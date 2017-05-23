@@ -1,0 +1,24 @@
+<nav search_view="search" color="#218BC6">
+  <view name="overview" default='true'/>
+  <view name="alerts" />
+<!--  <collection label="Compliance">
+  <view name="pci" />
+  <view name="cis" />
+  </collection> -->
+   <!--<view name="fim" /> -->
+   <view name="audit" />
+  <!-- <view name="policy" /> 
+   <view name="openscap" /> -->
+<collection label="Manager">
+  <view name="agents" />
+  <view name="rules" />
+  </collection>
+  <collection label="Splunk">
+  <view name="search" />
+  <view name="datasets" />
+  <view name="reports" />
+  <view name="alerts" />
+  <view name="dashboards" />
+</collection>
+  <!-- <view name="about" /> -->
+</nav>

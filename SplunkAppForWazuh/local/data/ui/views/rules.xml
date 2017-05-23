@@ -1,0 +1,17 @@
+<dashboard>
+  <label>Rules</label>
+  <row>
+    <panel>
+      <chart>
+        <title>Rules</title>
+        <search>
+          <query>index="add_on_builder_index" sourcetype=wazuh_rules "data.totalItems"=1826| top limit=30 "data.items{}.description"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+</dashboard>

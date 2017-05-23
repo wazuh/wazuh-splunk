@@ -1,0 +1,70 @@
+{
+    "tokens": [
+        "__settings__.logging.loglevel", 
+        "global_account.username", 
+        "global_account.password"
+    ], 
+    "requests": [
+        {
+            "pre_process": {
+                "skip_conditions": [], 
+                "pipeline": []
+            }, 
+            "request": {
+                "method": "GET", 
+                "auth": {
+                    "options": {
+                        "username": "{{global_account.username}}", 
+                        "password": "{{global_account.password}}"
+                    }, 
+                    "type": "basic_auth"
+                }, 
+                "url": "http://10.0.0.51:55000/manager/status", 
+                "headers": {}
+            }, 
+            "post_process": {
+                "skip_conditions": [
+                    {
+                        "method": "json_empty", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$"
+                        ]
+                    }
+                ], 
+                "pipeline": [
+                    {
+                        "method": "splunk_xml", 
+                        "output": "__stdout__", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "", 
+                            "{{index}}", 
+                            "{{host}}", 
+                            "{{source}}", 
+                            "{{sourcetype}}"
+                        ]
+                    }, 
+                    {
+                        "method": "std_output", 
+                        "input": [
+                            "{{__stdout__}}"
+                        ]
+                    }
+                ]
+            }, 
+            "iteration_mode": {
+                "stop_conditions": [], 
+                "iteration_count": "1"
+            }
+        }
+    ], 
+    "global_settings": {
+        "logging": {
+            "level": "{{__settings__.logging.loglevel}}"
+        }
+    }, 
+    "meta": {
+        "apiVersion": "1.0.0"
+    }
+}

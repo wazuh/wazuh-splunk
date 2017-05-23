@@ -1,0 +1,59 @@
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-Wazuh%23data%2Finputs%2FWazuh_API%3ATAB_example%60%60splunk_cred_sep%60%601%3A]
+owner = splunk-system-user
+version = 6.6.0
+modtime = 1495480142.105710000
+
+[ta_wazuh_settings/logging]
+version = 6.6.0
+modtime = 1495486809.854602000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-Wazuh%23data%2Finputs%2FWazuh_API%3ATAB_example%60%60splunk_cred_sep%60%602%3A]
+owner = splunk-system-user
+version = 6.6.0
+modtime = 1495480142.114676000
+
+[inputs/Wazuh_API%3A%2F%2FTAB_example]
+version = 6.6.0
+modtime = 1495480142.429677000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-Wazuh%23configs%2Fconf-ta_wazuh_account%3Aaccount0%60%60splunk_cred_sep%60%601%3A]
+owner = admin
+version = 6.6.0
+modtime = 1495486810.006549000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-Wazuh%23configs%2Fconf-ta_wazuh_account%3Aaccount0%60%60splunk_cred_sep%60%602%3A]
+owner = admin
+version = 6.6.0
+modtime = 1495486810.031039000
+
+[ta_wazuh_account/account0]
+owner = admin
+version = 6.6.0
+modtime = 1495486810.037280000
+
+[props/wazuh%3Aapi]
+owner = admin
+version = 6.6.0
+modtime = 1495480509.257738000
+
+[props/manager%3Astatus]
+owner = admin
+version = 6.6.0
+modtime = 1495480520.850101000
+
+[app/ui]
+version = 6.6.0
+modtime = 1495486624.603733000
+
+[app/launcher]
+version = 6.6.0
+modtime = 1495486624.605501000
+
+[app/package/check_for_updates]
+version = 6.6.0
+modtime = 1495486624.606251000
+
+[props/wazuh_rules]
+owner = admin
+version = 6.6.0
+modtime = 1495486864.866828000
