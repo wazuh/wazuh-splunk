@@ -1,0 +1,21 @@
+#   Version 6.4.0
+#
+# This is an example audit.conf.  Use this file to configure auditing.
+#
+# There is NO DEFAULT audit.conf.
+#
+# To use one or more of these configurations, copy the configuration block into
+# audit.conf in $SPLUNK_HOME/etc/system/local/.  You must restart Splunk to
+# enable configurations.
+#
+# To learn more about configuration files (including precedence) please see the
+# documentation located at
+# http://docs.splunk.com/Documentation/Splunk/latest/Admin/Aboutconfigurationfiles
+
+[auditTrail]
+privateKey=/some/path/to/your/private/key/private_key.pem
+publicKey=/some/path/to/your/public/key/public_key.pem
+
+# If this stanza exists, audit trail events will be cryptographically signed.
+# You must have a private key to encrypt the signatures and a public key to decrypt them.
+# Generate your own keys using openssl in $SPLUNK_HOME/bin/.

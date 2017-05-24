@@ -1,0 +1,29 @@
+#   Version 6.4.0
+#
+# This is an example web.conf.  Use this file to configure data web
+# settings.
+#
+# To use one or more of these configurations, copy the configuration block
+# into web.conf in $SPLUNK_HOME/etc/system/local/. You must restart Splunk
+# to enable configurations.
+#
+# To learn more about configuration files (including precedence) please see
+# the documentation located at
+# http://docs.splunk.com/Documentation/Splunk/latest/Admin/Aboutconfigurationfiles
+
+
+
+# This stanza heading must precede any changes.
+[settings]
+
+# Change the default port number:
+httpport = 12800
+# Also run the python application server on a non-default port:
+appServerPorts = 12801
+
+# Turn on SSL:
+enableSplunkWebSSL = true
+# absolute paths may be used here.
+privKeyPath = /home/user/certs/myprivatekey.pem
+caCertPath = /home/user/certs/mycacert.pem
+# NOTE: non-absolute paths are relative to $SPLUNK_HOME
