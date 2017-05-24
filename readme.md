@@ -14,4 +14,4 @@ Project to adjust development setting. Build on Splunk app addon builder. Very u
 
 ## forwarder config
 
-Configuration to install on distribuited environment. T
+Configuration to install on distribuited environment. 
