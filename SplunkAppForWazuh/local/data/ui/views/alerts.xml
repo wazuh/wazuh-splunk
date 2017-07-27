@@ -1,11 +1,22 @@
-<dashboard>
+<form>
   <label>Alerts</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="date" searchWhenChanged="true">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
   <row>
     <panel>
       <title>Alerts Level 5 or More</title>
       <single>
         <search>
           <query>index="wazuh"  sourcetype=wazuh "rule.level"&gt;5 | timechart count</query>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">trend</option>
@@ -30,7 +41,8 @@
       <single>
         <search>
           <query>index="wazuh"  sourcetype=wazuh "rule.level"&gt;=10 | timechart count</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">trend</option>
@@ -54,7 +66,8 @@
       <single>
         <search>
           <query>index="wazuh"  sourcetype=wazuh "rule.level"&gt;=10 | timechart dc(host)</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">trend</option>
@@ -80,7 +93,8 @@
       <chart>
         <search>
           <query>index="wazuh"  sourcetype=wazuh "rule.level"&gt;5 | timechart count by rule.level | rename rule.level as "Alert Level"</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -115,7 +129,8 @@
       <chart>
         <search>
           <query>index="wazuh"  sourcetype=wazuh "rule.level"&gt;5 | chart count over rule.level by agent.name</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -148,7 +163,8 @@
       <chart>
         <search>
           <query>index="wazuh"  sourcetype=wazuh rule.level&gt;=5 | top limit=10 srcip</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -181,7 +197,8 @@
       <chart>
         <search>
           <query>index="wazuh"  sourcetype=wazuh rule.level&gt;=5 | top limit=10 srcip | iplocation srcip | table Country count</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
@@ -216,7 +233,8 @@
       <map>
         <search>
           <query>index="wazuh"  sourcetype=wazuh rule.level&gt;=5 | top limit=10 srcip | iplocation srcip | geostats count by srcip</query>
-          <earliest>0</earliest>
+          <earliest>$date.earliest$</earliest>
+          <latest>$date.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="drilldown">all</option>
@@ -243,4 +261,4 @@
       </map>
     </panel>
   </row>
-</dashboard>
+</form>

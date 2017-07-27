@@ -1,5 +1,12 @@
 <nav search_view="search" color="#218BC6">
-  <view name="overview" default='true'/>
+  <collection label="Overview">
+  <view name="general" default='true' />
+  <view name="overview_fim" />
+  <view name="overview_policy_monitoring" />
+  <view name="overview_scap" />
+  <view name="overview_audit" />
+  <view name="overview_pci_dss" />
+</collection>
   <view name="alerts" />
 <!--  <collection label="Compliance">
   <view name="pci" />
@@ -13,7 +20,7 @@
   <view name="agents" />
   <view name="rules" />
   </collection>
-  <collection label="Splunk">
+<collection label="Splunk">
   <view name="search" />
   <view name="datasets" />
   <view name="reports" />

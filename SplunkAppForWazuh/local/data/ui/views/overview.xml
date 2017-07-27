@@ -1,9 +1,9 @@
 <dashboard>
-  <label>Overview</label>
+  <label>Old_Overview</label>
   <row>
     <panel>
-      <title>Analissd</title>
       <single>
+        <title>Analissd</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-analysisd as analysisd | eval estado=if(analysisd="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -11,13 +11,17 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">83</option>
         <option name="numberPrecision">0</option>
-        <option name="rangeColors">["0x65a637","0xd93f3c"]</option>
+        <option name="rangeColors">["0x65a637","0x65a637","0xd93f3c"]</option>
         <option name="rangeValues">[0]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
@@ -26,8 +30,8 @@
       </single>
     </panel>
     <panel>
-      <title>Ossec-execd</title>
       <single>
+        <title>Ossec-execd</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-execd as execd | eval estado=if(execd="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -35,23 +39,27 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">84</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
+        <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
     <panel>
-      <title>Logcollector</title>
       <single>
+        <title>Logcollector</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-logcollector as logcollector | eval estado=if(logcollector="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -59,23 +67,27 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">85</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
+        <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
     <panel>
-      <title>Monitord</title>
       <single>
+        <title>Monitord</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-monitord as monitord | eval estado=if(monitord="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -83,23 +95,27 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">85</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
+        <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
     <panel>
-      <title>Remoted</title>
       <single>
+        <title>Remoted</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-remoted as remoted | eval estado=if(remoted="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -107,25 +123,27 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">86</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
+        <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
-  </row>
-  <row>
     <panel>
-      <title>Maild</title>
       <single>
+        <title>Maild</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-maild as maild | eval estado=if(maild="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -133,23 +151,27 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">86</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
         <option name="rangeValues">[0,30,70,100]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
+        <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
     <panel>
-      <title>Authd</title>
       <single>
+        <title>Authd</title>
         <search>
           <query>index="*" sourcetype="manager*"  | rename data.ossec-authd as authd | eval estado=if(authd="running","OK","DOWN") | stats count by estado | fields estado</query>
           <earliest>-1m</earliest>
@@ -157,17 +179,21 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
-        <option name="colorMode">none</option>
+        <option name="colorMode">block</option>
         <option name="drilldown">none</option>
+        <option name="height">86</option>
         <option name="numberPrecision">0</option>
-        <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c"]</option>
-        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="rangeColors">["0x65a637","0x6db7c6","0xf7bc38","0xf58f39","0xd93f3c","0xd93f3c"]</option>
+        <option name="rangeValues">[0,30,70,100,200]</option>
         <option name="showSparkline">1</option>
         <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">small</option>
+        <option name="trellis.splitBy">_aggregation</option>
         <option name="trendColorInterpretation">standard</option>
         <option name="trendDisplayMode">absolute</option>
         <option name="unitPosition">after</option>
-        <option name="useColors">0</option>
+        <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
