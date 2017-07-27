@@ -101,12 +101,12 @@ modtime = 1501006838.734314000
 [views/general]
 owner = admin
 version = 6.6.0
-modtime = 1501112693.922091000
+modtime = 1501135721.412055000
 
 [views/overview_fim]
 owner = admin
 version = 6.6.0
-modtime = 1501119758.789885000
+modtime = 1501135775.245309000
 
 [views/overview_policy_monitoring]
 owner = admin
@@ -116,7 +116,7 @@ modtime = 1501105831.890151000
 [views/overview_scap]
 owner = admin
 version = 6.6.0
-modtime = 1501131226.295039000
+modtime = 1501135823.662253000
 
 [views/overview_pci_dss]
 owner = admin
@@ -625,4 +625,4 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501133162.560608000
+modtime = 1501135904.540833000
