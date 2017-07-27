@@ -193,4 +193,24 @@
       </table>
     </panel>
   </row>
+  <row>
+    <panel>
+      <title>PCI DSS REQUIREMENT</title>
+      <table>
+        <search>
+          <query>| inputlookup pci1.csv  |search REQUIREMENT="$pci$" | table REQUIREMENT,DESCRIPTION</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
 </form>
