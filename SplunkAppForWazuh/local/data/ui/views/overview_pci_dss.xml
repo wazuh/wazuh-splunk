@@ -188,7 +188,7 @@
         <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
-        <option name="totalsRow">true</option>
+        <option name="totalsRow">false</option>
         <option name="wrap">false</option>
       </table>
     </panel>
