@@ -1,5 +1,5 @@
 .custom-result-value {
-    font-size: 55px;
+    font-size: 30px;
     margin: 35px auto;
     text-align: center;
     font-weight: bold;
@@ -25,5 +25,5 @@
     content: "\ECD3";
 }
 .custom-result-value.icon-only {
-    font-size: 90px;
+    font-size: 60px;
 }

@@ -651,3 +651,8 @@ modtime = 1501169965.902314000
 [app/package/check_for_updates]
 version = 6.6.0
 modtime = 1501197797.622406000
+
+[views/manager_status]
+owner = admin
+version = 6.6.0
+modtime = 1501249475.755425000

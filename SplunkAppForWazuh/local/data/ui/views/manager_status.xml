@@ -1,0 +1,131 @@
+<dashboard stylesheet="wazuh_decorations.css">
+  <label>Manager Status</label>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-analysisd as analysisd | eval value=if(analysisd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value1">$result.value$</set>
+      <set token="range1">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-execd as execd| eval value=if(execd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value2">$result.value$</set>
+      <set token="range2">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-logcollector as logcollector| eval value=if(logcollector="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value3">$result.value$</set>
+      <set token="range3">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-monitord as monitord | eval value=if(monitord="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value4">$result.value$</set>
+      <set token="range4">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-remoted as remoted | eval value=if(remoted="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value5">$result.value$</set>
+      <set token="range5">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-maild as maild  | eval value=if(maild="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value6">$result.value$</set>
+      <set token="range6">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-authd as authd  | eval value=if(authd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value7">$result.value$</set>
+      <set token="range7">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.wazuh-modulesd as modulesd  | eval value=if(modulesd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value8">$result.value$</set>
+      <set token="range8">$result.range$</set>
+    </progress>
+  </search>
+  <search>
+    <query>index="add_on_builder_index" sourcetype="manager*"  | rename data.ossec-syscheckd as syscheckd  | eval value=if(syscheckd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <progress>
+      <set token="value9">$result.value$</set>
+      <set token="range9">$result.range$</set>
+    </progress>
+  </search>
+  <row>
+    <panel>
+      <title>analysisd</title>
+      <html>
+                <div class="custom-result-value  $range1$"> 
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>execd</title>
+      <html>
+                <div class="custom-result-value $range2$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>logcollector</title>
+      <html>
+                <div class="custom-result-value $range3$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>monitord</title>
+      <html>
+                <div class="custom-result-value $range4$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>remoted</title>
+      <html>
+                <div class="custom-result-value $range5$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>maild</title>
+      <html>
+                <div class="custom-result-value $range6$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>authd</title>
+      <html>
+                <div class="custom-result-value $range7$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>modulesd</title>
+      <html>
+                <div class="custom-result-value $range8$">
+                </div>
+            </html>
+    </panel>
+    <panel>
+      <title>syscheckd</title>
+      <html>
+                <div class="custom-result-value $range9$">
+                </div>
+            </html>
+    </panel>
+  </row>
+</dashboard>
