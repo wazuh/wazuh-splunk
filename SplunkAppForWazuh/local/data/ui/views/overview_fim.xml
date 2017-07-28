@@ -213,7 +213,7 @@
       <title>Last file added</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" syscheck.event="added" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time | rename syscheck.path as "Path"</query>
+          <query>index=wazuh sourcetype="wazuh" syscheck.event="added" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time | rename syscheck.path as "&gt;"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -224,13 +224,17 @@
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
+        <format type="color" field="&gt;">
+          <colorPalette type="list">[#D93F3C]</colorPalette>
+          <scale type="threshold"></scale>
+        </format>
       </table>
     </panel>
     <panel>
       <title>Last file modified</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" syscheck.event="modified" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as "Path"</query>
+          <query>index=wazuh sourcetype="wazuh" syscheck.event="modified" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as "&gt;"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -247,7 +251,7 @@
       <title>Last File Deleted</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" syscheck.event="deleted" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as "Path"</query>
+          <query>index=wazuh sourcetype="wazuh" syscheck.event="deleted" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as "&gt;"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

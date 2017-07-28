@@ -1,10 +1,10 @@
 [app/ui]
-version = 6.5.2
-modtime = 1491666194.651469000
+version = 6.6.0
+modtime = 1501197797.616584000
 
 [app/launcher]
-version = 6.5.2
-modtime = 1491666194.654090000
+version = 6.6.0
+modtime = 1501197797.620008000
 
 [nav/default]
 version = 6.6.0
@@ -106,7 +106,7 @@ modtime = 1501172578.926131000
 [views/overview_fim]
 owner = admin
 version = 6.6.0
-modtime = 1501135775.245309000
+modtime = 1501172813.205315000
 
 [views/overview_policy_monitoring]
 owner = admin
@@ -121,7 +121,7 @@ modtime = 1501166574.520874000
 [views/overview_pci_dss]
 owner = admin
 version = 6.6.0
-modtime = 1501172378.948706000
+modtime = 1501200952.443499000
 
 [savedsearches/RPT_overview_alerts_up_level12]
 access = read : [ * ], write : [ admin, power ]
@@ -647,3 +647,7 @@ export = none
 owner = admin
 version = 6.6.0
 modtime = 1501169965.902314000
+
+[app/package/check_for_updates]
+version = 6.6.0
+modtime = 1501197797.622406000

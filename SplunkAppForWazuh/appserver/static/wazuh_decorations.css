@@ -1,0 +1,29 @@
+.custom-result-value {
+    font-size: 55px;
+    margin: 35px auto;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(85, 85, 85);
+}
+.custom-result-value:before {
+    font-family: "Splunk Icons";
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-size: 110%;
+}
+.down.custom-result-value:before {
+    content: "\2297";
+}
+.down.custom-result-value {
+    color: rgb(217, 63, 60);
+}
+.up.custom-result-value {
+    color: rgb(101, 166, 55);
+}
+.up.custom-result-value:before {
+    content: "\ECD3";
+}
+.custom-result-value.icon-only {
+    font-size: 90px;
+}
