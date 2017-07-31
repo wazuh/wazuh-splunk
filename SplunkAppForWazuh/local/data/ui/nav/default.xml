@@ -7,6 +7,14 @@
   <view name="overview_audit" />
   <view name="overview_pci_dss" />
 </collection>
+<collection label="Detail">
+  <view name="audit" />
+  <view name="cis" />
+    <view name="alerts" />
+</collection>
+  <collection label="Manager">
+  <view name="manager_status" />
+</collection>
 <collection label="Splunk">
   <view name="search" />
   <view name="datasets" />

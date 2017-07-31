@@ -128,4 +128,66 @@
             </html>
     </panel>
   </row>
+  <row>
+    <panel>
+      <single>
+        <title>Total Agents</title>
+        <search>
+          <query>index="add_on_builder_index" sourcetype="agents:summary" | stats latest(data.Total) as "Total Agents"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Active</title>
+        <search>
+          <query>index="add_on_builder_index" sourcetype="agents:summary" | stats latest(data.Active) as "Active Agents"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Disconnected</title>
+        <search>
+          <query>index="add_on_builder_index" sourcetype="agents:summary" | stats latest(data.Disconnected) as "Disconnected"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Never connected</title>
+        <search>
+          <query>index="add_on_builder_index" sourcetype="agents:summary" | stats latest("data.Never connected") as "Never"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Agent Coverage</title>
+        <search>
+          <query>index="add_on_builder_index" sourcetype="agents:summary" | rename   data.Active as Active, data.Total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + " %" | top Coverage showcount=f showperc=f</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+  </row>
 </dashboard>

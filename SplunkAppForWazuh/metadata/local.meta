@@ -8,7 +8,7 @@ modtime = 1501197797.620008000
 
 [nav/default]
 version = 6.6.0
-modtime = 1501135326.682317000
+modtime = 1501529237.436865000
 
 [props/wazuh]
 owner = admin
@@ -32,22 +32,12 @@ owner = admin
 version = 6.6.0
 modtime = 1495483590.979542000
 
-[views/overview]
-owner = admin
-version = 6.6.0
-modtime = 1501032882.297581000
-
 [views/openscap]
 access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
 modtime = 1501133154.054197000
-
-[views/rules]
-owner = admin
-version = 6.6.0
-modtime = 1495487256.485838000
 
 [savedsearches/RPT_Table_Agents_by_ID_and_IP_24h]
 access = read : [ * ], write : [ admin, power ]
@@ -101,7 +91,7 @@ modtime = 1501006838.734314000
 [views/general]
 owner = admin
 version = 6.6.0
-modtime = 1501172578.926131000
+modtime = 1501529348.199209000
 
 [views/overview_fim]
 owner = admin
@@ -655,4 +645,266 @@ modtime = 1501197797.622406000
 [views/manager_status]
 owner = admin
 version = 6.6.0
-modtime = 1501249475.755425000
+modtime = 1501263238.769912000
+
+[views/cis]
+owner = admin
+version = 6.6.0
+modtime = 1501291144.600268000
+
+[savedsearches/RPT_audit_Alerts_group_over_time]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287933.191383000
+
+[savedsearches/RPT_audit_Effective_user_ID]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287941.614607000
+
+[savedsearches/RPT_audit_Files_created]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287949.462537000
+
+[savedsearches/RPT_audit_Files_deleted]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287957.238661000
+
+[savedsearches/RPT_audit_agents]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287964.990182000
+
+[savedsearches/RPT_audit_alert_groups_over_time]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287974.401056000
+
+[savedsearches/RPT_audit_commands]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287981.611316000
+
+[savedsearches/RPT_audit_directories]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287988.659236000
+
+[savedsearches/RPT_audit_effective_group_id]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501287997.349690000
+
+[savedsearches/RPT_audit_file_attributes_modified]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288004.737533000
+
+[savedsearches/RPT_audit_file_read_access]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288011.762769000
+
+[savedsearches/RPT_audit_file_write_access]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288018.900043000
+
+[savedsearches/RPT_audit_files]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288025.542989000
+
+[savedsearches/RPT_audit_last_alerts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288033.156866000
+
+[savedsearches/RPT_audit_rule_grroups]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288041.956470000
+
+[savedsearches/RPT_cis_Agents_and_Benchmarks]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288050.409827000
+
+[savedsearches/RPT_cis_evolution_by_agent]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288059.314099000
+
+[savedsearches/RPT_cis_groups_and_benchmarks]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288069.597086000
+
+[savedsearches/RPT_cis_last_alerts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288078.439332000
+
+[savedsearches/RPT_cis_requirements_by_time]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288087.499106000
+
+[savedsearches/RPT_cis_sections2]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288094.629470000
+
+[savedsearches/RPT_cis_security_breaches_by_agent]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288101.626265000
+
+[savedsearches/RPT_cis_top_cis_breaches]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288109.213599000
+
+[views/audit]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501288452.644608000
+
+[views/alerts]
+owner = admin
+version = 6.6.0
+modtime = 1501529305.761105000
+
+[savedsearches/RPT_alerts_Alerts_By_country]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529385.148753000
+
+[savedsearches/RPT_alerts_Alerts_Geolocation]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529392.682124000
+
+[savedsearches/RPT_alerts_Alerts_Top_5_Groups]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529399.980092000
+
+[savedsearches/RPT_alerts_Alerts_level_greater_than_9]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529407.380309000
+
+[savedsearches/RPT_alerts_Last_alerts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529414.603633000
+
+[savedsearches/RPT_alerts_Signature_Area_Chart]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529422.292006000
+
+[savedsearches/RPT_alerts_Total_Alerts_Time_Bar]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529430.037452000
+
+[savedsearches/RPT_alerts_agents_total_alerts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529438.894017000
+
+[savedsearches/RPT_alerts_alert_level_evolution]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529446.104995000
+
+[savedsearches/RPT_alerts_pie_chart_signature]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529453.847132000
+
+[savedsearches/RPT_alerts_signature_count]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529462.168291000
+
+[savedsearches/RPT_alerts_stacked_groups]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501529469.236594000
