@@ -10,7 +10,8 @@
 <collection label="Detail">
   <view name="audit" />
   <view name="cis" />
-    <view name="alerts" />
+  <view name="alerts" />
+    <view name="fim" />
 </collection>
   <collection label="Manager">
   <view name="manager_status" />
