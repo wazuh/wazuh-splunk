@@ -13,6 +13,7 @@
   <view name="alerts" />
   <view name="fim" />
   <view name="openscap" />
+  <view name="pcidss" />
 </collection>
   <collection label="Manager">
   <view name="manager_status" />

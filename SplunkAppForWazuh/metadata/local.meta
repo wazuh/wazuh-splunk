@@ -7,8 +7,11 @@ version = 6.6.0
 modtime = 1501197797.620008000
 
 [nav/default]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = nobody
 version = 6.6.0
-modtime = 1501560192.253825000
+modtime = 1501565984.094996000
 
 [props/wazuh]
 owner = admin
@@ -25,26 +28,12 @@ owner = admin
 version = 6.5.3
 modtime = 1491695488.676519000
 
-[views/agents]
-access = read : [ * ], write : [ admin ]
-export = none
-owner = admin
-version = 6.6.0
-modtime = 1501542515.902694000
-
 [views/openscap]
 access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
 modtime = 1501560451.198204000
-
-[savedsearches/RPT_Table_Agents_by_ID_and_IP_24h]
-access = read : [ * ], write : [ admin, power ]
-export = none
-owner = admin
-version = 6.6.0
-modtime = 1496284305.498821000
 
 [savedsearches/RPT_agentID_count_events_24h]
 access = read : [ * ], write : [ admin, power ]
@@ -912,7 +901,7 @@ modtime = 1501529469.236594000
 [views/fim]
 owner = admin
 version = 6.6.0
-modtime = 1501561067.145073000
+modtime = 1501565155.417421000
 
 [savedsearches/RPT_fim_FIM%20Top_10_Files_converted_to_executable]
 access = read : [ * ], write : [ admin, power ]
@@ -1116,3 +1105,106 @@ export = none
 owner = admin
 version = 6.6.0
 modtime = 1501560879.232974000
+
+[views/pcidss]
+owner = admin
+version = 6.6.0
+modtime = 1501565915.907859000
+
+[savedsearches/RPT_pci_File_table_integrity_checksum_changed]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564592.267774000
+
+[savedsearches/RPT_pci_High_Risk_Alerts-PCI_DSS]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564601.365243000
+
+[savedsearches/RPT_pci_Integrity_checksum_changed]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564609.346679000
+
+[savedsearches/RPT_pci_PCI_DSS_Requirement_10.2.2]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564618.319980000
+
+[savedsearches/RPT_pci_PCI_DSS_Requirement_10.2.5]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564626.433938000
+
+[savedsearches/RPT_pci_PCI_DSS_Requirement_10.6.1]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564633.637479000
+
+[savedsearches/RPT_pci_PCI_DSS_Requirement_11.4]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564640.300349000
+
+[savedsearches/RPT_pci_PCI_DSS_Signature_Area_Chart]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564648.230683000
+
+[savedsearches/RPT_pci_PCI_Last_Alerts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564655.778875000
+
+[savedsearches/RPT_pci_PCI_Requirements_Agent]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564668.375539000
+
+[savedsearches/RPT_pci_PCI_Requirements_by_time]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564675.890393000
+
+[savedsearches/RPT_pci_Requirements-Groups]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564683.638039000
+
+[savedsearches/RPT_pci_Requirements_by_agent]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564691.340473000
+
+[savedsearches/RPT_pci_requirements]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501564698.604935000
