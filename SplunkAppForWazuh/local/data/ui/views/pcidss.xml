@@ -1,6 +1,19 @@
 <form>
   <label>PCI-DSS</label>
   <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="agent" searchWhenChanged="true">
+      <label>Agent</label>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <fieldForLabel>agent.name</fieldForLabel>
+      <fieldForValue>agent.name</fieldForValue>
+      <search>
+        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
       <default>
@@ -11,10 +24,10 @@
   </fieldset>
   <row>
     <panel>
-      <title>Requirements by time</title>
+      <title>Requirements by time $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh | timechart count by rule.pci_dss</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | timechart count by rule.pci_dss</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -48,10 +61,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Requirements</title>
+      <title>Requirements $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | top rule.pci_dss{} useother=f</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | top rule.pci_dss{} useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -89,8 +102,9 @@
     <panel>
       <title>Requirement 11.4</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=11.4 | timechart count</query>
+          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=11.4 agent.name="$agent$" | timechart count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -126,8 +140,9 @@
     <panel>
       <title>Requirement 10.2.2</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=10.2.2 | timechart count</query>
+          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=10.2.2 agent.name="$agent$" | timechart count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -163,8 +178,9 @@
     <panel>
       <title>Requirement 10.2.5</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=10.2.5 | timechart count</query>
+          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=10.2.5 agent.name="$agent$" | timechart count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -200,8 +216,9 @@
     <panel>
       <title>Requirement 10.6.1</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=10.6.1 | timechart count</query>
+          <query>index=wazuh sourcetype=wazuh rule.pci_dss{}=10.6.1 agent.name="$agent$"| timechart count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -237,10 +254,10 @@
   </row>
   <row>
     <panel>
-      <title>Requirements / Groups</title>
+      <title>Requirements / Groups $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh | top rule.groups</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$"| top rule.groups</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -274,10 +291,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Requirements / Agent</title>
+      <title>Requirements / Agent $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | stats count(rule.pci_dss{}) by agent.name</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | stats count(rule.pci_dss{}) by agent.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -313,10 +330,10 @@
   </row>
   <row>
     <panel>
-      <title>High risk alerts</title>
+      <title>High risk alerts $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.pci_dss{}"&gt;=10 | timechart count(rule.level) by rule.pci_dss{} useother=f usenull=f</query>
+          <query>index=wazuh sourcetype=wazuh "rule.pci_dss{}"&gt;=10 agent.name="$agent$" | timechart count(rule.level) by rule.pci_dss{} useother=f usenull=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -352,10 +369,10 @@
   </row>
   <row>
     <panel>
-      <title>Signature area chart</title>
+      <title>Signature area chart $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.pci_dss{}"&gt;=* | timechart count by rule.description useother=f usenull=f</query>
+          <query>index=wazuh sourcetype=wazuh "rule.pci_dss{}"&gt;=* agent.name="$agent$"| timechart count by rule.description useother=f usenull=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -391,10 +408,10 @@
   </row>
   <row>
     <panel>
-      <title>Integrity checksum changed</title>
+      <title>Integrity checksum changed $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | timechart count by syscheck.path useother=f usenull=f</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | timechart count by syscheck.path useother=f usenull=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -428,10 +445,10 @@
       </chart>
     </panel>
     <panel>
-      <title>File integrity monitoring checksum changed</title>
+      <title>File integrity monitoring checksum changed $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -450,10 +467,10 @@
   </row>
   <row>
     <panel>
-      <title>Last alerts</title>
+      <title>Last alerts $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | table agent.name, rule.level, rule.pci_dss{}, rule.description</query>
+          <query>index=wazuh sourcetype=wazuh  agent.name="$agent$"| table agent.name, rule.level, rule.pci_dss{}, rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -470,10 +487,10 @@
       </table>
     </panel>
     <panel>
-      <title>Requirements by agent</title>
+      <title>Requirements by agent $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | stats count sparkline by agent.name, rule.pci_dss{}, rule.description</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

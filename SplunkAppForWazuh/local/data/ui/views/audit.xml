@@ -1,6 +1,19 @@
 <form>
   <label>Audit</label>
   <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="agent" searchWhenChanged="true">
+      <label>Agent</label>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <fieldForLabel>agent.name</fieldForLabel>
+      <fieldForValue>agent.name</fieldForValue>
+      <search>
+        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
       <default>
@@ -11,10 +24,10 @@
   </fieldset>
   <row>
     <panel>
-      <title>Rule Groups</title>
+      <title>Rule Groups $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit | top rule.groups</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name="$agent$" | top rule.groups</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -48,10 +61,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Agents</title>
+      <title>Agents $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name=* | top agent.name showperc=false</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name="$agent$" | top agent.name showperc=false</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -63,10 +76,10 @@
       </table>
     </panel>
     <panel>
-      <title>Directories</title>
+      <title>Directories $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit | top audit.directory.name showperc=f</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name="$agent$" | top audit.directory.name showperc=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -78,10 +91,10 @@
       </table>
     </panel>
     <panel>
-      <title>Files</title>
+      <title>Files $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  | top audit.file.name showperc=f</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  agent.name="$agent$"| top audit.file.name showperc=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -95,10 +108,10 @@
   </row>
   <row>
     <panel>
-      <title>Alerts group over time</title>
+      <title>Alerts group over time $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit   | timechart count by rule.description</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  agent.name="$agent$" | timechart count by rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -134,10 +147,10 @@
   </row>
   <row>
     <panel>
-      <title>File attributes modified</title>
+      <title>File attributes modified $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  "rule.id"=80787 | top audit.file.name</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  "rule.id"=80787 agent.name="$agent$" | top audit.file.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -147,10 +160,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Effective group id</title>
+      <title>Effective group id $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit   | top audit.egid</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name="$agent$"  | top audit.egid</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -184,10 +197,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Commands</title>
+      <title>Commands $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit   | top audit.command</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name="$agent$"  | top audit.command</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -223,10 +236,10 @@
   </row>
   <row>
     <panel>
-      <title>Alerts over time</title>
+      <title>Alerts over time $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  | timechart count by rule.groups</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  agent.name="$agent$"| timechart count by rule.groups</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -264,8 +277,9 @@
     <panel>
       <title>File read access</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80784 | top audit.file.name</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80784 agent.name="$agent$"| top audit.file.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -301,8 +315,9 @@
     <panel>
       <title>File write access</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80781 | top audit.file.name</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80781 agent.name="$agent$" | top audit.file.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -338,8 +353,9 @@
     <panel>
       <title>Files created</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80790 | top audit.file.name</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80790 agent.name="$agent$" | top audit.file.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -375,8 +391,9 @@
     <panel>
       <title>Files deleted</title>
       <chart>
+        <title>$agent$</title>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80791 | top audit.file.name</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit  rule.id=80791 agent.name="$agent$"| top audit.file.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -412,10 +429,10 @@
   </row>
   <row>
     <panel>
-      <title>Last alerts</title>
+      <title>Last alerts $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit | table _time, agent.name, rule.description, audit.exe, audit.file.mode, audit.egid, audit.euid</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.groups"=audit agent.name="$agent$"| table _time, agent.name, rule.description, audit.exe, audit.file.mode, audit.egid, audit.euid</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

@@ -11,7 +11,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = nobody
 version = 6.6.0
-modtime = 1501569185.867314000
+modtime = 1501611617.127508000
 
 [props/wazuh]
 owner = admin
@@ -33,7 +33,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501608710.567941000
+modtime = 1501613412.596423000
 
 [savedsearches/RPT_agentID_count_events_24h]
 access = read : [ * ], write : [ admin, power ]
@@ -85,7 +85,7 @@ modtime = 1501607144.552290000
 [views/overview_fim]
 owner = admin
 version = 6.6.0
-modtime = 1501607971.930291000
+modtime = 1501609235.995406000
 
 [views/overview_policy_monitoring]
 owner = admin
@@ -639,7 +639,7 @@ modtime = 1501263238.769912000
 [views/cis]
 owner = admin
 version = 6.6.0
-modtime = 1501608380.392290000
+modtime = 1501613066.872860000
 
 [savedsearches/RPT_audit_Alerts_group_over_time]
 access = read : [ * ], write : [ admin, power ]
@@ -807,12 +807,12 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501607660.965276000
+modtime = 1501614192.601302000
 
 [views/alerts]
 owner = admin
 version = 6.6.0
-modtime = 1501607485.306001000
+modtime = 1501611511.491418000
 
 [savedsearches/RPT_alerts_Alerts_By_country]
 access = read : [ * ], write : [ admin, power ]
@@ -901,7 +901,7 @@ modtime = 1501529469.236594000
 [views/fim]
 owner = admin
 version = 6.6.0
-modtime = 1501607517.134552000
+modtime = 1501612481.333775000
 
 [savedsearches/RPT_fim_FIM%20Top_10_Files_converted_to_executable]
 access = read : [ * ], write : [ admin, power ]
@@ -1109,7 +1109,7 @@ modtime = 1501560879.232974000
 [views/pcidss]
 owner = admin
 version = 6.6.0
-modtime = 1501607744.917237000
+modtime = 1501614603.731756000
 
 [savedsearches/RPT_pci_File_table_integrity_checksum_changed]
 access = read : [ * ], write : [ admin, power ]

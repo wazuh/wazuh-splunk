@@ -1,6 +1,19 @@
 <form>
   <label>OpenSCAP</label>
   <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="agent" searchWhenChanged="true">
+      <label>Agent</label>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <fieldForLabel>agent.name</fieldForLabel>
+      <fieldForValue>agent.name</fieldForValue>
+      <search>
+        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
       <default>
@@ -11,10 +24,10 @@
   </fieldset>
   <row>
     <panel>
-      <title>Content</title>
+      <title>Content $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"!="syslog" | top oscap.scan.content</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"!="syslog" agent.name="$agent$"| top oscap.scan.content</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -48,10 +61,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Profiles</title>
+      <title>Profiles $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"!="syslog" | top oscap.scan.profile.title</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"!="syslog" agent.name="$agent$"| top oscap.scan.profile.title</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -85,10 +98,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Agents</title>
+      <title>Agents $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"!="syslog" | top agent.name</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"!="syslog" agent.name="$agent$"| top agent.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -122,10 +135,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Errors</title>
+      <title>Errors $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" AND "rule.groups"="errors" | top rule.description</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" AND "rule.groups"="errors" agent.name="$agent$" | top rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -137,10 +150,10 @@
   </row>
   <row>
     <panel>
-      <title>Scans score average</title>
+      <title>Scans score average $agent$</title>
       <single>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report"  | chart avg(oscap.scan.score) as Score |  eval Score=round(Score,2) |eval Score=Score + "%"</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report" agent.name="$agent$" | chart avg(oscap.scan.score) as Score |  eval Score=round(Score,2) |eval Score=Score + "%"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -167,10 +180,10 @@
   </row>
   <row>
     <panel>
-      <title>Scan score ranges</title>
+      <title>Scan score ranges $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report" | rangemap field=oscap.scan.score "0.1 to 15"=0-15 "15.01 to 30"=15.01-30 "30.01 to 50"=30.1-50 "50.1 to 70"=50.1-70 "70.1 to 90"=70.1-90 "90.1 to 100"=90.1-100 | top range</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report" agent.name="$agent$"| rangemap field=oscap.scan.score "0.1 to 15"=0-15 "15.01 to 30"=15.01-30 "30.01 to 50"=30.1-50 "50.1 to 70"=50.1-70 "70.1 to 90"=70.1-90 "90.1 to 100"=90.1-100 | top range</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -204,10 +217,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Scans history</title>
+      <title>Scans history $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report"  | timechart count by oscap.scan.score</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report" agent.name="$agent$" | timechart count by oscap.scan.score</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -241,10 +254,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Errors history</title>
+      <title>Errors history $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" AND "rule.groups"="errors" | timechart count</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" AND "rule.groups"="errors" agent.name="$agent$"| timechart count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -280,10 +293,10 @@
   </row>
   <row>
     <panel>
-      <title>Checks result</title>
+      <title>Checks result $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"="oscap-result" | top oscap.check.result</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"="oscap-result" agent.name="$agent$" | top oscap.check.result</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -317,10 +330,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Checks severity</title>
+      <title>Checks severity $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"="oscap-result" | top oscap.check.severity</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"="oscap-result" agent.name="$agent$" | top oscap.check.severity</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -356,10 +369,10 @@
   </row>
   <row>
     <panel>
-      <title>Top failed checks</title>
+      <title>Top failed checks $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"="oscap-result" oscap.check.result=fail | timechart count by oscap.check.title useother=f</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" "rule.groups"="oscap-result" oscap.check.result=fail agent.name="$agent$" | timechart count by oscap.check.title useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -393,9 +406,10 @@
       </chart>
     </panel>
     <panel>
+      <title>Summary of alerts $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" | table agent.name, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title , oscap.scan.score</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" agent.name="$agent$" | table agent.name, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title , oscap.scan.score</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -414,10 +428,10 @@
   </row>
   <row>
     <panel>
-      <title>Checks</title>
+      <title>Checks $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" | table _time, agent.name, oscap.check.title, oscap.check.result, oscap.check.severity, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" agent.name="$agent$" | table _time, agent.name, oscap.check.title, oscap.check.result, oscap.check.severity, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

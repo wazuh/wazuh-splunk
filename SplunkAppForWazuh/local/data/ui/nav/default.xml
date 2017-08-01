@@ -7,7 +7,7 @@
   <view name="overview_audit" />
   <view name="overview_pci_dss" />
 </collection>
-<collection label="Component detail">
+<collection label="Agents">
   <view name="alerts" />
   <view name="fim" />
   <view name="cis" />

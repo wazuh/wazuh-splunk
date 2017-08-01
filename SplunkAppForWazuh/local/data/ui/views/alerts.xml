@@ -1,6 +1,19 @@
 <form>
   <label>Alerts</label>
   <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="agent" searchWhenChanged="true">
+      <label>Agent</label>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <fieldForLabel>agent.name</fieldForLabel>
+      <fieldForValue>agent.name</fieldForValue>
+      <search>
+        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
       <default>
@@ -11,10 +24,10 @@
   </fieldset>
   <row>
     <panel>
-      <title>Signatures area chart</title>
+      <title>Signatures area chart $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | timechart count by rule.description usenull=f useother=f</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | timechart count by rule.description usenull=f useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -48,10 +61,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Alerts level evolution</title>
+      <title>Alerts level evolution $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | timechart count by rule.level usenull=f useother=f</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | timechart count by rule.level usenull=f useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -87,10 +100,10 @@
   </row>
   <row>
     <panel>
-      <title>Stacked groups</title>
+      <title>Stacked groups $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | timechart count by rule.groups usenull=f useother=f</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | timechart count by rule.groups usenull=f useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -124,10 +137,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Total alerts</title>
+      <title>Total alerts $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | timechart count</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | timechart count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -163,10 +176,10 @@
   </row>
   <row>
     <panel>
-      <title>Events geolocation</title>
+      <title>Events geolocation $agent$</title>
       <map>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | iplocation srcip | geostats latfield=lat longfield=lon count</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | iplocation srcip | geostats latfield=lat longfield=lon count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -202,10 +215,10 @@
   </row>
   <row>
     <panel>
-      <title>Agents total alerts</title>
+      <title>Agents total alerts $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | stats count by agent.name</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | stats count by agent.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -239,10 +252,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Signatures</title>
+      <title>Signatures $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh" rule.description=* | stats count by rule.description</query>
+          <query>index=wazuh sourcetype="wazuh" rule.description=* agent.name="$agent$" | stats count by rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -276,10 +289,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Alerts by country</title>
+      <title>Alerts by country $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh"  | iplocation srcip| top  Country useother=f</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | iplocation srcip| top  Country useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -313,10 +326,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Top 5 groups</title>
+      <title>Top 5 groups $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype="wazuh"  | top rule.groups limit=5</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | top rule.groups limit=5</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -352,10 +365,10 @@
   </row>
   <row>
     <panel>
-      <title>Signature counts</title>
+      <title>Signature counts $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh"  | chart sparkline count by rule.description | sort - count | head 5</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | chart sparkline count by rule.description | sort - count | head 5</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -372,10 +385,10 @@
       </table>
     </panel>
     <panel>
-      <title>Alerts level &gt; 9</title>
+      <title>Alerts level &gt; 9 $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" "rule.level"&gt;=9 | table agent.name, rule.level, rule.description</query>
+          <query>index=wazuh sourcetype="wazuh" "rule.level"&gt;=9 agent.name="$agent$" | table agent.name, rule.level, rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -394,10 +407,10 @@
   </row>
   <row>
     <panel>
-      <title>Last alerts</title>
+      <title>Last alerts $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time</query>
+          <query>index=wazuh sourcetype="wazuh" agent.name="$agent$" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

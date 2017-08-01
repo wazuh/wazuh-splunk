@@ -1,6 +1,19 @@
 <form>
   <label>Policy monitoring</label>
   <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="agent" searchWhenChanged="true">
+      <label>Agent</label>
+      <choice value="*">ALL</choice>
+      <fieldForLabel>agent.name</fieldForLabel>
+      <fieldForValue>agent.name</fieldForValue>
+      <search>
+        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
       <default>
@@ -11,10 +24,10 @@
   </fieldset>
   <row>
     <panel>
-      <title>Requirements by time</title>
+      <title>Requirements by time $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh | timechart count by rule.cis{} usenull=f useother=f</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | timechart count by rule.cis{} usenull=f useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -50,10 +63,10 @@
   </row>
   <row>
     <panel>
-      <title>Sections</title>
+      <title>Sections $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,agent.name| transpose header_field=rule.cis | rename column as agent.client</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$" | rename rule.cis{} as rule.cis |chart count by rule.cis,agent.name| transpose header_field=rule.cis | rename column as agent.client</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -67,10 +80,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Groups and bencharks</title>
+      <title>Groups and benchmarks $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups</query>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$"| rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -90,49 +103,10 @@
   </row>
   <row>
     <panel>
-      <title>Agents and benchmarks</title>
+      <title>Agents and benchmarks $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.cis{}=* | chart count by agent.name,rule.cis{}</query>
-          <earliest>$when.earliest$</earliest>
-          <latest>$when.latest$</latest>
-          <sampleRatio>1</sampleRatio>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.visibility">visible</option>
-        <option name="charting.axisTitleY.visibility">visible</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.axisX.scale">linear</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.axisY2.enabled">0</option>
-        <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">column</option>
-        <option name="charting.chart.bubbleMaximumSize">50</option>
-        <option name="charting.chart.bubbleMinimumSize">10</option>
-        <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">none</option>
-        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
-        <option name="charting.chart.stackMode">stacked</option>
-        <option name="charting.chart.style">shiny</option>
-        <option name="charting.drilldown">none</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
-        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
-        <option name="charting.legend.placement">right</option>
-        <option name="trellis.enabled">0</option>
-        <option name="trellis.scales.shared">1</option>
-        <option name="trellis.size">medium</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
-    <panel>
-      <title>Evolution by agent</title>
-      <chart>
-        <search>
-          <query>index=wazuh sourcetype=wazuh rule.cis{}=* | timechart count(agent.name) by rule.cis{}</query>
+          <query>index=wazuh sourcetype=wazuh rule.cis{}=* agent.name="$agent$" | chart count by agent.name,rule.cis{} useother=f</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -168,10 +142,49 @@
   </row>
   <row>
     <panel>
-      <title>Security breaches by agent</title>
+      <title>Evolution by agent $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.cis{}=* | chart count(rule.cis{}) as "Agent name"  by agent.name</query>
+          <query>index=wazuh sourcetype=wazuh rule.cis{}=* agent.name="$agent$"| timechart count(agent.name) by rule.cis{}</query>
+          <earliest>$when.earliest$</earliest>
+          <latest>$when.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Security breaches by agent $agent$</title>
+      <chart>
+        <search>
+          <query>index=wazuh sourcetype=wazuh rule.cis{}=* agent.name="$agent$"| chart count(rule.cis{}) as "Agent name"  by agent.name</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -181,10 +194,10 @@
       </chart>
     </panel>
     <panel>
-      <title>Top CIS breaches</title>
+      <title>Top CIS breaches $agent$</title>
       <chart>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.cis{}=* | chart count by rule.cis{} | rename rule.cis{} as "Rule CIS"</query>
+          <query>index=wazuh sourcetype=wazuh rule.cis{}=* agent.name="$agent$"| chart count by rule.cis{} | rename rule.cis{} as "Rule CIS"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -196,10 +209,10 @@
   </row>
   <row>
     <panel>
-      <title>Last alerts</title>
+      <title>Last alerts $agent$</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log</query>
+          <query>index=wazuh sourcetype=wazuh rule.cis{}=* agent.name="$agent$"| stats count by _time, agent.name, rule.level, rule.cis{}, full_log</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
