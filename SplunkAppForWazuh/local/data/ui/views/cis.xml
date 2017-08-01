@@ -1,5 +1,5 @@
 <form>
-  <label>CIS</label>
+  <label>Policy monitoring</label>
   <fieldset submitButton="false" autoRun="true">
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>

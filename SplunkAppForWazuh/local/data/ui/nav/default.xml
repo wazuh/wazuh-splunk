@@ -7,12 +7,12 @@
   <view name="overview_audit" />
   <view name="overview_pci_dss" />
 </collection>
-<collection label="Detail">
-  <view name="audit" />
-  <view name="cis" />
+<collection label="Component detail">
   <view name="alerts" />
   <view name="fim" />
+  <view name="cis" />
   <view name="openscap" />
+  <view name="audit" />
   <view name="pcidss" />
 </collection>
   <collection label="Manager">

@@ -1,6 +1,5 @@
 <form refresh="300">
-  <label>General</label>
-  <description>Overview</description>
+  <label>Alerts</label>
   <fieldset submitButton="false" autoRun="true">
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
@@ -439,24 +438,7 @@
       <title>Alerts summary</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count</query>
-          <earliest>$when.earliest$</earliest>
-          <latest>$when.latest$</latest>
-          <sampleRatio>1</sampleRatio>
-        </search>
-        <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
-        <option name="percentagesRow">false</option>
-        <option name="rowNumbers">false</option>
-        <option name="totalsRow">false</option>
-        <option name="wrap">true</option>
-      </table>
-    </panel>
-    <panel>
-      <title>Groups summary</title>
-      <table>
-        <search>
-          <query>index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count</query>
+          <query>index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count, rule.groups as "Rule group"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

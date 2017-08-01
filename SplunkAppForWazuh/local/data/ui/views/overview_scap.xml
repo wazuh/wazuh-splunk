@@ -1,5 +1,5 @@
 <form>
-  <label>Overview SCAP</label>
+  <label>Overview OpenSCAP</label>
   <fieldset submitButton="false" autoRun="true">
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>

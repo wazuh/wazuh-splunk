@@ -11,7 +11,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = nobody
 version = 6.6.0
-modtime = 1501565984.094996000
+modtime = 1501569185.867314000
 
 [props/wazuh]
 owner = admin
@@ -33,7 +33,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501560451.198204000
+modtime = 1501568965.220638000
 
 [savedsearches/RPT_agentID_count_events_24h]
 access = read : [ * ], write : [ admin, power ]
@@ -80,7 +80,7 @@ modtime = 1501006838.734314000
 [views/general]
 owner = admin
 version = 6.6.0
-modtime = 1501567002.982419000
+modtime = 1501569630.429172000
 
 [views/overview_fim]
 owner = admin
@@ -95,7 +95,7 @@ modtime = 1501567090.499920000
 [views/overview_scap]
 owner = admin
 version = 6.6.0
-modtime = 1501166574.520874000
+modtime = 1501567511.934516000
 
 [views/overview_pci_dss]
 owner = admin
@@ -639,7 +639,7 @@ modtime = 1501263238.769912000
 [views/cis]
 owner = admin
 version = 6.6.0
-modtime = 1501291144.600268000
+modtime = 1501569026.208633000
 
 [savedsearches/RPT_audit_Alerts_group_over_time]
 access = read : [ * ], write : [ admin, power ]

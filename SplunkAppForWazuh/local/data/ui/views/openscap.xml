@@ -395,7 +395,7 @@
     <panel>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" | table _time, agent.name, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title , oscap.scan.score</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap" | table agent.name, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title , oscap.scan.score</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
