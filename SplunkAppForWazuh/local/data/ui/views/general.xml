@@ -1,5 +1,5 @@
 <form refresh="300">
-  <label>Alerts</label>
+  <label>Top alerts</label>
   <fieldset submitButton="false" autoRun="true">
     <input type="time" token="when" searchWhenChanged="true">
       <label>When?</label>
