@@ -166,7 +166,7 @@
       <title>Alerts Summary</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="rootcheck" |stats count by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="rootcheck" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

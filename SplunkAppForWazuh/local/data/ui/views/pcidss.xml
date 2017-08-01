@@ -330,7 +330,7 @@
         <option name="charting.axisY.scale">linear</option>
         <option name="charting.axisY2.enabled">0</option>
         <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">area</option>
+        <option name="charting.chart">column</option>
         <option name="charting.chart.bubbleMaximumSize">50</option>
         <option name="charting.chart.bubbleMinimumSize">10</option>
         <option name="charting.chart.bubbleSizeBy">area</option>
@@ -467,7 +467,7 @@
       <title>Requirements by agent</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh  | stats count by agent.name, rule.pci_dss{}, rule.description</query>
+          <query>index=wazuh sourcetype=wazuh  | stats count sparkline by agent.name, rule.pci_dss{}, rule.description</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

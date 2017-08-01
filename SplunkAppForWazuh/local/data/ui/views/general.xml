@@ -37,6 +37,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype="wazuh"  | stats count&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -66,6 +69,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index="wazuh" sourcetype=wazuh "rule.level"&gt;=12 | chart count&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -433,7 +439,7 @@
       <title>Alerts summary</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh |stats count by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count</query>
+          <query>index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -450,7 +456,7 @@
       <title>Groups summary</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype=wazuh |stats count by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count</query>
+          <query>index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
