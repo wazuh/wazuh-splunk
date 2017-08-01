@@ -85,7 +85,7 @@
       </chart>
     </panel>
     <panel>
-      <title>Top 5 PCI-DSS Requirements</title>
+      <title>Top 5 PCI-DSS requirements</title>
       <chart>
         <search>
           <query>index=wazuh sourcetype=wazuh "rule.groups"="rootcheck" rule.pci_dss{}=* | top  rule.pci_dss{}</query>
@@ -163,7 +163,7 @@
   </row>
   <row>
     <panel>
-      <title>Alerts Summary</title>
+      <title>Alerts summary</title>
       <table>
         <search>
           <query>index=wazuh sourcetype=wazuh "rule.groups"="rootcheck" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control</query>

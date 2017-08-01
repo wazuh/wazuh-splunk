@@ -24,7 +24,7 @@
   </fieldset>
   <row>
     <panel>
-      <title>Last Score</title>
+      <title>Last score</title>
       <single>
         <search>
           <query>index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest</query>
@@ -245,7 +245,7 @@
   </row>
   <row>
     <panel>
-      <title>Top 5 agents severity High</title>
+      <title>Top 5 agents severity high</title>
       <chart>
         <search>
           <query>index=wazuh sourcetype=wazuh rule.groups="oscap" oscap.scan.profile.title="$profile$" oscap.check.severity="high" | chart count by agent.name</query>
@@ -386,7 +386,7 @@
       </single>
     </panel>
     <panel>
-      <title>Lower Score</title>
+      <title>Lower score</title>
       <single>
         <search>
           <query>index=wazuh sourcetype=wazuh oscap.scan.score=* | stats min(oscap.scan.score)</query>

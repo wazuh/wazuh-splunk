@@ -198,8 +198,8 @@
   </row>
   <row>
     <panel>
-      <title>PCI DSS REQUIREMENT</title>
       <table>
+        <title>Requirement description</title>
         <search>
           <query>| inputlookup pci1.csv  |search REQUIREMENT="$pci$" | table REQUIREMENT,DESCRIPTION</query>
           <earliest>-24h@h</earliest>

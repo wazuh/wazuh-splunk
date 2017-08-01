@@ -143,7 +143,7 @@
       </chart>
     </panel>
     <panel>
-      <title>Top User Owners</title>
+      <title>Top user owners</title>
       <chart>
         <search>
           <query>index=wazuh sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"</query>
@@ -180,7 +180,7 @@
       </chart>
     </panel>
     <panel>
-      <title>Top Group Owners</title>
+      <title>Top group owners</title>
       <chart>
         <search>
           <query>index=wazuh sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"</query>
@@ -257,7 +257,7 @@
       </table>
     </panel>
     <panel>
-      <title>Last File Deleted</title>
+      <title>Last file deleted</title>
       <table>
         <search>
           <query>index=wazuh sourcetype="wazuh" syscheck.event="deleted" AND location="syscheck" | top "syscheck.path"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as "&gt;"</query>
@@ -313,7 +313,7 @@
       </chart>
     </panel>
     <panel>
-      <title>root user file changes</title>
+      <title>Root user file changes</title>
       <chart>
         <search>
           <query>index=wazuh sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=50 syscheck.path</query>

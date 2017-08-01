@@ -140,7 +140,7 @@
       <title>Scans score average</title>
       <single>
         <search>
-          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report"  | chart avg(oscap.scan.score) as Score | eval Score=Score + "%"</query>
+          <query>index=wazuh sourcetype=wazuh "rule.groups"="oscap-report"  | chart avg(oscap.scan.score) as Score |  eval Score=round(Score,2) |eval Score=Score + "%"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
