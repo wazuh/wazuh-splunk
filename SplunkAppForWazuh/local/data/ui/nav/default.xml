@@ -11,7 +11,8 @@
   <view name="audit" />
   <view name="cis" />
   <view name="alerts" />
-    <view name="fim" />
+  <view name="fim" />
+  <view name="openscap" />
 </collection>
   <collection label="Manager">
   <view name="manager_status" />

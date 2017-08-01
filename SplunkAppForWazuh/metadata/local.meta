@@ -8,7 +8,7 @@ modtime = 1501197797.620008000
 
 [nav/default]
 version = 6.6.0
-modtime = 1501543809.029994000
+modtime = 1501560192.253825000
 
 [props/wazuh]
 owner = admin
@@ -37,7 +37,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501133154.054197000
+modtime = 1501560451.198204000
 
 [savedsearches/RPT_Table_Agents_by_ID_and_IP_24h]
 access = read : [ * ], write : [ admin, power ]
