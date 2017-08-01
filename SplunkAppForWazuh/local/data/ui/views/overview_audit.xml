@@ -21,7 +21,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x65a637"]</option>
@@ -36,6 +36,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.groups="audit" rule.id=80790 | stats count&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -49,7 +52,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x65a637"]</option>
@@ -64,6 +67,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.groups="audit" rule.id=80784 | stats count&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -77,7 +83,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x65a637"]</option>
@@ -92,6 +98,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.groups="audit" rule.id=80781 | stats count&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -105,7 +114,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0x65a637"]</option>
@@ -120,6 +129,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.groups="audit" rule.id=80791 | stats count&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -133,7 +145,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0xd93f3c"]</option>
@@ -148,6 +160,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.description=* rule.groups="audit" | stats latest(rule.description)&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
   </row>
@@ -540,11 +555,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.groups="audit" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>

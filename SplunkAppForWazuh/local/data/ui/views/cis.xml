@@ -77,11 +77,14 @@
         </search>
         <option name="count">5</option>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>
@@ -202,11 +205,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>

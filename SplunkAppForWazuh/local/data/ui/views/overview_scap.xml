@@ -34,7 +34,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0xf7bc38","0x65a637"]</option>
@@ -49,6 +49,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -62,7 +65,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0xd93f3c"]</option>
@@ -77,6 +80,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh  sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" | stats latest(agent.name) as Latest&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
     <panel>
@@ -90,7 +96,7 @@
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">all</option>
         <option name="height">50</option>
         <option name="numberPrecision">0</option>
         <option name="rangeColors">["0x65a637","0xd93f3c"]</option>
@@ -105,6 +111,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
   </row>
@@ -430,6 +439,9 @@
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" | stats latest(oscap.check.title)&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </single>
     </panel>
   </row>
@@ -444,11 +456,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>

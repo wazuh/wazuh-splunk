@@ -437,11 +437,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>
@@ -456,11 +459,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh  | table agent.name, rule.level, rule.pci_dss{}, rule.description&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
     <panel>
@@ -473,11 +479,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh  | stats count sparkline by agent.name, rule.pci_dss{}, rule.description&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>

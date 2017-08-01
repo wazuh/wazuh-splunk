@@ -172,11 +172,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">heatmap</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">true</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype=wazuh "rule.groups"="rootcheck" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>

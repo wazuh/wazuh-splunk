@@ -355,17 +355,20 @@
       <title>Signature counts</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh"  | top rule.description limit=5 showperc=f</query>
+          <query>index=wazuh sourcetype="wazuh"  | chart sparkline count by rule.description | sort - count | head 5</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype="wazuh"  | chart sparkline count by rule.description | sort - count | head 5&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
     <panel>
@@ -378,11 +381,14 @@
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype="wazuh" "rule.level"&gt;=9 | table agent.name, rule.level, rule.description&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>
@@ -391,17 +397,20 @@
       <title>Last alerts</title>
       <table>
         <search>
-          <query>index=wazuh sourcetype="wazuh" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log</query>
+          <query>index=wazuh sourcetype="wazuh" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
+        <drilldown>
+          <link target="_blank">search?q=index=wazuh sourcetype="wazuh" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
+        </drilldown>
       </table>
     </panel>
   </row>
