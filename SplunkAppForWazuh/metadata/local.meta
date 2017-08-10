@@ -1,17 +1,17 @@
 [app/ui]
 version = 6.6.0
-modtime = 1501197797.616584000
+modtime = 1502288599.418710000
 
 [app/launcher]
 version = 6.6.0
-modtime = 1501197797.620008000
+modtime = 1502288599.424276000
 
 [nav/default]
 access = read : [ * ], write : [ admin, power ]
 export = none
 owner = nobody
 version = 6.6.0
-modtime = 1501611617.127508000
+modtime = 1502383568.127859000
 
 [props/wazuh]
 owner = admin
@@ -33,7 +33,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501613412.596423000
+modtime = 1501615809.123049000
 
 [savedsearches/RPT_agentID_count_events_24h]
 access = read : [ * ], write : [ admin, power ]
@@ -80,12 +80,12 @@ modtime = 1501006838.734314000
 [views/general]
 owner = admin
 version = 6.6.0
-modtime = 1501607144.552290000
+modtime = 1502253847.683552000
 
 [views/overview_fim]
 owner = admin
 version = 6.6.0
-modtime = 1501609235.995406000
+modtime = 1502361832.843595000
 
 [views/overview_policy_monitoring]
 owner = admin
@@ -629,12 +629,12 @@ modtime = 1501169965.902314000
 
 [app/package/check_for_updates]
 version = 6.6.0
-modtime = 1501197797.622406000
+modtime = 1502288599.428593000
 
 [views/manager_status]
 owner = admin
 version = 6.6.0
-modtime = 1501263238.769912000
+modtime = 1502385786.943712000
 
 [views/cis]
 owner = admin
@@ -1208,3 +1208,47 @@ export = none
 owner = admin
 version = 6.6.0
 modtime = 1501564698.604935000
+
+[views/agent_activity]
+owner = admin
+version = 6.6.0
+modtime = 1502380260.236814000
+
+[savedsearches/RPT_manager_information]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1501701983.435689000
+
+[views/manager_ruleset]
+owner = admin
+version = 6.6.0
+modtime = 1502378881.264917000
+
+[savedsearches/RPT_manager_stats]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502254032.502265000
+
+[views/search_on_rules]
+owner = admin
+version = 6.6.0
+modtime = 1502381973.328447000
+
+[views/manager_decoders]
+owner = admin
+version = 6.6.0
+modtime = 1502378957.763655000
+
+[views/agents_summary]
+owner = admin
+version = 6.6.0
+modtime = 1502381608.046884000
+
+[views/search_on_decoders]
+owner = admin
+version = 6.6.0
+modtime = 1502383381.703312000

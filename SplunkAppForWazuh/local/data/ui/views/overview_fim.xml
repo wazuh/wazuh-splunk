@@ -481,6 +481,8 @@
         </drilldown>
       </single>
     </panel>
+  </row>
+  <row>
     <panel>
       <title>Most modified file</title>
       <single>

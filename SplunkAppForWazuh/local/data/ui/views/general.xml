@@ -291,7 +291,7 @@
       <title>Agents status</title>
       <chart>
         <search>
-          <query>index=add_on_builder_index [| metadata type=sourcetypes index=add_on_builder_index | eval earliest=lastTime | table earliest] | search data.items{}.status!=enabled | stats count by data.items{}.status</query>
+          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_active) as "Active Agents" | appendcols  [ search index="wazuh_api" sourcetype="wazuh:api:info:basic"  | stats latest(agent_summary_disconnected) as "Disconnected"] | transpose | rename "column" as Status, "row 1" as "count"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -305,7 +305,7 @@
         <option name="charting.axisY.scale">linear</option>
         <option name="charting.axisY2.enabled">0</option>
         <option name="charting.axisY2.scale">inherit</option>
-        <option name="charting.chart">bar</option>
+        <option name="charting.chart">pie</option>
         <option name="charting.chart.bubbleMaximumSize">50</option>
         <option name="charting.chart.bubbleMinimumSize">10</option>
         <option name="charting.chart.bubbleSizeBy">area</option>
