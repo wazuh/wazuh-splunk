@@ -2,7 +2,7 @@
 
 ## SplunkAppForWazuh
 
-App for Splunk Index. Could be installed also in a search head.
+App for Splunk. Require TA-Wazuh
 
 ## TA-Wazuh
 
@@ -12,6 +12,6 @@ Technology Addon. Build to ingest REST API data.
 
 Project to adjust development env. Build on Splunk app addon builder. Very useful.
 
-## forwarder config
+## Forwarder config
 
 Configuration to install on distribuited environment. 
