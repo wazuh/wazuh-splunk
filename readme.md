@@ -2,7 +2,7 @@
 
 ## SplunkAppForWazuh
 
-App for Splunk. Require TA-Wazuh
+App for Splunk. Requires TA-Wazuh
 
 ## TA-Wazuh
 
