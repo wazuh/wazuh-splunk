@@ -1,0 +1,588 @@
+{
+    "meta": {
+        "version": "1.0.1", 
+        "restRoot": "TA_wazuh", 
+        "name": "TA-wazuh", 
+        "displayName": "Wazuh", 
+        "apiVersion": "3.0.0"
+    }, 
+    "pages": {
+        "inputs": {
+            "table": {
+                "header": [
+                    {
+                        "field": "name", 
+                        "label": "Name"
+                    }, 
+                    {
+                        "field": "interval", 
+                        "label": "Interval"
+                    }, 
+                    {
+                        "field": "index", 
+                        "label": "Index"
+                    }, 
+                    {
+                        "field": "disabled", 
+                        "label": "Status"
+                    }
+                ], 
+                "moreInfo": [
+                    {
+                        "field": "name", 
+                        "label": "Name"
+                    }, 
+                    {
+                        "field": "interval", 
+                        "label": "Interval"
+                    }, 
+                    {
+                        "field": "index", 
+                        "label": "Index"
+                    }, 
+                    {
+                        "field": "disabled", 
+                        "label": "Status"
+                    }, 
+                    {
+                        "field": "username", 
+                        "label": "USERNAME"
+                    }, 
+                    {
+                        "field": "password", 
+                        "label": "PASSWORD"
+                    }, 
+                    {
+                        "field": "base_url", 
+                        "label": "WAZUH HOST IP"
+                    }
+                ], 
+                "actions": [
+                    "edit", 
+                    "enable", 
+                    "delete", 
+                    "clone"
+                ]
+            }, 
+            "services": [
+                {
+                    "name": "wazuh_api_info_basic", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Name", 
+                            "field": "name", 
+                            "help": "Enter a unique name for the data input", 
+                            "validators": [
+                                {
+                                    "pattern": "^[a-zA-Z]\\w*$", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "type": "regex"
+                                }, 
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Interval", 
+                            "field": "interval", 
+                            "help": "Time interval of input in seconds.", 
+                            "validators": [
+                                {
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "type": "regex"
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "label": "Index", 
+                            "field": "index", 
+                            "defaultValue": "default", 
+                            "options": {
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true, 
+                                "endpointUrl": "data/indexes"
+                            }, 
+                            "validators": [
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "USERNAME", 
+                            "field": "username", 
+                            "options": {
+                                "placeholder": "Default: foo"
+                            }, 
+                            "defaultValue": "foo", 
+                            "help": "Default: foo", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "encrypted": true, 
+                            "required": true, 
+                            "type": "text", 
+                            "label": "PASSWORD", 
+                            "field": "password", 
+                            "options": {
+                                "placeholder": "bar"
+                            }, 
+                            "defaultValue": "bar", 
+                            "help": "Default: bar", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of password is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "WAZUH HOST IP", 
+                            "field": "base_url", 
+                            "options": {
+                                "placeholder": "http://HOST_IP:55000"
+                            }, 
+                            "defaultValue": "http://127.0.0.1:55000", 
+                            "help": "http://HOST_IP:55000", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }
+                    ], 
+                    "title": "wazuh:api:info:basic"
+                }, 
+                {
+                    "name": "wazuh_api_decoders", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Name", 
+                            "field": "name", 
+                            "help": "Enter a unique name for the data input", 
+                            "validators": [
+                                {
+                                    "pattern": "^[a-zA-Z]\\w*$", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "type": "regex"
+                                }, 
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Interval", 
+                            "field": "interval", 
+                            "help": "Time interval of input in seconds.", 
+                            "validators": [
+                                {
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "type": "regex"
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "label": "Index", 
+                            "field": "index", 
+                            "defaultValue": "default", 
+                            "options": {
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true, 
+                                "endpointUrl": "data/indexes"
+                            }, 
+                            "validators": [
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "USERNAME", 
+                            "field": "username", 
+                            "options": {
+                                "placeholder": "Default: foo"
+                            }, 
+                            "defaultValue": "foo", 
+                            "help": "Default: foo", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "encrypted": true, 
+                            "required": true, 
+                            "type": "text", 
+                            "label": "PASSWORD", 
+                            "field": "password", 
+                            "options": {
+                                "placeholder": "bar"
+                            }, 
+                            "defaultValue": "bar", 
+                            "help": "Default: bar", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of password is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": false, 
+                            "type": "text", 
+                            "label": "WAZUH API HOST", 
+                            "field": "base_url", 
+                            "options": {
+                                "placeholder": "http://IP_HOST:55000"
+                            }, 
+                            "defaultValue": "http://127.0.0.1:55000", 
+                            "help": "http://IP_HOST:55000", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }
+                    ], 
+                    "title": "wazuh:api:decoders"
+                }, 
+                {
+                    "name": "wazuh_api_rules", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Name", 
+                            "field": "name", 
+                            "help": "Enter a unique name for the data input", 
+                            "validators": [
+                                {
+                                    "pattern": "^[a-zA-Z]\\w*$", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "type": "regex"
+                                }, 
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Interval", 
+                            "field": "interval", 
+                            "help": "Time interval of input in seconds.", 
+                            "validators": [
+                                {
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "type": "regex"
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "label": "Index", 
+                            "field": "index", 
+                            "defaultValue": "default", 
+                            "options": {
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true, 
+                                "endpointUrl": "data/indexes"
+                            }, 
+                            "validators": [
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "USERNAME", 
+                            "field": "username", 
+                            "options": {
+                                "placeholder": "Default: foo"
+                            }, 
+                            "defaultValue": "foo", 
+                            "help": "Default: foo", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "encrypted": true, 
+                            "required": true, 
+                            "type": "text", 
+                            "label": "PASSWORD", 
+                            "field": "password", 
+                            "options": {
+                                "placeholder": "bar"
+                            }, 
+                            "defaultValue": "bar", 
+                            "help": "Default: bar", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of password is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "WAZUH API HOST", 
+                            "field": "base_url", 
+                            "options": {
+                                "placeholder": "http://IP_HOST:55000"
+                            }, 
+                            "defaultValue": "http://127.0.0.1:55000", 
+                            "help": "http://IP_HOST:55000", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }
+                    ], 
+                    "title": "wazuh:api:rules"
+                }, 
+                {
+                    "name": "wazuh_api_agents", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Name", 
+                            "field": "name", 
+                            "help": "Enter a unique name for the data input", 
+                            "validators": [
+                                {
+                                    "pattern": "^[a-zA-Z]\\w*$", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "type": "regex"
+                                }, 
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "Interval", 
+                            "field": "interval", 
+                            "help": "Time interval of input in seconds.", 
+                            "validators": [
+                                {
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "type": "regex"
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "label": "Index", 
+                            "field": "index", 
+                            "defaultValue": "default", 
+                            "options": {
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true, 
+                                "endpointUrl": "data/indexes"
+                            }, 
+                            "validators": [
+                                {
+                                    "minLength": 1, 
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "USERNAME", 
+                            "field": "username", 
+                            "options": {
+                                "placeholder": "Default: foo"
+                            }, 
+                            "defaultValue": "foo", 
+                            "help": "Default: foo", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "encrypted": true, 
+                            "required": true, 
+                            "type": "text", 
+                            "label": "PASSWORD", 
+                            "field": "password", 
+                            "options": {
+                                "placeholder": "Default: bar"
+                            }, 
+                            "defaultValue": "bar", 
+                            "help": "Default: bar", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of password is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }, 
+                        {
+                            "required": true, 
+                            "type": "text", 
+                            "label": "WAZUH IP HOST", 
+                            "field": "base_url", 
+                            "options": {
+                                "placeholder": "http://IP_HOST:55000"
+                            }, 
+                            "defaultValue": "http://127.0.0.1:55000", 
+                            "help": "http://IP_HOST:55000", 
+                            "validators": [
+                                {
+                                    "minLength": 0, 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192
+                                }
+                            ]
+                        }
+                    ], 
+                    "title": "wazuh:api:agents"
+                }
+            ], 
+            "description": "Manage your data inputs", 
+            "title": "Inputs"
+        }, 
+        "configuration": {
+            "tabs": [
+                {
+                    "name": "logging", 
+                    "entity": [
+                        {
+                            "field": "loglevel", 
+                            "defaultValue": "INFO", 
+                            "options": {
+                                "autoCompleteFields": [
+                                    {
+                                        "label": "DEBUG", 
+                                        "value": "DEBUG"
+                                    }, 
+                                    {
+                                        "label": "INFO", 
+                                        "value": "INFO"
+                                    }, 
+                                    {
+                                        "label": "WARNING", 
+                                        "value": "WARNING"
+                                    }, 
+                                    {
+                                        "label": "ERROR", 
+                                        "value": "ERROR"
+                                    }, 
+                                    {
+                                        "label": "CRITICAL", 
+                                        "value": "CRITICAL"
+                                    }
+                                ], 
+                                "disableSearch": true
+                            }, 
+                            "type": "singleSelect", 
+                            "label": "Log level"
+                        }
+                    ], 
+                    "title": "Logging"
+                }
+            ], 
+            "description": "Set up your add-on", 
+            "title": "Configuration"
+        }
+    }
+}
