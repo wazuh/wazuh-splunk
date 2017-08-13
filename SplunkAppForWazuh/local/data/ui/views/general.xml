@@ -217,7 +217,7 @@
       <title>Top 5 agents</title>
       <chart>
         <search>
-          <query>index=*| top "agent.name"</query>
+          <query>index=wazuh sourcetype=wazuh | top "agent.name"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>

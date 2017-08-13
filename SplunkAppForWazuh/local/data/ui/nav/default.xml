@@ -16,7 +16,7 @@
 </collection>
   <collection label="Agents">
   <view name="agents_summary" />
-  <view name="alerts" />
+  <view name="wazuh_alerts" />
   <view name="fim" />
   <view name="cis" />
   <view name="openscap" />

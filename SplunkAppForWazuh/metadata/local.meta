@@ -11,7 +11,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = nobody
 version = 6.6.0
-modtime = 1502383568.127859000
+modtime = 1502595879.081472000
 
 [props/wazuh]
 owner = admin
@@ -80,12 +80,12 @@ modtime = 1501006838.734314000
 [views/general]
 owner = admin
 version = 6.6.0
-modtime = 1502253847.683552000
+modtime = 1502596354.300741000
 
 [views/overview_fim]
 owner = admin
 version = 6.6.0
-modtime = 1502361832.843595000
+modtime = 1502596446.691620000
 
 [views/overview_policy_monitoring]
 owner = admin
@@ -809,11 +809,6 @@ owner = admin
 version = 6.6.0
 modtime = 1501614192.601302000
 
-[views/alerts]
-owner = admin
-version = 6.6.0
-modtime = 1501611511.491418000
-
 [savedsearches/RPT_alerts_Alerts_By_country]
 access = read : [ * ], write : [ admin, power ]
 export = none
@@ -1252,3 +1247,36 @@ modtime = 1502516161.201545000
 owner = admin
 version = 6.6.0
 modtime = 1502383381.703312000
+
+[props/wazuh_api/FIELDALIAS-agent-last-syscheck]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502585330.232369000
+
+[props/wazuh/FIELDALIAS-dstuser]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502586400.003339000
+
+[props/wazuh/FIELDALIAS-srcip]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502586258.509305000
+
+[views/wazuh_alerts]
+owner = admin
+version = 6.6.0
+modtime = 1502595933.181500000
+
+[savedsearches/Alerts%20with%20level%2012%20or%20more]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502596260.387422000
