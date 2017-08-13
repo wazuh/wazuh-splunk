@@ -604,7 +604,7 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 6.6.0
-modtime = 1501607366.325627000
+modtime = 1502597455.290864000
 
 [lookups/pci1.csv]
 access = read : [ * ], write : [ admin, power ]
@@ -1280,3 +1280,87 @@ export = none
 owner = admin
 version = 6.6.0
 modtime = 1502596260.387422000
+
+[props/wazuh/FIELDALIAS-data.title]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502597361.199587000
+
+[props/wazuh/FIELDALIAS-oscap.scan.id]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502597709.436652000
+
+[props/wazuh/FIELDALIAS-oscap.scan.content]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502597758.054950000
+
+[props/wazuh/FIELDALIAS-oscap.scan.profile.title]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502597811.484037000
+
+[props/wazuh/FIELDALIAS-oscap.scan.score]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502597865.345558000
+
+[props/wazuh/FIELDALIAS-oscap.check.title]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502597966.854156000
+
+[props/wazuh/FIELDALIAS-oscap.check.result]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502598015.035832000
+
+[props/wazuh/FIELDALIAS-oscap.check.severity]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502598059.569273000
+
+[props/wazuh/FIELDALIAS-audit.exe]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502598458.816378000
+
+[props/wazuh/FIELDALIAS-audit.file.mode]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502598515.209385000
+
+[props/wazuh/FIELDALIAS-audit.egid]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502598559.665470000
+
+[props/wazuh/FIELDALIAS-audit.euid]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 6.6.0
+modtime = 1502598678.925916000
