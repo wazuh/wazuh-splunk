@@ -24,6 +24,22 @@
   </fieldset>
   <row>
     <panel>
+      <table>
+        <search>
+          <query>index="wazuh_api" sourcetype="wazuh:api:agents" name=$agent$ |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, las_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", las_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:agents" name=$agent$ |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, las_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", las_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"&amp;earliest=-60m@m&amp;latest=now</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
       <title>Requirements by time $agent$</title>
       <chart>
         <search>
@@ -222,7 +238,7 @@
         <option name="percentagesRow">false</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
-        <option name="wrap">false</option>
+        <option name="wrap">true</option>
         <drilldown>
           <link target="_blank">search?q=index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log&amp;earliest=$when.earliest$&amp;latest=$when.latest$</link>
         </drilldown>
