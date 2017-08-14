@@ -1,0 +1,34 @@
+<dashboard>
+  <label>Agents Summary</label>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>index="wazuh_api" sourcetype="wazuh:api:agents" |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, las_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", las_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <!--
+        <drilldown target="blank">
+          <link>
+            <![CDATA[
+          /app/SplunkAppForWazuh/agentdetail?form.sourcetype=$row.sourcetype$&earliest=$earliest$&latest=$latest$
+         ]]>
+          </link>
+        </drilldown>
+        -->
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:agents" | table id, ip, name, status | dedup id | sort id&amp;earliest=-60m@m&amp;latest=now</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</dashboard>

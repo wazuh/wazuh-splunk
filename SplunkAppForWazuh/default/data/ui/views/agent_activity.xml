@@ -1,0 +1,43 @@
+<form>
+  <label>Live events</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="agent" searchWhenChanged="true">
+      <label>Agent</label>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <fieldForLabel>agen.name</fieldForLabel>
+      <fieldForValue>agent.name</fieldForValue>
+      <search>
+        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="when" searchWhenChanged="true">
+      <label>When?</label>
+      <default>
+        <earliest>rt-5m</earliest>
+        <latest>rtnow</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <event>
+        <search>
+          <query>index=wazuh sourcetype=wazuh agent.name="$agent$"</query>
+          <earliest>$when.earliest$</earliest>
+          <latest>$when.latest$</latest>
+        </search>
+        <option name="list.drilldown">none</option>
+        <option name="list.wrap">1</option>
+        <option name="raw.drilldown">none</option>
+        <option name="rowNumbers">0</option>
+        <option name="table.drilldown">none</option>
+        <option name="table.wrap">1</option>
+        <option name="type">list</option>
+      </event>
+    </panel>
+  </row>
+</form>
