@@ -16,6 +16,8 @@ Project to adjust development env. Build on Splunk app addon builder. Very usefu
 
 Configuration to install on distribuited environment. 
 
+* * *
+
 ### Splunk App for Wazuh
 
 Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
