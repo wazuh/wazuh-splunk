@@ -20,7 +20,7 @@ Configuration to install on distribuited environment.
 
 Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 
-#####Requirements
+###Requirements
 
 1. You must install the __TA Wazuh Connector__ from our [_Github Repo_](https://github.com/wazuh/wazuh-splunk/releases/download/1.0-beta1/TA-wazuh-api-connector.tgz). After installed, needs to be configured.
 2. Also, you need to install and setup a __Splunk Universal Forwarder__ where the Wazuh's manager is installed. 
@@ -28,9 +28,9 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 4. User and password (credentials) for api basic authentication (usually _foo_ and _bar_)
 5. Set the indexers to `manager receiving`. (Check bottom).
 
-#####Quick Install
+### Quick Install
 
-###### Splunk Servers
+#### Splunk Servers
 
 1. Create a new index named __wazuh_api__.
 2. Install the __TA Wazuh API Connector__ on each indexer.
@@ -45,7 +45,7 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 	Repeat the process on each _Data input_ (four in total).
 5. Wait a couple of minutes to have data in your `wazuh_api` index.
 
-###### Wazuh Manager
+#### Wazuh Manager
 
 1. You must install Splunk Forwarder on your Wazuh Manager.
 2. Go to `$SPLUNK_HOME/etc/system/local`. 
@@ -82,7 +82,7 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 7. Test on Splunk:
 	`index=wazuh *`
 	
-######Setup Manager Receiving 
+#### Setup Manager Receiving 
 
 1. Log into the receiver as admin or an administrative equivalent.
 2. Click Settings > Forwarding and receiving.
@@ -92,6 +92,6 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 
 	More info at [Splunk Documentation](https://docs.splunk.com/Documentation/SplunkCloud/6.6.1/Forwarding/Enableareceiver)
 
-######More info
+#### More info
 
 [Check our Github Repo.](https://github.com/wazuh/wazuh-splunk)
