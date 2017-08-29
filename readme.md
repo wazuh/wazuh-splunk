@@ -16,11 +16,11 @@ Project to adjust development env. Build on Splunk app addon builder. Very usefu
 
 Configuration to install on distribuited environment. 
 
-###Splunk App for Wazuh
+### Splunk App for Wazuh
 
 Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 
-###Requirements
+### Requirements
 
 1. You must install the __TA Wazuh Connector__ from our [_Github Repo_](https://github.com/wazuh/wazuh-splunk/releases/download/1.0-beta1/TA-wazuh-api-connector.tgz). After installed, needs to be configured.
 2. Also, you need to install and setup a __Splunk Universal Forwarder__ where the Wazuh's manager is installed. 
