@@ -1,6 +1,6 @@
 #### Splunk suggested configuration to send `alerts.json` from Wazuh Manager to Splunk indexers
 
-- Workdir: `$SPLUNK_FORWARDER_HOME/etc/system`
+- Workdir: `$SPLUNK_FORWARDER_HOME/etc/system/local`
 
 
 - If you have multiple indexers, please set `outputs.conf` like this:
