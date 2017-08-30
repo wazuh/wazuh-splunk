@@ -24,7 +24,7 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 
 ### Requirements
 
-1. You must install the __TA Wazuh Connector__ from our [_Github Repo_](https://github.com/wazuh/wazuh-splunk/releases/download/1.0-beta1/TA-wazuh-api-connector.tgz). After installed, needs to be configured.
+1. You must install the __TA Wazuh Connector__ from our [_Github Repo_](https://github.com/wazuh/wazuh-splunk/releases). After installed, needs to be configured.
 2. Also, you need to install and setup a __Splunk Universal Forwarder__ where the Wazuh's manager is installed. 
 3. A Wazuh Manager with access to the API via HTTP (usually on port 55000).
 4. User and password (credentials) for api basic authentication (usually _foo_ and _bar_)
