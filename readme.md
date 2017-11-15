@@ -45,7 +45,11 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 	* Adjust the index to be `wazuh_api`
 
 	Repeat the process on each _Data input_ (four in total).
-5. Wait a couple of minutes to have data in your `wazuh_api` index.
+5. Clear passwords.conf and write
+	username = 'your_admin_login'
+	password = 'your_admin_password'
+6. Wait a couple of minutes to have data in your `wazuh_api` index.
+7. After that you can delete 'username' and 'password' in passwords.conf
 
 #### Wazuh Manager
 
@@ -67,7 +71,7 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 
 	```
 	[wazuh]
-	DATETIME_CONFIG =
+	DATETIME_CONFIG = $SPLUNK_HOME/etc/datetime.xml
 	INDEXED_EXTRACTIONS = json
 	KV_MODE = none
 	NO_BINARY_CHECK = true
