@@ -22,22 +22,25 @@ def collect_events(helper, ew):
     agent_summary = json.loads(request.text)['data']
 
     request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
-    logs = json.loads(request.text)['data']['items']
+    logs = json.loads(request.text)["data"]["items"]
 
-    data = {}
-    for key in manager_info:
-        data['manager-info_' + key.lower()] = manager_info[key]
-
-    for key in manager_status:
-        data['manager-status_' + key.lower()] = manager_status[key]
-
-    for key in agent_summary:
-        data['agent_summary_' + key.lower().replace(' ', '')] = agent_summary[key]
+    # data = {}
+    # for key in manager_info:
+    #     data['manager-info_' + key.lower()] = manager_info[key]
+    #
+    # for key in manager_status:
+    #     data['manager-status_' + key.lower()] = manager_status[key]
+    #
+    # for key in agent_summary:
+    #     data['agent_summary_' + key.lower().replace(' ', '')] = agent_summary[key]
+    #
+    # event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(data))
+    # ew.write_event(event)
 
     for row in logs:
+        data = {}
         for key in row:
             data[key] = row[key]
         data = json.dumps(data)
-
-    event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(data))
-    ew.write_event(event)
+        event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
+        ew.write_event(event)
