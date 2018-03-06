@@ -1,129 +1,59 @@
-[props/source%3A%3A...ta-wazuh-api-conector%2A.log%2A]
-owner = admin
-version = 6.6.2
-modtime = 1502853368.806189000
-
-[props/source%3A%3A...ta_wazuh_api_conector%2A.log%2A]
-owner = admin
-version = 6.6.2
-modtime = 1502853369.021450000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_info_basic%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854018.443198000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_info_basic%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854018.454913000
-
-[inputs/wazuh_api_info_basic%3A%2F%2Fapi_server]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854018.886871000
-
-[props/wazuh%3Aapi%3Ainfo%3Abasic]
-owner = admin
-version = 6.6.2
-modtime = 1502854051.833396000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_decoders%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854473.953776000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_decoders%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854473.965405000
-
-[inputs/wazuh_api_decoders%3A%2F%2Fapi_server]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854474.404782000
-
-[props/wazuh%3Aapi%3Adecoders]
-owner = admin
-version = 6.6.2
-modtime = 1502854517.454590000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_rules%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854780.303946000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_rules%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854780.315327000
-
-[inputs/wazuh_api_rules%3A%2F%2Fapi_server]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502854780.769471000
-
-[props/wazuh%3Aapi%3Arules]
-owner = admin
-version = 6.6.2
-modtime = 1502854801.899975000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_agents%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855043.272196000
-
-[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-conector%23data%2Finputs%2Fwazuh_api_agents%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855043.285087000
-
-[inputs/wazuh_api_agents%3A%2F%2Fapi_server]
-owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855043.737358000
-
-[props/wazuh%3Aapi%3Aagents]
-owner = admin
-version = 6.6.2
-modtime = 1502855064.133777000
+[app/install/install_source_checksum]
+version = 6.6.0
+modtime = 1502857881.102573000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_agents%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855116.789621000
+version = 7.0.2
+modtime = 1520338395.946874000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_agents%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855116.801837000
+version = 7.0.2
+modtime = 1520338395.956374000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_decoders%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855117.389413000
+version = 7.0.2
+modtime = 1520338396.777451000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_decoders%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855117.402274000
+version = 7.0.2
+modtime = 1520338396.786326000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_info_basic%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855118.073038000
+version = 7.0.2
+modtime = 1520338397.329491000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_info_basic%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855118.087020000
+version = 7.0.2
+modtime = 1520338397.338632000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_rules%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855118.866850000
+version = 7.0.2
+modtime = 1520338398.055265000
 
 [passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_rules%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
 owner = splunk-system-user
-version = 6.6.2
-modtime = 1502855118.882572000
+version = 7.0.2
+modtime = 1520338398.065657000
+
+[inputs/wazuh_api_agents%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338396.477847000
+
+[inputs/wazuh_api_decoders%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338397.216103000
+
+[inputs/wazuh_api_info_basic%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338397.900223000
+
+[inputs/wazuh_api_rules%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338398.491097000

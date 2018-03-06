@@ -11,8 +11,9 @@
   <view name="manager_status" />
   <view name="manager_ruleset" />
   <view name="manager_decoders" />
-  <view name="search_on_rules" />" 
-  <view name="search_on_decoders" />" 
+  <view name="search_on_rules" />"
+  <view name="search_on_decoders" />"
+  <view name="logs" />" 
 </collection>
   <collection label="Agents">
   <view name="agents_summary" />
