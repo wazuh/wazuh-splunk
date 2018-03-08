@@ -4,7 +4,7 @@
     <panel>
       <table>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | table timestamp, tag, description, level </query>
+          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | table logs_timestamp, logs_tag, logs_description, logs_level </query>
           <earliest>-60m@m</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -26,7 +26,7 @@
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
         <drilldown>
-          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:agents" | table id, ip, name, status | dedup id | sort id&amp;earliest=-60m@m&amp;latest=now</link>
+          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats count by logs_description</link>
         </drilldown>
       </table>
     </panel>
