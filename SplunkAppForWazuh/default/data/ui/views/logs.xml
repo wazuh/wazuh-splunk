@@ -1,49 +1,34 @@
 <dashboard>
-  <label>Manager Logss</label>
+  <label>Manager Logs</label>
   <row>
-
-      <label>Post Process in Form Inputs</label>
-
-      <!-- Global search for post process by dropdown input -->
-      <!-- Search uses stats command to limit results to less than 10,000 limit -->
-      <search id="searchInput">
-        <query>index=wazuh_api sourcetype="wazuh:api:info:basic" | stats count by sourcetype</query>
-        <earliest>-60min</earliest>
-        <latest>now</latest>
-      </search>
-
-      <fieldset submitButton="false">
-
-      <!-- Select an level  from two static choices -->
-        <input type="dropdown" token="level" searchWhenChanged="true">
-          <label>Select a level to search</label>
-          <choice value="_internal">WARNING</choice>
-          <choice value="_internal">INFO</choice>
-          <choice value="*">All levels</choice>
-          <default>INFO</default>
-        </input>
-        <!-- Dynamically populate choices -->
-        <input type="time" token="time_tok" searchWhenChanged="true">
-          <label></label>
-          <default>
-            <earliest>-24h@h</earliest>
-            <latest>now</latest>
-          </default>
-        </input>
-      </fieldset>
-      <!-- <row>
-        <panel>
-          <chart>
-            <title>Chart</title>
-            <search>
-              <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | table logs_timestamp, logs_tag, logs_description, logs_level | where logs_level=$level$ </query>
-              <earliest>$time_tok.earliest$</earliest>
-              <latest>$time_tok.latest$</latest>
-              <sampleRatio>1</sampleRatio>
-            </search>
-          </chart>
-        </panel>
-      </row> -->
-
+    <panel>
+      <table>
+        <search>
+          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | table logs_timestamp, logs_tag, logs_description, logs_level </query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <!--
+        <drilldown target="blank">
+          <link>
+            <![CDATA[
+          /app/SplunkAppForWazuh/agentdetail?form.sourcetype=$row.sourcetype$&earliest=$earliest$&latest=$latest$
+         ]]>
+          </link>
+        </drilldown>
+        -->
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats count by logs_description</link>
+        </drilldown>
+      </table>
+    </panel>
   </row>
 </dashboard>

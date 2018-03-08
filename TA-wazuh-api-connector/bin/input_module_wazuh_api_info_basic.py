@@ -21,8 +21,8 @@ def collect_events(helper, ew):
     request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
     agent_summary = json.loads(request.text)['data']
 
-    request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
-    logs = json.loads(request.text)["data"]["items"]
+    # request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
+    # logs = json.loads(request.text)["data"]["items"]
 
     data = {}
     for key in manager_info:
@@ -37,10 +37,10 @@ def collect_events(helper, ew):
     event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(data))
     ew.write_event(event)
 
-    for row in logs:
-        data = {}
-        for key in row:
-            data['logs_'+key] = row[key]
-        data = json.dumps(data)
-        event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
-        ew.write_event(event)
+    # for row in logs:
+    #     data = {}
+    #     for key in row:
+    #         data['logs_'+key] = row[key]
+    #     data = json.dumps(data)
+    #     event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
+    #     ew.write_event(event)
