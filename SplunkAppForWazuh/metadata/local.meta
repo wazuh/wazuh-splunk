@@ -1364,3 +1364,7 @@ export = none
 owner = admin
 version = 6.6.0
 modtime = 1502598678.925916000
+
+[views/logs]
+version = 7.0.2
+modtime = 1520596415.232658000

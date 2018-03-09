@@ -39,23 +39,16 @@ def collect_events(helper, ew):
     for key in agent_summary:
         data['agent_summary_' + key.lower().replace(' ', '')] = agent_summary[key]
 
-    dataLogs = {}
-    for row in logs:
-        for key in row:
-            dataLogs['logs_'+key] = row[key]
-        dataLogs = json.dumps(dataLogs)
 
-        # event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
-        # ew.write_event(event)
     data = json.dumps(data)
-    mergedJson = merge_two_dicts(data,dataLogs)
+    # mergedJson = merge_two_dicts(data,dataLogs)
     event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
     ew.write_event(event)
 
-    # for row in logs:
-    #     data = {}
-    #     for key in row:
-    #         data['logs_'+key] = row[key]
-    #     data = json.dumps(data)
-    #     event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
-    #     ew.write_event(event)
+    for row in logs:
+        data = {}
+        for key in row:
+            data['logs_'+key] = row[key]
+        data = json.dumps(data)
+        event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
+        ew.write_event(event)
