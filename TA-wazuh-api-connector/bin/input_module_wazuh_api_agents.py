@@ -39,7 +39,7 @@ def collect_events(helper, ew):
                 data[key] = agent_info[key]
 
         data["last_rootcheck"] = rootcheck_lastscan
-        data["las_syscheck"] = syscheck_lastscan
+        data["last_syscheck"] = syscheck_lastscan
 
         event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(data))
         ew.write_event(event)
