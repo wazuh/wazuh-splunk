@@ -9,6 +9,16 @@
 
     .state('overview', {
       url: "/",
+      template: '<h1>testing Overview</h1>',
+    })
+
+    .state('manager', {
+      url: "/",
+      template: '<h1>testing</h1>',
+    })
+
+    .state('agents', {
+      url: "/",
       template: '<h1>testing</h1>',
     })
 

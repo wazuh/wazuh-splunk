@@ -44,14 +44,16 @@
 <div class="dashboard-body container-fluid main-section-body" data-role="main">
   <div class="dashboard-header clearfix">
   </div>
-  <md-content class="md-padding">
-    <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
-      <md-nav-item md-nav-sref="overview" name="overview">Overview</md-nav-item>
-      <md-nav-item md-nav-sref="manager" name="page5">Manager</md-nav-item>
-      <md-nav-item md-nav-sref="agents" name="page5">Agents</md-nav-item>
-    </md-nav-bar>
-  </md-content>
-<ui-view></ui-view>
+  <!-- <md-content class="md-padding">
+  <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+  <md-nav-item md-nav-sref="overview" name="overview">Overview</md-nav-item>
+  <md-nav-item md-nav-sref="manager" name="page5">Manager</md-nav-item>
+  <md-nav-item md-nav-sref="agents" name="page5">Agents</md-nav-item>
+</md-nav-bar>
+</md-content>
+<ui-view></ui-view> -->
+<input type="button" id='mybutton' onclick=callScript("{{SPLUNKWEB_URL_PREFIX}}")>Get logs</input>
+<div id='logs'></div>
 
 
 </div>
@@ -179,6 +181,8 @@ function(
   // Initialize tokens
   defaultTokenModel.set(urlTokenModel.toJSON());
 
+
+
   function submitTokens() {
     // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
     FormUtils.submitForm({ replaceState: pageLoading });
@@ -255,5 +259,21 @@ function(
 <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/angular-ui-router.min.js" type="text/javascript"></script>
 <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/app.js" type="text/javascript"></script>
 <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/routes.js" type="text/javascript"></script>
+<script type="text/javascript">
+function callScript(splunkIp){
+  console.log('API called',splunkIp)
+  $.get("http://192.168.0.157:8000/custom/wazuh/my_script/my_endpoint").done(function(data){
+
+    console.log('data',data)
+    $('#logs').html(data)
+
+  }).fail(function(err) {
+    console.log( "api error",err );
+  })
+  .always(function(data) {
+    console.log( "finished",data );
+  });
+}
+</script>
 </body>
 </html>
