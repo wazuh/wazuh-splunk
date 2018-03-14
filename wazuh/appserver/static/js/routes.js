@@ -1,6 +1,6 @@
 (function () {
 
-  function routes($locationProvider, $stateProvider, $urlRouterProvider) {
+  function routes( $routeProvider,$locationProvider) {
 
     $locationProvider.html5Mode(true);
 
@@ -19,6 +19,6 @@
   }
 
   angular.module('wazuhApp')
-  .config([ '$locationProvider', '$stateProvider', '$urlRouterProvider', routes]);
+  .config([ '$routeProvider','$locationProvider', routes]);
 
 })();
