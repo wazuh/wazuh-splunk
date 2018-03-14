@@ -4,23 +4,17 @@
 
     $locationProvider.html5Mode(true);
 
-    $stateProvider
-    //======== No auth =========
+    $routeProvider
 
-    .state('overview', {
-      url: "/",
-      template: '<h1>testing Overview</h1>',
+    .when("/overview", {
+        template : "<h2>prueba overview </h2>"
     })
-
-    .state('manager', {
-      url: "/",
-      template: '<h1>testing</h1>',
+    .when("/manager", {
+        template : "<h2>prueba manager </h2>"
     })
-
-    .state('agents', {
-      url: "/",
-      template: '<h1>testing</h1>',
-    })
+    .when("/agents", {
+        template : "<h2>prueba agents </h2>"
+    });
 
   }
 
