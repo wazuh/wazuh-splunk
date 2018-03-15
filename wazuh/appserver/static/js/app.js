@@ -1,5 +1,6 @@
 angular.module('wazuhApp',[
   'ui.router',
-  'ngMaterial'
+  'ngMaterial',
+  'ngLoadScript'
 ]);
 
