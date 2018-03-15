@@ -9,7 +9,7 @@ var gulp        = require('gulp'),
         description: 'Ayuda'
     });
 gulp.task('compress', 'Concat and uglify all javascripts in app.min.js.', function() {
-    gulp.src(['wazuh/appserver/static/js/*.js', 'wazuh/appserver/static/js/controllers/**/*.js'])
+    gulp.src(['wazuh/appserver/static/js/*.js', 'wazuh/appserver/static/js/directives/**/*.js','wazuh/appserver/static/js/controllers/**/*.js'])
         .pipe(concat('app'))
         //.pipe(ngAnnotate())
         //.pipe(jshint())
@@ -26,7 +26,7 @@ gulp.task('compress', 'Concat and uglify all javascripts in app.min.js.', functi
 });
 
 gulp.task('stream', 'Listens for changes', function() {
-    gulp.watch("wazuh/appserver/static/**/*.js", ['compress']);
+    gulp.watch("wazuh/appserver/static/js/**/*.js",  ['compress']);
 });
 
 gulp.task('default', ['stream']);
