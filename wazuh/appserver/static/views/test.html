@@ -1,1 +1,1067 @@
-<h1>TEST EN STATIC!:{{oc.exampleVar}} </h1>
+
+<!-- 
+BEGIN LAYOUT
+This section contains the layout for the dashboard. Splunk uses proprietary
+styles in <div> tags, similar to Bootstrap's grid system. 
+-->
+<header>
+<a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
+<div class="header splunk-header">
+<div id="placeholder-splunk-bar">
+<a href="/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk<strong>&gt;</strong></a>
+</div>
+<div id="placeholder-app-bar"></div>
+</div>
+<a id="navSkip"></a>
+</header>
+<div class="dashboard-body container-fluid main-section-body" data-role="main">
+<div class="dashboard-header clearfix">
+<h2>Top alerts</h2>
+</div>
+<div class="fieldset">
+<div class="input input-timerangepicker" id="input1">
+<label>When?</label>
+</div>
+</div>
+
+
+<div id="row1" class="dashboard-row dashboard-row1">
+<div id="panel1" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Alerts</h2>
+
+<div class="panel-element-row">
+<div id="element1" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel2" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Level 12 or above alerts</h2>
+
+<div class="panel-element-row">
+<div id="element2" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel3" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Authentication failure</h2>
+
+<div class="panel-element-row">
+<div id="element3" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel4" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Authentication success</h2>
+
+<div class="panel-element-row">
+<div id="element4" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="row2" class="dashboard-row dashboard-row2">
+<div id="panel5" class="dashboard-cell" style="width: 50%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Alert level evolution</h2>
+
+<div class="panel-element-row">
+<div id="element5" class="dashboard-element chart" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel6" class="dashboard-cell" style="width: 50%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Alerts</h2>
+
+<div class="panel-element-row">
+<div id="element6" class="dashboard-element chart" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="row3" class="dashboard-row dashboard-row3">
+<div id="panel7" class="dashboard-cell" style="width: 33.33%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Top 5 agents</h2>
+
+<div class="panel-element-row">
+<div id="element7" class="dashboard-element chart" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel8" class="dashboard-cell" style="width: 33.33%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Alerts evolution - Top 5 agents</h2>
+
+<div class="panel-element-row">
+<div id="element8" class="dashboard-element chart" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel9" class="dashboard-cell" style="width: 33.33%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Agents status</h2>
+
+<div class="panel-element-row">
+<div id="element9" class="dashboard-element chart" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="row4" class="dashboard-row dashboard-row4">
+<div id="panel10" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Top source user</h2>
+
+<div class="panel-element-row">
+<div id="element10" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel11" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Top source ip</h2>
+
+<div class="panel-element-row">
+<div id="element11" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel12" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Top group</h2>
+
+<div class="panel-element-row">
+<div id="element12" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="panel13" class="dashboard-cell" style="width: 25%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Top PCI DSS requirement</h2>
+
+<div class="panel-element-row">
+<div id="element13" class="dashboard-element single" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="row5" class="dashboard-row dashboard-row5">
+<div id="panel14" class="dashboard-cell" style="width: 100%;">
+<div class="dashboard-panel clearfix">
+<h2 class="panel-title">Alerts summary</h2>
+
+<div class="panel-element-row">
+<div id="element14" class="dashboard-element table" style="width: 100%">
+<div class="panel-body"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 
+END LAYOUT
+-->
+
+<script type="text/javascript-lazy">
+// <![CDATA[
+// <![CDATA[
+//
+// LIBRARY REQUIREMENTS
+//
+// In the require function, we include the necessary libraries and modules for
+// the HTML dashboard. Then, we pass variable names for these libraries and
+// modules as function parameters, in order.
+// 
+// When you add libraries or modules, remember to retain this mapping order
+// between the library or module and its function parameter. You can do this by
+// adding to the end of these lists, as shown in the commented examples below.
+
+require([
+"splunkjs/mvc",
+"splunkjs/mvc/utils",
+"splunkjs/mvc/tokenutils",
+"underscore",
+"jquery",
+"splunkjs/mvc/simplexml",
+"splunkjs/mvc/layoutview",
+"splunkjs/mvc/simplexml/dashboardview",
+"splunkjs/mvc/simplexml/dashboard/panelref",
+"splunkjs/mvc/simplexml/element/chart",
+"splunkjs/mvc/simplexml/element/event",
+"splunkjs/mvc/simplexml/element/html",
+"splunkjs/mvc/simplexml/element/list",
+"splunkjs/mvc/simplexml/element/map",
+"splunkjs/mvc/simplexml/element/single",
+"splunkjs/mvc/simplexml/element/table",
+"splunkjs/mvc/simplexml/element/visualization",
+"splunkjs/mvc/simpleform/formutils",
+"splunkjs/mvc/simplexml/eventhandler",
+"splunkjs/mvc/simplexml/searcheventhandler",
+"splunkjs/mvc/simpleform/input/dropdown",
+"splunkjs/mvc/simpleform/input/radiogroup",
+"splunkjs/mvc/simpleform/input/linklist",
+"splunkjs/mvc/simpleform/input/multiselect",
+"splunkjs/mvc/simpleform/input/checkboxgroup",
+"splunkjs/mvc/simpleform/input/text",
+"splunkjs/mvc/simpleform/input/timerange",
+"splunkjs/mvc/simpleform/input/submit",
+"splunkjs/mvc/searchmanager",
+"splunkjs/mvc/savedsearchmanager",
+"splunkjs/mvc/postprocessmanager",
+"splunkjs/mvc/simplexml/urltokenmodel"
+// Add comma-separated libraries and modules manually here, for example:
+// ..."splunkjs/mvc/simplexml/urltokenmodel",
+// "splunkjs/mvc/tokenforwarder"
+],
+function(
+mvc,
+utils,
+TokenUtils,
+_,
+$,
+DashboardController,
+LayoutView,
+Dashboard,
+PanelRef,
+ChartElement,
+EventElement,
+HtmlElement,
+ListElement,
+MapElement,
+SingleElement,
+TableElement,
+VisualizationElement,
+FormUtils,
+EventHandler,
+SearchEventHandler,
+DropdownInput,
+RadioGroupInput,
+LinkListInput,
+MultiSelectInput,
+CheckboxGroupInput,
+TextInput,
+TimeRangeInput,
+SubmitButton,
+SearchManager,
+SavedSearchManager,
+PostProcessManager,
+UrlTokenModel
+
+// Add comma-separated parameter names here, for example: 
+// ...UrlTokenModel, 
+// TokenForwarder
+) {
+
+var pageLoading = true;
+
+// 
+// TOKENS
+//
+
+// Create token namespaces
+var urlTokenModel = new UrlTokenModel();
+mvc.Components.registerInstance('url', urlTokenModel);
+var defaultTokenModel = mvc.Components.getInstance('default', {create: true});
+var submittedTokenModel = mvc.Components.getInstance('submitted', {create: true});
+
+urlTokenModel.on('url:navigate', function() {
+defaultTokenModel.set(urlTokenModel.toJSON());
+if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+submitTokens();
+} else {
+submittedTokenModel.clear();
+}
+});
+
+// Initialize tokens
+defaultTokenModel.set(urlTokenModel.toJSON());
+
+function submitTokens() {
+// Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+FormUtils.submitForm({ replaceState: pageLoading });
+}
+
+function setToken(name, value) {
+defaultTokenModel.set(name, value);
+submittedTokenModel.set(name, value);
+}
+
+function unsetToken(name) {
+defaultTokenModel.unset(name);
+submittedTokenModel.unset(name);
+}
+
+
+
+//
+// SEARCH MANAGERS
+//
+
+
+var search1 = new SearchManager({
+"id": "search1",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh | stats count",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search2 = new SearchManager({
+"id": "search2",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search3 = new SearchManager({
+"id": "search3",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search4 = new SearchManager({
+"id": "search4",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search5 = new SearchManager({
+"id": "search5",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh rule.level=*| timechart count by rule.level",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search6 = new SearchManager({
+"id": "search6",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | timechart span=2h count",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search7 = new SearchManager({
+"id": "search7",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | top \"agent.name\"",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search8 = new SearchManager({
+"id": "search8",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search9 = new SearchManager({
+"id": "search9",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=\"wazuh_api\" sourcetype=\"wazuh:api:info:basic\" | stats latest(agent_summary_active) as \"Active Agents\" | appendcols  [ search index=\"wazuh_api\" sourcetype=\"wazuh:api:info:basic\"  | stats latest(agent_summary_disconnected) as \"Disconnected\"] | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search10 = new SearchManager({
+"id": "search10",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search11 = new SearchManager({
+"id": "search11",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search12 = new SearchManager({
+"id": "search12",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search13 = new SearchManager({
+"id": "search13",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+var search14 = new SearchManager({
+"id": "search14",
+"cancelOnUnload": true,
+"earliest_time": "$when.earliest$",
+"sample_ratio": 1,
+"status_buckets": 0,
+"latest_time": "$when.latest$",
+"search": "index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+"app": utils.getCurrentApp(),
+"auto_cancel": 90,
+"preview": true,
+"tokenDependencies": {
+},
+"runWhenTimeIsUndefined": false
+}, {tokens: true, tokenNamespace: "submitted"});
+
+
+//
+// SPLUNK LAYOUT
+//
+
+$('header').remove();
+new LayoutView({"hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false})
+.render()
+.getContainerElement()
+.appendChild($('.dashboard-body')[0]);
+
+//
+// DASHBOARD EDITOR
+//
+
+new Dashboard({
+id: 'dashboard',
+el: $('.dashboard-body'),
+showTitle: true,
+editable: true
+}, {tokens: true}).render();
+
+
+//
+// VIEWS: VISUALIZATION ELEMENTS
+//
+
+var element1 = new SingleElement({
+"id": "element1",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0x6db7c6\",\"0xf7bc38\",\"0xf58f39\",\"0xd93f3c\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[50000,100000,150000,300000]",
+"height": "50",
+"trellis.scales.shared": "1",
+"managerid": "search1",
+"el": $('#element1')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element1.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element2 = new SingleElement({
+"id": "element2",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0xd93f3c\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "inverse",
+"trellis.enabled": "0",
+"colorBy": "trend",
+"trendDisplayMode": "percent",
+"drilldown": "all",
+"trendInterval": "-24h",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[0]",
+"height": "55",
+"trellis.scales.shared": "1",
+"managerid": "search2",
+"el": $('#element2')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element2.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element3 = new SingleElement({
+"id": "element3",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0x6db7c6\",\"0xf7bc38\",\"0xf58f39\",\"0xd93f3c\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[100,30000,70000,500000]",
+"height": "52",
+"trellis.scales.shared": "1",
+"managerid": "search3",
+"el": $('#element3')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element3.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element4 = new SingleElement({
+"id": "element4",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0x6db7c6\",\"0xf7bc38\",\"0xf58f39\",\"0xd93f3c\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[500,1000,2000,3000]",
+"height": "54",
+"trellis.scales.shared": "1",
+"managerid": "search4",
+"el": $('#element4')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element4.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element5 = new ChartElement({
+"id": "element5",
+"trellis.size": "medium",
+"charting.axisY2.scale": "inherit",
+"charting.chart.showDataLabels": "none",
+"charting.chart.stackMode": "stacked100",
+"resizable": true,
+"charting.axisTitleY2.visibility": "visible",
+"charting.drilldown": "none",
+"charting.chart": "area",
+"charting.layout.splitSeries.allowIndependentYRanges": "0",
+"charting.chart.nullValueMode": "gaps",
+"trellis.scales.shared": "1",
+"charting.layout.splitSeries": "0",
+"charting.axisTitleX.visibility": "collapsed",
+"charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+"charting.chart.style": "shiny",
+"charting.axisTitleY.visibility": "visible",
+"charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+"charting.chart.bubbleMinimumSize": "10",
+"charting.axisX.scale": "linear",
+"trellis.enabled": "0",
+"charting.axisY2.enabled": "0",
+"charting.legend.placement": "right",
+"charting.chart.bubbleSizeBy": "area",
+"charting.axisLabelsX.majorLabelStyle.rotation": "0",
+"charting.chart.bubbleMaximumSize": "50",
+"charting.chart.sliceCollapsingThreshold": "0.01",
+"charting.axisY.scale": "linear",
+"managerid": "search5",
+"el": $('#element5')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+
+var element6 = new ChartElement({
+"id": "element6",
+"trellis.size": "medium",
+"charting.axisY2.scale": "inherit",
+"charting.chart.showDataLabels": "all",
+"charting.chart.stackMode": "default",
+"resizable": true,
+"charting.axisTitleY2.visibility": "visible",
+"charting.drilldown": "none",
+"charting.chart": "column",
+"charting.layout.splitSeries.allowIndependentYRanges": "0",
+"charting.chart.nullValueMode": "gaps",
+"trellis.scales.shared": "1",
+"charting.layout.splitSeries": "0",
+"charting.axisTitleX.visibility": "collapsed",
+"charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+"charting.chart.style": "shiny",
+"charting.axisTitleY.visibility": "visible",
+"charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+"charting.chart.bubbleMinimumSize": "10",
+"charting.axisX.scale": "linear",
+"trellis.enabled": "0",
+"charting.axisY2.enabled": "0",
+"charting.legend.placement": "none",
+"charting.chart.bubbleSizeBy": "area",
+"charting.axisLabelsX.majorLabelStyle.rotation": "0",
+"charting.chart.bubbleMaximumSize": "50",
+"charting.chart.sliceCollapsingThreshold": "0.01",
+"charting.axisY.scale": "linear",
+"managerid": "search6",
+"el": $('#element6')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+
+var element7 = new ChartElement({
+"id": "element7",
+"trellis.size": "large",
+"charting.axisY2.scale": "inherit",
+"charting.chart.showDataLabels": "none",
+"charting.chart.stackMode": "default",
+"resizable": true,
+"charting.axisTitleY2.visibility": "visible",
+"charting.drilldown": "none",
+"charting.chart": "pie",
+"charting.layout.splitSeries.allowIndependentYRanges": "0",
+"charting.chart.nullValueMode": "gaps",
+"trellis.scales.shared": "1",
+"charting.layout.splitSeries": "0",
+"charting.axisTitleX.visibility": "visible",
+"charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+"charting.chart.style": "shiny",
+"charting.axisTitleY.visibility": "visible",
+"charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+"charting.chart.bubbleMinimumSize": "10",
+"charting.axisX.scale": "linear",
+"trellis.enabled": "0",
+"charting.axisY2.enabled": "0",
+"charting.legend.placement": "right",
+"charting.chart.bubbleSizeBy": "area",
+"charting.axisLabelsX.majorLabelStyle.rotation": "0",
+"charting.chart.bubbleMaximumSize": "50",
+"charting.chart.sliceCollapsingThreshold": "0.01",
+"charting.axisY.scale": "linear",
+"managerid": "search7",
+"el": $('#element7')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+
+var element8 = new ChartElement({
+"id": "element8",
+"trellis.size": "medium",
+"charting.axisY2.scale": "inherit",
+"charting.chart.showDataLabels": "minmax",
+"charting.chart.stackMode": "default",
+"resizable": true,
+"charting.axisTitleY2.visibility": "visible",
+"charting.drilldown": "none",
+"charting.chart": "area",
+"charting.layout.splitSeries.allowIndependentYRanges": "0",
+"charting.chart.nullValueMode": "gaps",
+"trellis.scales.shared": "1",
+"charting.layout.splitSeries": "0",
+"charting.axisTitleX.visibility": "collapsed",
+"charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+"charting.chart.style": "shiny",
+"charting.axisTitleY.visibility": "visible",
+"charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+"charting.chart.bubbleMinimumSize": "10",
+"charting.axisX.scale": "linear",
+"trellis.enabled": "0",
+"charting.axisY2.enabled": "0",
+"charting.legend.placement": "bottom",
+"charting.chart.bubbleSizeBy": "area",
+"charting.axisLabelsX.majorLabelStyle.rotation": "0",
+"charting.chart.bubbleMaximumSize": "50",
+"charting.chart.sliceCollapsingThreshold": "0.01",
+"charting.axisY.scale": "linear",
+"managerid": "search8",
+"el": $('#element8')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+
+var element9 = new ChartElement({
+"id": "element9",
+"trellis.size": "medium",
+"charting.axisY2.scale": "inherit",
+"charting.chart.showDataLabels": "all",
+"charting.chart.stackMode": "default",
+"resizable": true,
+"charting.axisTitleY2.visibility": "visible",
+"charting.drilldown": "none",
+"charting.chart": "pie",
+"charting.layout.splitSeries.allowIndependentYRanges": "0",
+"charting.chart.nullValueMode": "gaps",
+"trellis.scales.shared": "1",
+"charting.layout.splitSeries": "0",
+"charting.axisTitleX.visibility": "collapsed",
+"charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+"charting.chart.style": "shiny",
+"charting.axisTitleY.visibility": "collapsed",
+"charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+"charting.chart.bubbleMinimumSize": "10",
+"charting.axisX.scale": "linear",
+"trellis.enabled": "0",
+"charting.axisY2.enabled": "0",
+"charting.legend.placement": "none",
+"charting.chart.bubbleSizeBy": "area",
+"charting.axisLabelsX.majorLabelStyle.rotation": "0",
+"charting.chart.bubbleMaximumSize": "50",
+"charting.chart.sliceCollapsingThreshold": "0.01",
+"charting.axisY.scale": "linear",
+"managerid": "search9",
+"el": $('#element9')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+
+var element10 = new SingleElement({
+"id": "element10",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0x65a637\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[0]",
+"height": "50",
+"trellis.scales.shared": "1",
+"managerid": "search10",
+"el": $('#element10')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element10.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element11 = new SingleElement({
+"id": "element11",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0x65a637\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[0]",
+"height": "50",
+"trellis.scales.shared": "1",
+"managerid": "search11",
+"el": $('#element11')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element11.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element12 = new SingleElement({
+"id": "element12",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0x555\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[0]",
+"height": "50",
+"trellis.scales.shared": "1",
+"managerid": "search12",
+"el": $('#element12')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element12.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element13 = new SingleElement({
+"id": "element13",
+"trellis.size": "medium",
+"rangeColors": "[\"0x65a637\",\"0xd93f3c\"]",
+"numberPrecision": "0",
+"useColors": "1",
+"unitPosition": "after",
+"colorMode": "block",
+"trendColorInterpretation": "standard",
+"trellis.enabled": "0",
+"colorBy": "value",
+"trendDisplayMode": "absolute",
+"drilldown": "all",
+"showTrendIndicator": "1",
+"useThousandSeparators": "1",
+"showSparkline": "1",
+"rangeValues": "[0]",
+"height": "50",
+"trellis.scales.shared": "1",
+"managerid": "search13",
+"el": $('#element13')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element13.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+var element14 = new TableElement({
+"id": "element14",
+"dataOverlayMode": "none",
+"drilldown": "cell",
+"percentagesRow": "false",
+"rowNumbers": "false",
+"totalsRow": "false",
+"wrap": "true",
+"managerid": "search14",
+"el": $('#element14')
+}, {tokens: true, tokenNamespace: "submitted"}).render();
+
+element14.on("click", function(e) {
+if (e.field !== undefined) {
+e.preventDefault();
+var url = TokenUtils.replaceTokenNames("/app/wazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+utils.redirect(url, false, "_blank");
+}
+});
+
+
+//
+// VIEWS: FORM INPUTS
+//
+
+var input1 = new TimeRangeInput({
+"id": "input1",
+"default": {"latest_time": "now", "earliest_time": "-24h@h"},
+"searchWhenChanged": true,
+"earliest_time": "$form.when.earliest$",
+"latest_time": "$form.when.latest$",
+"el": $('#input1')
+}, {tokens: true}).render();
+
+input1.on("change", function(newValue) {
+FormUtils.handleValueChange(input1);
+});
+
+DashboardController.onReady(function() {
+if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
+submittedTokenModel.set({ earliest: '0', latest: '' });
+}
+});
+
+// Initialize time tokens to default
+if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+defaultTokenModel.set({ earliest: '0', latest: '' });
+}
+
+submitTokens();
+
+setTimeout("location.reload();", 300 * 1000);
+
+//
+// DASHBOARD READY
+//
+
+DashboardController.ready();
+pageLoading = false;
+
+}
+);
+// ]]>
+</script>
