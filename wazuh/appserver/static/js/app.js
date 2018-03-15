@@ -1,5 +1,5 @@
 angular.module('wazuhApp',[
-  'ngRoute',
+  'ui.router',
   'ngMaterial'
 ]);
 

@@ -1,24 +1,29 @@
 (function () {
-
-  function routes( $routeProvider,$locationProvider) {
-
+  function routes( $stateProvider, $locationProvider, $mdIconProvider, $mdThemingProvider) {
+    $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('blue');
     $locationProvider.html5Mode(true);
+    //console.log("loading path...",$location.absUrl());
 
-    $routeProvider
-
-    .when("/overview", {
-        template : "<h2>prueba overview </h2>"
+    $stateProvider
+    .state("overview", {
+        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/test.html",
+        controller : 'overviewCtrl',
+        controllerAs: 'oc'
     })
-    .when("/manager", {
-        template : "<h2>prueba manager </h2>"
+    .state("manager", {
+        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/test1.html",
+        controller : 'managerCtrl',
+        controllerAs: 'mc'
     })
-    .when("/agents", {
-        template : "<h2>prueba agents </h2>"
+    .state("agents", {
+        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/test2.html",
+        controller : 'agentCtrl',
+        controllerAs: 'ac'
     });
 
   }
 
   angular.module('wazuhApp')
-  .config([ '$routeProvider','$locationProvider', routes]);
+  .config([ '$stateProvider','$locationProvider', '$mdIconProvider', '$mdThemingProvider', routes]);
 
 })();
