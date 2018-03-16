@@ -34,5 +34,5 @@ class my_script(controllers.BaseController):
         verify = False
         request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
         manager_info = json.loads(request.text)['data']['totalItems']
-        miJson = json.dumps(manager_info)
-    return miJson
+        result = json.dumps(manager_info)
+        return result
