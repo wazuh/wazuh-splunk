@@ -6,12 +6,12 @@
 
     $stateProvider
     .state("overview", {
-        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/test.html",
+        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/overview.html",
         controller : 'overviewCtrl',
         controllerAs: 'oc'
     })
     .state("manager", {
-        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/test1.html",
+        templateUrl : "http://192.168.0.157:8000/en-US/static/app/wazuh/views/manager.html",
         controller : 'managerCtrl',
         controllerAs: 'mc'
     })

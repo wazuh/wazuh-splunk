@@ -4,16 +4,7 @@ BEGIN LAYOUT
 This section contains the layout for the dashboard. Splunk uses proprietary
 styles in <div> tags, similar to Bootstrap's grid system. 
 -->
-<header>
-<a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-<div class="header splunk-header">
-<div id="placeholder-splunk-bar">
-<a href="/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk<strong>&gt;</strong></a>
-</div>
-<div id="placeholder-app-bar"></div>
-</div>
-<a id="navSkip"></a>
-</header>
+
 <div class="dashboard-body container-fluid main-section-body" data-role="main">
 <div class="dashboard-header clearfix">
 <h2>Top alerts</h2>
@@ -190,7 +181,9 @@ styles in <div> tags, similar to Bootstrap's grid system.
 </div>
 </div>
 </div>
-
+<script>
+    console.log('loaded script in overview');
+</script>
 <!-- 
 END LAYOUT
 -->
@@ -284,7 +277,7 @@ UrlTokenModel
 // ...UrlTokenModel, 
 // TokenForwarder
 ) {
-
+console.log('loading scripts....')
 var pageLoading = true;
 
 // 
@@ -1051,8 +1044,6 @@ defaultTokenModel.set({ earliest: '0', latest: '' });
 }
 
 submitTokens();
-
-setTimeout("location.reload();", 300 * 1000);
 
 //
 // DASHBOARD READY

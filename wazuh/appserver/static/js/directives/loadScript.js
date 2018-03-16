@@ -5,7 +5,7 @@
     app.directive('script', function() {
       return {
         restrict: 'E',
-        scope: true,
+        scope: false,
         link: function(scope, elem, attr) {
           if (attr.type === 'text/javascript-lazy') {
             var code = elem.text();
