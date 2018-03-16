@@ -4,11 +4,6 @@ import requests
 def validate_input(helper, definition):
     pass
 
-def merge_two_dicts(x, y):
-    z = x.copy()   # start with x's keys and values
-    z.update(y)    # modifies z with y's keys and values & returns None
-    return z
-
 def collect_events(helper, ew):
     opt_username = helper.get_arg('username')
     opt_password = helper.get_arg('password')
@@ -26,9 +21,6 @@ def collect_events(helper, ew):
     request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
     agent_summary = json.loads(request.text)['data']
 
-    request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
-    logs = json.loads(request.text)['data']['items']
-
     data = {}
     for key in manager_info:
         data['manager-info_' + key.lower()] = manager_info[key]
@@ -41,14 +33,5 @@ def collect_events(helper, ew):
 
 
     data = json.dumps(data)
-    # mergedJson = merge_two_dicts(data,dataLogs)
     event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
     ew.write_event(event)
-
-    for row in logs:
-        data = {}
-        for key in row:
-            data['logs_'+key] = row[key]
-        data = json.dumps(data)
-        event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
-        ew.write_event(event)
