@@ -16,11 +16,7 @@ try:
     # print request.text
     data = json.loads(request.text)
     manager_logs = json.loads(request.text)
-    # data = {}
-    if (manager_logs['data']==''):
-        results=[ manager_logs ]
-    else:
-        results=[ manager_logs['data'] ]
+    results=[ manager_logs ]
 except Exception as err:
         import traceback
         print err

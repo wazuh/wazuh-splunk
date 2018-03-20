@@ -5,6 +5,7 @@
       <label>Filter by level</label>
       <choice value="WARNING">WARNING</choice>
       <choice value="INFO">INFO</choice>
+      <choice value="ERROR">ERROR</choice>
       <choice value="*">*</choice>
       <initialValue>*</initialValue>
     </input>
@@ -14,7 +15,7 @@
       <table>
         <title>Manager logs</title>
         <search>
-          <query>index=wazuh_api sourcetype="wazuh:api:info:basic" | table logs_timestamp, logs_tag, logs_description, logs_level | search logs_level=$value$</query>
+          <query>| getmanagerlogs | table timestamp, tag, level, description | search level=$value$ </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
