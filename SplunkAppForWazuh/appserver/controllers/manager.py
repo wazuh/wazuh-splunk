@@ -29,7 +29,7 @@ class manager(controllers.BaseController):
     def logs(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://192.168.0.157:55000'
+        opt_base_url = 'http://10.0.0.83:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
