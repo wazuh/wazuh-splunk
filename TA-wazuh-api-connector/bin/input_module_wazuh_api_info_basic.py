@@ -31,5 +31,7 @@ def collect_events(helper, ew):
     for key in agent_summary:
         data['agent_summary_' + key.lower().replace(' ', '')] = agent_summary[key]
 
-    event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(data))
+
+    data = json.dumps(data)
+    event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=data)
     ew.write_event(event)

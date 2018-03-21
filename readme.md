@@ -134,7 +134,7 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 
 	```
 	[wazuh]
-	DATETIME_CONFIG = $SPLUNK_HOME/etc/datetime.xml
+	DATETIME_CONFIG = 
 	INDEXED_EXTRACTIONS = json
 	KV_MODE = none
 	NO_BINARY_CHECK = true
@@ -174,7 +174,7 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
     Add a new receiving configuration editing __inputs.conf__ file, adding the following lines:
      ```
 	[splunktcp://9997]
-	connection_host = ip
+	connection_host = <forwarder ip>
 	```
     ###### Web GUI
     ```
