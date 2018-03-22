@@ -15,8 +15,6 @@ try:
     request = requests.get("http://192.168.0.159:8000/en-US/custom/SplunkAppForWazuh/manager/logs")
     # print request.text
     data = json.loads(request.text)
-    manager_logs = json.loads(request.text)
-    results=[ manager_logs ]
 except Exception as err:
         import traceback
         print err
