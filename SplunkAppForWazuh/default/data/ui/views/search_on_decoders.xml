@@ -21,7 +21,7 @@
     <panel>
       <table>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:decoders" name=$name$ details-parent=$parent$ position=$position$| fillnull value="-" |table name, details-program_name, details-order, file, position, details-parent, status | rename name as Name, details-program_name as Program, details-order as Fields, file as File, position as Position, details-parent as Parent  | sort Name</query>
+          <query>| getdecoders name=$name$ details-parent=$parent$ position=$position$| fillnull value="-" |table name, details-program_name, details-order, file, position, details-parent, status | rename name as Name, details-program_name as Program, details-order as Fields, file as File, position as Position, details-parent as Parent  | sort Name</query>
           <earliest>-60m@m</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
