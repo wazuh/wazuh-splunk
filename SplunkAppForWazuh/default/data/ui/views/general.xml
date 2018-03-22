@@ -291,7 +291,7 @@
       <title>Agents status</title>
       <chart>
         <search>
-          <query>| getagentsummary | stats latest(agent_summary_active) as "Active Agents" | appendcols  [ search index="wazuh_api" sourcetype="wazuh:api:info:basic"  | stats latest(agent_summary_disconnected) as "Disconnected"] | transpose | rename "column" as Status, "row 1" as "count"</query>
+          <query>| getagentsummary | table agent_summary_active , agent_summary_disconnected | transpose | rename "column" as Status, "row 1" as "count"</query>
           <earliest>$when.earliest$</earliest>
           <latest>$when.latest$</latest>
           <sampleRatio>1</sampleRatio>
