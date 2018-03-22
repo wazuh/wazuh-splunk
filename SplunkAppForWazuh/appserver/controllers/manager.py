@@ -24,7 +24,7 @@ def setup_logger(level):
 logger = setup_logger(logging.DEBUG)
 print 'OK'
 class manager(controllers.BaseController):
-    # /custom/MyAppName/my_script/my_endpoint
+    # /custom/wazuh/my_script/my_endpoint
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):
         opt_username = 'foo'
@@ -36,3 +36,37 @@ class manager(controllers.BaseController):
         manager_info = json.loads(request.text)['data']['items']
         result = json.dumps(manager_info)
         return result
+
+    # /custom/wazuh/manager/rules
+    @expose_page(must_login=False, methods=['GET'])
+    def rules(self, **kwargs):
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.157:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        
+        request = requests.get(opt_base_url + '/rules?limit=1', auth=auth, verify=verify)
+        rules_qty = json.loads(request.text)["data"]["totalItems"]
+
+        request = requests.get(opt_base_url + '/rules?offset=0&limit=' + str(rules_qty), auth=auth, verify=verify)
+        rules = json.loads(request.text)["data"]["items"]
+        # result = json.loads(rules)
+        results = []
+        for row in rules:
+            data = {}
+            for key in row:
+                if isinstance(row[key], dict):
+                    for detail in row[key]:
+                        data[key + "-" + detail] = row[key][detail]
+                elif isinstance(row[key], list):
+                    count = 0
+                    for detail in row[key]:
+                        data[str(key) + "-" + str(count)] = detail
+                        count += 1
+                else:
+                    data[key] = row[key]
+            # data = json.dumps(data)
+            results.append(data)
+        
+        return json.dumps(results)
