@@ -22,9 +22,8 @@ def setup_logger(level):
     logger.addHandler(file_handler)
     return logger
 logger = setup_logger(logging.DEBUG)
-print 'OK'
 class manager(controllers.BaseController):
-    # /custom/wazuh/my_script/my_endpoint
+    # /custom/wazuh/manager/logs
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):
         opt_username = 'foo'
