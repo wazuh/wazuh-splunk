@@ -22,7 +22,6 @@ def setup_logger(level):
     logger.addHandler(file_handler)
     return logger
 logger = setup_logger(logging.DEBUG)
-print 'OK'
 class agents(controllers.BaseController):
     # /custom/wazuh/agents/summary
     @expose_page(must_login=False, methods=['GET'])
