@@ -32,7 +32,10 @@ class agents(controllers.BaseController):
         opt_base_url = 'http://192.168.0.157:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
-        agents_summary = json.loads(request.text)['data']['items']
-        result = json.dumps(agents_summary)
-        return result
+        request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
+        agent_summary = json.loads(request.text)['data']
+        data = {}
+        for key in agent_summary:
+            data['agent_summary_' + key.lower().replace(' ', '')] = agent_summary[key]
+        result = json.dumps(data)
+        return data
