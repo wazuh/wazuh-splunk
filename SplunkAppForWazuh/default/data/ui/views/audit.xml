@@ -9,7 +9,7 @@
       <fieldForLabel>agent.name</fieldForLabel>
       <fieldForValue>agent.name</fieldForValue>
       <search>
-        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <query>| getagents | stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
       </search>
