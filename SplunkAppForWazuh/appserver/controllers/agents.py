@@ -39,3 +39,40 @@ class agents(controllers.BaseController):
         data = [data]
         result = json.dumps(data)
         return result
+
+    # /custom/wazuh/agents/agents
+    @expose_page(must_login=False, methods=['GET'])
+    def agents(self, **kwargs):
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.157:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
+        agents_qty = json.loads(request.text)["data"]["totalItems"]
+
+        request = requests.get(opt_base_url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
+        agents = json.loads(request.text)["data"]["items"]
+        results = []
+        for row in agents:
+            data = {}
+            request = requests.get(opt_base_url + '/agents/' + row["id"], auth=auth, verify=verify)
+            agent_info = json.loads(request.text)["data"]
+
+            request = requests.get(opt_base_url + '/rootcheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            rootcheck_lastscan = json.loads(request.text)["data"]["start"]
+
+            request = requests.get(opt_base_url + '/syscheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            syscheck_lastscan = json.loads(request.text)["data"]["start"]
+
+            keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
+
+            data = {}
+            for key in keys:
+                if key in agent_info:
+                    data[key] = agent_info[key]
+
+            data["last_rootcheck"] = rootcheck_lastscan
+            data["last_syscheck"] = syscheck_lastscan
+            results.append(data)
+        return json.dumps(results)
