@@ -135,7 +135,7 @@
       <single>
         <title>Total Agents</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_total) as "Total Agents"</query>
+          <query>| getagentsummary | stats first(agent_summary_total) as "Total Agents"</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
@@ -147,7 +147,7 @@
       <single>
         <title>Active</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_active) as "Active Agents"</query>
+          <query>| getagentsummary | stats first(agent_summary_active) as "Active Agents"</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
@@ -159,7 +159,7 @@
       <single>
         <title>Disconnected</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_disconnected) as "Disconnected"</query>
+          <query>| getagentsummary | stats first(agent_summary_disconnected) as "Disconnected"</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
@@ -171,7 +171,7 @@
       <single>
         <title>Never connected</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_neverconnected) as "Never"</query>
+          <query>| getagentsummary | stats first(agent_summary_neverconnected) as "Never"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
@@ -183,7 +183,7 @@
       <single>
         <title>Agent Coverage</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | rename   agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + " %" | top Coverage showcount=f showperc=f</query>
+          <query>| getagentsummary | rename agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + " %" | top Coverage showcount=f showperc=f</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>

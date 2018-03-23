@@ -23,6 +23,40 @@ def setup_logger(level):
     return logger
 logger = setup_logger(logging.DEBUG)
 class manager(controllers.BaseController):
+    # /custom/wazuh/manager/status
+    @expose_page(must_login=False, methods=['GET'])
+    def status(self, **kwargs):
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.157:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/manager/status', auth=auth, verify=verify)
+        manager_status = json.loads(request.text)['data']
+        data = {}
+        for key in manager_status:
+            data['manager-status_' + key.lower()] = manager_status[key]
+        data = [data]
+        result = json.dumps(data)
+        return result
+        
+    # /custom/wazuh/manager/info
+    @expose_page(must_login=False, methods=['GET'])
+    def info(self, **kwargs):
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.157:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/manager/info', auth=auth, verify=verify)
+        manager_info = json.loads(request.text)['data']
+        data = {}
+        for key in manager_info:
+            data['manager-info_' + key.lower()] = manager_info[key]
+        data = [data]
+        result = json.dumps(data)
+        return result
+
     # /custom/wazuh/manager/logs
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):
@@ -32,8 +66,8 @@ class manager(controllers.BaseController):
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
-        manager_info = json.loads(request.text)['data']['items']
-        result = json.dumps(manager_info)
+        manager_logs = json.loads(request.text)['data']['items']
+        result = json.dumps(manager_logs)
         return result
 
     # /custom/wazuh/manager/rules

@@ -1,0 +1,59 @@
+[app/install/install_source_checksum]
+version = 6.6.0
+modtime = 1502857881.102573000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_agents%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338395.946874000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_agents%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338395.956374000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_decoders%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338396.777451000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_decoders%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338396.786326000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_info_basic%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338397.329491000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_info_basic%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338397.338632000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_rules%3Aapi_server%60%60splunk_cred_sep%60%601%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338398.055265000
+
+[passwords/credential%3A__REST_CREDENTIAL__%23TA-wazuh-api-connector%23data%2Finputs%2Fwazuh_api_rules%3Aapi_server%60%60splunk_cred_sep%60%602%3A]
+owner = splunk-system-user
+version = 7.0.2
+modtime = 1520338398.065657000
+
+[inputs/wazuh_api_agents%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338396.477847000
+
+[inputs/wazuh_api_decoders%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338397.216103000
+
+[inputs/wazuh_api_info_basic%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338397.900223000
+
+[inputs/wazuh_api_rules%3A%2F%2Fapi_server]
+version = 7.0.2
+modtime = 1520338398.491097000
