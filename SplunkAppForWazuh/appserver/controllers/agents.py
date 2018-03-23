@@ -75,4 +75,4 @@ class agents(controllers.BaseController):
             data["last_rootcheck"] = rootcheck_lastscan
             data["last_syscheck"] = syscheck_lastscan
             results.append(data)
-        return json.dumps(results)
+        return json.dumps(agents)
