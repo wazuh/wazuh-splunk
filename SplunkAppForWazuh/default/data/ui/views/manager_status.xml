@@ -1,63 +1,63 @@
 <dashboard stylesheet="wazuh_decorations.css">
   <label>Manager Status</label>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | rename manager-status_ossec-analysisd as analysisd | eval value=if(analysisd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-analysisd as analysisd | eval value=if(analysisd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value1">$result.value$</set>
       <set token="range1">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-execd as execd| eval value=if(execd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-execd as execd| eval value=if(execd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value2">$result.value$</set>
       <set token="range2">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-logcollector as logcollector| eval value=if(logcollector="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-logcollector as logcollector| eval value=if(logcollector="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value3">$result.value$</set>
       <set token="range3">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-monitord as monitord | eval value=if(monitord="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-monitord as monitord | eval value=if(monitord="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value4">$result.value$</set>
       <set token="range4">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-remoted as remoted | eval value=if(remoted="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-remoted as remoted | eval value=if(remoted="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value5">$result.value$</set>
       <set token="range5">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-maild as maild  | eval value=if(maild="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-maild as maild  | eval value=if(maild="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value6">$result.value$</set>
       <set token="range6">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-authd as authd  | eval value=if(authd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-authd as authd  | eval value=if(authd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value7">$result.value$</set>
       <set token="range7">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_wazuh-modulesd as modulesd  | eval value=if(modulesd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_wazuh-modulesd as modulesd  | eval value=if(modulesd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value8">$result.value$</set>
       <set token="range8">$result.range$</set>
     </progress>
   </search>
   <search>
-    <query>index="wazuh_api" sourcetype="wazuh:api:info:basic"  | rename manager-status_ossec-syscheckd as syscheckd  | eval value=if(syscheckd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
+    <query>| getmanagerstatus | rename manager-status_ossec-syscheckd as syscheckd  | eval value=if(syscheckd="running","1","0") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none</query>
     <progress>
       <set token="value9">$result.value$</set>
       <set token="range9">$result.range$</set>
@@ -135,7 +135,7 @@
       <single>
         <title>Total Agents</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_total) as "Total Agents"</query>
+          <query>| getagentsummary | stats first(agent_summary_total) as "Total Agents"</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
@@ -147,7 +147,7 @@
       <single>
         <title>Active</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_active) as "Active Agents"</query>
+          <query>| getagentsummary | stats first(agent_summary_active) as "Active Agents"</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
@@ -159,7 +159,7 @@
       <single>
         <title>Disconnected</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_disconnected) as "Disconnected"</query>
+          <query>| getagentsummary | stats first(agent_summary_disconnected) as "Disconnected"</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
@@ -171,7 +171,7 @@
       <single>
         <title>Never connected</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | stats latest(agent_summary_neverconnected) as "Never"</query>
+          <query>| getagentsummary | stats first(agent_summary_neverconnected) as "Never"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
@@ -183,7 +183,7 @@
       <single>
         <title>Agent Coverage</title>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:info:basic" | rename   agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + " %" | top Coverage showcount=f showperc=f</query>
+          <query>| getagentsummary | rename agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + " %" | top Coverage showcount=f showperc=f</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
         </search>
