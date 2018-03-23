@@ -104,3 +104,30 @@ class agents(controllers.BaseController):
             data["last_syscheck"] = syscheck_lastscan
             results.append(data)
         return json.dumps(agents)
+    
+    # /custom/wazuh/agents/agentschecks
+    @expose_page(must_login=False, methods=['GET'])
+    def agents(self, **kwargs):
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.157:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
+        agents_qty = json.loads(request.text)["data"]["totalItems"]
+
+        request = requests.get(opt_base_url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
+        agents = json.loads(request.text)["data"]["items"]
+        results = []
+        for row in agents:
+            data = {}
+
+            keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
+
+            data = {}
+            for key in keys:
+                if key in agent_info:
+                    data[key] = agent_info[key]
+
+            results.append(data)
+        return json.dumps(agents)
