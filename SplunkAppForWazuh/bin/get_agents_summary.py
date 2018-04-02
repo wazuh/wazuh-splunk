@@ -12,7 +12,7 @@ import json
 try:
     #pass
     results = []
-    request = requests.get("http://192.168.0.159:8000/en-US/custom/SplunkAppForWazuh/agents/summary")
+    request = requests.get("http://10.0.0.90:8000/en-US/custom/wazuh/agents/summary")
     # print request.text
     data = json.loads(request.text)
 except Exception as err:

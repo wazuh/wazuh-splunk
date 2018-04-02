@@ -8,7 +8,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-_APPNAME = 'SplunkAppForWazuh'
+_APPNAME = 'wazuh'
 def setup_logger(level):
     """
     Setup a logger for the REST handler.
@@ -28,7 +28,7 @@ class agents(controllers.BaseController):
     def summary(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://192.168.0.157:55000'
+        opt_base_url = 'http://10.0.0.83:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
@@ -44,7 +44,7 @@ class agents(controllers.BaseController):
     def agents_info(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://192.168.0.157:55000'
+        opt_base_url = 'http://10.0.0.83:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -58,6 +58,12 @@ class agents(controllers.BaseController):
             request = requests.get(opt_base_url + '/agents/' + row["id"], auth=auth, verify=verify)
             agent_info = json.loads(request.text)["data"]
 
+            request = requests.get(opt_base_url + '/rootcheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            rootcheck_lastscan = json.loads(request.text)["data"]["start"]
+
+            request = requests.get(opt_base_url + '/syscheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            syscheck_lastscan = json.loads(request.text)["data"]["start"]
+
             keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
 
             data = {}
@@ -65,15 +71,18 @@ class agents(controllers.BaseController):
                 if key in agent_info:
                     data[key] = agent_info[key]
 
+            data["last_rootcheck"] = rootcheck_lastscan
+            data["last_syscheck"] = syscheck_lastscan
+
             results.append(data)
-        return json.dumps(agents)
+        return json.dumps(results)
         
     # /custom/wazuh/agents/agentschecks
     @expose_page(must_login=False, methods=['GET'])
     def agents_checks(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://192.168.0.157:55000'
+        opt_base_url = 'http://10.0.0.83:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -103,14 +112,14 @@ class agents(controllers.BaseController):
             data["last_rootcheck"] = rootcheck_lastscan
             data["last_syscheck"] = syscheck_lastscan
             results.append(data)
-        return json.dumps(agents)
+        return json.dumps(results)
     
     # /custom/wazuh/agents/agentschecks
     @expose_page(must_login=False, methods=['GET'])
     def agents(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://192.168.0.157:55000'
+        opt_base_url = 'http://10.0.0.83:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -121,6 +130,14 @@ class agents(controllers.BaseController):
         results = []
         for row in agents:
             data = {}
+            request = requests.get(opt_base_url + '/agents/' + row["id"], auth=auth, verify=verify)
+            agent_info = json.loads(request.text)["data"]
+
+            request = requests.get(opt_base_url + '/rootcheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            rootcheck_lastscan = json.loads(request.text)["data"]["start"]
+
+            request = requests.get(opt_base_url + '/syscheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            syscheck_lastscan = json.loads(request.text)["data"]["start"]
 
             keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
 
@@ -129,5 +146,8 @@ class agents(controllers.BaseController):
                 if key in agent_info:
                     data[key] = agent_info[key]
 
+            data["last_rootcheck"] = rootcheck_lastscan
+            data["last_syscheck"] = syscheck_lastscan
+
             results.append(data)
-        return json.dumps(agents)
+        return json.dumps(results)

@@ -34,7 +34,7 @@
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
         <drilldown>
-          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:decoders" name=$name$ | fillnull value="-" |table name, details-program_name, details-order, file, position, details-parent, status | rename name as Name, details-program_name as Program, details-order as Fields, file as File, position as Position, details-parent as Parent | sort Name&amp;earliest=-60m@m&amp;latest=now</link>
+          <link target="_blank">| getdecoders name=$name$ | fillnull value="-" |table name, details-program_name, details-order, file, position, details-parent, status | rename name as Name, details-program_name as Program, details-order as Fields, file as File, position as Position, details-parent as Parent | sort Name&amp;earliest=-60m@m&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
