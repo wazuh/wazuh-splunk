@@ -4,7 +4,7 @@
     <panel>
       <table>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:decoders" | fillnull value="-" |table name, details-program_name, details-order, file, path, position, details-parent, details-regex| rename name as Name, details-program_name as Program, details-order as Fields, file as File, path as Path, position as Position, details-parent as Parent, details-regex as Regex | sort Name</query>
+          <query>| getdecoders | fillnull value="-" |table name, details-program_name, details-order, file, path, position, details-parent, details-regex| rename name as Name, details-program_name as Program, details-order as Fields, file as File, path as Path, position as Position, details-parent as Parent, details-regex as Regex | sort Name</query>
           <earliest>-1m</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>

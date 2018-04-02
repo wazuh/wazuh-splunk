@@ -1,7 +1,7 @@
 #!/opt/splunk/bin/python
 ############################################################
 #
-# GET /manager/logs
+# GET /manager/decoders
 #
 ############################################################
 import sys
@@ -12,7 +12,7 @@ import json
 try:
     #pass
     results = []
-    request = requests.get("http://10.0.0.90:8000/en-US/custom/wazuh/manager/logs")
+    request = requests.get("http://10.0.0.90:8000/en-US/custom/wazuh/manager/decoders")
     # print request.text
     data = json.loads(request.text)
 except Exception as err:

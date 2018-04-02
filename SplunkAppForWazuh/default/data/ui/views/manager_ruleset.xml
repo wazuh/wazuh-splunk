@@ -4,7 +4,7 @@
     <panel>
       <table>
         <search>
-          <query>index=wazuh_api sourcetype="wazuh:api:rules" | rename pci-0 as pci0,pci-1 as pci1,pci-2 as pci2,pci-3 as pci3,pci-4 as pci4, "details-info{}" as details.info, groups-0 as groups0, groups-1 as groups1, groups-2 as groups2 | eval Requirement = mvappend(pci0,pci1,pci2,pci3,pci4) | eval Groups = mvappend(groups0,groups1,groups2) |table id, file, description, Requirement, Groups, level, "details-regex", "details-info", "details-if_sid", "details-frequency" | dedup id |  sort - level | fillnull value="-"</query>
+          <query>| getruleset | rename pci-0 as pci0,pci-1 as pci1,pci-2 as pci2,pci-3 as pci3,pci-4 as pci4, "details-info{}" as details.info, groups-0 as groups0, groups-1 as groups1, groups-2 as groups2 | eval Requirement = mvappend(pci0,pci1,pci2,pci3,pci4) | eval Groups = mvappend(groups0,groups1,groups2) |table id, file, description, Requirement, Groups, level, "details-regex", "details-info", "details-if_sid", "details-frequency" | dedup id |  sort - level | fillnull value="-"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>

@@ -9,7 +9,7 @@
       <fieldForLabel>agent.name</fieldForLabel>
       <fieldForValue>agent.name</fieldForValue>
       <search>
-        <query>index=wazuh sourcetype=wazuh agent.name="*"| stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
+        <query>| getagents | stats count by "agent.name" | sort "agent.name" ASC | fields - count</query>
         <earliest>-24h@h</earliest>
         <latest>now</latest>
       </search>
@@ -26,14 +26,14 @@
     <panel>
       <table>
         <search>
-          <query>index="wazuh_api" sourcetype="wazuh:api:agents" name=$agent$ |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", last_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"</query>
+          <query>| getagentscheck name=$agent$ |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", last_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"</query>
           <earliest>-60m@m</earliest>
           <latest>now</latest>
         </search>
         <option name="count">5</option>
         <option name="drilldown">cell</option>
         <drilldown>
-          <link target="_blank">search?q=index="wazuh_api" sourcetype="wazuh:api:agents" name=$agent$ |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", last_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"&amp;earliest=-60m@m&amp;latest=now</link>
+          <link target="_blank">| getagentscheck name=$agent$ |table id, ip, name, os.platform, os.uname, os.name, os.arch, os.version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os.platform as "Platform", os.uname as "OS Info", os.name as "OS name", os.arch as "Arch", os.version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", last_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"&amp;earliest=-60m@m&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
