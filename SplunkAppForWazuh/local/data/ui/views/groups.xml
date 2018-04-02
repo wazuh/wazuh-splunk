@@ -1,0 +1,16 @@
+<form>
+  <label>Groups</label>
+  <row>
+    <panel>
+      <table>
+        <title>Manager groups</title>
+        <search>
+          <query>| getgroups | table name </query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>

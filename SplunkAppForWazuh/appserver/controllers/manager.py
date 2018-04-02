@@ -70,6 +70,19 @@ class manager(controllers.BaseController):
         result = json.dumps(manager_logs)
         return result
 
+    # /custom/wazuh/manager/groups
+    @expose_page(must_login=False, methods=['GET'])
+    def groups(self, **kwargs):
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups', auth=auth, verify=verify)
+        groups = json.loads(request.text)['data']['items']
+        result = json.dumps(groups)
+        return result
+
     # /custom/wazuh/manager/rules
     @expose_page(must_login=False, methods=['GET'])
     def rules(self, **kwargs):
