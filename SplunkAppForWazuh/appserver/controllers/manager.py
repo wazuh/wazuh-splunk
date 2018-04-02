@@ -28,7 +28,7 @@ class manager(controllers.BaseController):
     def status(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/manager/status', auth=auth, verify=verify)
@@ -45,7 +45,7 @@ class manager(controllers.BaseController):
     def info(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/manager/info', auth=auth, verify=verify)
@@ -62,7 +62,7 @@ class manager(controllers.BaseController):
     def logs(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
@@ -75,7 +75,7 @@ class manager(controllers.BaseController):
     def rules(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         
@@ -108,7 +108,7 @@ class manager(controllers.BaseController):
     def decoders(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/decoders?limit=1', auth=auth, verify=verify)
