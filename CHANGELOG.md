@@ -1,7 +1,7 @@
 # Change Log
-All notable changes to the Wazuh App for Splunk project will be documented in this file.
+All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.2.x - Revision 390
+## Wazuh v3.2.x - Splunk app v2.0.0
 ### Added
 - New Manager Logs tab ([#6](https://github.com/wazuh/wazuh-splunk/pull/6)):
   - New module implemented to show Manager logs.
