@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import requests
+import re
 # from splunk import AuthorizationFailed as AuthorizationFailed
 import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
@@ -23,12 +24,57 @@ def setup_logger(level):
     return logger
 logger = setup_logger(logging.DEBUG)
 class agents(controllers.BaseController):
+
+    # /custom/wazuh/agents/filescontent?id=idgroup&filename=agent.conf
+    @expose_page(must_login=False, methods=['GET'])
+    def filescontent(self,**kwargs):
+        group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
+        filename = re.split(r'[\/\\]+', kwargs['filename'])[-1]
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
+        files = [json.loads(request.text)]
+        return json.dumps(files)
+
+    # /custom/wazuh/agents/files?id=idgroup
+    @expose_page(must_login=False, methods=['GET'])
+    def files(self,**kwargs):
+        group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files', auth=auth, verify=verify)
+        files_qty = json.loads(request.text)["data"]["totalItems"]
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files?offset=0&limit=' + str(files_qty), auth=auth, verify=verify)
+        files = json.loads(request.text)["data"]["items"]
+        return json.dumps(files)
+
+    # /custom/wazuh/agents/groups
+    @expose_page(must_login=False, methods=['GET'])
+    def groups(self,**kwargs):
+        group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id, auth=auth, verify=verify)
+        groups_qty = json.loads(request.text)["data"]["totalItems"]
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '?offset=0&limit=' + str(groups_qty), auth=auth, verify=verify)
+        groups = json.loads(request.text)["data"]["items"]
+        return json.dumps(groups)
+
     # /custom/wazuh/agents/summary
     @expose_page(must_login=False, methods=['GET'])
     def summary(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
@@ -44,7 +90,7 @@ class agents(controllers.BaseController):
     def agents_info(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -82,7 +128,7 @@ class agents(controllers.BaseController):
     def agents_checks(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -119,7 +165,7 @@ class agents(controllers.BaseController):
     def agents(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)

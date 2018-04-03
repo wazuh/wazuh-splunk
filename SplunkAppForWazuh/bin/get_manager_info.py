@@ -1,7 +1,7 @@
 #!/opt/splunk/bin/python
 ############################################################
 #
-# GET /manager/logs
+# GET /manager/info
 #
 ############################################################
 import sys
@@ -12,8 +12,7 @@ import json
 try:
     #pass
     results = []
-    request = requests.get("http://10.0.0.90:8000/en-US/custom/wazuh/manager/info")
-    # print request.text
+    request = requests.get("http://192.168.0.159:8000/en-US/custom/wazuh/manager/info")
     data = json.loads(request.text)
 except Exception as err:
         import traceback
