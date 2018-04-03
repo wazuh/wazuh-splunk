@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import requests
+import re
 # from splunk import AuthorizationFailed as AuthorizationFailed
 import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
@@ -23,6 +24,22 @@ def setup_logger(level):
     return logger
 logger = setup_logger(logging.DEBUG)
 class agents(controllers.BaseController):
+
+    # /custom/wazuh/agents/groups
+    @expose_page(must_login=False, methods=['GET'])
+    def groups(self,**kwargs):
+        group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id, auth=auth, verify=verify)
+        agents_qty = json.loads(request.text)["data"]["totalItems"]
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
+        agents = json.loads(request.text)["data"]["items"]
+        return json.dumps(agents)
+        
     # /custom/wazuh/agents/summary
     @expose_page(must_login=False, methods=['GET'])
     def summary(self, **kwargs):
