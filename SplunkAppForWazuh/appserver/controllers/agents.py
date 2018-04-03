@@ -27,6 +27,37 @@ class agents(controllers.BaseController):
 
     # /custom/wazuh/agents/groups
     @expose_page(must_login=False, methods=['GET'])
+    def filescontent(self,**kwargs):
+        group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
+        filename = re.split(r'[\/\\]+', kwargs['filename'])[-1]
+        #group_id = 'testing001'
+        #filename = 'ar.conf'
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
+        files = [json.loads(request.text)]
+        return json.dumps(files)
+
+    # /custom/wazuh/agents/groups
+    @expose_page(must_login=False, methods=['GET'])
+    def files(self,**kwargs):
+        group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
+        opt_username = 'foo'
+        opt_password = 'bar'
+        opt_base_url = 'http://192.168.0.130:55000'
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files', auth=auth, verify=verify)
+        files_qty = json.loads(request.text)["data"]["totalItems"]
+        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files?offset=0&limit=' + str(files_qty), auth=auth, verify=verify)
+        files = json.loads(request.text)["data"]["items"]
+        return json.dumps(files)
+
+    # /custom/wazuh/agents/groups
+    @expose_page(must_login=False, methods=['GET'])
     def groups(self,**kwargs):
         group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
         opt_username = 'foo'
@@ -39,7 +70,7 @@ class agents(controllers.BaseController):
         request = requests.get(opt_base_url + '/agents/groups/' + group_id + '?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
         return json.dumps(agents)
-        
+
     # /custom/wazuh/agents/summary
     @expose_page(must_login=False, methods=['GET'])
     def summary(self, **kwargs):
