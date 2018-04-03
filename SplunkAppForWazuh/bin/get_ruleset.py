@@ -13,7 +13,6 @@ try:
     #pass
     results = []
     request = requests.get("http://192.168.0.159:8000/en-US/custom/wazuh/manager/rules")
-    # print request.text
     data = json.loads(request.text)
 except Exception as err:
         import traceback
