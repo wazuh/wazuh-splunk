@@ -1,10 +1,32 @@
-<dashboard>
+<form>
   <label>Agents Summary</label>
+  <fieldset submitButton="false">
+    <input type="text" token="valueId" searchWhenChanged="true">
+      <label>Filter Agents by ID</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="text" token="valueName" searchWhenChanged="true">
+      <label>Filter Agents by Name</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="text" token="valueIp" searchWhenChanged="true">
+      <label>Filter Agents by Ip</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="text" token="valueVersion" searchWhenChanged="true">
+      <label>Filter Agents by Version</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+  </fieldset>
   <row>
     <panel>
       <table>
         <search>
-          <query>| getagentscheck |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as "Platform", os-uname as "OS Info", os-name as "OS name", os-arch as "Arch", os-version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", last_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A"</query>
+          <query>| getagentscheck |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as "Platform", os-uname as "OS Info", os-name as "OS name", os-arch as "Arch", os-version as "OS Version", dateAdd as "Registered date", lastKeepAlive as "Last KeepAlive", last_rootcheck as "Last Rootcheck", last_syscheck as "Last Syscheck", version as "Agent version" | fillnull value="N/A" | search id=*$valueId$* name = *$valueName$* ip = *$valueIp$* "Agent version" = *$valueVersion$*</query>
           <earliest>-60m@m</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
@@ -22,13 +44,11 @@
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">cell</option>
         <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
-        <drilldown>
-          <link target="_blank">| getagents | table id, ip, name, status | dedup id | sort id&amp;earliest=-60m@m&amp;latest=now</link>
-        </drilldown>
       </table>
     </panel>
   </row>
-</dashboard>
+</form>
