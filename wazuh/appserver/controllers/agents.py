@@ -95,31 +95,27 @@ class agents(controllers.BaseController):
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
-
         request = requests.get(opt_base_url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
         results = []
-        for row in agents:
+        for agent in agents:
             data = {}
-            request = requests.get(opt_base_url + '/agents/' + row["id"], auth=auth, verify=verify)
-            agent_info = json.loads(request.text)["data"]
-
-            request = requests.get(opt_base_url + '/rootcheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            for attribute, value in agent.iteritems():
+                if attribute == 'os':
+                    for key,val in agent['os'].iteritems():
+                        data['os-'+key] = val
+                else:
+                    data[attribute] = value 
+            
+            request = requests.get(opt_base_url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             rootcheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            request = requests.get(opt_base_url + '/syscheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(opt_base_url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             syscheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
-
-            data = {}
-            for key in keys:
-                if key in agent_info:
-                    data[key] = agent_info[key]
 
             data["last_rootcheck"] = rootcheck_lastscan
             data["last_syscheck"] = syscheck_lastscan
-
+            
             results.append(data)
         return json.dumps(results)
         
@@ -133,30 +129,27 @@ class agents(controllers.BaseController):
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
-
         request = requests.get(opt_base_url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
         results = []
-        for row in agents:
+        for agent in agents:
             data = {}
-            request = requests.get(opt_base_url + '/agents/' + row["id"], auth=auth, verify=verify)
-            agent_info = json.loads(request.text)["data"]
-
-            request = requests.get(opt_base_url + '/rootcheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            for attribute, value in agent.iteritems():
+                if attribute == 'os':
+                    for key,val in agent['os'].iteritems():
+                        data['os-'+key] = val
+                else:
+                    data[attribute] = value 
+            
+            request = requests.get(opt_base_url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             rootcheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            request = requests.get(opt_base_url + '/syscheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(opt_base_url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             syscheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
-
-            data = {}
-            for key in keys:
-                if key in agent_info:
-                    data[key] = agent_info[key]
 
             data["last_rootcheck"] = rootcheck_lastscan
             data["last_syscheck"] = syscheck_lastscan
+
             results.append(data)
         return json.dumps(results)
     
@@ -170,30 +163,26 @@ class agents(controllers.BaseController):
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
-
         request = requests.get(opt_base_url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
         results = []
-        for row in agents:
+        for agent in agents:
             data = {}
-            request = requests.get(opt_base_url + '/agents/' + row["id"], auth=auth, verify=verify)
-            agent_info = json.loads(request.text)["data"]
-
-            request = requests.get(opt_base_url + '/rootcheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            for attribute, value in agent.iteritems():
+                if attribute == 'os':
+                    for key,val in agent['os'].iteritems():
+                        data['os-'+key] = val
+                else:
+                    data[attribute] = value 
+            
+            request = requests.get(opt_base_url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             rootcheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            request = requests.get(opt_base_url + '/syscheck/' + row["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(opt_base_url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             syscheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            keys = ["id", "status", "name", "ip", "dateAdd", "version", "os_family", "lastKeepAlive", "os"]
-
-            data = {}
-            for key in keys:
-                if key in agent_info:
-                    data[key] = agent_info[key]
 
             data["last_rootcheck"] = rootcheck_lastscan
             data["last_syscheck"] = syscheck_lastscan
-
+            
             results.append(data)
         return json.dumps(results)
