@@ -32,7 +32,7 @@ class agents(controllers.BaseController):
         filename = re.split(r'[\/\\]+', kwargs['filename'])[-1]
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
@@ -45,7 +45,7 @@ class agents(controllers.BaseController):
         group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files', auth=auth, verify=verify)
@@ -60,7 +60,7 @@ class agents(controllers.BaseController):
         group_id = re.split(r'[\/\\]+', kwargs['id'])[-1]
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/groups/' + group_id, auth=auth, verify=verify)
@@ -74,7 +74,7 @@ class agents(controllers.BaseController):
     def summary(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
@@ -90,7 +90,7 @@ class agents(controllers.BaseController):
     def agents_info(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -124,7 +124,7 @@ class agents(controllers.BaseController):
     def agents_checks(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
@@ -158,7 +158,7 @@ class agents(controllers.BaseController):
     def agents(self, **kwargs):
         opt_username = 'foo'
         opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_base_url = 'http://192.168.0.130:55000'
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)

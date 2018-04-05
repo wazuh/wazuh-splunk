@@ -11,7 +11,7 @@ import json
 
 try:
     results = []
-    request = requests.get("http://10.0.0.90:8000/en-US/custom/wazuh/manager/status")
+    request = requests.get("http://192.168.0.159:8000/en-US/custom/wazuh/manager/status")
     data = json.loads(request.text)
 except Exception as err:
         import traceback
