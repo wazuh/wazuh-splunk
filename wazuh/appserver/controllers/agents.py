@@ -36,8 +36,9 @@ class agents(controllers.BaseController):
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
-        files = [json.loads(request.text)]
-        return json.dumps(files)
+        files = json.loads(request.text)
+        # files = json.dumps(files)
+        return json.dumps([{'data':files}], sort_keys=True,indent=4, separators=(',', ': '))
 
     # /custom/wazuh/agents/files?id=idgroup
     @expose_page(must_login=False, methods=['GET'])

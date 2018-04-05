@@ -53,5 +53,17 @@
         </search>
       </table>
     </panel>
+    </row>
+    <row depends="$showFileDetails$">
+    <panel>
+      <single>
+        <title>File content</title>
+        <search>
+          <query>| getfilecontent $name$ $filename$ |</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
   </row>
 </form>
