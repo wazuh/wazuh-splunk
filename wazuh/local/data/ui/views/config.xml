@@ -1,0 +1,23 @@
+<form>
+  <label>Configuration</label>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="text" token="ip">
+      <label>IP</label>
+    </input>
+    <input type="text" token="port">
+      <label>Port</label>
+      <default>55000</default>
+      <initialValue>55000</initialValue>
+    </input>
+    <input type="text" token="user">
+      <label>Credential user</label>
+      <default>foo</default>
+      <initialValue>foo</initialValue>
+    </input>
+    <input type="text" token="password">
+      <label>Credential password</label>
+      <default>bar</default>
+      <initialValue>bar</initialValue>
+    </input>
+  </fieldset>
+</form>
