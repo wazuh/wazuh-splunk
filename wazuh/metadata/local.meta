@@ -21,3 +21,9 @@ access = read : [ * ], write : [ admin, power ]
 owner = admin
 version = 7.0.3
 modtime = 1523285529.502624000
+
+[html/logs]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523292338.388426000

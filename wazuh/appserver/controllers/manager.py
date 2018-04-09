@@ -60,12 +60,14 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/logs
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://192.168.0.130:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
+        request = requests.get(url + '/manager/logs', auth=auth, verify=verify)
         manager_logs = json.loads(request.text)['data']['items']
         result = json.dumps(manager_logs)
         return result
