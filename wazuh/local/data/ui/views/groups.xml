@@ -5,7 +5,7 @@
       <table>
         <title>Manager groups</title>
         <search>
-          <query>| getgroups | table name,merged_sum </query>
+          <query>| getgroups {{SPLUNKWEB_URL_PREFIX}} | table name,merged_sum </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>

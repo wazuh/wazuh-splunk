@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Configuration HTML</title>
+    <title>Global Configuration</title>
     <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
     <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css" />
@@ -16,7 +16,7 @@
                 window._splunk_metrics_events = {
                    push : function() {},
                    active: false,
-                   }
+                }
           </script>
     </head>
 <body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
@@ -36,30 +36,59 @@ styles in <div> tags, similar to Bootstrap's grid system.
     <a id="navSkip"></a>
 </header>
 <div class="dashboard-body container-fluid main-section-body" data-role="main">
-    <div class="dashboard-header clearfix">
-        <h2>Configuration HTML</h2>
+        <h3>Configuration</h3>
+  
+        <form id="formCustomerInfo">
+            
+            <div class="fieldset">
+                <div class="input input-text" id="input1">
+                    <label>Base IP</label>
+                </div>
+                <div class="input input-text" id="input2">
+                    <label>Base port</label>
+                </div>
+                <br>
+                <h3>API Configuration</h3>
+
+                <div class="input input-text" id="input3">
+                    <label>IP API</label>
+                </div>
+                <div class="input input-text" id="input4">
+                    <label>Port API</label>
+                </div>
+                <div class="input input-text" id="input5">
+                    <label>API Username</label>
+                </div>
+                <div class="input input-text" id="input6">
+                    <label>API password</label>
+                </div>
+                <div class="form-submit" id="search_btn">
+                    <button class="btn btn-primary submit">Submit</button>
+                </div>
+            </div>
+    
+            <div>
+                <div class="input input-text" id="input7">
+                    <label>Clean credentials</label>
+                </div>
+                <div><button id="deleteRecord">Delete</button></div>
+            </div><br>
+        </form>
+    
+        <div id="row1" class="dashboard-row dashboard-row1">
+            <div id="panel1" class="dashboard-cell" style="width: 100%;">                
+                <div class="panel-element-row">
+                    <div id="element1" class="dashboard-element table" style="width: 100%">
+                        <div class="panel-head">
+                            <h3>Current credentials</h3>
+                        </div>
+                        <div class="panel-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
-    <div class="fieldset">
-        <div class="input input-text" id="input1">
-            <label>IP</label>
-        </div>
-        <div class="input input-text" id="input2">
-            <label>Port</label>
-        </div>
-        <div class="input input-text" id="input3">
-            <label>Credential user</label>
-        </div>
-        <div class="input input-text" id="input4">
-            <label>Credential password</label>
-        </div>
-        <div class="form-submit" id="search_btn">
-            <button class="btn btn-primary submit">Submit</button>
-        </div>
-    </div>
-
-
-</div>
-
 <!-- 
 END LAYOUT
 -->
@@ -204,6 +233,22 @@ require([
         // SEARCH MANAGERS
         //
 
+        
+var search1 = new SearchManager({
+            "id": "search1",
+            "status_buckets": 0,
+            "sample_ratio": null,
+            "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table baseip ,baseport,ipapi,portapi,userapi,passapi | rename baseip as Base-IP, baseport as Base-Port, ipapi as IP-API, portapi as Port-API, userapi as API-Username, passapi as Password-API",
+            "latest_time": "now",
+            "earliest_time": "-24h@h",
+            "cancelOnUnload": true,
+            "app": utils.getCurrentApp(),
+            "auto_cancel": 90,
+            "preview": true,
+            "tokenDependencies": {
+            },
+            "runWhenTimeIsUndefined": false
+        }, {tokens: true});
 
 
         //
@@ -232,6 +277,13 @@ require([
         // VIEWS: VISUALIZATION ELEMENTS
         //
 
+        var element1 = new TableElement({
+            "id": "element1",
+            "drilldown": "none",
+            "managerid": "search1",
+            "el": $('#element1')
+        }, {tokens: true, tokenNamespace: "submitted"}).render();
+
 
         //
         // VIEWS: FORM INPUTS
@@ -239,7 +291,7 @@ require([
 
         var input1 = new TextInput({
             "id": "input1",
-            "value": "$form.ip$",
+            "value": "$form.baseip$",
             "el": $('#input1')
         }, {tokens: true}).render();
 
@@ -249,9 +301,7 @@ require([
         
         var input2 = new TextInput({
             "id": "input2",
-            "default": "55000",
-            "initialValue": "55000",
-            "value": "$form.port$",
+            "value": "$form.baseport$",
             "el": $('#input2')
         }, {tokens: true}).render();
 
@@ -261,9 +311,7 @@ require([
         
         var input3 = new TextInput({
             "id": "input3",
-            "default": "foo",
-            "initialValue": "foo",
-            "value": "$form.user$",
+            "value": "$form.apiip$",
             "el": $('#input3')
         }, {tokens: true}).render();
 
@@ -273,9 +321,7 @@ require([
         
         var input4 = new TextInput({
             "id": "input4",
-            "default": "bar",
-            "initialValue": "bar",
-            "value": "$form.password$",
+            "value": "$form.apiport$",
             "el": $('#input4')
         }, {tokens: true}).render();
 
@@ -283,11 +329,58 @@ require([
             FormUtils.handleValueChange(input4);
         });
         
+        var input5 = new TextInput({
+            "id": "input5",
+            "value": "$form.apiuser$",
+            "el": $('#input5')
+        }, {tokens: true}).render();
+
+        input5.on("change", function(newValue) {
+            FormUtils.handleValueChange(input5);
+        });
+        
+        var input6 = new TextInput({
+            "id": "input6",
+            "value": "$form.apipass$",
+            "el": $('#input6')
+        }, {tokens: true}).render();
+
+        input6.on("change", function(newValue) {
+            FormUtils.handleValueChange(input6);
+        });
+        
 
         // 
         // SUBMIT FORM DATA
         //
+         // 
+        // DELETE BUTTON
+        //
 
+        // Call this function when the Delete Record button is clicked
+        $("#deleteRecord").click(function() {
+            // Get the value of the key ID field
+            var tokens = mvc.Components.get("default");
+            //var form_keyid = tokens.get("KeyID");
+
+            // Delete the record that corresponds to the key ID using
+            // the del method to send a DELETE request
+            // to the storage/collections/data/{collection}/ endpoint
+            service.del("storage/collections/data/credentials/")
+                .done(function() { 
+                    // Run the search again to update the table
+                    search1.startSearch(); 
+                });
+            return false;
+        }); 
+        // 
+        // SERVICE OBJECT
+        //
+
+        // Create a service object using the Splunk SDK for JavaScript
+        // to send REST requests
+        var service = mvc.createService({ owner: "nobody" });
+        
         var submit = new SubmitButton({
             id: 'submit',
             el: $('#search_btn')
@@ -295,6 +388,43 @@ require([
 
         submit.on("submit", function() {
             submitTokens();
+
+            // When the Submit button is clicked, get all the form fields by accessing token values
+            var tokens = mvc.Components.get("default");
+            var form_baseip = tokens.get("baseip");
+            var form_baseport = tokens.get("baseport");
+            var form_apiip = tokens.get("apiip");
+            var form_apiport = tokens.get("apiport");
+            var form_apiuser = tokens.get("apiuser");
+            var form_apipass = tokens.get("apipass");
+            
+            // Create a dictionary to store the field names and values
+            var record = { 
+                "baseip": form_baseip, 
+                "baseport": form_baseport, 
+                "ipapi": form_apiip,
+                "portapi": form_apiport,
+                "userapi": form_apiuser,
+                "passapi": form_apipass 
+            }; 
+
+            // Use the request method to send a REST POST request
+            // to the storage/collections/data/{collection}/ endpoint
+            service.request(
+                "storage/collections/data/credentials/",
+                "POST",
+                null,
+                null,
+                JSON.stringify(record),
+                {"Content-Type": "application/json"},
+                null)
+                    .done(function() { 
+                         // Run the search again to update the table
+                        search1.startSearch();
+
+                        // Clear the form fields 
+                        $("#formCustomerInfo input[type=text]").val(""); 
+                    });
         });
 
         // Initialize time tokens to default
@@ -302,7 +432,9 @@ require([
             defaultTokenModel.set({ earliest: '0', latest: '' });
         }
 
-        submitTokens();
+        if (!_.isEmpty(urlTokenModel.toJSON())){
+            submitTokens();
+        }
 
 
         //

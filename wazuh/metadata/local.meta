@@ -4,9 +4,20 @@ modtime = 1522925476.733719000
 
 [views/config]
 version = 7.0.3
-modtime = 1522931480.058009000
+modtime = 1523286454.178960000
 
 [html/configuration_html]
 owner = admin
 version = 7.0.3
-modtime = 1522931566.161173000
+modtime = 1523286490.507595000
+
+[html/groups_html]
+owner = admin
+version = 7.0.3
+modtime = 1523277093.315530000
+
+[html/config]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523285529.502624000

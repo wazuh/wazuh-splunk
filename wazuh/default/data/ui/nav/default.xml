@@ -1,6 +1,6 @@
 <nav search_view="search" color="#218BC6">
   <collection label="Overview">
-  <view name="config" default='true' />
+  <view name="configuration" default='true' />
   <view name="general" />
   <view name="overview_fim" />
   <view name="overview_policy_monitoring" />
