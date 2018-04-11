@@ -27,6 +27,6 @@
   <view name="pcidss" />
 </collection>
 <collection label="Configuration">
-  <view name="configuration" default='true' />
+  <view name="Global" default='true' />
 </collection>
 </nav>
