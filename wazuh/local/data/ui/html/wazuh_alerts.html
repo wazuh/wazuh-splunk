@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>PCI-DSS</title>
+  <title>Wazuh Alerts</title>
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"
   />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
@@ -43,7 +43,7 @@ styles in <div> tags, similar to Bootstrap's grid system.
   </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-      <h2>PCI-DSS</h2>
+      <h2>Wazuh Alerts</h2>
     </div>
     <div class="fieldset">
       <div class="input input-dropdown" id="input1">
@@ -70,7 +70,7 @@ styles in <div> tags, similar to Bootstrap's grid system.
     <div id="row2" class="dashboard-row dashboard-row2">
       <div id="panel2" class="dashboard-cell" style="width: 50%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirements by time $agent$</h2>
+          <h2 class="panel-title">Signatures area chart $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element2" class="dashboard-element chart" style="width: 100%">
@@ -81,7 +81,7 @@ styles in <div> tags, similar to Bootstrap's grid system.
       </div>
       <div id="panel3" class="dashboard-cell" style="width: 50%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirements $agent$</h2>
+          <h2 class="panel-title">Alerts level evolution $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element3" class="dashboard-element chart" style="width: 100%">
@@ -92,57 +92,23 @@ styles in <div> tags, similar to Bootstrap's grid system.
       </div>
     </div>
     <div id="row3" class="dashboard-row dashboard-row3">
-      <div id="panel4" class="dashboard-cell" style="width: 25%;">
+      <div id="panel4" class="dashboard-cell" style="width: 50%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirement 11.4</h2>
+          <h2 class="panel-title">Stacked groups $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element4" class="dashboard-element chart" style="width: 100%">
-              <div class="panel-head">
-                <h3>$agent$</h3>
-              </div>
               <div class="panel-body"></div>
             </div>
           </div>
         </div>
       </div>
-      <div id="panel5" class="dashboard-cell" style="width: 25%;">
+      <div id="panel5" class="dashboard-cell" style="width: 50%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirement 10.2.2</h2>
+          <h2 class="panel-title">Total alerts $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element5" class="dashboard-element chart" style="width: 100%">
-              <div class="panel-head">
-                <h3>$agent$</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel6" class="dashboard-cell" style="width: 25%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirement 10.2.5</h2>
-
-          <div class="panel-element-row">
-            <div id="element6" class="dashboard-element chart" style="width: 100%">
-              <div class="panel-head">
-                <h3>$agent$</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel7" class="dashboard-cell" style="width: 25%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirement 10.6.1</h2>
-
-          <div class="panel-element-row">
-            <div id="element7" class="dashboard-element chart" style="width: 100%">
-              <div class="panel-head">
-                <h3>$agent$</h3>
-              </div>
               <div class="panel-body"></div>
             </div>
           </div>
@@ -150,9 +116,33 @@ styles in <div> tags, similar to Bootstrap's grid system.
       </div>
     </div>
     <div id="row4" class="dashboard-row dashboard-row4">
-      <div id="panel8" class="dashboard-cell" style="width: 50%;">
+      <div id="panel6" class="dashboard-cell" style="width: 100%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirements / Groups $agent$</h2>
+          <h2 class="panel-title">Events geolocation $agent$</h2>
+
+          <div class="panel-element-row">
+            <div id="element6" class="dashboard-element map" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="row5" class="dashboard-row dashboard-row5">
+      <div id="panel7" class="dashboard-cell" style="width: 25%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Agents total alerts $agent$</h2>
+
+          <div class="panel-element-row">
+            <div id="element7" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel8" class="dashboard-cell" style="width: 25%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Signatures $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element8" class="dashboard-element chart" style="width: 100%">
@@ -161,9 +151,9 @@ styles in <div> tags, similar to Bootstrap's grid system.
           </div>
         </div>
       </div>
-      <div id="panel9" class="dashboard-cell" style="width: 50%;">
+      <div id="panel9" class="dashboard-cell" style="width: 25%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirements / Agent $agent$</h2>
+          <h2 class="panel-title">Alerts by country $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element9" class="dashboard-element chart" style="width: 100%">
@@ -172,11 +162,9 @@ styles in <div> tags, similar to Bootstrap's grid system.
           </div>
         </div>
       </div>
-    </div>
-    <div id="row5" class="dashboard-row dashboard-row5">
-      <div id="panel10" class="dashboard-cell" style="width: 100%;">
+      <div id="panel10" class="dashboard-cell" style="width: 25%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">High risk alerts $agent$</h2>
+          <h2 class="panel-title">Top 5 groups $agent$</h2>
 
           <div class="panel-element-row">
             <div id="element10" class="dashboard-element chart" style="width: 100%">
@@ -187,12 +175,23 @@ styles in <div> tags, similar to Bootstrap's grid system.
       </div>
     </div>
     <div id="row6" class="dashboard-row dashboard-row6">
-      <div id="panel11" class="dashboard-cell" style="width: 100%;">
+      <div id="panel11" class="dashboard-cell" style="width: 50%;">
         <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Signature area chart $agent$</h2>
+          <h2 class="panel-title">Signature counts $agent$</h2>
 
           <div class="panel-element-row">
-            <div id="element11" class="dashboard-element chart" style="width: 100%">
+            <div id="element11" class="dashboard-element table" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel12" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Alerts level &gt; 9 $agent$</h2>
+
+          <div class="panel-element-row">
+            <div id="element12" class="dashboard-element table" style="width: 100%">
               <div class="panel-body"></div>
             </div>
           </div>
@@ -200,47 +199,12 @@ styles in <div> tags, similar to Bootstrap's grid system.
       </div>
     </div>
     <div id="row7" class="dashboard-row dashboard-row7">
-      <div id="panel12" class="dashboard-cell" style="width: 50%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Integrity checksum changed $agent$</h2>
-
-          <div class="panel-element-row">
-            <div id="element12" class="dashboard-element chart" style="width: 100%">
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel13" class="dashboard-cell" style="width: 50%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">File integrity monitoring checksum changed $agent$</h2>
-
-          <div class="panel-element-row">
-            <div id="element13" class="dashboard-element table" style="width: 100%">
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="row8" class="dashboard-row dashboard-row8">
-      <div id="panel14" class="dashboard-cell" style="width: 50%;">
+      <div id="panel13" class="dashboard-cell" style="width: 100%;">
         <div class="dashboard-panel clearfix">
           <h2 class="panel-title">Last alerts $agent$</h2>
 
           <div class="panel-element-row">
-            <div id="element14" class="dashboard-element table" style="width: 100%">
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel15" class="dashboard-cell" style="width: 50%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">Requirements by agent $agent$</h2>
-
-          <div class="panel-element-row">
-            <div id="element15" class="dashboard-element table" style="width: 100%">
+            <div id="element13" class="dashboard-element table" style="width: 100%">
               <div class="panel-body"></div>
             </div>
           </div>
@@ -417,12 +381,12 @@ END LAYOUT
 
         var search1 = new SearchManager({
           "id": "search1",
-          "cancelOnUnload": true,
-          "sample_ratio": null,
-          "earliest_time": "-60m@m",
           "status_buckets": 0,
           "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | search name=$agent$ | fillnull value=\"N/A\"",
           "latest_time": "now",
+          "cancelOnUnload": true,
+          "sample_ratio": null,
+          "earliest_time": "-60m@m",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -433,12 +397,12 @@ END LAYOUT
 
         var search2 = new SearchManager({
           "id": "search2",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.description usenull=f useother=f",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | timechart count by rule.pci_dss",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -449,12 +413,12 @@ END LAYOUT
 
         var search3 = new SearchManager({
           "id": "search3",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.level usenull=f useother=f",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | top rule.pci_dss{} useother=f",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -465,12 +429,12 @@ END LAYOUT
 
         var search4 = new SearchManager({
           "id": "search4",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.groups usenull=f useother=f",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=11.4 agent.name=\"$agent$\" | timechart count",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -481,12 +445,12 @@ END LAYOUT
 
         var search5 = new SearchManager({
           "id": "search5",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=10.2.2 agent.name=\"$agent$\" | timechart count",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -497,12 +461,12 @@ END LAYOUT
 
         var search6 = new SearchManager({
           "id": "search6",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | iplocation srcip | geostats latfield=lat longfield=lon count",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=10.2.5 agent.name=\"$agent$\" | timechart count",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -513,12 +477,12 @@ END LAYOUT
 
         var search7 = new SearchManager({
           "id": "search7",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | stats count by agent.name",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=10.6.1 agent.name=\"$agent$\"| timechart count",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -529,12 +493,12 @@ END LAYOUT
 
         var search8 = new SearchManager({
           "id": "search8",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" rule.description=* agent.name=\"$agent$\" | stats count by rule.description",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\"| top rule.groups",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -545,12 +509,12 @@ END LAYOUT
 
         var search9 = new SearchManager({
           "id": "search9",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | iplocation srcip| top  Country useother=f",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | stats count(rule.pci_dss{}) by agent.name",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -561,12 +525,12 @@ END LAYOUT
 
         var search10 = new SearchManager({
           "id": "search10",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | top rule.groups limit=5",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh \"rule.pci_dss{}\">=10 agent.name=\"$agent$\" | timechart count(rule.level) by rule.pci_dss{} useother=f usenull=f",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -577,12 +541,12 @@ END LAYOUT
 
         var search11 = new SearchManager({
           "id": "search11",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | chart sparkline count by rule.description | sort - count | head 5",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh \"rule.pci_dss{}\">=* agent.name=\"$agent$\"| timechart count by rule.description useother=f usenull=f",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -593,12 +557,12 @@ END LAYOUT
 
         var search12 = new SearchManager({
           "id": "search12",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" \"rule.level\">=9 agent.name=\"$agent$\" | table agent.name, rule.level, rule.description",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | timechart count by syscheck.path useother=f usenull=f",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -609,12 +573,12 @@ END LAYOUT
 
         var search13 = new SearchManager({
           "id": "search13",
+          "status_buckets": 0,
+          "search": "index=wazuh sourcetype=\"wazuh\" agent.name=\"$agent$\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time",
+          "latest_time": "$when.latest$",
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}",
-          "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -625,44 +589,12 @@ END LAYOUT
 
         var search14 = new SearchManager({
           "id": "search14",
-          "cancelOnUnload": true,
-          "sample_ratio": 1,
-          "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh  agent.name=\"$agent$\"| table agent.name, rule.level, rule.pci_dss{}, rule.description",
-          "latest_time": "$when.latest$",
-          "app": utils.getCurrentApp(),
-          "auto_cancel": 90,
-          "preview": true,
-          "tokenDependencies": {
-          },
-          "runWhenTimeIsUndefined": false
-        }, { tokens: true, tokenNamespace: "submitted" });
-
-        var search15 = new SearchManager({
-          "id": "search15",
-          "cancelOnUnload": true,
-          "sample_ratio": 1,
-          "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description",
-          "latest_time": "$when.latest$",
-          "app": utils.getCurrentApp(),
-          "auto_cancel": 90,
-          "preview": true,
-          "tokenDependencies": {
-          },
-          "runWhenTimeIsUndefined": false
-        }, { tokens: true, tokenNamespace: "submitted" });
-
-        var search16 = new SearchManager({
-          "id": "search16",
-          "cancelOnUnload": true,
-          "sample_ratio": null,
-          "earliest_time": "-24h@h",
           "status_buckets": 0,
           "search": "index=wazuh sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
           "latest_time": "now",
+          "cancelOnUnload": true,
+          "sample_ratio": null,
+          "earliest_time": "-24h@h",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -706,43 +638,35 @@ END LAYOUT
           "el": $('#element1')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-        element1.on("click", function (e) {
-          if (e.field !== undefined) {
-            e.preventDefault();
-            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ name=$agent$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\"&earliest=-60m@m&latest=now", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-            utils.redirect(url, false, "_blank");
-          }
-        });
-
         var element2 = new ChartElement({
           "id": "element2",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "area",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "bottom",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "area",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search2",
           "el": $('#element2')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -750,33 +674,33 @@ END LAYOUT
 
         var element3 = new ChartElement({
           "id": "element3",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "pie",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "visible",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "right",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "column",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search3",
           "el": $('#element3')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -784,33 +708,33 @@ END LAYOUT
 
         var element4 = new ChartElement({
           "id": "element4",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "line",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "column",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search4",
           "el": $('#element4')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -818,101 +742,100 @@ END LAYOUT
 
         var element5 = new ChartElement({
           "id": "element5",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "line",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "line",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search5",
           "el": $('#element5')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-        var element6 = new ChartElement({
+        var element6 = new MapElement({
           "id": "element6",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "line",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
-          "charting.chart.style": "shiny",
-          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
+          "mapping.map.center": "(0,0.53)",
+          "mapping.legend.placement": "bottomright",
+          "mapping.choroplethLayer.colorMode": "auto",
+          "mapping.markerLayer.markerOpacity": "0.8",
+          "drilldown": "none",
+          "mapping.tileLayer.maxZoom": "19",
+          "mapping.choroplethLayer.neutralPoint": "0",
           "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
-          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-          "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
-          "charting.chart.sliceCollapsingThreshold": "0.01",
+          "mapping.markerLayer.markerMinSize": "10",
+          "mapping.tileLayer.minZoom": "0",
+          "mapping.choroplethLayer.minimumColor": "0x2F25BA",
+          "mapping.choroplethLayer.colorBins": "5",
+          "mapping.map.zoom": "2",
+          "trellis.scales.shared": "1",
+          "mapping.type": "marker",
+          "mapping.tileLayer.tileOpacity": "1",
+          "resizable": true,
+          "mapping.markerLayer.markerMaxSize": "50",
+          "mapping.tileLayer.url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          "mapping.choroplethLayer.maximumColor": "0xDB5800",
+          "mapping.map.scrollZoom": "0",
+          "mapping.showTiles": "1",
+          "mapping.choroplethLayer.showBorder": "1",
+          "trellis.size": "medium",
+          "mapping.choroplethLayer.shapeOpacity": "0.75",
+          "mapping.data.maxClusters": "100",
+          "mapping.map.panning": "1",
           "managerid": "search6",
           "el": $('#element6')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-
         var element7 = new ChartElement({
           "id": "element7",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "line",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "visible",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "pie",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search7",
           "el": $('#element7')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -920,33 +843,33 @@ END LAYOUT
 
         var element8 = new ChartElement({
           "id": "element8",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "pie",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "visible",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "right",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "visible",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "pie",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search8",
           "el": $('#element8')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -954,33 +877,33 @@ END LAYOUT
 
         var element9 = new ChartElement({
           "id": "element9",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "pie",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "visible",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "right",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "visible",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "pie",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search9",
           "el": $('#element9')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -988,105 +911,77 @@ END LAYOUT
 
         var element10 = new ChartElement({
           "id": "element10",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "stacked",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "column",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
           "charting.chart.style": "shiny",
           "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "bottom",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
           "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.stackMode": "stacked",
           "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.axisTitleX.visibility": "visible",
+          "charting.axisY2.enabled": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "trellis.scales.shared": "1",
+          "charting.chart.bubbleMinimumSize": "10",
+          "trellis.size": "medium",
+          "resizable": true,
           "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.chart.showDataLabels": "none",
+          "charting.drilldown": "none",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart": "pie",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.layout.splitSeries": "0",
           "managerid": "search10",
           "el": $('#element10')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-        var element11 = new ChartElement({
+        var element11 = new TableElement({
           "id": "element11",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "stacked",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "area",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
-          "charting.chart.style": "shiny",
-          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "bottom",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
-          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-          "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
-          "charting.chart.sliceCollapsingThreshold": "0.01",
+          "dataOverlayMode": "none",
+          "drilldown": "cell",
+          "percentagesRow": "false",
+          "rowNumbers": "true",
+          "totalsRow": "false",
+          "wrap": "false",
           "managerid": "search11",
           "el": $('#element11')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
+        element11.on("click", function (e) {
+          if (e.field !== undefined) {
+            e.preventDefault();
+            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | chart sparkline count by rule.description | sort - count | head 5&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+            utils.redirect(url, false, "_blank");
+          }
+        });
 
-        var element12 = new ChartElement({
+        var element12 = new TableElement({
           "id": "element12",
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "stacked",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "area",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
-          "charting.chart.style": "shiny",
-          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "bottom",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
-          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-          "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "none",
-          "charting.chart.sliceCollapsingThreshold": "0.01",
+          "dataOverlayMode": "none",
+          "drilldown": "cell",
+          "percentagesRow": "false",
+          "rowNumbers": "true",
+          "totalsRow": "false",
+          "wrap": "false",
           "managerid": "search12",
           "el": $('#element12')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
+        element12.on("click", function (e) {
+          if (e.field !== undefined) {
+            e.preventDefault();
+            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.level\">=9 | table agent.name, rule.level, rule.description&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+            utils.redirect(url, false, "_blank");
+          }
+        });
 
         var element13 = new TableElement({
           "id": "element13",
@@ -1095,7 +990,7 @@ END LAYOUT
           "percentagesRow": "false",
           "rowNumbers": "true",
           "totalsRow": "false",
-          "wrap": "false",
+          "wrap": "true",
           "managerid": "search13",
           "el": $('#element13')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -1103,47 +998,7 @@ END LAYOUT
         element13.on("click", function (e) {
           if (e.field !== undefined) {
             e.preventDefault();
-            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-            utils.redirect(url, false, "_blank");
-          }
-        });
-
-        var element14 = new TableElement({
-          "id": "element14",
-          "dataOverlayMode": "none",
-          "drilldown": "cell",
-          "percentagesRow": "false",
-          "rowNumbers": "true",
-          "totalsRow": "false",
-          "wrap": "false",
-          "managerid": "search14",
-          "el": $('#element14')
-        }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-        element14.on("click", function (e) {
-          if (e.field !== undefined) {
-            e.preventDefault();
-            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | table agent.name, rule.level, rule.pci_dss{}, rule.description&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-            utils.redirect(url, false, "_blank");
-          }
-        });
-
-        var element15 = new TableElement({
-          "id": "element15",
-          "dataOverlayMode": "none",
-          "drilldown": "cell",
-          "percentagesRow": "false",
-          "rowNumbers": "true",
-          "totalsRow": "false",
-          "wrap": "false",
-          "managerid": "search15",
-          "el": $('#element15')
-        }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-        element15.on("click", function (e) {
-          if (e.field !== undefined) {
-            e.preventDefault();
-            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | stats count sparkline by agent.name, rule.pci_dss{}, rule.description&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+            var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
             utils.redirect(url, false, "_blank");
           }
         });
@@ -1158,15 +1013,15 @@ END LAYOUT
           "choices": [
             { "label": "ALL", "value": "*" }
           ],
-          "labelField": "agent.name",
-          "searchWhenChanged": true,
-          "default": "*",
           "valueField": "agent.name",
           "initialValue": "*",
           "selectFirstChoice": false,
           "showClearButton": true,
+          "labelField": "agent.name",
+          "searchWhenChanged": true,
+          "default": "*",
           "value": "$form.agent$",
-          "managerid": "search16",
+          "managerid": "search14",
           "el": $('#input1')
         }, { tokens: true }).render();
 
