@@ -1,13 +1,13 @@
-# Splunk App for Wazuh
+# Wazuh App for Splunk
 
 [![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://goo.gl/forms/M2AoZC4b2R9A9Zy12)
 [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
 [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
 
-### Splunk App for Wazuh
+###  Wazuh App for Splunk
 
-Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
+Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
 ### Requirements
 
@@ -18,17 +18,6 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
 
 ### Quick Install
 
-#### Search head
-1. Install our app SplunkAppForWazuh on each search head that you have.
-    ######  CLI mode:
-    ```
-    $SPLUNK_HOME/bin/splunk install app SplunkAppForWazuh.tgz
-    ```
-    ######  Web GUI:
-    ```
-    Apps -> Manage apps -> install app from file
-    ```
-* This app creates a new index named `wazuh`.
 #### Forwarder
 
 1. You must install Splunk Forwarder on your Wazuh Manager.
@@ -97,8 +86,31 @@ Splunk App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data
     2. At Configure receiving, click Add new.
     3. Set the chosen port
 	```
-4. After this Splunk software starts listening for incoming data on the port you specified.
+2. After this Splunk software starts listening for incoming data on the port you specified.
 ***
+#### Search head
+1. Install our app Wazuh on each search head that you have.
+    ######  CLI mode:
+    ```
+    $SPLUNK_HOME/bin/splunk install app Wazuh.tgz
+    ```
+    ######  Web GUI:
+    ```
+    Apps -> Manage apps -> install app from file
+    ```
+* This app creates a new index named `wazuh`.
+
+2. Configure credentials:
+  - Open the Wazuh App for Splunk after installing it.
+  - Add credentials in Configuration -> Global
+    - Base IP: current IP where Splunk is accessed by.
+    - Base PORT: Splunk web port, usually 8000.
+    - API IP: Address of Wazuh API server.
+    - API Port: Port of Wazuh API server, usually 55000.
+    - Api User: Username for Wazuh API authorization, usually 'foo'.
+    - Api Password: Password for Wazuh API authorization, usually 'bar'.
+
+
 #### More info
 
 ##### Forwarder config
