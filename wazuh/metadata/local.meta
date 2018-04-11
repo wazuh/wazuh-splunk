@@ -1,0 +1,125 @@
+[views/general]
+version = 7.0.3
+modtime = 1522925476.733719000
+
+[views/config]
+version = 7.0.3
+modtime = 1523286454.178960000
+
+[html/configuration_html]
+owner = admin
+version = 7.0.3
+modtime = 1523286490.507595000
+
+[html/groups_html]
+owner = admin
+version = 7.0.3
+modtime = 1523277093.315530000
+
+[html/config]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523285529.502624000
+
+[html/logs]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523292338.388426000
+
+[html/general]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523441912.714249000
+
+[html/agents_summary]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442446.864583000
+
+[html/audit]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442469.176876000
+
+[html/cis]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442510.004584000
+
+[html/openscap]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442537.970792000
+
+[html/pcidss]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442597.525230000
+
+[html/manager_ruleset]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442630.956953000
+
+[html/manager_decoders]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442658.911011000
+
+[html/search_on_rules]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442680.291735000
+
+[html/search_on_decoders]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442701.441344000
+
+[html/groups]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442722.211578000
+
+[html/fim]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442901.713890000
+
+[html/overview_audit]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442978.409387000
+
+[html/overview_fim]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523442999.053922000
+
+[html/overview_policy_monitoring]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523443019.827757000
+
+[html/overview_scap]
+access = read : [ * ], write : [ admin, power ]
+owner = admin
+version = 7.0.3
+modtime = 1523443040.784156000
