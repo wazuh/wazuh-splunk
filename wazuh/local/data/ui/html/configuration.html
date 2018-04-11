@@ -1,154 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Global Configuration</title>
-    <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
-    <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Global Configuration</title>
+  <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"
+  />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css"
+  />
 
 
-        <meta name="referrer" content="never" />
-        <meta name="referrer" content="no-referrer" />
-    
-          <script>
-                window._splunk_metrics_events = {
-                   push : function() {},
-                   active: false,
-                }
-          </script>
-    </head>
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+</head>
+
 <body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
-<!-- 
+  <!-- 
 BEGIN LAYOUT
 This section contains the layout for the dashboard. Splunk uses proprietary
 styles in <div> tags, similar to Bootstrap's grid system. 
 -->
-<header>
+  <header>
     <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
     <div class="header splunk-header">
-            <div id="placeholder-splunk-bar">
-                <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk<strong>&gt;</strong></a>
-            </div>
-                <div id="placeholder-app-bar"></div>
+      <div id="placeholder-splunk-bar">
+        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
+          <strong>&gt;</strong>
+        </a>
+      </div>
+      <div id="placeholder-app-bar"></div>
     </div>
     <a id="navSkip"></a>
-</header>
-<div class="dashboard-body container-fluid main-section-body" data-role="main">
-        <h3>Configuration</h3>
-  
-        <form id="formCustomerInfo">
-            
-            <div class="fieldset">
-                <div class="input input-text" id="input1">
-                    <label>Base IP</label>
-                </div>
-                <div class="input input-text" id="input2">
-                    <label>Base port</label>
-                </div>
-                <br>
-                <h3>API Configuration</h3>
+  </header>
+  <div class="dashboard-body container-fluid main-section-body" data-role="main">
+    <h3>Configuration</h3>
 
-                <div class="input input-text" id="input3">
-                    <label>IP API</label>
-                </div>
-                <div class="input input-text" id="input4">
-                    <label>Port API</label>
-                </div>
-                <div class="input input-text" id="input5">
-                    <label>API Username</label>
-                </div>
-                <div class="input input-text" id="input6">
-                    <label>API password</label>
-                </div>
-                <div class="form-submit" id="search_btn">
-                    <button class="btn btn-primary submit">Submit</button>
-                </div>
-            </div>
-    
-            <div>
-                <div class="input input-text" id="input7">
-                    <label>Clean credentials</label>
-                </div>
-                <div><button id="deleteRecord">Delete</button></div>
-            </div><br>
-        </form>
-    
-        <div id="row1" class="dashboard-row dashboard-row1">
-            <div id="panel1" class="dashboard-cell" style="width: 100%;">                
-                <div class="panel-element-row">
-                    <div id="element1" class="dashboard-element table" style="width: 100%">
-                        <div class="panel-head">
-                            <h3>Current credentials</h3>
-                        </div>
-                        <div class="panel-body"></div>
-                    </div>
-                </div>
-            </div>
+    <form id="formCustomerInfo">
+
+      <div class="fieldset">
+        <div class="input input-text" id="input1">
+          <label>Base IP</label>
         </div>
-        
+        <div class="input input-text" id="input2">
+          <label>Base port</label>
+        </div>
+        <br>
+        <h3>API Configuration</h3>
+
+        <div class="input input-text" id="input3">
+          <label>IP</label>
+        </div>
+        <div class="input input-text" id="input4">
+          <label>Port</label>
+        </div>
+        <div class="input input-text" id="input5">
+          <label>Username</label>
+        </div>
+        <div class="input input-text" id="input6">
+          <label>Password</label>
+        </div>
+        <div class="form-submit" id="search_btn">
+          <button class="btn btn-primary submit">Submit</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="input input-text" id="input7">
+          <label>Clean credentials</label>
+        </div>
+        <div>
+          <button id="deleteRecord">Delete</button>
+        </div>
+      </div>
+      <br>
+    </form>
+
+    <div id="row1" class="dashboard-row dashboard-row1">
+      <div id="panel1" class="dashboard-cell" style="width: 100%;">
+        <div class="panel-element-row">
+          <div id="element1" class="dashboard-element table" style="width: 100%">
+            <div class="panel-head">
+              <h3>Current credentials</h3>
+            </div>
+            <div class="panel-body"></div>
+          </div>
+        </div>
+      </div>
     </div>
-<!-- 
+
+  </div>
+  <!-- 
 END LAYOUT
 -->
 
-<script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
-<script type="text/javascript">
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script type="text/javascript">
+    // <![CDATA[
+    // <![CDATA[
+    //
+    // LIBRARY REQUIREMENTS
+    //
+    // In the require function, we include the necessary libraries and modules for
+    // the HTML dashboard. Then, we pass variable names for these libraries and
+    // modules as function parameters, in order.
+    // 
+    // When you add libraries or modules, remember to retain this mapping order
+    // between the library or module and its function parameter. You can do this by
+    // adding to the end of these lists, as shown in the commented examples below.
 
-require([
-    "splunkjs/mvc",
-    "splunkjs/mvc/utils",
-    "splunkjs/mvc/tokenutils",
-    "underscore",
-    "jquery",
-    "splunkjs/mvc/simplexml",
-    "splunkjs/mvc/layoutview",
-    "splunkjs/mvc/simplexml/dashboardview",
-    "splunkjs/mvc/simplexml/dashboard/panelref",
-    "splunkjs/mvc/simplexml/element/chart",
-    "splunkjs/mvc/simplexml/element/event",
-    "splunkjs/mvc/simplexml/element/html",
-    "splunkjs/mvc/simplexml/element/list",
-    "splunkjs/mvc/simplexml/element/map",
-    "splunkjs/mvc/simplexml/element/single",
-    "splunkjs/mvc/simplexml/element/table",
-    "splunkjs/mvc/simplexml/element/visualization",
-    "splunkjs/mvc/simpleform/formutils",
-    "splunkjs/mvc/simplexml/eventhandler",
-    "splunkjs/mvc/simplexml/searcheventhandler",
-    "splunkjs/mvc/simpleform/input/dropdown",
-    "splunkjs/mvc/simpleform/input/radiogroup",
-    "splunkjs/mvc/simpleform/input/linklist",
-    "splunkjs/mvc/simpleform/input/multiselect",
-    "splunkjs/mvc/simpleform/input/checkboxgroup",
-    "splunkjs/mvc/simpleform/input/text",
-    "splunkjs/mvc/simpleform/input/timerange",
-    "splunkjs/mvc/simpleform/input/submit",
-    "splunkjs/mvc/searchmanager",
-    "splunkjs/mvc/savedsearchmanager",
-    "splunkjs/mvc/postprocessmanager",
-    "splunkjs/mvc/simplexml/urltokenmodel"
-    // Add comma-separated libraries and modules manually here, for example:
-    // ..."splunkjs/mvc/simplexml/urltokenmodel",
-    // "splunkjs/mvc/tokenforwarder"
+    require([
+      "splunkjs/mvc",
+      "splunkjs/mvc/utils",
+      "splunkjs/mvc/tokenutils",
+      "underscore",
+      "jquery",
+      "splunkjs/mvc/simplexml",
+      "splunkjs/mvc/layoutview",
+      "splunkjs/mvc/simplexml/dashboardview",
+      "splunkjs/mvc/simplexml/dashboard/panelref",
+      "splunkjs/mvc/simplexml/element/chart",
+      "splunkjs/mvc/simplexml/element/event",
+      "splunkjs/mvc/simplexml/element/html",
+      "splunkjs/mvc/simplexml/element/list",
+      "splunkjs/mvc/simplexml/element/map",
+      "splunkjs/mvc/simplexml/element/single",
+      "splunkjs/mvc/simplexml/element/table",
+      "splunkjs/mvc/simplexml/element/visualization",
+      "splunkjs/mvc/simpleform/formutils",
+      "splunkjs/mvc/simplexml/eventhandler",
+      "splunkjs/mvc/simplexml/searcheventhandler",
+      "splunkjs/mvc/simpleform/input/dropdown",
+      "splunkjs/mvc/simpleform/input/radiogroup",
+      "splunkjs/mvc/simpleform/input/linklist",
+      "splunkjs/mvc/simpleform/input/multiselect",
+      "splunkjs/mvc/simpleform/input/checkboxgroup",
+      "splunkjs/mvc/simpleform/input/text",
+      "splunkjs/mvc/simpleform/input/timerange",
+      "splunkjs/mvc/simpleform/input/submit",
+      "splunkjs/mvc/searchmanager",
+      "splunkjs/mvc/savedsearchmanager",
+      "splunkjs/mvc/postprocessmanager",
+      "splunkjs/mvc/simplexml/urltokenmodel"
+      // Add comma-separated libraries and modules manually here, for example:
+      // ..."splunkjs/mvc/simplexml/urltokenmodel",
+      // "splunkjs/mvc/tokenforwarder"
     ],
-    function(
+      function (
         mvc,
         utils,
         TokenUtils,
@@ -185,7 +194,7 @@ require([
         // Add comma-separated parameter names here, for example: 
         // ...UrlTokenModel, 
         // TokenForwarder
-        ) {
+      ) {
 
         var pageLoading = true;
 
@@ -193,62 +202,62 @@ require([
         // 
         // TOKENS
         //
-        
+
         // Create token namespaces
         var urlTokenModel = new UrlTokenModel();
         mvc.Components.registerInstance('url', urlTokenModel);
-        var defaultTokenModel = mvc.Components.getInstance('default', {create: true});
-        var submittedTokenModel = mvc.Components.getInstance('submitted', {create: true});
+        var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+        var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
 
-        urlTokenModel.on('url:navigate', function() {
-            defaultTokenModel.set(urlTokenModel.toJSON());
-            if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-                submitTokens();
-            } else {
-                submittedTokenModel.clear();
-            }
+        urlTokenModel.on('url:navigate', function () {
+          defaultTokenModel.set(urlTokenModel.toJSON());
+          if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+            submitTokens();
+          } else {
+            submittedTokenModel.clear();
+          }
         });
 
         // Initialize tokens
         defaultTokenModel.set(urlTokenModel.toJSON());
 
         function submitTokens() {
-            // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-            FormUtils.submitForm({ replaceState: pageLoading });
+          // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+          FormUtils.submitForm({ replaceState: pageLoading });
         }
 
         function setToken(name, value) {
-            defaultTokenModel.set(name, value);
-            submittedTokenModel.set(name, value);
+          defaultTokenModel.set(name, value);
+          submittedTokenModel.set(name, value);
         }
 
         function unsetToken(name) {
-            defaultTokenModel.unset(name);
-            submittedTokenModel.unset(name);
+          defaultTokenModel.unset(name);
+          submittedTokenModel.unset(name);
         }
 
-        
-        
+
+
         //
         // SEARCH MANAGERS
         //
 
-        
-var search1 = new SearchManager({
-            "id": "search1",
-            "status_buckets": 0,
-            "sample_ratio": null,
-            "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table baseip ,baseport,ipapi,portapi,userapi,passapi | rename baseip as Base-IP, baseport as Base-Port, ipapi as IP-API, portapi as Port-API, userapi as API-Username, passapi as Password-API",
-            "latest_time": "now",
-            "earliest_time": "-24h@h",
-            "cancelOnUnload": true,
-            "app": utils.getCurrentApp(),
-            "auto_cancel": 90,
-            "preview": true,
-            "tokenDependencies": {
-            },
-            "runWhenTimeIsUndefined": false
-        }, {tokens: true});
+
+        var search1 = new SearchManager({
+          "id": "search1",
+          "status_buckets": 0,
+          "sample_ratio": null,
+          "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table baseip ,baseport,ipapi,portapi,userapi,passapi | rename baseip as Base-IP, baseport as Base-Port, ipapi as IP-API, portapi as Port-API, userapi as API-Username, passapi as Password-API",
+          "latest_time": "now",
+          "earliest_time": "-24h@h",
+          "cancelOnUnload": true,
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true });
 
 
         //
@@ -256,21 +265,21 @@ var search1 = new SearchManager({
         //
 
         $('header').remove();
-        new LayoutView({"hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false})
-            .render()
-            .getContainerElement()
-            .appendChild($('.dashboard-body')[0]);
+        new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
+          .render()
+          .getContainerElement()
+          .appendChild($('.dashboard-body')[0]);
 
         //
         // DASHBOARD EDITOR
         //
 
         new Dashboard({
-            id: 'dashboard',
-            el: $('.dashboard-body'),
-            showTitle: true,
-            editable: true
-        }, {tokens: true}).render();
+          id: 'dashboard',
+          el: $('.dashboard-body'),
+          showTitle: true,
+          editable: true
+        }, { tokens: true }).render();
 
 
         //
@@ -278,11 +287,11 @@ var search1 = new SearchManager({
         //
 
         var element1 = new TableElement({
-            "id": "element1",
-            "drilldown": "none",
-            "managerid": "search1",
-            "el": $('#element1')
-        }, {tokens: true, tokenNamespace: "submitted"}).render();
+          "id": "element1",
+          "drilldown": "none",
+          "managerid": "search1",
+          "el": $('#element1')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
         //
@@ -290,89 +299,89 @@ var search1 = new SearchManager({
         //
 
         var input1 = new TextInput({
-            "id": "input1",
-            "value": "$form.baseip$",
-            "el": $('#input1')
-        }, {tokens: true}).render();
+          "id": "input1",
+          "value": "$form.baseip$",
+          "el": $('#input1')
+        }, { tokens: true }).render();
 
-        input1.on("change", function(newValue) {
-            FormUtils.handleValueChange(input1);
+        input1.on("change", function (newValue) {
+          FormUtils.handleValueChange(input1);
         });
-        
+
         var input2 = new TextInput({
-            "id": "input2",
-            "value": "$form.baseport$",
-            "el": $('#input2')
-        }, {tokens: true}).render();
+          "id": "input2",
+          "value": "$form.baseport$",
+          "el": $('#input2')
+        }, { tokens: true }).render();
 
-        input2.on("change", function(newValue) {
-            FormUtils.handleValueChange(input2);
+        input2.on("change", function (newValue) {
+          FormUtils.handleValueChange(input2);
         });
-        
+
         var input3 = new TextInput({
-            "id": "input3",
-            "value": "$form.apiip$",
-            "el": $('#input3')
-        }, {tokens: true}).render();
+          "id": "input3",
+          "value": "$form.apiip$",
+          "el": $('#input3')
+        }, { tokens: true }).render();
 
-        input3.on("change", function(newValue) {
-            FormUtils.handleValueChange(input3);
+        input3.on("change", function (newValue) {
+          FormUtils.handleValueChange(input3);
         });
-        
+
         var input4 = new TextInput({
-            "id": "input4",
-            "value": "$form.apiport$",
-            "el": $('#input4')
-        }, {tokens: true}).render();
+          "id": "input4",
+          "value": "$form.apiport$",
+          "el": $('#input4')
+        }, { tokens: true }).render();
 
-        input4.on("change", function(newValue) {
-            FormUtils.handleValueChange(input4);
+        input4.on("change", function (newValue) {
+          FormUtils.handleValueChange(input4);
         });
-        
+
         var input5 = new TextInput({
-            "id": "input5",
-            "value": "$form.apiuser$",
-            "el": $('#input5')
-        }, {tokens: true}).render();
+          "id": "input5",
+          "value": "$form.apiuser$",
+          "el": $('#input5')
+        }, { tokens: true }).render();
 
-        input5.on("change", function(newValue) {
-            FormUtils.handleValueChange(input5);
+        input5.on("change", function (newValue) {
+          FormUtils.handleValueChange(input5);
         });
-        
+
         var input6 = new TextInput({
-            "id": "input6",
-            "value": "$form.apipass$",
-            "el": $('#input6')
-        }, {tokens: true}).render();
+          "id": "input6",
+          "value": "$form.apipass$",
+          "el": $('#input6')
+        }, { tokens: true }).render();
 
-        input6.on("change", function(newValue) {
-            FormUtils.handleValueChange(input6);
+        input6.on("change", function (newValue) {
+          FormUtils.handleValueChange(input6);
         });
-        
+
 
         // 
         // SUBMIT FORM DATA
         //
-         // 
+        // 
         // DELETE BUTTON
         //
 
         // Call this function when the Delete Record button is clicked
-        $("#deleteRecord").click(function() {
-            // Get the value of the key ID field
-            var tokens = mvc.Components.get("default");
-            //var form_keyid = tokens.get("KeyID");
+        $("#deleteRecord").click(function () {
+          // Get the value of the key ID field
+          var tokens = mvc.Components.get("default");
+          //var form_keyid = tokens.get("KeyID");
 
-            // Delete the record that corresponds to the key ID using
-            // the del method to send a DELETE request
-            // to the storage/collections/data/{collection}/ endpoint
-            service.del("storage/collections/data/credentials/")
-                .done(function() { 
-                    // Run the search again to update the table
-                    search1.startSearch(); 
-                });
-            return false;
-        }); 
+          // Delete the record that corresponds to the key ID using
+          // the del method to send a DELETE request
+          // to the storage/collections/data/{collection}/ endpoint
+          service.del("storage/collections/data/credentials/")
+            .done(function () {
+              // Run the search again to update the table
+              search1.startSearch();
+            });
+          //return false;
+        });
         // 
         // SERVICE OBJECT
         //
@@ -380,60 +389,65 @@ var search1 = new SearchManager({
         // Create a service object using the Splunk SDK for JavaScript
         // to send REST requests
         var service = mvc.createService({ owner: "nobody" });
-        
+
         var submit = new SubmitButton({
-            id: 'submit',
-            el: $('#search_btn')
-        }, {tokens: true}).render();
+          id: 'submit',
+          el: $('#search_btn')
+        }, { tokens: true }).render();
 
-        submit.on("submit", function() {
-            submitTokens();
+        submit.on("submit", function () {
+          service.del("storage/collections/data/credentials/")
+            .done(function () {
+              // Run the search again to update the table
+              submitTokens();
 
-            // When the Submit button is clicked, get all the form fields by accessing token values
-            var tokens = mvc.Components.get("default");
-            var form_baseip = tokens.get("baseip");
-            var form_baseport = tokens.get("baseport");
-            var form_apiip = tokens.get("apiip");
-            var form_apiport = tokens.get("apiport");
-            var form_apiuser = tokens.get("apiuser");
-            var form_apipass = tokens.get("apipass");
-            
-            // Create a dictionary to store the field names and values
-            var record = { 
-                "baseip": form_baseip, 
-                "baseport": form_baseport, 
+              // When the Submit button is clicked, get all the form fields by accessing token values
+              var tokens = mvc.Components.get("default");
+              var form_baseip = tokens.get("baseip");
+              var form_baseport = tokens.get("baseport");
+              var form_apiip = tokens.get("apiip");
+              var form_apiport = tokens.get("apiport");
+              var form_apiuser = tokens.get("apiuser");
+              var form_apipass = tokens.get("apipass");
+
+              // Create a dictionary to store the field names and values
+              var record = {
+                "baseip": form_baseip,
+                "baseport": form_baseport,
                 "ipapi": form_apiip,
                 "portapi": form_apiport,
                 "userapi": form_apiuser,
-                "passapi": form_apipass 
-            }; 
+                "passapi": form_apipass
+              };
 
-            // Use the request method to send a REST POST request
-            // to the storage/collections/data/{collection}/ endpoint
-            service.request(
+              // Use the request method to send a REST POST request
+              // to the storage/collections/data/{collection}/ endpoint
+              service.request(
                 "storage/collections/data/credentials/",
                 "POST",
                 null,
                 null,
                 JSON.stringify(record),
-                {"Content-Type": "application/json"},
+                { "Content-Type": "application/json" },
                 null)
-                    .done(function() { 
-                         // Run the search again to update the table
-                        search1.startSearch();
+                .done(function () {
+                  // Run the search again to update the table
+                  search1.startSearch();
 
-                        // Clear the form fields 
-                        $("#formCustomerInfo input[type=text]").val(""); 
-                    });
+                  // Clear the form fields 
+                  $("#formCustomerInfo input[type=text]").val("");
+                });
+            });
+
         });
 
         // Initialize time tokens to default
         if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-            defaultTokenModel.set({ earliest: '0', latest: '' });
+          defaultTokenModel.set({ earliest: '0', latest: '' });
         }
 
-        if (!_.isEmpty(urlTokenModel.toJSON())){
-            submitTokens();
+        if (!_.isEmpty(urlTokenModel.toJSON())) {
+          submitTokens();
         }
 
 
@@ -444,9 +458,10 @@ var search1 = new SearchManager({
         DashboardController.ready();
         pageLoading = false;
 
-    }
-);
+      }
+    );
 // ]]>
-</script>
+  </script>
 </body>
+
 </html>
