@@ -1,6 +1,6 @@
 <nav search_view="search" color="#218BC6">
   <collection label="Overview">
-  <view name="general" default='true' />
+  <view name="general" />
   <view name="overview_fim" />
   <view name="overview_policy_monitoring" />
   <view name="overview_scap" />
@@ -26,11 +26,7 @@
   <view name="audit" />
   <view name="pcidss" />
 </collection>
-  <collection label="Tools">
-    <view name="agent_activity" />"
-</collection>
-<collection label="Splunk">
-  <view name="search" />
-  <view name="alerts" />
+<collection label="Configuration">
+  <view name="Global" default='true' />
 </collection>
 </nav>

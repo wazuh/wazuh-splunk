@@ -10,8 +10,7 @@ import requests
 import json
 
 try:
-    results = []
-    request = requests.get("http://10.0.0.90:8000/en-US/custom/wazuh/manager/status")
+    request = requests.get('http://'+sys.argv[1]+":"+sys.argv[2]+"/en-US/custom/wazuh/manager/status?ip="+sys.argv[3]+"&port="+sys.argv[4]+"&user="+sys.argv[5]+"&pass="+sys.argv[6])
     data = json.loads(request.text)
 except Exception as err:
         import traceback

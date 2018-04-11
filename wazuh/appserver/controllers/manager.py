@@ -26,12 +26,14 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/status
     @expose_page(must_login=False, methods=['GET'])
     def status(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/manager/status', auth=auth, verify=verify)
+        request = requests.get(url + '/manager/status', auth=auth, verify=verify)
         manager_status = json.loads(request.text)['data']
         data = {}
         for key in manager_status:
@@ -43,12 +45,14 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/info
     @expose_page(must_login=False, methods=['GET'])
     def info(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/manager/info', auth=auth, verify=verify)
+        request = requests.get(url + '/manager/info', auth=auth, verify=verify)
         manager_info = json.loads(request.text)['data']
         data = {}
         for key in manager_info:
@@ -60,12 +64,14 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/logs
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/manager/logs', auth=auth, verify=verify)
+        request = requests.get(url + '/manager/logs', auth=auth, verify=verify)
         manager_logs = json.loads(request.text)['data']['items']
         result = json.dumps(manager_logs)
         return result
@@ -73,12 +79,14 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/groups
     @expose_page(must_login=False, methods=['GET'])
     def groups(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/agents/groups', auth=auth, verify=verify)
+        request = requests.get(url + '/agents/groups', auth=auth, verify=verify)
         groups = json.loads(request.text)['data']['items']
         result = json.dumps(groups)
         return result
@@ -86,18 +94,17 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/rules
     @expose_page(must_login=False, methods=['GET'])
     def rules(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        
-        request = requests.get(opt_base_url + '/rules?limit=1', auth=auth, verify=verify)
+        request = requests.get(url + '/rules?limit=1', auth=auth, verify=verify)
         rules_qty = json.loads(request.text)["data"]["totalItems"]
-
-        request = requests.get(opt_base_url + '/rules?offset=0&limit=' + str(rules_qty), auth=auth, verify=verify)
+        request = requests.get(url + '/rules?offset=0&limit=' + str(rules_qty), auth=auth, verify=verify)
         rules = json.loads(request.text)["data"]["items"]
-        # result = json.loads(rules)
         results = []
         for row in rules:
             data = {}
@@ -112,21 +119,22 @@ class manager(controllers.BaseController):
                         count += 1
                 else:
                     data[key] = row[key]
-            # data = json.dumps(data)
             results.append(data)
         return json.dumps(results)
 
      # /custom/wazuh/manager/decoders
     @expose_page(must_login=False, methods=['GET'])
     def decoders(self, **kwargs):
-        opt_username = 'foo'
-        opt_password = 'bar'
-        opt_base_url = 'http://10.0.0.83:55000'
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/decoders?limit=1', auth=auth, verify=verify)
+        request = requests.get(url + '/decoders?limit=1', auth=auth, verify=verify)
         decoders_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(opt_base_url + '/decoders?offset=0&limit=' + str(decoders_qty), auth=auth, verify=verify)
+        request = requests.get(url + '/decoders?offset=0&limit=' + str(decoders_qty), auth=auth, verify=verify)
         decoders = json.loads(request.text)["data"]["items"]
         results = []
         for row in decoders:
