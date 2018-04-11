@@ -15,6 +15,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Credentials are now stored in KVStore database, values are getting from ajax when needed.
 - Each query now send parameters to streaming commands.
 - The app is now called 'Wazuh' instead 'SplunkAppForWazuh'.
+- Some unused tabs were deleted (Splunk and Tools).
 ### Fixed
 - Ruleset and Decoders search tabs now are able to filter properly.
 
