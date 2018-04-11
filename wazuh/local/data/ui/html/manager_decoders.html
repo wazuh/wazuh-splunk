@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Manager Logs</title>
+  <title>Manager Decoders</title>
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"
   />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
@@ -43,31 +43,83 @@ styles in <div> tags, similar to Bootstrap's grid system.
   </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-      <h2>Manager Logs</h2>
+      <h2>Manager Decoders</h2>
     </div>
-    <div class="fieldset">
-      <div class="input input-dropdown" id="input1">
-        <label>Filter by level</label>
+
+
+    <div id="row1" class="dashboard-row dashboard-row1">
+      <div id="panel1" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element1" class="dashboard-element table" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <div id="row2" class="dashboard-row dashboard-row2" data-depends="$showDetails$">
+      <div id="panel2" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
 
-    <row data-depends="$loadedtokens$">
-      <div id="row1" class="dashboard-row dashboard-row1">
-        <div id="panel1" class="dashboard-cell" style="width: 100%;">
-          <div class="dashboard-panel clearfix">
-
-            <div class="panel-element-row">
-              <div id="element1" class="dashboard-element table" style="width: 100%">
-                <div class="panel-head">
-                  <h3>Manager logs</h3>
-                </div>
-                <div class="panel-body"></div>
+          <div class="panel-element-row">
+            <div id="element2" class="dashboard-element html" style="width: 100%">
+              <div class="panel-body html">
+                <h3>Details</h3>
+                <table cellpadding="2" cellspacing="0">
+                  <tr>
+                    <th style="text-align:left; width:100px;">field</th>
+                    <th style="text-align:left">value</th>
+                  </tr>
+                  <tr>
+                    <td>Name</td>
+                    <td>$Name$</td>
+                  </tr>
+                  <tr>
+                    <td>Program</td>
+                    <td>$Program$</td>
+                  </tr>
+                  <tr>
+                    <td>Fields</td>
+                    <td>$Fields$</td>
+                  </tr>
+                  <tr>
+                    <td>Path</td>
+                    <td>$Path$</td>
+                  </tr>
+                  <tr>
+                    <td>Position</td>
+                    <td>$Position$</td>
+                  </tr>
+                  <tr>
+                    <td>Parent</td>
+                    <td>$Parent$</td>
+                  </tr>
+                  <tr>
+                    <td>Regex</td>
+                    <td>$Regex$</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </row>
+    </div>
+    <div id="row3" class="dashboard-row dashboard-row3">
+      <div id="panel3" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Top 24h - Decoder name</h2>
+
+          <div class="panel-element-row">
+            <div id="element3" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 
@@ -182,7 +234,6 @@ END LAYOUT
         var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
         var service = mvc.createService({ owner: "nobody" });
 
-
         urlTokenModel.on('url:navigate', function () {
           defaultTokenModel.set(urlTokenModel.toJSON());
           if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -210,11 +261,6 @@ END LAYOUT
           submittedTokenModel.unset(name);
         }
 
-
-
-        //
-        // SEARCH MANAGERS
-        //
         $(document).ready(function () {
           service.request(
             "storage/collections/data/credentials/",
@@ -237,14 +283,34 @@ END LAYOUT
           });
         })
 
+        //
+        // SEARCH MANAGERS
+        //
+
 
         var search1 = new SearchManager({
           "id": "search1",
-          "search": "| getmanagerlogs $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table timestamp, tag, level, description | search level=$value$",
-          "status_buckets": 0,
-          "earliest_time": "-24h@h",
           "cancelOnUnload": true,
-          "sample_ratio": null,
+          "sample_ratio": 1,
+          "earliest_time": "-1m",
+          "status_buckets": 0,
+          "search": "| getdecoders $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | fillnull value=\"-\" |table name, details-program_name, details-order, file, path, position, details-parent, details-regex| rename name as Name, details-program_name as Program, details-order as Fields, file as File, path as Path, position as Position, details-parent as Parent, details-regex as Regex | sort Name",
+          "latest_time": "now",
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" });
+
+        var search2 = new SearchManager({
+          "id": "search2",
+          "cancelOnUnload": true,
+          "sample_ratio": 1,
+          "earliest_time": "-24h@h",
+          "status_buckets": 0,
+          "search": "index=\"wazuh\" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
           "latest_time": "now",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
@@ -259,29 +325,8 @@ END LAYOUT
         // SPLUNK LAYOUT
         //
 
-
-        // $(document).ready(function(){
-        //     // to the storage/collections/data/{collection}/ endpoint
-        //     service.request(
-        //         "storage/collections/data/credentials/",
-        //         "GET",
-        //         null,
-        //         null,
-        //         null,
-        //         {"Content-Type": "application/json"},null
-        //     ).done(function(data) { 
-        //         console.log(data)
-        //         setToken('baseip',data[0].baseip);
-        //         setToken('baseport',data[0].baseport);
-        //         setToken('ipapi',data[0].ipapi);
-        //         setToken('portapi',data[0].portapi);
-        //         setToken('userapi',data[0].userapi);
-        //         setToken('passwordapi',data[0].passwordapi);
-        //     });
-        // });
-
         $('header').remove();
-        new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
+        new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
           .render()
           .getContainerElement()
           .appendChild($('.dashboard-body')[0]);
@@ -304,41 +349,73 @@ END LAYOUT
 
         var element1 = new TableElement({
           "id": "element1",
-          "drilldown": "none",
+          "count": 10,
+          "dataOverlayMode": "none",
+          "drilldown": "cell",
+          "fields": ["Name", "Program", "Fields", "Path"],
+          "percentagesRow": "false",
+          "rowNumbers": "false",
+          "totalsRow": "false",
+          "wrap": "false",
           "managerid": "search1",
           "el": $('#element1')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-
-        //
-        // VIEWS: FORM INPUTS
-        //
-
-        var input1 = new DropdownInput({
-          "id": "input1",
-          "choices": [
-            { "label": "WARNING", "value": "WARNING" },
-            { "label": "INFO", "value": "INFO" },
-            { "label": "ERROR", "value": "ERROR" },
-            { "label": "*", "value": "*" }
-          ],
-          "initialValue": "*",
-          "showClearButton": true,
-          "selectFirstChoice": false,
-          "searchWhenChanged": true,
-          "value": "$form.value$",
-          "el": $('#input1')
-        }, { tokens: true }).render();
-
-        input1.on("change", function (newValue) {
-          FormUtils.handleValueChange(input1);
-        });
-
-        DashboardController.onReady(function () {
-          if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-            submittedTokenModel.set({ earliest: '0', latest: '' });
+        element1.on("click", function (e) {
+          if (e.field !== undefined) {
+            e.preventDefault();
+            setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Name", TokenUtils.replaceTokenNames("$row.Name$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Program", TokenUtils.replaceTokenNames("$row.Program$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Fields", TokenUtils.replaceTokenNames("$row.Fields$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Path", TokenUtils.replaceTokenNames("$row.Path$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Position", TokenUtils.replaceTokenNames("$row.Position$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Parent", TokenUtils.replaceTokenNames("$row.Parent$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("Regex", TokenUtils.replaceTokenNames("$row.Regex$", _.extend(submittedTokenModel.toJSON(), e.data)));
           }
         });
+
+        var element2 = new HtmlElement({
+          "id": "element2",
+          "useTokens": true,
+          "el": $('#element2')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
+
+        DashboardController.addReadyDep(element2.contentLoaded());
+
+        var element3 = new ChartElement({
+          "id": "element3",
+          "charting.axisY2.scale": "inherit",
+          "trellis.size": "medium",
+          "charting.chart.stackMode": "stacked",
+          "resizable": true,
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.drilldown": "none",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.chart": "area",
+          "trellis.scales.shared": "1",
+          "charting.layout.splitSeries": "0",
+          "charting.chart.style": "shiny",
+          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.axisX.scale": "linear",
+          "charting.chart.bubbleMinimumSize": "10",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.axisY2.enabled": "0",
+          "trellis.enabled": "0",
+          "charting.legend.placement": "right",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.chart.bubbleMaximumSize": "50",
+          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.axisY.scale": "linear",
+          "charting.chart.showDataLabels": "none",
+          "charting.chart.sliceCollapsingThreshold": "0.01",
+          "managerid": "search2",
+          "el": $('#element3')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
+
 
         // Initialize time tokens to default
         if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
@@ -354,8 +431,6 @@ END LAYOUT
 
         DashboardController.ready();
         pageLoading = false;
-
-
 
       }
     );

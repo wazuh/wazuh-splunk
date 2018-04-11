@@ -37,9 +37,7 @@ class agents(controllers.BaseController):
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-        verify = False
-        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
+        request = requests.get(url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
         files = json.loads(request.text)
         # files = json.dumps(files)
         return json.dumps([{'data':files}], sort_keys=True,indent=4, separators=(',', ': '))
@@ -55,9 +53,9 @@ class agents(controllers.BaseController):
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files', auth=auth, verify=verify)
+        request = requests.get(url + '/agents/groups/' + group_id + '/files', auth=auth, verify=verify)
         files_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '/files?offset=0&limit=' + str(files_qty), auth=auth, verify=verify)
+        request = requests.get(url + '/agents/groups/' + group_id + '/files?offset=0&limit=' + str(files_qty), auth=auth, verify=verify)
         files = json.loads(request.text)["data"]["items"]
         return json.dumps(files)
 
@@ -72,9 +70,9 @@ class agents(controllers.BaseController):
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/agents/groups/' + group_id, auth=auth, verify=verify)
+        request = requests.get(url + '/agents/groups/' + group_id, auth=auth, verify=verify)
         groups_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(opt_base_url + '/agents/groups/' + group_id + '?offset=0&limit=' + str(groups_qty), auth=auth, verify=verify)
+        request = requests.get(url + '/agents/groups/' + group_id + '?offset=0&limit=' + str(groups_qty), auth=auth, verify=verify)
         groups = json.loads(request.text)["data"]["items"]
         return json.dumps(groups)
 
@@ -88,7 +86,7 @@ class agents(controllers.BaseController):
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/agents/summary', auth=auth, verify=verify)
+        request = requests.get(url + '/agents/summary', auth=auth, verify=verify)
         agent_summary = json.loads(request.text)['data']
         data = {}
         for key in agent_summary:
@@ -106,9 +104,9 @@ class agents(controllers.BaseController):
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
+        request = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(opt_base_url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
+        request = requests.get(url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
         results = []
         for agent in agents:
@@ -120,10 +118,10 @@ class agents(controllers.BaseController):
                 else:
                     data[attribute] = value 
             
-            request = requests.get(opt_base_url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             rootcheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            request = requests.get(opt_base_url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             syscheck_lastscan = json.loads(request.text)["data"]["start"]
 
             data["last_rootcheck"] = rootcheck_lastscan
@@ -192,10 +190,10 @@ class agents(controllers.BaseController):
                 else:
                     data[attribute] = value 
             
-            request = requests.get(opt_base_url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             rootcheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            request = requests.get(opt_base_url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
+            request = requests.get(url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
             syscheck_lastscan = json.loads(request.text)["data"]["start"]
 
             data["last_rootcheck"] = rootcheck_lastscan

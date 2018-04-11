@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Manager Logs</title>
+  <title>Groups</title>
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"
   />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
@@ -43,31 +43,64 @@ styles in <div> tags, similar to Bootstrap's grid system.
   </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-      <h2>Manager Logs</h2>
-    </div>
-    <div class="fieldset">
-      <div class="input input-dropdown" id="input1">
-        <label>Filter by level</label>
-      </div>
+      <h2>Groups</h2>
     </div>
 
-    <row data-depends="$loadedtokens$">
-      <div id="row1" class="dashboard-row dashboard-row1">
-        <div id="panel1" class="dashboard-cell" style="width: 100%;">
-          <div class="dashboard-panel clearfix">
 
-            <div class="panel-element-row">
-              <div id="element1" class="dashboard-element table" style="width: 100%">
-                <div class="panel-head">
-                  <h3>Manager logs</h3>
-                </div>
-                <div class="panel-body"></div>
+    <div id="row1" class="dashboard-row dashboard-row1">
+      <div id="panel1" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element1" class="dashboard-element table" style="width: 100%">
+              <div class="panel-head">
+                <h3>Manager groups</h3>
               </div>
+              <div class="panel-body"></div>
             </div>
           </div>
         </div>
       </div>
-    </row>
+    </div>
+    <div id="row2" class="dashboard-row dashboard-row2" data-depends="$showDetails$">
+      <div id="panel2" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element2" class="dashboard-element table" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel3" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element3" class="dashboard-element table" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Uncomment when app be able to show file content -->
+    <!-- <div id="row3" class="dashboard-row dashboard-row3" data-depends="$showFileDetails$">
+      <div id="panel4" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element4" class="dashboard-element single" style="width: 100%">
+              <div class="panel-head">
+                <h3>File content</h3>
+              </div>
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
   </div>
 
   <!-- 
@@ -182,7 +215,6 @@ END LAYOUT
         var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
         var service = mvc.createService({ owner: "nobody" });
 
-
         urlTokenModel.on('url:navigate', function () {
           defaultTokenModel.set(urlTokenModel.toJSON());
           if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -210,11 +242,6 @@ END LAYOUT
           submittedTokenModel.unset(name);
         }
 
-
-
-        //
-        // SEARCH MANAGERS
-        //
         $(document).ready(function () {
           service.request(
             "storage/collections/data/credentials/",
@@ -237,15 +264,67 @@ END LAYOUT
           });
         })
 
+        //
+        // SEARCH MANAGERS
+        //
+
 
         var search1 = new SearchManager({
           "id": "search1",
-          "search": "| getmanagerlogs $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table timestamp, tag, level, description | search level=$value$",
-          "status_buckets": 0,
-          "earliest_time": "-24h@h",
           "cancelOnUnload": true,
           "sample_ratio": null,
+          "earliest_time": "-24h@h",
+          "status_buckets": 0,
+          "search": "| getgroups $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table name,merged_sum",
           "latest_time": "now",
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" });
+
+        var search2 = new SearchManager({
+          "id": "search2",
+          "cancelOnUnload": true,
+          "sample_ratio": 1,
+          "earliest_time": "-60m@m",
+          "status_buckets": 0,
+          "search": "| getfilesfromgroup $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ $name$ | table filename,hash",
+          "latest_time": "now",
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" });
+
+        var search3 = new SearchManager({
+          "id": "search3",
+          "cancelOnUnload": true,
+          "sample_ratio": 1,
+          "earliest_time": "-60m@m",
+          "status_buckets": 0,
+          "search": "| getagentsfromgroup $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ $name$ | table id,name,ip,last_keepalive",
+          "latest_time": "now",
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" });
+
+        var search4 = new SearchManager({
+          "id": "search4",
+          "cancelOnUnload": true,
+          "sample_ratio": null,
+          "earliest_time": "$earliest$",
+          "status_buckets": 0,
+          "search": "| getfilecontent $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ $name$ $filename$ |",
+          "latest_time": "$latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -259,29 +338,8 @@ END LAYOUT
         // SPLUNK LAYOUT
         //
 
-
-        // $(document).ready(function(){
-        //     // to the storage/collections/data/{collection}/ endpoint
-        //     service.request(
-        //         "storage/collections/data/credentials/",
-        //         "GET",
-        //         null,
-        //         null,
-        //         null,
-        //         {"Content-Type": "application/json"},null
-        //     ).done(function(data) { 
-        //         console.log(data)
-        //         setToken('baseip',data[0].baseip);
-        //         setToken('baseport',data[0].baseport);
-        //         setToken('ipapi',data[0].ipapi);
-        //         setToken('portapi',data[0].portapi);
-        //         setToken('userapi',data[0].userapi);
-        //         setToken('passwordapi',data[0].passwordapi);
-        //     });
-        // });
-
         $('header').remove();
-        new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
+        new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
           .render()
           .getContainerElement()
           .appendChild($('.dashboard-body')[0]);
@@ -304,41 +362,57 @@ END LAYOUT
 
         var element1 = new TableElement({
           "id": "element1",
-          "drilldown": "none",
+          "count": 10,
+          "dataOverlayMode": "none",
+          "drilldown": "row",
+          "fields": ["name", "merged_sum"],
+          "rowNumbers": "false",
+          "wrap": "true",
           "managerid": "search1",
           "el": $('#element1')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-
-        //
-        // VIEWS: FORM INPUTS
-        //
-
-        var input1 = new DropdownInput({
-          "id": "input1",
-          "choices": [
-            { "label": "WARNING", "value": "WARNING" },
-            { "label": "INFO", "value": "INFO" },
-            { "label": "ERROR", "value": "ERROR" },
-            { "label": "*", "value": "*" }
-          ],
-          "initialValue": "*",
-          "showClearButton": true,
-          "selectFirstChoice": false,
-          "searchWhenChanged": true,
-          "value": "$form.value$",
-          "el": $('#input1')
-        }, { tokens: true }).render();
-
-        input1.on("change", function (newValue) {
-          FormUtils.handleValueChange(input1);
-        });
-
-        DashboardController.onReady(function () {
-          if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-            submittedTokenModel.set({ earliest: '0', latest: '' });
+        element1.on("click", function (e) {
+          if (e.field !== undefined) {
+            e.preventDefault();
+            setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("name", TokenUtils.replaceTokenNames("$row.name$", _.extend(submittedTokenModel.toJSON(), e.data)));
           }
         });
+
+        var element2 = new TableElement({
+          "id": "element2",
+          "count": 10,
+          "dataOverlayMode": "none",
+          "drilldown": "row",
+          "fields": ["filename", "hash"],
+          "rowNumbers": "false",
+          "wrap": "true",
+          "managerid": "search2",
+          "el": $('#element2')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
+
+        element2.on("click", function (e) {
+          if (e.field !== undefined) {
+            e.preventDefault();
+            setToken("showFileDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
+            setToken("filename", TokenUtils.replaceTokenNames("$row.filename$", _.extend(submittedTokenModel.toJSON(), e.data)));
+          }
+        });
+
+        var element3 = new TableElement({
+          "id": "element3",
+          "managerid": "search3",
+          "el": $('#element3')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
+
+        var element4 = new SingleElement({
+          "id": "element4",
+          "height": "50",
+          "drilldown": "none",
+          "managerid": "search4",
+          "el": $('#element4')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
 
         // Initialize time tokens to default
         if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
@@ -354,8 +428,6 @@ END LAYOUT
 
         DashboardController.ready();
         pageLoading = false;
-
-
 
       }
     );

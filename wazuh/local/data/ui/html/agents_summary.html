@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Manager Logs</title>
+  <title>Agents Summary</title>
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"
   />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
@@ -43,31 +43,36 @@ styles in <div> tags, similar to Bootstrap's grid system.
   </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-      <h2>Manager Logs</h2>
+      <h2>Agents Summary</h2>
     </div>
     <div class="fieldset">
-      <div class="input input-dropdown" id="input1">
-        <label>Filter by level</label>
+      <div class="input input-text" id="input1">
+        <label>Filter Agents by ID</label>
+      </div>
+      <div class="input input-text" id="input2">
+        <label>Filter Agents by Name</label>
+      </div>
+      <div class="input input-text" id="input3">
+        <label>Filter Agents by Ip</label>
+      </div>
+      <div class="input input-text" id="input4">
+        <label>Filter Agents by Version</label>
       </div>
     </div>
 
-    <row data-depends="$loadedtokens$">
-      <div id="row1" class="dashboard-row dashboard-row1">
-        <div id="panel1" class="dashboard-cell" style="width: 100%;">
-          <div class="dashboard-panel clearfix">
 
-            <div class="panel-element-row">
-              <div id="element1" class="dashboard-element table" style="width: 100%">
-                <div class="panel-head">
-                  <h3>Manager logs</h3>
-                </div>
-                <div class="panel-body"></div>
-              </div>
+    <div id="row1" class="dashboard-row dashboard-row1">
+      <div id="panel1" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element1" class="dashboard-element table" style="width: 100%">
+              <div class="panel-body"></div>
             </div>
           </div>
         </div>
       </div>
-    </row>
+    </div>
   </div>
 
   <!-- 
@@ -182,7 +187,6 @@ END LAYOUT
         var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
         var service = mvc.createService({ owner: "nobody" });
 
-
         urlTokenModel.on('url:navigate', function () {
           defaultTokenModel.set(urlTokenModel.toJSON());
           if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -210,11 +214,6 @@ END LAYOUT
           submittedTokenModel.unset(name);
         }
 
-
-
-        //
-        // SEARCH MANAGERS
-        //
         $(document).ready(function () {
           service.request(
             "storage/collections/data/credentials/",
@@ -237,14 +236,18 @@ END LAYOUT
           });
         })
 
+        //
+        // SEARCH MANAGERS
+        //
+
 
         var search1 = new SearchManager({
           "id": "search1",
-          "search": "| getmanagerlogs $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table timestamp, tag, level, description | search level=$value$",
-          "status_buckets": 0,
-          "earliest_time": "-24h@h",
           "cancelOnUnload": true,
-          "sample_ratio": null,
+          "sample_ratio": 1,
+          "earliest_time": "-60m@m",
+          "status_buckets": 0,
+          "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\" | search id=*$valueId$* name = *$valueName$* ip = *$valueIp$* \"Agent version\" = *$valueVersion$*",
           "latest_time": "now",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
@@ -259,29 +262,8 @@ END LAYOUT
         // SPLUNK LAYOUT
         //
 
-
-        // $(document).ready(function(){
-        //     // to the storage/collections/data/{collection}/ endpoint
-        //     service.request(
-        //         "storage/collections/data/credentials/",
-        //         "GET",
-        //         null,
-        //         null,
-        //         null,
-        //         {"Content-Type": "application/json"},null
-        //     ).done(function(data) { 
-        //         console.log(data)
-        //         setToken('baseip',data[0].baseip);
-        //         setToken('baseport',data[0].baseport);
-        //         setToken('ipapi',data[0].ipapi);
-        //         setToken('portapi',data[0].portapi);
-        //         setToken('userapi',data[0].userapi);
-        //         setToken('passwordapi',data[0].passwordapi);
-        //     });
-        // });
-
         $('header').remove();
-        new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
+        new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
           .render()
           .getContainerElement()
           .appendChild($('.dashboard-body')[0]);
@@ -304,7 +286,14 @@ END LAYOUT
 
         var element1 = new TableElement({
           "id": "element1",
-          "drilldown": "none",
+          "count": 100,
+          "dataOverlayMode": "none",
+          "drilldown": "cell",
+          "percentagesRow": "false",
+          "refresh.display": "progressbar",
+          "rowNumbers": "false",
+          "totalsRow": "false",
+          "wrap": "true",
           "managerid": "search1",
           "el": $('#element1')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
@@ -314,24 +303,56 @@ END LAYOUT
         // VIEWS: FORM INPUTS
         //
 
-        var input1 = new DropdownInput({
+        var input1 = new TextInput({
           "id": "input1",
-          "choices": [
-            { "label": "WARNING", "value": "WARNING" },
-            { "label": "INFO", "value": "INFO" },
-            { "label": "ERROR", "value": "ERROR" },
-            { "label": "*", "value": "*" }
-          ],
           "initialValue": "*",
-          "showClearButton": true,
-          "selectFirstChoice": false,
           "searchWhenChanged": true,
-          "value": "$form.value$",
+          "default": "*",
+          "value": "$form.valueId$",
           "el": $('#input1')
         }, { tokens: true }).render();
 
         input1.on("change", function (newValue) {
           FormUtils.handleValueChange(input1);
+        });
+
+        var input2 = new TextInput({
+          "id": "input2",
+          "initialValue": "*",
+          "searchWhenChanged": true,
+          "default": "*",
+          "value": "$form.valueName$",
+          "el": $('#input2')
+        }, { tokens: true }).render();
+
+        input2.on("change", function (newValue) {
+          FormUtils.handleValueChange(input2);
+        });
+
+        var input3 = new TextInput({
+          "id": "input3",
+          "initialValue": "*",
+          "searchWhenChanged": true,
+          "default": "*",
+          "value": "$form.valueIp$",
+          "el": $('#input3')
+        }, { tokens: true }).render();
+
+        input3.on("change", function (newValue) {
+          FormUtils.handleValueChange(input3);
+        });
+
+        var input4 = new TextInput({
+          "id": "input4",
+          "initialValue": "*",
+          "searchWhenChanged": true,
+          "default": "*",
+          "value": "$form.valueVersion$",
+          "el": $('#input4')
+        }, { tokens: true }).render();
+
+        input4.on("change", function (newValue) {
+          FormUtils.handleValueChange(input4);
         });
 
         DashboardController.onReady(function () {
@@ -345,7 +366,9 @@ END LAYOUT
           defaultTokenModel.set({ earliest: '0', latest: '' });
         }
 
-        submitTokens();
+        if (!_.isEmpty(urlTokenModel.toJSON())) {
+          submitTokens();
+        }
 
 
         //
@@ -354,8 +377,6 @@ END LAYOUT
 
         DashboardController.ready();
         pageLoading = false;
-
-
 
       }
     );
