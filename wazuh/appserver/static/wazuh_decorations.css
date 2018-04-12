@@ -27,3 +27,34 @@
 .custom-result-value.icon-only {
     font-size: 60px;
 }
+
+.json-key {
+  color: brown;
+}
+
+.json-value {
+  color: navy;
+}
+
+.json-string {
+  color: olive;
+}
+
+.json-beautifier {
+  background-color: ghostwhite;
+  border: 1px solid silver;
+  padding: 10px 20px;
+  margin: 20px;
+}
+
+.wz-pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  height: 200px;
+  line-height: 20px !important;
+}
+
+.jsonbeauty2 {
+  min-height: 300px;
+  margin: 0px !important;
+}
