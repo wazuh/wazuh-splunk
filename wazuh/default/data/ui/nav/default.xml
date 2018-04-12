@@ -14,7 +14,7 @@
   <view name="search_on_rules" />"
   <view name="search_on_decoders" />"
   <view name="logs" />" 
-  <view name="groups" />" 
+  <a href="groups">Groups</a> 
 
 </collection>
   <collection label="Agents">
