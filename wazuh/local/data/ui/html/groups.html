@@ -9,6 +9,7 @@
   />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css"
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/wazuh_decorations.css"
   />
 
 
@@ -86,21 +87,20 @@ styles in <div> tags, similar to Bootstrap's grid system.
     </div>
 
     <!-- Uncomment when app be able to show file content -->
-    <!-- <div id="row3" class="dashboard-row dashboard-row3" data-depends="$showFileDetails$">
+    <div id="row3" class="dashboard-row dashboard-row3" data-depends="$showFileDetails$">
       <div id="panel4" class="dashboard-cell" style="width: 100%;">
-        <div class="dashboard-panel clearfix">
-
+        <div>
           <div class="panel-element-row">
-            <div id="element4" class="dashboard-element single" style="width: 100%">
+            <div style="width: 100%">
               <div class="panel-head">
                 <h3>File content</h3>
               </div>
-              <div class="panel-body"></div>
+              <pre class="wz-pre json-beautifier jsonbeauty2"> <code id='filecontent'></code></pre>
             </div>
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 
   <!-- 
@@ -397,6 +397,29 @@ END LAYOUT
             e.preventDefault();
             setToken("showFileDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
             setToken("filename", TokenUtils.replaceTokenNames("$row.filename$", _.extend(submittedTokenModel.toJSON(), e.data)));
+            console.log('click on element');
+            var tokens = mvc.Components.get("default");
+            var name = tokens.get("name");
+            var fileName = tokens.get("filename");
+            var ipBase = tokens.get("baseip");
+            var ipApi = tokens.get("ipapi");
+            var portApi = tokens.get("portapi");
+            var passApi = tokens.get("passwordapi");
+            var userApi = tokens.get("userapi");
+            var portBase = tokens.get("baseport");
+            var endPoint = 'http://'+ipBase + ':' + portBase + '/custom/wazuh/agents/filescontent?id=' + name + '&filename=' + fileName + '&ip=' + ipApi + '&port=' + portApi + '&user=' + userApi + '&pass=' + passApi;
+            console.log("endpoint",endPoint);
+            $.get(endPoint, function (data) {
+              var jsonObj = JSON.parse(data);
+              var jsonPretty = JSON.stringify(jsonObj[0].data, null, '\t');
+              $('#filecontent').text(jsonPretty);
+            }).done(function () {
+              console.log("second success");
+            }).fail(function () {
+              console.log("error");
+            }).always(function () {
+              console.log("finished");
+            });
           }
         });
 
