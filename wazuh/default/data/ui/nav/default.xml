@@ -8,6 +8,7 @@
   <view name="overview_pci_dss" />
 </collection>
   <collection label="Manager">
+  <view name="Configuration" />
   <view name="manager_status" />
   <view name="manager_ruleset" />
   <view name="manager_decoders" />
