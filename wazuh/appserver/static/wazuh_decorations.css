@@ -58,3 +58,27 @@
   min-height: 300px;
   margin: 0px !important;
 }
+
+/* Classes for custom widths */
+
+.wz-width-25 {
+  width: 25% !important;
+}
+
+.wz-width-65 {
+  width: 65% !important;
+}
+
+/* Classes for custom shadows for dashboard cells */
+
+.wz-dashboard-cell {
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #D9D9D9 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.wz-dashboard-panel {
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
+}
