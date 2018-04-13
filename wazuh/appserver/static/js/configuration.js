@@ -143,7 +143,7 @@ require([
         $.get(endPoint, function (data) {
           var jsonObj = JSON.parse(data);
           console.log(jsonObj);
-          //var jsonPretty = JSON.stringify(jsonObj[0].data, null, '\t');
+          // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output);
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level);
           $('#nameCluster').text(jsonObj.cluster.name);
@@ -154,16 +154,188 @@ require([
           $('#rootSkipNFS').text(jsonObj.rootcheck.skip_nfs);
           $('#authPurge').text(jsonObj.auth.purge);
           $('#authForceInsert').text(jsonObj.auth.force_insert);
-        }).done(function () {
-          console.log("request success");
+          // First load Global view by default
+          var globalUrl = "/static/app/wazuh/views/global.html"
+          $('#dynamicContent').load(globalUrl, function (data) {
+            $('#jsonViewOutput').text(jsonObj.global.jsonout_output);
+            $('#logAll').text(jsonObj.global.logall);
+            $('#logAllJson').text(jsonObj.global.logall_json);
+            $('#whiteList').text(jsonObj.global.white_list);
+            $('#logViewAlertLevel').text(jsonObj.alerts.log_alert_level);
+            $('#emailNotifications').text(jsonObj.global.email_notification);
+            $('#emailAlertLevel').text(jsonObj.alerts.email_alert_level);
+            $('#emailTo').text(jsonObj.global.email_to);
+            $('#emailFrom').text(jsonObj.global.email_from);
+            $('#smtpServer').text(jsonObj.global.smtp_server);
+            $('#maxEmailPerHour').text(jsonObj.global.email_maxperhour);
+          });
+          // If click on Global section
+          $('#global').click(function () {
+            var globalUrl = "/static/app/wazuh/views/global.html"
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              $('#jsonViewOutput').text(jsonObj.global.jsonout_output);
+              $('#logAll').text(jsonObj.global.logall);
+              $('#logAllJson').text(jsonObj.global.logall_json);
+              $('#whiteList').text(jsonObj.global.white_list);
+              $('#logViewAlertLevel').text(jsonObj.alerts.log_alert_level);
+              $('#emailNotifications').text(jsonObj.global.email_notification);
+              $('#emailAlertLevel').text(jsonObj.alerts.email_alert_level);
+              $('#emailTo').text(jsonObj.global.email_to);
+              $('#emailFrom').text(jsonObj.global.email_from);
+              $('#smtpServer').text(jsonObj.global.smtp_server);
+              $('#maxEmailPerHour').text(jsonObj.global.email_maxperhour);
+            });
+          })
+          // If click on Cluster section
+          $('#cluster').click(function () {
+            var globalUrl = "/static/app/wazuh/views/cluster.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              $('#disabled').text(jsonObj.cluster.disabled);
+              $('#hidden').text(jsonObj.cluster.hidden);
+              $('#name').text(jsonObj.cluster.name);
+              $('#interval').text(jsonObj.cluster.interval);
+              $('#nodeName').text(jsonObj.cluster.node_name);
+              $('#nodeType').text(jsonObj.cluster.node_type);
+              $('#port').text(jsonObj.cluster.port);
+              $('#bindAddress').text(jsonObj.cluster.bind_addr);
+              $('#nodes').text(jsonObj.cluster.nodes);
+            });
+          })
+          // If click on Syscheck section
+          $('#syscheck').click(function () {
+            var globalUrl = "/static/app/wazuh/views/syscheck.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              console.log('syscheck ',jsonObj.syscheck,typeof jsonObj.syscheck);
+              console.log('syscheck frequency' ,jsonObj.syscheck.frequency, typeof jsonObj.syscheck.frequency);
+              $('#sysDisabled').text(jsonObj.syscheck.frequency);
+              $('#sysFrequency').text('dflñngdlg');
+              $('#sysAutoIgnore').text(jsonObj.syscheck.auto_ignore);
+              $('#sysViewAlertNewFiles').text(jsonObj.syscheck.alert_new_files);
+              $('#sysScanOnStart').text(jsonObj.syscheck.scan_on_start);
+              $('#sysNoDiff').text(jsonObj.syscheck.nodiff);
+              $('#sysSkipNfs').text(jsonObj.syscheck.skip_nfs);
+              //$('#sysMonitoringDirectories').text(jsonObj.syscheck.directories);
+              console.log('size of directories ',jsonObj.syscheck.directories.length);
+              for (var i = 0; i < jsonObj.syscheck.directories.length; i++) {
+                console.log("one iteration")
+                $('#monitoringDirectories').append(
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Path</p>' +
+                  '<p>' + jsonObj.syscheck.directories[i].path + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Check all</p>' +
+                  '<p>' + jsonObj.syscheck.directories[i].check_all + '</p>' +
+                  '</div>' 
+                )
+              }
+            
+            });
+          })
+          // If click on Rootcheck section
+          $('#rootcheck').click(function () {
+            var globalUrl = "/static/app/wazuh/views/rootcheck.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              $('#rootDisabled').text(jsonObj.rootcheck.disabled);
+              $('#rootFiles').text(jsonObj.rootcheck.rootkit_files);
+              $('#rootTrojans').text(jsonObj.rootcheck.rootkit_trojans);
+              $('#rootViewFreq').text(jsonObj.rootcheck.frequency);
+              $('#rootSkipNfs').text(jsonObj.rootcheck.skip_nfs);
+              $('#rootSysAuditFiles').text(jsonObj.rootcheck.system_audit);
+            });
+          })
+          // If click on Auth section
+          $('#auth').click(function () {
+            var globalUrl = "/static/app/wazuh/views/auth.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              $('#authDisabled').text(jsonObj.auth.disabled);
+              $('#authViewPurge').text(jsonObj.auth.purge);
+              $('#authViewForceInsert').text(jsonObj.auth.force_insert);
+              $('#authSslVerifyHost').text(jsonObj.auth.ssl_verify_host);
+              $('#authLimitMaxAgents').text(jsonObj.auth.limit_maxagents);
+              $('#authForceTime').text(jsonObj.auth.force_time);
+              $('#authSslManagerKey').text(jsonObj.auth.ssl_manager_key);
+              $('#authSslManagerCert').text(jsonObj.auth.ssl_manager_cert);
+              $('#authUseSourceIP').text(jsonObj.auth.use_source_ip);
+              $('#authUsePassword').text(jsonObj.auth.use_password);
+              $('#authPort').text(jsonObj.auth.port);
+              $('#authSslAutoNegotiate').text(jsonObj.auth.ssl_auto_negotiate);
+              $('#authCiphers').text(jsonObj.auth.ciphers);
+            });
+          })
+          // If click on Ruleset section
+          $('#ruleset').click(function () {
+            var globalUrl = "/static/app/wazuh/views/ruleset.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              $('#ruleDecoderDirs').text(jsonObj.ruleset.decoder_dir);
+              $('#ruleRulesDirs').text(jsonObj.ruleset.rule_dir);
+              $('#ruleRuleExcludes').text(jsonObj.ruleset.rule_exclude);
+              $('#ruleCdbLists').text(jsonObj.ruleset.list);
+            });
+          })
+          // If click on Command section
+          $('#command').click(function () {
+            var globalUrl = "/static/app/wazuh/views/command.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              for (var i = 0; i < jsonObj.command.length; i++) {
+                $('#commandChilds').append(
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Name</p>' +
+                  '<p>' + jsonObj.command[i].name  + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Expect</p>' +
+                  '<p>' + jsonObj.command[i].expect + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Executable</p>' +
+                  '<p>' + jsonObj.command[i].executable + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Timeout allowed</p>' +
+                  '<p>' + jsonObj.command[i].timeout_allowed + '</p>' +
+                  '</div>'
+                )
+              }
+            });
+          });
+          // If click on Remote section
+          $('#remote').click(function () {
+            var globalUrl = "/static/app/wazuh/views/remote.html";
+            $('#dynamicContent').empty();
+            $('#dynamicContent').load(globalUrl, function (data) {
+              for (var i = 0; i < jsonObj.remote.length; i++) {
+                $('#remoteChilds').append(
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Connection</p>' +
+                  '<p>' + jsonObj.remote[i].connection + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Port</p>' +
+                  '<p>' + jsonObj.remote[i].port + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<p>Protocol</p>' +
+                  '<p>' + jsonObj.remote[i].protocol + '</p>' +
+                  '</div>' 
+                )
+              }
+              $('#remConnection').text(jsonObj.remote.decoder_dir);
+              $('#remPort').text(jsonObj.ruleset.rule_dir);
+              $('#remProtocol').text(jsonObj.ruleset.rule_exclude);
+            });
+          });
         }).fail(function () {
-          console.log("error");
-        }).always(function () {
-          console.log("finished");
-        });
+          console.error("error");
+        })
       });
-
-
     })
 
 
