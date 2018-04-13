@@ -46,7 +46,7 @@ styles in <div> tags, similar to Bootstrap's grid system.
 
     <div class="row">
       <div class="dashboard-header clearfix">
-        <h2>Page Title</h2>
+        <!-- <h2 style='margin:0 10px '>Manager Configuration</h2> -->
       </div>
     </div>
 
@@ -55,22 +55,22 @@ styles in <div> tags, similar to Bootstrap's grid system.
     <div class="dashboard-row">
 
       <!-- First cell -->
-      <div class="dashboard-cell wz-dashboard-cell wz-width-25">
+      <div class="dashboard-cell wz-dashboard-cell wz-width-15">
         <div class="dashboard-panel wz-dashboard-panel">
           <div class="panel-body">
             <!-- Manager info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Global</h3>
+                <div>
+                  <div>
+                    <h3 id='global' class="wz-headline-title wz-text-link">Global</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>JSON output</p>
                       <p id='jsonOutput'></p>
                     </div>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Log alert level</p>
                       <p id='logAlertLevel'></p>
                     </div>
@@ -82,16 +82,16 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Cluster info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Cluster</h3>
+                <div>
+                  <div>
+                    <h3 id='cluster' class="wz-headline-title wz-text-link">Cluster</h3>
                   </div>
                   <div class="panel-body" id='clusterRow'>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Name</p>
                       <p id='nameCluster'></p>
                     </div>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Type</p>
                       <p id='typeCluster'></p>
                     </div>
@@ -103,16 +103,18 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Syscheck info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Syscheck</h3>
+                <div>
+                  <div>
+                    <h3 id='syscheck' class="wz-headline-title wz-text-link">Syscheck</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+
                       <p>Frequency</p>
                       <p id='sysFreq'></p>
                     </div>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+
                       <p>Alert new files</p>
                       <p id='sysAlertNewFiles'></p>
                     </div>
@@ -124,16 +126,16 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Rootcheck info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Rootcheck</h3>
+                <div>
+                  <div>
+                    <h3 id='rootcheck' class="wz-headline-title wz-text-link">Rootcheck</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Frequency</p>
                       <p id='rootFreq'></p>
                     </div>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Skip NFS</p>
                       <p id='rootSkipNFS'></p>
                     </div>
@@ -144,16 +146,16 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Auth info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Auth</h3>
+                <div>
+                  <div>
+                    <h3 id='auth' class="wz-headline-title wz-text-link">Auth</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Purge</p>
                       <p id='authPurge'></p>
                     </div>
-                    <div class="row">
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                       <p>Force insert</p>
                       <p id='authForceInsert'></p>
                     </div>
@@ -165,14 +167,12 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Ruleset info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Ruleset</h3>
+                <div>
+                  <div>
+                    <h3 id='ruleset' class="wz-headline-title wz-text-link">Ruleset</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
-                      <p>Ruleset settings</p>
-                    </div>
+                    <p>Ruleset settings</p>
                   </div>
                 </div>
               </div>
@@ -180,15 +180,12 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Command info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Command</h3>
+                <div>
+                  <div>
+                    <h3 id='command' class="wz-headline-title wz-text-link">Command</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
-                      <p>Command settings</p>
-                      <p id='jsonOutput'></p>
-                    </div>
+                    <p>Command settings</p>
                   </div>
                 </div>
               </div>
@@ -197,21 +194,16 @@ styles in <div> tags, similar to Bootstrap's grid system.
             <!-- Remote info -->
             <div class="dashboard-row">
               <div class="dashboard-cell">
-                <div class="dashboard-panel">
-                  <div class="panel-head">
-                    <h3>Remote</h3>
+                <div>
+                  <div>
+                    <h3 id='remote' class="wz-headline-title wz-text-link">Remote</h3>
                   </div>
                   <div class="panel-body" id='managerRow'>
-                    <div class="row">
-                      <p>Agents events listening settings</p>
-                      <p id='jsonOutput'></p>
-                    </div>
+                    <p>Agents events listening settings</p>
                   </div>
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -219,7 +211,7 @@ styles in <div> tags, similar to Bootstrap's grid system.
       <!-- Second cell -->
       <div class="dashboard-cell wz-dashboard-cell wz-width-65">
         <div class="dashboard-panel wz-dashboard-panel">
-          <div class="panel-body">
+          <div id='dynamicContent' class="panel-body">
             <!-- Place panel contents here -->
           </div>
         </div>
