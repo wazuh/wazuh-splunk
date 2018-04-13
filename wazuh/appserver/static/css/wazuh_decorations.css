@@ -99,6 +99,10 @@
   justify-content: space-between;
 }
 
+.wz-flex-align-flex-start {
+  justify-content: flex-start;
+}
+
 .wz-text-link:hover {
   text-decoration: underline;
 }
@@ -109,4 +113,30 @@
 .wz-headline-title {
   font-size: 17px !important;
   padding: 0 10px !important;
+}
+
+.wz-line-separator {
+  height:1px;
+  background:#717171;
+  border-bottom:1px solid #313030;
+}
+
+.wz-list-child {
+  padding: 0 50px !important;
+}
+
+hr {
+  display: block;
+  position: relative;
+  padding: 0;
+  margin: 8px auto;
+  height: 0;
+  width: 100%;
+  max-height: 0;
+  font-size: 1px;
+  line-height: 0;
+  clear: both;
+  border: none;
+  border-top: 1px solid #aaaaaa;
+  border-bottom: 1px solid #ffffff;
 }

@@ -208,8 +208,8 @@ require([
             var globalUrl = "/static/app/wazuh/views/syscheck.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              console.log('syscheck ',jsonObj.syscheck,typeof jsonObj.syscheck);
-              console.log('syscheck frequency' ,jsonObj.syscheck.frequency, typeof jsonObj.syscheck.frequency);
+              console.log('syscheck ', jsonObj.syscheck, typeof jsonObj.syscheck);
+              console.log('syscheck frequency', jsonObj.syscheck.frequency, typeof jsonObj.syscheck.frequency);
               $('#sysDisabled').text(jsonObj.syscheck.frequency);
               $('#sysFrequency').text('dflñngdlg');
               $('#sysAutoIgnore').text(jsonObj.syscheck.auto_ignore);
@@ -218,21 +218,24 @@ require([
               $('#sysNoDiff').text(jsonObj.syscheck.nodiff);
               $('#sysSkipNfs').text(jsonObj.syscheck.skip_nfs);
               //$('#sysMonitoringDirectories').text(jsonObj.syscheck.directories);
-              console.log('size of directories ',jsonObj.syscheck.directories.length);
+              console.log('size of directories ', jsonObj.syscheck.directories.length);
               for (var i = 0; i < jsonObj.syscheck.directories.length; i++) {
                 console.log("one iteration")
                 $('#monitoringDirectories').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Path</p>' +
-                  '<p>' + jsonObj.syscheck.directories[i].path + '</p>' +
+                  '<p class="wz-list-child">Path</p>' +
+                  '<p class="wz-list-child">' + jsonObj.syscheck.directories[i].path + '</p>' +
                   '</div>' +
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Check all</p>' +
-                  '<p>' + jsonObj.syscheck.directories[i].check_all + '</p>' +
-                  '</div>' 
+                  '<p class="wz-list-child">Check all</p>' +
+                  '<p class="wz-list-child">' + jsonObj.syscheck.directories[i].check_all + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<hr>' +
+                  '</div>'
                 )
               }
-            
+
             });
           })
           // If click on Rootcheck section
@@ -287,20 +290,23 @@ require([
               for (var i = 0; i < jsonObj.command.length; i++) {
                 $('#commandChilds').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Name</p>' +
-                  '<p>' + jsonObj.command[i].name  + '</p>' +
+                  '<p class="wz-list-child">Name</p>' +
+                  '<p>' + jsonObj.command[i].name + '</p>' +
                   '</div>' +
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Expect</p>' +
+                  '<p class="wz-list-child">Expect</p>' +
                   '<p>' + jsonObj.command[i].expect + '</p>' +
                   '</div>' +
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Executable</p>' +
+                  '<p class="wz-list-child">Executable</p>' +
                   '<p>' + jsonObj.command[i].executable + '</p>' +
                   '</div>' +
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Timeout allowed</p>' +
+                  '<p class="wz-list-child">Timeout allowed</p>' +
                   '<p>' + jsonObj.command[i].timeout_allowed + '</p>' +
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<hr>' +
                   '</div>'
                 )
               }
@@ -314,17 +320,20 @@ require([
               for (var i = 0; i < jsonObj.remote.length; i++) {
                 $('#remoteChilds').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Connection</p>' +
+                  '<p class="wz-list-child">Connection</p>' +
                   '<p>' + jsonObj.remote[i].connection + '</p>' +
                   '</div>' +
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Port</p>' +
+                  '<p class="wz-list-child">Port</p>' +
                   '<p>' + jsonObj.remote[i].port + '</p>' +
                   '</div>' +
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p>Protocol</p>' +
+                  '<p class="wz-list-child">Protocol</p>' +
                   '<p>' + jsonObj.remote[i].protocol + '</p>' +
-                  '</div>' 
+                  '</div>' +
+                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+                  '<hr>' +
+                  '</div>'
                 )
               }
               $('#remConnection').text(jsonObj.remote.decoder_dir);
