@@ -1,0 +1,142 @@
+.custom-result-value {
+    font-size: 30px;
+    margin: 35px auto;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(85, 85, 85);
+}
+.custom-result-value:before {
+    font-family: "Splunk Icons";
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-size: 110%;
+}
+.down.custom-result-value:before {
+    content: "\2297";
+}
+.down.custom-result-value {
+    color: rgb(217, 63, 60);
+}
+.up.custom-result-value {
+    color: rgb(101, 166, 55);
+}
+.up.custom-result-value:before {
+    content: "\ECD3";
+}
+.custom-result-value.icon-only {
+    font-size: 60px;
+}
+
+.json-key {
+  color: brown;
+}
+
+.json-value {
+  color: navy;
+}
+
+.json-string {
+  color: olive;
+}
+
+.json-beautifier {
+  background-color: ghostwhite;
+  border: 1px solid silver;
+  padding: 10px 20px;
+  margin: 20px;
+}
+
+.wz-pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  height: 200px;
+  line-height: 20px !important;
+}
+
+.jsonbeauty2 {
+  min-height: 300px;
+  margin: 0px !important;
+}
+
+/* Classes for custom widths */
+
+.wz-width-15 {
+  width: 15% !important;
+}
+
+.wz-width-65 {
+  width: 65% !important;
+}
+
+/* Classes for custom shadows for dashboard cells */
+
+.wz-dashboard-cell {
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #D9D9D9 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.wz-dashboard-panel {
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
+}
+
+.wz-flex-container {
+  display: flex;
+}
+
+.wz-flex-column {
+  flex-flow: column wrap;
+}
+
+.wz-flex-row {
+  flex-flow: row wrap;
+}
+
+.wz-flex-align-space-between {
+  justify-content: space-between;
+}
+
+.wz-flex-align-flex-start {
+  justify-content: flex-start;
+}
+
+.wz-text-link:hover {
+  text-decoration: underline;
+}
+.wz-text-link {
+  cursor: pointer !important;
+  color: #0079a5 !important;
+}
+.wz-headline-title {
+  font-size: 17px !important;
+  padding: 0 10px !important;
+}
+
+.wz-line-separator {
+  height:1px;
+  background:#717171;
+  border-bottom:1px solid #313030;
+}
+
+.wz-list-child {
+  padding: 0 50px !important;
+}
+
+hr {
+  display: block;
+  position: relative;
+  padding: 0;
+  margin: 8px auto;
+  height: 0;
+  width: 100%;
+  max-height: 0;
+  font-size: 1px;
+  line-height: 0;
+  clear: both;
+  border: none;
+  border-top: 1px solid #aaaaaa;
+  border-bottom: 1px solid #ffffff;
+}

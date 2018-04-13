@@ -3,6 +3,9 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ## Wazuh v3.2.x - Splunk app v2.2.0
 
+### Added
+- New Manager Configuration tab
+
 ### Fixed
 - Groups: now the content of each individual configuration file is showed up in pretty JSON format properly.
 

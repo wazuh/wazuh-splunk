@@ -61,6 +61,21 @@ class manager(controllers.BaseController):
         result = json.dumps(data)
         return result
 
+    # /custom/wazuh/manager/configuration
+    @expose_page(must_login=False, methods=['GET'])
+    def configuration(self, **kwargs):
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(url + '/manager/configuration', auth=auth, verify=verify)
+        manager_config = json.loads(request.text)['data']
+        result = json.dumps(manager_config)
+        return result
+
     # /custom/wazuh/manager/logs
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):

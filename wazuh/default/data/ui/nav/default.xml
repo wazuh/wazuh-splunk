@@ -9,6 +9,7 @@
 </collection>
   <collection label="Manager">
   <view name="manager_status" />
+  <view name="Configuration" />
   <view name="manager_ruleset" />
   <view name="manager_decoders" />
   <view name="search_on_rules" />"
