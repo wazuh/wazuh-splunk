@@ -61,8 +61,8 @@
 
 /* Classes for custom widths */
 
-.wz-width-25 {
-  width: 25% !important;
+.wz-width-15 {
+  width: 15% !important;
 }
 
 .wz-width-65 {
@@ -81,4 +81,32 @@
 .wz-dashboard-panel {
   margin-bottom: 0 !important;
   margin-right: 0 !important;
+}
+
+.wz-flex-container {
+  display: flex;
+}
+
+.wz-flex-column {
+  flex-flow: column wrap;
+}
+
+.wz-flex-row {
+  flex-flow: row wrap;
+}
+
+.wz-flex-align-space-between {
+  justify-content: space-between;
+}
+
+.wz-text-link:hover {
+  text-decoration: underline;
+}
+.wz-text-link {
+  cursor: pointer !important;
+  color: #0079a5 !important;
+}
+.wz-headline-title {
+  font-size: 17px !important;
+  padding: 0 10px !important;
 }
