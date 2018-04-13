@@ -146,6 +146,14 @@ require([
           //var jsonPretty = JSON.stringify(jsonObj[0].data, null, '\t');
           $('#jsonOutput').text(jsonObj.global.jsonout_output);
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level);
+          $('#nameCluster').text(jsonObj.cluster.name);
+          $('#typeCluster').text(jsonObj.cluster.node_type);
+          $('#sysFreq').text(jsonObj.syscheck.frequency);
+          $('#sysAlertNewFiles').text(jsonObj.syscheck.alert_new_files);
+          $('#rootFreq').text(jsonObj.rootcheck.frequency);
+          $('#rootSkipNFS').text(jsonObj.rootcheck.skip_nfs);
+          $('#authPurge').text(jsonObj.auth.purge);
+          $('#authForceInsert').text(jsonObj.auth.force_insert);
         }).done(function () {
           console.log("request success");
         }).fail(function () {
