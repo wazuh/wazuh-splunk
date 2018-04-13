@@ -161,7 +161,7 @@ require([
       "sample_ratio": 1,
       "earliest_time": "-60m@m",
       "status_buckets": 0,
-      "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\" | search id=*$valueId$* name = *$valueName$* ip = *$valueIp$* \"Agent version\" = *$valueVersion$*",
+      "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, status, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\" | search id=*$valueId$* name = *$valueName$* ip = *$valueIp$* \"Agent version\" = *$valueVersion$*",
       "latest_time": "now",
       "app": utils.getCurrentApp(),
       "auto_cancel": 90,
