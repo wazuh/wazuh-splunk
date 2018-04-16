@@ -9,17 +9,40 @@ define(function (require, exports, module) {
     constructor() { console.log('builded') }
     generateTable($el, urlArg, pages) {
       $el.DataTable({
-        "ajax": {
-          'url': urlArg,
-          'dataSrc': ''
-        } ,
+        dom: "Bfrtip",
+        paging: true,
+        pageLength: 5,
+        ajax: function (data, callback, settings) {
+          $.ajax({
+            url: urlArg,
+            // dataType: 'text',
+            type: 'get',
+            dataSrc: 'data.items'
+            // data: {
+            //   RecordsStart: data.start,
+            //   PageSize: data.length
+            // },
+            // success: function (data, textStatus, jQxhr) {
+            //   callback({
+            //     // draw: data.draw,
+            //     data: data.Data,
+            //     recordsTotal: data.TotalRecords,
+            //     recordsFiltered: data.RecordsFiltered
+            //   });
+            // },
+            // error: function (jqXhr, textStatus, errorThrown) {
+            // }
+          });
+        },
+        serverSide: true,
         "columns": [
           { "data": "timestamp" },
           { "data": "tag" },
           { "data": "description" },
           { "data": "level" }
-      ]
-      })
+        ]
+
+      });
     }
   }
   return table

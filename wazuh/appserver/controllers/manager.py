@@ -87,7 +87,7 @@ class manager(controllers.BaseController):
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/manager/logs', auth=auth, verify=verify)
-        manager_logs = json.loads(request.text)['data']['items']
+        manager_logs = json.loads(request.text)
         result = json.dumps(manager_logs)
         return result
 
