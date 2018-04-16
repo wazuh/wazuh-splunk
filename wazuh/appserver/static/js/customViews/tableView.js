@@ -10,12 +10,14 @@ define(function (require, exports, module) {
     generateTable($el, urlArg, pages) {
       $el.DataTable({
         "ajax": {
-          url: urlArg,
-          dataSrc: ''
+          'url': urlArg,
+          'dataSrc': ''
         } ,
         "columns": [
-          { "data": "dateAdd" },
-          { "data": "manager_host" }
+          { "data": "timestamp" },
+          { "data": "tag" },
+          { "data": "description" },
+          { "data": "level" }
       ]
       })
     }

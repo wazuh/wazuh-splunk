@@ -77,7 +77,7 @@ require([
     $(document).ready(() => {
       console.log('document ready')
       const miclase = new tableView()
-      miclase.generateTable($('#miid'),'http://192.168.0.159:8000/custom/wazuh/agents/agents?ip=192.168.0.130&port=55000&user=foo&pass=bar',5)
+      miclase.generateTable($('#miid'),'http://192.168.0.159:8000/custom/wazuh/manager/logs?ip=192.168.0.130&port=55000&user=foo&pass=bar',5)
     })
 
   })
