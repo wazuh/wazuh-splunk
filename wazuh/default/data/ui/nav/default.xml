@@ -26,6 +26,7 @@
   <view name="openscap" />
   <view name="audit" />
   <view name="pcidss" />
+  <view name="tabledemo" />
 </collection>
 <collection label="Configuration">
   <view name="Global" default='true' />
