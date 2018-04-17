@@ -9,15 +9,25 @@ define(function (require, exports, module) {
     constructor() { }
     generateTable($el, urlArg, pages) {
       $el.DataTable({
-        dom: "Bfrtip",
-        paging: true,
-        pageLength: 5,
-        ajax: {
+        //dom: "Bfrtip",
+        "paging": true,
+        "processing": true,
+        "serverSide": true,
+        "pageLength": 5,
+        "ajax": {
           url: urlArg,
           type: 'get',
-          dataSrc: 'data.items'
+          //dataSrc: 'data.items',
+          dataFilter: (data) => {
+            let json = jQuery.parseJSON(data);
+            console.log(json)
+            json.recordsTotal = json.data.totalItems;
+            json.recordsFiltered = json.data.totalItems;
+            json.data = json.data.items;
+            return JSON.stringify(json); // return JSON string
+          },
         },
-        serverSide: true,
+        //"deferLoading": 14,
         "columns": [
           { "data": "timestamp" },
           { "data": "tag" },

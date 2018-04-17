@@ -22,6 +22,8 @@ def setup_logger(level):
     logger.addHandler(file_handler)
     return logger
 logger = setup_logger(logging.DEBUG)
+file = open("/home/wazuh/restoutput.txt","w") 
+
 class manager(controllers.BaseController):
     # /custom/wazuh/manager/status
     @expose_page(must_login=False, methods=['GET'])
@@ -79,14 +81,18 @@ class manager(controllers.BaseController):
     # /custom/wazuh/manager/logs
     @expose_page(must_login=False, methods=['GET'])
     def logs(self, **kwargs):
+        file.write('\n-----------------------\n')
+        file.write(json.dumps(kwargs))
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
+        limit = kwargs["length"]
+        offset = kwargs["start"]
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(url + '/manager/logs', auth=auth, verify=verify)
+        request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset, auth=auth, verify=verify)
         manager_logs = json.loads(request.text)
         result = json.dumps(manager_logs)
         return result
