@@ -9,6 +9,8 @@ define(function (require, exports, module) {
     constructor() { }
     generateTable($el, urlArg, pages) {
       $el.DataTable({
+        "ordering": true,
+        "orderMulti": true,
         "paging": true,
         "processing": true,
         "serverSide": true,
@@ -26,10 +28,10 @@ define(function (require, exports, module) {
           },
         },
         "columns": [
-          { "data": "timestamp" },
-          { "data": "tag" },
-          { "data": "description" },
-          { "data": "level" }
+          { "data": "timestamp", 'orderable': true },
+          { "data": "tag", 'orderable': true },
+          { "data": "description", 'orderable': true },
+          { "data": "level", 'orderable': true }
         ]
       });
     }
