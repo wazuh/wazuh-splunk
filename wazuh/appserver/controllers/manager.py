@@ -89,10 +89,11 @@ class manager(controllers.BaseController):
         opt_base_port = kwargs["port"]
         limit = kwargs["length"]
         offset = kwargs["start"]
+        search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset, auth=auth, verify=verify)
+        request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset + '&search='+search_value, auth=auth, verify=verify)
         manager_logs = json.loads(request.text)
         result = json.dumps(manager_logs)
         return result

@@ -9,7 +9,6 @@ define(function (require, exports, module) {
     constructor() { }
     generateTable($el, urlArg, pages) {
       $el.DataTable({
-        //dom: "Bfrtip",
         "paging": true,
         "processing": true,
         "serverSide": true,
@@ -17,7 +16,6 @@ define(function (require, exports, module) {
         "ajax": {
           url: urlArg,
           type: 'get',
-          //dataSrc: 'data.items',
           dataFilter: (data) => {
             let json = jQuery.parseJSON(data);
             console.log(json)
@@ -27,14 +25,12 @@ define(function (require, exports, module) {
             return JSON.stringify(json); // return JSON string
           },
         },
-        //"deferLoading": 14,
         "columns": [
           { "data": "timestamp" },
           { "data": "tag" },
           { "data": "description" },
           { "data": "level" }
         ]
-
       });
     }
   }
