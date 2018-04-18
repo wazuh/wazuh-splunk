@@ -43,8 +43,13 @@ require([
       ).done((data) => {
 
         // Inject DataTable
-        const parsedData = JSON.parse(data)
-        console.log(parsedData)
+        const jsonData = JSON.parse(data)
+        console.log(jsonData)
+        // Extract backend Protocol://URL:Port for making requests
+        const url = window.location.href
+        const arr = url.split("/");
+        const baseUrl = arr[0] + "//" + arr[2]
+
         const opts = {
           pages: 10,
           processing: true,
@@ -57,7 +62,7 @@ require([
             { "data": "level", 'orderable': true }
           ]
         }
-        const table = new tableView($('#miid'), 'http://192.168.0.159:8000/custom/wazuh/manager/logs?ip=192.168.0.130&port=55000&user=foo&pass=bar', opts)
+        const table = new tableView($('#miid'), baseUrl+'/custom/wazuh/manager/logs?ip='+jsonData[0].ipapi+'&port='+jsonData[0].portapi+'&user='+jsonData[0].userapi+'&pass='+jsonData[0].passapi, opts)
         // table.search($('#tag'))
       })
     })
