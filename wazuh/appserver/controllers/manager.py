@@ -46,10 +46,10 @@ class manager(controllers.BaseController):
   def __init__(self):
     controllers.BaseController.__init__(self)
     # /custom/wazuh/manager/status
-    self.cached_search_column = ""
-    self.cached_direction = ""
+    # self.cached_search_column = ""
+    # self.cached_direction = ""
 
-
+    
   @expose_page(must_login=False, methods=['GET'])
   def status(self, **kwargs):
     opt_username = kwargs["user"]
@@ -68,7 +68,6 @@ class manager(controllers.BaseController):
     result = json.dumps(data)
     return result
       
-
   # /custom/wazuh/manager/info
   @expose_page(must_login=False, methods=['GET'])
   def info(self, **kwargs):
@@ -88,7 +87,6 @@ class manager(controllers.BaseController):
     result = json.dumps(data)
     return result
 
-
   # /custom/wazuh/manager/configuration
   @expose_page(must_login=False, methods=['GET'])
   def configuration(self, **kwargs):
@@ -104,22 +102,24 @@ class manager(controllers.BaseController):
     result = json.dumps(manager_config)
     return result
 
-
   # /custom/wazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
   def logs(self, **kwargs):
+
     opt_username = kwargs["user"]
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
     limit = kwargs["length"]
     offset = kwargs["start"]
-    # self.cached_search_column = get_cache()['column']
-    # self.cached_direction = get_cache()['dir']
-    if self.cached_search_column != kwargs["order[0][column]"]:
-      offset = "0"
-    self.cached_search_column = kwargs["order[0][column]"]
-    self.cached_direction = kwargs['order[0][dir]']
+    # cached_search_column = get_cache()['column']
+    # cached_direction = get_cache()['dir']
+
+    # if cached_search_column != kwargs["order[0][column]"]:
+    # #   offset = "0"
+
+    # cached_search_column = kwargs["order[0][column]"]
+    # # cached_direction = kwargs['order[0][dir]']
     # set_cache(cached_search_column,cached_direction)
     sorting_column = kwargs["order[0][column]"]
     direction = kwargs['order[0][dir]']
@@ -129,6 +129,21 @@ class manager(controllers.BaseController):
         sort_chain = '+timestamp'
       if direction == 'desc':
         sort_chain = '-timestamp'
+    elif sorting_column == "1":
+      if direction == 'asc':
+        sort_chain = '+tag'
+      if direction == 'desc':
+        sort_chain = '-tag'
+    elif sorting_column == "2":
+      if direction == 'asc':
+        sort_chain = '+description'
+      if direction == 'desc':
+        sort_chain = '-description'
+    elif sorting_column == "3":
+      if direction == 'asc':
+        sort_chain = '+level'
+      if direction == 'desc':
+        sort_chain = '-level'
     search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
     url = "http://" + opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)

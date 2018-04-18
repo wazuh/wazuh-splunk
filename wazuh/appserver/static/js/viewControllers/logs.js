@@ -43,7 +43,8 @@ require([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "/static/app/wazuh/js/customViews/tableView.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -80,7 +81,8 @@ require([
     SearchManager,
     SavedSearchManager,
     PostProcessManager,
-    UrlTokenModel
+    UrlTokenModel,
+    tableView
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -102,35 +104,6 @@ require([
     var service = mvc.createService({ owner: "nobody" });
 
 
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
-      } else {
-        submittedTokenModel.clear();
-      }
-    });
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
-
-    function submitTokens() {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
-    }
-
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
-    }
-
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
-    }
-
-
-
     //
     // SEARCH MANAGERS
     //
@@ -144,60 +117,12 @@ require([
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
         var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        setToken("loadedtokens", "true");
+
+        const miclase = new tableView()
+        miclase.generateTable($('#miid'),'http://'+parsedData[0].baseip+':'+parsedData[0].baseport+'/custom/wazuh/manager/logs?ip='+ parsedData[0].ipapi+'&port='+parsedData[0].ipapi+'&user='+ parsedData[0].userapi+'&pass='+ parsedData[0].passapi,10)
+    
       });
     })
-
-
-    var search1 = new SearchManager({
-      "id": "search1",
-      "search": "| getmanagerlogs $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table timestamp, tag, level, description | search level=$value$",
-      "status_buckets": 0,
-      "earliest_time": "-24h@h",
-      "cancelOnUnload": true,
-      "sample_ratio": null,
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
-
-
-    //
-    // SPLUNK LAYOUT
-    //
-
-
-    // $(document).ready(function(){
-    //     // to the storage/collections/data/{collection}/ endpoint
-    //     service.request(
-    //         "storage/collections/data/credentials/",
-    //         "GET",
-    //         null,
-    //         null,
-    //         null,
-    //         {"Content-Type": "application/json"},null
-    //     ).done(function(data) { 
-    //         console.log(data)
-    //         setToken('baseip',data[0].baseip);
-    //         setToken('baseport',data[0].baseport);
-    //         setToken('ipapi',data[0].ipapi);
-    //         setToken('portapi',data[0].portapi);
-    //         setToken('userapi',data[0].userapi);
-    //         setToken('passwordapi',data[0].passwordapi);
-    //     });
-    // });
 
     $('header').remove();
     new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
@@ -217,57 +142,11 @@ require([
     }, { tokens: true }).render();
 
 
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    var element1 = new TableElement({
-      "id": "element1",
-      "drilldown": "none",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-
-    //
-    // VIEWS: FORM INPUTS
-    //
-
-    var input1 = new DropdownInput({
-      "id": "input1",
-      "choices": [
-        { "label": "WARNING", "value": "WARNING" },
-        { "label": "INFO", "value": "INFO" },
-        { "label": "ERROR", "value": "ERROR" },
-        { "label": "*", "value": "*" }
-      ],
-      "initialValue": "*",
-      "showClearButton": true,
-      "selectFirstChoice": false,
-      "searchWhenChanged": true,
-      "value": "$form.value$",
-      "el": $('#input1')
-    }, { tokens: true }).render();
-
-    input1.on("change", function (newValue) {
-      FormUtils.handleValueChange(input1);
-    });
-
-    DashboardController.onReady(function () {
-      if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-        submittedTokenModel.set({ earliest: '0', latest: '' });
-      }
-    });
-
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
       defaultTokenModel.set({ earliest: '0', latest: '' });
     }
 
-    submitTokens();
-
-
-    //
     // DASHBOARD READY
     //
 

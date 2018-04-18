@@ -45,27 +45,18 @@ styles in <div> tags, similar to Bootstrap's grid system.
     <div class="dashboard-header clearfix">
       <h2>Manager logs</h2>
     </div>
-    <div class="fieldset">
-      <div class="input input-dropdown" id="input1">
-        <label>Filter by level</label>
-      </div>
-    </div>
-
     <row data-depends="$loadedtokens$">
       <div id="row1" class="dashboard-row dashboard-row1">
-        <div id="panel1" class="dashboard-cell" style="width: 100%;">
-          <div class="dashboard-panel clearfix">
-
-            <div class="panel-element-row">
-              <div id="element1" class="dashboard-element table" style="width: 100%">
-                <div class="panel-head">
-                  <h3>Manager logs</h3>
-                </div>
-                <div class="panel-body"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <table id="miid" class="table table-striped table-condensed">
+          <thead>
+            <tr>
+              <th>timestamp</th>
+              <th>tag</th>
+              <th>description</th>
+              <th>level</th>
+            </tr>
+          </thead>
+        </table>
       </div>
     </row>
   </div>

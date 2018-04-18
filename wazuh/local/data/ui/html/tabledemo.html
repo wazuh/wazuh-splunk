@@ -9,19 +9,20 @@
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/thirdPartyStyles/dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css">
 
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
+  <!-- <meta name="referrer" content="never" /> -->
+  <!-- <meta name="referrer" content="no-referrer" /> -->
 
-  <script>
+  <!-- <script>
     window._splunk_metrics_events = {
       push: function () { },
       active: false,
     }
-  </script>
+  </script> -->
 </head>
 
-<body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
+<body>
   <!-- 
 BEGIN LAYOUT
 This section contains the layout for the dashboard. Splunk uses proprietary
@@ -40,7 +41,21 @@ styles in <div> tags, similar to Bootstrap's grid system.
     <a id="navSkip"></a>
   </header>
   <h4>Manager logs</h4>
-  <table id="miid" class="table table-striped table-condensed">
+  <div class="wz-flex-container wz-flex-row wz-flex-align-flex-start">
+    <div class="input input-text" >
+      <label>Search by tag</label>
+      <input type="text">
+    </div>
+    <div class="input input-text" >
+      <label>Search by description</label>
+      <input type="text">
+    </div>
+    <div class="input input-text">
+      <label>Search by level</label>
+      <input type="text">
+    </div>
+  </div>
+  <table id="miid" class="display compact">
     <thead>
       <tr>
         <th>timestamp</th>

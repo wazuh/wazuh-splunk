@@ -76,8 +76,19 @@ require([
 
     $(document).ready(() => {
       console.log('document ready')
-      const miclase = new tableView()
-      miclase.generateTable($('#miid'),'http://192.168.0.159:8000/custom/wazuh/manager/logs?ip=192.168.0.130&port=55000&user=foo&pass=bar',5)
+      var opts = {
+        pages: 5,
+        processing: true,
+        serverSide: true,
+        filterVisible: false,
+        columns: [
+          { "data": "timestamp", 'orderable': true },
+          { "data": "tag", 'orderable': true },
+          { "data": "description", 'orderable': true },
+          { "data": "level", 'orderable': true }
+        ]
+      }
+      new tableView($('#miid'), 'http://192.168.0.159:8000/custom/wazuh/manager/logs?ip=192.168.0.130&port=55000&user=foo&pass=bar', opts)
     })
 
   })
