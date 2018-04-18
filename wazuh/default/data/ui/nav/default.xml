@@ -14,7 +14,7 @@
   <view name="manager_decoders" />
   <view name="search_on_rules" />"
   <view name="search_on_decoders" />"
-  <view name="logs" />" 
+  <a href="logs">Logs</a> 
   <a href="groups">Groups</a> 
 
 </collection>
@@ -26,6 +26,7 @@
   <view name="openscap" />
   <view name="audit" />
   <view name="pcidss" />
+  <!-- <view name="tabledemo" /> -->
 </collection>
 <collection label="Configuration">
   <view name="Global" default='true' />
