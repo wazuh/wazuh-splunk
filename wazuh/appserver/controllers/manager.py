@@ -105,13 +105,16 @@ class manager(controllers.BaseController):
   # /custom/wazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
   def logs(self, **kwargs):
-
+    file = open("/home/wazuh/logs.txt","w") 
+    file.write(json.dumps(kwargs)) 
     opt_username = kwargs["user"]
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
     limit = kwargs["length"]
     offset = kwargs["start"]
+    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+
     # cached_search_column = get_cache()['column']
     # cached_direction = get_cache()['dir']
 
@@ -144,7 +147,6 @@ class manager(controllers.BaseController):
         sort_chain = '+level'
       if direction == 'desc':
         sort_chain = '-level'
-    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
     url = "http://" + opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False

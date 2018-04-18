@@ -11,9 +11,9 @@ define(function (require, exports, module) {
      * @param {String} urlArg: API endpoint
      * @param {Object} opt: options
      */
-    constructor($el, urlArg ,opt) {
+    constructor($el, urlArg, opt) {
       this.table = $el.DataTable({
-        "ordering":  true,
+        "ordering": true,
         "orderMulti": true,
         "paging": true,
         "processing": opt.processing || true,
@@ -30,11 +30,27 @@ define(function (require, exports, module) {
             return JSON.stringify(json); // return JSON string
           },
         },
-        "bFilter": opt.filterVisible || false,
-        'sDom': '<"top"i>rt<"bottom"flp><"clear">',
+        // "bFilter": opt.filterVisible || false,
+        // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
         "columns": opt.columns
       })
     }
+
+    search($el) {
+      this.table.columns().every(function () {
+        var that = this;
+        console.log('that.search()',that.search())
+        $el.on('keyup change', function () {
+          if (that.search() !== this.value) {
+            console.log('this.value',this.value)
+            that
+              .search(this.value)
+              .draw();
+          }
+        })
+      })
+    }
+
   }
   return table
 })
