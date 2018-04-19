@@ -163,7 +163,7 @@ require([
             { "data": "name", 'orderable': true },
             { "data": "status", 'orderable': true },
             { "data": "path", 'orderable': true },
-            { "data": "file", 'orderable': false },
+            { "data": "file", 'orderable': true },
             { "data": "position", 'orderable': true }
           ]
         }
