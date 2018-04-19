@@ -1,136 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Manager ruleset</title>
-    <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
-    <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Manager ruleset</title>
+  <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"
+  />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css"
+  />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/thirdPartyStyles/dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css">
 
 
-        <meta name="referrer" content="never" />
-        <meta name="referrer" content="no-referrer" />
-    
-          <script>
-                window._splunk_metrics_events = {
-                   push : function() {},
-                   active: false,
-                   }
-          </script>
-    </head>
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+</head>
+
 <body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
-<!-- 
+  <!-- 
 BEGIN LAYOUT
 This section contains the layout for the dashboard. Splunk uses proprietary
 styles in <div> tags, similar to Bootstrap's grid system. 
 -->
-<header>
+  <header>
     <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
     <div class="header splunk-header">
-            <div id="placeholder-splunk-bar">
-                <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk<strong>&gt;</strong></a>
-            </div>
-                <div id="placeholder-app-bar"></div>
+      <div id="placeholder-splunk-bar">
+        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
+          <strong>&gt;</strong>
+        </a>
+      </div>
+      <div id="placeholder-app-bar"></div>
     </div>
     <a id="navSkip"></a>
-</header>
-<div class="dashboard-body container-fluid main-section-body" data-role="main">
+  </header>
+  <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-        <h2>Manager Ruleset</h2>
+      <h2>Manager Ruleset</h2>
     </div>
 
 
     <div id="row1" class="dashboard-row dashboard-row1">
-        <div id="panel1" class="dashboard-cell" style="width: 100%;">
-            <div class="dashboard-panel clearfix">
-                
-                <div class="panel-element-row">
-                    <div id="element1" class="dashboard-element table" style="width: 100%">
-                        <div class="panel-body"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <table id="myTable" class="table table-striped table-condensed">
+        <thead>
+          <tr>
+            <!-- <th>id</th> -->
+            <th>id</th>
+            <th>path</th>
+            <th>status</th>
+            <th>file</th>
+            <th>groups</th>
+            <th>description</th>
+            <th>level</th>
+            <th>pci</th>
+          </tr>
+        </thead>
+      </table>
     </div>
     <div id="row2" class="dashboard-row dashboard-row2" data-depends="$showDetails$">
-        <div id="panel2" class="dashboard-cell" style="width: 100%;">
-            <div class="dashboard-panel clearfix">
-                
-                <div class="panel-element-row">
-                    <div id="element2" class="dashboard-element html" style="width: 100%">
-                        <div class="panel-body html">
-                                <h3>Details</h3><table cellpadding="2" cellspacing="0"><tr><th style="text-align:left; width:100px;">field</th><th style="text-align:left">value</th></tr><tr><td>Requirement</td><td>$Requirement$</td></tr><tr><td>id</td><td>$id$</td></tr><tr><td>Description</td><td>$description$</td></tr><tr><td>Groups</td><td>$Groups$</td></tr><tr><td>details-if_sid</td><td>$details-if_sid$</td></tr><tr><td>details-regex</td><td>$details-regex$</td></tr><tr><td>details-info</td><td>$details-info$</td></tr><tr><td>details-frequency</td><td>$details-frequency$</td></tr></table>
-                        </div>
-                    </div>
-                </div>
+      <div id="panel2" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element2" class="dashboard-element html" style="width: 100%">
+              <div class="panel-body html">
+                <h3>Details</h3>
+                <table cellpadding="2" cellspacing="0">
+                  <tr>
+                    <th style="text-align:left; width:100px;">field</th>
+                    <th style="text-align:left">value</th>
+                  </tr>
+                  <tr>
+                    <td>id</td>
+                    <td>$id$</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td>$description$</td>
+                  </tr>
+                  <tr>
+                    <td>Groups</td>
+                    <td>$Groups$</td>
+                  </tr>
+                  <tr>
+                    <td>Details: if_sid</td>
+                    <td>$details-if_sid$</td>
+                  </tr>
+                  <tr>
+                    <td>details-regex</td>
+                    <td>$details-regex$</td>
+                  </tr>
+                  <tr>
+                    <td>details-info</td>
+                    <td>$details-info$</td>
+                  </tr>
+                  <tr>
+                    <td>details-frequency</td>
+                    <td>$details-frequency$</td>
+                  </tr>
+                </table>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
     <div id="row3" class="dashboard-row dashboard-row3">
-        <div id="panel3" class="dashboard-cell" style="width: 25%;">
-            <div class="dashboard-panel clearfix">
-                
-                <div class="panel-element-row">
-                    <div id="element3" class="dashboard-element chart" style="width: 100%">
-                        <div class="panel-head">
-                            <h3>Top 24h rule.id</h3>
-                        </div>
-                        <div class="panel-body"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="panel4" class="dashboard-cell" style="width: 25%;">
-            <div class="dashboard-panel clearfix">
-                
-                <div class="panel-element-row">
-                    <div id="element4" class="dashboard-element chart" style="width: 100%">
-                        <div class="panel-head">
-                            <h3>Top groups</h3>
-                        </div>
-                        <div class="panel-body"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="panel5" class="dashboard-cell" style="width: 25%;">
-            <div class="dashboard-panel clearfix">
-                
-                <div class="panel-element-row">
-                    <div id="element5" class="dashboard-element chart" style="width: 100%">
-                        <div class="panel-head">
-                            <h3>Top PCI Requeriments</h3>
-                        </div>
-                        <div class="panel-body"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="panel6" class="dashboard-cell" style="width: 25%;">
-            <div class="dashboard-panel clearfix">
-                
-                <div class="panel-element-row">
-                    <div id="element6" class="dashboard-element chart" style="width: 100%">
-                        <div class="panel-head">
-                            <h3>Top level</h3>
-                        </div>
-                        <div class="panel-body"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+      <div id="panel3" class="dashboard-cell" style="width: 25%;">
+        <div class="dashboard-panel clearfix">
 
-<!-- 
+          <div class="panel-element-row">
+            <div id="element3" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-head">
+                <h3>Top 24h rule.id</h3>
+              </div>
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel4" class="dashboard-cell" style="width: 25%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element4" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-head">
+                <h3>Top groups</h3>
+              </div>
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel5" class="dashboard-cell" style="width: 25%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element5" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-head">
+                <h3>Top PCI Requeriments</h3>
+              </div>
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel6" class="dashboard-cell" style="width: 25%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element6" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-head">
+                <h3>Top level</h3>
+              </div>
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
 END LAYOUT
 -->
 
-<script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
-<script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/js/viewControllers/manager_ruleset.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/js/viewControllers/manager_ruleset.js"></script>
 </body>
+
 </html>

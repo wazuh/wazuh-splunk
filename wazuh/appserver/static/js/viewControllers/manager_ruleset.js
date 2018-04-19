@@ -43,7 +43,9 @@ require([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "/static/app/wazuh/js/customViews/tableView.js"
+
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -80,7 +82,8 @@ require([
     SearchManager,
     SavedSearchManager,
     PostProcessManager,
-    UrlTokenModel
+    UrlTokenModel,
+    tableView
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -147,7 +150,39 @@ require([
         setToken('userapi', parsedData[0].userapi);
         setToken('passwordapi', parsedData[0].passapi);
         setToken("loadedtokens", "true");
-      });
+        const url = window.location.href
+        const arr = url.split("/");
+        const baseUrl = arr[0] + "//" + arr[2]
+        console.log('BASEURL ',baseUrl)
+        const opts = {
+          pages: 10,
+          processing: true,
+          serverSide: true,
+          filterVisible: false,
+          columns: [
+            { "data": "id", 'orderable': true },
+            { "data": "path", 'orderable': true },
+            { "data": "status", 'orderable': true },
+            { "data": "file", 'orderable': true },
+            { "data": "groups", 'orderable': false },
+            { "data": "description", 'orderable': true },
+            { "data": "level", 'orderable': true },
+            { "data": "pci", 'orderable': false }
+          ]
+        }
+        const table = new tableView($('#myTable'), baseUrl+'/custom/wazuh/manager/rules?ip='+parsedData[0].ipapi+'&port='+parsedData[0].portapi+'&user='+parsedData[0].userapi+'&pass='+parsedData[0].passapi, opts)
+        table.click(data => {
+          setToken("showDetails", "true")
+          setToken("id", data.id || "-")
+          setToken("description", data.description || "-")
+          setToken("Groups", data.groups)
+          setToken("details-if_sid", data.details.if_sid || "-")
+          setToken("details-regex", data.details.regex || "-")
+          setToken("details-info", data.details.info || "-")
+          setToken("details-frequency", data.details.frequency || "-")
+        })
+
+      })
     })
 
     //
@@ -155,21 +190,21 @@ require([
     //
 
 
-    var search1 = new SearchManager({
-      "id": "search1",
-      "cancelOnUnload": true,
-      "sample_ratio": 1,
-      "earliest_time": "-24h@h",
-      "status_buckets": 0,
-      "search": "| getruleset $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename pci-0 as pci0,pci-1 as pci1,pci-2 as pci2,pci-3 as pci3,pci-4 as pci4, \"details-info{}\" as details.info, groups-0 as groups0, groups-1 as groups1, groups-2 as groups2 | eval Requirement = mvappend(pci0,pci1,pci2,pci3,pci4) | eval Groups = mvappend(groups0,groups1,groups2) |table id, file, description, Requirement, Groups, level, \"details-regex\", \"details-info\", \"details-if_sid\", \"details-frequency\" | dedup id |  sort - level | fillnull value=\"-\"",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    // var search1 = new SearchManager({
+    //   "id": "search1",
+    //   "cancelOnUnload": true,
+    //   "sample_ratio": 1,
+    //   "earliest_time": "-24h@h",
+    //   "status_buckets": 0,
+    //   "search": "| getruleset 192.168.0.159 8000 192.168.0.130 55000 foo bar |table id, file, description, groups, level,pci | dedup id |  sort - level | fillnull value='-'",
+    //   "latest_time": "now",
+    //   "app": utils.getCurrentApp(),
+    //   "auto_cancel": 90,
+    //   "preview": true,
+    //   "tokenDependencies": {
+    //   },
+    //   "runWhenTimeIsUndefined": false
+    // }, { tokens: true, tokenNamespace: "submitted" });
 
     var search2 = new SearchManager({
       "id": "search2",
@@ -262,32 +297,32 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new TableElement({
-      "id": "element1",
-      "count": 5,
-      "dataOverlayMode": "none",
-      "drilldown": "cell",
-      "fields": ["id", "file", "description", "Requirement", "level"],
-      "rowNumbers": "false",
-      "wrap": "true",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    // var element1 = new TableElement({
+    //   "id": "element1",
+    //   "count": 5,
+    //   "dataOverlayMode": "none",
+    //   "drilldown": "cell",
+    //   "fields": ["id", "file", "description", "Requirement", "level"],
+    //   "rowNumbers": "false",
+    //   "wrap": "true",
+    //   "managerid": "search1",
+    //   "el": $('#element1')
+    // }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element1.on("click", function (e) {
-      if (e.field !== undefined) {
-        e.preventDefault();
-        setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("Groups", TokenUtils.replaceTokenNames("$row.Groups$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("Requirement", TokenUtils.replaceTokenNames("$row.Requirement$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("description", TokenUtils.replaceTokenNames("$row.description$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("id", TokenUtils.replaceTokenNames("$row.id$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-if_sid", TokenUtils.replaceTokenNames("$row.details-if_sid$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-regex", TokenUtils.replaceTokenNames("$row.details-regex$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-info", TokenUtils.replaceTokenNames("$row.details-info$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-frequency", TokenUtils.replaceTokenNames("$row.details-frequency$", _.extend(submittedTokenModel.toJSON(), e.data)));
-      }
-    });
+    // element1.on("click", function (e) {
+    //   if (e.field !== undefined) {
+    //     e.preventDefault();
+    //     setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("Groups", TokenUtils.replaceTokenNames("$row.Groups$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("Requirement", TokenUtils.replaceTokenNames("$row.Requirement$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("description", TokenUtils.replaceTokenNames("$row.description$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("id", TokenUtils.replaceTokenNames("$row.id$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("details-if_sid", TokenUtils.replaceTokenNames("$row.details-if_sid$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("details-regex", TokenUtils.replaceTokenNames("$row.details-regex$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("details-info", TokenUtils.replaceTokenNames("$row.details-info$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //     setToken("details-frequency", TokenUtils.replaceTokenNames("$row.details-frequency$", _.extend(submittedTokenModel.toJSON(), e.data)));
+    //   }
+    // });
 
     var element2 = new HtmlElement({
       "id": "element2",

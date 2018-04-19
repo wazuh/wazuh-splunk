@@ -10,10 +10,10 @@
   <collection label="Manager">
   <view name="manager_status" />
   <view name="Configuration" />
-  <view name="manager_ruleset" />
-  <view name="manager_decoders" />
-  <view name="search_on_rules" />"
-  <view name="search_on_decoders" />"
+  <a href="manager_ruleset">Ruleset</a> 
+  <a href="manager_decoders">Decoders</a> 
+  <!-- <view name="search_on_rules" />" -->
+  <!-- <view name="search_on_decoders" />" -->
   <a href="logs">Logs</a> 
   <a href="groups">Groups</a> 
 

@@ -12,7 +12,8 @@ define(function (require, exports, module) {
      * @param {Object} opt: options
      */
     constructor($el, urlArg, opt) {
-      this.table = $el.DataTable({
+      this.$el = $el
+      this.table = this.$el.DataTable({
         "ordering": true,
         "orderMulti": true,
         "paging": true,
@@ -23,11 +24,14 @@ define(function (require, exports, module) {
           url: urlArg,
           type: opt.method || 'get',
           dataFilter: (data) => {
-            let json = jQuery.parseJSON(data);
-            json.recordsTotal = json.data.totalItems;
-            json.recordsFiltered = json.data.totalItems;
-            json.data = json.data.items;
-            return JSON.stringify(json); // return JSON string
+            console.log('getting data in table .....')
+
+            let json = jQuery.parseJSON(data)
+            console.log('parsed data in table ', json)
+            json.recordsTotal = json.data.totalItems
+            json.recordsFiltered = json.data.totalItems
+            json.data = json.data.items
+            return JSON.stringify(json) // return JSON string
           },
         },
         // "bFilter": opt.filterVisible || false,
@@ -39,10 +43,10 @@ define(function (require, exports, module) {
     search($el) {
       this.table.columns().every(function () {
         var that = this;
-        console.log('that.search()',that.search())
+        console.log('that.search()', that.search())
         $el.on('keyup change', function () {
           if (that.search() !== this.value) {
-            console.log('this.value',this.value)
+            console.log('this.value', this.value)
             that
               .search(this.value)
               .draw();
@@ -51,6 +55,17 @@ define(function (require, exports, module) {
       })
     }
 
+    /**
+     * Click: perform a click in a row
+     */
+    click(cb) {
+      const myThis = this;
+      this.$el.on('click', 'tr', function () {
+        console.log(myThis.table.row(this).data())
+        cb(myThis.table.row(this).data())
+      })
+    }
   }
+  
   return table
 })
