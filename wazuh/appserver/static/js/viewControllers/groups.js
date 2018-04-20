@@ -1,15 +1,3 @@
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
 
 require([
   "splunkjs/mvc",
@@ -43,7 +31,9 @@ require([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "/static/app/wazuh/js/customViews/tableView.js"
+
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -80,14 +70,15 @@ require([
     SearchManager,
     SavedSearchManager,
     PostProcessManager,
-    UrlTokenModel
+    UrlTokenModel,
+    tableView
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    // var pageLoading = true;
 
 
     // 
@@ -137,207 +128,84 @@ require([
         null,
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
-        var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        setToken("loadedtokens", "true");
-      });
+        const jsonData = JSON.parse(data);
+        const url = window.location.href
+        const arr = url.split("/");
+        const baseUrl = arr[0] + "//" + arr[2]
+
+        // Options for Groups table
+        const optsGroups = {
+          pages: 10,
+          processing: true,
+          serverSide: true,
+          filterVisible: false,
+          columns: [
+            { "data": "name", 'orderable': true },
+            { "data": "merged_sum", 'orderable': true }
+          ]
+        }
+        // Options for Agents Group table
+        const optsAgentsGroup = {
+          pages: 10,
+          processing: true,
+          serverSide: true,
+          filterVisible: false,
+          columns: [
+            { "data": "id", 'orderable': true },
+            { "data": "name", 'orderable': true },
+            { "data": "ip", 'orderable': true },
+            { "data": "last_keepalive", 'orderable': true }
+          ]
+        }
+
+        // Options for Files Group table
+        const optsFiles = {
+          pages: 10,
+          processing: true,
+          serverSide: true,
+          filterVisible: false,
+          columns: [
+            { "data": "filename", 'orderable': true },
+            { "data": "hash", 'orderable': true }
+          ]
+        }
+        const tableGroups = new tableView($('#myGroupTable'))
+        tableGroups.build(baseUrl + '/custom/wazuh/manager/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi, optsGroups)
+        $('#row2').hide()
+        $('#row3').hide()
+        const tableFiles = new tableView($('#myFilesTable'))
+        const tableAgents = new tableView($('#myAgentsGroupTable'))
+        tableGroups.click(data => {
+          const groupName = data.name
+          //setToken("name", data.name)
+          tableFiles.build(baseUrl + '/custom/wazuh/agents/files?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, optsFiles)
+          const agentsUrl = baseUrl + '/custom/wazuh/agents/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name
+          $.get(baseUrl+'/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+            parsedData = JSON.parse(data)
+            console.log('AGENTS JSOINDATA', parsedData)
+            if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems)
+              tableAgents.build(agentsUrl, optsFiles)
+            else
+              $('#panel3').html('<p>No agents were found in this group.</p>')
+          })
+          // // tableAgents.build(baseUrl + '/custom/wazuh/agents/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, optsAgentsGroup)
+          tableFiles.click(data => {
+            console.log('perform click on file',baseUrl + '/custom/wazuh/agents/filescontent?id=' + data.name + '&filename=' + data.filename + '&ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi)
+            $.get(baseUrl + '/custom/wazuh/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi, data => {
+              $('#precode').prepend('<pre style="height: 100%" class="wz-pre json-beautifier jsonbeauty scroll "><code>'+data+'</code></pre>')
+              $('#row3').show(200)
+            })
+          })
+          $('#row2').show(200)
+          //setToken("showDetails", "true")
+        })
+      })
     })
-
-    //
-    // SEARCH MANAGERS
-    //
-
-
-    var search1 = new SearchManager({
-      "id": "search1",
-      "cancelOnUnload": true,
-      "sample_ratio": null,
-      "earliest_time": "-24h@h",
-      "status_buckets": 0,
-      "search": "| getgroups $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table name,merged_sum",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
-
-    var search2 = new SearchManager({
-      "id": "search2",
-      "cancelOnUnload": true,
-      "sample_ratio": 1,
-      "earliest_time": "-60m@m",
-      "status_buckets": 0,
-      "search": "| getfilesfromgroup $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ $name$ | table filename,hash",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
-
-    var search3 = new SearchManager({
-      "id": "search3",
-      "cancelOnUnload": true,
-      "sample_ratio": 1,
-      "earliest_time": "-60m@m",
-      "status_buckets": 0,
-      "search": "| getagentsfromgroup $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ $name$ | table id,name,ip,last_keepalive",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
-
-    var search4 = new SearchManager({
-      "id": "search4",
-      "cancelOnUnload": true,
-      "sample_ratio": null,
-      "earliest_time": "$earliest$",
-      "status_buckets": 0,
-      "search": "| getfilecontent $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ $name$ $filename$ |",
-      "latest_time": "$latest$",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
-
-
-    //
-    // SPLUNK LAYOUT
-    //
 
     $('header').remove();
     new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
       .render()
       .getContainerElement()
-      .appendChild($('.dashboard-body')[0]);
-
-    //
-    // DASHBOARD EDITOR
-    //
-
-    new Dashboard({
-      id: 'dashboard',
-      el: $('.dashboard-body'),
-      showTitle: true,
-      editable: true
-    }, { tokens: true }).render();
-
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    var element1 = new TableElement({
-      "id": "element1",
-      "count": 10,
-      "dataOverlayMode": "none",
-      "drilldown": "row",
-      "fields": ["name", "merged_sum"],
-      "rowNumbers": "false",
-      "wrap": "true",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    element1.on("click", function (e) {
-      if (e.field !== undefined) {
-        e.preventDefault();
-        setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("name", TokenUtils.replaceTokenNames("$row.name$", _.extend(submittedTokenModel.toJSON(), e.data)));
-      }
-    });
-
-    var element2 = new TableElement({
-      "id": "element2",
-      "count": 10,
-      "dataOverlayMode": "none",
-      "drilldown": "row",
-      "fields": ["filename", "hash"],
-      "rowNumbers": "false",
-      "wrap": "true",
-      "managerid": "search2",
-      "el": $('#element2')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    element2.on("click", function (e) {
-      if (e.field !== undefined) {
-        e.preventDefault();
-        setToken("showFileDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("filename", TokenUtils.replaceTokenNames("$row.filename$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        console.log('click on element');
-        var tokens = mvc.Components.get("default");
-        var name = tokens.get("name");
-        var fileName = tokens.get("filename");
-        var ipBase = tokens.get("baseip");
-        var ipApi = tokens.get("ipapi");
-        var portApi = tokens.get("portapi");
-        var passApi = tokens.get("passwordapi");
-        var userApi = tokens.get("userapi");
-        var portBase = tokens.get("baseport");
-        var endPoint = 'http://' + ipBase + ':' + portBase + '/custom/wazuh/agents/filescontent?id=' + name + '&filename=' + fileName + '&ip=' + ipApi + '&port=' + portApi + '&user=' + userApi + '&pass=' + passApi;
-        console.log("endpoint", endPoint);
-        $.get(endPoint, function (data) {
-          var jsonObj = JSON.parse(data);
-          var jsonPretty = JSON.stringify(jsonObj[0].data, null, '\t');
-          $('#filecontent').text(jsonPretty);
-        }).done(function () {
-          console.log("second success");
-        }).fail(function () {
-          console.log("error");
-        }).always(function () {
-          console.log("finished");
-        });
-      }
-    });
-
-    var element3 = new TableElement({
-      "id": "element3",
-      "managerid": "search3",
-      "el": $('#element3')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    var element4 = new SingleElement({
-      "id": "element4",
-      "height": "50",
-      "drilldown": "none",
-      "managerid": "search4",
-      "el": $('#element4')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    // Initialize time tokens to default
-    if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
-    }
-
-    submitTokens();
-
-
-    //
-    // DASHBOARD READY
-    //
-
-    DashboardController.ready();
-    pageLoading = false;
-
+      .appendChild($('.dashboard-body')[0])
   }
-);
-// ]]>
+)
