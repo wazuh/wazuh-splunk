@@ -54,7 +54,7 @@
   line-height: 20px !important;
 }
 
-.jsonbeauty2 {
+.jsonbeauty {
   min-height: 300px;
   margin: 0px !important;
 }
@@ -139,4 +139,8 @@ hr {
   border: none;
   border-top: 1px solid #aaaaaa;
   border-bottom: 1px solid #ffffff;
+}
+
+scroll {
+  overflow: scroll;
 }
