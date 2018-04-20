@@ -1,37 +1,10 @@
 
 require([
   "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
   "underscore",
   "jquery",
-  "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/layoutview",
-  "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/dashboard/panelref",
-  "splunkjs/mvc/simplexml/element/chart",
-  "splunkjs/mvc/simplexml/element/event",
-  "splunkjs/mvc/simplexml/element/html",
-  "splunkjs/mvc/simplexml/element/list",
-  "splunkjs/mvc/simplexml/element/map",
-  "splunkjs/mvc/simplexml/element/single",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simplexml/element/visualization",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simplexml/eventhandler",
-  "splunkjs/mvc/simplexml/searcheventhandler",
-  "splunkjs/mvc/simpleform/input/dropdown",
-  "splunkjs/mvc/simpleform/input/radiogroup",
-  "splunkjs/mvc/simpleform/input/linklist",
-  "splunkjs/mvc/simpleform/input/multiselect",
-  "splunkjs/mvc/simpleform/input/checkboxgroup",
-  "splunkjs/mvc/simpleform/input/text",
-  "splunkjs/mvc/simpleform/input/timerange",
-  "splunkjs/mvc/simpleform/input/submit",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/savedsearchmanager",
-  "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
+  "splunkjs/mvc/layoutview",
   "/static/app/wazuh/js/customViews/tableView.js"
 
   // Add comma-separated libraries and modules manually here, for example:
@@ -40,86 +13,43 @@ require([
 ],
   function (
     mvc,
-    utils,
-    TokenUtils,
     _,
     $,
-    DashboardController,
-    LayoutView,
-    Dashboard,
-    PanelRef,
-    ChartElement,
-    EventElement,
-    HtmlElement,
-    ListElement,
-    MapElement,
-    SingleElement,
-    TableElement,
-    VisualizationElement,
-    FormUtils,
-    EventHandler,
-    SearchEventHandler,
-    DropdownInput,
-    RadioGroupInput,
-    LinkListInput,
-    MultiSelectInput,
-    CheckboxGroupInput,
-    TextInput,
-    TimeRangeInput,
-    SubmitButton,
-    SearchManager,
-    SavedSearchManager,
-    PostProcessManager,
     UrlTokenModel,
+    LayoutView,
     tableView
-
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
 
-    // var pageLoading = true;
-
-
-    // 
-    // TOKENS
-    //
-
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
+    var urlTokenModel = new UrlTokenModel()
+    mvc.Components.registerInstance('url', urlTokenModel)
+    var defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    var service = mvc.createService({ owner: "nobody" })
 
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
+    urlTokenModel.on('url:navigate', () => {
+      defaultTokenModel.set(urlTokenModel.toJSON())
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
+        submitTokens()
       } else {
-        submittedTokenModel.clear();
+        submittedTokenModel.clear()
       }
-    });
+    })
 
     // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
+    defaultTokenModel.set(urlTokenModel.toJSON())
 
-    function submitTokens() {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
+    const setToken = (name, value) => {
+      defaultTokenModel.set(name, value)
+      submittedTokenModel.set(name, value)
     }
 
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
+    const unsetToken = (name) => {
+      defaultTokenModel.unset(name)
+      submittedTokenModel.unset(name)
     }
 
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
-    }
-
-    $(document).ready(function () {
+    $(document).ready( () => {
       service.request(
         "storage/collections/data/credentials/",
         "GET",
@@ -127,10 +57,10 @@ require([
         null,
         null,
         { "Content-Type": "application/json" }, null
-      ).done(function (data) {
-        const jsonData = JSON.parse(data);
+      ).done(data => {
+        const jsonData = JSON.parse(data)
         const url = window.location.href
-        const arr = url.split("/");
+        const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
 
         // Options for Groups table
@@ -202,7 +132,7 @@ require([
       })
     })
 
-    $('header').remove();
+    $('header').remove()
     new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
       .render()
       .getContainerElement()
