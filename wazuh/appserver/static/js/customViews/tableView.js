@@ -8,13 +8,23 @@ define(function (require, exports, module) {
     /**
      * Constructor method
      * @param {*} $el: DOM table element to attach the table 
-     * @param {String} urlArg: API endpoint
+     */
+    constructor($el){ 
+      this.$el = $el
+      this.table = ""
+      // this.$el.DataTable({"retrieve": true}) 
+    }
+
+    /**
+     * Build: generates and draws a datatable
+     * @param {*} urlArg : url to get the data from
      * @param {Object} opt: options
      */
-    constructor($el, urlArg, opt) {
-      this.$el = $el
+    build( urlArg, opt) {
+      
       this.table = this.$el.DataTable({
-        "ordering": true,
+        "ordering": opt.ordering || true,
+        "retrieve": opt.retrieve || true,
         "orderMulti": true,
         "paging": true,
         "processing": opt.processing || true,
@@ -25,7 +35,6 @@ define(function (require, exports, module) {
           type: opt.method || 'get',
           dataFilter: (data) => {
             console.log('getting data in table .....')
-
             let json = jQuery.parseJSON(data)
             console.log('parsed data in table ', json)
             json.recordsTotal = json.data.totalItems
@@ -38,6 +47,7 @@ define(function (require, exports, module) {
         // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
         "columns": opt.columns
       })
+      //this.table.draw()
     }
 
     search($el) {
@@ -49,7 +59,7 @@ define(function (require, exports, module) {
             console.log('this.value', this.value)
             that
               .search(this.value)
-              .draw();
+              //.draw();
           }
         })
       })
