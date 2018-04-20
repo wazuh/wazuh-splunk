@@ -153,9 +153,25 @@ class manager(controllers.BaseController):
     url = "http://" + opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url + '/agents/groups', auth=auth, verify=verify)
-    groups = json.loads(request.text)['data']['items']
-    result = json.dumps(groups)
+    limit = kwargs["length"]
+    offset = kwargs["start"]
+    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+    sorting_column = kwargs["order[0][column]"]
+    direction = kwargs['order[0][dir]']
+    sort_chain = ""
+    if sorting_column == "0":
+      if direction == 'asc':
+        sort_chain = '+name'
+      if direction == 'desc':
+        sort_chain = '-name'
+    elif sorting_column == "1":
+      if direction == 'asc':
+        sort_chain = '+merged_sum'
+      if direction == 'desc':
+        sort_chain = '-merged_sum'
+    
+    request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+    result = json.dumps(request)
     return result
 
   # /custom/wazuh/manager/rules
