@@ -9,12 +9,15 @@ define(function (require, exports, module) {
      * Constructor method
      * @param {*} $el: DOM table element to attach the table 
      */
-    constructor($el){ 
-      this.$el = $el
+    constructor(){ 
+      this.$el = ""
       this.table = ""
       // this.$el.DataTable({"retrieve": true}) 
     }
 
+    element($el) {
+      this.$el = $el
+    }
     /**
      * Build: generates and draws a datatable
      * @param {*} urlArg : url to get the data from
