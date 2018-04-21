@@ -87,7 +87,9 @@ require([
     // TokenForwarder
   ) {
 
-    let pageLoading = true;
+    let pageLoading = true
+
+
 
 
     // 
@@ -95,37 +97,67 @@ require([
     //
 
     // Create token namespaces
-    const urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    const service = mvc.createService({ owner: "nobody" });
+    const urlTokenModel = new UrlTokenModel()
+
+
+    mvc.Components.registerInstance('url', urlTokenModel)
+
+
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+
+
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+
+
+    const service = mvc.createService({ owner: "nobody" })
+
+
 
     urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
+      defaultTokenModel.set(urlTokenModel.toJSON())
+
+
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
+        submitTokens()
+
+
       } else {
-        submittedTokenModel.clear();
+        submittedTokenModel.clear()
+
+
       }
-    });
+    })
+
+
 
     // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
+    defaultTokenModel.set(urlTokenModel.toJSON())
+
+
 
     const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
+      FormUtils.submitForm({ replaceState: pageLoading })
+
+
     }
 
     const setToken = (name, value) => {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
+      defaultTokenModel.set(name, value)
+
+
+      submittedTokenModel.set(name, value)
+
+
     }
 
     const unsetToken = (name) => {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
+      defaultTokenModel.unset(name)
+
+
+      submittedTokenModel.unset(name)
+
+
     }
 
 
@@ -175,18 +207,24 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true });
+    }, { tokens: true })
+
+
 
 
     //
     // SPLUNK LAYOUT
     //
 
-    $('header').remove();
+    $('header').remove()
+
+
     new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
       .render()
       .getContainerElement()
-      .appendChild($('.dashboard-body')[0]);
+      .appendChild($('.dashboard-body')[0])
+
+
 
     //
     // DASHBOARD EDITOR
@@ -197,7 +235,7 @@ require([
       el: $('.dashboard-body'),
       showTitle: true,
       editable: true
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
 
     //
@@ -209,7 +247,7 @@ require([
       "drilldown": "none",
       "managerid": "search1",
       "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
     //
@@ -220,37 +258,37 @@ require([
       "id": "input3",
       "value": "$form.apiip$",
       "el": $('#input3')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input3.on("change", function (newValue) {
-      FormUtils.handleValueChange(input3);
-    });
+      FormUtils.handleValueChange(input3)
+    })
 
     var input4 = new TextInput({
       "id": "input4",
       "value": "$form.apiport$",
       "el": $('#input4')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input4.on("change", function (newValue) {
-      FormUtils.handleValueChange(input4);
-    });
+      FormUtils.handleValueChange(input4)
+    })
 
     var input5 = new TextInput({
       "id": "input5",
       "value": "$form.apiuser$",
       "el": $('#input5')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input5.on("change", function (newValue) {
-      FormUtils.handleValueChange(input5);
-    });
+      FormUtils.handleValueChange(input5)
+    })
 
     var input6 = new TextInput({
       "id": "input6",
       "value": "$form.apipass$",
       "el": $('#input6')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input6.on("change", function (newValue) {
       service.request(
@@ -276,8 +314,8 @@ require([
             $('#statusLed').addClass('wz-green-red')
           })
       })
-      FormUtils.handleValueChange(input6);
-    });
+      FormUtils.handleValueChange(input6)
+    })
 
 
     // 
@@ -290,8 +328,8 @@ require([
     // Call this function when the Delete Record button is clicked
     $("#deleteRecord").click(function () {
       // Get the value of the key ID field
-      var tokens = mvc.Components.get("default");
-      //var form_keyid = tokens.get("KeyID");
+      var tokens = mvc.Components.get("default")
+      //var form_keyid = tokens.get("KeyID")
 
       // Delete the record that corresponds to the key ID using
       // the del method to send a DELETE request
@@ -299,10 +337,11 @@ require([
       service.del("storage/collections/data/credentials/")
         .done(function () {
           // Run the search again to update the table
-          search1.startSearch();
-        });
-      //return false;
-    });
+          
+          search1.startSearch()
+        })
+      //return false
+    })
     // 
     // SERVICE OBJECT
     //
@@ -313,20 +352,20 @@ require([
     var submit = new SubmitButton({
       id: 'submit',
       el: $('#search_btn')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     submit.on("submit", function () {
       service.del("storage/collections/data/credentials/")
         .done(function () {
           // Run the search again to update the table
-          submitTokens();
+          submitTokens()
 
           // When the Submit button is clicked, get all the form fields by accessing token values
-          var tokens = mvc.Components.get("default");
-          var form_apiip = tokens.get("apiip");
-          var form_apiport = tokens.get("apiport");
-          var form_apiuser = tokens.get("apiuser");
-          var form_apipass = tokens.get("apipass");
+          var tokens = mvc.Components.get("default")
+          var form_apiip = tokens.get("apiip")
+          var form_apiport = tokens.get("apiport")
+          var form_apiuser = tokens.get("apiuser")
+          var form_apipass = tokens.get("apipass")
 
           // Create a dictionary to store the field names and values
           var record = {
@@ -334,7 +373,7 @@ require([
             "portapi": form_apiport,
             "userapi": form_apiuser,
             "passapi": form_apipass
-          };
+          }
 
           // Use the request method to send a REST POST request
           // to the storage/collections/data/{collection}/ endpoint
@@ -346,9 +385,17 @@ require([
             JSON.stringify(record),
             { "Content-Type": "application/json" },
             null)
-            .done( (data) => {
+            .done(() => {
               // Run the search again to update the table
-              
+              service.request(
+                "storage/collections/data/credentials/",
+                "GET",
+                null,
+                null,
+                null,
+                { "Content-Type": "application/json" }, null
+              ).done(data => {
+        
                 jsonData = JSON.parse(data)
                 const url = window.location.href
                 const arr = url.split("/")
@@ -358,27 +405,40 @@ require([
                   $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
                     parsedData = JSON.parse(data)
                     if (parsedData.data)
+                      $('#statusLed').removeClass('wz-green-red')
                       $('#statusLed').addClass('wz-green-led')
                   }).fail(() => {
+                    $('#statusLed').removeClass('wz-green-green')
                     $('#statusLed').addClass('wz-green-red')
                   })
+              })
+
               
-              search1.startSearch();
+            })
+            search1.startSearch()
 
-              // Clear the form fields 
-              $("#formCustomerInfo input[type=text]").val("");
-            });
-        });
+            // Clear the form fields 
+            $("#formCustomerInfo input[type=text]").val("")
 
-    });
+        })
+
+
+
+    })
+
+
 
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
+      defaultTokenModel.set({ earliest: '0', latest: '' })
+
+
     }
 
     if (!_.isEmpty(urlTokenModel.toJSON())) {
-      submitTokens();
+      submitTokens()
+
+
     }
 
 
@@ -386,8 +446,12 @@ require([
     // DASHBOARD READY
     //
 
-    DashboardController.ready();
-    pageLoading = false;
+    DashboardController.ready()
+
+
+    pageLoading = false
+
+
 
   }
 )
