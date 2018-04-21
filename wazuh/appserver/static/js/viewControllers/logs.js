@@ -3,22 +3,16 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/wazuh/js/customViews/tableView.js"
 ],
   function (
     mvc,
     $,
     LayoutView,
-    UrlTokenModel,
     tableView
-
   ) {
 
-    var urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    var service = mvc.createService({ owner: "nobody" })
+    const service = mvc.createService({ owner: "nobody" })
 
     $(document).ready(() => {
       service.request(
@@ -33,9 +27,8 @@ require([
         // Inject DataTable
         const jsonData = JSON.parse(data)
         console.log(jsonData)
-        // Extract backend Protocol://URL:Port for making requests
         const url = window.location.href
-        const arr = url.split("/");
+        const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
 
         const opts = {
@@ -50,12 +43,13 @@ require([
             { "data": "level", 'orderable': true }
           ]
         }
-        const table = new tableView($('#miid'), baseUrl+'/custom/wazuh/manager/logs?ip='+jsonData[0].ipapi+'&port='+jsonData[0].portapi+'&user='+jsonData[0].userapi+'&pass='+jsonData[0].passapi, opts)
+        const table = new tableView($('#myLogTable'))
+        table.build(baseUrl+'/custom/wazuh/manager/logs?ip='+jsonData[0].ipapi+'&port='+jsonData[0].portapi+'&user='+jsonData[0].userapi+'&pass='+jsonData[0].passapi, opts)
         // table.search($('#tag'))
       })
     })
 
-    $('header').remove();
+    $('header').remove()
     new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
       .render()
       .getContainerElement()
