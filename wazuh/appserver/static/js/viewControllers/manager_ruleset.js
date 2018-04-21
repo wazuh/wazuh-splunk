@@ -170,7 +170,8 @@ require([
             { "data": "pci", 'orderable': false }
           ]
         }
-        const table = new tableView($('#myTable'), baseUrl+'/custom/wazuh/manager/rules?ip='+parsedData[0].ipapi+'&port='+parsedData[0].portapi+'&user='+parsedData[0].userapi+'&pass='+parsedData[0].passapi, opts)
+        const table = new tableView($('#myTable'))
+        table.build(baseUrl+'/custom/wazuh/manager/rules?ip='+parsedData[0].ipapi+'&port='+parsedData[0].portapi+'&user='+parsedData[0].userapi+'&pass='+parsedData[0].passapi, opts)
         table.click(data => {
           setToken("showDetails", "true")
           setToken("id", data.id || "-")
