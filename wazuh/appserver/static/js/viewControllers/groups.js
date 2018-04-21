@@ -3,51 +3,18 @@ require([
   "splunkjs/mvc",
   "underscore",
   "jquery",
-  "splunkjs/mvc/simplexml/urltokenmodel",
   "splunkjs/mvc/layoutview",
   "/static/app/wazuh/js/customViews/tableView.js"
-
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
 ],
   function (
     mvc,
     _,
     $,
-    UrlTokenModel,
     LayoutView,
     tableView
   ) {
 
-    // Create token namespaces
-    var urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    var service = mvc.createService({ owner: "nobody" })
-
-    urlTokenModel.on('url:navigate', () => {
-      defaultTokenModel.set(urlTokenModel.toJSON())
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens()
-      } else {
-        submittedTokenModel.clear()
-      }
-    })
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON())
-
-    const setToken = (name, value) => {
-      defaultTokenModel.set(name, value)
-      submittedTokenModel.set(name, value)
-    }
-
-    const unsetToken = (name) => {
-      defaultTokenModel.unset(name)
-      submittedTokenModel.unset(name)
-    }
+    const service = mvc.createService({ owner: "nobody" })
 
     $(document).ready( () => {
       service.request(
@@ -107,7 +74,6 @@ require([
         const tableAgents = new tableView($('#myAgentsGroupTable'))
         tableGroups.click(data => {
           const groupName = data.name
-          //setToken("name", data.name)
           tableFiles.build(baseUrl + '/custom/wazuh/agents/files?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, optsFiles)
           const agentsUrl = baseUrl + '/custom/wazuh/agents/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name
           $.get(baseUrl+'/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
@@ -118,7 +84,6 @@ require([
             else
               $('#panel3').html('<p>No agents were found in this group.</p>')
           })
-          // // tableAgents.build(baseUrl + '/custom/wazuh/agents/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, optsAgentsGroup)
           tableFiles.click(data => {
             console.log('perform click on file',baseUrl + '/custom/wazuh/agents/filescontent?id=' + data.name + '&filename=' + data.filename + '&ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi)
             $.get(baseUrl + '/custom/wazuh/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi, data => {
@@ -127,7 +92,6 @@ require([
             })
           })
           $('#row2').show(200)
-          //setToken("showDetails", "true")
         })
       })
     })
