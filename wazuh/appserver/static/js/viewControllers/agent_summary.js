@@ -26,7 +26,6 @@ require([
 
         // Inject DataTable
         const jsonData = JSON.parse(data)
-        console.log(jsonData)
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]

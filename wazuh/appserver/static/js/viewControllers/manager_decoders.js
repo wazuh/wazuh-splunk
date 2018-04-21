@@ -4,7 +4,7 @@
 // LIBRARY REQUIREMENTS
 //
 // In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
+// the HTML dashboard. Then, we pass constiable names for these libraries and
 // modules as function parameters, in order.
 // 
 // When you add libraries or modules, remember to retain this mapping order
@@ -98,11 +98,11 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const service = mvc.createService({ owner: "nobody" });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -140,9 +140,7 @@ require([
         null,
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
-        var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
+        const parsedData = JSON.parse(data);
         setToken('baseip', parsedData[0].baseip);
         setToken('baseport', parsedData[0].baseport);
         setToken('ipapi', parsedData[0].ipapi);
@@ -153,7 +151,6 @@ require([
         const url = window.location.href
         const arr = url.split("/");
         const baseUrl = arr[0] + "//" + arr[2]
-        console.log('BASEURL ', baseUrl)
         const opts = {
           pages: 10,
           processing: true,
@@ -187,7 +184,7 @@ require([
     //
 
 
-    // var search1 = new SearchManager({
+    // const search1 = new SearchManager({
     //   "id": "search1",
     //   "cancelOnUnload": true,
     //   "sample_ratio": 1,
@@ -203,7 +200,7 @@ require([
     //   "runWhenTimeIsUndefined": false
     // }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search2 = new SearchManager({
+    const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -246,7 +243,7 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    // var element1 = new TableElement({
+    // const element1 = new TableElement({
     //   "id": "element1",
     //   "count": 10,
     //   "dataOverlayMode": "none",
@@ -274,7 +271,7 @@ require([
     //   }
     // });
 
-    var element2 = new HtmlElement({
+    const element2 = new HtmlElement({
       "id": "element2",
       "useTokens": true,
       "el": $('#element2')
@@ -282,7 +279,7 @@ require([
 
     DashboardController.addReadyDep(element2.contentLoaded());
 
-    var element3 = new ChartElement({
+    const element3 = new ChartElement({
       "id": "element3",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",

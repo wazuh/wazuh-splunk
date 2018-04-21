@@ -4,7 +4,7 @@
 // LIBRARY REQUIREMENTS
 //
 // In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
+// the HTML dashboard. Then, we pass constiable names for these libraries and
 // modules as function parameters, in order.
 // 
 // When you add libraries or modules, remember to retain this mapping order
@@ -87,7 +87,7 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true;
 
 
     // 
@@ -95,11 +95,11 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const service = mvc.createService({ owner: "nobody" });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -142,9 +142,7 @@ require([
         null,
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
-        var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
+        const parsedData = JSON.parse(data);
         setToken('baseip', parsedData[0].baseip);
         setToken('baseport', parsedData[0].baseport);
         setToken('ipapi', parsedData[0].ipapi);
@@ -156,7 +154,7 @@ require([
     })
 
 
-    // var search1 = new SearchManager({
+    // const search1 = new SearchManager({
     //   "id": "search1",
     //   "cancelOnUnload": true,
     //   "sample_ratio": null,
@@ -172,7 +170,7 @@ require([
     //   "runWhenTimeIsUndefined": false
     // }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search2 = new SearchManager({
+    const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -188,7 +186,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search3 = new SearchManager({
+    const search3 = new SearchManager({
       "id": "search3",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -204,7 +202,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search4 = new SearchManager({
+    const search4 = new SearchManager({
       "id": "search4",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -220,7 +218,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search5 = new SearchManager({
+    const search5 = new SearchManager({
       "id": "search5",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -236,7 +234,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search6 = new SearchManager({
+    const search6 = new SearchManager({
       "id": "search6",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -252,7 +250,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search7 = new SearchManager({
+    const search7 = new SearchManager({
       "id": "search7",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -268,7 +266,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search8 = new SearchManager({
+    const search8 = new SearchManager({
       "id": "search8",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -284,7 +282,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search9 = new SearchManager({
+    const search9 = new SearchManager({
       "id": "search9",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -300,7 +298,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search10 = new SearchManager({
+    const search10 = new SearchManager({
       "id": "search10",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -316,7 +314,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search11 = new SearchManager({
+    const search11 = new SearchManager({
       "id": "search11",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -332,7 +330,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search12 = new SearchManager({
+    const search12 = new SearchManager({
       "id": "search12",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -348,7 +346,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search13 = new SearchManager({
+    const search13 = new SearchManager({
       "id": "search13",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -364,7 +362,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search14 = new SearchManager({
+    const search14 = new SearchManager({
       "id": "search14",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -380,7 +378,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search15 = new SearchManager({
+    const search15 = new SearchManager({
       "id": "search15",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -396,7 +394,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search16 = new SearchManager({
+    const search16 = new SearchManager({
       "id": "search16",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -412,7 +410,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search17 = new SearchManager({
+    const search17 = new SearchManager({
       "id": "search17",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -428,7 +426,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search18 = new SearchManager({
+    const search18 = new SearchManager({
       "id": "search18",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -471,7 +469,7 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    // var element1 = new TableElement({
+    // const element1 = new TableElement({
     //   "id": "element1",
     //   "count": 5,
     //   "drilldown": "cell",
@@ -482,12 +480,12 @@ require([
     // element1.on("click", function (e) {
     //   if (e.field !== undefined) {
     //     e.preventDefault();
-    //     var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/| getagentscheck\" name=$agent$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\"&earliest=-60m@m&latest=now", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+    //     const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/| getagentscheck\" name=$agent$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\"&earliest=-60m@m&latest=now", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
     //     utils.redirect(url, false, "_blank");
     //   }
     // });
 
-    var element2 = new ChartElement({
+    const element2 = new ChartElement({
       "id": "element2",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -521,7 +519,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element3 = new ChartElement({
+    const element3 = new ChartElement({
       "id": "element3",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -555,7 +553,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element4 = new ChartElement({
+    const element4 = new ChartElement({
       "id": "element4",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -589,7 +587,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element5 = new ChartElement({
+    const element5 = new ChartElement({
       "id": "element5",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -623,7 +621,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element6 = new ChartElement({
+    const element6 = new ChartElement({
       "id": "element6",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -657,7 +655,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element7 = new ChartElement({
+    const element7 = new ChartElement({
       "id": "element7",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -691,7 +689,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element8 = new ChartElement({
+    const element8 = new ChartElement({
       "id": "element8",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -725,7 +723,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element9 = new ChartElement({
+    const element9 = new ChartElement({
       "id": "element9",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -759,7 +757,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element10 = new ChartElement({
+    const element10 = new ChartElement({
       "id": "element10",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -793,7 +791,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element11 = new ChartElement({
+    const element11 = new ChartElement({
       "id": "element11",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -827,7 +825,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element12 = new ChartElement({
+    const element12 = new ChartElement({
       "id": "element12",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -861,7 +859,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element13 = new ChartElement({
+    const element13 = new ChartElement({
       "id": "element13",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -895,7 +893,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element14 = new ChartElement({
+    const element14 = new ChartElement({
       "id": "element14",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -929,7 +927,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element15 = new ChartElement({
+    const element15 = new ChartElement({
       "id": "element15",
       "charting.drilldown": "none",
       "resizable": true,
@@ -939,7 +937,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element16 = new ChartElement({
+    const element16 = new ChartElement({
       "id": "element16",
       "charting.drilldown": "none",
       "resizable": true,
@@ -949,7 +947,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element17 = new TableElement({
+    const element17 = new TableElement({
       "id": "element17",
       "dataOverlayMode": "none",
       "drilldown": "cell",
@@ -964,7 +962,7 @@ require([
     element17.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\"| table agent.name, syscheck.path, full_log, syscheck.mtime_after&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\"| table agent.name, syscheck.path, full_log, syscheck.mtime_after&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
@@ -974,7 +972,7 @@ require([
     // VIEWS: FORM INPUTS
     //
 
-    var input1 = new DropdownInput({
+    const input1 = new DropdownInput({
       "id": "input1",
       "choices": [
         { "label": "ALL", "value": "*" }
@@ -995,7 +993,7 @@ require([
       FormUtils.handleValueChange(input1);
     });
 
-    var input2 = new TimeRangeInput({
+    const input2 = new TimeRangeInput({
       "id": "input2",
       "searchWhenChanged": true,
       "default": { "latest_time": "now", "earliest_time": "-24h@h" },

@@ -4,7 +4,7 @@
 // LIBRARY REQUIREMENTS
 //
 // In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
+// the HTML dashboard. Then, we pass constiable names for these libraries and
 // modules as function parameters, in order.
 // 
 // When you add libraries or modules, remember to retain this mapping order
@@ -87,7 +87,7 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true;
 
 
     // 
@@ -95,10 +95,10 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -134,7 +134,7 @@ require([
     //
 
 
-    var search1 = new SearchManager({
+    const search1 = new SearchManager({
       "id": "search1",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -150,7 +150,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search2 = new SearchManager({
+    const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -166,7 +166,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search3 = new SearchManager({
+    const search3 = new SearchManager({
       "id": "search3",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -182,7 +182,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search4 = new SearchManager({
+    const search4 = new SearchManager({
       "id": "search4",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -198,7 +198,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search5 = new SearchManager({
+    const search5 = new SearchManager({
       "id": "search5",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -214,7 +214,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search6 = new SearchManager({
+    const search6 = new SearchManager({
       "id": "search6",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -230,7 +230,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search7 = new SearchManager({
+    const search7 = new SearchManager({
       "id": "search7",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -246,7 +246,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search8 = new SearchManager({
+    const search8 = new SearchManager({
       "id": "search8",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -262,7 +262,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search9 = new SearchManager({
+    const search9 = new SearchManager({
       "id": "search9",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -278,7 +278,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search10 = new SearchManager({
+    const search10 = new SearchManager({
       "id": "search10",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -294,7 +294,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search11 = new SearchManager({
+    const search11 = new SearchManager({
       "id": "search11",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -310,7 +310,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search12 = new SearchManager({
+    const search12 = new SearchManager({
       "id": "search12",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -326,7 +326,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search13 = new SearchManager({
+    const search13 = new SearchManager({
       "id": "search13",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -342,7 +342,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search14 = new SearchManager({
+    const search14 = new SearchManager({
       "id": "search14",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -358,7 +358,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search15 = new SearchManager({
+    const search15 = new SearchManager({
       "id": "search15",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -401,7 +401,7 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new SingleElement({
+    const element1 = new SingleElement({
       "id": "element1",
       "numberPrecision": "0",
       "trellis.size": "medium",
@@ -427,12 +427,12 @@ require([
     element1.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
 
-    var element2 = new SingleElement({
+    const element2 = new SingleElement({
       "id": "element2",
       "numberPrecision": "0",
       "trellis.size": "medium",
@@ -458,12 +458,12 @@ require([
     element2.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
 
-    var element3 = new SingleElement({
+    const element3 = new SingleElement({
       "id": "element3",
       "numberPrecision": "0",
       "trellis.size": "medium",
@@ -489,12 +489,12 @@ require([
     element3.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
 
-    var element4 = new ChartElement({
+    const element4 = new ChartElement({
       "id": "element4",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -528,7 +528,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element5 = new ChartElement({
+    const element5 = new ChartElement({
       "id": "element5",
       "charting.drilldown": "none",
       "resizable": true,
@@ -538,7 +538,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element6 = new ChartElement({
+    const element6 = new ChartElement({
       "id": "element6",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -572,7 +572,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element7 = new ChartElement({
+    const element7 = new ChartElement({
       "id": "element7",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -606,7 +606,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element8 = new ChartElement({
+    const element8 = new ChartElement({
       "id": "element8",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -640,7 +640,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element9 = new ChartElement({
+    const element9 = new ChartElement({
       "id": "element9",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -674,7 +674,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element10 = new ChartElement({
+    const element10 = new ChartElement({
       "id": "element10",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -708,7 +708,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element11 = new SingleElement({
+    const element11 = new SingleElement({
       "id": "element11",
       "numberPrecision": "0",
       "trellis.size": "medium",
@@ -731,7 +731,7 @@ require([
       "el": $('#element11')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element12 = new SingleElement({
+    const element12 = new SingleElement({
       "id": "element12",
       "numberPrecision": "0.00",
       "trellis.size": "medium",
@@ -754,7 +754,7 @@ require([
       "el": $('#element12')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element13 = new SingleElement({
+    const element13 = new SingleElement({
       "id": "element13",
       "numberPrecision": "0.00",
       "trellis.size": "medium",
@@ -780,12 +780,12 @@ require([
     element13.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
 
-    var element14 = new TableElement({
+    const element14 = new TableElement({
       "id": "element14",
       "dataOverlayMode": "none",
       "drilldown": "cell",
@@ -800,7 +800,7 @@ require([
     element14.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
@@ -810,7 +810,7 @@ require([
     // VIEWS: FORM INPUTS
     //
 
-    var input1 = new TimeRangeInput({
+    const input1 = new TimeRangeInput({
       "id": "input1",
       "searchWhenChanged": true,
       "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -823,7 +823,7 @@ require([
       FormUtils.handleValueChange(input1);
     });
 
-    var input2 = new DropdownInput({
+    const input2 = new DropdownInput({
       "id": "input2",
       "choices": [
         { "label": "ALL", "value": "*" }

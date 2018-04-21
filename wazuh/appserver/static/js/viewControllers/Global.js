@@ -4,7 +4,7 @@
 // LIBRARY REQUIREMENTS
 //
 // In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
+// the HTML dashboard. Then, we pass constiable names for these libraries and
 // modules as function parameters, in order.
 // 
 // When you add libraries or modules, remember to retain this mapping order
@@ -193,7 +193,7 @@ require([
     })
 
 
-    var search1 = new SearchManager({
+    const search1 = new SearchManager({
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
@@ -242,7 +242,7 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new TableElement({
+    const element1 = new TableElement({
       "id": "element1",
       "drilldown": "none",
       "managerid": "search1",
@@ -254,7 +254,7 @@ require([
     // VIEWS: FORM INPUTS
     //
 
-    var input3 = new TextInput({
+    const input3 = new TextInput({
       "id": "input3",
       "value": "$form.apiip$",
       "el": $('#input3')
@@ -264,7 +264,7 @@ require([
       FormUtils.handleValueChange(input3)
     })
 
-    var input4 = new TextInput({
+    const input4 = new TextInput({
       "id": "input4",
       "value": "$form.apiport$",
       "el": $('#input4')
@@ -274,7 +274,7 @@ require([
       FormUtils.handleValueChange(input4)
     })
 
-    var input5 = new TextInput({
+    const input5 = new TextInput({
       "id": "input5",
       "value": "$form.apiuser$",
       "el": $('#input5')
@@ -284,7 +284,7 @@ require([
       FormUtils.handleValueChange(input5)
     })
 
-    var input6 = new TextInput({
+    const input6 = new TextInput({
       "id": "input6",
       "value": "$form.apipass$",
       "el": $('#input6')
@@ -328,8 +328,8 @@ require([
     // Call this function when the Delete Record button is clicked
     $("#deleteRecord").click(function () {
       // Get the value of the key ID field
-      var tokens = mvc.Components.get("default")
-      //var form_keyid = tokens.get("KeyID")
+      const tokens = mvc.Components.get("default")
+      //const form_keyid = tokens.get("KeyID")
 
       // Delete the record that corresponds to the key ID using
       // the del method to send a DELETE request
@@ -349,7 +349,7 @@ require([
     // Create a service object using the Splunk SDK for JavaScript
     // to send REST requests
 
-    var submit = new SubmitButton({
+    const submit = new SubmitButton({
       id: 'submit',
       el: $('#search_btn')
     }, { tokens: true }).render()
@@ -361,14 +361,14 @@ require([
           submitTokens()
 
           // When the Submit button is clicked, get all the form fields by accessing token values
-          var tokens = mvc.Components.get("default")
-          var form_apiip = tokens.get("apiip")
-          var form_apiport = tokens.get("apiport")
-          var form_apiuser = tokens.get("apiuser")
-          var form_apipass = tokens.get("apipass")
+          const tokens = mvc.Components.get("default")
+          const form_apiip = tokens.get("apiip")
+          const form_apiport = tokens.get("apiport")
+          const form_apiuser = tokens.get("apiuser")
+          const form_apipass = tokens.get("apipass")
 
           // Create a dictionary to store the field names and values
-          var record = {
+          const record = {
             "ipapi": form_apiip,
             "portapi": form_apiport,
             "userapi": form_apiuser,

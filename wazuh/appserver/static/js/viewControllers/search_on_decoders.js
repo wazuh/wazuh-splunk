@@ -139,8 +139,6 @@ require([
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
         var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
         setToken('baseip', parsedData[0].baseip);
         setToken('baseport', parsedData[0].baseport);
         setToken('ipapi', parsedData[0].ipapi);

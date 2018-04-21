@@ -14,8 +14,7 @@ require([
   ) {
 
     $(document).ready(() => {
-      console.log('document ready')
-      var opts = {
+      let opts = {
         pages: 10,
         processing: true,
         serverSide: true,

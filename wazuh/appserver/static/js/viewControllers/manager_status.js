@@ -4,7 +4,7 @@
 // LIBRARY REQUIREMENTS
 //
 // In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
+// the HTML dashboard. Then, we pass constiable names for these libraries and
 // modules as function parameters, in order.
 // 
 // When you add libraries or modules, remember to retain this mapping order
@@ -87,7 +87,7 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true;
 
 
     // 
@@ -95,11 +95,11 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const service = mvc.createService({ owner: "nobody" });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -137,11 +137,10 @@ require([
         null,
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
-        var parsedData = JSON.parse(data);
+        const parsedData = JSON.parse(data);
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2] 
-        // console.log('BASEIP', baseUrl + JSON.parse(data)[0].baseip);
         setToken('baseip', baseUrl);
         setToken('ipapi', parsedData[0].ipapi);
         setToken('portapi', parsedData[0].portapi);
@@ -151,12 +150,8 @@ require([
       });
     })
 
-    //
-    // SEARCH MANAGERS
-    //
 
-
-    var search1 = new SearchManager({
+    const search1 = new SearchManager({
       "id": "search1",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-analysisd as analysisd | eval value=if(analysisd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -187,7 +182,7 @@ require([
       ]
     });
 
-    var search2 = new SearchManager({
+    const search2 = new SearchManager({
       "id": "search2",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-execd as execd| eval value=if(execd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -218,7 +213,7 @@ require([
       ]
     });
 
-    var search3 = new SearchManager({
+    const search3 = new SearchManager({
       "id": "search3",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-logcollector as logcollector| eval value=if(logcollector=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -249,7 +244,7 @@ require([
       ]
     });
 
-    var search4 = new SearchManager({
+    const search4 = new SearchManager({
       "id": "search4",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-monitord as monitord | eval value=if(monitord=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -280,7 +275,7 @@ require([
       ]
     });
 
-    var search5 = new SearchManager({
+    const search5 = new SearchManager({
       "id": "search5",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-remoted as remoted | eval value=if(remoted=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -311,7 +306,7 @@ require([
       ]
     });
 
-    var search6 = new SearchManager({
+    const search6 = new SearchManager({
       "id": "search6",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-maild as maild  | eval value=if(maild=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -342,7 +337,7 @@ require([
       ]
     });
 
-    var search7 = new SearchManager({
+    const search7 = new SearchManager({
       "id": "search7",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-authd as authd  | eval value=if(authd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -373,7 +368,7 @@ require([
       ]
     });
 
-    var search8 = new SearchManager({
+    const search8 = new SearchManager({
       "id": "search8",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_wazuh-modulesd as modulesd  | eval value=if(modulesd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -404,7 +399,7 @@ require([
       ]
     });
 
-    var search9 = new SearchManager({
+    const search9 = new SearchManager({
       "id": "search9",
       "sample_ratio": null,
       "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-syscheckd as syscheckd  | eval value=if(syscheckd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
@@ -435,7 +430,7 @@ require([
       ]
     });
 
-    var search10 = new SearchManager({
+    const search10 = new SearchManager({
       "id": "search10",
       "sample_ratio": null,
       "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_total) as \"Total Agents\"",
@@ -451,7 +446,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search11 = new SearchManager({
+    const search11 = new SearchManager({
       "id": "search11",
       "sample_ratio": null,
       "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_active) as \"Active Agents\"",
@@ -467,7 +462,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search12 = new SearchManager({
+    const search12 = new SearchManager({
       "id": "search12",
       "sample_ratio": null,
       "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_disconnected) as \"Disconnected\"",
@@ -483,7 +478,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search13 = new SearchManager({
+    const search13 = new SearchManager({
       "id": "search13",
       "sample_ratio": null,
       "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_neverconnected) as \"Never\"",
@@ -499,7 +494,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search14 = new SearchManager({
+    const search14 = new SearchManager({
       "id": "search14",
       "sample_ratio": null,
       "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + \" %\" | top Coverage showcount=f showperc=f",
@@ -515,7 +510,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search15 = new SearchManager({
+    const search15 = new SearchManager({
       "id": "search15",
       "sample_ratio": 1,
       "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats latest(*) | fields - latest(punct),latest(timestamp),latest(linecount),latest(error),latest(host),latest(agent_summary_disconnected),latest(agent_summary_neverconnected),latest(agent_summary_total),latest(date_hour),latest(date_mday),latest(date_minute),latest(date_month),latest(date_second),latest(date_wday),latest(date_year),latest(date_zone),latest(index),latest(manager-info_tz_offset),latest(manager-status_ossec-analysisd),latest(manager-status_ossec-authd),latest(manager-status_ossec-execd),latest(manager-status_ossec-logcollector),latest(manager-status_ossec-maild),latest(manager-status_ossec-monitord),latest(manager-status_ossec-remoted),latest(manager-status_ossec-syscheckd),latest(manager-status_wazuh-modulesd),latest(source),latest(timeendpos),latest(timestartpos) | rename latest(agent_summary_active) as \"Agents Active\", latest(manager-info_installation_date) as \"Installation date\", latest(manager-info_max_agents) as \"Max agents\",latest(manager-info_openssl_support) as \"SSL Support\", latest(manager-info_path) as \"WAZUH PATH\",latest(manager-info_type) as \"Role\",latest(manager-info_tz_name) as \"Time Zone\", latest(manager-info_version) as \"WAZUH VERSION\", latest(sourcetype) as \"sourcetype\", latest(splunk_server) as \"Splunk Server\", latest(manager-info_ruleset_version) as \"Ruleset version\" | appendcols [search index=\"wazuh_api\" sourcetype=* sourcetype=wazuh_api_rules \"agent_summary_totalItems\"=\"*\" | head 1 | stats count by agent_summary_totalItems | fields - count  | transpose | rename \"row 1\" as \"Total rules\" | sort Component ] | transpose | rename \"column\" as Component, \"row 1\" as \"Value\" | head 10",
@@ -558,7 +553,7 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new HtmlElement({
+    const element1 = new HtmlElement({
       "id": "element1",
       "useTokens": true,
       "el": $('#element1')
@@ -566,7 +561,7 @@ require([
 
     DashboardController.addReadyDep(element1.contentLoaded());
 
-    var element2 = new HtmlElement({
+    const element2 = new HtmlElement({
       "id": "element2",
       "useTokens": true,
       "el": $('#element2')
@@ -574,7 +569,7 @@ require([
 
     DashboardController.addReadyDep(element2.contentLoaded());
 
-    var element3 = new HtmlElement({
+    const element3 = new HtmlElement({
       "id": "element3",
       "useTokens": true,
       "el": $('#element3')
@@ -582,7 +577,7 @@ require([
 
     DashboardController.addReadyDep(element3.contentLoaded());
 
-    var element4 = new HtmlElement({
+    const element4 = new HtmlElement({
       "id": "element4",
       "useTokens": true,
       "el": $('#element4')
@@ -590,7 +585,7 @@ require([
 
     DashboardController.addReadyDep(element4.contentLoaded());
 
-    var element5 = new HtmlElement({
+    const element5 = new HtmlElement({
       "id": "element5",
       "useTokens": true,
       "el": $('#element5')
@@ -598,7 +593,7 @@ require([
 
     DashboardController.addReadyDep(element5.contentLoaded());
 
-    var element6 = new HtmlElement({
+    const element6 = new HtmlElement({
       "id": "element6",
       "useTokens": true,
       "el": $('#element6')
@@ -606,7 +601,7 @@ require([
 
     DashboardController.addReadyDep(element6.contentLoaded());
 
-    var element7 = new HtmlElement({
+    const element7 = new HtmlElement({
       "id": "element7",
       "useTokens": true,
       "el": $('#element7')
@@ -614,7 +609,7 @@ require([
 
     DashboardController.addReadyDep(element7.contentLoaded());
 
-    var element8 = new HtmlElement({
+    const element8 = new HtmlElement({
       "id": "element8",
       "useTokens": true,
       "el": $('#element8')
@@ -622,7 +617,7 @@ require([
 
     DashboardController.addReadyDep(element8.contentLoaded());
 
-    var element9 = new HtmlElement({
+    const element9 = new HtmlElement({
       "id": "element9",
       "useTokens": true,
       "el": $('#element9')
@@ -630,7 +625,7 @@ require([
 
     DashboardController.addReadyDep(element9.contentLoaded());
 
-    var element10 = new SingleElement({
+    const element10 = new SingleElement({
       "id": "element10",
       "drilldown": "none",
       "height": "50",
@@ -638,7 +633,7 @@ require([
       "el": $('#element10')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element11 = new SingleElement({
+    const element11 = new SingleElement({
       "id": "element11",
       "drilldown": "none",
       "height": "50",
@@ -646,7 +641,7 @@ require([
       "el": $('#element11')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element12 = new SingleElement({
+    const element12 = new SingleElement({
       "id": "element12",
       "drilldown": "none",
       "height": "50",
@@ -654,7 +649,7 @@ require([
       "el": $('#element12')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element13 = new SingleElement({
+    const element13 = new SingleElement({
       "id": "element13",
       "drilldown": "none",
       "height": "50",
@@ -662,7 +657,7 @@ require([
       "el": $('#element13')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element14 = new SingleElement({
+    const element14 = new SingleElement({
       "id": "element14",
       "drilldown": "none",
       "height": "50",
@@ -670,7 +665,7 @@ require([
       "el": $('#element14')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    var element15 = new TableElement({
+    const element15 = new TableElement({
       "id": "element15",
       "count": 100,
       "dataOverlayMode": "none",

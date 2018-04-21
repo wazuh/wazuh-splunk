@@ -4,7 +4,7 @@
 // LIBRARY REQUIREMENTS
 //
 // In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
+// the HTML dashboard. Then, we pass constiable names for these libraries and
 // modules as function parameters, in order.
 // 
 // When you add libraries or modules, remember to retain this mapping order
@@ -87,7 +87,7 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true;
 
 
     // 
@@ -95,10 +95,10 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -134,7 +134,7 @@ require([
     //
 
 
-    var search1 = new SearchManager({
+    const search1 = new SearchManager({
       "id": "search1",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -150,7 +150,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search2 = new SearchManager({
+    const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -166,7 +166,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search3 = new SearchManager({
+    const search3 = new SearchManager({
       "id": "search3",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -182,7 +182,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search4 = new SearchManager({
+    const search4 = new SearchManager({
       "id": "search4",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -198,7 +198,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search5 = new SearchManager({
+    const search5 = new SearchManager({
       "id": "search5",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -241,7 +241,7 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new ChartElement({
+    const element1 = new ChartElement({
       "id": "element1",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -275,7 +275,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element2 = new ChartElement({
+    const element2 = new ChartElement({
       "id": "element2",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -309,7 +309,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element3 = new ChartElement({
+    const element3 = new ChartElement({
       "id": "element3",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -343,7 +343,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element4 = new ChartElement({
+    const element4 = new ChartElement({
       "id": "element4",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -377,7 +377,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element5 = new TableElement({
+    const element5 = new TableElement({
       "id": "element5",
       "dataOverlayMode": "heatmap",
       "drilldown": "cell",
@@ -392,7 +392,7 @@ require([
     element5.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
         utils.redirect(url, false, "_blank");
       }
     });
@@ -402,7 +402,7 @@ require([
     // VIEWS: FORM INPUTS
     //
 
-    var input1 = new TimeRangeInput({
+    const input1 = new TimeRangeInput({
       "id": "input1",
       "searchWhenChanged": true,
       "default": { "latest_time": "now", "earliest_time": "-24h@h" },

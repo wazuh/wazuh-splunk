@@ -29,8 +29,7 @@ require([
         const baseUrl = arr[0] + "//" + arr[2]
         const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
         $.get(endPoint, function (data) {
-          var jsonObj = JSON.parse(data);
-          console.log(jsonObj);
+          const jsonObj = JSON.parse(data);
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output);
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level);
@@ -43,7 +42,7 @@ require([
           $('#authPurge').text(jsonObj.auth.purge);
           $('#authForceInsert').text(jsonObj.auth.force_insert);
           // First load Global view by default
-          var globalUrl = "/static/app/wazuh/views/global.html"
+          const globalUrl = "/static/app/wazuh/views/global.html"
           $('#dynamicContent').load(globalUrl, function (data) {
             $('#jsonViewOutput').text(jsonObj.global.jsonout_output);
             $('#logAll').text(jsonObj.global.logall);
@@ -59,7 +58,7 @@ require([
           });
           // If click on Global section
           $('#global').click(function () {
-            var globalUrl = "/static/app/wazuh/views/global.html"
+            const globalUrl = "/static/app/wazuh/views/global.html"
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#jsonViewOutput').text(jsonObj.global.jsonout_output);
@@ -77,7 +76,7 @@ require([
           })
           // If click on Cluster section
           $('#cluster').click(function () {
-            var globalUrl = "/static/app/wazuh/views/cluster.html";
+            const globalUrl = "/static/app/wazuh/views/cluster.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#disabled').text(jsonObj.cluster.disabled);
@@ -93,11 +92,9 @@ require([
           })
           // If click on Syscheck section
           $('#syscheck').click(function () {
-            var globalUrl = "/static/app/wazuh/views/syscheck.html";
+            const globalUrl = "/static/app/wazuh/views/syscheck.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              console.log('syscheck ', jsonObj.syscheck, typeof jsonObj.syscheck);
-              console.log('syscheck frequency', jsonObj.syscheck.frequency, typeof jsonObj.syscheck.frequency);
               $('#sysDisabled').text(jsonObj.syscheck.frequency);
               $('#sysFrequency').text('dflñngdlg');
               $('#sysAutoIgnore').text(jsonObj.syscheck.auto_ignore);
@@ -106,9 +103,7 @@ require([
               $('#sysNoDiff').text(jsonObj.syscheck.nodiff);
               $('#sysSkipNfs').text(jsonObj.syscheck.skip_nfs);
               //$('#sysMonitoringDirectories').text(jsonObj.syscheck.directories);
-              console.log('size of directories ', jsonObj.syscheck.directories.length);
-              for (var i = 0; i < jsonObj.syscheck.directories.length; i++) {
-                console.log("one iteration")
+              for (let i = 0; i < jsonObj.syscheck.directories.length; i++) {
                 $('#monitoringDirectories').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
                   '<p class="wz-list-child">Path</p>' +
@@ -128,7 +123,7 @@ require([
           })
           // If click on Rootcheck section
           $('#rootcheck').click(function () {
-            var globalUrl = "/static/app/wazuh/views/rootcheck.html";
+            const globalUrl = "/static/app/wazuh/views/rootcheck.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#rootDisabled').text(jsonObj.rootcheck.disabled);
@@ -141,7 +136,7 @@ require([
           })
           // If click on Auth section
           $('#auth').click(function () {
-            var globalUrl = "/static/app/wazuh/views/auth.html";
+            const globalUrl = "/static/app/wazuh/views/auth.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#authDisabled').text(jsonObj.auth.disabled);
@@ -161,7 +156,7 @@ require([
           })
           // If click on Ruleset section
           $('#ruleset').click(function () {
-            var globalUrl = "/static/app/wazuh/views/ruleset.html";
+            const globalUrl = "/static/app/wazuh/views/ruleset.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#ruleDecoderDirs').text(jsonObj.ruleset.decoder_dir);
@@ -172,10 +167,10 @@ require([
           })
           // If click on Command section
           $('#command').click(function () {
-            var globalUrl = "/static/app/wazuh/views/command.html";
+            const globalUrl = "/static/app/wazuh/views/command.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              for (var i = 0; i < jsonObj.command.length; i++) {
+              for (let i = 0; i < jsonObj.command.length; i++) {
                 $('#commandChilds').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
                   '<p class="wz-list-child">Name</p>' +
@@ -202,10 +197,10 @@ require([
           });
           // If click on Remote section
           $('#remote').click(function () {
-            var globalUrl = "/static/app/wazuh/views/remote.html";
+            const globalUrl = "/static/app/wazuh/views/remote.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              for (var i = 0; i < jsonObj.remote.length; i++) {
+              for (let i = 0; i < jsonObj.remote.length; i++) {
                 $('#remoteChilds').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
                   '<p class="wz-list-child">Connection</p>' +
