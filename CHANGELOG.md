@@ -3,29 +3,26 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ## Wazuh v3.2.x - Splunk app v2.2.0
 ### Added
-- New Configuration tab:
-  - Now the whole configuration that the app needs is made by inputs.
-  - Extern configuration files are not needed anymore.
-- Back-end refactor:
-  - Each controller is now parameterized, not any hardcoded values anymore.
-  - Endpoints now work with GET params.
+- New Manager Configuration tab ([#32](https://github.com/wazuh/wazuh-splunk/pull/32))
+- Dynamic tables([#37](https://github.com/wazuh/wazuh-splunk/pull/37))
+  - Now the app uses dynamic tables improving the pagination and filtering.
+  - Backend endpoints were adapted to pagination and better interaction with Wazuh API.
 
 ### Changed
-- Each view was converted from SimpleXML to HTML+JS in order to gain the whole SplunkJS SDK functionality.
-- Credentials are now stored in KVStore database, values are getting from ajax when needed.
-- Each query now send parameters to streaming commands.
-- The app is now called 'Wazuh' instead 'SplunkAppForWazuh'.
-- Some unused tabs were deleted (Splunk and Tools).
+- Performance improvings:
+  - Event listeners and unused dependencies were removed
+- API Configuration:
+  - IP base and port are not required anymore.
+  - Status led added in order to check connection.
+  - Password field is not shown now.
+- View controllers transpiled to ES6 syntax
+- Tab distribution redesigned:
+  - Deleted redundant Agents summary views and compact them in just one tab
+  - Deleted Search on Rules and Search on Decoders tab and compacting all functionalities in Ruleset and Decoders tabs
+  - Tab names were renamed
 ### Fixed
 - Ruleset and Decoders search tabs now are able to filter properly.
-
-
-## Wazuh v3.2.x - Splunk app v2.2.0
-
-### Added
-- New Manager Configuration tab
-
-### Fixed
+- SSL Verification Error in lab environment fixed
 - Groups: now the content of each individual configuration file is showed up in pretty JSON format properly.
 
 ## Wazuh v3.2.x - Splunk app v2.1.0
