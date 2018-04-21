@@ -56,7 +56,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     request = requests.get(url + '/manager/status', auth=auth, verify=verify)

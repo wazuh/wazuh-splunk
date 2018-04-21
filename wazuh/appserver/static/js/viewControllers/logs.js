@@ -26,11 +26,9 @@ require([
 
         // Inject DataTable
         const jsonData = JSON.parse(data)
-        console.log(jsonData)
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-
         const opts = {
           pages: 10,
           processing: true,
@@ -46,7 +44,6 @@ require([
         const table = new tableView()
         table.element($('#myLogTable'))
         table.build(baseUrl+'/custom/wazuh/manager/logs?ip='+jsonData[0].ipapi+'&port='+jsonData[0].portapi+'&user='+jsonData[0].userapi+'&pass='+jsonData[0].passapi, opts)
-        // table.search($('#tag'))
       })
     })
 
