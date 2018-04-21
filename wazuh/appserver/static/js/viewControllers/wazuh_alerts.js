@@ -155,21 +155,21 @@ require([
     //
 
 
-    var search1 = new SearchManager({
-      "id": "search1",
-      "status_buckets": 0,
-      "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | search name=$agent$ | fillnull value=\"N/A\"",
-      "latest_time": "now",
-      "cancelOnUnload": true,
-      "sample_ratio": null,
-      "earliest_time": "-60m@m",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    // var search1 = new SearchManager({
+    //   "id": "search1",
+    //   "status_buckets": 0,
+    //   "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | search name=$agent$ | fillnull value=\"N/A\"",
+    //   "latest_time": "now",
+    //   "cancelOnUnload": true,
+    //   "sample_ratio": null,
+    //   "earliest_time": "-60m@m",
+    //   "app": utils.getCurrentApp(),
+    //   "auto_cancel": 90,
+    //   "preview": true,
+    //   "tokenDependencies": {
+    //   },
+    //   "runWhenTimeIsUndefined": false
+    // }, { tokens: true, tokenNamespace: "submitted" });
 
     var search2 = new SearchManager({
       "id": "search2",

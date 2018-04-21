@@ -138,7 +138,7 @@ require([
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table baseip ,baseport,ipapi,portapi,userapi,passapi | rename baseip as Base-IP, baseport as Base-Port, ipapi as IP-API, portapi as Port-API, userapi as Username, passapi as Password",
+      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table ipapi,portapi,userapi,passapi | rename ipapi as IP-API, portapi as Port-API, userapi as Username, passapi as Password",
       "latest_time": "now",
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
@@ -188,26 +188,6 @@ require([
     //
     // VIEWS: FORM INPUTS
     //
-
-    var input1 = new TextInput({
-      "id": "input1",
-      "value": "$form.baseip$",
-      "el": $('#input1')
-    }, { tokens: true }).render();
-
-    input1.on("change", function (newValue) {
-      FormUtils.handleValueChange(input1);
-    });
-
-    var input2 = new TextInput({
-      "id": "input2",
-      "value": "$form.baseport$",
-      "el": $('#input2')
-    }, { tokens: true }).render();
-
-    input2.on("change", function (newValue) {
-      FormUtils.handleValueChange(input2);
-    });
 
     var input3 = new TextInput({
       "id": "input3",
@@ -294,8 +274,6 @@ require([
 
           // When the Submit button is clicked, get all the form fields by accessing token values
           var tokens = mvc.Components.get("default");
-          var form_baseip = tokens.get("baseip");
-          var form_baseport = tokens.get("baseport");
           var form_apiip = tokens.get("apiip");
           var form_apiport = tokens.get("apiport");
           var form_apiuser = tokens.get("apiuser");
@@ -303,8 +281,6 @@ require([
 
           // Create a dictionary to store the field names and values
           var record = {
-            "baseip": form_baseip,
-            "baseport": form_baseport,
             "ipapi": form_apiip,
             "portapi": form_apiport,
             "userapi": form_apiuser,

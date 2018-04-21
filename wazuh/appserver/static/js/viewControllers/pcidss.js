@@ -155,21 +155,21 @@ require([
     //
 
 
-    var search1 = new SearchManager({
-      "id": "search1",
-      "cancelOnUnload": true,
-      "sample_ratio": null,
-      "earliest_time": "-60m@m",
-      "status_buckets": 0,
-      "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | search name=$agent$ | fillnull value=\"N/A\"",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    // var search1 = new SearchManager({
+    //   "id": "search1",
+    //   "cancelOnUnload": true,
+    //   "sample_ratio": null,
+    //   "earliest_time": "-60m@m",
+    //   "status_buckets": 0,
+    //   "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | search name=$agent$ | fillnull value=\"N/A\"",
+    //   "latest_time": "now",
+    //   "app": utils.getCurrentApp(),
+    //   "auto_cancel": 90,
+    //   "preview": true,
+    //   "tokenDependencies": {
+    //   },
+    //   "runWhenTimeIsUndefined": false
+    // }, { tokens: true, tokenNamespace: "submitted" });
 
     var search2 = new SearchManager({
       "id": "search2",
@@ -438,21 +438,21 @@ require([
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new TableElement({
-      "id": "element1",
-      "count": 5,
-      "drilldown": "cell",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    // var element1 = new TableElement({
+    //   "id": "element1",
+    //   "count": 5,
+    //   "drilldown": "cell",
+    //   "managerid": "search1",
+    //   "el": $('#element1')
+    // }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element1.on("click", function (e) {
-      if (e.field !== undefined) {
-        e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ name=$agent$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\"&earliest=-60m@m&latest=now", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-        utils.redirect(url, false, "_blank");
-      }
-    });
+    // element1.on("click", function (e) {
+    //   if (e.field !== undefined) {
+    //     e.preventDefault();
+    //     var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ name=$agent$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\"&earliest=-60m@m&latest=now", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+    //     utils.redirect(url, false, "_blank");
+    //   }
+    // });
 
     var element2 = new ChartElement({
       "id": "element2",
