@@ -43,7 +43,8 @@ require([
             { "data": "level", 'orderable': true }
           ]
         }
-        const table = new tableView($('#myLogTable'))
+        const table = new tableView()
+        table.element($('#myLogTable'))
         table.build(baseUrl+'/custom/wazuh/manager/logs?ip='+jsonData[0].ipapi+'&port='+jsonData[0].portapi+'&user='+jsonData[0].userapi+'&pass='+jsonData[0].passapi, opts)
         // table.search($('#tag'))
       })

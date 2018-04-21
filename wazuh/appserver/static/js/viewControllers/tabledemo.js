@@ -27,7 +27,8 @@ require([
           { "data": "level", 'orderable': true }
         ]
       }
-      const table = new tableView($('#miid'))
+      const table = new tableView()
+      table.element($('#miid'))
       table.build('http://192.168.0.159:8000/custom/wazuh/manager/logs?ip=192.168.0.130&port=55000&user=foo&pass=bar', opts)
       // table.search($('#tag'))
     })

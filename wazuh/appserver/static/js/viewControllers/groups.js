@@ -66,12 +66,15 @@ require([
             { "data": "hash", 'orderable': true }
           ]
         }
-        const tableGroups = new tableView($('#myGroupTable'))
+        const tableGroups = new tableView()
+        tableGroups.element($('#myGroupTable'))
         tableGroups.build(baseUrl + '/custom/wazuh/manager/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi, optsGroups)
         $('#row2').hide()
         $('#row3').hide()
-        const tableFiles = new tableView($('#myFilesTable'))
-        const tableAgents = new tableView($('#myAgentsGroupTable'))
+        const tableFiles = new tableView()
+        tableFiles.element($('#myFilesTable'))
+        const tableAgents = new tableView()
+        tableAgents.element($('#myAgentsGroupTable'))
         tableGroups.click(data => {
           const groupName = data.name
           tableFiles.build(baseUrl + '/custom/wazuh/agents/files?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, optsFiles)

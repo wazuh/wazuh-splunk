@@ -167,7 +167,8 @@ require([
             { "data": "position", 'orderable': true }
           ]
         }
-        const table = new tableView($('#myTable'))
+        const table = new tableView()
+        table.element($('#myTable'))
         table.build(baseUrl + '/custom/wazuh/manager/decoders?ip=' + parsedData[0].ipapi + '&port=' + parsedData[0].portapi + '&user=' + parsedData[0].userapi + '&pass=' + parsedData[0].passapi, opts)
         table.click(data => {
           setToken("showDetails", "true")
