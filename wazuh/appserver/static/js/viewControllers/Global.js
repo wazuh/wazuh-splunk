@@ -138,7 +138,7 @@ require([
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table ipapi,portapi,userapi,passapi | rename ipapi as IP-API, portapi as Port-API, userapi as Username, passapi as Password",
+      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table ipapi,portapi,userapi | rename ipapi as IP, portapi as Port, userapi as Username",
       "latest_time": "now",
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
