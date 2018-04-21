@@ -2,6 +2,25 @@
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
 ## Wazuh v3.2.x - Splunk app v2.2.0
+### Added
+- New Configuration tab:
+  - Now the whole configuration that the app needs is made by inputs.
+  - Extern configuration files are not needed anymore.
+- Back-end refactor:
+  - Each controller is now parameterized, not any hardcoded values anymore.
+  - Endpoints now work with GET params.
+
+### Changed
+- Each view was converted from SimpleXML to HTML+JS in order to gain the whole SplunkJS SDK functionality.
+- Credentials are now stored in KVStore database, values are getting from ajax when needed.
+- Each query now send parameters to streaming commands.
+- The app is now called 'Wazuh' instead 'SplunkAppForWazuh'.
+- Some unused tabs were deleted (Splunk and Tools).
+### Fixed
+- Ruleset and Decoders search tabs now are able to filter properly.
+
+
+## Wazuh v3.2.x - Splunk app v2.2.0
 
 ### Added
 - New Manager Configuration tab

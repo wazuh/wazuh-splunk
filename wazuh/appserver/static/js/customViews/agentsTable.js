@@ -36,7 +36,7 @@ define(function (require, exports, module) {
     }
 
     generateTableView($element){
-      $element.prepend('<table id="myAgentTable" class="table table-striped table-condensed"><thead><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
+      $element.prepend('<table id="myAgentTable" class="display compact"><thead><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
       super.element($('#myAgentTable'))
     }
     /**
