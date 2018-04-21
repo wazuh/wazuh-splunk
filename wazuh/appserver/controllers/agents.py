@@ -148,41 +148,6 @@ class agents(controllers.BaseController):
         result = json.dumps(data)
         return result
 
-    @expose_page(must_login=False, methods=['GET'])
-    def agents_info(self, **kwargs):
-        opt_username = kwargs["user"]
-        opt_password = kwargs["pass"]
-        opt_base_url = kwargs["ip"]
-        opt_base_port = kwargs["port"]
-        url = "http://" + opt_base_url + ":" + opt_base_port
-        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-        verify = False
-        request = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
-        agents_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
-        agents = json.loads(request.text)["data"]["items"]
-        results = []
-        for agent in agents:
-            data = {}
-            for attribute, value in agent.iteritems():
-                if attribute == 'os':
-                    for key,val in agent['os'].iteritems():
-                        data['os-'+key] = val
-                else:
-                    data[attribute] = value 
-            
-            request = requests.get(url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
-            rootcheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            request = requests.get(url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
-            syscheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            data["last_rootcheck"] = rootcheck_lastscan
-            data["last_syscheck"] = syscheck_lastscan
-            
-            results.append(data)
-        return json.dumps(results)
-        
     # /custom/wazuh/agents/agentschecks
     @expose_page(must_login=False, methods=['GET'])
     def agents_checks(self, **kwargs):
@@ -190,6 +155,32 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
+        limit =  kwargs['length'] if kwargs['length'] != "" else '""'
+        offset = kwargs['offset'] if kwargs['offset'] != "" else '""'
+        search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+        sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
+        direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
+        sort_chain = ""
+        if sorting_column == "0":
+          if direction == 'asc':
+            sort_chain = '+id'
+          if direction == 'desc':
+            sort_chain = '-id'
+        elif sorting_column == "1":
+          if direction == 'asc':
+            sort_chain = '+name'
+          if direction == 'desc':
+            sort_chain = '-name'
+        elif sorting_column == "2":
+          if direction == 'asc':
+            sort_chain = '+ip'
+          if direction == 'desc':
+            sort_chain = '-ip'
+        elif sorting_column == "3":
+          if direction == 'asc':
+            sort_chain = '+last_keepalive'
+          if direction == 'desc':
+            sort_chain = '-last_keepalive'
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
@@ -226,31 +217,109 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
+
+        limit =  kwargs['length'] if 'length' in kwargs else '10'
+        # limit =  "50"
+        offset = kwargs['offset'] if 'offset' in kwargs else '0'
+        # offset = "0"
+        search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
+        # search_value = '""'
+        sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
+        # sorting_column = '0'
+        direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
+        # direction = 'asc'
+        sort_chain = ""
+
+        if sorting_column == "0":
+          if direction == 'asc':
+            sort_chain = '+id'
+          if direction == 'desc':
+            sort_chain = '-id'
+        elif sorting_column == "1":
+          if direction == 'asc':
+            sort_chain = '+ip'
+          if direction == 'desc':
+            sort_chain = '-ip'
+        elif sorting_column == "2":
+          if direction == 'asc':
+            sort_chain = '+name'
+          if direction == 'desc':
+            sort_chain = '-name'
+        elif sorting_column == "3":
+          if direction == 'asc':
+            sort_chain = '+status'
+          if direction == 'desc':
+            sort_chain = '-status'
+        elif sorting_column == "4":
+          if direction == 'asc':
+            sort_chain = '+os.platform'
+          if direction == 'desc':
+            sort_chain = '-os.platform'
+        elif sorting_column == "5":
+          if direction == 'asc':
+            sort_chain = '+os.uname'
+          if direction == 'desc':
+            sort_chain = '-os.uname'
+        elif sorting_column == "6":
+          if direction == 'asc':
+            sort_chain = '+os.name'
+          if direction == 'desc':
+            sort_chain = '-os.name'
+        elif sorting_column == "7":
+          if direction == 'asc':
+            sort_chain = '+os.arch'
+          if direction == 'desc':
+            sort_chain = '-os.arch'
+        elif sorting_column == "8":
+          if direction == 'asc':
+            sort_chain = '+os.version'
+          if direction == 'desc':
+            sort_chain = '-os.version'
+        elif sorting_column == "9":
+          if direction == 'asc':
+            sort_chain = '+date_add'
+          if direction == 'desc':
+            sort_chain = '-date_add'
+        elif sorting_column == "13":
+          if direction == 'asc':
+            sort_chain = '+version'
+          if direction == 'desc':
+            sort_chain = '-version'
+
+
         url = "http://" + opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
-        agents_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
+        final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
+
+        request = requests.get(final_url, auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
+        total_items = json.loads(request.text)["data"]["totalItems"]
+
         results = []
         for agent in agents:
-            data = {}
-            for attribute, value in agent.iteritems():
-                if attribute == 'os':
-                    for key,val in agent['os'].iteritems():
-                        data['os-'+key] = val
-                else:
-                    data[attribute] = value 
-            
-            request = requests.get(url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
-            rootcheck_lastscan = json.loads(request.text)["data"]["start"]
+          data = {}
+          for attribute, value in agent.iteritems():
+              if attribute == 'os':
+                  for key,val in agent['os'].iteritems():
+                      data['os-'+key] = val
+              else:
+                  data[attribute] = value 
+          
+          request = requests.get(url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
+          rootcheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            request = requests.get(url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
-            syscheck_lastscan = json.loads(request.text)["data"]["start"]
+          request = requests.get(url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
+          syscheck_lastscan = json.loads(request.text)["data"]["start"]
 
-            data["last_rootcheck"] = rootcheck_lastscan
-            data["last_syscheck"] = syscheck_lastscan
-            
-            results.append(data)
-        return json.dumps(results)
+          data["last_rootcheck"] = rootcheck_lastscan
+          data["last_syscheck"] = syscheck_lastscan
+          results.append(data)
+
+
+        response = {}
+        response['data'] = {}
+        response['data']['totalItems'] = total_items
+        response['data']['items'] = results
+
+        return json.dumps(response)
