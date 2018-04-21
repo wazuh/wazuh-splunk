@@ -34,9 +34,7 @@ define(function (require, exports, module) {
           url: urlArg,
           type: opt.method || 'get',
           dataFilter: (data) => {
-            console.log('getting data in table .....')
             let json = jQuery.parseJSON(data)
-            console.log('parsed data in table ', json)
             json.recordsTotal = json.data.totalItems
             json.recordsFiltered = json.data.totalItems
             json.data = json.data.items
@@ -53,13 +51,10 @@ define(function (require, exports, module) {
     search($el) {
       this.table.columns().every(function () {
         var that = this;
-        console.log('that.search()', that.search())
         $el.on('keyup change', function () {
           if (that.search() !== this.value) {
-            console.log('this.value', this.value)
             that
               .search(this.value)
-              //.draw();
           }
         })
       })
@@ -71,7 +66,6 @@ define(function (require, exports, module) {
     click(cb) {
       const myThis = this;
       this.$el.on('click', 'tr', function () {
-        console.log(myThis.table.row(this).data())
         cb(myThis.table.row(this).data())
       })
     }
