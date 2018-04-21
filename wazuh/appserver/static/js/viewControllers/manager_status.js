@@ -141,6 +141,7 @@ require([
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2] 
+        console.log('baseurl ',baseUrl)
         setToken('baseip', baseUrl);
         setToken('ipapi', parsedData[0].ipapi);
         setToken('portapi', parsedData[0].portapi);

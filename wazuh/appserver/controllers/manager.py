@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import requests
+import ssl
 # from splunk import AuthorizationFailed as AuthorizationFailed
 import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
@@ -21,6 +22,7 @@ def setup_logger(level):
   file_handler.setFormatter(formatter)
   logger.addHandler(file_handler)
   return logger
+ssl._create_default_https_context = ssl._create_unverified_context
 
 logger = setup_logger(logging.DEBUG)
 
