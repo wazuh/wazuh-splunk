@@ -7,7 +7,7 @@
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
-
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css">
 
   <meta name="referrer" content="never" />
   <meta name="referrer" content="no-referrer" />
@@ -35,7 +35,7 @@
   </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <h3>API configuration</h3>
-
+          
     <form id="formCustomerInfo">
 
       <div class="fieldset">
@@ -59,10 +59,10 @@
 
       <div>
         <div class="input input-text" id="input7">
-          <label>Clean credentials</label>
+          <label>Remove credentials</label>
         </div>
-        <div>
-          <button id="deleteRecord">Delete</button>
+        <div class="form-submit" id="search_btn">
+          <button  id="deleteRecord" class="btn btn-primary submit">Clear</button>
         </div>
       </div>
       <br>
@@ -80,6 +80,8 @@
         </div>
       </div>
     </div>
+    
+  <div id='statusLed'></div>
 
   </div>
   <!-- 

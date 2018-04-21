@@ -87,7 +87,7 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true;
 
 
     // 
@@ -95,10 +95,11 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const service = mvc.createService({ owner: "nobody" });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -112,17 +113,17 @@ require([
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON());
 
-    function submitTokens() {
+    const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading });
     }
 
-    function setToken(name, value) {
+    const setToken = (name, value) => {
       defaultTokenModel.set(name, value);
       submittedTokenModel.set(name, value);
     }
 
-    function unsetToken(name) {
+    const unsetToken = (name) => {
       defaultTokenModel.unset(name);
       submittedTokenModel.unset(name);
     }
@@ -132,6 +133,32 @@ require([
     //
     // SEARCH MANAGERS
     //
+
+    $(document).ready(() => {
+      service.request(
+        "storage/collections/data/credentials/",
+        "GET",
+        null,
+        null,
+        null,
+        { "Content-Type": "application/json" }, null
+      ).done(data => {
+
+        jsonData = JSON.parse(data)
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+
+        if (jsonData && jsonData[0] && jsonData[0].ipapi)
+          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+            parsedData = JSON.parse(data)
+            if (parsedData.data)
+              $('#statusLed').addClass('wz-green-led')
+          }).fail(() => {
+            $('#statusLed').addClass('wz-green-red')
+          })
+      })
+    })
 
 
     var search1 = new SearchManager({
@@ -226,6 +253,29 @@ require([
     }, { tokens: true }).render();
 
     input6.on("change", function (newValue) {
+      service.request(
+        "storage/collections/data/credentials/",
+        "GET",
+        null,
+        null,
+        null,
+        { "Content-Type": "application/json" }, null
+      ).done(data => {
+
+        jsonData = JSON.parse(data)
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+
+        if (jsonData && jsonData[0] && jsonData[0].ipapi)
+          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+            parsedData = JSON.parse(data)
+            if (parsedData.data)
+              $('#statusLed').addClass('wz-green-led')
+          }).fail(() => {
+            $('#statusLed').addClass('wz-green-red')
+          })
+      })
       FormUtils.handleValueChange(input6);
     });
 
@@ -259,7 +309,6 @@ require([
 
     // Create a service object using the Splunk SDK for JavaScript
     // to send REST requests
-    var service = mvc.createService({ owner: "nobody" });
 
     var submit = new SubmitButton({
       id: 'submit',
@@ -297,8 +346,23 @@ require([
             JSON.stringify(record),
             { "Content-Type": "application/json" },
             null)
-            .done(function () {
+            .done( (data) => {
               // Run the search again to update the table
+              
+                jsonData = JSON.parse(data)
+                const url = window.location.href
+                const arr = url.split("/")
+                const baseUrl = arr[0] + "//" + arr[2]
+        
+                if (jsonData && jsonData[0] && jsonData[0].ipapi)
+                  $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+                    parsedData = JSON.parse(data)
+                    if (parsedData.data)
+                      $('#statusLed').addClass('wz-green-led')
+                  }).fail(() => {
+                    $('#statusLed').addClass('wz-green-red')
+                  })
+              
               search1.startSearch();
 
               // Clear the form fields 
@@ -326,5 +390,4 @@ require([
     pageLoading = false;
 
   }
-);
-// ]]>
+)
