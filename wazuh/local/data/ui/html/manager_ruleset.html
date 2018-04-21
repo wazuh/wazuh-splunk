@@ -24,11 +24,7 @@
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
-  <!-- 
-BEGIN LAYOUT
-This section contains the layout for the dashboard. Splunk uses proprietary
-styles in <div> tags, similar to Bootstrap's grid system. 
--->
+
   <header>
     <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
     <div class="header splunk-header">
@@ -51,7 +47,6 @@ styles in <div> tags, similar to Bootstrap's grid system.
       <table id="myTable"  class="display compact">
         <thead>
           <tr>
-            <!-- <th>id</th> -->
             <th>id</th>
             <th>path</th>
             <th>status</th>
@@ -167,10 +162,6 @@ styles in <div> tags, similar to Bootstrap's grid system.
       </div>
     </div>
   </div>
-
-  <!-- 
-END LAYOUT
--->
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>

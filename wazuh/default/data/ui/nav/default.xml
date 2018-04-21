@@ -12,8 +12,6 @@
   <view name="Configuration" />
   <a href="manager_ruleset">Ruleset</a> 
   <a href="manager_decoders">Decoders</a> 
-  <!-- <view name="search_on_rules" />" -->
-  <!-- <view name="search_on_decoders" />" -->
   <a href="logs">Logs</a> 
   <a href="groups">Groups</a> 
 
@@ -26,7 +24,6 @@
   <a href="openscap">OpenSCAP</a> 
   <view name="audit" />
   <view name="pcidss" />
-  <!-- <view name="tabledemo" /> -->
 </collection>
 <collection label="Configuration">
   <view name="API" default='true' />
