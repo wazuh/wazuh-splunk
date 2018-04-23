@@ -270,38 +270,6 @@ require([
       editable: true
     }, { tokens: true }).render();
 
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    // const element1 = new TableElement({
-    //   "id": "element1",
-    //   "count": 5,
-    //   "dataOverlayMode": "none",
-    //   "drilldown": "cell",
-    //   "fields": ["id", "file", "description", "Requirement", "level"],
-    //   "rowNumbers": "false",
-    //   "wrap": "true",
-    //   "managerid": "search1",
-    //   "el": $('#element1')
-    // }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    // element1.on("click", function (e) {
-    //   if (e.field !== undefined) {
-    //     e.preventDefault();
-    //     setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Groups", TokenUtils.replaceTokenNames("$row.Groups$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Requirement", TokenUtils.replaceTokenNames("$row.Requirement$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("description", TokenUtils.replaceTokenNames("$row.description$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("id", TokenUtils.replaceTokenNames("$row.id$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("details-if_sid", TokenUtils.replaceTokenNames("$row.details-if_sid$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("details-regex", TokenUtils.replaceTokenNames("$row.details-regex$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("details-info", TokenUtils.replaceTokenNames("$row.details-info$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("details-frequency", TokenUtils.replaceTokenNames("$row.details-frequency$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //   }
-    // });
-
     const element2 = new HtmlElement({
       "id": "element2",
       "useTokens": true,
