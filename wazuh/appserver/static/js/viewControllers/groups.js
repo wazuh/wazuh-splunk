@@ -48,10 +48,10 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "id", 'orderable': true },
-            { "data": "name", 'orderable': true },
-            { "data": "ip", 'orderable': true },
-            { "data": "last_keepalive", 'orderable': true }
+            { "data": "id", 'orderable': false },
+            { "data": "name", 'orderable': false },
+            { "data": "ip", 'orderable': false },
+            { "data": "last_keepalive", 'orderable': false }
           ]
         }
 
@@ -76,13 +76,14 @@ require([
         const tableAgents = new tableView()
         tableAgents.element($('#myAgentsGroupTable'))
         tableGroups.click(data => {
+          console.log('data',data,' ',typeof data)
           const groupName = data.name
           tableFiles.build(baseUrl + '/custom/wazuh/agents/files?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, optsFiles)
           const agentsUrl = baseUrl + '/custom/wazuh/agents/groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name
           $.get(baseUrl+'/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
             parsedData = JSON.parse(data)
             if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems)
-              tableAgents.build(agentsUrl, optsFiles)
+              tableAgents.build(agentsUrl, optsAgentsGroup)
             else
               $('#panel3').html('<p>No agents were found in this group.</p>')
           })

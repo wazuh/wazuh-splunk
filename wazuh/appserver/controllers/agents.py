@@ -92,41 +92,51 @@ class agents(controllers.BaseController):
     # /custom/wazuh/agents/groups/:id
     @expose_page(must_login=False, methods=['GET'])
     def groups(self,**kwargs):
+        file = open('/tmp/groups.log','w')
+        file.write('starting \n')
+        file.write(str(kwargs))
+
         group_id = kwargs["id"]
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        limit =  kwargs['length'] if kwargs['length'] != "" else '""'
-        offset = kwargs['offset'] if kwargs['offset'] != "" else '""'
+        limit =  kwargs['length'] if kwargs['length'] != "" else 10
+        offset = kwargs['start'] if kwargs['start'] != "" else 0
         search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-        sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
+        # sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
         direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
         sort_chain = ""
-        if sorting_column == "0":
-          if direction == 'asc':
-            sort_chain = '+id'
-          if direction == 'desc':
-            sort_chain = '-id'
-        elif sorting_column == "1":
-          if direction == 'asc':
-            sort_chain = '+name'
-          if direction == 'desc':
-            sort_chain = '-name'
-        elif sorting_column == "2":
-          if direction == 'asc':
-            sort_chain = '+ip'
-          if direction == 'desc':
-            sort_chain = '-ip'
-        elif sorting_column == "3":
-          if direction == 'asc':
-            sort_chain = '+last_keepalive'
-          if direction == 'desc':
-            sort_chain = '-last_keepalive'
+        file.write('second arguments \n')
+
+        # if sorting_column == "0":
+        #   if direction == 'asc':
+        #     sort_chain = '+id'
+        #   if direction == 'desc':
+        #     sort_chain = '-id'
+        # elif sorting_column == "1":
+        #   if direction == 'asc':
+        #     sort_chain = '+name'
+        #   if direction == 'desc':
+        #     sort_chain = '-name'
+        # elif sorting_column == "2":
+        #   if direction == 'asc':
+        #     sort_chain = '+ip'
+        #   if direction == 'desc':
+        #     sort_chain = '-ip'
+        # elif sorting_column == "3":
+        #   if direction == 'asc':
+        #     sort_chain = '+last_keepalive'
+        #   if direction == 'desc':
+        #     sort_chain = '-last_keepalive'
         url = "http://" + opt_base_url + ":" + opt_base_port
+        file.write(url)
+        file.write('making request...\n')
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(url + '/agents/groups/' + group_id  + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+        request = requests.get(url + '/agents/groups/' + group_id  , auth=auth, verify=verify).json()
+        file.write('done request\n')
+
         result = json.dumps(request)
         return result
 
@@ -156,8 +166,8 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        limit =  kwargs['length'] if kwargs['length'] != "" else '""'
-        offset = kwargs['offset'] if kwargs['offset'] != "" else '""'
+        limit =  kwargs['length'] if kwargs['length'] != "" else 10
+        offset = kwargs['start'] if kwargs['start'] != "" else 0
         search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
         sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
         direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
@@ -219,9 +229,9 @@ class agents(controllers.BaseController):
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
 
-        limit =  kwargs['length'] if 'length' in kwargs else '10'
+        limit =  kwargs['length'] if 'length' in kwargs else 10
         # limit =  "50"
-        offset = kwargs['offset'] if 'offset' in kwargs else '0'
+        offset = kwargs['start'] if 'start' in kwargs else 0
         # offset = "0"
         search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
         # search_value = '""'
