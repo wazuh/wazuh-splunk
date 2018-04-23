@@ -102,9 +102,7 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 
 2. Configure credentials:
   - Open the Wazuh App for Splunk after installing it.
-  - Add credentials in Configuration -> Global
-    - Base IP: current IP where Splunk is accessed by.
-    - Base PORT: Splunk web port, usually 8000.
+  - Add API credentials in Configuration -> API
     - API IP: Address of Wazuh API server.
     - API Port: Port of Wazuh API server, usually 55000.
     - Api User: Username for Wazuh API authorization, usually 'foo'.
