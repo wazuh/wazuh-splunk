@@ -1,3 +1,14 @@
+/*
+ * Wazuh app - Logs view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 require([
   "splunkjs/mvc",
@@ -35,15 +46,15 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "timestamp", 'orderable': true, defaultContent:"-"  },
-            { "data": "tag", 'orderable': true, defaultContent:"-"  },
-            { "data": "description", 'orderable': true, defaultContent:"-"  },
-            { "data": "level", 'orderable': true, defaultContent:"-"  }
+            { "data": "timestamp", 'orderable': true, defaultContent: "-" },
+            { "data": "tag", 'orderable': true, defaultContent: "-" },
+            { "data": "description", 'orderable': true, defaultContent: "-" },
+            { "data": "level", 'orderable': true, defaultContent: "-" }
           ]
         }
         const table = new tableView()
         table.element($('#myLogTable'))
-        table.build(baseUrl+'/custom/wazuh/manager/logs?ip='+jsonData[0].ipapi+'&port='+jsonData[0].portapi+'&user='+jsonData[0].userapi+'&pass='+jsonData[0].passapi, opts)
+        table.build(baseUrl + '/custom/wazuh/manager/logs?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi, opts)
       })
     })
 

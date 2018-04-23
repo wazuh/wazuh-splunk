@@ -1,16 +1,14 @@
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass constiable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
-
+/*
+ * Wazuh app - API configuration view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 require([
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
@@ -337,7 +335,7 @@ require([
       service.del("storage/collections/data/credentials/")
         .done(function () {
           // Run the search again to update the table
-          
+
           search1.startSearch()
         })
       //return false
@@ -395,30 +393,30 @@ require([
                 null,
                 { "Content-Type": "application/json" }, null
               ).done(data => {
-        
+
                 jsonData = JSON.parse(data)
                 const url = window.location.href
                 const arr = url.split("/")
                 const baseUrl = arr[0] + "//" + arr[2]
-        
+
                 if (jsonData && jsonData[0] && jsonData[0].ipapi)
                   $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
                     parsedData = JSON.parse(data)
                     if (parsedData.data)
                       $('#statusLed').removeClass('wz-green-red')
-                      $('#statusLed').addClass('wz-green-led')
+                    $('#statusLed').addClass('wz-green-led')
                   }).fail(() => {
                     $('#statusLed').removeClass('wz-green-green')
                     $('#statusLed').addClass('wz-green-red')
                   })
               })
 
-              
-            })
-            search1.startSearch()
 
-            // Clear the form fields 
-            $("#formCustomerInfo input[type=text]").val("")
+            })
+          search1.startSearch()
+
+          // Clear the form fields 
+          $("#formCustomerInfo input[type=text]").val("")
 
         })
 

@@ -1,3 +1,15 @@
+/*
+ * Wazuh app - AgentsTable class
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define(function (require, exports, module) {
   const $ = require('jquery')
   const TableView = require("./tableView.js")
@@ -35,6 +47,10 @@ define(function (require, exports, module) {
       }
     }
 
+    /**
+     * Generates HTML table code and append it into the element passed
+     * @param {*} jQuery element  
+     */
     generateTableView($element){
       $element.prepend('<table id="myAgentTable" class="display compact"><thead><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
       super.element($('#myAgentTable'))

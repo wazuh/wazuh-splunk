@@ -1,3 +1,14 @@
+/*
+ * Wazuh app - Groups view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 require([
   "splunkjs/mvc",
@@ -37,8 +48,8 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "name", 'orderable': true , defaultContent:"-" },
-            { "data": "merged_sum", 'orderable': true , defaultContent:"-" }
+            { "data": "name", 'orderable': true, defaultContent: "-" },
+            { "data": "merged_sum", 'orderable': true, defaultContent: "-" }
           ]
         }
         // Options for Agents Group table
@@ -48,10 +59,10 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "id", 'orderable': false, defaultContent:"-"  },
-            { "data": "name", 'orderable': false, defaultContent:"-"  },
-            { "data": "ip", 'orderable': false, defaultContent:"-"  },
-            { "data": "last_keepalive", 'orderable': false, defaultContent:"-"  }
+            { "data": "id", 'orderable': false, defaultContent: "-" },
+            { "data": "name", 'orderable': false, defaultContent: "-" },
+            { "data": "ip", 'orderable': false, defaultContent: "-" },
+            { "data": "last_keepalive", 'orderable': false, defaultContent: "-" }
           ]
         }
 
@@ -62,8 +73,8 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "filename", 'orderable': true, defaultContent:"-"  },
-            { "data": "hash", 'orderable': true, defaultContent:"-"  }
+            { "data": "filename", 'orderable': true, defaultContent: "-" },
+            { "data": "hash", 'orderable': true, defaultContent: "-" }
           ]
         }
         const tableGroups = new tableView()

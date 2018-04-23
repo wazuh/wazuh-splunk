@@ -1,3 +1,15 @@
+/*
+ * Wazuh app - TableView class
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define(function (require, exports, module) {
   const $ = require('jquery')
   const tableLib = require("../thirdPartyLibs/dataTables.min.js")
@@ -9,7 +21,7 @@ define(function (require, exports, module) {
      * Constructor method
      * @param {*} $el: DOM table element to attach the table 
      */
-    constructor(){ 
+    constructor() {
       this.$el = ""
       this.table = ""
       // this.$el.DataTable({"retrieve": true}) 
@@ -23,8 +35,8 @@ define(function (require, exports, module) {
      * @param {*} urlArg : url to get the data from
      * @param {Object} opt: options
      */
-    build( urlArg, opt) {
-      
+    build(urlArg, opt) {
+
       this.table = this.$el.DataTable({
         "ordering": opt.ordering || true,
         "retrieve": opt.retrieve || true,
@@ -73,6 +85,6 @@ define(function (require, exports, module) {
       })
     }
   }
-  
+
   return table
 })

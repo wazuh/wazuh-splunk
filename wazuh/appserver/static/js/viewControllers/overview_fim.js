@@ -1,16 +1,14 @@
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass constiable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
-
+/*
+ * Wazuh app - Overview FIM view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 require([
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
