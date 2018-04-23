@@ -2,9 +2,9 @@
  * Wazuh app - Overview Policy Monitoring view controller
  * Copyright (C) 2018 Wazuh, Inc.
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation either version 2 of the License, or
  * (at your option) any later version.
  *
  * Find more information about this on the LICENSE file.
@@ -85,7 +85,7 @@ require([
     // TokenForwarder
   ) {
 
-    let pageLoading = true;
+    let pageLoading = true
 
 
     // 
@@ -93,36 +93,43 @@ require([
     //
 
     // Create token namespaces
-    const urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
+    const urlTokenModel = new UrlTokenModel()
+    mvc.Components.registerInstance('url', urlTokenModel)
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    let baseUrl = ""
+    urlTokenModel.on('url:navigate',  () => {
+      defaultTokenModel.set(urlTokenModel.toJSON())
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
+        submitTokens()
       } else {
-        submittedTokenModel.clear();
+        submittedTokenModel.clear()
       }
-    });
+    })
+
+    $(document).ready(() => {
+      const parsedData = JSON.parse(data)
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
+    })
 
     // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
+    defaultTokenModel.set(urlTokenModel.toJSON())
 
-    function submitTokens() {
+    const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
+      FormUtils.submitForm({ replaceState: pageLoading })
     }
 
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
+    const setToken = (name, value) => {
+      defaultTokenModel.set(name, value)
+      submittedTokenModel.set(name, value)
     }
 
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
+    const unsetToken = (name) => {
+      defaultTokenModel.unset(name)
+      submittedTokenModel.unset(name)
     }
 
 
@@ -146,7 +153,7 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
     const search2 = new SearchManager({
       "id": "search2",
@@ -162,7 +169,7 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
     const search3 = new SearchManager({
       "id": "search3",
@@ -178,7 +185,7 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
     const search4 = new SearchManager({
       "id": "search4",
@@ -194,7 +201,7 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
     const search5 = new SearchManager({
       "id": "search5",
@@ -210,18 +217,18 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
 
     //
     // SPLUNK LAYOUT
     //
 
-    $('header').remove();
+    $('header').remove()
     new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
       .render()
       .getContainerElement()
-      .appendChild($('.dashboard-body')[0]);
+      .appendChild($('.dashboard-body')[0])
 
     //
     // DASHBOARD EDITOR
@@ -232,7 +239,7 @@ require([
       el: $('.dashboard-body'),
       showTitle: true,
       editable: true
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
 
     //
@@ -270,7 +277,7 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search1",
       "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
     const element2 = new ChartElement({
@@ -304,7 +311,7 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search2",
       "el": $('#element2')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
     const element3 = new ChartElement({
@@ -338,7 +345,7 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search3",
       "el": $('#element3')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
     const element4 = new ChartElement({
@@ -372,7 +379,7 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search4",
       "el": $('#element4')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
     const element5 = new TableElement({
@@ -385,15 +392,15 @@ require([
       "wrap": "false",
       "managerid": "search5",
       "el": $('#element5')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element5.on("click", function (e) {
+    element5.on("click",  (e) => {
       if (e.field !== undefined) {
-        e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-        utils.redirect(url, false, "_blank");
+        e.preventDefault()
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control"
+        utils.redirect(url, false, "_blank")
       }
-    });
+    })
 
 
     //
@@ -407,33 +414,33 @@ require([
       "earliest_time": "$form.when.earliest$",
       "latest_time": "$form.when.latest$",
       "el": $('#input1')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
-    input1.on("change", function (newValue) {
-      FormUtils.handleValueChange(input1);
-    });
+    input1.on("change",  (newValue) => {
+      FormUtils.handleValueChange(input1)
+    })
 
-    DashboardController.onReady(function () {
+    DashboardController.onReady( () => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-        submittedTokenModel.set({ earliest: '0', latest: '' });
+        submittedTokenModel.set({ earliest: '0', latest: '' })
       }
-    });
+    })
 
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
+      defaultTokenModel.set({ earliest: '0', latest: '' })
     }
 
-    submitTokens();
+    submitTokens()
 
 
     //
     // DASHBOARD READY
     //
 
-    DashboardController.ready();
-    pageLoading = false;
+    DashboardController.ready()
+    pageLoading = false
 
   }
-);
+)
 // ]]>

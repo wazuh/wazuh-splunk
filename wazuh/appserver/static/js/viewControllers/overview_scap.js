@@ -98,7 +98,7 @@ require([
     mvc.Components.registerInstance('url', urlTokenModel);
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-
+    let baseUrl = ''
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -107,7 +107,13 @@ require([
         submittedTokenModel.clear();
       }
     });
-
+    
+    $(document).ready(() => {
+      const parsedData = JSON.parse(data)
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
+    })
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON());
 
