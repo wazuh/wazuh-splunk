@@ -1,121 +1,30 @@
+/*
+ * Wazuh app - Configuration view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 require([
   "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
   "underscore",
   "jquery",
-  "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/layoutview",
-  "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/dashboard/panelref",
-  "splunkjs/mvc/simplexml/element/chart",
-  "splunkjs/mvc/simplexml/element/event",
-  "splunkjs/mvc/simplexml/element/html",
-  "splunkjs/mvc/simplexml/element/list",
-  "splunkjs/mvc/simplexml/element/map",
-  "splunkjs/mvc/simplexml/element/single",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simplexml/element/visualization",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simplexml/eventhandler",
-  "splunkjs/mvc/simplexml/searcheventhandler",
-  "splunkjs/mvc/simpleform/input/dropdown",
-  "splunkjs/mvc/simpleform/input/radiogroup",
-  "splunkjs/mvc/simpleform/input/linklist",
-  "splunkjs/mvc/simpleform/input/multiselect",
-  "splunkjs/mvc/simpleform/input/checkboxgroup",
-  "splunkjs/mvc/simpleform/input/text",
-  "splunkjs/mvc/simpleform/input/timerange",
-  "splunkjs/mvc/simpleform/input/submit",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/savedsearchmanager",
-  "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "splunkjs/mvc/layoutview"
 ],
   function (
     mvc,
-    utils,
-    TokenUtils,
     _,
     $,
-    DashboardController,
-    LayoutView,
-    Dashboard,
-    PanelRef,
-    ChartElement,
-    EventElement,
-    HtmlElement,
-    ListElement,
-    MapElement,
-    SingleElement,
-    TableElement,
-    VisualizationElement,
-    FormUtils,
-    EventHandler,
-    SearchEventHandler,
-    DropdownInput,
-    RadioGroupInput,
-    LinkListInput,
-    MultiSelectInput,
-    CheckboxGroupInput,
-    TextInput,
-    TimeRangeInput,
-    SubmitButton,
-    SearchManager,
-    SavedSearchManager,
-    PostProcessManager,
-    UrlTokenModel
+    LayoutView
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
 
-    var pageLoading = true;
-
-
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
-
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
-      } else {
-        submittedTokenModel.clear();
-      }
-    });
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
-
-    function submitTokens() {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
-    }
-
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
-    }
-
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
-    }
-
+    const service = mvc.createService({ owner: "nobody" });
     $(document).ready(function () {
       service.request(
         "storage/collections/data/credentials/",
@@ -125,24 +34,13 @@ require([
         null,
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
-        var parsedData = JSON.parse(data);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        var tokens = mvc.Components.get("default");
-        var ipBase = tokens.get("baseip");
-        var ipApi = tokens.get("ipapi");
-        var portApi = tokens.get("portapi");
-        var passApi = tokens.get("passwordapi");
-        var userApi = tokens.get("userapi");
-        var portBase = tokens.get("baseport");
-        var endPoint = 'http://' + ipBase + ':' + portBase + '/custom/wazuh/manager/configuration?ip=' + ipApi + '&port=' + portApi + '&user=' + userApi + '&pass=' + passApi;
+        const jsonData = JSON.parse(data)
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+        const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
         $.get(endPoint, function (data) {
-          var jsonObj = JSON.parse(data);
-          console.log(jsonObj);
+          const jsonObj = JSON.parse(data);
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output);
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level);
@@ -155,7 +53,7 @@ require([
           $('#authPurge').text(jsonObj.auth.purge);
           $('#authForceInsert').text(jsonObj.auth.force_insert);
           // First load Global view by default
-          var globalUrl = "/static/app/wazuh/views/global.html"
+          const globalUrl = "/static/app/wazuh/views/global.html"
           $('#dynamicContent').load(globalUrl, function (data) {
             $('#jsonViewOutput').text(jsonObj.global.jsonout_output);
             $('#logAll').text(jsonObj.global.logall);
@@ -171,7 +69,7 @@ require([
           });
           // If click on Global section
           $('#global').click(function () {
-            var globalUrl = "/static/app/wazuh/views/global.html"
+            const globalUrl = "/static/app/wazuh/views/global.html"
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#jsonViewOutput').text(jsonObj.global.jsonout_output);
@@ -189,7 +87,7 @@ require([
           })
           // If click on Cluster section
           $('#cluster').click(function () {
-            var globalUrl = "/static/app/wazuh/views/cluster.html";
+            const globalUrl = "/static/app/wazuh/views/cluster.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#disabled').text(jsonObj.cluster.disabled);
@@ -205,11 +103,9 @@ require([
           })
           // If click on Syscheck section
           $('#syscheck').click(function () {
-            var globalUrl = "/static/app/wazuh/views/syscheck.html";
+            const globalUrl = "/static/app/wazuh/views/syscheck.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              console.log('syscheck ', jsonObj.syscheck, typeof jsonObj.syscheck);
-              console.log('syscheck frequency', jsonObj.syscheck.frequency, typeof jsonObj.syscheck.frequency);
               $('#sysDisabled').text(jsonObj.syscheck.frequency);
               $('#sysFrequency').text('dflñngdlg');
               $('#sysAutoIgnore').text(jsonObj.syscheck.auto_ignore);
@@ -218,9 +114,7 @@ require([
               $('#sysNoDiff').text(jsonObj.syscheck.nodiff);
               $('#sysSkipNfs').text(jsonObj.syscheck.skip_nfs);
               //$('#sysMonitoringDirectories').text(jsonObj.syscheck.directories);
-              console.log('size of directories ', jsonObj.syscheck.directories.length);
-              for (var i = 0; i < jsonObj.syscheck.directories.length; i++) {
-                console.log("one iteration")
+              for (let i = 0; i < jsonObj.syscheck.directories.length; i++) {
                 $('#monitoringDirectories').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
                   '<p class="wz-list-child">Path</p>' +
@@ -240,7 +134,7 @@ require([
           })
           // If click on Rootcheck section
           $('#rootcheck').click(function () {
-            var globalUrl = "/static/app/wazuh/views/rootcheck.html";
+            const globalUrl = "/static/app/wazuh/views/rootcheck.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#rootDisabled').text(jsonObj.rootcheck.disabled);
@@ -253,7 +147,7 @@ require([
           })
           // If click on Auth section
           $('#auth').click(function () {
-            var globalUrl = "/static/app/wazuh/views/auth.html";
+            const globalUrl = "/static/app/wazuh/views/auth.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#authDisabled').text(jsonObj.auth.disabled);
@@ -273,7 +167,7 @@ require([
           })
           // If click on Ruleset section
           $('#ruleset').click(function () {
-            var globalUrl = "/static/app/wazuh/views/ruleset.html";
+            const globalUrl = "/static/app/wazuh/views/ruleset.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
               $('#ruleDecoderDirs').text(jsonObj.ruleset.decoder_dir);
@@ -284,10 +178,10 @@ require([
           })
           // If click on Command section
           $('#command').click(function () {
-            var globalUrl = "/static/app/wazuh/views/command.html";
+            const globalUrl = "/static/app/wazuh/views/command.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              for (var i = 0; i < jsonObj.command.length; i++) {
+              for (let i = 0; i < jsonObj.command.length; i++) {
                 $('#commandChilds').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
                   '<p class="wz-list-child">Name</p>' +
@@ -314,10 +208,10 @@ require([
           });
           // If click on Remote section
           $('#remote').click(function () {
-            var globalUrl = "/static/app/wazuh/views/remote.html";
+            const globalUrl = "/static/app/wazuh/views/remote.html";
             $('#dynamicContent').empty();
             $('#dynamicContent').load(globalUrl, function (data) {
-              for (var i = 0; i < jsonObj.remote.length; i++) {
+              for (let i = 0; i < jsonObj.remote.length; i++) {
                 $('#remoteChilds').append(
                   '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
                   '<p class="wz-list-child">Connection</p>' +
@@ -348,63 +242,11 @@ require([
     })
 
 
-    //
-    // SEARCH MANAGERS
-    //
-
-    //
-    // SPLUNK LAYOUT
-    //
-
     $('header').remove();
     new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
       .render()
       .getContainerElement()
       .appendChild($('.dashboard-body')[0]);
-
-    //
-    // DASHBOARD EDITOR
-    //
-
-    new Dashboard({
-      id: 'dashboard',
-      el: $('.dashboard-body'),
-      showTitle: true,
-      editable: true
-    }, { tokens: true }).render();
-
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-
-    //
-    // VIEWS: FORM INPUTS
-    //
-
-    DashboardController.onReady(function () {
-      if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-        submittedTokenModel.set({ earliest: '0', latest: '' });
-      }
-    });
-
-    // Initialize time tokens to default
-    if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
-    }
-
-    if (!_.isEmpty(urlTokenModel.toJSON())) {
-      submitTokens();
-    }
-
-
-    //
-    // DASHBOARD READY
-    //
-
-    DashboardController.ready();
-    pageLoading = false;
 
   }
 );

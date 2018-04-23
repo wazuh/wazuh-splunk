@@ -1,16 +1,14 @@
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
-
+/*
+ * Wazuh app - PCI-DSS view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 require([
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
@@ -87,7 +85,7 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true
 
 
     // 
@@ -95,83 +93,45 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
-
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
+    const urlTokenModel = new UrlTokenModel()
+    mvc.Components.registerInstance('url', urlTokenModel)
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    let baseUrl = ''
+    urlTokenModel.on('url:navigate', () => {
+      defaultTokenModel.set(urlTokenModel.toJSON())
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
+        submitTokens()
       } else {
-        submittedTokenModel.clear();
+        submittedTokenModel.clear()
       }
-    });
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
-
-    function submitTokens() {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
-    }
-
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
-    }
-
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
-    }
-
-    $(document).ready(function () {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(function (data) {
-        var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        setToken("loadedtokens", "true");
-      });
     })
 
-    //
-    // SEARCH MANAGERS
-    //
+    // Initialize tokens
+    defaultTokenModel.set(urlTokenModel.toJSON())
 
+    const submitTokens = () => {
+      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+      FormUtils.submitForm({ replaceState: pageLoading })
+    }
 
-    var search1 = new SearchManager({
-      "id": "search1",
-      "cancelOnUnload": true,
-      "sample_ratio": null,
-      "earliest_time": "-60m@m",
-      "status_buckets": 0,
-      "search": "| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | search name=$agent$ | fillnull value=\"N/A\"",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    const setToken = (name, value) => {
+      defaultTokenModel.set(name, value)
+      submittedTokenModel.set(name, value)
+    }
 
-    var search2 = new SearchManager({
+    const unsetToken = (name) => {
+      defaultTokenModel.unset(name)
+      submittedTokenModel.unset(name)
+    }
+
+    $(document).ready(() => {
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
+    })
+
+    const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -185,9 +145,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search3 = new SearchManager({
+    const search3 = new SearchManager({
       "id": "search3",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -201,9 +161,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search4 = new SearchManager({
+    const search4 = new SearchManager({
       "id": "search4",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -217,9 +177,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search5 = new SearchManager({
+    const search5 = new SearchManager({
       "id": "search5",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -233,9 +193,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search6 = new SearchManager({
+    const search6 = new SearchManager({
       "id": "search6",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -249,9 +209,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search7 = new SearchManager({
+    const search7 = new SearchManager({
       "id": "search7",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -265,9 +225,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search8 = new SearchManager({
+    const search8 = new SearchManager({
       "id": "search8",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -281,9 +241,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search9 = new SearchManager({
+    const search9 = new SearchManager({
       "id": "search9",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -297,9 +257,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search10 = new SearchManager({
+    const search10 = new SearchManager({
       "id": "search10",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -313,9 +273,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search11 = new SearchManager({
+    const search11 = new SearchManager({
       "id": "search11",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -329,9 +289,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search12 = new SearchManager({
+    const search12 = new SearchManager({
       "id": "search12",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -345,9 +305,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search13 = new SearchManager({
+    const search13 = new SearchManager({
       "id": "search13",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -361,9 +321,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search14 = new SearchManager({
+    const search14 = new SearchManager({
       "id": "search14",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -377,9 +337,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search15 = new SearchManager({
+    const search15 = new SearchManager({
       "id": "search15",
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -393,9 +353,9 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-    var search16 = new SearchManager({
+    const search16 = new SearchManager({
       "id": "search16",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -409,18 +369,18 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true });
+    }, { tokens: true })
 
 
     //
     // SPLUNK LAYOUT
     //
 
-    $('header').remove();
+    $('header').remove()
     new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
       .render()
       .getContainerElement()
-      .appendChild($('.dashboard-body')[0]);
+      .appendChild($('.dashboard-body')[0])
 
     //
     // DASHBOARD EDITOR
@@ -431,30 +391,9 @@ require([
       el: $('.dashboard-body'),
       showTitle: true,
       editable: true
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    var element1 = new TableElement({
-      "id": "element1",
-      "count": 5,
-      "drilldown": "cell",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    element1.on("click", function (e) {
-      if (e.field !== undefined) {
-        e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=| getagentscheck $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ name=$agent$ |table id, ip, name, os-platform, os-uname, os-name, os-arch, os-version, dateAdd, lastKeepAlive, last_rootcheck, last_syscheck, version, status | dedup id | sort - id | rename os-platform as \"Platform\", os-uname as \"OS Info\", os-name as \"OS name\", os-arch as \"Arch\", os-version as \"OS Version\", dateAdd as \"Registered date\", lastKeepAlive as \"Last KeepAlive\", last_rootcheck as \"Last Rootcheck\", last_syscheck as \"Last Syscheck\", version as \"Agent version\" | fillnull value=\"N/A\"&earliest=-60m@m&latest=now", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-        utils.redirect(url, false, "_blank");
-      }
-    });
-
-    var element2 = new ChartElement({
+    const element2 = new ChartElement({
       "id": "element2",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -485,10 +424,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search2",
       "el": $('#element2')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element3 = new ChartElement({
+    const element3 = new ChartElement({
       "id": "element3",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -519,10 +458,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search3",
       "el": $('#element3')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element4 = new ChartElement({
+    const element4 = new ChartElement({
       "id": "element4",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -553,10 +492,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search4",
       "el": $('#element4')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element5 = new ChartElement({
+    const element5 = new ChartElement({
       "id": "element5",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -587,10 +526,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search5",
       "el": $('#element5')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element6 = new ChartElement({
+    const element6 = new ChartElement({
       "id": "element6",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -621,10 +560,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search6",
       "el": $('#element6')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element7 = new ChartElement({
+    const element7 = new ChartElement({
       "id": "element7",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -655,10 +594,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search7",
       "el": $('#element7')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element8 = new ChartElement({
+    const element8 = new ChartElement({
       "id": "element8",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -689,10 +628,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search8",
       "el": $('#element8')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element9 = new ChartElement({
+    const element9 = new ChartElement({
       "id": "element9",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -723,10 +662,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search9",
       "el": $('#element9')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element10 = new ChartElement({
+    const element10 = new ChartElement({
       "id": "element10",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -757,10 +696,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search10",
       "el": $('#element10')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element11 = new ChartElement({
+    const element11 = new ChartElement({
       "id": "element11",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -791,10 +730,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search11",
       "el": $('#element11')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element12 = new ChartElement({
+    const element12 = new ChartElement({
       "id": "element12",
       "charting.axisY2.scale": "inherit",
       "trellis.size": "medium",
@@ -825,10 +764,10 @@ require([
       "charting.chart.sliceCollapsingThreshold": "0.01",
       "managerid": "search12",
       "el": $('#element12')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    var element13 = new TableElement({
+    const element13 = new TableElement({
       "id": "element13",
       "dataOverlayMode": "none",
       "drilldown": "cell",
@@ -838,17 +777,17 @@ require([
       "wrap": "false",
       "managerid": "search13",
       "el": $('#element13')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element13.on("click", function (e) {
+    element13.on("click", (e) => {
       if (e.field !== undefined) {
-        e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-        utils.redirect(url, false, "_blank");
+        e.preventDefault()
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.pci_dss{}"
+        utils.redirect(url, false, "_blank")
       }
-    });
+    })
 
-    var element14 = new TableElement({
+    const element14 = new TableElement({
       "id": "element14",
       "dataOverlayMode": "none",
       "drilldown": "cell",
@@ -858,17 +797,17 @@ require([
       "wrap": "false",
       "managerid": "search14",
       "el": $('#element14')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element14.on("click", function (e) {
+    element14.on("click", (e) => {
       if (e.field !== undefined) {
-        e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | table agent.name, rule.level, rule.pci_dss{}, rule.description&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-        utils.redirect(url, false, "_blank");
+        e.preventDefault()
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | table agent.name, rule.level, rule.pci_dss{}, rule.description"
+        utils.redirect(url, false, "_blank")
       }
-    });
+    })
 
-    var element15 = new TableElement({
+    const element15 = new TableElement({
       "id": "element15",
       "dataOverlayMode": "none",
       "drilldown": "cell",
@@ -878,22 +817,22 @@ require([
       "wrap": "false",
       "managerid": "search15",
       "el": $('#element15')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element15.on("click", function (e) {
+    element15.on("click", (e) => {
       if (e.field !== undefined) {
-        e.preventDefault();
-        var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | stats count sparkline by agent.name, rule.pci_dss{}, rule.description&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-        utils.redirect(url, false, "_blank");
+        e.preventDefault()
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh  | stats count sparkline by agent.name, rule.pci_dss{}, rule.description"
+        utils.redirect(url, false, "_blank")
       }
-    });
+    })
 
 
     //
     // VIEWS: FORM INPUTS
     //
 
-    var input1 = new DropdownInput({
+    const input1 = new DropdownInput({
       "id": "input1",
       "choices": [
         { "label": "ALL", "value": "*" }
@@ -908,46 +847,46 @@ require([
       "value": "$form.agent$",
       "managerid": "search16",
       "el": $('#input1')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
-    input1.on("change", function (newValue) {
-      FormUtils.handleValueChange(input1);
-    });
+    input1.on("change", (newValue) => {
+      FormUtils.handleValueChange(input1)
+    })
 
-    var input2 = new TimeRangeInput({
+    const input2 = new TimeRangeInput({
       "id": "input2",
       "searchWhenChanged": true,
       "default": { "latest_time": "now", "earliest_time": "-24h@h" },
       "earliest_time": "$form.when.earliest$",
       "latest_time": "$form.when.latest$",
       "el": $('#input2')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
-    input2.on("change", function (newValue) {
-      FormUtils.handleValueChange(input2);
-    });
+    input2.on("change", (newValue) => {
+      FormUtils.handleValueChange(input2)
+    })
 
-    DashboardController.onReady(function () {
+    DashboardController.onReady(() => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-        submittedTokenModel.set({ earliest: '0', latest: '' });
+        submittedTokenModel.set({ earliest: '0', latest: '' })
       }
-    });
+    })
 
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
+      defaultTokenModel.set({ earliest: '0', latest: '' })
     }
 
-    submitTokens();
+    submitTokens()
 
 
     //
     // DASHBOARD READY
     //
 
-    DashboardController.ready();
-    pageLoading = false;
+    DashboardController.ready()
+    pageLoading = false
 
   }
-);
+)
 // ]]>

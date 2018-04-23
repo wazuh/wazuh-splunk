@@ -1,3 +1,15 @@
+#
+# Wazuh app - Manager backend
+# Copyright (C) 2018 Wazuh, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Find more information about this on the LICENSE file.
+#
+
 import logging
 import os
 import sys
@@ -56,7 +68,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     request = requests.get(url + '/manager/status', auth=auth, verify=verify)
@@ -105,8 +117,6 @@ class manager(controllers.BaseController):
   # /custom/wazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
   def logs(self, **kwargs):
-    file = open("/home/wazuh/logs.txt","w") 
-    file.write(json.dumps(kwargs)) 
     opt_username = kwargs["user"]
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
@@ -114,16 +124,6 @@ class manager(controllers.BaseController):
     limit = kwargs["length"]
     offset = kwargs["start"]
     search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-
-    # cached_search_column = get_cache()['column']
-    # cached_direction = get_cache()['dir']
-
-    # if cached_search_column != kwargs["order[0][column]"]:
-    # #   offset = "0"
-
-    # cached_search_column = kwargs["order[0][column]"]
-    # # cached_direction = kwargs['order[0][dir]']
-    # set_cache(cached_search_column,cached_direction)
     sorting_column = kwargs["order[0][column]"]
     direction = kwargs['order[0][dir]']
     sort_chain = ""
@@ -151,9 +151,8 @@ class manager(controllers.BaseController):
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
 
-    request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify)
-    manager_logs = json.loads(request.text)
-    result = json.dumps(manager_logs)
+    request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+    result = json.dumps(request)
     return result
 
   # /custom/wazuh/manager/groups
@@ -166,9 +165,25 @@ class manager(controllers.BaseController):
     url = "http://" + opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url + '/agents/groups', auth=auth, verify=verify)
-    groups = json.loads(request.text)['data']['items']
-    result = json.dumps(groups)
+    limit = kwargs["length"]
+    offset = kwargs["start"]
+    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+    sorting_column = kwargs["order[0][column]"]
+    direction = kwargs['order[0][dir]']
+    sort_chain = ""
+    if sorting_column == "0":
+      if direction == 'asc':
+        sort_chain = '+name'
+      if direction == 'desc':
+        sort_chain = '-name'
+    elif sorting_column == "1":
+      if direction == 'asc':
+        sort_chain = '+merged_sum'
+      if direction == 'desc':
+        sort_chain = '-merged_sum'
+    
+    request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+    result = json.dumps(request)
     return result
 
   # /custom/wazuh/manager/rules
@@ -181,28 +196,48 @@ class manager(controllers.BaseController):
     url = "http://" + opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url + '/rules?limit=1', auth=auth, verify=verify)
-    rules_qty = json.loads(request.text)["data"]["totalItems"]
-    request = requests.get(url + '/rules?offset=0&limit=' + str(rules_qty), auth=auth, verify=verify)
-    rules = json.loads(request.text)["data"]["items"]
-    results = []
-    for row in rules:
-        data = {}
-        for key in row:
-            if isinstance(row[key], dict):
-                for detail in row[key]:
-                    data[key + "-" + detail] = row[key][detail]
-            elif isinstance(row[key], list):
-                count = 0
-                for detail in row[key]:
-                    data[str(key) + "-" + str(count)] = detail
-                    count += 1
-            else:
-                data[key] = row[key]
-        results.append(data)
-    return json.dumps(results)
+    limit = kwargs["length"]
+    offset = kwargs["start"]
+    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+    sorting_column = kwargs["order[0][column]"]
+    direction = kwargs['order[0][dir]']
+    sort_chain = ""
+    if sorting_column == "0":
+      if direction == 'asc':
+        sort_chain = '+id'
+      if direction == 'desc':
+        sort_chain = '-id'
+    elif sorting_column == "1":
+      if direction == 'asc':
+        sort_chain = '+path'
+      if direction == 'desc':
+        sort_chain = '-path'
+    elif sorting_column == "2":
+      if direction == 'asc':
+        sort_chain = '+status'
+      if direction == 'desc':
+        sort_chain = '-status'
+    elif sorting_column == "3":
+      if direction == 'asc':
+        sort_chain = '+file'
+      if direction == 'desc':
+        sort_chain = '-file'
+    elif sorting_column == "5":
+      if direction == 'asc':
+        sort_chain = '+description'
+      if direction == 'desc':
+        sort_chain = '-description'
+    elif sorting_column == "6":
+      if direction == 'asc':
+        sort_chain = '+level'
+      if direction == 'desc':
+        sort_chain = '-level'
 
-    # /custom/wazuh/manager/decoders
+    request = requests.get(url + '/rules' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+    result = json.dumps(request)
+    return result
+
+  # /custom/wazuh/manager/decoders
   @expose_page(must_login=False, methods=['GET'])
   def decoders(self, **kwargs):
     opt_username = kwargs["user"]
@@ -212,23 +247,38 @@ class manager(controllers.BaseController):
     url = "http://" + opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url + '/decoders?limit=1', auth=auth, verify=verify)
-    decoders_qty = json.loads(request.text)["data"]["totalItems"]
-    request = requests.get(url + '/decoders?offset=0&limit=' + str(decoders_qty), auth=auth, verify=verify)
-    decoders = json.loads(request.text)["data"]["items"]
-    results = []
-    for row in decoders:
-        data = {}
-        for key in row:
-            if isinstance(row[key], dict):
-                for detail in row[key]:
-                    data[key + "-" + detail] = row[key][detail]
-            elif isinstance(row[key], list):
-                count = 0
-                for detail in row[key]:
-                    data[str(key) + "-" + str(count)] = detail
-                    count += 1
-            else:
-                data[key] = row[key]
-        results.append(data)
-    return json.dumps(results)
+    limit = kwargs["length"]
+    offset = kwargs["start"]
+    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+    sorting_column = kwargs["order[0][column]"]
+    direction = kwargs['order[0][dir]']
+    sort_chain = ""
+    if sorting_column == "0":
+      if direction == 'asc':
+        sort_chain = '+name'
+      if direction == 'desc':
+        sort_chain = '-name'
+    elif sorting_column == "1":
+      if direction == 'asc':
+        sort_chain = '+status'
+      if direction == 'desc':
+        sort_chain = '-status'
+    elif sorting_column == "2":
+      if direction == 'asc':
+        sort_chain = '+path'
+      if direction == 'desc':
+        sort_chain = '-path'
+    elif sorting_column == "3":
+      if direction == 'asc':
+        sort_chain = '+file'
+      if direction == 'desc':
+        sort_chain = '-file'
+    elif sorting_column == "4":
+      if direction == 'asc':
+        sort_chain = '+position'
+      if direction == 'desc':
+        sort_chain = '-position'
+    
+    request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+    result = json.dumps(request)
+    return result

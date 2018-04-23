@@ -5,10 +5,11 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Groups</title>
-  <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico"/>
-  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
-  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css"
-  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css"/>
+  <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/thirdPartyStyles/dataTables.min.css">
 
 
   <meta name="referrer" content="never" />
@@ -23,11 +24,7 @@
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
-  <!-- 
-BEGIN LAYOUT
-This section contains the layout for the dashboard. Splunk uses proprietary
-styles in <div> tags, similar to Bootstrap's grid system. 
--->
+
   <header>
     <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
     <div class="header splunk-header">
@@ -44,48 +41,44 @@ styles in <div> tags, similar to Bootstrap's grid system.
     <div class="dashboard-header clearfix">
       <h2>Groups</h2>
     </div>
-
-
     <div id="row1" class="dashboard-row dashboard-row1">
-      <div id="panel1" class="dashboard-cell" style="width: 100%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element1" class="dashboard-element table" style="width: 100%">
-              <div class="panel-head">
-                <h3>Manager groups</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <table id="myGroupTable" class="display compact">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>merged_sum</th>
+          </tr>
+        </thead>
+      </table>
     </div>
     <div id="row2" class="dashboard-row dashboard-row2" data-depends="$showDetails$">
-      <div id="panel2" class="dashboard-cell" style="width: 50%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element2" class="dashboard-element table" style="width: 100%">
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
+      <div id="panel2" class="dashboard-cell wz-margin-right-10" style="width: 48%;">
+        <h3>Files</h3>
+        <table id="myFilesTable" class="display compact">
+          <thead>
+            <tr>
+              <th>filename</th>
+              <th>hash</th>
+            </tr>
+          </thead>
+        </table>
       </div>
-      <div id="panel3" class="dashboard-cell" style="width: 50%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element3" class="dashboard-element table" style="width: 100%">
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
+      <div id="panel3" class="dashboard-cell wz-margin-left-10" style="width: 48%;">
+        <h3>Agents</h3>
+        <table id="myAgentsGroupTable" class="display compact">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>name</th>
+              <th>ip</th>
+              <th>last_keepalive</th>
+            </tr>
+          </thead>
+        </table>
       </div>
     </div>
 
-    <!-- Uncomment when app be able to show file content -->
-    <div id="row3" class="dashboard-row dashboard-row3" data-depends="$showFileDetails$">
+    <div id="row3" class="dashboard-row dashboard-row3">
       <div id="panel4" class="dashboard-cell" style="width: 100%;">
         <div>
           <div class="panel-element-row">
@@ -93,17 +86,13 @@ styles in <div> tags, similar to Bootstrap's grid system.
               <div class="panel-head">
                 <h3>File content</h3>
               </div>
-              <pre class="wz-pre json-beautifier jsonbeauty2"> <code id='filecontent'></code></pre>
+              <div id='precode'></div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- 
-END LAYOUT
--->
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>

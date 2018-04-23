@@ -1,6 +1,6 @@
 <nav search_view="search" color="#218BC6">
   <collection label="Overview">
-  <view name="general" />
+  <a href="general">General</a> 
   <view name="overview_fim" />
   <view name="overview_policy_monitoring" />
   <view name="overview_scap" />
@@ -8,27 +8,24 @@
   <view name="overview_pci_dss" />
 </collection>
   <collection label="Manager">
-  <view name="manager_status" />
+  <a href="manager_status">Status</a> 
   <view name="Configuration" />
-  <view name="manager_ruleset" />
-  <view name="manager_decoders" />
-  <view name="search_on_rules" />"
-  <view name="search_on_decoders" />"
+  <a href="manager_ruleset">Ruleset</a> 
+  <a href="manager_decoders">Decoders</a> 
   <a href="logs">Logs</a> 
   <a href="groups">Groups</a> 
 
 </collection>
   <collection label="Agents">
-  <view name="agents_summary" />
-  <view name="wazuh_alerts" />
+  <a href="agents_summary">Summary</a> 
+  <a href="wazuh_alerts">Alerts</a> 
   <view name="fim" />
   <view name="cis" />
-  <view name="openscap" />
+  <a href="openscap">OpenSCAP</a> 
   <view name="audit" />
   <view name="pcidss" />
-  <!-- <view name="tabledemo" /> -->
 </collection>
 <collection label="Configuration">
-  <view name="Global" default='true' />
+  <view name="API" default='true' />
 </collection>
 </nav>

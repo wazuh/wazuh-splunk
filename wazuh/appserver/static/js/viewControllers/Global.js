@@ -1,16 +1,14 @@
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
-
+/*
+ * Wazuh app - API configuration view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 require([
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
@@ -87,7 +85,9 @@ require([
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true
+
+
 
 
     // 
@@ -95,36 +95,67 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const urlTokenModel = new UrlTokenModel()
+
+
+    mvc.Components.registerInstance('url', urlTokenModel)
+
+
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+
+
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+
+
+    const service = mvc.createService({ owner: "nobody" })
+
+
 
     urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
+      defaultTokenModel.set(urlTokenModel.toJSON())
+
+
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
+        submitTokens()
+
+
       } else {
-        submittedTokenModel.clear();
+        submittedTokenModel.clear()
+
+
       }
-    });
+    })
+
+
 
     // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
+    defaultTokenModel.set(urlTokenModel.toJSON())
 
-    function submitTokens() {
+
+
+    const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
+      FormUtils.submitForm({ replaceState: pageLoading })
+
+
     }
 
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
+    const setToken = (name, value) => {
+      defaultTokenModel.set(name, value)
+
+
+      submittedTokenModel.set(name, value)
+
+
     }
 
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
+    const unsetToken = (name) => {
+      defaultTokenModel.unset(name)
+
+
+      submittedTokenModel.unset(name)
+
+
     }
 
 
@@ -133,12 +164,38 @@ require([
     // SEARCH MANAGERS
     //
 
+    $(document).ready(() => {
+      service.request(
+        "storage/collections/data/credentials/",
+        "GET",
+        null,
+        null,
+        null,
+        { "Content-Type": "application/json" }, null
+      ).done(data => {
 
-    var search1 = new SearchManager({
+        jsonData = JSON.parse(data)
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+
+        if (jsonData && jsonData[0] && jsonData[0].ipapi)
+          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+            parsedData = JSON.parse(data)
+            if (parsedData.data)
+              $('#statusLed').addClass('wz-green-led')
+          }).fail(() => {
+            $('#statusLed').addClass('wz-green-red')
+          })
+      })
+    })
+
+
+    const search1 = new SearchManager({
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table baseip ,baseport,ipapi,portapi,userapi,passapi | rename baseip as Base-IP, baseport as Base-Port, ipapi as IP-API, portapi as Port-API, userapi as Username, passapi as Password",
+      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table ipapi,portapi,userapi | rename ipapi as IP, portapi as Port, userapi as Username",
       "latest_time": "now",
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
@@ -148,18 +205,24 @@ require([
       "tokenDependencies": {
       },
       "runWhenTimeIsUndefined": false
-    }, { tokens: true });
+    }, { tokens: true })
+
+
 
 
     //
     // SPLUNK LAYOUT
     //
 
-    $('header').remove();
+    $('header').remove()
+
+
     new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
       .render()
       .getContainerElement()
-      .appendChild($('.dashboard-body')[0]);
+      .appendChild($('.dashboard-body')[0])
+
+
 
     //
     // DASHBOARD EDITOR
@@ -170,84 +233,87 @@ require([
       el: $('.dashboard-body'),
       showTitle: true,
       editable: true
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
 
     //
     // VIEWS: VISUALIZATION ELEMENTS
     //
 
-    var element1 = new TableElement({
+    const element1 = new TableElement({
       "id": "element1",
       "drilldown": "none",
       "managerid": "search1",
       "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+    }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
     //
     // VIEWS: FORM INPUTS
     //
 
-    var input1 = new TextInput({
-      "id": "input1",
-      "value": "$form.baseip$",
-      "el": $('#input1')
-    }, { tokens: true }).render();
-
-    input1.on("change", function (newValue) {
-      FormUtils.handleValueChange(input1);
-    });
-
-    var input2 = new TextInput({
-      "id": "input2",
-      "value": "$form.baseport$",
-      "el": $('#input2')
-    }, { tokens: true }).render();
-
-    input2.on("change", function (newValue) {
-      FormUtils.handleValueChange(input2);
-    });
-
-    var input3 = new TextInput({
+    const input3 = new TextInput({
       "id": "input3",
       "value": "$form.apiip$",
       "el": $('#input3')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input3.on("change", function (newValue) {
-      FormUtils.handleValueChange(input3);
-    });
+      FormUtils.handleValueChange(input3)
+    })
 
-    var input4 = new TextInput({
+    const input4 = new TextInput({
       "id": "input4",
       "value": "$form.apiport$",
       "el": $('#input4')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input4.on("change", function (newValue) {
-      FormUtils.handleValueChange(input4);
-    });
+      FormUtils.handleValueChange(input4)
+    })
 
-    var input5 = new TextInput({
+    const input5 = new TextInput({
       "id": "input5",
       "value": "$form.apiuser$",
       "el": $('#input5')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input5.on("change", function (newValue) {
-      FormUtils.handleValueChange(input5);
-    });
+      FormUtils.handleValueChange(input5)
+    })
 
-    var input6 = new TextInput({
+    const input6 = new TextInput({
       "id": "input6",
       "value": "$form.apipass$",
       "el": $('#input6')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     input6.on("change", function (newValue) {
-      FormUtils.handleValueChange(input6);
-    });
+      service.request(
+        "storage/collections/data/credentials/",
+        "GET",
+        null,
+        null,
+        null,
+        { "Content-Type": "application/json" }, null
+      ).done(data => {
+
+        jsonData = JSON.parse(data)
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+
+        if (jsonData && jsonData[0] && jsonData[0].ipapi)
+          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+            parsedData = JSON.parse(data)
+            if (parsedData.data)
+              $('#statusLed').addClass('wz-green-led')
+          }).fail(() => {
+            $('#statusLed').addClass('wz-green-red')
+          })
+      })
+      FormUtils.handleValueChange(input6)
+    })
 
 
     // 
@@ -260,8 +326,8 @@ require([
     // Call this function when the Delete Record button is clicked
     $("#deleteRecord").click(function () {
       // Get the value of the key ID field
-      var tokens = mvc.Components.get("default");
-      //var form_keyid = tokens.get("KeyID");
+      const tokens = mvc.Components.get("default")
+      //const form_keyid = tokens.get("KeyID")
 
       // Delete the record that corresponds to the key ID using
       // the del method to send a DELETE request
@@ -269,47 +335,43 @@ require([
       service.del("storage/collections/data/credentials/")
         .done(function () {
           // Run the search again to update the table
-          search1.startSearch();
-        });
-      //return false;
-    });
+
+          search1.startSearch()
+        })
+      //return false
+    })
     // 
     // SERVICE OBJECT
     //
 
     // Create a service object using the Splunk SDK for JavaScript
     // to send REST requests
-    var service = mvc.createService({ owner: "nobody" });
 
-    var submit = new SubmitButton({
+    const submit = new SubmitButton({
       id: 'submit',
       el: $('#search_btn')
-    }, { tokens: true }).render();
+    }, { tokens: true }).render()
 
     submit.on("submit", function () {
       service.del("storage/collections/data/credentials/")
         .done(function () {
           // Run the search again to update the table
-          submitTokens();
+          submitTokens()
 
           // When the Submit button is clicked, get all the form fields by accessing token values
-          var tokens = mvc.Components.get("default");
-          var form_baseip = tokens.get("baseip");
-          var form_baseport = tokens.get("baseport");
-          var form_apiip = tokens.get("apiip");
-          var form_apiport = tokens.get("apiport");
-          var form_apiuser = tokens.get("apiuser");
-          var form_apipass = tokens.get("apipass");
+          const tokens = mvc.Components.get("default")
+          const form_apiip = tokens.get("apiip")
+          const form_apiport = tokens.get("apiport")
+          const form_apiuser = tokens.get("apiuser")
+          const form_apipass = tokens.get("apipass")
 
           // Create a dictionary to store the field names and values
-          var record = {
-            "baseip": form_baseip,
-            "baseport": form_baseport,
+          const record = {
             "ipapi": form_apiip,
             "portapi": form_apiport,
             "userapi": form_apiuser,
             "passapi": form_apipass
-          };
+          }
 
           // Use the request method to send a REST POST request
           // to the storage/collections/data/{collection}/ endpoint
@@ -321,24 +383,60 @@ require([
             JSON.stringify(record),
             { "Content-Type": "application/json" },
             null)
-            .done(function () {
+            .done(() => {
               // Run the search again to update the table
-              search1.startSearch();
+              service.request(
+                "storage/collections/data/credentials/",
+                "GET",
+                null,
+                null,
+                null,
+                { "Content-Type": "application/json" }, null
+              ).done(data => {
 
-              // Clear the form fields 
-              $("#formCustomerInfo input[type=text]").val("");
-            });
-        });
+                jsonData = JSON.parse(data)
+                const url = window.location.href
+                const arr = url.split("/")
+                const baseUrl = arr[0] + "//" + arr[2]
 
-    });
+                if (jsonData && jsonData[0] && jsonData[0].ipapi)
+                  $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+                    parsedData = JSON.parse(data)
+                    if (parsedData.data)
+                      $('#statusLed').removeClass('wz-green-red')
+                    $('#statusLed').addClass('wz-green-led')
+                  }).fail(() => {
+                    $('#statusLed').removeClass('wz-green-green')
+                    $('#statusLed').addClass('wz-green-red')
+                  })
+              })
+
+
+            })
+          search1.startSearch()
+
+          // Clear the form fields 
+          $("#formCustomerInfo input[type=text]").val("")
+
+        })
+
+
+
+    })
+
+
 
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
+      defaultTokenModel.set({ earliest: '0', latest: '' })
+
+
     }
 
     if (!_.isEmpty(urlTokenModel.toJSON())) {
-      submitTokens();
+      submitTokens()
+
+
     }
 
 
@@ -346,9 +444,12 @@ require([
     // DASHBOARD READY
     //
 
-    DashboardController.ready();
-    pageLoading = false;
+    DashboardController.ready()
+
+
+    pageLoading = false
+
+
 
   }
-);
-// ]]>
+)

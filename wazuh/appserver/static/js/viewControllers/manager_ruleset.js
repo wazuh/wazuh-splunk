@@ -1,15 +1,14 @@
-// <![CDATA[
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
-// modules as function parameters, in order.
-// 
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
+/*
+ * Wazuh app - Ruleset view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 require([
   "splunkjs/mvc",
@@ -43,7 +42,9 @@ require([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "/static/app/wazuh/js/customViews/tableView.js"
+
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -80,14 +81,15 @@ require([
     SearchManager,
     SavedSearchManager,
     PostProcessManager,
-    UrlTokenModel
+    UrlTokenModel,
+    tableView
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
     // TokenForwarder
   ) {
 
-    var pageLoading = true;
+    let pageLoading = true;
 
 
     // 
@@ -95,11 +97,11 @@ require([
     //
 
     // Create token namespaces
-    var urlTokenModel = new UrlTokenModel();
+    const urlTokenModel = new UrlTokenModel();
     mvc.Components.registerInstance('url', urlTokenModel);
-    var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    var service = mvc.createService({ owner: "nobody" });
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+    const service = mvc.createService({ owner: "nobody" });
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
@@ -137,9 +139,7 @@ require([
         null,
         { "Content-Type": "application/json" }, null
       ).done(function (data) {
-        var parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log('BASEIP', JSON.parse(data)[0].baseip);
+        const parsedData = JSON.parse(data);
         setToken('baseip', parsedData[0].baseip);
         setToken('baseport', parsedData[0].baseport);
         setToken('ipapi', parsedData[0].ipapi);
@@ -147,31 +147,43 @@ require([
         setToken('userapi', parsedData[0].userapi);
         setToken('passwordapi', parsedData[0].passapi);
         setToken("loadedtokens", "true");
-      });
+        const url = window.location.href
+        const arr = url.split("/");
+        const baseUrl = arr[0] + "//" + arr[2]
+        const opts = {
+          pages: 10,
+          processing: true,
+          serverSide: true,
+          filterVisible: false,
+          columns: [
+            { "data": "id", 'orderable': true, defaultContent:"-"  },
+            { "data": "path", 'orderable': true, defaultContent:"-"  },
+            { "data": "status", 'orderable': true, defaultContent:"-"  },
+            { "data": "file", 'orderable': true, defaultContent:"-"  },
+            { "data": "groups", 'orderable': false, defaultContent:"-"  },
+            { "data": "description", 'orderable': true, defaultContent:"-"  },
+            { "data": "level", 'orderable': true, defaultContent:"-"  },
+            { "data": "pci", 'orderable': false, defaultContent:"-"  }
+          ]
+        }
+        const table = new tableView()
+        table.element($('#myTable'))
+        table.build(baseUrl+'/custom/wazuh/manager/rules?ip='+parsedData[0].ipapi+'&port='+parsedData[0].portapi+'&user='+parsedData[0].userapi+'&pass='+parsedData[0].passapi, opts)
+        table.click(data => {
+          setToken("showDetails", "true")
+          setToken("id", data.id || "-")
+          setToken("description", data.description || "-")
+          setToken("Groups", data.groups)
+          setToken("details-if_sid", data.details.if_sid || "-")
+          setToken("details-regex", data.details.regex || "-")
+          setToken("details-info", data.details.info || "-")
+          setToken("details-frequency", data.details.frequency || "-")
+        })
+
+      })
     })
 
-    //
-    // SEARCH MANAGERS
-    //
-
-
-    var search1 = new SearchManager({
-      "id": "search1",
-      "cancelOnUnload": true,
-      "sample_ratio": 1,
-      "earliest_time": "-24h@h",
-      "status_buckets": 0,
-      "search": "| getruleset $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename pci-0 as pci0,pci-1 as pci1,pci-2 as pci2,pci-3 as pci3,pci-4 as pci4, \"details-info{}\" as details.info, groups-0 as groups0, groups-1 as groups1, groups-2 as groups2 | eval Requirement = mvappend(pci0,pci1,pci2,pci3,pci4) | eval Groups = mvappend(groups0,groups1,groups2) |table id, file, description, Requirement, Groups, level, \"details-regex\", \"details-info\", \"details-if_sid\", \"details-frequency\" | dedup id |  sort - level | fillnull value=\"-\"",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
-
-    var search2 = new SearchManager({
+    const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -187,7 +199,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search3 = new SearchManager({
+    const search3 = new SearchManager({
       "id": "search3",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -203,7 +215,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search4 = new SearchManager({
+    const search4 = new SearchManager({
       "id": "search4",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -219,7 +231,7 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true, tokenNamespace: "submitted" });
 
-    var search5 = new SearchManager({
+    const search5 = new SearchManager({
       "id": "search5",
       "cancelOnUnload": true,
       "sample_ratio": null,
@@ -257,39 +269,7 @@ require([
       editable: true
     }, { tokens: true }).render();
 
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    var element1 = new TableElement({
-      "id": "element1",
-      "count": 5,
-      "dataOverlayMode": "none",
-      "drilldown": "cell",
-      "fields": ["id", "file", "description", "Requirement", "level"],
-      "rowNumbers": "false",
-      "wrap": "true",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    element1.on("click", function (e) {
-      if (e.field !== undefined) {
-        e.preventDefault();
-        setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("Groups", TokenUtils.replaceTokenNames("$row.Groups$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("Requirement", TokenUtils.replaceTokenNames("$row.Requirement$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("description", TokenUtils.replaceTokenNames("$row.description$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("id", TokenUtils.replaceTokenNames("$row.id$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-if_sid", TokenUtils.replaceTokenNames("$row.details-if_sid$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-regex", TokenUtils.replaceTokenNames("$row.details-regex$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-info", TokenUtils.replaceTokenNames("$row.details-info$", _.extend(submittedTokenModel.toJSON(), e.data)));
-        setToken("details-frequency", TokenUtils.replaceTokenNames("$row.details-frequency$", _.extend(submittedTokenModel.toJSON(), e.data)));
-      }
-    });
-
-    var element2 = new HtmlElement({
+    const element2 = new HtmlElement({
       "id": "element2",
       "useTokens": true,
       "el": $('#element2')
@@ -297,7 +277,7 @@ require([
 
     DashboardController.addReadyDep(element2.contentLoaded());
 
-    var element3 = new ChartElement({
+    const element3 = new ChartElement({
       "id": "element3",
       "charting.drilldown": "none",
       "resizable": true,
@@ -307,7 +287,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element4 = new ChartElement({
+    const element4 = new ChartElement({
       "id": "element4",
       "charting.drilldown": "none",
       "resizable": true,
@@ -317,7 +297,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element5 = new ChartElement({
+    const element5 = new ChartElement({
       "id": "element5",
       "charting.drilldown": "none",
       "resizable": true,
@@ -327,7 +307,7 @@ require([
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-    var element6 = new ChartElement({
+    const element6 = new ChartElement({
       "id": "element6",
       "charting.drilldown": "none",
       "resizable": true,
@@ -344,14 +324,8 @@ require([
 
     submitTokens();
 
-
-    //
-    // DASHBOARD READY
-    //
-
     DashboardController.ready();
     pageLoading = false;
 
   }
 );
-// ]]>

@@ -1,3 +1,15 @@
+/*
+ * Wazuh app - TableView class
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define(function (require, exports, module) {
   const $ = require('jquery')
   const tableLib = require("../thirdPartyLibs/dataTables.min.js")
@@ -8,12 +20,26 @@ define(function (require, exports, module) {
     /**
      * Constructor method
      * @param {*} $el: DOM table element to attach the table 
-     * @param {String} urlArg: API endpoint
+     */
+    constructor() {
+      this.$el = ""
+      this.table = ""
+      // this.$el.DataTable({"retrieve": true}) 
+    }
+
+    element($el) {
+      this.$el = $el
+    }
+    /**
+     * Build: generates and draws a datatable
+     * @param {*} urlArg : url to get the data from
      * @param {Object} opt: options
      */
-    constructor($el, urlArg, opt) {
-      this.table = $el.DataTable({
-        "ordering": true,
+    build(urlArg, opt) {
+
+      this.table = this.$el.DataTable({
+        "ordering": opt.ordering || true,
+        "retrieve": opt.retrieve || true,
         "orderMulti": true,
         "paging": true,
         "processing": opt.processing || true,
@@ -23,34 +49,42 @@ define(function (require, exports, module) {
           url: urlArg,
           type: opt.method || 'get',
           dataFilter: (data) => {
-            let json = jQuery.parseJSON(data);
-            json.recordsTotal = json.data.totalItems;
-            json.recordsFiltered = json.data.totalItems;
-            json.data = json.data.items;
-            return JSON.stringify(json); // return JSON string
+            let json = jQuery.parseJSON(data)
+            json.recordsTotal = json.data.totalItems
+            json.recordsFiltered = json.data.totalItems
+            json.data = json.data.items
+            return JSON.stringify(json) // return JSON string
           },
         },
         // "bFilter": opt.filterVisible || false,
         // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
         "columns": opt.columns
       })
+      this.table.draw()
     }
 
     search($el) {
       this.table.columns().every(function () {
         var that = this;
-        console.log('that.search()',that.search())
         $el.on('keyup change', function () {
           if (that.search() !== this.value) {
-            console.log('this.value',this.value)
             that
               .search(this.value)
-              .draw();
           }
         })
       })
     }
 
+    /**
+     * Click: perform a click in a row
+     */
+    click(cb) {
+      const myThis = this;
+      this.$el.on('click', 'tr', function () {
+        cb(myThis.table.row(this).data())
+      })
+    }
   }
+
   return table
 })
