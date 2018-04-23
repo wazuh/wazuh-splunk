@@ -184,27 +184,6 @@ require([
       })
     })
 
-    //
-    // SEARCH MANAGERS
-    //
-
-
-    // const search1 = new SearchManager({
-    //   "id": "search1",
-    //   "cancelOnUnload": true,
-    //   "sample_ratio": 1,
-    //   "earliest_time": "-24h@h",
-    //   "status_buckets": 0,
-    //   "search": "| getruleset 192.168.0.159 8000 192.168.0.130 55000 foo bar |table id, file, description, groups, level,pci | dedup id |  sort - level | fillnull value='-'",
-    //   "latest_time": "now",
-    //   "app": utils.getCurrentApp(),
-    //   "auto_cancel": 90,
-    //   "preview": true,
-    //   "tokenDependencies": {
-    //   },
-    //   "runWhenTimeIsUndefined": false
-    // }, { tokens: true, tokenNamespace: "submitted" });
-
     const search2 = new SearchManager({
       "id": "search2",
       "cancelOnUnload": true,
@@ -378,14 +357,8 @@ require([
 
     submitTokens();
 
-
-    //
-    // DASHBOARD READY
-    //
-
     DashboardController.ready();
     pageLoading = false;
 
   }
 );
-// ]]>
