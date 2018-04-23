@@ -98,7 +98,7 @@ require([
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     let baseUrl = ""
-    urlTokenModel.on('url:navigate',  ()  =>{
+    urlTokenModel.on('url:navigate', () => {
       defaultTokenModel.set(urlTokenModel.toJSON())
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens()
@@ -116,17 +116,17 @@ require([
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON())
 
-     const submitTokens = () => {
+    const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading })
     }
 
-     const setToken = (name, value) => {
+    const setToken = (name, value) => {
       defaultTokenModel.set(name, value)
       submittedTokenModel.set(name, value)
     }
 
-     const unsetToken = (name) => {
+    const unsetToken = (name) => {
       defaultTokenModel.unset(name)
       submittedTokenModel.unset(name)
     }
@@ -436,7 +436,7 @@ require([
       "el": $('#element3')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element3.on("click",  (e) => {
+    element3.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit agent.name=* | top agent.name showperc=false"
@@ -451,7 +451,7 @@ require([
       "el": $('#element4')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element4.on("click",  (e) => {
+    element4.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit | top audit.directory.name showperc=false"
@@ -466,7 +466,7 @@ require([
       "el": $('#element5')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element5.on("click",  (e) => {
+    element5.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit  | top audit.file.name showperc=f"
@@ -768,7 +768,7 @@ require([
       "el": $('#element15')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element15.on("click",  (e) => {
+    element15.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit | table _time, agent.name, rule.description, audit.exe, audit.file.mode, audit.egid, audit.euid"
@@ -798,7 +798,7 @@ require([
       "el": $('#input1')
     }, { tokens: true }).render()
 
-    input1.on("change",  (newValue) => {
+    input1.on("change", (newValue) => {
       FormUtils.handleValueChange(input1)
     })
 
@@ -811,11 +811,11 @@ require([
       "el": $('#input2')
     }, { tokens: true }).render()
 
-    input2.on("change",  (newValue) => {
+    input2.on("change", (newValue) => {
       FormUtils.handleValueChange(input2)
     })
 
-    DashboardController.onReady( ()  =>{
+    DashboardController.onReady(() => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
         submittedTokenModel.set({ earliest: '0', latest: '' })
       }

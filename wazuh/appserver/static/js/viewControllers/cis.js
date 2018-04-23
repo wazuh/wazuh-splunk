@@ -98,7 +98,7 @@ require([
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     let baseUrl = ""
-    urlTokenModel.on('url:navigate',  () => {
+    urlTokenModel.on('url:navigate', () => {
       defaultTokenModel.set(urlTokenModel.toJSON())
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens()
@@ -359,7 +359,7 @@ require([
       "el": $('#element4')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element4.on("click",  (e) => {
+    element4.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups"
@@ -467,7 +467,7 @@ require([
       "el": $('#element9')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element9.on("click",  (e) => {
+    element9.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log"
@@ -497,7 +497,7 @@ require([
       "el": $('#input1')
     }, { tokens: true }).render()
 
-    input1.on("change",  (newValue) => {
+    input1.on("change", (newValue) => {
       FormUtils.handleValueChange(input1)
     })
 
@@ -510,11 +510,11 @@ require([
       "el": $('#input2')
     }, { tokens: true }).render()
 
-    input2.on("change",  (newValue) => {
+    input2.on("change", (newValue) => {
       FormUtils.handleValueChange(input2)
     })
 
-    DashboardController.onReady( () => {
+    DashboardController.onReady(() => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
         submittedTokenModel.set({ earliest: '0', latest: '' })
       }

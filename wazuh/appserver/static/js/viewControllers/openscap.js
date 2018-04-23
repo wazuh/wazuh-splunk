@@ -47,7 +47,7 @@ require([
   // "splunkjs/mvc/tokenforwarder"
 ],
   function (
-     mvc,
+    mvc,
     utils,
     TokenUtils,
     _,
@@ -80,27 +80,17 @@ require([
     PostProcessManager,
     UrlTokenModel
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
 
     let pageLoading = true
 
-
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
     const urlTokenModel = new UrlTokenModel()
     mvc.Components.registerInstance('url', urlTokenModel)
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = mvc.createService({ owner: "nobody" })
     let baseUrl = ""
 
-    urlTokenModel.on('url:navigate',  () => {
+    urlTokenModel.on('url:navigate', () => {
       defaultTokenModel.set(urlTokenModel.toJSON())
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens()
@@ -112,17 +102,17 @@ require([
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON())
 
-     const submitTokens = () => {
+    const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading })
     }
 
-     const setToken = (name, value) => {
+    const setToken = (name, value) => {
       defaultTokenModel.set(name, value)
       submittedTokenModel.set(name, value)
     }
 
-     const unsetToken = (name) => {
+    const unsetToken = (name) => {
       defaultTokenModel.unset(name)
       submittedTokenModel.unset(name)
     }
@@ -730,7 +720,7 @@ require([
       "el": $('#element13')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element13.on("click",  (e) => {
+    element13.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"oscap\" | table agent.name, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title , oscap.scan.score"
@@ -751,7 +741,7 @@ require([
       "el": $('#element14')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-    element14.on("click",  (e) => {
+    element14.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault()
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"oscap\" | table _time, agent.name, oscap.check.title, oscap.check.result, oscap.check.severity, oscap.scan.id, oscap.scan.content, oscap.scan.profile.title"
@@ -781,7 +771,7 @@ require([
       "el": $('#input1')
     }, { tokens: true }).render()
 
-    input1.on("change",  (newValue) => {
+    input1.on("change", (newValue) => {
       FormUtils.handleValueChange(input1)
     })
 
@@ -794,11 +784,11 @@ require([
       "el": $('#input2')
     }, { tokens: true }).render()
 
-    input2.on("change",  (newValue) => {
+    input2.on("change", (newValue) => {
       FormUtils.handleValueChange(input2)
     })
 
-    DashboardController.onReady( ()  =>{
+    DashboardController.onReady(() => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
         submittedTokenModel.set({ earliest: '0', latest: '' })
       }
