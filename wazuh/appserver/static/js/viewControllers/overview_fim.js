@@ -128,7 +128,6 @@ require([
 
 
     $(document).ready(() => {
-      const parsedData = JSON.parse(data)
       const urlTemp = window.location.href
       const arr = urlTemp.split("/")
       baseUrl = arr[0] + "//" + arr[2]

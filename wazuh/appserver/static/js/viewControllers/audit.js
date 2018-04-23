@@ -97,9 +97,8 @@ require([
     mvc.Components.registerInstance('url', urlTokenModel);
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    const service = mvc.createService({ owner: "nobody" });
-
-    urlTokenModel.on('url:navigate', function () {
+    let baseUrl = ""
+    urlTokenModel.on('url:navigate',  ()  =>{
       defaultTokenModel.set(urlTokenModel.toJSON());
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens();
@@ -108,44 +107,29 @@ require([
       }
     });
 
+    $(document).ready(() => {
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
+    })
+
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON());
 
-    function submitTokens() {
+     const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading });
     }
 
-    function setToken(name, value) {
+     const setToken = (name, value) => {
       defaultTokenModel.set(name, value);
       submittedTokenModel.set(name, value);
     }
 
-    function unsetToken(name) {
+     const unsetToken = (name) => {
       defaultTokenModel.unset(name);
       submittedTokenModel.unset(name);
     }
-
-    $(document).ready(function () {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(function (data) {
-        const parsedData = JSON.parse(data);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        setToken("loadedtokens", "true");
-      });
-    })
-
 
     const search2 = new SearchManager({
       "id": "search2",
@@ -452,10 +436,10 @@ require([
       "el": $('#element3')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element3.on("click", function (e) {
+    element3.on("click",  (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit agent.name=* | top agent.name showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit agent.name=* | top agent.name showperc=false"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -467,10 +451,10 @@ require([
       "el": $('#element4')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element4.on("click", function (e) {
+    element4.on("click",  (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit | top audit.directory.name showperc=f&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit | top audit.directory.name showperc=false"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -482,10 +466,10 @@ require([
       "el": $('#element5')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element5.on("click", function (e) {
+    element5.on("click",  (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit  | top audit.file.name showperc=f&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit  | top audit.file.name showperc=f"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -784,10 +768,10 @@ require([
       "el": $('#element15')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element15.on("click", function (e) {
+    element15.on("click",  (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit | table _time, agent.name, rule.description, audit.exe, audit.file.mode, audit.egid, audit.euid&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=audit | table _time, agent.name, rule.description, audit.exe, audit.file.mode, audit.egid, audit.euid"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -814,7 +798,7 @@ require([
       "el": $('#input1')
     }, { tokens: true }).render();
 
-    input1.on("change", function (newValue) {
+    input1.on("change",  (newValue) => {
       FormUtils.handleValueChange(input1);
     });
 
@@ -827,11 +811,11 @@ require([
       "el": $('#input2')
     }, { tokens: true }).render();
 
-    input2.on("change", function (newValue) {
+    input2.on("change",  (newValue) => {
       FormUtils.handleValueChange(input2);
     });
 
-    DashboardController.onReady(function () {
+    DashboardController.onReady( ()  =>{
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
         submittedTokenModel.set({ earliest: '0', latest: '' });
       }
