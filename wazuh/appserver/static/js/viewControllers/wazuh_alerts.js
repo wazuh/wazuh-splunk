@@ -761,7 +761,7 @@ require([
       "el": $('#input1')
     }, { tokens: true }).render();
 
-    input1.on("change",  (ne =>wValue) {
+    input1.on("change",  (newValue) => {
       FormUtils.handleValueChange(input1);
     });
 
@@ -774,7 +774,7 @@ require([
       "el": $('#input2')
     }, { tokens: true }).render();
 
-    input2.on("change",  (ne =>wValue) {
+    input2.on("change",  (newValue) => {
       FormUtils.handleValueChange(input2);
     });
 
