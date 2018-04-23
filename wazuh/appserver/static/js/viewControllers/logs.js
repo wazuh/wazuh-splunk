@@ -35,10 +35,10 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "timestamp", 'orderable': true },
-            { "data": "tag", 'orderable': true },
-            { "data": "description", 'orderable': true },
-            { "data": "level", 'orderable': true }
+            { "data": "timestamp", 'orderable': true, defaultContent:"-"  },
+            { "data": "tag", 'orderable': true, defaultContent:"-"  },
+            { "data": "description", 'orderable': true, defaultContent:"-"  },
+            { "data": "level", 'orderable': true, defaultContent:"-"  }
           ]
         }
         const table = new tableView()

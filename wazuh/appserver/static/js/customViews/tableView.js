@@ -48,7 +48,7 @@ define(function (require, exports, module) {
         // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
         "columns": opt.columns
       })
-      //this.table.draw()
+      this.table.draw()
     }
 
     search($el) {

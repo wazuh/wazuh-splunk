@@ -157,14 +157,14 @@ require([
           serverSide: true,
           filterVisible: false,
           columns: [
-            { "data": "id", 'orderable': true },
-            { "data": "path", 'orderable': true },
-            { "data": "status", 'orderable': true },
-            { "data": "file", 'orderable': true },
-            { "data": "groups", 'orderable': false },
-            { "data": "description", 'orderable': true },
-            { "data": "level", 'orderable': true },
-            { "data": "pci", 'orderable': false }
+            { "data": "id", 'orderable': true, defaultContent:"-"  },
+            { "data": "path", 'orderable': true, defaultContent:"-"  },
+            { "data": "status", 'orderable': true, defaultContent:"-"  },
+            { "data": "file", 'orderable': true, defaultContent:"-"  },
+            { "data": "groups", 'orderable': false, defaultContent:"-"  },
+            { "data": "description", 'orderable': true, defaultContent:"-"  },
+            { "data": "level", 'orderable': true, defaultContent:"-"  },
+            { "data": "pci", 'orderable': false, defaultContent:"-"  }
           ]
         }
         const table = new tableView()

@@ -134,7 +134,7 @@ class agents(controllers.BaseController):
         file.write('making request...\n')
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(url + '/agents/groups/' + group_id  , auth=auth, verify=verify).json()
+        request = requests.get(url + '/agents/groups/' + group_id + '?limit=' + limit + '&offset='+offset + '&search='+search_value , auth=auth, verify=verify).json()
         file.write('done request\n')
 
         result = json.dumps(request)

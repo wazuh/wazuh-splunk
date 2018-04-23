@@ -17,20 +17,20 @@ define(function (require, exports, module) {
         serverSide: true,
         filterVisible: false,
         columns: [
-          { "data": "id", 'orderable': true },
-          { "data": "ip", 'orderable': true },
-          { "data": "name", 'orderable': true },
-          { "data": "status", 'orderable': true },
-          { "data": "os-platform", 'orderable': true },
-          { "data": "os-uname", 'orderable': true },
-          { "data": "os-name", 'orderable': true },
-          { "data": "os-arch", 'orderable': false },
-          { "data": "os-version", 'orderable': true },
-          { "data": "dateAdd", 'orderable': false },
-          { "data": "lastKeepAlive", 'orderable': false },
-          { "data": "last_rootcheck", 'orderable': false },
-          { "data": "last_syscheck", 'orderable': false },
-          { "data": "version", 'orderable': false }
+          { "data": "id", 'orderable': true, defaultContent:"-"  },
+          { "data": "ip", 'orderable': true, defaultContent:"-"  },
+          { "data": "name", 'orderable': true, defaultContent:"-"  },
+          { "data": "status", 'orderable': true, defaultContent:"-"  },
+          { "data": "os-platform", 'orderable': true, defaultContent:"-"  },
+          { "data": "os-uname", 'orderable': true, defaultContent:"-"  },
+          { "data": "os-name", 'orderable': true, defaultContent:"-"  },
+          { "data": "os-arch", 'orderable': false, defaultContent:"-" },
+          { "data": "os-version", 'orderable': true, defaultContent:"-"  },
+          { "data": "dateAdd", 'orderable': false, defaultContent:"-"  },
+          { "data": "lastKeepAlive", 'orderable': false, defaultContent:"-"  },
+          { "data": "last_rootcheck", 'orderable': false, defaultContent:"-"  },
+          { "data": "last_syscheck", 'orderable': false, defaultContent:"-"  },
+          { "data": "version", 'orderable': false, defaultContent:"-"  }
         ]
       }
     }
