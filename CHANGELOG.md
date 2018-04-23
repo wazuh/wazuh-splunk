@@ -11,11 +11,13 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Changed
 - Performance improvings:
   - Event listeners and unused dependencies were removed
+  - Useless tokens deleted
 - API Configuration:
   - IP base and port are not required anymore.
   - Status led added in order to check connection.
   - Password field is not shown now.
 - View controllers transpiled to ES6 syntax
+- Wazuh copyright on each javascript and python file
 - Tab distribution redesigned:
   - Deleted redundant Agents summary views and compact them in just one tab
   - Deleted Search on Rules and Search on Decoders tab and compacting all functionalities in Ruleset and Decoders tabs
@@ -24,7 +26,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Ruleset and Decoders search tabs now are able to filter properly.
 - SSL Verification Error in lab environment fixed
 - Groups: now the content of each individual configuration file is showed up in pretty JSON format properly.
-
+- Splunk queries fixed:
+  - Now a query is executed when a Splunk element such tables and tags are clicked
 ## Wazuh v3.2.x - Splunk app v2.1.0
 ### Added
 - New Configuration tab:
