@@ -107,7 +107,7 @@ require([
         submittedTokenModel.clear();
       }
     });
-    
+
     $(document).ready(() => {
       const parsedData = JSON.parse(data)
       const urlTemp = window.location.href
@@ -432,7 +432,7 @@ require([
     element1.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = "/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -463,7 +463,7 @@ require([
     element2.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = "/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -494,7 +494,7 @@ require([
     element3.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = "/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -785,7 +785,7 @@ require([
     element13.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = "/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -805,7 +805,7 @@ require([
     element14.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = "/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
         utils.redirect(url, false, "_blank");
       }
     });
