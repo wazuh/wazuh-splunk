@@ -97,8 +97,7 @@ require([
     mvc.Components.registerInstance('url', urlTokenModel);
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    const service = mvc.createService({ owner: "nobody" });
-
+    let baseUrl = ""
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -127,24 +126,10 @@ require([
     }
 
 
-    $(document).ready(function () {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(function (data) {
-        const parsedData = JSON.parse(data);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        setToken("loadedtokens", "true");
-      });
+    $(document).ready(() => {
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
     })
 
     const search2 = new SearchManager({
@@ -377,7 +362,7 @@ require([
     element4.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -485,7 +470,7 @@ require([
     element9.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log"
         utils.redirect(url, false, "_blank");
       }
     });
