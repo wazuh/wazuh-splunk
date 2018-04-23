@@ -98,7 +98,7 @@ require([
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
     let baseUrl = ''
-    urlTokenModel.on('url:navigate',  ()  =>{
+    urlTokenModel.on('url:navigate', () => {
       defaultTokenModel.set(urlTokenModel.toJSON());
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens();
@@ -116,17 +116,17 @@ require([
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON());
 
-     const submitTokens = () => {
+    const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading });
     }
 
-     const setToken = (name, value) => {
+    const setToken = (name, value) => {
       defaultTokenModel.set(name, value);
       submittedTokenModel.set(name, value);
     }
 
-     const unsetToken = (name) => {
+    const unsetToken = (name) => {
       defaultTokenModel.unset(name);
       submittedTokenModel.unset(name);
     }
@@ -691,7 +691,7 @@ require([
       "el": $('#element11')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element11.on("click",  (e) => {
+    element11.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | chart sparkline count by rule.description | sort - count | head 5"
@@ -711,7 +711,7 @@ require([
       "el": $('#element12')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element12.on("click",  (e) => {
+    element12.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.level\">=9 | table agent.name, rule.level, rule.description"
@@ -731,7 +731,7 @@ require([
       "el": $('#element13')
     }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-    element13.on("click",  (e) => {
+    element13.on("click", (e) => {
       if (e.field !== undefined) {
         e.preventDefault();
         const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time"
@@ -761,7 +761,7 @@ require([
       "el": $('#input1')
     }, { tokens: true }).render();
 
-    input1.on("change",  (newValue) => {
+    input1.on("change", (newValue) => {
       FormUtils.handleValueChange(input1);
     });
 
@@ -774,11 +774,11 @@ require([
       "el": $('#input2')
     }, { tokens: true }).render();
 
-    input2.on("change",  (newValue) => {
+    input2.on("change", (newValue) => {
       FormUtils.handleValueChange(input2);
     });
 
-    DashboardController.onReady( ()  =>{
+    DashboardController.onReady(() => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
         submittedTokenModel.set({ earliest: '0', latest: '' });
       }
