@@ -136,10 +136,12 @@ require([
         null,
         null,
         { "Content-Type": "application/json" }, null
-      ).done(function (data) {
+      ).done( (data) => {
         const parsedData = JSON.parse(data);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+        setToken('baseip', baseUrl);
         setToken('ipapi', parsedData[0].ipapi);
         setToken('portapi', parsedData[0].portapi);
         setToken('userapi', parsedData[0].userapi);
@@ -287,7 +289,7 @@ require([
       "sample_ratio": 1,
       "earliest_time": "$when.earliest$",
       "status_buckets": 0,
-      "search": "| getagentsummary $baseip$ $baseport$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
+      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
       "latest_time": "$when.latest$",
       "app": utils.getCurrentApp(),
       "auto_cancel": 90,
