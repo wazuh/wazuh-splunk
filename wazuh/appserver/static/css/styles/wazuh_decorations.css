@@ -69,6 +69,16 @@
   width: 65% !important;
 }
 
+/* Custom margin styles */
+
+.wz-margin-left-10 {
+  margin-left: 10px;
+}
+
+.wz-margin-right-10 {
+  margin-right: 10px;
+}
+
 /* Classes for custom shadows for dashboard cells */
 
 .wz-dashboard-cell {

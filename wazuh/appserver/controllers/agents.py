@@ -104,10 +104,6 @@ class agents(controllers.BaseController):
     # /custom/wazuh/agents/groups/:id
     @expose_page(must_login=False, methods=['GET'])
     def groups(self,**kwargs):
-        file = open('/tmp/groups.log','w')
-        file.write('starting \n')
-        file.write(str(kwargs))
-
         group_id = kwargs["id"]
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
@@ -119,7 +115,6 @@ class agents(controllers.BaseController):
         # sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
         direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
         sort_chain = ""
-        file.write('second arguments \n')
 
         # if sorting_column == "0":
         #   if direction == 'asc':
@@ -142,13 +137,9 @@ class agents(controllers.BaseController):
         #   if direction == 'desc':
         #     sort_chain = '-last_keepalive'
         url = "http://" + opt_base_url + ":" + opt_base_port
-        file.write(url)
-        file.write('making request...\n')
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + group_id + '?limit=' + limit + '&offset='+offset + '&search='+search_value , auth=auth, verify=verify).json()
-        file.write('done request\n')
-
         result = json.dumps(request)
         return result
 
