@@ -97,7 +97,7 @@ require([
     mvc.Components.registerInstance('url', urlTokenModel);
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-
+    let baseUrl = ''
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON());
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -106,6 +106,12 @@ require([
         submittedTokenModel.clear();
       }
     });
+
+    $(document).ready(() => {
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
+    })
 
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON());
@@ -441,7 +447,7 @@ require([
     element1.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -472,7 +478,7 @@ require([
     element2.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -503,7 +509,7 @@ require([
     element3.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -534,7 +540,7 @@ require([
     element4.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -565,7 +571,7 @@ require([
     element5.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.description=* rule.groups=\"audit\" | stats latest(rule.description)&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.description=* rule.groups=\"audit\" | stats latest(rule.description)"
         utils.redirect(url, false, "_blank");
       }
     });
@@ -925,7 +931,7 @@ require([
     element16.on("click", function (e) {
       if (e.field !== undefined) {
         e.preventDefault();
-        const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+        const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\""
         utils.redirect(url, false, "_blank");
       }
     });
