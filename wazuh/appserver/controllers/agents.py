@@ -42,7 +42,6 @@ class agents(controllers.BaseController):
     @expose_page(must_login=False, methods=['GET'])
     def info(self,**kwargs):
         agent_id = kwargs['id']
-        filename = kwargs['filename']
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
@@ -51,9 +50,9 @@ class agents(controllers.BaseController):
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/' + str(agent_id), auth=auth, verify=verify)
-        files = json.loads(request.text)
-        # files = json.dumps(files)
-        return json.dumps([{'data':files}], sort_keys=True,indent=4, separators=(',', ': '))
+        files = json.loads(request.text)['data']
+        result = json.dumps(files)
+        return result
 
     # /custom/wazuh/agents/filescontent?id=idgroup&filename=agent.conf
     @expose_page(must_login=False, methods=['GET'])
@@ -68,9 +67,9 @@ class agents(controllers.BaseController):
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
-        info = json.loads(request.text)['data']
-        result = json.dumps(info)
-        return result
+        files = json.loads(request.text)
+        # files = json.dumps(files)
+        return json.dumps([{'data':files}], sort_keys=True,indent=4, separators=(',', ': '))
 
     # /custom/wazuh/agents/files?id=idgroup
     @expose_page(must_login=False, methods=['GET'])
