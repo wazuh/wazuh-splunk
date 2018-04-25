@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Agent Configuration</title>
+  <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css">
+
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
+    crossorigin="anonymous"></script>
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+</head>
+
+<body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
+
+  <header>
+    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
+    <div class="header splunk-header">
+      <div id="placeholder-splunk-bar">
+        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
+          <strong>&gt;</strong>
+        </a>
+      </div>
+      <div id="placeholder-app-bar"></div>
+    </div>
+    <a id="navSkip"></a>
+  </header>
+  <div class="dashboard-body container-fluid main-section-body">
+
+    <div class="row">
+      <div class="dashboard-header clearfix">
+      </div>
+    </div>
+
+    <!-- Two cells in a same row -->
+
+    <div class="dashboard-row">
+
+      <!-- First cell -->
+      <div class="dashboard-cell wz-dashboard-cell wz-width-15">
+        <div class="dashboard-panel wz-dashboard-panel">
+          <div class="panel-body">
+            <!-- Agents info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='fileIntegrity' class="wz-headline-title wz-text-link">File Integrity</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Disabled</p>
+                      <p id='syscheckDisabled'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Frequency</p>
+                      <p id='syscheckFreq'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!-- Policy Monitoring -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='root' class="wz-headline-title wz-text-link">Policy Monitoring</h3>
+                  </div>
+                  <div class="panel-body" id='clusterRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Disabled</p>
+                      <p id='rootDisabled'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Base directory</p>
+                      <p id='rootBaseDirectory'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!-- Syscollector -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='syscollector' class="wz-headline-title wz-text-link">Syscollector</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Disabled</p>
+                      <p id='syscollectorDisabled'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Scan on start</p>
+                      <p id='syscollectorScan'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- OpenSCAP -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='openscap' class="wz-headline-title wz-text-link">OpenSCAP</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Disabled</p>
+                      <p id='openscapDisabled'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Interval</p>
+                      <p id='openscapInterval'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- CIS-CAT -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='ciscat' class="wz-headline-title wz-text-link">CIS-CAT</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Disabled</p>
+                      <p id='ciscatDisabled'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Interval</p>
+                      <p id='ciscatInterval'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Log collection  -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='logcollection' class="wz-headline-title wz-text-link">Log Collection</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <p>Visualize all Log Collection settings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Remote info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='remote' class="wz-headline-title wz-text-link">Remote Command</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <p>Visualize all Remote Command settings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second cell -->
+      <div class="dashboard-cell wz-dashboard-cell wz-width-65">
+        <div class="dashboard-panel wz-dashboard-panel">
+          <div id='dynamicContent' class="panel-body">
+            <!-- Place panel contents here -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Place the next row here -->
+
+  </div>
+  <!-- 
+END LAYOUT
+-->
+
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/js/viewControllers/agentsConfiguration.js"></script>
+</body>
+
+</html>
