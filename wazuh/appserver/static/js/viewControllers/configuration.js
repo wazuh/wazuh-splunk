@@ -106,8 +106,8 @@ require([
             globalUrl = "/static/app/wazuh/views/syscheck.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
-              $('#sysDisabled').text(jsonObj.syscheck.frequency)
-              $('#sysFrequency').text('dflñngdlg')
+              $('#sysDisabled').text(jsonObj.syscheck.disabled)
+              $('#sysFrequency').text(jsonObj.syscheck.frequency)
               $('#sysAutoIgnore').text(jsonObj.syscheck.auto_ignore)
               $('#sysViewAlertNewFiles').text(jsonObj.syscheck.alert_new_files)
               $('#sysScanOnStart').text(jsonObj.syscheck.scan_on_start)
