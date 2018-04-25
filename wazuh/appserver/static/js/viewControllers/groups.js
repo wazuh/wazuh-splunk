@@ -12,14 +12,12 @@
 
 require([
   "splunkjs/mvc",
-  "underscore",
   "jquery",
   "splunkjs/mvc/layoutview",
   "/static/app/wazuh/js/customViews/tableView.js"
 ],
   function (
     mvc,
-    _,
     $,
     LayoutView,
     tableView
