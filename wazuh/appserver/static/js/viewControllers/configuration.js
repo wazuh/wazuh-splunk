@@ -129,7 +129,6 @@ require([
                   '</div>'
                 )
               }
-
             })
           })
           // If click on Rootcheck section
