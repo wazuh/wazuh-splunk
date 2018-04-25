@@ -40,6 +40,22 @@ class agents(controllers.BaseController):
 
     # /custom/wazuh/agents/info/:id
     @expose_page(must_login=False, methods=['GET'])
+    def group_configuration(self,**kwargs):
+        group_id = kwargs['id']
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = "http://" + opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = requests.get(url + '/agents/groups/' + str(group_id) + '/configuration', auth=auth, verify=verify)
+        files = json.loads(request.text)['data']
+        result = json.dumps(files)
+        return result
+
+    # /custom/wazuh/agents/info/:id
+    @expose_page(must_login=False, methods=['GET'])
     def info(self,**kwargs):
         agent_id = kwargs['id']
         opt_username = kwargs["user"]
