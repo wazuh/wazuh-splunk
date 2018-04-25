@@ -18,6 +18,7 @@
 </collection>
   <collection label="Agents">
   <a href="agents_summary">Summary</a> 
+  <a href="agents_configuration">Configuration</a> 
   <a href="wazuh_alerts">Alerts</a> 
   <a href="fim">FIM</a>
   <a href="cis">Policy monitoring</a>
