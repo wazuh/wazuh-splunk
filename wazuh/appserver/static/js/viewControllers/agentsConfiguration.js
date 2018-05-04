@@ -67,114 +67,238 @@ require([
     })
 
 
-    const service = mvc.createService({ owner: "nobody" });
-    $(document).ready(() => {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done((data) => {
-        const jsonData = JSON.parse(data)
+    const service = mvc.createService({ owner: "nobody" })
+
+    const myAsyncGet = url => {
+      return new Promise((resolve, reject) => {
+        $.get(url, data => {
+          resolve(data)
+        }).fail((err) => { reject(err) })
+      })
+    }
+
+    const myAsyncLoad = ($element, url) => {
+      return new Promise((resolve, reject) => {
+        $element.load(url, (data, status, xhr) => {
+          if (status === 'error')
+            reject(status)
+          resolve(data)
+        })
+      })
+    }
+
+    const fileIntegrityContent = async (data) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/fileIntegrity.html"
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+      $('#fileIntegrityDisabledView').text(data.disabled)
+      $('#fileIntegrityFrequencyView').text(data.frequency)
+      $('#fileIntegrityAlertNewFiles').text(data.alert_new_files)
+      $('#fileIntegritySkipNFS').text(data.skip_nfs)
+      $('#fileIntegrityScanOnStart').text(data.scan_on_start)
+      $('#fileIntegrityScanTime').text(data.scan_time)
+      $('#fileIntegrityAutoIgnore').text(data.auto_ignore)
+      // $('#fileIntegrityNoDiff').text(data.nodiff)
+      for (const element of data.nodiff) {
+        const item = typeof element !== 'object' ? element : element.item 
+        console.log(typeof item,item)
+        $('#fileIntegrityNoDiff').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+      for (let i = 0; i < data.directories.length; i++) {
+        $('#fileIntegrityMonitoredFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">Path</p>' +
+          '<p class="wz-list-child">' +
+          data.directories[i].path +
+          '</p>' +
+          '</div>' +
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">Check all</p>' +
+          '<p class="wz-list-child">' +
+          data.directories[i].check_all +
+          '</p>' +
+          '</div>'
+        )
+      }
+      for (let i = 0; i < data.ignore.length; i++) {
+        const item = data.ignore[i] !== 'object' ? data.ignore[i] : data.ignore[i].item
+        $('#fileIntegrityIgnoredFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+    }
+
+    const policyMonitoring = async (data) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/policyMonitoring.html"
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+
+      $('#policyMonitoringDisabledView').text(data.disabled)
+      $('#policyMonitoringBaseDirectoryView').text(data.base_directory)
+      $('#policyMonitoringFrequencyView').text(data.frequency)
+      $('#policyMonitoringSkipNFS').text(data.skip_nfs)
+      $('#policyMonitoringScanAllFiles').text(data.scanall)
+
+      $('#policyMonitoringChecksIf').text(data.check_if)
+      $('#policyMonitoringChecksPid').text(data.check_pids)
+      $('#policyMonitoringChecksFiles').text(data.check_files)
+      $('#policyMonitoringChecksDev').text(data.check_dev)
+      $('#policyMonitoringChecksPorts').text(data.check_ports)
+      $('#policyMonitoringChecksSys').text(data.check_sys)
+      $('#policyMonitoringChecksTrojans').text(data.check_trojans)
+      $('#policyMonitoringChecksUnixAudit').text(data.check_unixaudit)
+      $('#policyMonitoringChecksWinApps').text(data.check_winapps)
+      
+      for (let i = 0; i < data.windows_audit.length; i++) {
+        const item = data.windows_audit[i] !== 'object' ? data.windows_audit[i] : data.windows_audit[i].item
+        $('#policyMonitoringWinAuditFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+
+      for (let i = 0; i < data.windows_apps.length; i++) {
+        const item = data.windows_apps[i] !== 'object' ? data.windows_apps[i] : data.windows_apps[i].item
+        $('#policyMonitoringWinAppsFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+
+      for (let i = 0; i < data.windows_malware.length; i++) {
+        const item = data.windows_malware[i] !== 'object' ? data.windows_malware[i] : data.windows_malware[i].item
+        $('#policyMonitoringWinMalwareFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+
+      for (let i = 0; i < data.rootkit_files.length; i++) {
+        const item = data.rootkit_files[i] !== 'object' ? data.rootkit_files[i] : data.rootkit_files[i].item
+        $('#policyMonitoringRootkitFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+
+      for (let i = 0; i < data.rootkit_trojans.length; i++) {
+        const item = data.rootkit_trojans[i] !== 'object' ? data.rootkit_trojans[i] : data.rootkit_trojans[i].item
+        $('#policyMonitoringRootkitTrojans').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">Trojan</p>' +
+          '<p class="wz-list-child">' +
+          item +
+          '</p>' +
+          '</div>'
+        )
+      }
+
+      
+
+      // $('#policyMonitoringSysAuditFiles').text(data.disabled)
+      // $('#policyMonitoringWinMalwareFiles').text(data.disabled)
+    }
+
+    const loadAgentConfig = async groupInformationEndpoint => {
+      try {
+        const groupConf = await myAsyncGet(groupInformationEndpoint)
+        const groupConfJSON = JSON.parse(groupConf)
+        console.log(groupConfJSON)
+        // Fill the initial data
+        $('#fileIntegrityDisabled').text(groupConfJSON.items[0].config.syscheck.disabled)
+        $('#fileIntegrityFreq').text(groupConfJSON.items[0].config.syscheck.frequency)
+        $('#rootDisabled').text(groupConfJSON.items[0].config.rootcheck.disabled)
+        $('#rootBaseDirectory').text(groupConfJSON.items[0].config.rootcheck.base_directory)
+        $('#syscollectorDisabled').text(groupConfJSON.items[0].config.syscollector.disabled)
+        $('#syscollectorScan').text(groupConfJSON.items[0].config.syscollector.scan_on_start)
+        $('#openscapDisabled').text(groupConfJSON.items[0].config['open-scap'].disabled)
+        $('#openscapInterval').text(groupConfJSON.items[0].config['open-scap'].interval)
+        $('#ciscatDisabled').text(groupConfJSON.items[0].config['cis-cat'].disabled)
+        $('#ciscatInterval').text(groupConfJSON.items[0].config['cis-cat'].interval)
+        // First load File Integrity view by default
+
+        await fileIntegrityContent(groupConfJSON.items[0].config.syscheck)
+
+        // If click on Syscheck section
+        $('#fileIntegrity').click( () => fileIntegrityContent(groupConfJSON.items[0].config.syscheck))
+
+        // Click on Policy Monitoring
+        $('#policyMonitoring').click( () => policyMonitoring(groupConfJSON.items[0].config.rootcheck))
+
+      } catch (err) {
+        console.error('error at loading content ', err)
+        Promise.reject(err)
+      }
+    }
+
+    /**
+     * Load API credential data and generates a Base URL
+     */
+    const loadCredentialData = async () => {
+      try {
+        const apiData = await service.request(
+          "storage/collections/data/credentials/",
+          "GET",
+          null,
+          null,
+          null,
+          { "Content-Type": "application/json" }, null)
+        const jsonData = JSON.parse(apiData)
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
+        return { baseUrl, jsonData }
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    const loadData = async () => {
+      try {
+        const { baseUrl, jsonData } = await loadCredentialData()
         const endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=001'
-        $.get(endPoint, data => {
-          const parsedJson = JSON.parse(data)
-          console.log('parsedData', parsedJson)
-          const group = parsedJson.group
-          const groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=default'
-          $.get(groupInformationEndpoint, groupConf => {
-            const groupConfJSON = JSON.parse(groupConf)
-            console.log('groupconf', groupConfJSON)
-            // Fill the initial data
-            $('#fileIntegrityDisabled').text(groupConfJSON.items[0].config.syscheck.disabled)
-            $('#fileIntegrityFreq').text(groupConfJSON.items[0].config.syscheck.frequency)
-            $('#rootDisabled').text(groupConfJSON.items[0].config.rootcheck.disabled)
-            $('#rootBaseDirectory').text(groupConfJSON.items[0].config.rootcheck.base_directory)
-            $('#syscollectorDisabled').text(groupConfJSON.items[0].config.syscollector.disabled)
-            $('#syscollectorScan').text(groupConfJSON.items[0].config.syscollector.scan_on_start)
-            $('#openscapDisabled').text(groupConfJSON.items[0].config['open-scap'].disabled)
-            $('#openscapInterval').text(groupConfJSON.items[0].config['open-scap'].interval)
-            $('#ciscatDisabled').text(groupConfJSON.items[0].config['cis-cat'].disabled)
-            $('#ciscatInterval').text(groupConfJSON.items[0].config['cis-cat'].interval)
-            // First load File Integrity view by default
-            let globalUrl = "/static/app/wazuh/views/agentConfigurationViews/fileIntegrity.html"
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#fileIntegrityDisabledView').text(groupConfJSON.items[0].config.syscheck.disabled)
-              $('#fileIntegrityFrequencyView').text(groupConfJSON.items[0].config.syscheck.frequency)
-              $('#fileIntegrityAlertNewFiles').text(groupConfJSON.items[0].config.syscheck.alert_new_files)
-              $('#fileIntegritySkipNFS').text(groupConfJSON.items[0].config.syscheck.skip_nfs)
-              $('#fileIntegrityScanOnStart').text(groupConfJSON.items[0].config.syscheck.scan_on_start)
-              $('#fileIntegrityScanTime').text(groupConfJSON.items[0].config.syscheck.scan_time)
-              $('#fileIntegrityAutoIgnore').text(groupConfJSON.items[0].config.syscheck.auto_ignore)
-              // $('#fileIntegrityNoDiff').text(groupConfJSON.items[0].config.syscheck.nodiff)
-              for (let i = 0; i < groupConfJSON.items[0].config.syscheck.nodiff.length; i++) {
-                let item = typeof groupConfJSON.items[0].config.syscheck.nodiff[i] !== 'object' ? groupConfJSON.items[0].config.syscheck.nodiff[i] : groupConfJSON.items[0].config.syscheck.nodiff[i].item
-                $('#fileIntegrityNoDiff').append(
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">File</p>' +
-                  '<p class="wz-list-child">' +
-                  item +
-                  '</p>' +
-                  '</div>'
-                )
-              }
-              for (let i = 0; i < groupConfJSON.items[0].config.syscheck.directories.length; i++) {
-                $('#fileIntegrityMonitoredFiles').append(
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Path</p>' +
-                  '<p class="wz-list-child">' +
-                  groupConfJSON.items[0].config.syscheck.directories[i].path +
-                  '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Check all</p>' +
-                  '<p class="wz-list-child">' +
-                  groupConfJSON.items[0].config.syscheck.directories[i].check_all +
-                  '</p>' +
-                  '</div>'
-                )
-              } 
-              for (let i = 0; i < groupConfJSON.items[0].config.syscheck.ignore.length; i++) {
-                const item = groupConfJSON.items[0].config.syscheck.ignore[i] !== 'object' ? groupConfJSON.items[0].config.syscheck.ignore[i] : groupConfJSON.items[0].config.syscheck.ignore[i].item
-                $('#fileIntegrityIgnoredFiles').append(
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">File</p>' +
-                  '<p class="wz-list-child">' +
-                  item +
-                  '</p>' +
-                  '</div>'
-                )
-              } 
-            })
-            // If click on Global section
-            $('#global').click(() => {
-              globalUrl = "/static/app/wazuh/views/global.html"
-              $('#dynamicContent').empty()
-              $('#dynamicContent').load(globalUrl, (data) => {
-                $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
-                $('#logAll').text(jsonObj.global.logall)
-                $('#logAllJson').text(jsonObj.global.logall_json)
-                $('#whiteList').text(jsonObj.global.white_list)
-                $('#logViewAlertLevel').text(jsonObj.alerts.log_alert_level)
-                $('#emailNotifications').text(jsonObj.global.email_notification)
-                $('#emailAlertLevel').text(jsonObj.alerts.email_alert_level)
-                $('#emailTo').text(jsonObj.global.email_to)
-                $('#emailFrom').text(jsonObj.global.email_from)
-                $('#smtpServer').text(jsonObj.global.smtp_server)
-                $('#maxEmailPerHour').text(jsonObj.global.email_maxperhour)
-              })
-            })
+        const dataResult = await myAsyncGet(endPoint)
+        const parsedJson = JSON.parse(dataResult)
+        const group = parsedJson.group
+        const groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=default'
+        await loadAgentConfig(groupInformationEndpoint)
+        return
+      } catch (err) {
+        console.error('error at loading data ', err.message || err)
+      }
+    }
 
-
-          }).fail(() => { console.error('error at fetching group info') })
-        }).fail(() => { console.error('error at fetching agent info') })
-      })
-    })
+    try {
+      $(document).ready(() => loadData())
+    } catch (error) {
+      console.error('error at loading document ', err.message || err)
+    }
 
     const input1 = new DropdownInput({
       "id": "input1",
@@ -220,4 +344,4 @@ require([
       .appendChild($('.dashboard-body')[0]);
 
   }
-);
+)
