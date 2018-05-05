@@ -1,15 +1,15 @@
 <nav search_view="search" color="#218BC6">
   <collection label="Overview">
   <a href="general">General</a> 
-  <view name="overview_fim" />
-  <view name="overview_policy_monitoring" />
-  <view name="overview_scap" />
-  <view name="overview_audit" />
-  <view name="overview_pci_dss" />
+  <a href="overview_fim">Overview FIM</a> 
+  <a href="overview_policy_monitoring">Overview policy monitoring</a> 
+  <a href="overview_scap">Overview OpenSCAP</a> 
+  <a href="overview_audit">Overview audit</a> 
+  <a href="overview_pci_dss">Overview PCI-DSS</a> 
 </collection>
   <collection label="Manager">
   <a href="manager_status">Status</a> 
-  <view name="Configuration" />
+  <a href="Configuration">Configuration</a> 
   <a href="manager_ruleset">Ruleset</a> 
   <a href="manager_decoders">Decoders</a> 
   <a href="logs">Logs</a> 
@@ -18,12 +18,13 @@
 </collection>
   <collection label="Agents">
   <a href="agents_summary">Summary</a> 
+  <a href="agents_configuration">Configuration</a> 
   <a href="wazuh_alerts">Alerts</a> 
-  <view name="fim" />
-  <view name="cis" />
+  <a href="fim">FIM</a>
+  <a href="cis">Policy monitoring</a>
   <a href="openscap">OpenSCAP</a> 
-  <view name="audit" />
-  <view name="pcidss" />
+  <a href="audit">Audit</a>
+  <a href="pcidss">PCI-DSS</a>
 </collection>
 <collection label="Configuration">
   <view name="API" default='true' />
