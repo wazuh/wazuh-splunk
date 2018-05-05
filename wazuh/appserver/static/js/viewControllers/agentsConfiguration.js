@@ -200,7 +200,7 @@ require([
         const item = data.rootkit_files[i] !== 'object' ? data.rootkit_files[i] : data.rootkit_files[i].item
         $('#policyMonitoringRootkitFiles').append(
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">Files</p>' +
           '<p class="wz-list-child">' +
           item +
           '</p>' +
@@ -212,7 +212,7 @@ require([
         const item = data.rootkit_trojans[i] !== 'object' ? data.rootkit_trojans[i] : data.rootkit_trojans[i].item
         $('#policyMonitoringRootkitTrojans').append(
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-          '<p class="wz-list-child">Trojan</p>' +
+          '<p class="wz-list-child">Trojans</p>' +
           '<p class="wz-list-child">' +
           item +
           '</p>' +
