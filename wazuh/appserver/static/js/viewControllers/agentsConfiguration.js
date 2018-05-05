@@ -99,6 +99,7 @@ require([
       $('#fileIntegrityAutoIgnore').text(data.auto_ignore)
       // $('#fileIntegrityNoDiff').text(data.nodiff)
       for (const element of data.nodiff) {
+        console.log('un element',element)
         const item = typeof element !== 'object' ? element : element.item 
         console.log(typeof item,item)
         $('#fileIntegrityNoDiff').append(
@@ -110,29 +111,30 @@ require([
           '</div>'
         )
       }
-      for (let i = 0; i < data.directories.length; i++) {
+      for (const path of data.directories) {
         $('#fileIntegrityMonitoredFiles').append(
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">Path</p>' +
           '<p class="wz-list-child">' +
-          data.directories[i].path +
+          path.path +
           '</p>' +
           '</div>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">Check all</p>' +
           '<p class="wz-list-child">' +
-          data.directories[i].check_all +
+          path.check_all +
           '</p>' +
           '</div>'
         )
       }
-      for (let i = 0; i < data.ignore.length; i++) {
-        const item = data.ignore[i] !== 'object' ? data.ignore[i] : data.ignore[i].item
+      for (const ignore of data.ignore) {
+
+        const element = typeof ignore !== 'object' ? ignore : ignore.item
         $('#fileIntegrityIgnoredFiles').append(
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
           '<p class="wz-list-child">' +
-          item +
+          element +
           '</p>' +
           '</div>'
         )
@@ -148,7 +150,6 @@ require([
       $('#policyMonitoringFrequencyView').text(data.frequency)
       $('#policyMonitoringSkipNFS').text(data.skip_nfs)
       $('#policyMonitoringScanAllFiles').text(data.scanall)
-
       $('#policyMonitoringChecksIf').text(data.check_if)
       $('#policyMonitoringChecksPid').text(data.check_pids)
       $('#policyMonitoringChecksFiles').text(data.check_files)
@@ -250,6 +251,9 @@ require([
 
         // Click on Policy Monitoring
         $('#policyMonitoring').click( () => policyMonitoring(groupConfJSON.items[0].config.rootcheck))
+
+        // Click on Syscollector
+        $('#syscollector').click( () => policyMonitoring(groupConfJSON.items[0].config.syscollector))
 
       } catch (err) {
         console.error('error at loading content ', err)
