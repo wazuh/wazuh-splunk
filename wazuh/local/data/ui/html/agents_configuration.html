@@ -43,147 +43,61 @@
       </div>
     </div>
 
-    <!-- Two cells in a same row -->
     <div class="dashboard-row">
-      <div class="fieldset">
-        <div class="input input-dropdown" id="input1">
-          <label>Agent</label>
-        </div>
-      </div>
-    </div>
-    <div class="dashboard-row">
+      <!-- Two cells in a same row -->
 
       <!-- First cell -->
       <div class="dashboard-cell wz-dashboard-cell wz-width-15">
         <div class="dashboard-panel wz-dashboard-panel">
           <div class="panel-body">
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='fileIntegrity' class="wz-headline-title wz-text-link">File Integrity</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Disabled</p>
-                      <p id='fileIntegrityDisabled'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Frequency</p>
-                      <p id='fileIntegrityFreq'></p>
-                    </div>
-                  </div>
+            <div>
+              <select class="input input-dropdown" id='agentList'></select>
+            </div>
+            <div id='dynamicList'>
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifSyscheck'></div>
                 </div>
               </div>
-            </div>
-            <!---->
-            <!-- Policy Monitoring -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='policyMonitoring' class="wz-headline-title wz-text-link">Policy Monitoring</h3>
-                  </div>
-                  <div class="panel-body" id='clusterRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Disabled</p>
-                      <p id='rootDisabled'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Base directory</p>
-                      <p id='rootBaseDirectory'></p>
-                    </div>
-                  </div>
+              <!---->
+              <!-- Policy Monitoring -->
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifRootcheck'></div>
                 </div>
               </div>
-            </div>
-            <!---->
-            <!-- Syscollector -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='syscollector' class="wz-headline-title wz-text-link">Syscollector</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Disabled</p>
-                      <p id='syscollectorDisabled'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Scan on start</p>
-                      <p id='syscollectorScan'></p>
-                    </div>
-                  </div>
+              <!---->
+              <!-- Syscollector -->
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifSyscollector'></div>
                 </div>
               </div>
-            </div>
 
-            <!-- OpenSCAP -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='openscap' class="wz-headline-title wz-text-link">OpenSCAP</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Disabled</p>
-                      <p id='openscapDisabled'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Interval</p>
-                      <p id='openscapInterval'></p>
-                    </div>
-                  </div>
+              <!-- OpenSCAP -->
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifOpenScap'></div>
                 </div>
               </div>
-            </div>
-            <!-- CIS-CAT -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='ciscat' class="wz-headline-title wz-text-link">CIS-CAT</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Disabled</p>
-                      <p id='ciscatDisabled'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Interval</p>
-                      <p id='ciscatInterval'></p>
-                    </div>
-                  </div>
+              <!-- CIS-CAT -->
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifCisCat'></div>
                 </div>
               </div>
-            </div>
 
-            <!-- Log collection  -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='logcollection' class="wz-headline-title wz-text-link">Log Collection</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <p>Visualize all Log Collection settings</p>
-                  </div>
+              <!-- Log collection  -->
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifLog'></div>
                 </div>
               </div>
-            </div>
 
-            <!-- Remote info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='remote' class="wz-headline-title wz-text-link">Remote Command</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <p>Visualize all Remote Command settings</p>
-                  </div>
+              <!-- Remote info -->
+              <div class="dashboard-row">
+                <div class="dashboard-cell">
+                  <div id='ifCommand'></div>
                 </div>
               </div>
             </div>

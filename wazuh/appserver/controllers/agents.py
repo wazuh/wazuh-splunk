@@ -369,3 +369,37 @@ class agents(controllers.BaseController):
         response['data']['items'] = results
 
         return json.dumps(response)
+
+    # /custom/wazuh/agents/agents_name
+    @expose_page(must_login=False, methods=['GET'])
+    def agents_name(self, **kwargs):
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+
+        url = "http://" + opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        init_url = url + '/agents?limit=1' 
+        request = requests.get(init_url, auth=auth, verify=verify)
+        total_agents = json.loads(request.text)["data"]["totalItems"]
+        final_url = url + '/agents?limit=' + str(total_agents) + '&offset=0' 
+        request = requests.get(final_url, auth=auth, verify=verify)
+        agents = json.loads(request.text)["data"]["items"]
+        total_items = json.loads(request.text)["data"]["totalItems"]
+
+        results = []
+        for agent in agents:
+          data = {}
+          for attribute, value in agent.iteritems():
+            if attribute == 'name' or attribute == 'id':
+              data[attribute] = value 
+          results.append(data)
+
+
+        response = {}
+        response['data'] = {}
+        response['data']['items'] = results
+
+        return json.dumps(response)
