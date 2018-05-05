@@ -272,6 +272,40 @@ require([
       $('#openscapScanOnStartView').text(data.scan_on_start)
     }
 
+    
+    /**
+     * Render CIS-CAT data with object received
+     * @param {Object} data 
+     */
+    const cisCat = async (data) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/ciscat.html"
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+      $('#ciscatPathView').text(data.ciscat_path)
+      $('#ciscatDisabledView').text(data.disabled)
+      $('#ciscatIntervalView').text(data.interval)
+      $('#ciscatTimeoutView').text(data.timeout)
+      $('#ciscatScanOnStartView').text(data.scan-on-start)
+      $('#ciscatJavaPathView').text(data.java_path)
+    }
+
+    /**
+     * Render CIS-CAT data with object received
+     * @param {Array} files 
+     */
+    const logCollection = async (files) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/logCollection.html"
+      for (const file of files) {
+        $('#logCollectionFiles').append(
+          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+          '<p class="wz-list-child">File</p>' +
+          '<p class="wz-list-child">' +
+          file +
+          '</p>' +
+          '</div>'
+        )
+      }
+    }
+
     /**
      * Fill first visualization with data from API
      * @param {String} groupInformationEndpoint 
@@ -307,6 +341,13 @@ require([
 
         // Click on Syscollector
         $('#openscap').click(() => openSCAP(groupConfJSON.items[0].config['open-scap']))
+
+        // Click on cis-cat
+        $('#ciscat').click(() => cisCat(groupConfJSON.items[0].config['cis-cat']))
+
+        // Click on Log Collection
+        $('#logcollection').click(() => logCollection(groupConfJSON.items[0].localfile))
+
 
       } catch (err) {
         console.error('error at loading content ', err)
