@@ -117,6 +117,7 @@ require([
         const item = typeof element !== 'object' ? element : element.item
         console.log(typeof item, item)
         $('#fileIntegrityNoDiff').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
           '<p class="wz-list-child">' +
@@ -127,6 +128,7 @@ require([
       }
       for (const path of data.directories) {
         $('#fileIntegrityMonitoredFiles').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">Path</p>' +
           '<p class="wz-list-child">' +
@@ -142,9 +144,9 @@ require([
         )
       }
       for (const ignore of data.ignore) {
-
         const element = typeof ignore !== 'object' ? ignore : ignore.item
         $('#fileIntegrityIgnoredFiles').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
           '<p class="wz-list-child">' +
@@ -181,6 +183,7 @@ require([
       for (let i = 0; i < data.windows_audit.length; i++) {
         const item = data.windows_audit[i] !== 'object' ? data.windows_audit[i] : data.windows_audit[i].item
         $('#policyMonitoringWinAuditFiles').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
           '<p class="wz-list-child">' +
@@ -193,6 +196,7 @@ require([
       for (let i = 0; i < data.windows_apps.length; i++) {
         const item = data.windows_apps[i] !== 'object' ? data.windows_apps[i] : data.windows_apps[i].item
         $('#policyMonitoringWinAppsFiles').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
           '<p class="wz-list-child">' +
@@ -205,6 +209,7 @@ require([
       for (let i = 0; i < data.windows_malware.length; i++) {
         const item = data.windows_malware[i] !== 'object' ? data.windows_malware[i] : data.windows_malware[i].item
         $('#policyMonitoringWinMalwareFiles').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
           '<p class="wz-list-child">' +
@@ -217,6 +222,7 @@ require([
       for (let i = 0; i < data.rootkit_files.length; i++) {
         const item = data.rootkit_files[i] !== 'object' ? data.rootkit_files[i] : data.rootkit_files[i].item
         $('#policyMonitoringRootkitFiles').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">Files</p>' +
           '<p class="wz-list-child">' +
@@ -229,6 +235,7 @@ require([
       for (let i = 0; i < data.rootkit_trojans.length; i++) {
         const item = data.rootkit_trojans[i] !== 'object' ? data.rootkit_trojans[i] : data.rootkit_trojans[i].item
         $('#policyMonitoringRootkitTrojans').append(
+          '<hr>' +
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">Trojans</p>' +
           '<p class="wz-list-child">' +
@@ -253,7 +260,7 @@ require([
       await myAsyncLoad($('#dynamicContent'), globalUrl)
       $('#syscollectorDisabledView').text(data.disabled)
       $('#syscollectorHardwareView').text(data.hardware)
-      $('#syscollectxorIntervalView').text(data.interval)
+      $('#syscollectorIntervalView').text(data.interval)
       $('#syscollectorOSView').text(data.os)
       $('#syscollectorPackagesView').text(data.packages)
       $('#syscollectorScanOnStartView').text(data.scan_on_start)
@@ -269,10 +276,10 @@ require([
       $('#openscapDisabledView').text(data.disabled)
       $('#openscapIntervalView').text(data.interval)
       $('#openscapTimeoutView').text(data.timeout)
-      $('#openscapScanOnStartView').text(data.scan_on_start)
+      $('#openscapScanOnStartView').text(data['scan-on-start'])
     }
 
-    
+
     /**
      * Render CIS-CAT data with object received
      * @param {Object} data 
@@ -284,25 +291,73 @@ require([
       $('#ciscatDisabledView').text(data.disabled)
       $('#ciscatIntervalView').text(data.interval)
       $('#ciscatTimeoutView').text(data.timeout)
-      $('#ciscatScanOnStartView').text(data.scan-on-start)
-      $('#ciscatJavaPathView').text(data.java_path)
+      $('#ciscatScanOnStartView').text(data['scan-on-start'])
+      $('#ciscatJavaPathView').text(data['java_path'])
     }
 
     /**
-     * Render CIS-CAT data with object received
+     * Render Log collection data with object received
      * @param {Array} files 
      */
     const logCollection = async (files) => {
       const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/logCollection.html"
-      for (const file of files) {
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+
+      console.log('files',typeof files,files)
+      for (const item of files) {
+        console.log(item)
         $('#logCollectionFiles').append(
-          '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-          '<p class="wz-list-child">File</p>' +
-          '<p class="wz-list-child">' +
-          file +
-          '</p>' +
-          '</div>'
+          '<hr>'
         )
+        if (item["log_format"])
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Log format</p>' +
+            '<p>' + item.log_format + '</p>' +
+            '</div>'
+          )
+        if (item.location)
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Location</p>' +
+            '<p>' + item.location + '</p>' +
+            '</div>'
+          )
+        if (item.query)
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Query</p>' +
+            '<p>' + item.query + '</p>' +
+            '</div>'
+          )
+        if (item.frequency)
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Frecuency</p>' +
+            '<p>' + item.frequency + '</p>' +
+            '</div>'
+          )
+        if (item.command)
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Command</p>' +
+            '<p>' + item.command + '</p>' +
+            '</div>'
+          )
+        if (item.alias)
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Alias</p>' +
+            '<p>' + item.alias + '</p>' +
+            '</div>'
+          )
+        if (item['only-future-events'])
+          $('#logCollectionFiles').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Only future events</p>' +
+            '<p>' + item['only-future-events'] + '</p>' +
+            '</div>'
+          )
       }
     }
 
@@ -346,7 +401,7 @@ require([
         $('#ciscat').click(() => cisCat(groupConfJSON.items[0].config['cis-cat']))
 
         // Click on Log Collection
-        $('#logcollection').click(() => logCollection(groupConfJSON.items[0].localfile))
+        $('#logcollection').click(() => logCollection(groupConfJSON.items[0].config.localfile))
 
 
       } catch (err) {
