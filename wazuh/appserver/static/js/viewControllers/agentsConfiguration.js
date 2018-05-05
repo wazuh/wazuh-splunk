@@ -69,6 +69,11 @@ require([
 
     const service = mvc.createService({ owner: "nobody" })
 
+    /**
+     * Perform an async GET HTTP request
+     * @param {String} url 
+     * Returns Promise
+     */
     const myAsyncGet = url => {
       return new Promise((resolve, reject) => {
         $.get(url, data => {
@@ -77,6 +82,11 @@ require([
       })
     }
 
+    /**
+     * Load HTTP content asynchronously
+     * @param {String} url 
+     * Returns Promise
+     */
     const myAsyncLoad = ($element, url) => {
       return new Promise((resolve, reject) => {
         $element.load(url, (data, status, xhr) => {
@@ -87,6 +97,10 @@ require([
       })
     }
 
+    /**
+     * Render File Integrity data with object received
+     * @param {Object} data 
+     */
     const fileIntegrityContent = async (data) => {
       const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/fileIntegrity.html"
       await myAsyncLoad($('#dynamicContent'), globalUrl)
@@ -99,9 +113,9 @@ require([
       $('#fileIntegrityAutoIgnore').text(data.auto_ignore)
       // $('#fileIntegrityNoDiff').text(data.nodiff)
       for (const element of data.nodiff) {
-        console.log('un element',element)
-        const item = typeof element !== 'object' ? element : element.item 
-        console.log(typeof item,item)
+        console.log('un element', element)
+        const item = typeof element !== 'object' ? element : element.item
+        console.log(typeof item, item)
         $('#fileIntegrityNoDiff').append(
           '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
           '<p class="wz-list-child">File</p>' +
@@ -141,6 +155,10 @@ require([
       }
     }
 
+    /**
+     * Render Policy Monitoring data with object received
+     * @param {Object} data 
+     */
     const policyMonitoring = async (data) => {
       const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/policyMonitoring.html"
       await myAsyncLoad($('#dynamicContent'), globalUrl)
@@ -159,7 +177,7 @@ require([
       $('#policyMonitoringChecksTrojans').text(data.check_trojans)
       $('#policyMonitoringChecksUnixAudit').text(data.check_unixaudit)
       $('#policyMonitoringChecksWinApps').text(data.check_winapps)
-      
+
       for (let i = 0; i < data.windows_audit.length; i++) {
         const item = data.windows_audit[i] !== 'object' ? data.windows_audit[i] : data.windows_audit[i].item
         $('#policyMonitoringWinAuditFiles').append(
@@ -220,12 +238,44 @@ require([
         )
       }
 
-      
+
 
       // $('#policyMonitoringSysAuditFiles').text(data.disabled)
       // $('#policyMonitoringWinMalwareFiles').text(data.disabled)
     }
 
+    /**
+     * Render Syscollector data with object received
+     * @param {Object} data 
+     */
+    const sysCollector = async (data) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/syscollector.html"
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+      $('#syscollectorDisabledView').text(data.disabled)
+      $('#syscollectorHardwareView').text(data.hardware)
+      $('#syscollectxorIntervalView').text(data.interval)
+      $('#syscollectorOSView').text(data.os)
+      $('#syscollectorPackagesView').text(data.packages)
+      $('#syscollectorScanOnStartView').text(data.scan_on_start)
+    }
+
+    /**
+     * Render OpenSCAP data with object received
+     * @param {Object} data 
+     */
+    const openSCAP = async (data) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/openSCAP.html"
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+      $('#openscapDisabledView').text(data.disabled)
+      $('#openscapIntervalView').text(data.interval)
+      $('#openscapTimeoutView').text(data.timeout)
+      $('#openscapScanOnStartView').text(data.scan_on_start)
+    }
+
+    /**
+     * Fill first visualization with data from API
+     * @param {String} groupInformationEndpoint 
+     */
     const loadAgentConfig = async groupInformationEndpoint => {
       try {
         const groupConf = await myAsyncGet(groupInformationEndpoint)
@@ -247,13 +297,16 @@ require([
         await fileIntegrityContent(groupConfJSON.items[0].config.syscheck)
 
         // If click on Syscheck section
-        $('#fileIntegrity').click( () => fileIntegrityContent(groupConfJSON.items[0].config.syscheck))
+        $('#fileIntegrity').click(() => fileIntegrityContent(groupConfJSON.items[0].config.syscheck))
 
         // Click on Policy Monitoring
-        $('#policyMonitoring').click( () => policyMonitoring(groupConfJSON.items[0].config.rootcheck))
+        $('#policyMonitoring').click(() => policyMonitoring(groupConfJSON.items[0].config.rootcheck))
 
         // Click on Syscollector
-        $('#syscollector').click( () => policyMonitoring(groupConfJSON.items[0].config.syscollector))
+        $('#syscollector').click(() => sysCollector(groupConfJSON.items[0].config.syscollector))
+
+        // Click on Syscollector
+        $('#openscap').click(() => openSCAP(groupConfJSON.items[0].config['open-scap']))
 
       } catch (err) {
         console.error('error at loading content ', err)
@@ -283,6 +336,9 @@ require([
       }
     }
 
+    /**
+     * Load backend address,port and request agent configuration data
+     */
     const loadData = async () => {
       try {
         const { baseUrl, jsonData } = await loadCredentialData()
@@ -298,6 +354,9 @@ require([
       }
     }
 
+    /**
+     * Initialize visualizations and data when DOM is ready
+     */
     try {
       $(document).ready(() => loadData())
     } catch (error) {
