@@ -361,6 +361,65 @@ require([
       }
     }
 
+        /**
+     * Render Log collection data with object received
+     * @param {Array} files 
+     */
+    const remoteCommands = async (files) => {
+      const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/remoteCommand.html"
+      await myAsyncLoad($('#dynamicContent'), globalUrl)
+
+      console.log('files',typeof files,files)
+      for (const item of files) {
+        console.log(item)
+        $('#remoteCommands').append(
+          '<hr>'
+        )
+        if (item["command"])
+          $('#remoteCommands').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Command</p>' +
+            '<p>' + item.command + '</p>' +
+            '</div>'
+          )
+        if (item.disabled)
+          $('#remoteCommands').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Disabled</p>' +
+            '<p>' + item.disabled + '</p>' +
+            '</div>'
+          )
+        if (item['ignore_output'])
+          $('#remoteCommands').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Ignore output</p>' +
+            '<p>' + item['ignore_output'] + '</p>' +
+            '</div>'
+          )
+        if (item.interval)
+          $('#remoteCommands').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Interval</p>' +
+            '<p>' + item.interval + '</p>' +
+            '</div>'
+          )
+        if (item['run_on_start'])
+          $('#remoteCommands').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Run on start</p>' +
+            '<p>' + item['run_on_start'] + '</p>' +
+            '</div>'
+          )
+        if (item.tag)
+          $('#remoteCommands').append(
+            '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+            '<p class="wz-list-child">Tag</p>' +
+            '<p>' + item.tag + '</p>' +
+            '</div>'
+          )
+      }
+    }
+
     /**
      * Fill first visualization with data from API
      * @param {String} groupInformationEndpoint 
@@ -402,6 +461,9 @@ require([
 
         // Click on Log Collection
         $('#logcollection').click(() => logCollection(groupConfJSON.items[0].config.localfile))
+
+        // Click on Commands
+        $('#remote').click(() => remoteCommands(groupConfJSON.items[0].config.command))
 
 
       } catch (err) {
