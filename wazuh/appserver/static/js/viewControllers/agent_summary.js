@@ -42,7 +42,7 @@ require([
         const baseUrl = arr[0] + "//" + arr[2]
         const urlData = {
           baseUrl: baseUrl,
-          ipApi: jsonData[0].ipapi,
+          ipApi: jsonData[0].url,
           portApi: jsonData[0].portapi,
           userApi: jsonData[0].userapi,
           passApi: jsonData[0].passapi

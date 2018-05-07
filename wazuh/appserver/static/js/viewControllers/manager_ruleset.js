@@ -142,7 +142,7 @@ require([
         const parsedData = JSON.parse(data);
         setToken('baseip', parsedData[0].baseip);
         setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
+        setToken('url', parsedData[0].url);
         setToken('portapi', parsedData[0].portapi);
         setToken('userapi', parsedData[0].userapi);
         setToken('passwordapi', parsedData[0].passapi);
@@ -168,7 +168,7 @@ require([
         }
         const table = new tableView()
         table.element($('#myTable'))
-        table.build(baseUrl+'/custom/wazuh/manager/rules?ip='+parsedData[0].ipapi+'&port='+parsedData[0].portapi+'&user='+parsedData[0].userapi+'&pass='+parsedData[0].passapi, opts)
+        table.build(baseUrl+'/custom/wazuh/manager/rules?ip='+parsedData[0].url+'&port='+parsedData[0].portapi+'&user='+parsedData[0].userapi+'&pass='+parsedData[0].passapi, opts)
         table.click(data => {
           setToken("showDetails", "true")
           setToken("id", data.id || "-")

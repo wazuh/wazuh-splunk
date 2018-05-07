@@ -87,7 +87,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     request = requests.get(url + '/manager/info', auth=auth, verify=verify)
@@ -106,7 +106,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     request = requests.get(url + '/manager/configuration', auth=auth, verify=verify)
@@ -147,7 +147,7 @@ class manager(controllers.BaseController):
         sort_chain = '+level'
       if direction == 'desc':
         sort_chain = '-level'
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
 
@@ -162,7 +162,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     limit = kwargs["length"]
@@ -193,7 +193,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     limit = kwargs["length"]
@@ -244,7 +244,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     limit = kwargs["length"]

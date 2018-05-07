@@ -38,7 +38,7 @@ require([
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-        const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+        const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
         $.get(endPoint, (data) => {
           const jsonObj = JSON.parse(data)
           // Fill the initial data
@@ -53,7 +53,7 @@ require([
           $('#authPurge').text(jsonObj.auth.purge)
           $('#authForceInsert').text(jsonObj.auth.force_insert)
           // First load Global view by default
-          let globalUrl = "/static/app/wazuh/views/global.html"
+          let globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
           $('#dynamicContent').load(globalUrl, (data) => {
             $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
             $('#logAll').text(jsonObj.global.logall)
@@ -69,7 +69,7 @@ require([
           })
           // If click on Global section
           $('#global').click(() => {
-            globalUrl = "/static/app/wazuh/views/global.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
@@ -87,7 +87,7 @@ require([
           })
           // If click on Cluster section
           $('#cluster').click(() => {
-            globalUrl = "/static/app/wazuh/views/cluster.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/cluster.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               $('#disabled').text(jsonObj.cluster.disabled)
@@ -103,7 +103,7 @@ require([
           })
           // If click on Syscheck section
           $('#syscheck').click(() => {
-            globalUrl = "/static/app/wazuh/views/syscheck.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/syscheck.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               $('#sysDisabled').text(jsonObj.syscheck.disabled)
@@ -133,7 +133,7 @@ require([
           })
           // If click on Rootcheck section
           $('#rootcheck').click(() => {
-            globalUrl = "/static/app/wazuh/views/rootcheck.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/rootcheck.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               $('#rootDisabled').text(jsonObj.rootcheck.disabled)
@@ -146,7 +146,7 @@ require([
           })
           // If click on Auth section
           $('#auth').click(() => {
-            globalUrl = "/static/app/wazuh/views/auth.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/auth.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               $('#authDisabled').text(jsonObj.auth.disabled)
@@ -166,7 +166,7 @@ require([
           })
           // If click on Ruleset section
           $('#ruleset').click(() => {
-            globalUrl = "/static/app/wazuh/views/ruleset.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/ruleset.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               $('#ruleDecoderDirs').text(jsonObj.ruleset.decoder_dir)
@@ -177,7 +177,7 @@ require([
           })
           // If click on Command section
           $('#command').click(() => {
-            globalUrl = "/static/app/wazuh/views/command.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/command.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               for (let i = 0; i < jsonObj.command.length; i++) {
@@ -207,7 +207,7 @@ require([
           })
           // If click on Remote section
           $('#remote').click(() => {
-            globalUrl = "/static/app/wazuh/views/remote.html"
+            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/remote.html"
             $('#dynamicContent').empty()
             $('#dynamicContent').load(globalUrl, (data) => {
               for (let i = 0; i < jsonObj.remote.length; i++) {
