@@ -41,7 +41,9 @@ require([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "/static/app/wazuh/js/utilLib/promisedReq.js"
+
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -78,7 +80,8 @@ require([
     SearchManager,
     SavedSearchManager,
     PostProcessManager,
-    UrlTokenModel
+    UrlTokenModel,
+    asyncReq
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -109,11 +112,11 @@ require([
 
     const service = mvc.createService({ owner: "nobody" })
 
-    const userRegEx  = new RegExp(/^.{3,100}$/)
-    const passRegEx  = new RegExp(/^.{3,100}$/)
-    const urlRegEx   = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
+    const userRegEx = new RegExp(/^.{3,100}$/)
+    const passRegEx = new RegExp(/^.{3,100}$/)
+    const urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
     const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
-    const portRegEx  = new RegExp(/^[0-9]{2,5}$/)
+    const portRegEx = new RegExp(/^[0-9]{2,5}$/)
 
     /**
      * Check if an URL is valid or not
@@ -147,69 +150,68 @@ require([
       return passRegEx.test(pass)
     }
 
-    $('#input3').focusout( function (data) {
-      const text = $(this).children().children().children().val();
-      console.log(text)
-      if ( validUrl(text) ) {
-        console.log('valid url')
-      } else {
-        console.log('invalid url')
+    /**
+     * Check if connection with API was successful
+     * @param {Object} jsonData 
+     */
+    const checkConnection = async jsonData => {
+      try {
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+
+        // if (jsonData && jsonData[0] && jsonData[0].url)
+        //   const parsedData = await asyncReq('get', baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+        //     if (parsedData.data)
+        //       return true
+        //   }).fail(() => {
+        //     return false
+        //   })
+      } catch (err) {
+        Promise.reject(err)
       }
-    })
+    }
+
+    // $('#input3').focusout( function (data) {
+    //   const text = $(this).children().children().children().val();
+    //   console.log(text)
+    //   if ( validUrl(text) ) {
+    //     console.log('valid url')
+    //   } else {
+    //     console.log('invalid url')
+    //   }
+    // })
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON())
-
-
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens()
-
-
       } else {
         submittedTokenModel.clear()
-
-
       }
     })
-
-
 
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON())
 
-
-
     const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading })
-
-
     }
 
     const setToken = (name, value) => {
       defaultTokenModel.set(name, value)
-
-
       submittedTokenModel.set(name, value)
-
-
     }
 
     const unsetToken = (name) => {
       defaultTokenModel.unset(name)
-
-
       submittedTokenModel.unset(name)
-
-
     }
 
-
-
-    //
-    // SEARCH MANAGERS
-    //
-
+    /**
+     * On document ready
+     */
     $(document).ready(() => {
       service.request(
         "storage/collections/data/credentials/",
@@ -218,30 +220,34 @@ require([
         null,
         null,
         { "Content-Type": "application/json" }, null
-      ).done(data => {
-
-        jsonData = JSON.parse(data)
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-
-        if (jsonData && jsonData[0] && jsonData[0].url)
-          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-            parsedData = JSON.parse(data)
-            if (parsedData.data)
-              $('#statusLed').addClass('wz-green-led')
-          }).fail(() => {
-            $('#statusLed').addClass('wz-green-red')
-          })
+      ).done(async data => {
+        try {
+          jsonData = JSON.parse(data)
+          const url = window.location.href
+          const arr = url.split("/")
+          const baseUrl = arr[0] + "//" + arr[2]
+          let parsedData = ''
+          if (jsonData && jsonData[0] && jsonData[0].url) {
+            const endpoint = baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name
+            parsedData = await asyncReq('get', endpoint)
+          }
+          if (parsedData.data)
+            $('#statusLed').addClass('wz-green-led')
+        } catch (err) {
+          $('#statusLed').addClass('wz-green-red')
+          Promise.reject(err)
+        }
       })
     })
 
-
+    /**
+     * Searches and draws for already stored credentials
+     */
     const search1 = new SearchManager({
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as IP, portapi as Port, userapi as Username",
+      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as URL, portapi as Port, userapi as Username",
       "latest_time": "now",
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
@@ -253,22 +259,11 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true })
 
-
-
-
-    //
-    // SPLUNK LAYOUT
-    //
-
     $('header').remove()
-
-
     new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
       .render()
       .getContainerElement()
       .appendChild($('.dashboard-body')[0])
-
-
 
     //
     // DASHBOARD EDITOR
@@ -281,7 +276,6 @@ require([
       editable: true
     }, { tokens: true }).render()
 
-
     //
     // VIEWS: VISUALIZATION ELEMENTS
     //
@@ -292,7 +286,6 @@ require([
       "managerid": "search1",
       "el": $('#element1')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
-
 
     //
     // VIEWS: FORM INPUTS
@@ -334,6 +327,9 @@ require([
       "el": $('#input6')
     }, { tokens: true }).render()
 
+    /**
+     * Action when submit button is clicked
+     */
     input6.on("change", function (newValue) {
       service.request(
         "storage/collections/data/credentials/",
@@ -373,18 +369,14 @@ require([
     $("#deleteRecord").click(function () {
       // Get the value of the key ID field
       const tokens = mvc.Components.get("default")
-      //const form_keyid = tokens.get("KeyID")
-
       // Delete the record that corresponds to the key ID using
       // the del method to send a DELETE request
       // to the storage/collections/data/{collection}/ endpoint
       service.del("storage/collections/data/credentials/")
         .done(function () {
           // Run the search again to update the table
-
           search1.startSearch()
         })
-      //return false
     })
     // 
     // SERVICE OBJECT
@@ -428,8 +420,7 @@ require([
             null,
             JSON.stringify(record),
             { "Content-Type": "application/json" },
-            null)
-            .done(() => {
+            null).done(() => {
               // Run the search again to update the table
               service.request(
                 "storage/collections/data/credentials/",
@@ -440,21 +431,7 @@ require([
                 { "Content-Type": "application/json" }, null
               ).done(data => {
 
-                jsonData = JSON.parse(data)
-                const url = window.location.href
-                const arr = url.split("/")
-                const baseUrl = arr[0] + "//" + arr[2]
 
-                if (jsonData && jsonData[0] && jsonData[0].url)
-                  $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-                    parsedData = JSON.parse(data)
-                    if (parsedData.data)
-                      $('#statusLed').removeClass('wz-green-red')
-                    $('#statusLed').addClass('wz-green-led')
-                  }).fail(() => {
-                    $('#statusLed').removeClass('wz-green-green')
-                    $('#statusLed').addClass('wz-green-red')
-                  })
               })
 
 
