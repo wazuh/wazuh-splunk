@@ -41,7 +41,10 @@ require([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "/static/app/wazuh/js/utilLib/promisedReq.js",
+  "/static/app/wazuh/js/utilLib/services.js"
+
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -78,7 +81,9 @@ require([
     SearchManager,
     SavedSearchManager,
     PostProcessManager,
-    UrlTokenModel
+    UrlTokenModel,
+    asyncReq,
+    services
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -86,120 +91,154 @@ require([
   ) {
 
     let pageLoading = true
-
-
-
-
     // 
     // TOKENS
     //
-
     // Create token namespaces
     const urlTokenModel = new UrlTokenModel()
-
-
     mvc.Components.registerInstance('url', urlTokenModel)
-
-
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-
-
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    const service = new services()
 
-
-    const service = mvc.createService({ owner: "nobody" })
-
-    // $('#input3').focusout( () => {
-    //   const url = mvc.Components.get('url').val()
-    //   console.log(url)
-
+    // $('#input3').focusout( function (data) {
+    //   const text = $(this).children().children().children().val();
+    //   console.log(text)
+    //   if ( validUrl(text) ) {
+    //     console.log('valid url')
+    //   } else {
+    //     console.log('invalid url')
+    //   }
     // })
 
-    urlTokenModel.on('url:navigate', function () {
+    urlTokenModel.on('url:navigate', () => {
       defaultTokenModel.set(urlTokenModel.toJSON())
-
-
       if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
         submitTokens()
-
-
       } else {
         submittedTokenModel.clear()
-
-
       }
     })
-
-
 
     // Initialize tokens
     defaultTokenModel.set(urlTokenModel.toJSON())
 
-
-
     const submitTokens = () => {
       // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
       FormUtils.submitForm({ replaceState: pageLoading })
-
-
     }
 
     const setToken = (name, value) => {
       defaultTokenModel.set(name, value)
-
-
       submittedTokenModel.set(name, value)
-
-
     }
 
     const unsetToken = (name) => {
       defaultTokenModel.unset(name)
-
-
       submittedTokenModel.unset(name)
-
-
     }
 
+    const userRegEx = new RegExp(/^.{3,100}$/)
+    const passRegEx = new RegExp(/^.{3,100}$/)
+    const urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
+    const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
+    const portRegEx = new RegExp(/^[0-9]{2,5}$/)
 
+    /**
+     * Check if an URL is valid or not
+     * @param {String} url 
+     */
+    const validUrl = url => {
+      return urlRegEx.test(url) || urlRegExIP.test(url)
+    }
 
-    //
-    // SEARCH MANAGERS
-    //
+    /**
+     * Check if a port is valid or not
+     * @param {String} port 
+     */
+    const validPort = port => {
+      return portRegEx.test(port)
+    }
 
-    $(document).ready(() => {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(data => {
+    /**
+     * Check if an user is valid or not
+     * @param {String} user 
+     */
+    const validUsername = user => {
+      return userRegEx.test(user)
+    }
 
-        jsonData = JSON.parse(data)
+    /**
+     * Check if a password is valid or not
+     * @param {String} pass 
+     */
+    const validPassword = pass => {
+      return passRegEx.test(pass)
+    }
+
+    /**
+     * Check if connection with API was successful
+     * @param {Object} jsonData 
+     */
+    const checkConnection = async jsonData => {
+      try {
+        console.log('check connection ready')
+
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
+        let parsedData = ''
+        if (jsonData && jsonData[0] && jsonData[0].url) {
+          console.log('credential data ', jsonData)
+          const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+          parsedData = await asyncReq('get', endpoint)
+          console.log('CONNECTION OK!,returning')
+        }
+        return
+      } catch (err) {
+        console.error('error at checking connection!', err)
+        return Promise.reject(err)
+      }
+    }
 
-        if (jsonData && jsonData[0] && jsonData[0].url)
-          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-            parsedData = JSON.parse(data)
-            if (parsedData.data)
-              $('#statusLed').addClass('wz-green-led')
-          }).fail(() => {
-            $('#statusLed').addClass('wz-green-red')
-          })
-      })
+    /**
+     * Set a status (green/red) light for API connecting
+     * @param {object} jsonData 
+     */
+    const setLight = async (jsonData) => {
+      try {
+        console.log('set light ')
+        await checkConnection(jsonData)
+        console.log('setting green led!')
+        $('#statusLed').addClass('wz-green-led')
+      } catch (err) {
+        console.log('setting red led')
+        $('#statusLed').addClass('wz-red-led')
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * On document ready
+     */
+    $(document).ready(async () => {
+      try {
+        console.log('document ready')
+        const data = await service.get("storage/collections/data/credentials/")
+        await setLight(JSON.parse(data))
+      } catch (err) {
+        console.error('error at loading data', err.message || err)
+      }
     })
 
-
+    /**
+     * Searches and draws for already stored credentials
+     */
     const search1 = new SearchManager({
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as IP, portapi as Port, userapi as Username",
+      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as URL, portapi as Port, userapi as Username",
       "latest_time": "now",
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
@@ -211,22 +250,11 @@ require([
       "runWhenTimeIsUndefined": false
     }, { tokens: true })
 
-
-
-
-    //
-    // SPLUNK LAYOUT
-    //
-
     $('header').remove()
-
-
     new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
       .render()
       .getContainerElement()
       .appendChild($('.dashboard-body')[0])
-
-
 
     //
     // DASHBOARD EDITOR
@@ -239,7 +267,6 @@ require([
       editable: true
     }, { tokens: true }).render()
 
-
     //
     // VIEWS: VISUALIZATION ELEMENTS
     //
@@ -251,7 +278,6 @@ require([
       "el": $('#element1')
     }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-
     //
     // VIEWS: FORM INPUTS
     //
@@ -262,7 +288,7 @@ require([
       "el": $('#input3')
     }, { tokens: true }).render()
 
-    input3.on("change", function (newValue) {
+    input3.on("change", (newValue) => {
       FormUtils.handleValueChange(input3)
     })
 
@@ -272,7 +298,7 @@ require([
       "el": $('#input4')
     }, { tokens: true }).render()
 
-    input4.on("change", function (newValue) {
+    input4.on("change", (newValue) => {
       FormUtils.handleValueChange(input4)
     })
 
@@ -282,7 +308,7 @@ require([
       "el": $('#input5')
     }, { tokens: true }).render()
 
-    input5.on("change", function (newValue) {
+    input5.on("change", (newValue) => {
       FormUtils.handleValueChange(input5)
     })
 
@@ -292,30 +318,7 @@ require([
       "el": $('#input6')
     }, { tokens: true }).render()
 
-    input6.on("change", function (newValue) {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(data => {
-
-        jsonData = JSON.parse(data)
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-
-        if (jsonData && jsonData[0] && jsonData[0].url)
-          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-            parsedData = JSON.parse(data)
-            if (parsedData.data)
-              $('#statusLed').addClass('wz-green-led')
-          }).fail(() => {
-            $('#statusLed').addClass('wz-green-red')
-          })
-      })
+    input6.on("change", (newValue) => {
       FormUtils.handleValueChange(input6)
     })
 
@@ -328,21 +331,19 @@ require([
     //
 
     // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(function () {
-      // Get the value of the key ID field
-      const tokens = mvc.Components.get("default")
-      //const form_keyid = tokens.get("KeyID")
-
-      // Delete the record that corresponds to the key ID using
-      // the del method to send a DELETE request
-      // to the storage/collections/data/{collection}/ endpoint
-      service.del("storage/collections/data/credentials/")
-        .done(function () {
-          // Run the search again to update the table
-
-          search1.startSearch()
-        })
-      //return false
+    $("#deleteRecord").click(async () => {
+      try {
+        // Get the value of the key ID field
+        const tokens = mvc.Components.get("default")
+        // Delete the record that corresponds to the key ID using
+        // the del method to send a DELETE request
+        // to the storage/collections/data/{collection}/ endpoint
+        await service.delete("storage/collections/data/credentials/")
+        // Run the search again to update the table
+        search1.startSearch()
+      } catch (err) {
+        console.error(err.message || err)
+      }
     })
     // 
     // SERVICE OBJECT
@@ -356,18 +357,20 @@ require([
       el: $('#search_btn')
     }, { tokens: true }).render()
 
-    submit.on("submit", function () {
-      service.del("storage/collections/data/credentials/")
-        .done(function () {
-          // Run the search again to update the table
-          submitTokens()
+    /**
+     *  Click on submit button
+     */
+    submit.on("submit", async () => {
+      try {
+        // When the Submit button is clicked, get all the form fields by accessing token values
+        const tokens = mvc.Components.get("default")
+        const form_url = tokens.get("url")
+        const form_apiport = tokens.get("apiport")
+        const form_apiuser = tokens.get("apiuser")
+        const form_apipass = tokens.get("apipass")
 
-          // When the Submit button is clicked, get all the form fields by accessing token values
-          const tokens = mvc.Components.get("default")
-          const form_url = tokens.get("url")
-          const form_apiport = tokens.get("apiport")
-          const form_apiuser = tokens.get("apiuser")
-          const form_apipass = tokens.get("apipass")
+        if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
+          await service.delete("storage/collections/data/credentials/")
 
           // Create a dictionary to store the field names and values
           const record = {
@@ -376,84 +379,40 @@ require([
             "userapi": form_apiuser,
             "passapi": form_apipass
           }
-
           // Use the request method to send a REST POST request
           // to the storage/collections/data/{collection}/ endpoint
-          service.request(
-            "storage/collections/data/credentials/",
-            "POST",
-            null,
-            null,
-            JSON.stringify(record),
-            { "Content-Type": "application/json" },
-            null)
-            .done(() => {
-              // Run the search again to update the table
-              service.request(
-                "storage/collections/data/credentials/",
-                "GET",
-                null,
-                null,
-                null,
-                { "Content-Type": "application/json" }, null
-              ).done(data => {
-
-                jsonData = JSON.parse(data)
-                const url = window.location.href
-                const arr = url.split("/")
-                const baseUrl = arr[0] + "//" + arr[2]
-
-                if (jsonData && jsonData[0] && jsonData[0].url)
-                  $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-                    parsedData = JSON.parse(data)
-                    if (parsedData.data)
-                      $('#statusLed').removeClass('wz-green-red')
-                    $('#statusLed').addClass('wz-green-led')
-                  }).fail(() => {
-                    $('#statusLed').removeClass('wz-green-green')
-                    $('#statusLed').addClass('wz-green-red')
-                  })
-              })
-
-
-            })
+          await service.post("storage/collections/data/credentials/", record)
+          // Run the search again to update the table
+          const data = await service.get("storage/collections/data/credentials/")
+          console.log('data', data)
+          await setLight(data)
           search1.startSearch()
-
           // Clear the form fields 
           $("#formCustomerInfo input[type=text]").val("")
-
-        })
-
-
-
+        } else {
+          // Handle error alert here
+          console.log('invalid data')
+        }
+      } catch (err) {
+        console.error('error at submit ', err)
+      }
     })
-
-
 
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
       defaultTokenModel.set({ earliest: '0', latest: '' })
-
-
     }
 
     if (!_.isEmpty(urlTokenModel.toJSON())) {
       submitTokens()
-
-
     }
-
 
     //
     // DASHBOARD READY
     //
 
     DashboardController.ready()
-
-
     pageLoading = false
-
-
 
   }
 )
