@@ -89,28 +89,52 @@ require([
   ) {
 
     let pageLoading = true
-
-
-
-
     // 
     // TOKENS
     //
-
     // Create token namespaces
     const urlTokenModel = new UrlTokenModel()
-
-
     mvc.Components.registerInstance('url', urlTokenModel)
-
-
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-
-
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
-
     const service = mvc.createService({ owner: "nobody" })
+
+    // $('#input3').focusout( function (data) {
+    //   const text = $(this).children().children().children().val();
+    //   console.log(text)
+    //   if ( validUrl(text) ) {
+    //     console.log('valid url')
+    //   } else {
+    //     console.log('invalid url')
+    //   }
+    // })
+
+    urlTokenModel.on('url:navigate', () => {
+      defaultTokenModel.set(urlTokenModel.toJSON())
+      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+        submitTokens()
+      } else {
+        submittedTokenModel.clear()
+      }
+    })
+
+    // Initialize tokens
+    defaultTokenModel.set(urlTokenModel.toJSON())
+
+    const submitTokens = () => {
+      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+      FormUtils.submitForm({ replaceState: pageLoading })
+    }
+
+    const setToken = (name, value) => {
+      defaultTokenModel.set(name, value)
+      submittedTokenModel.set(name, value)
+    }
+
+    const unsetToken = (name) => {
+      defaultTokenModel.unset(name)
+      submittedTokenModel.unset(name)
+    }
 
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -156,88 +180,65 @@ require([
      */
     const checkConnection = async jsonData => {
       try {
+        console.log('check connection ready')
+
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-
-        // if (jsonData && jsonData[0] && jsonData[0].url)
-        //   const parsedData = await asyncReq('get', baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-        //     if (parsedData.data)
-        //       return true
-        //   }).fail(() => {
-        //     return false
-        //   })
+        let parsedData = ''
+        if (jsonData && jsonData[0] && jsonData[0].url) {
+          console.log('credential data ', jsonData)
+          const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+          parsedData = await asyncReq('get', endpoint)
+          console.log('CONNECTION OK!,returning')
+        }
+        return
       } catch (err) {
-        Promise.reject(err)
+        console.error('error at checking connection!',err)
+        return Promise.reject(err)
       }
     }
 
-    // $('#input3').focusout( function (data) {
-    //   const text = $(this).children().children().children().val();
-    //   console.log(text)
-    //   if ( validUrl(text) ) {
-    //     console.log('valid url')
-    //   } else {
-    //     console.log('invalid url')
-    //   }
-    // })
+    /**
+     * Set a status (green/red) light for API connecting
+     * @param {object} jsonData 
+     */
+    const setLight = async (jsonData) => {
+      try {
+        console.log('set light ')
 
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON())
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens()
-      } else {
-        submittedTokenModel.clear()
+        await checkConnection(jsonData)
+        console.log('setting green led!')
+        $('#statusLed').addClass('wz-green-led')
+      } catch (err) {
+        console.log('setting red led')
+        $('#statusLed').addClass('wz-red-led')
+        return Promise.reject(err)
       }
-    })
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON())
-
-    const submitTokens = () => {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading })
-    }
-
-    const setToken = (name, value) => {
-      defaultTokenModel.set(name, value)
-      submittedTokenModel.set(name, value)
-    }
-
-    const unsetToken = (name) => {
-      defaultTokenModel.unset(name)
-      submittedTokenModel.unset(name)
     }
 
     /**
      * On document ready
      */
     $(document).ready(() => {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(async data => {
-        try {
-          jsonData = JSON.parse(data)
-          const url = window.location.href
-          const arr = url.split("/")
-          const baseUrl = arr[0] + "//" + arr[2]
-          let parsedData = ''
-          if (jsonData && jsonData[0] && jsonData[0].url) {
-            const endpoint = baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name
-            parsedData = await asyncReq('get', endpoint)
-          }
-          if (parsedData.data)
-            $('#statusLed').addClass('wz-green-led')
-        } catch (err) {
-          $('#statusLed').addClass('wz-green-red')
-          Promise.reject(err)
-        }
-      })
+      try {
+        console.log('document ready')
+        service.request(
+          "storage/collections/data/credentials/",
+          "GET",
+          null,
+          null,
+          null,
+          { "Content-Type": "application/json" }, null
+        )
+          .done(data => {
+            setLight(JSON.parse(data))
+              .then(data => console.log('Successss'))
+              .catch(err => console.error('error at loading data', err.message || err))
+          })
+      } catch (err) {
+        console.error('error at loading data', err.message || err)
+      }
     })
 
     /**
@@ -297,7 +298,7 @@ require([
       "el": $('#input3')
     }, { tokens: true }).render()
 
-    input3.on("change", function (newValue) {
+    input3.on("change", (newValue) => {
       FormUtils.handleValueChange(input3)
     })
 
@@ -307,7 +308,7 @@ require([
       "el": $('#input4')
     }, { tokens: true }).render()
 
-    input4.on("change", function (newValue) {
+    input4.on("change", (newValue) => {
       FormUtils.handleValueChange(input4)
     })
 
@@ -317,7 +318,7 @@ require([
       "el": $('#input5')
     }, { tokens: true }).render()
 
-    input5.on("change", function (newValue) {
+    input5.on("change", (newValue) => {
       FormUtils.handleValueChange(input5)
     })
 
@@ -327,33 +328,7 @@ require([
       "el": $('#input6')
     }, { tokens: true }).render()
 
-    /**
-     * Action when submit button is clicked
-     */
-    input6.on("change", function (newValue) {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(data => {
-
-        jsonData = JSON.parse(data)
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-
-        if (jsonData && jsonData[0] && jsonData[0].url)
-          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
-            parsedData = JSON.parse(data)
-            if (parsedData.data)
-              $('#statusLed').addClass('wz-green-led')
-          }).fail(() => {
-            $('#statusLed').addClass('wz-green-red')
-          })
-      })
+    input6.on("change", (newValue) => {
       FormUtils.handleValueChange(input6)
     })
 
@@ -366,14 +341,14 @@ require([
     //
 
     // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(function () {
+    $("#deleteRecord").click(() => {
       // Get the value of the key ID field
       const tokens = mvc.Components.get("default")
       // Delete the record that corresponds to the key ID using
       // the del method to send a DELETE request
       // to the storage/collections/data/{collection}/ endpoint
       service.del("storage/collections/data/credentials/")
-        .done(function () {
+        .done(() => {
           // Run the search again to update the table
           search1.startSearch()
         })
@@ -390,89 +365,78 @@ require([
       el: $('#search_btn')
     }, { tokens: true }).render()
 
-    submit.on("submit", function () {
-      service.del("storage/collections/data/credentials/")
-        .done(function () {
-          // Run the search again to update the table
-          submitTokens()
+    /**
+     *  Click on submit button
+     */
+    submit.on("submit", () => {
+      try {
+        service.del("storage/collections/data/credentials/")
+          .done(() => {
+            // When the Submit button is clicked, get all the form fields by accessing token values
+            const tokens = mvc.Components.get("default")
+            const form_url = tokens.get("url")
+            const form_apiport = tokens.get("apiport")
+            const form_apiuser = tokens.get("apiuser")
+            const form_apipass = tokens.get("apipass")
 
-          // When the Submit button is clicked, get all the form fields by accessing token values
-          const tokens = mvc.Components.get("default")
-          const form_url = tokens.get("url")
-          const form_apiport = tokens.get("apiport")
-          const form_apiuser = tokens.get("apiuser")
-          const form_apipass = tokens.get("apipass")
-
-          // Create a dictionary to store the field names and values
-          const record = {
-            "url": form_url,
-            "portapi": form_apiport,
-            "userapi": form_apiuser,
-            "passapi": form_apipass
-          }
-
-          // Use the request method to send a REST POST request
-          // to the storage/collections/data/{collection}/ endpoint
-          service.request(
-            "storage/collections/data/credentials/",
-            "POST",
-            null,
-            null,
-            JSON.stringify(record),
-            { "Content-Type": "application/json" },
-            null).done(() => {
-              // Run the search again to update the table
-              service.request(
-                "storage/collections/data/credentials/",
-                "GET",
-                null,
-                null,
-                null,
-                { "Content-Type": "application/json" }, null
-              ).done(data => {
-
+            // Create a dictionary to store the field names and values
+            const record = {
+              "url": form_url,
+              "portapi": form_apiport,
+              "userapi": form_apiuser,
+              "passapi": form_apipass
+            }
+            // Use the request method to send a REST POST request
+            // to the storage/collections/data/{collection}/ endpoint
+            service.request(
+              "storage/collections/data/credentials/",
+              "POST",
+              null,
+              null,
+              JSON.stringify(record),
+              { "Content-Type": "application/json" }, null)
+              .done(() => {
+                // Run the search again to update the table
+                service.request(
+                  "storage/collections/data/credentials/",
+                  "GET",
+                  null,
+                  null,
+                  null,
+                  { "Content-Type": "application/json" }, null
+                ).done(data => {
+                  console.log('data get credentials', data)
+                  setLight(JSON.parse(data))
+                    .then(data => console.log('success!', data))
+                    .catch(err => { console.error('error at setlight',err.message || err); })
+                })
 
               })
+            search1.startSearch()
 
-
-            })
-          search1.startSearch()
-
-          // Clear the form fields 
-          $("#formCustomerInfo input[type=text]").val("")
-
-        })
-
-
-
+            // Clear the form fields 
+            $("#formCustomerInfo input[type=text]").val("")
+          })
+      } catch (err) {
+        console.error('error at submit ',err)
+      }
     })
-
-
 
     // Initialize time tokens to default
     if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
       defaultTokenModel.set({ earliest: '0', latest: '' })
-
-
     }
 
     if (!_.isEmpty(urlTokenModel.toJSON())) {
       submitTokens()
-
-
     }
-
 
     //
     // DASHBOARD READY
     //
 
     DashboardController.ready()
-
-
     pageLoading = false
-
-
 
   }
 )
