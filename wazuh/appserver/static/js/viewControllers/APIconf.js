@@ -42,7 +42,8 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/wazuh/js/utilLib/promisedReq.js",
+  "/static/app/wazuh/js/utilLib/services.js"
 
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
@@ -81,7 +82,8 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    asyncReq
+    asyncReq,
+    services
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -97,7 +99,7 @@ require([
     mvc.Components.registerInstance('url', urlTokenModel)
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = mvc.createService({ owner: "nobody" })
+    const service = new services()
 
     // $('#input3').focusout( function (data) {
     //   const text = $(this).children().children().children().val();
@@ -194,7 +196,7 @@ require([
         }
         return
       } catch (err) {
-        console.error('error at checking connection!',err)
+        console.error('error at checking connection!', err)
         return Promise.reject(err)
       }
     }
@@ -206,7 +208,6 @@ require([
     const setLight = async (jsonData) => {
       try {
         console.log('set light ')
-
         await checkConnection(jsonData)
         console.log('setting green led!')
         $('#statusLed').addClass('wz-green-led')
@@ -220,22 +221,11 @@ require([
     /**
      * On document ready
      */
-    $(document).ready(() => {
+    $(document).ready(async () => {
       try {
         console.log('document ready')
-        service.request(
-          "storage/collections/data/credentials/",
-          "GET",
-          null,
-          null,
-          null,
-          { "Content-Type": "application/json" }, null
-        )
-          .done(data => {
-            setLight(JSON.parse(data))
-              .then(data => console.log('Successss'))
-              .catch(err => console.error('error at loading data', err.message || err))
-          })
+        const data = await service.get("storage/collections/data/credentials/")
+        await setLight(JSON.parse(data))
       } catch (err) {
         console.error('error at loading data', err.message || err)
       }
@@ -341,17 +331,19 @@ require([
     //
 
     // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(() => {
-      // Get the value of the key ID field
-      const tokens = mvc.Components.get("default")
-      // Delete the record that corresponds to the key ID using
-      // the del method to send a DELETE request
-      // to the storage/collections/data/{collection}/ endpoint
-      service.del("storage/collections/data/credentials/")
-        .done(() => {
-          // Run the search again to update the table
-          search1.startSearch()
-        })
+    $("#deleteRecord").click(async () => {
+      try {
+        // Get the value of the key ID field
+        const tokens = mvc.Components.get("default")
+        // Delete the record that corresponds to the key ID using
+        // the del method to send a DELETE request
+        // to the storage/collections/data/{collection}/ endpoint
+        await service.delete("storage/collections/data/credentials/")
+        // Run the search again to update the table
+        search1.startSearch()
+      } catch (err) {
+        console.error(err.message || err)
+      }
     })
     // 
     // SERVICE OBJECT
@@ -368,57 +360,38 @@ require([
     /**
      *  Click on submit button
      */
-    submit.on("submit", () => {
+    submit.on("submit", async () => {
       try {
-        service.del("storage/collections/data/credentials/")
-          .done(() => {
-            // When the Submit button is clicked, get all the form fields by accessing token values
-            const tokens = mvc.Components.get("default")
-            const form_url = tokens.get("url")
-            const form_apiport = tokens.get("apiport")
-            const form_apiuser = tokens.get("apiuser")
-            const form_apipass = tokens.get("apipass")
+        console.log('awaiting del')
+        await service.delete("storage/collections/data/credentials/")
+        console.log('finished del')
+        // When the Submit button is clicked, get all the form fields by accessing token values
+        const tokens = mvc.Components.get("default")
+        const form_url = tokens.get("url")
+        const form_apiport = tokens.get("apiport")
+        const form_apiuser = tokens.get("apiuser")
+        const form_apipass = tokens.get("apipass")
 
-            // Create a dictionary to store the field names and values
-            const record = {
-              "url": form_url,
-              "portapi": form_apiport,
-              "userapi": form_apiuser,
-              "passapi": form_apipass
-            }
-            // Use the request method to send a REST POST request
-            // to the storage/collections/data/{collection}/ endpoint
-            service.request(
-              "storage/collections/data/credentials/",
-              "POST",
-              null,
-              null,
-              JSON.stringify(record),
-              { "Content-Type": "application/json" }, null)
-              .done(() => {
-                // Run the search again to update the table
-                service.request(
-                  "storage/collections/data/credentials/",
-                  "GET",
-                  null,
-                  null,
-                  null,
-                  { "Content-Type": "application/json" }, null
-                ).done(data => {
-                  console.log('data get credentials', data)
-                  setLight(JSON.parse(data))
-                    .then(data => console.log('success!', data))
-                    .catch(err => { console.error('error at setlight',err.message || err); })
-                })
+        // Create a dictionary to store the field names and values
+        const record = {
+          "url": form_url,
+          "portapi": form_apiport,
+          "userapi": form_apiuser,
+          "passapi": form_apipass
+        }
+        // Use the request method to send a REST POST request
+        // to the storage/collections/data/{collection}/ endpoint
+        await service.post("storage/collections/data/credentials/",record)
+        // Run the search again to update the table
+        const data = await service.get("storage/collections/data/credentials/")
+        console.log('data',data)
+        await setLight(data)
+        search1.startSearch()
+        // Clear the form fields 
+        $("#formCustomerInfo input[type=text]").val("")
 
-              })
-            search1.startSearch()
-
-            // Clear the form fields 
-            $("#formCustomerInfo input[type=text]").val("")
-          })
       } catch (err) {
-        console.error('error at submit ',err)
+        console.error('error at submit ', err)
       }
     })
 
