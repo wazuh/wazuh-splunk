@@ -141,7 +141,7 @@ require([
         const arr = url.split("/")
         baseUrl = arr[0] + "//" + arr[2]
         setToken('baseip', baseUrl)
-        setToken('ipapi', parsedData[0].ipapi)
+        setToken('url', parsedData[0].url)
         setToken('portapi', parsedData[0].portapi)
         setToken('userapi', parsedData[0].userapi)
         setToken('passwordapi', parsedData[0].passapi)
@@ -288,7 +288,7 @@ require([
       "sample_ratio": 1,
       "earliest_time": "$when.earliest$",
       "status_buckets": 0,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
       "latest_time": "$when.latest$",
       "app": utils.getCurrentApp(),
       "auto_cancel": 90,

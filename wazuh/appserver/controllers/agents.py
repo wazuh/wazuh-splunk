@@ -46,7 +46,7 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + str(group_id) + '/configuration', auth=auth, verify=verify)
@@ -62,7 +62,7 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/' + str(agent_id), auth=auth, verify=verify)
@@ -79,7 +79,7 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + group_id + '/files/' + filename, auth=auth, verify=verify)
@@ -111,7 +111,7 @@ class agents(controllers.BaseController):
             sort_chain = '+hash'
           if direction == 'desc':
             sort_chain = '-hash'
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + group_id + '/files?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
@@ -126,7 +126,7 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + group_id  + '?limit=1', auth=auth, verify=verify).json()
@@ -168,7 +168,7 @@ class agents(controllers.BaseController):
         #     sort_chain = '+last_keepalive'
         #   if direction == 'desc':
         #     sort_chain = '-last_keepalive'
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/groups/' + group_id + '?limit=' + limit + '&offset='+offset + '&search='+search_value , auth=auth, verify=verify).json()
@@ -182,7 +182,7 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents/summary', auth=auth, verify=verify)
@@ -227,7 +227,7 @@ class agents(controllers.BaseController):
             sort_chain = '+last_keepalive'
           if direction == 'desc':
             sort_chain = '-last_keepalive'
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
@@ -333,7 +333,7 @@ class agents(controllers.BaseController):
             sort_chain = '-version'
 
 
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
@@ -378,7 +378,7 @@ class agents(controllers.BaseController):
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
 
-        url = "http://" + opt_base_url + ":" + opt_base_port
+        url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         init_url = url + '/agents?limit=1' 

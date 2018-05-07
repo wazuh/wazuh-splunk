@@ -38,7 +38,7 @@ require([
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-        const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+        const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
         $.get(endPoint, (data) => {
           const jsonObj = JSON.parse(data)
           // Fill the initial data

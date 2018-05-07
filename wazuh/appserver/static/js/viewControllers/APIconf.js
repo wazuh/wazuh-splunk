@@ -109,7 +109,11 @@ require([
 
     const service = mvc.createService({ owner: "nobody" })
 
+    // $('#input3').focusout( () => {
+    //   const url = mvc.Components.get('url').val()
+    //   console.log(url)
 
+    // })
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON())
@@ -179,8 +183,8 @@ require([
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
 
-        if (jsonData && jsonData[0] && jsonData[0].ipapi)
-          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+        if (jsonData && jsonData[0] && jsonData[0].url)
+          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
             parsedData = JSON.parse(data)
             if (parsedData.data)
               $('#statusLed').addClass('wz-green-led')
@@ -195,7 +199,7 @@ require([
       "id": "search1",
       "status_buckets": 0,
       "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table ipapi,portapi,userapi | rename ipapi as IP, portapi as Port, userapi as Username",
+      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as IP, portapi as Port, userapi as Username",
       "latest_time": "now",
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
@@ -254,7 +258,7 @@ require([
 
     const input3 = new TextInput({
       "id": "input3",
-      "value": "$form.apiip$",
+      "value": "$form.url$",
       "el": $('#input3')
     }, { tokens: true }).render()
 
@@ -303,8 +307,8 @@ require([
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
 
-        if (jsonData && jsonData[0] && jsonData[0].ipapi)
-          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+        if (jsonData && jsonData[0] && jsonData[0].url)
+          $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
             parsedData = JSON.parse(data)
             if (parsedData.data)
               $('#statusLed').addClass('wz-green-led')
@@ -360,14 +364,14 @@ require([
 
           // When the Submit button is clicked, get all the form fields by accessing token values
           const tokens = mvc.Components.get("default")
-          const form_apiip = tokens.get("apiip")
+          const form_url = tokens.get("url")
           const form_apiport = tokens.get("apiport")
           const form_apiuser = tokens.get("apiuser")
           const form_apipass = tokens.get("apipass")
 
           // Create a dictionary to store the field names and values
           const record = {
-            "ipapi": form_apiip,
+            "url": form_url,
             "portapi": form_apiport,
             "userapi": form_apiuser,
             "passapi": form_apipass
@@ -399,8 +403,8 @@ require([
                 const arr = url.split("/")
                 const baseUrl = arr[0] + "//" + arr[2]
 
-                if (jsonData && jsonData[0] && jsonData[0].ipapi)
-                  $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].ipapi + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
+                if (jsonData && jsonData[0] && jsonData[0].url)
+                  $.get(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + data.name, data => {
                     parsedData = JSON.parse(data)
                     if (parsedData.data)
                       $('#statusLed').removeClass('wz-green-red')

@@ -141,7 +141,7 @@ require([
         const baseUrl = arr[0] + "//" + arr[2]
         console.log('baseurl ', baseUrl)
         setToken('baseip', baseUrl);
-        setToken('ipapi', parsedData[0].ipapi);
+        setToken('url', parsedData[0].url);
         setToken('portapi', parsedData[0].portapi);
         setToken('userapi', parsedData[0].userapi);
         setToken('passwordapi', parsedData[0].passapi);
@@ -153,7 +153,7 @@ require([
     const search1 = new SearchManager({
       "id": "search1",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-analysisd as analysisd | eval value=if(analysisd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-analysisd as analysisd | eval value=if(analysisd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -184,7 +184,7 @@ require([
     const search2 = new SearchManager({
       "id": "search2",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-execd as execd| eval value=if(execd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-execd as execd| eval value=if(execd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -215,7 +215,7 @@ require([
     const search3 = new SearchManager({
       "id": "search3",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-logcollector as logcollector| eval value=if(logcollector=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-logcollector as logcollector| eval value=if(logcollector=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -246,7 +246,7 @@ require([
     const search4 = new SearchManager({
       "id": "search4",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-monitord as monitord | eval value=if(monitord=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-monitord as monitord | eval value=if(monitord=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -277,7 +277,7 @@ require([
     const search5 = new SearchManager({
       "id": "search5",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-remoted as remoted | eval value=if(remoted=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-remoted as remoted | eval value=if(remoted=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -308,7 +308,7 @@ require([
     const search6 = new SearchManager({
       "id": "search6",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-maild as maild  | eval value=if(maild=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-maild as maild  | eval value=if(maild=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -339,7 +339,7 @@ require([
     const search7 = new SearchManager({
       "id": "search7",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-authd as authd  | eval value=if(authd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-authd as authd  | eval value=if(authd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -370,7 +370,7 @@ require([
     const search8 = new SearchManager({
       "id": "search8",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_wazuh-modulesd as modulesd  | eval value=if(modulesd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_wazuh-modulesd as modulesd  | eval value=if(modulesd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -401,7 +401,7 @@ require([
     const search9 = new SearchManager({
       "id": "search9",
       "sample_ratio": null,
-      "search": "| getmanagerstatus $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-syscheckd as syscheckd  | eval value=if(syscheckd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
+      "search": "| getmanagerstatus $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename manager-status_ossec-syscheckd as syscheckd  | eval value=if(syscheckd=\"running\",\"1\",\"0\") | top value showcount=f showperc=f | rangemap  field=value  up=1-1 down=0-0 none=2-2 default=none",
       "status_buckets": 0,
       "earliest_time": "$earliest$",
       "cancelOnUnload": true,
@@ -432,7 +432,7 @@ require([
     const search10 = new SearchManager({
       "id": "search10",
       "sample_ratio": null,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_total) as \"Total Agents\"",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_total) as \"Total Agents\"",
       "status_buckets": 0,
       "earliest_time": "-15m",
       "cancelOnUnload": true,
@@ -448,7 +448,7 @@ require([
     const search11 = new SearchManager({
       "id": "search11",
       "sample_ratio": null,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_active) as \"Active Agents\"",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_active) as \"Active Agents\"",
       "status_buckets": 0,
       "earliest_time": "-15m",
       "cancelOnUnload": true,
@@ -464,7 +464,7 @@ require([
     const search12 = new SearchManager({
       "id": "search12",
       "sample_ratio": null,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_disconnected) as \"Disconnected\"",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_disconnected) as \"Disconnected\"",
       "status_buckets": 0,
       "earliest_time": "-15m",
       "cancelOnUnload": true,
@@ -480,7 +480,7 @@ require([
     const search13 = new SearchManager({
       "id": "search13",
       "sample_ratio": null,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_neverconnected) as \"Never\"",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | stats first(agent_summary_neverconnected) as \"Never\"",
       "status_buckets": 0,
       "earliest_time": "-24h@h",
       "cancelOnUnload": true,
@@ -496,7 +496,7 @@ require([
     const search14 = new SearchManager({
       "id": "search14",
       "sample_ratio": null,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | rename agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + \" %\" | top Coverage showcount=f showperc=f",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | rename agent_summary_active as Active, agent_summary_total as Total | eval Coverage=round((Active*100)/Total,2) | eval Coverage=Coverage + \" %\" | top Coverage showcount=f showperc=f",
       "status_buckets": 0,
       "earliest_time": "-15m",
       "cancelOnUnload": true,
@@ -512,7 +512,7 @@ require([
     const search15 = new SearchManager({
       "id": "search15",
       "sample_ratio": 1,
-      "search": "| getagentsummary $baseip$ $ipapi$ $portapi$ $userapi$ $passwordapi$ | stats latest(*) | fields - latest(punct),latest(timestamp),latest(linecount),latest(error),latest(host),latest(agent_summary_disconnected),latest(agent_summary_neverconnected),latest(agent_summary_total),latest(date_hour),latest(date_mday),latest(date_minute),latest(date_month),latest(date_second),latest(date_wday),latest(date_year),latest(date_zone),latest(index),latest(manager-info_tz_offset),latest(manager-status_ossec-analysisd),latest(manager-status_ossec-authd),latest(manager-status_ossec-execd),latest(manager-status_ossec-logcollector),latest(manager-status_ossec-maild),latest(manager-status_ossec-monitord),latest(manager-status_ossec-remoted),latest(manager-status_ossec-syscheckd),latest(manager-status_wazuh-modulesd),latest(source),latest(timeendpos),latest(timestartpos) | rename latest(agent_summary_active) as \"Agents Active\", latest(manager-info_installation_date) as \"Installation date\", latest(manager-info_max_agents) as \"Max agents\",latest(manager-info_openssl_support) as \"SSL Support\", latest(manager-info_path) as \"WAZUH PATH\",latest(manager-info_type) as \"Role\",latest(manager-info_tz_name) as \"Time Zone\", latest(manager-info_version) as \"WAZUH VERSION\", latest(sourcetype) as \"sourcetype\", latest(splunk_server) as \"Splunk Server\", latest(manager-info_ruleset_version) as \"Ruleset version\" | appendcols [search index=\"wazuh_api\" sourcetype=* sourcetype=wazuh_api_rules \"agent_summary_totalItems\"=\"*\" | head 1 | stats count by agent_summary_totalItems | fields - count  | transpose | rename \"row 1\" as \"Total rules\" | sort Component ] | transpose | rename \"column\" as Component, \"row 1\" as \"Value\" | head 10",
+      "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | stats latest(*) | fields - latest(punct),latest(timestamp),latest(linecount),latest(error),latest(host),latest(agent_summary_disconnected),latest(agent_summary_neverconnected),latest(agent_summary_total),latest(date_hour),latest(date_mday),latest(date_minute),latest(date_month),latest(date_second),latest(date_wday),latest(date_year),latest(date_zone),latest(index),latest(manager-info_tz_offset),latest(manager-status_ossec-analysisd),latest(manager-status_ossec-authd),latest(manager-status_ossec-execd),latest(manager-status_ossec-logcollector),latest(manager-status_ossec-maild),latest(manager-status_ossec-monitord),latest(manager-status_ossec-remoted),latest(manager-status_ossec-syscheckd),latest(manager-status_wazuh-modulesd),latest(source),latest(timeendpos),latest(timestartpos) | rename latest(agent_summary_active) as \"Agents Active\", latest(manager-info_installation_date) as \"Installation date\", latest(manager-info_max_agents) as \"Max agents\",latest(manager-info_openssl_support) as \"SSL Support\", latest(manager-info_path) as \"WAZUH PATH\",latest(manager-info_type) as \"Role\",latest(manager-info_tz_name) as \"Time Zone\", latest(manager-info_version) as \"WAZUH VERSION\", latest(sourcetype) as \"sourcetype\", latest(splunk_server) as \"Splunk Server\", latest(manager-info_ruleset_version) as \"Ruleset version\" | appendcols [search index=\"wazuh_api\" sourcetype=* sourcetype=wazuh_api_rules \"agent_summary_totalItems\"=\"*\" | head 1 | stats count by agent_summary_totalItems | fields - count  | transpose | rename \"row 1\" as \"Total rules\" | sort Component ] | transpose | rename \"column\" as Component, \"row 1\" as \"Value\" | head 10",
       "status_buckets": 0,
       "earliest_time": "-15m",
       "cancelOnUnload": true,
