@@ -362,9 +362,6 @@ require([
      */
     submit.on("submit", async () => {
       try {
-        console.log('awaiting del')
-        await service.delete("storage/collections/data/credentials/")
-        console.log('finished del')
         // When the Submit button is clicked, get all the form fields by accessing token values
         const tokens = mvc.Components.get("default")
         const form_url = tokens.get("url")
@@ -372,24 +369,30 @@ require([
         const form_apiuser = tokens.get("apiuser")
         const form_apipass = tokens.get("apipass")
 
-        // Create a dictionary to store the field names and values
-        const record = {
-          "url": form_url,
-          "portapi": form_apiport,
-          "userapi": form_apiuser,
-          "passapi": form_apipass
-        }
-        // Use the request method to send a REST POST request
-        // to the storage/collections/data/{collection}/ endpoint
-        await service.post("storage/collections/data/credentials/",record)
-        // Run the search again to update the table
-        const data = await service.get("storage/collections/data/credentials/")
-        console.log('data',data)
-        await setLight(data)
-        search1.startSearch()
-        // Clear the form fields 
-        $("#formCustomerInfo input[type=text]").val("")
+        if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
+          await service.delete("storage/collections/data/credentials/")
 
+          // Create a dictionary to store the field names and values
+          const record = {
+            "url": form_url,
+            "portapi": form_apiport,
+            "userapi": form_apiuser,
+            "passapi": form_apipass
+          }
+          // Use the request method to send a REST POST request
+          // to the storage/collections/data/{collection}/ endpoint
+          await service.post("storage/collections/data/credentials/", record)
+          // Run the search again to update the table
+          const data = await service.get("storage/collections/data/credentials/")
+          console.log('data', data)
+          await setLight(data)
+          search1.startSearch()
+          // Clear the form fields 
+          $("#formCustomerInfo input[type=text]").val("")
+        } else {
+          // Handle error alert here
+          console.log('invalid data')
+        }
       } catch (err) {
         console.error('error at submit ', err)
       }
