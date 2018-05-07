@@ -109,11 +109,53 @@ require([
 
     const service = mvc.createService({ owner: "nobody" })
 
-    // $('#input3').focusout( () => {
-    //   const url = mvc.Components.get('url').val()
-    //   console.log(url)
+    const userRegEx  = new RegExp(/^.{3,100}$/)
+    const passRegEx  = new RegExp(/^.{3,100}$/)
+    const urlRegEx   = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
+    const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
+    const portRegEx  = new RegExp(/^[0-9]{2,5}$/)
 
-    // })
+    /**
+     * Check if an URL is valid or not
+     * @param {String} url 
+     */
+    const validUrl = url => {
+      return urlRegEx.test(url) || urlRegExIP.test(url)
+    }
+
+    /**
+     * Check if a port is valid or not
+     * @param {String} port 
+     */
+    const validPort = port => {
+      return portRegEx.test(port)
+    }
+
+    /**
+     * Check if an user is valid or not
+     * @param {String} user 
+     */
+    const validUsername = user => {
+      return userRegEx.test(user)
+    }
+
+    /**
+     * Check if a password is valid or not
+     * @param {String} pass 
+     */
+    const validPassword = pass => {
+      return passRegEx.test(pass)
+    }
+
+    $('#input3').focusout( function (data) {
+      const text = $(this).children().children().children().val();
+      console.log(text)
+      if ( validUrl(text) ) {
+        console.log('valid url')
+      } else {
+        console.log('invalid url')
+      }
+    })
 
     urlTokenModel.on('url:navigate', function () {
       defaultTokenModel.set(urlTokenModel.toJSON())
