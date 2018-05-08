@@ -43,7 +43,8 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/wazuh/js/utilLib/promisedReq.js",
-  "/static/app/wazuh/js/utilLib/services.js"
+  "/static/app/wazuh/js/utilLib/services.js",
+  "/static/app/wazuh/js/customViews/toaster.js"
 
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
@@ -83,7 +84,8 @@ require([
     PostProcessManager,
     UrlTokenModel,
     asyncReq,
-    services
+    services,
+    Toast
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -100,7 +102,6 @@ require([
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
-
     // $('#input3').focusout( function (data) {
     //   const text = $(this).children().children().children().val();
     //   console.log(text)
@@ -138,11 +139,17 @@ require([
       submittedTokenModel.unset(name)
     }
 
+    // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
     const urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
     const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
     const portRegEx = new RegExp(/^[0-9]{2,5}$/)
+
+    // Toast definition
+    const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Connection error', 1000, 250, 250)
+    const success = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
+
 
     /**
      * Check if an URL is valid or not
@@ -182,18 +189,18 @@ require([
      */
     const checkConnection = async jsonData => {
       try {
-        console.log('check connection ready')
-
+        console.log('checking connection')
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-        let parsedData = ''
-        if (jsonData && jsonData[0] && jsonData[0].url) {
-          console.log('credential data ', jsonData)
-          const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
-          parsedData = await asyncReq('get', endpoint)
-          console.log('CONNECTION OK!,returning')
-        }
+        // if (typeof jsonData === 'object') {
+        console.log('performing GET...')
+        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+        const parsedData = await asyncReq.promisedGet(endpoint)
+        console.log('done with GET...', parsedData)
+
+        console.log('CONNECTION OK!,returning')
+        // }
         return
       } catch (err) {
         console.error('error at checking connection!', err)
@@ -205,31 +212,32 @@ require([
      * Set a status (green/red) light for API connecting
      * @param {object} jsonData 
      */
-    const setLight = async (jsonData) => {
+    const showStatusConnectionToast = async () => {
       try {
-        console.log('set light ')
-        await checkConnection(jsonData)
-        console.log('setting green led!')
-        $('#statusLed').addClass('wz-green-led')
+        const data = await service.get("storage/collections/data/credentials/")
+        await checkConnection(data.data)
+        success.show()
       } catch (err) {
-        console.log('setting red led')
-        $('#statusLed').addClass('wz-red-led')
-        return Promise.reject(err)
+        errorConnectionToast.show()
       }
     }
 
     /**
-     * On document ready
+     * Check if connection is OK at starting view
      */
-    $(document).ready(async () => {
+    const firstLoad = async () => {
       try {
-        console.log('document ready')
         const data = await service.get("storage/collections/data/credentials/")
-        await setLight(JSON.parse(data))
+        console.log('data', data, ' ', typeof data)
+        await showStatusConnectionToast()
       } catch (err) {
         console.error('error at loading data', err.message || err)
       }
-    })
+    }
+    /**
+     * On document ready
+     */
+    $(document).ready(() => firstLoad())
 
     /**
      * Searches and draws for already stored credentials
@@ -358,6 +366,11 @@ require([
     }, { tokens: true }).render()
 
     /**
+     * Check connection when click on button
+     */
+    $('#checkConnection').click(() => showStatusConnectionToast())
+
+    /**
      *  Click on submit button
      */
     submit.on("submit", async () => {
@@ -385,7 +398,7 @@ require([
           // Run the search again to update the table
           const data = await service.get("storage/collections/data/credentials/")
           console.log('data', data)
-          await setLight(data)
+          await showStatusConnectionToast(data.data)
           search1.startSearch()
           // Clear the form fields 
           $("#formCustomerInfo input[type=text]").val("")

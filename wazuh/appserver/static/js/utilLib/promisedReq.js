@@ -12,12 +12,33 @@
 
 define(function (require, exports, module) {
     const $ = require('jquery')
-    const promisedRequest = (verb, url) => {
+
+    /**
+     * Promisified GET request
+     * @param {String} url 
+     */
+    const promisedGet = (url) => {
+        console.log('receiving get')
         return new Promise((resolve, reject) => {
-            $.ajax({ 'method': verb, 'url': url }, data => {
-                resolve(JSON.parse(data))
-            }).fail((err) => { reject(err) })
+            $.get(url, data => {
+                console.log('done with request', data, ' ', typeof data)
+                return resolve(JSON.parse(data))
+            }).fail((err) => { return reject(err) })
         })
     }
-    return promisedRequest
+
+    /**
+     * Promisified POST request
+     * @param {String} url 
+     * @param {Object} payload 
+     */
+    const promisedPost = (url, payload) => {
+        console.log('receiving get')
+        return new Promise((resolve, reject) => {
+            $.post(url, payload, data => {
+                return resolve(JSON.parse(data))
+            }).fail((err) => { return reject(err) })
+        })
+    }
+    return { promisedGet, promisedPost }
 })

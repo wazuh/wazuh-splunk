@@ -37,7 +37,7 @@ define(function (require, exports, module) {
           { "Content-Type": "application/json" }, (err, data) => {
             if (err)
               return reject(err)
-            return resolve(data)
+            resolve(data)
           }
         )
       })
@@ -74,10 +74,8 @@ define(function (require, exports, module) {
 
         this.service.del(url, {}, (err, data) => {
           if (err) {
-            console.error('error at deleting ', err)
             return reject(err)
           }
-          console.log('deleting')
           return resolve(data)
         })
       })

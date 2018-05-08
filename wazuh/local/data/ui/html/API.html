@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/wazuh_decorations.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/css/styles/toast.css">
 
   <meta name="referrer" content="never" />
   <meta name="referrer" content="no-referrer" />
@@ -35,11 +36,11 @@
   </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <h3>API configuration</h3>
-          
+
     <form id="formCustomerInfo">
 
       <div class="fieldset">
-        
+
         <div class="input input-text" id="input3">
           <label>URL</label>
         </div>
@@ -62,13 +63,20 @@
           <label>Remove credentials</label>
         </div>
         <div class="form-submit" id="search_btn">
-          <button  id="deleteRecord" class="btn btn-primary submit">Clear</button>
+          <button id="deleteRecord" class="btn btn-primary submit">Clear</button>
         </div>
       </div>
-      <br>
     </form>
 
     <div id="row1" class="dashboard-row dashboard-row1">
+      <div>
+        <div class="input input-text">
+          <label>Check connection</label>
+        </div>
+        <div>
+          <button id="checkConnection" class="btn btn-primary">Check</button>
+        </div>
+      </div>
       <div id="panel1" class="dashboard-cell" style="width: 100%;">
         <div class="panel-element-row">
           <div id="element1" class="dashboard-element table" style="width: 100%">
@@ -80,9 +88,6 @@
         </div>
       </div>
     </div>
-    
-  <div id='statusLed'></div>
-
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
