@@ -37,7 +37,7 @@ define(function (require, exports, module) {
           { "Content-Type": "application/json" }, (err, data) => {
             if (err)
               return reject(err)
-            resolve(data)
+            resolve(data.data[0])
           }
         )
       })
@@ -66,12 +66,26 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Load API credential data and generates a Base URL
+     */
+    async loadCredentialData(){
+      try {
+        const jsonData = await this.get("storage/collections/data/credentials/")
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+        return { baseUrl, jsonData }
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
      * DELETE method
      * @param {String} url 
      */
     delete(url) {
       return new Promise((resolve, reject) => {
-
         this.service.del(url, {}, (err, data) => {
           if (err) {
             return reject(err)
@@ -81,5 +95,7 @@ define(function (require, exports, module) {
       })
     }
   }
+
+  // Return class
   return service
 })

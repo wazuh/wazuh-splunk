@@ -29,20 +29,20 @@ define(function (require, exports, module) {
         serverSide: true,
         filterVisible: false,
         columns: [
-          { "data": "id", 'orderable': true, defaultContent:"-"  },
-          { "data": "ip", 'orderable': true, defaultContent:"-"  },
-          { "data": "name", 'orderable': true, defaultContent:"-"  },
-          { "data": "status", 'orderable': true, defaultContent:"-"  },
-          { "data": "os-platform", 'orderable': true, defaultContent:"-"  },
-          { "data": "os-uname", 'orderable': true, defaultContent:"-"  },
-          { "data": "os-name", 'orderable': true, defaultContent:"-"  },
-          { "data": "os-arch", 'orderable': false, defaultContent:"-" },
-          { "data": "os-version", 'orderable': true, defaultContent:"-"  },
-          { "data": "dateAdd", 'orderable': false, defaultContent:"-"  },
-          { "data": "lastKeepAlive", 'orderable': false, defaultContent:"-"  },
-          { "data": "last_rootcheck", 'orderable': false, defaultContent:"-"  },
-          { "data": "last_syscheck", 'orderable': false, defaultContent:"-"  },
-          { "data": "version", 'orderable': false, defaultContent:"-"  }
+          { "data": "id", 'orderable': true, defaultContent: "-" },
+          { "data": "ip", 'orderable': true, defaultContent: "-" },
+          { "data": "name", 'orderable': true, defaultContent: "-" },
+          { "data": "status", 'orderable': true, defaultContent: "-" },
+          { "data": "os-platform", 'orderable': true, defaultContent: "-" },
+          { "data": "os-uname", 'orderable': true, defaultContent: "-" },
+          { "data": "os-name", 'orderable': true, defaultContent: "-" },
+          { "data": "os-arch", 'orderable': false, defaultContent: "-" },
+          { "data": "os-version", 'orderable': true, defaultContent: "-" },
+          { "data": "dateAdd", 'orderable': false, defaultContent: "-" },
+          { "data": "lastKeepAlive", 'orderable': false, defaultContent: "-" },
+          { "data": "last_rootcheck", 'orderable': false, defaultContent: "-" },
+          { "data": "last_syscheck", 'orderable': false, defaultContent: "-" },
+          { "data": "version", 'orderable': false, defaultContent: "-" }
         ]
       }
     }
@@ -51,7 +51,7 @@ define(function (require, exports, module) {
      * Generates HTML table code and append it into the element passed
      * @param {*} jQuery element  
      */
-    generateTableView($element){
+    generateTableView($element) {
       $element.prepend('<table id="myAgentTable" class="display compact"><thead><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
       super.element($('#myAgentTable'))
     }
@@ -61,7 +61,7 @@ define(function (require, exports, module) {
      * @param {Object} opt: options
      */
     build(urlArg) {
-      const url = urlArg.baseUrl+'/custom/wazuh/agents/agents?ip='+urlArg.ipApi+'&port='+urlArg.portApi+'&user='+urlArg.userApi+'&pass='+urlArg.passApi
+      const url = urlArg.baseUrl + '/custom/wazuh/agents/agents?ip=' + urlArg.ipApi + '&port=' + urlArg.portApi + '&user=' + urlArg.userApi + '&pass=' + urlArg.passApi
       super.build(url, this.opts)
     }
   }

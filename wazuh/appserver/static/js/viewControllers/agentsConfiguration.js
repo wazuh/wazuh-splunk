@@ -15,19 +15,22 @@ require([
   "splunkjs/mvc/utils",
   "underscore",
   "jquery",
-  "splunkjs/mvc/layoutview"
+  "splunkjs/mvc/layoutview",
+  "/static/app/wazuh/js/utilLib/services.js"
+  
 ],
   function (
     mvc,
     utils,
     _,
     $,
-    LayoutView
+    LayoutView,
+    services
 
   ) {
 
-    const service = mvc.createService({ owner: "nobody" })
-
+    const service = new services()
+    
     /**
      * Perform an async GET HTTP request
      * @param {String} url 
@@ -203,11 +206,6 @@ require([
           '</div>'
         )
       }
-
-
-
-      // $('#policyMonitoringSysAuditFiles').text(data.disabled)
-      // $('#policyMonitoringWinMalwareFiles').text(data.disabled)
     }
 
     /**
@@ -327,7 +325,6 @@ require([
       const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/remoteCommand.html"
       await myAsyncLoad($('#dynamicContent'), globalUrl)
 
-      console.log('files', typeof files, files)
       for (const item of files) {
         console.log(item)
         $('#remoteCommands').append(
@@ -429,9 +426,7 @@ require([
 
         // Click on Policy Monitoring
         $('#policyMonitoring').click(() => policyMonitoring(data.rootcheck))
-
       }
-
 
       if (data.syscollector) {
         $('#ifSyscollector').html(
@@ -558,26 +553,9 @@ require([
     }
 
     /**
-     * Load API credential data and generates a Base URL
+     * Agent list for dropdown
+     * @param {String} agentListEndpoint 
      */
-    const loadCredentialData = async () => {
-      try {
-        const apiData = await service.request(
-          "storage/collections/data/credentials/",
-          "GET",
-          null,
-          null,
-          null,
-          { "Content-Type": "application/json" }, null)
-        const jsonData = JSON.parse(apiData)
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-        return { baseUrl, jsonData }
-      } catch (err) {
-        return Promise.reject(err)
-      }
-    }
     const agentList = async agentListEndpoint => {
       try {
         const agentList = await myAsyncGet(agentListEndpoint)
@@ -590,23 +568,26 @@ require([
         Promise.reject(err)
       }
     }
+
     /**
      * Load backend address,port and request agent configuration data
      */
     const loadData = async (id) => {
       try {
-        const { baseUrl, jsonData } = await loadCredentialData()
-        let endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + id
+        console.log('loaddata')
+        const { baseUrl, jsonData } = await service.loadCredentialData()
+        console.log('jsondata',jsonData)
+        let endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + id
         let dataResult = await myAsyncGet(endPoint)
         let parsedJson = JSON.parse(dataResult)
         console.log('parsedJson', parsedJson)
-        const agentListEndpoint = baseUrl + '/custom/wazuh/agents/agents_name?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+        const agentListEndpoint = baseUrl + '/custom/wazuh/agents/agents_name?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
         await agentList(agentListEndpoint)
 
         let group = parsedJson.group
         let groupInformationEndpoint = ''
         if (typeof group !== 'undefined') {
-          groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + group
+          groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
           await loadAgentConfig(groupInformationEndpoint)
         } else {
           $('#dynamicContent').html(
@@ -617,7 +598,7 @@ require([
         }
 
         $('#agentList').on('change', async function () {
-          endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + this.value
+          endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + this.value
           dataResult = await myAsyncGet(endPoint)
           parsedJson = JSON.parse(dataResult)
           group = parsedJson.group
@@ -625,7 +606,7 @@ require([
           if (typeof group !== 'undefined') {
             $('#dynamicList').hide()
             $('#dynamicContent').empty()
-            groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi + '&id=' + group
+            groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
             $('#dynamicList').show()
 

@@ -187,20 +187,11 @@ require([
      * Check if connection with API was successful
      * @param {Object} jsonData 
      */
-    const checkConnection = async jsonData => {
+    const checkConnection = async () => {
       try {
-        console.log('checking connection')
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-        // if (typeof jsonData === 'object') {
-        console.log('performing GET...')
-        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
+        const { baseUrl, jsonData } = await service.loadCredentialData()
+        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
         const parsedData = await asyncReq.promisedGet(endpoint)
-        console.log('done with GET...', parsedData)
-
-        console.log('CONNECTION OK!,returning')
-        // }
         return
       } catch (err) {
         console.error('error at checking connection!', err)
@@ -214,8 +205,7 @@ require([
      */
     const showStatusConnectionToast = async () => {
       try {
-        const data = await service.get("storage/collections/data/credentials/")
-        await checkConnection(data.data)
+        await checkConnection()
         success.show()
       } catch (err) {
         errorConnectionToast.show()

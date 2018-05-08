@@ -11,34 +11,46 @@
  */
 
 define(function (require, exports, module) {
-    const $ = require('jquery')
+  const $ = require('jquery')
 
-    /**
-     * Promisified GET request
-     * @param {String} url 
-     */
-    const promisedGet = (url) => {
-        console.log('receiving get')
-        return new Promise((resolve, reject) => {
-            $.get(url, data => {
-                console.log('done with request', data, ' ', typeof data)
-                return resolve(JSON.parse(data))
-            }).fail((err) => { return reject(err) })
-        })
-    }
+  /**
+   * Promisified GET request
+   * @param {String} url 
+   */
+  const promisedGet = (url) => {
+    return new Promise((resolve, reject) => {
+      $.get(url, data => {
+        return resolve(JSON.parse(data))
+      }).fail((err) => { return reject(err) })
+    })
+  }
 
-    /**
-     * Promisified POST request
-     * @param {String} url 
-     * @param {Object} payload 
-     */
-    const promisedPost = (url, payload) => {
-        console.log('receiving get')
-        return new Promise((resolve, reject) => {
-            $.post(url, payload, data => {
-                return resolve(JSON.parse(data))
-            }).fail((err) => { return reject(err) })
-        })
-    }
-    return { promisedGet, promisedPost }
+  /**
+   * Promisified POST request
+   * @param {String} url 
+   * @param {Object} payload 
+   */
+  const promisedPost = (url, payload) => {
+    return new Promise((resolve, reject) => {
+      $.post(url, payload, data => {
+        return resolve(JSON.parse(data))
+      }).fail((err) => { return reject(err) })
+    })
+  }
+
+  /**
+   * Load HTTP content asynchronously
+   * @param {String} url 
+   * Returns Promise
+   */
+  const promisedLoad = ($element, url) => {
+    return new Promise((resolve, reject) => {
+      $element.load(url, (data, status, xhr) => {
+        if (status === 'error')
+          reject(status)
+        resolve(data)
+      })
+    })
+  }
+  return { promisedGet, promisedPost, promisedLoad }
 })

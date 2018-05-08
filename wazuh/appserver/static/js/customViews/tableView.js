@@ -65,7 +65,7 @@ define(function (require, exports, module) {
 
     search($el) {
       this.table.columns().every(function () {
-        var that = this;
+        const that = this;
         $el.on('keyup change', function () {
           if (that.search() !== this.value) {
             that
@@ -80,7 +80,7 @@ define(function (require, exports, module) {
      */
     click(cb) {
       const myThis = this;
-      this.$el.on('click', 'tr', function () {
+      this.$el.on('click', 'tr', () => {
         cb(myThis.table.row(this).data())
       })
     }
