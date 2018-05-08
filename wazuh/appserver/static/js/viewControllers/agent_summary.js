@@ -30,6 +30,8 @@ require([
   ) {
 
     const service = new services()
+    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
+
     service.checkConnection().then(() => {
 
       /**
@@ -48,6 +50,7 @@ require([
           const table = new agentsTable($('#row1'))
           table.build(urlData)
         } catch (err) {
+          errorToast.show()
           console.error(err)
         }
       }
