@@ -43,8 +43,7 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/wazuh/js/customViews/toaster.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -83,9 +82,7 @@ require([
     PostProcessManager,
     UrlTokenModel,
     services,
-    Toast,
-    promisedReq
-
+    Toast
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
     // TokenForwarder
