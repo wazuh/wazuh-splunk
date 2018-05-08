@@ -34,6 +34,7 @@ require([
 
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
+      const handleError = err => errorConnectionToast.show()
 
       /**
        * Render File Integrity data with object received
@@ -370,7 +371,7 @@ require([
           // If click on Syscheck section
           // await fileIntegrityContent(data.syscheck)
 
-          $('#fileIntegrity').click(() => fileIntegrityContent(data.syscheck))
+          $('#fileIntegrity').click(() => fileIntegrityContent(data.syscheck).catch(handleError))
         }
 
         // If there is rootcheck data then render it
@@ -394,7 +395,7 @@ require([
           )
 
           // Click on Policy Monitoring
-          $('#policyMonitoring').click(() => policyMonitoring(data.rootcheck))
+          $('#policyMonitoring').click(() => policyMonitoring(data.rootcheck).catch(handleError))
         }
 
         if (data.syscollector) {
@@ -419,7 +420,7 @@ require([
           $('#syscollectorScan').text(data.syscollector.scan_on_start)
 
           // Click on Syscollector
-          $('#syscollector').click(() => sysCollector(data.syscollector))
+          $('#syscollector').click(() => sysCollector(data.syscollector).catch(handleError))
         }
 
         if (data['open-scap']) {
@@ -443,7 +444,7 @@ require([
           $('#openscapDisabled').text(data['open-scap'].disabled)
           $('#openscapInterval').text(data['open-scap'].interval)
           // Click on Syscollector
-          $('#openscap').click(() => openSCAP(data['open-scap']))
+          $('#openscap').click(() => openSCAP(data['open-scap']).catch(handleError))
         }
 
         if (data['cis-cat']) {
@@ -469,7 +470,7 @@ require([
           $('#ciscatInterval').text(data['cis-cat'].interval)
 
           // Click on cis-cat
-          $('#ciscat').click(() => cisCat(data['cis-cat']))
+          $('#ciscat').click(() => cisCat(data['cis-cat']).catch(handleError))
 
         }
 
@@ -485,7 +486,7 @@ require([
             '</div> '
           )
           // Click on Log Collection
-          $('#logcollection').click(() => logCollection(data.localfile))
+          $('#logcollection').click(() => logCollection(data.localfile).catch(handleError))
         }
 
         if (data.command) {
@@ -500,7 +501,7 @@ require([
             '</div>'
           )
           // Click on Commands
-          $('#remote').click(() => remoteCommands(data.command))
+          $('#remote').click(() => remoteCommands(data.command).catch(handleError))
         }
 
       }

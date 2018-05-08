@@ -12,36 +12,262 @@
 
 require([
   "splunkjs/mvc",
-  "underscore",
   "jquery",
-  "splunkjs/mvc/layoutview"
+  "splunkjs/mvc/layoutview",
+  "/static/app/wazuh/js/utilLib/services.js",
+  "/static/app/wazuh/js/customViews/toaster.js",
+  "/static/app/wazuh/js/utilLib/promisedReq.js"
 ],
   function (
     mvc,
-    _,
     $,
-    LayoutView
+    LayoutView,
+    services,
+    Toast,
+    promisedReq
 
   ) {
 
-    const service = mvc.createService({ owner: "nobody" })
-    $(document).ready(() => {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done((data) => {
-        const jsonData = JSON.parse(data)
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-        const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData[0].url + '&port=' + jsonData[0].portapi + '&user=' + jsonData[0].userapi + '&pass=' + jsonData[0].passapi
-        $.get(endPoint, (data) => {
-          const jsonObj = JSON.parse(data)
+    const service = new services()
+    service.checkConnection().then(() => {
+
+      // Toast definition
+      const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
+      const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
+      const handleError = err => errorConnectionToast.show()
+
+      /**
+       * Render Global dynamic view
+       */
+      const globalView = async (globalObj) => {
+        try {
+          console.log('globalObj', globalObj)
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+          $('#jsonViewOutput').text(globalObj.global.jsonout_output)
+          $('#logAll').text(globalObj.global.logall)
+          $('#logAllJson').text(globalObj.global.logall_json)
+          $('#whiteList').text(globalObj.global.white_list)
+          $('#logViewAlertLevel').text(globalObj.alerts.log_alert_level)
+          $('#emailNotifications').text(globalObj.global.email_notification)
+          $('#emailAlertLevel').text(globalObj.alerts.email_alert_level)
+          $('#emailTo').text(globalObj.global.email_to)
+          $('#emailFrom').text(globalObj.global.email_from)
+          $('#smtpServer').text(globalObj.global.smtp_server)
+          $('#maxEmailPerHour').text(globalObj.global.email_maxperhour)
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Cluster dynamic view
+       */
+      const clusterView = async (clusterObj) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/cluster.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          $('#disabled').text(clusterObj.disabled)
+          $('#hidden').text(clusterObj.hidden)
+          $('#name').text(clusterObj.name)
+          $('#interval').text(clusterObj.interval)
+          $('#nodeName').text(clusterObj.node_name)
+          $('#nodeType').text(clusterObj.node_type)
+          $('#port').text(clusterObj.port)
+          $('#bindAddress').text(clusterObj.bind_addr)
+          $('#nodes').text(clusterObj.nodes)
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Syscheck dynamic view
+       */
+      const syscheckView = async (syscheckObj) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/syscheck.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          $('#sysDisabled').text(syscheckObj.disabled)
+          $('#sysFrequency').text(syscheckObj.frequency)
+          $('#sysAutoIgnore').text(syscheckObj.auto_ignore)
+          $('#sysViewAlertNewFiles').text(syscheckObj.alert_new_files)
+          $('#sysScanOnStart').text(syscheckObj.scan_on_start)
+          $('#sysNoDiff').text(syscheckObj.nodiff)
+          $('#sysSkipNfs').text(syscheckObj.skip_nfs)
+          //$('#sysMonitoringDirectories').text(syscheckObj.directories)
+          for (let i = 0; i < syscheckObj.directories.length; i++) {
+            $('#monitoringDirectories').append(
+              '<hr>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Path</p>' +
+              '<p class="wz-list-child">' + syscheckObj.directories[i].path + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Check all</p>' +
+              '<p class="wz-list-child">' + syscheckObj.directories[i].check_all + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+
+              '</div>'
+            )
+          }
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Rootcheck dynamic view
+       */
+      const rootcheckView = async (rootcheckView) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/rootcheck.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          $('#rootDisabled').text(rootcheckView.disabled)
+          $('#rootFiles').text(rootcheckView.rootkit_files)
+          $('#rootTrojans').text(rootcheckView.rootkit_trojans)
+          $('#rootViewFreq').text(rootcheckView.frequency)
+          $('#rootSkipNfs').text(rootcheckView.skip_nfs)
+          $('#rootSysAuditFiles').text(rootcheckView.system_audit)
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Auth dynamic view
+       */
+      const authView = async (authObj) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/auth.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          $('#authDisabled').text(authObj.disabled)
+          $('#authViewPurge').text(authObj.purge)
+          $('#authViewForceInsert').text(authObj.force_insert)
+          $('#authSslVerifyHost').text(authObj.ssl_verify_host)
+          $('#authLimitMaxAgents').text(authObj.limit_maxagents)
+          $('#authForceTime').text(authObj.force_time)
+          $('#authSslManagerKey').text(authObj.ssl_manager_key)
+          $('#authSslManagerCert').text(authObj.ssl_manager_cert)
+          $('#authUseSourceIP').text(authObj.use_source_ip)
+          $('#authUsePassword').text(authObj.use_password)
+          $('#authPort').text(authObj.port)
+          $('#authSslAutoNegotiate').text(authObj.ssl_auto_negotiate)
+          $('#authCiphers').text(authObj.ciphers)
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Ruleset dynamic view
+       */
+      const rulesetView = async (rulesetObj) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/ruleset.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          $('#ruleDecoderDirs').text(rulesetObj.decoder_dir)
+          $('#ruleRulesDirs').text(rulesetObj.rule_dir)
+          $('#ruleRuleExcludes').text(rulesetObj.rule_exclude)
+          $('#ruleCdbLists').text(rulesetObj.list)
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Command dynamic view
+       */
+      const commandView = async (commandObj) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/command.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          for (let i = 0; i < commandObj.length; i++) {
+            $('#commandChilds').append(
+              '<hr>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Name</p>' +
+              '<p>' + commandObj[i].name + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Expect</p>' +
+              '<p>' + commandObj[i].expect + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Executable</p>' +
+              '<p>' + commandObj[i].executable + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Timeout allowed</p>' +
+              '<p>' + commandObj[i].timeout_allowed + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '</div>'
+            )
+          }
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Render Remote dynamic view
+       */
+      const remoteView = async (remoteObj) => {
+        try {
+          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/remote.html"
+          $('#dynamicContent').empty()
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+
+          for (let i = 0; i < remoteObj.remote.length; i++) {
+            $('#remoteChilds').append(
+              '<hr>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Connection</p>' +
+              '<p>' + remoteObj.remote[i].connection + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Port</p>' +
+              '<p>' + remoteObj.remote[i].port + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '<p class="wz-list-child">Protocol</p>' +
+              '<p>' + remoteObj.remote[i].protocol + '</p>' +
+              '</div>' +
+              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              '</div>'
+            )
+          }
+
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Loads and distributes manager configuration content
+       */
+      const loadConfigurationContent = async () => {
+        try {
+          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+          const jsonObj = await promisedReq.promisedGet(endPoint)
           // Fill the initial data
+          console.log('first jsonobj', jsonObj)
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)
           $('#nameCluster').text(jsonObj.cluster.name)
@@ -54,198 +280,58 @@ require([
           $('#authForceInsert').text(jsonObj.auth.force_insert)
           // First load Global view by default
           let globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
-          $('#dynamicContent').load(globalUrl, (data) => {
-            $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
-            $('#logAll').text(jsonObj.global.logall)
-            $('#logAllJson').text(jsonObj.global.logall_json)
-            $('#whiteList').text(jsonObj.global.white_list)
-            $('#logViewAlertLevel').text(jsonObj.alerts.log_alert_level)
-            $('#emailNotifications').text(jsonObj.global.email_notification)
-            $('#emailAlertLevel').text(jsonObj.alerts.email_alert_level)
-            $('#emailTo').text(jsonObj.global.email_to)
-            $('#emailFrom').text(jsonObj.global.email_from)
-            $('#smtpServer').text(jsonObj.global.smtp_server)
-            $('#maxEmailPerHour').text(jsonObj.global.email_maxperhour)
-          })
+          await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
+          $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
+          $('#logAll').text(jsonObj.global.logall)
+          $('#logAllJson').text(jsonObj.global.logall_json)
+          $('#whiteList').text(jsonObj.global.white_list)
+          $('#logViewAlertLevel').text(jsonObj.alerts.log_alert_level)
+          $('#emailNotifications').text(jsonObj.global.email_notification)
+          $('#emailAlertLevel').text(jsonObj.alerts.email_alert_level)
+          $('#emailTo').text(jsonObj.global.email_to)
+          $('#emailFrom').text(jsonObj.global.email_from)
+          $('#smtpServer').text(jsonObj.global.smtp_server)
+          $('#maxEmailPerHour').text(jsonObj.global.email_maxperhour)
           // If click on Global section
-          $('#global').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
-              $('#logAll').text(jsonObj.global.logall)
-              $('#logAllJson').text(jsonObj.global.logall_json)
-              $('#whiteList').text(jsonObj.global.white_list)
-              $('#logViewAlertLevel').text(jsonObj.alerts.log_alert_level)
-              $('#emailNotifications').text(jsonObj.global.email_notification)
-              $('#emailAlertLevel').text(jsonObj.alerts.email_alert_level)
-              $('#emailTo').text(jsonObj.global.email_to)
-              $('#emailFrom').text(jsonObj.global.email_from)
-              $('#smtpServer').text(jsonObj.global.smtp_server)
-              $('#maxEmailPerHour').text(jsonObj.global.email_maxperhour)
-            })
-          })
+          $('#global').click(() => globalView(jsonObj).catch(handleError))
+
           // If click on Cluster section
-          $('#cluster').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/cluster.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#disabled').text(jsonObj.cluster.disabled)
-              $('#hidden').text(jsonObj.cluster.hidden)
-              $('#name').text(jsonObj.cluster.name)
-              $('#interval').text(jsonObj.cluster.interval)
-              $('#nodeName').text(jsonObj.cluster.node_name)
-              $('#nodeType').text(jsonObj.cluster.node_type)
-              $('#port').text(jsonObj.cluster.port)
-              $('#bindAddress').text(jsonObj.cluster.bind_addr)
-              $('#nodes').text(jsonObj.cluster.nodes)
-            })
-          })
+          $('#cluster').click(() => clusterView(jsonObj.cluster).catch(handleError))
+
           // If click on Syscheck section
-          $('#syscheck').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/syscheck.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#sysDisabled').text(jsonObj.syscheck.disabled)
-              $('#sysFrequency').text(jsonObj.syscheck.frequency)
-              $('#sysAutoIgnore').text(jsonObj.syscheck.auto_ignore)
-              $('#sysViewAlertNewFiles').text(jsonObj.syscheck.alert_new_files)
-              $('#sysScanOnStart').text(jsonObj.syscheck.scan_on_start)
-              $('#sysNoDiff').text(jsonObj.syscheck.nodiff)
-              $('#sysSkipNfs').text(jsonObj.syscheck.skip_nfs)
-              //$('#sysMonitoringDirectories').text(jsonObj.syscheck.directories)
-              for (let i = 0; i < jsonObj.syscheck.directories.length; i++) {
-                $('#monitoringDirectories').append(
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Path</p>' +
-                  '<p class="wz-list-child">' + jsonObj.syscheck.directories[i].path + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Check all</p>' +
-                  '<p class="wz-list-child">' + jsonObj.syscheck.directories[i].check_all + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<hr>' +
-                  '</div>'
-                )
-              }
-            })
-          })
+          $('#syscheck').click(() => syscheckView(jsonObj.syscheck).catch(handleError))
+
           // If click on Rootcheck section
-          $('#rootcheck').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/rootcheck.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#rootDisabled').text(jsonObj.rootcheck.disabled)
-              $('#rootFiles').text(jsonObj.rootcheck.rootkit_files)
-              $('#rootTrojans').text(jsonObj.rootcheck.rootkit_trojans)
-              $('#rootViewFreq').text(jsonObj.rootcheck.frequency)
-              $('#rootSkipNfs').text(jsonObj.rootcheck.skip_nfs)
-              $('#rootSysAuditFiles').text(jsonObj.rootcheck.system_audit)
-            })
-          })
+          $('#rootcheck').click(() => rootcheckView(jsonObj.rootcheck).catch(handleError))
+
           // If click on Auth section
-          $('#auth').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/auth.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#authDisabled').text(jsonObj.auth.disabled)
-              $('#authViewPurge').text(jsonObj.auth.purge)
-              $('#authViewForceInsert').text(jsonObj.auth.force_insert)
-              $('#authSslVerifyHost').text(jsonObj.auth.ssl_verify_host)
-              $('#authLimitMaxAgents').text(jsonObj.auth.limit_maxagents)
-              $('#authForceTime').text(jsonObj.auth.force_time)
-              $('#authSslManagerKey').text(jsonObj.auth.ssl_manager_key)
-              $('#authSslManagerCert').text(jsonObj.auth.ssl_manager_cert)
-              $('#authUseSourceIP').text(jsonObj.auth.use_source_ip)
-              $('#authUsePassword').text(jsonObj.auth.use_password)
-              $('#authPort').text(jsonObj.auth.port)
-              $('#authSslAutoNegotiate').text(jsonObj.auth.ssl_auto_negotiate)
-              $('#authCiphers').text(jsonObj.auth.ciphers)
-            })
-          })
+          $('#auth').click(() => authView(jsonObj.auth).catch(handleError))
+
           // If click on Ruleset section
-          $('#ruleset').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/ruleset.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              $('#ruleDecoderDirs').text(jsonObj.ruleset.decoder_dir)
-              $('#ruleRulesDirs').text(jsonObj.ruleset.rule_dir)
-              $('#ruleRuleExcludes').text(jsonObj.ruleset.rule_exclude)
-              $('#ruleCdbLists').text(jsonObj.ruleset.list)
-            })
-          })
+          $('#ruleset').click(() => rulesetView(jsonObj.ruleset).catch(handleError))
+
           // If click on Command section
-          $('#command').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/command.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              for (let i = 0; i < jsonObj.command.length; i++) {
-                $('#commandChilds').append(
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Name</p>' +
-                  '<p>' + jsonObj.command[i].name + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Expect</p>' +
-                  '<p>' + jsonObj.command[i].expect + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Executable</p>' +
-                  '<p>' + jsonObj.command[i].executable + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Timeout allowed</p>' +
-                  '<p>' + jsonObj.command[i].timeout_allowed + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<hr>' +
-                  '</div>'
-                )
-              }
-            })
-          })
+          $('#command').click(() => commandView(jsonObj.command).catch(handleError))
+
           // If click on Remote section
-          $('#remote').click(() => {
-            globalUrl = "/static/app/wazuh/views/managerConfigurationViews/remote.html"
-            $('#dynamicContent').empty()
-            $('#dynamicContent').load(globalUrl, (data) => {
-              for (let i = 0; i < jsonObj.remote.length; i++) {
-                $('#remoteChilds').append(
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Connection</p>' +
-                  '<p>' + jsonObj.remote[i].connection + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Port</p>' +
-                  '<p>' + jsonObj.remote[i].port + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<p class="wz-list-child">Protocol</p>' +
-                  '<p>' + jsonObj.remote[i].protocol + '</p>' +
-                  '</div>' +
-                  '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                  '<hr>' +
-                  '</div>'
-                )
-              }
-              $('#remConnection').text(jsonObj.remote.decoder_dir)
-              $('#remPort').text(jsonObj.ruleset.rule_dir)
-              $('#remProtocol').text(jsonObj.ruleset.rule_exclude)
-            })
-          })
-        }).fail(() => {
-          console.error("error")
-        })
-      })
-    })
+          $('#remote').click(() => remoteView(jsonObj).catch(handleError))
 
+        } catch (err) {
+          errorConnectionToast.show()
+          console.error(err.message || err)
+        }
+      }
 
-    $('header').remove()
-    new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
-      .render()
-      .getContainerElement()
-      .appendChild($('.dashboard-body')[0])
+      /**
+       * On document ready load configuration content
+       */
+      $(document).ready(() => loadConfigurationContent())
 
+      $('header').remove()
+      new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
+        .render()
+        .getContainerElement()
+        .appendChild($('.dashboard-body')[0])
+    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
   }
 )

@@ -44,10 +44,7 @@ define(function (require, exports, module) {
          * Draws a custom toast
          */
         show() {
-            console.log('drawing toast')
-            console.log(toastr)
             toastr[this.type](this.msg)
-            //this.delayToast();
         }
 
     }

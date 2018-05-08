@@ -106,7 +106,6 @@ define(function (require, exports, module) {
         const parsedData = await asyncReq.promisedGet(endpoint)
         return
       } catch (err) {
-        console.error('error at checking connection!', err)
         return Promise.reject(err)
       }
     }

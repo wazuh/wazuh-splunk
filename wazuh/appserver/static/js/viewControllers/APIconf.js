@@ -202,7 +202,6 @@ require([
     const firstLoad = async () => {
       try {
         const data = await service.get("storage/collections/data/credentials/")
-        console.log('data', data, ' ', typeof data)
         await showStatusConnectionToast()
       } catch (err) {
         console.error('error at loading data', err.message || err)
@@ -371,14 +370,11 @@ require([
           await service.post("storage/collections/data/credentials/", record)
           // Run the search again to update the table
           const data = await service.get("storage/collections/data/credentials/")
-          console.log('data', data)
           await showStatusConnectionToast(data.data)
           search1.startSearch()
           // Clear the form fields 
           $("#formCustomerInfo input[type=text]").val("")
         } else {
-          // Handle error alert here
-          console.log('invalid data')
         }
       } catch (err) {
         console.error('error at submit ', err)
