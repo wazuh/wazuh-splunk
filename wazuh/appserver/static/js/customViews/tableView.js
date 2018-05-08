@@ -80,7 +80,8 @@ define(function (require, exports, module) {
      */
     click(cb) {
       const myThis = this;
-      this.$el.on('click', 'tr', () => {
+      this.$el.on('click', 'tr', function() {
+        console.log('click on row',myThis.table.row(this).data())
         cb(myThis.table.row(this).data())
       })
     }
