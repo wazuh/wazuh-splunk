@@ -148,7 +148,7 @@ require([
 
     // Toast definition
     const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Connection error', 1000, 250, 250)
-    const success = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
+    const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
 
 
     /**
@@ -184,29 +184,13 @@ require([
     }
 
     /**
-     * Check if connection with API was successful
-     * @param {Object} jsonData 
-     */
-    const checkConnection = async () => {
-      try {
-        const { baseUrl, jsonData } = await service.loadCredentialData()
-        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
-        const parsedData = await asyncReq.promisedGet(endpoint)
-        return
-      } catch (err) {
-        console.error('error at checking connection!', err)
-        return Promise.reject(err)
-      }
-    }
-
-    /**
      * Set a status (green/red) light for API connecting
      * @param {object} jsonData 
      */
     const showStatusConnectionToast = async () => {
       try {
-        await checkConnection()
-        success.show()
+        await service.checkConnection()
+        successToast.show()
       } catch (err) {
         errorConnectionToast.show()
       }

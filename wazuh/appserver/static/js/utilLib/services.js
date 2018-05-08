@@ -13,7 +13,7 @@
 define(function (require, exports, module) {
   const $ = require('jquery')
   const mvc = require('splunkjs/mvc')
-
+  const asyncReq = require('./promisedReq.js')
   /**
    * Encapsulates Splunk service functionality
    */
@@ -68,7 +68,7 @@ define(function (require, exports, module) {
     /**
      * Load API credential data and generates a Base URL
      */
-    async loadCredentialData(){
+    async loadCredentialData() {
       try {
         const jsonData = await this.get("storage/collections/data/credentials/")
         const url = window.location.href
@@ -94,7 +94,25 @@ define(function (require, exports, module) {
         })
       })
     }
+
+    /**
+     * Check if connection with API was successful
+     * @param {Object} jsonData 
+     */
+    async checkConnection() {
+      try {
+        const { baseUrl, jsonData } = await this.loadCredentialData()
+        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+        const parsedData = await asyncReq.promisedGet(endpoint)
+        return
+      } catch (err) {
+        console.error('error at checking connection!', err)
+        return Promise.reject(err)
+      }
+    }
+
   }
+
 
   // Return class
   return service
