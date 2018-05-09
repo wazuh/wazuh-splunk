@@ -76,6 +76,7 @@ define(function (require, exports, module) {
         const baseUrl = arr[0] + "//" + arr[2]
         return { baseUrl, jsonData }
       } catch (err) {
+        console.error("loadCredentialData", err.message || err)
         return Promise.reject(err)
       }
     }
@@ -106,6 +107,7 @@ define(function (require, exports, module) {
         const parsedData = await asyncReq.promisedGet(endpoint)
         return
       } catch (err) {
+        console.error("checkConnection", err.message || err)
         return Promise.reject(err)
       }
     }
