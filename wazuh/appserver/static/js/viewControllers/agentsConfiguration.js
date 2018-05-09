@@ -92,7 +92,7 @@ require([
             )
           }
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -185,7 +185,7 @@ require([
             )
           }
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -204,7 +204,7 @@ require([
           $('#syscollectorPackagesView').text(data.packages)
           $('#syscollectorScanOnStartView').text(data.scan_on_start)
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -221,7 +221,7 @@ require([
           $('#openscapTimeoutView').text(data.timeout)
           $('#openscapScanOnStartView').text(data['scan-on-start'])
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -240,7 +240,7 @@ require([
           $('#ciscatScanOnStartView').text(data['scan-on-start'])
           $('#ciscatJavaPathView').text(data['java_path'])
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -307,7 +307,7 @@ require([
               )
           }
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -368,7 +368,7 @@ require([
               )
           }
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -530,7 +530,7 @@ require([
             $('#remote').click(() => remoteCommands(data.command).catch(handleError))
           }
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -543,7 +543,7 @@ require([
           const groupConfJSON = await promisedReq.promisedGet(groupInformationEndpoint)
           await initializeData(groupConfJSON.items[0].config)
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -559,7 +559,7 @@ require([
               '<option value="' + agent.id + '">' + agent.name + ' - ' + agent.id + '</option>'
             )
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
@@ -610,7 +610,7 @@ require([
           })
           return
         } catch (err) {
-          Promise.reject(err)
+          return Promise.reject(err)
         }
       }
 
