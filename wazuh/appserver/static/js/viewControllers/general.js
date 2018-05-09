@@ -887,7 +887,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { console.error(err) })
+    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
 
   }
 )
