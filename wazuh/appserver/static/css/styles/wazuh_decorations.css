@@ -73,6 +73,10 @@
   width: 45% !important;
 }
 
+.wz-width-100 {
+  width: 100% !important;
+}
+
 /* Custom margin styles */
 
 .wz-margin-left-10 {
