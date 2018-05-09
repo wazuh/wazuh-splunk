@@ -319,7 +319,7 @@ require([
         // Run the search again to update the table
         search1.startSearch()
       } catch (err) {
-        Promise.reject(err)
+        return Promise.reject(err)
       }
     }
 
