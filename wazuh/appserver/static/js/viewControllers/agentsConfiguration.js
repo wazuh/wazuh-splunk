@@ -530,7 +530,7 @@ require([
             $('#remote').click(() => remoteCommands(data.command).catch(handleError))
           }
         } catch (err) {
-         Promise.reject(err)
+          Promise.reject(err)
         }
       }
 
@@ -543,7 +543,7 @@ require([
           const groupConfJSON = await promisedReq.promisedGet(groupInformationEndpoint)
           await initializeData(groupConfJSON.items[0].config)
         } catch (err) {
-         Promise.reject(err)
+          Promise.reject(err)
         }
       }
 
