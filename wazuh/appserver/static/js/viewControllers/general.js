@@ -94,7 +94,6 @@ require([
 
     let pageLoading = true
 
-
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
@@ -109,7 +108,6 @@ require([
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const service = mvc.createService({ owner: "nobody" })
       let baseUrl = ""
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -152,7 +150,7 @@ require([
         }
       }
 
-      $(document).ready(() => loadCredentialData())
+      $(document).ready(() => loadAndSetCredentialData())
 
 
       //
@@ -889,7 +887,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { console.error(err) })
 
   }
 )
