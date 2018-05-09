@@ -41,7 +41,6 @@ require([
        */
       const globalView = async (globalObj) => {
         try {
-          console.log('globalObj', globalObj)
           globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
@@ -267,7 +266,6 @@ require([
           const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
           const jsonObj = await promisedReq.promisedGet(endPoint)
           // Fill the initial data
-          console.log('first jsonobj', jsonObj)
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)
           $('#nameCluster').text(jsonObj.cluster.name)

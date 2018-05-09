@@ -46,12 +46,8 @@ require([
        */
       const clickOnFile = async (data, baseUrl, groupName, jsonData) => {
         try {
-          console.log('data',data)
-          console.log('baseUrl',baseUrl)
-          console.log('groupName',groupName)
-          console.log('jsonData',jsonData)
+
           const dataFile = await promisedReq.promisedGet(baseUrl + '/custom/wazuh/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi)
-          console.log(dataFile)
           $('#precode').empty()
           $('#precode').prepend('<pre style="height: 100%" class="wz-pre json-beautifier jsonbeauty scroll "><code>' + JSON.stringify(dataFile, null, 2) + '</code></pre>')
           $('#row3').show(200)
@@ -112,7 +108,7 @@ require([
           tableFiles.click(data => clickOnFile(data, baseUrl, groupName, jsonData))
           $('#row2').show(200)
         } catch (err) {
-          console.log(err.message || err)
+          console.error(err.message || err)
           errorClickToast.show()
         }
       }

@@ -165,7 +165,6 @@ require([
           table.element($('#myTable'))
           table.build(baseUrl + '/custom/wazuh/manager/rules?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
           table.click(function (data) {
-            console.log("data!", data)
             setToken("showDetails", "true")
             setToken("id", data.id || "-")
             setToken("description", data.description || "-")
