@@ -138,27 +138,22 @@ require([
         submittedTokenModel.unset(name)
       }
 
-      $(document).ready(() => {
-        service.request(
-          "storage/collections/data/credentials/",
-          "GET",
-          null,
-          null,
-          null,
-          { "Content-Type": "application/json" }, null
-        ).done((data) => {
-          const parsedData = JSON.parse(data)
-          const url = window.location.href
-          const arr = url.split("/")
-          baseUrl = arr[0] + "//" + arr[2]
+      const loadAndSetCredentialData = async () => {
+        try {
+          const { baseUrl, jsonData } = await service.loadCredentialData()
           setToken('baseip', baseUrl)
-          setToken('url', parsedData[0].url)
-          setToken('portapi', parsedData[0].portapi)
-          setToken('userapi', parsedData[0].userapi)
-          setToken('passwordapi', parsedData[0].passapi)
+          setToken('url', jsonData.url)
+          setToken('portapi', jsonData.portapi)
+          setToken('userapi', jsonData.userapi)
+          setToken('passwordapi', jsonData.passapi)
           setToken("loadedtokens", "true")
-        })
-      })
+        } catch (err) {
+          errorToast.show()
+        }
+      }
+
+      $(document).ready(() => loadCredentialData())
+
 
       //
       // SEARCH MANAGERS

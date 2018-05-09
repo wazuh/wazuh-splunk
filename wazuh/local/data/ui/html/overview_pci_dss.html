@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Overview PCI DSS HTML</title>
+  <link rel="shortcut icon" href="/en-US/static/@E6BBD5BB182F99D8E9B6462CB77D3B0EFE601649661606276C0709ED975CA44D/img/favicon.ico"/>
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/splunkjs-dashboard.css" />
+
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+</head>
+
+<body class="simplexml preload locale-en" data-splunk-version="7.1.0" data-splunk-product="enterprise">
+  <!--
+BEGIN LAYOUT
+This section contains the layout for the dashboard. Splunk uses proprietary
+styles in <div> tags, similar to Bootstrap's grid system.
+-->
+  <header>
+    <a aria-label="Screen reader users, click here to skip the navigation bar" class="navSkip" href="#navSkip" tabIndex="1">Skip Navigation &gt;</a>
+    <div class="header splunk-header">
+      <div id="placeholder-splunk-bar">
+        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
+          <strong>&gt;</strong>
+        </a>
+      </div>
+      <div id="placeholder-app-bar"></div>
+    </div>
+    <a id="navSkip"></a>
+  </header>
+  <div class="dashboard-body container-fluid main-section-body" data-role="main">
+    <div class="dashboard-header clearfix">
+      <h2>Overview PCI DSS HTML</h2>
+    </div>
+    <div class="fieldset">
+      <div class="input input-timerangepicker" id="input1">
+        <label>When?</label>
+      </div>
+      <div class="input input-dropdown" id="input2">
+        <label>PCI Requirement</label>
+      </div>
+    </div>
+
+
+    <div id="row1" class="dashboard-row dashboard-row1">
+      <div id="panel1" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Requirements</h2>
+
+          <div class="panel-element-row">
+            <div id="element1" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel2" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Groups</h2>
+
+          <div class="panel-element-row">
+            <div id="element2" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="row2" class="dashboard-row dashboard-row2">
+      <div id="panel3" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Agents</h2>
+
+          <div class="panel-element-row">
+            <div id="element3" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="panel4" class="dashboard-cell" style="width: 50%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Requirements by agent</h2>
+
+          <div class="panel-element-row">
+            <div id="element4" class="dashboard-element chart" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="row3" class="dashboard-row dashboard-row3">
+      <div id="panel5" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+          <h2 class="panel-title">Last alerts</h2>
+
+          <div class="panel-element-row">
+            <div id="element5" class="dashboard-element table" style="width: 100%">
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="row4" class="dashboard-row dashboard-row4">
+      <div id="panel6" class="dashboard-cell" style="width: 100%;">
+        <div class="dashboard-panel clearfix">
+
+          <div class="panel-element-row">
+            <div id="element6" class="dashboard-element table" style="width: 100%">
+              <div class="panel-head">
+                <h3>Requirement description</h3>
+              </div>
+              <div class="panel-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+END LAYOUT
+-->
+
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/wazuh/js/viewControllers/overview_pci_dss.js"></script>
+
+</body>
+
+</html>
