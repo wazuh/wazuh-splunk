@@ -11,52 +11,62 @@
  */
 
 require([
-  "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/wazuh/js/customViews/agentsTable.js"
+  "/static/app/wazuh/js/customViews/agentsTable.js",
+  "/static/app/wazuh/js/utilLib/services.js",
+  "/static/app/wazuh/js/customViews/toaster.js",
+  "/static/app/wazuh/js/utilLib/promisedReq.js"
+
 ],
   function (
-    mvc,
     $,
     LayoutView,
-    agentsTable
+    agentsTable,
+    services,
+    Toast,
+    promisedReq
+
   ) {
 
-    const service = mvc.createService({ owner: "nobody" })
+    const service = new services()
+    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
-    $(document).ready(() => {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done((data) => {
+    service.checkConnection().then(() => {
 
-        // Inject DataTable
-        const jsonData = JSON.parse(data)
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-        const urlData = {
-          baseUrl: baseUrl,
-          ipApi: jsonData[0].url,
-          portApi: jsonData[0].portapi,
-          userApi: jsonData[0].userapi,
-          passApi: jsonData[0].passapi
+      /**
+       * Initializes agent table
+       */
+      const initializeAgentTable = async () => {
+        try {
+          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const urlData = {
+            baseUrl: baseUrl,
+            ipApi: jsonData.url,
+            portApi: jsonData.portapi,
+            userApi: jsonData.userapi,
+            passApi: jsonData.passapi
+          }
+          const table = new agentsTable($('#row1'))
+          table.build(urlData)
+        } catch (err) {
+          errorToast.show()
+          console.error(err)
         }
-        const table = new agentsTable($('#row1'))
-        table.build(urlData)
-      })
-    })
-    
-    $('header').remove()
-    new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
-      .render()
-      .getContainerElement()
-      .appendChild($('.dashboard-body')[0])
+      }
+
+      /**
+       * On document ready load agent table
+       */
+      $(document).ready(() => initializeAgentTable())
+
+      $('header').remove()
+      new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
+        .render()
+        .getContainerElement()
+        .appendChild($('.dashboard-body')[0])
+
+    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
   }
 )
 

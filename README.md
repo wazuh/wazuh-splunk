@@ -22,7 +22,7 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 
 1. You must install Splunk Forwarder on your Wazuh Manager.
 2. Go to `$SPLUNK_HOME/etc/system/local`. 
-3. Edit the file __inputs.conf__:
+3. Edit the file __inputs.conf__. If it doesn't exist, create it:
 
 	```
 	[monitor:///var/ossec/logs/alerts/alerts.json]
@@ -75,10 +75,10 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 1. Specify the TCP port you want the receiver to listen on (the listening port, also known as the receiving port). For example, if you enter "9997," the receiver listens for connections from forwarders on port 9997. You can specify any unused port. You can use a tool like netstat to determine what ports are available on your system. Make sure the port you select is not in use by splunkweb or splunkd. 
 
     ###### CLI mode:
-    Add a new receiving configuration editing __inputs.conf__ file, adding the following lines:
+    Add a new receiving configuration editing __$SPLUNK_HOME/etc/apps/launcher/local/inputs.conf__ file, adding the following lines:
      ```
 	[splunktcp://9997]
-	connection_host = <forwarder ip>
+	connection_host = ip
 	```
     ###### Web GUI
     ```

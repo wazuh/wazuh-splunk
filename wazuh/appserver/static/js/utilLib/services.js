@@ -13,7 +13,7 @@
 define(function (require, exports, module) {
   const $ = require('jquery')
   const mvc = require('splunkjs/mvc')
-
+  const asyncReq = require('./promisedReq.js')
   /**
    * Encapsulates Splunk service functionality
    */
@@ -37,7 +37,7 @@ define(function (require, exports, module) {
           { "Content-Type": "application/json" }, (err, data) => {
             if (err)
               return reject(err)
-            return resolve(data)
+            resolve(data.data[0])
           }
         )
       })
@@ -66,22 +66,53 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Load API credential data and generates a Base URL
+     */
+    async loadCredentialData() {
+      try {
+        const jsonData = await this.get("storage/collections/data/credentials/")
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+        return { baseUrl, jsonData }
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
      * DELETE method
      * @param {String} url 
      */
     delete(url) {
       return new Promise((resolve, reject) => {
-
         this.service.del(url, {}, (err, data) => {
           if (err) {
-            console.error('error at deleting ', err)
             return reject(err)
           }
-          console.log('deleting')
           return resolve(data)
         })
       })
     }
+
+    /**
+     * Check if connection with API was successful
+     * @param {Object} jsonData 
+     */
+    async checkConnection() {
+      try {
+        const { baseUrl, jsonData } = await this.loadCredentialData()
+        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+        const parsedData = await asyncReq.promisedGet(endpoint)
+        return
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
   }
+
+
+  // Return class
   return service
 })
