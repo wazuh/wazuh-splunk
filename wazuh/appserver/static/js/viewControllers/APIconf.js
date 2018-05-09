@@ -141,6 +141,7 @@ require([
     const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Connection error', 1000, 250, 250)
     const errorWhenDeletingRow = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
     const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
+    const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
 
 
     /**
@@ -373,6 +374,7 @@ require([
           // Clear the form fields 
           $("#formCustomerInfo input[type=text]").val("")
         } else {
+          invalidFormatInputToast.show()
         }
       } catch (err) {
         console.error('error at submit ', err)
