@@ -30,6 +30,10 @@ require([
   ) {
 
     const service = new services()
+
+    /**
+     * Check connection before load the content
+     */
     service.checkConnection().then(() => {
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager logs list', 1000, 250, 250)
@@ -71,6 +75,5 @@ require([
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
     }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
-
   }
 )
