@@ -102,15 +102,6 @@ require([
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
-    // $('#input3').focusout( function (data) {
-    //   const text = $(this).children().children().children().val();
-    //   console.log(text)
-    //   if ( validUrl(text) ) {
-    //     console.log('valid url')
-    //   } else {
-    //     console.log('invalid url')
-    //   }
-    // })
 
     urlTokenModel.on('url:navigate', () => {
       defaultTokenModel.set(urlTokenModel.toJSON())
