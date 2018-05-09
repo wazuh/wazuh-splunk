@@ -139,6 +139,7 @@ require([
 
     // Toast definition
     const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Connection error', 1000, 250, 250)
+    const errorWhenDeletingRow = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
     const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
 
 
@@ -295,15 +296,18 @@ require([
     })
 
 
-    // 
-    // SUBMIT FORM DATA
-    //
-    // 
-    // DELETE BUTTON
-    //
+    /**
+     * Reject a promise error
+     * @param {object} err 
+     */
+    const errorHandleDeleting = async (err) => {
+      errorWhenDeletingRow.show()
+    }
 
-    // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(async () => {
+    /**
+     * Delete a record
+     */
+    const deleteRecord = async () => {
       try {
         // Get the value of the key ID field
         const tokens = mvc.Components.get("default")
@@ -314,9 +318,12 @@ require([
         // Run the search again to update the table
         search1.startSearch()
       } catch (err) {
-        console.error(err.message || err)
+        Promise.reject(err)
       }
-    })
+    }
+
+    // Call this function when the Delete Record button is clicked
+    $("#deleteRecord").click(() => deleteRecord().catch( (err) => errorHandleDeleting()))
     // 
     // SERVICE OBJECT
     //
