@@ -5,7 +5,7 @@
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
 [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
 
-###  Wazuh App for Splunk
+###  Wazuh v3.2.2 for Splunk Enterprise v7.1.0
 
 Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
@@ -14,9 +14,34 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 1. You need to install and setup a __Splunk Universal Forwarder__ where the Wazuh's manager is installed from the official Splunk platform. 
 2. An already installed Wazuh Manager with access to the API via HTTP (usually on port 55000).
 3. User and password (credentials) for api basic authentication.
-4. Set the indexers to `manager receiving`. (Check bottom).
+4. Set the indexers to `manager receiving`.
 
 ### Quick Install
+
+####  Setup  Receiving 
+
+##### Indexer or Search head
+1. Install our app Wazuh on each search head that you have.
+    ######  CLI mode:
+    ```
+    $SPLUNK_HOME/bin/splunk install app Wazuh.tgz
+    ```
+    ######  Web GUI:
+    ```
+    Apps -> Manage apps -> install app from file
+    ```
+* Note that this app creates a new index named `wazuh` by itself.
+
+2. Also this app puts Splunk service to listen forwarded data on port 9997. This port can be changed by editing _inputs.conf_ file in _local/_ subfolder. After the first installation let the index take its time to be feeded.
+
+2. Configure credentials:
+  - Open the Wazuh App for Splunk after installing it.
+  - Add API credentials in Configuration -> API
+    - API IP: Address of Wazuh API server.
+    - API Port: Port of Wazuh API server, usually 55000.
+    - Api User: Username for Wazuh API authorization, usually 'foo'.
+    - Api Password: Password for Wazuh API authorization, usually 'bar'.
+
 
 #### Forwarder
 
@@ -71,49 +96,8 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 	```
 7. Test on Splunk:
 	`index=wazuh *`
-####  Setup  Receiving (indexers)
-1. Specify the TCP port you want the receiver to listen on (the listening port, also known as the receiving port). For example, if you enter "9997," the receiver listens for connections from forwarders on port 9997. You can specify any unused port. You can use a tool like netstat to determine what ports are available on your system. Make sure the port you select is not in use by splunkweb or splunkd. 
-
-    ###### CLI mode:
-    Add a new receiving configuration editing __$SPLUNK_HOME/etc/apps/launcher/local/inputs.conf__ file, adding the following lines:
-     ```
-	[splunktcp://9997]
-	connection_host = ip
-	```
-    ###### Web GUI
-    ```
-	1. Click Settings > Forwarding and receiving.
-    2. At Configure receiving, click Add new.
-    3. Set the chosen port
-	```
-2. After this Splunk software starts listening for incoming data on the port you specified.
-***
-#### Search head
-1. Install our app Wazuh on each search head that you have.
-    ######  CLI mode:
-    ```
-    $SPLUNK_HOME/bin/splunk install app Wazuh.tgz
-    ```
-    ######  Web GUI:
-    ```
-    Apps -> Manage apps -> install app from file
-    ```
-* This app creates a new index named `wazuh`.
-
-2. Configure credentials:
-  - Open the Wazuh App for Splunk after installing it.
-  - Add API credentials in Configuration -> API
-    - API IP: Address of Wazuh API server.
-    - API Port: Port of Wazuh API server, usually 55000.
-    - Api User: Username for Wazuh API authorization, usually 'foo'.
-    - Api Password: Password for Wazuh API authorization, usually 'bar'.
-
 
 #### More info
-
-##### Forwarder config
-
-Configuration to install on distribuited environment. 
 
 More info at [Splunk Documentation](https://docs.splunk.com/Documentation/SplunkCloud/6.6.1/Forwarding/Enableareceiver)
 [Check our Github Repo.](https://github.com/wazuh/wazuh-splunk)
