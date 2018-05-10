@@ -32,7 +32,7 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
     ```
 * Note that this app creates a new index named `wazuh` by itself.
 
-2. Also this app puts Splunk service to listen forwarded data on port 9997. This port can be changed by editing _inputs.conf_ file in _local/_ subfolder. After the first installation let the index take its time to be feeded.
+2. Also this app puts Splunk service to listen forwarded data on port 9997. This port can be changed by editing _inputs.conf_ file in _default/_ subfolder. After the first installation let the index take its time to be feeded.
 
 2. Configure credentials:
   - Open the Wazuh App for Splunk after installing it.
