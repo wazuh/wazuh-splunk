@@ -1,7 +1,20 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.2.x - Splunk app v2.2.0
+## Wazuh v3.2.2 - Splunk Enterprise v7.1.0 - Splunk app v3.2.2
+### Added
+- Wazuh secured API connections are now supported ([#51](https://github.com/wazuh/wazuh-splunk/pull/51)).
+- Error notifications with toasts ([#54](https://github.com/wazuh/wazuh-splunk/pull/54)).
+- New agent group configuration tab added ([#50](https://github.com/wazuh/wazuh-splunk/pull/50)).
+- Inputs need to be validated before being submitted ([#52](https://github.com/wazuh/wazuh-splunk/pull/52)).
+### Changed
+- Styling improvements ([#57](https://github.com/wazuh/wazuh-splunk/pull/57)).
+- Users can't navigate over the app without API successful connection.
+- Controllers logic refactor.
+### Fixed
+- Navigation navbar background color fixed.
+
+## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 - Splunk app v2.2.0
 ### Added
 - New Manager Configuration tab ([#32](https://github.com/wazuh/wazuh-splunk/pull/32))
 - Dynamic tables([#37](https://github.com/wazuh/wazuh-splunk/pull/37))
@@ -28,7 +41,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Groups: now the content of each individual configuration file is showed up in pretty JSON format properly.
 - Splunk queries fixed:
   - Now a query is executed when a Splunk element such tables and tags are clicked
-## Wazuh v3.2.x - Splunk app v2.1.0
+## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 -  Splunk app v2.1.0
 ### Added
 - New Configuration tab:
   - Now the whole configuration that the app needs is made by inputs.
@@ -46,7 +59,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Fixed
 - Ruleset and Decoders search tabs now are able to filter properly.
 
-## Wazuh v3.2.x - Splunk app v2.0.0
+## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 -  Splunk app v2.0.0
 ### Added
 - New Manager Logs tab ([#6](https://github.com/wazuh/wazuh-splunk/pull/6)):
   - New module implemented to show Manager logs.

@@ -61,6 +61,18 @@ class manager(controllers.BaseController):
     # self.cached_search_column = ""
     # self.cached_direction = ""
 
+  @expose_page(must_login=False, methods=['GET'])
+  def check_connection(self, **kwargs):
+    opt_username = kwargs["user"]
+    opt_password = kwargs["pass"]
+    opt_base_url = kwargs["ip"]
+    opt_base_port = kwargs["port"]
+    url = opt_base_url + ":" + opt_base_port
+    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+    verify = False
+    request = requests.get(url, auth=auth, verify=verify).json()
+    result = json.dumps(request)
+    return result
     
   @expose_page(must_login=False, methods=['GET'])
   def status(self, **kwargs):
@@ -87,7 +99,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     request = requests.get(url + '/manager/info', auth=auth, verify=verify)
@@ -106,7 +118,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     request = requests.get(url + '/manager/configuration', auth=auth, verify=verify)
@@ -147,7 +159,7 @@ class manager(controllers.BaseController):
         sort_chain = '+level'
       if direction == 'desc':
         sort_chain = '-level'
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
 
@@ -162,7 +174,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     limit = kwargs["length"]
@@ -193,7 +205,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     limit = kwargs["length"]
@@ -244,7 +256,7 @@ class manager(controllers.BaseController):
     opt_password = kwargs["pass"]
     opt_base_url = kwargs["ip"]
     opt_base_port = kwargs["port"]
-    url = "http://" + opt_base_url + ":" + opt_base_port
+    url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
     limit = kwargs["length"]

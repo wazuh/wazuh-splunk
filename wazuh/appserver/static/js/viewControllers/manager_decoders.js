@@ -2,9 +2,9 @@
  * Wazuh app - Decoders view controller
  * Copyright (C) 2018 Wazuh, Inc.
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation either version 2 of the License, or
  * (at your option) any later version.
  *
  * Find more information about this on the LICENSE file.
@@ -43,7 +43,10 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/customViews/tableView.js"
+  "/static/app/wazuh/js/customViews/tableView.js",
+  "/static/app/wazuh/js/utilLib/services.js",
+  "/static/app/wazuh/js/customViews/toaster.js",
+  "/static/app/wazuh/js/utilLib/promisedReq.js"
 
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
@@ -82,14 +85,17 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    tableView
+    tableView,
+    services,
+    Toast,
+    promisedReq
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
     // TokenForwarder
   ) {
 
-    let pageLoading = true;
+    let pageLoading = true
 
 
     // 
@@ -97,215 +103,174 @@ require([
     //
 
     // Create token namespaces
-    const urlTokenModel = new UrlTokenModel();
-    mvc.Components.registerInstance('url', urlTokenModel);
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-    const service = mvc.createService({ owner: "nobody" });
-
-    urlTokenModel.on('url:navigate', function () {
-      defaultTokenModel.set(urlTokenModel.toJSON());
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens();
-      } else {
-        submittedTokenModel.clear();
-      }
-    });
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON());
-
-    function submitTokens() {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading });
-    }
-
-    function setToken(name, value) {
-      defaultTokenModel.set(name, value);
-      submittedTokenModel.set(name, value);
-    }
-
-    function unsetToken(name) {
-      defaultTokenModel.unset(name);
-      submittedTokenModel.unset(name);
-    }
-
-    $(document).ready(function () {
-      service.request(
-        "storage/collections/data/credentials/",
-        "GET",
-        null,
-        null,
-        null,
-        { "Content-Type": "application/json" }, null
-      ).done(function (data) {
-        const parsedData = JSON.parse(data);
-        setToken('baseip', parsedData[0].baseip);
-        setToken('baseport', parsedData[0].baseport);
-        setToken('ipapi', parsedData[0].ipapi);
-        setToken('portapi', parsedData[0].portapi);
-        setToken('userapi', parsedData[0].userapi);
-        setToken('passwordapi', parsedData[0].passapi);
-        setToken("loadedtokens", "true");
-        const url = window.location.href
-        const arr = url.split("/");
-        const baseUrl = arr[0] + "//" + arr[2]
-        const opts = {
-          pages: 10,
-          processing: true,
-          serverSide: true,
-          filterVisible: false,
-          columns: [
-            { "data": "name", 'orderable': true, defaultContent:"-"  },
-            { "data": "status", 'orderable': true, defaultContent:"-"  },
-            { "data": "path", 'orderable': true, defaultContent:"-"  },
-            { "data": "file", 'orderable': true, defaultContent:"-"  },
-            { "data": "position", 'orderable': true, defaultContent:"-"  }
-          ]
+    const urlTokenModel = new UrlTokenModel()
+    mvc.Components.registerInstance('url', urlTokenModel)
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    const service = new services()
+    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
+    service.checkConnection().then(() => {
+      urlTokenModel.on('url:navigate', () => {
+        defaultTokenModel.set(urlTokenModel.toJSON())
+        if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+          submitTokens()
+        } else {
+          submittedTokenModel.clear()
         }
-        const table = new tableView()
-        table.element($('#myTable'))
-        table.build(baseUrl + '/custom/wazuh/manager/decoders?ip=' + parsedData[0].ipapi + '&port=' + parsedData[0].portapi + '&user=' + parsedData[0].userapi + '&pass=' + parsedData[0].passapi, opts)
-        table.click(data => {
-          setToken("showDetails", "true")
-          setToken("Name", data.name)
-          setToken("Program", data.details.program_name || "-")
-          setToken("Path", data.path)
-          setToken("Order", data.details.order || "-")
-          setToken("Parent", data.details.parent || "-")
-          setToken("Regex", data.details.regex || "-")
-        })
       })
-    })
 
-    const search2 = new SearchManager({
-      "id": "search2",
-      "cancelOnUnload": true,
-      "sample_ratio": 1,
-      "earliest_time": "-24h@h",
-      "status_buckets": 0,
-      "search": "index=\"wazuh\" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
-      "latest_time": "now",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true, tokenNamespace: "submitted" });
+      // Initialize tokens
+      defaultTokenModel.set(urlTokenModel.toJSON())
 
+      const submitTokens = () => {
+        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+        FormUtils.submitForm({ replaceState: pageLoading })
+      }
 
-    //
-    // SPLUNK LAYOUT
-    //
+      const setToken = (name, value) => {
+        defaultTokenModel.set(name, value)
+        submittedTokenModel.set(name, value)
+      }
 
-    $('header').remove();
-    new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
-      .render()
-      .getContainerElement()
-      .appendChild($('.dashboard-body')[0]);
+      const unsetToken = (name) => {
+        defaultTokenModel.unset(name)
+        submittedTokenModel.unset(name)
+      }
 
-    //
-    // DASHBOARD EDITOR
-    //
+      /**
+       * Initializes data for rendering decoders table
+       */
+      const initializeRulesetTable = async () => {
+        try {
+          const { baseUrl, jsonData } = await service.loadCredentialData()
 
-    new Dashboard({
-      id: 'dashboard',
-      el: $('.dashboard-body'),
-      showTitle: true,
-      editable: true
-    }, { tokens: true }).render();
+          const opts = {
+            pages: 10,
+            processing: true,
+            serverSide: true,
+            filterVisible: false,
+            columns: [
+              { "data": "name", 'orderable': true, defaultContent: "-" },
+              { "data": "status", 'orderable': true, defaultContent: "-" },
+              { "data": "path", 'orderable': true, defaultContent: "-" },
+              { "data": "file", 'orderable': true, defaultContent: "-" },
+              { "data": "position", 'orderable': true, defaultContent: "-" }
+            ]
+          }
+          const table = new tableView()
+          table.element($('#myTable'))
+          table.build(baseUrl + '/custom/wazuh/manager/decoders?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.click(data => {
+            setToken("showDetails", "true")
+            setToken("Name", data.name)
+            setToken("Program", data.details.program_name || "-")
+            setToken("Path", data.path)
+            setToken("Order", data.details.order || "-")
+            setToken("Parent", data.details.parent || "-")
+            setToken("Regex", data.details.regex || "-")
+          })
+        } catch (err) {
+          errorToast.show()
+        }
+      }
 
+      $(document).ready(() => initializeRulesetTable())
 
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    // const element1 = new TableElement({
-    //   "id": "element1",
-    //   "count": 10,
-    //   "dataOverlayMode": "none",
-    //   "drilldown": "cell",
-    //   "fields": ["Name", "Program", "Fields", "Path"],
-    //   "percentagesRow": "false",
-    //   "rowNumbers": "false",
-    //   "totalsRow": "false",
-    //   "wrap": "false",
-    //   "managerid": "search1",
-    //   "el": $('#element1')
-    // }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    // element1.on("click", function (e) {
-    //   if (e.field !== undefined) {
-    //     e.preventDefault();
-    //     setToken("showDetails", TokenUtils.replaceTokenNames("true", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Name", TokenUtils.replaceTokenNames("$row.Name$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Program", TokenUtils.replaceTokenNames("$row.Program$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Fields", TokenUtils.replaceTokenNames("$row.Fields$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Path", TokenUtils.replaceTokenNames("$row.Path$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Position", TokenUtils.replaceTokenNames("$row.Position$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Parent", TokenUtils.replaceTokenNames("$row.Parent$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //     setToken("Regex", TokenUtils.replaceTokenNames("$row.Regex$", _.extend(submittedTokenModel.toJSON(), e.data)));
-    //   }
-    // });
-
-    const element2 = new HtmlElement({
-      "id": "element2",
-      "useTokens": true,
-      "el": $('#element2')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-    DashboardController.addReadyDep(element2.contentLoaded());
-
-    const element3 = new ChartElement({
-      "id": "element3",
-      "charting.axisY2.scale": "inherit",
-      "trellis.size": "medium",
-      "charting.chart.stackMode": "stacked",
-      "resizable": true,
-      "charting.layout.splitSeries.allowIndependentYRanges": "0",
-      "charting.drilldown": "none",
-      "charting.chart.nullValueMode": "gaps",
-      "charting.axisTitleY2.visibility": "visible",
-      "charting.chart": "area",
-      "trellis.scales.shared": "1",
-      "charting.layout.splitSeries": "0",
-      "charting.chart.style": "shiny",
-      "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-      "charting.axisTitleX.visibility": "collapsed",
-      "charting.axisTitleY.visibility": "visible",
-      "charting.axisX.scale": "linear",
-      "charting.chart.bubbleMinimumSize": "10",
-      "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-      "charting.axisY2.enabled": "0",
-      "trellis.enabled": "0",
-      "charting.legend.placement": "right",
-      "charting.chart.bubbleSizeBy": "area",
-      "charting.chart.bubbleMaximumSize": "50",
-      "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-      "charting.axisY.scale": "linear",
-      "charting.chart.showDataLabels": "none",
-      "charting.chart.sliceCollapsingThreshold": "0.01",
-      "managerid": "search2",
-      "el": $('#element3')
-    }, { tokens: true, tokenNamespace: "submitted" }).render();
+      const search2 = new SearchManager({
+        "id": "search2",
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "-24h@h",
+        "status_buckets": 0,
+        "search": "index=\"wazuh\" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
+        "latest_time": "now",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
 
 
-    // Initialize time tokens to default
-    if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' });
-    }
+      //
+      // SPLUNK LAYOUT
+      //
 
-    submitTokens();
+      $('header').remove()
+      new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
+        .render()
+        .getContainerElement()
+        .appendChild($('.dashboard-body')[0])
+
+      //
+      // DASHBOARD EDITOR
+      //
+
+      new Dashboard({
+        id: 'dashboard',
+        el: $('.dashboard-body'),
+        showTitle: true,
+        editable: true
+      }, { tokens: true }).render()
+
+      const element2 = new HtmlElement({
+        "id": "element2",
+        "useTokens": true,
+        "el": $('#element2')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      DashboardController.addReadyDep(element2.contentLoaded())
+
+      const element3 = new ChartElement({
+        "id": "element3",
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "stacked",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "area",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "collapsed",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "search2",
+        "el": $('#element3')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-    //
-    // DASHBOARD READY
-    //
+      // Initialize time tokens to default
+      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+        defaultTokenModel.set({ earliest: '0', latest: '' })
+      }
 
-    DashboardController.ready();
-    pageLoading = false;
+      submitTokens()
 
+
+      //
+      // DASHBOARD READY
+      //
+
+      DashboardController.ready()
+      pageLoading = false
+    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
   }
-);
+)
 // ]]>
