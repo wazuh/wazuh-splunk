@@ -41,46 +41,34 @@
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <h3>API configuration</h3>
 
-    <form id="formCustomerInfo">
+    <div>
+      <form id="formCustomerInfo">
 
-      <div class="fieldset">
+        <div class="fieldset">
 
-        <div class="input input-text" id="input3">
-          <label>URL</label>
-        </div>
-        <div class="input input-text" id="input4">
-          <label>Port</label>
-        </div>
-        <div class="input input-text" id="input5">
-          <label>Username</label>
-        </div>
-        <div class="input input-text" id="input6">
-          <label>Password</label>
-        </div>
-        <div class="form-submit" id="search_btn">
-          <button class="btn btn-primary submit">Submit</button>
-        </div>
+          <div class="input input-text" id="input3">
+            <label>URL</label>
+          </div>
+          <div class="input input-text" id="input4">
+            <label>Port</label>
+          </div>
+          <div class="input input-text" id="input5">
+            <label>Username</label>
+          </div>
+          <div class="input input-text" id="input6">
+            <label>Password</label>
+          </div>
+          <div class="form-submit" id="search_btn">
+            <button class="btn btn-primary submit">Submit</button>
+          </div>
+
+      </form>
+
       </div>
 
-      <div>
-        <div class="input input-text" id="input7">
-          <label>Remove credentials</label>
-        </div>
-        <div class="form-submit" id="search_btn">
-          <button id="deleteRecord" class="btn btn-primary submit">Clear</button>
-        </div>
-      </div>
-    </form>
-
+    </div>
     <div id="row1" class="dashboard-row dashboard-row1">
-      <div>
-        <div class="input input-text">
-          <label>Check connection</label>
-        </div>
-        <div>
-          <button id="checkConnection" class="btn btn-primary">Check</button>
-        </div>
-      </div>
+
       <div id="panel1" class="dashboard-cell" style="width: 100%;">
         <div class="panel-element-row">
           <div id="element1" class="dashboard-element table" style="width: 100%">
@@ -91,6 +79,11 @@
           </div>
         </div>
       </div>
+    </div>
+    <div id="row2" class="dashboard-row dashboard-row2">
+
+      <button id="deleteRecord" class="btn btn-primary">Clear credentials</button>
+      <button id="checkConnection" class="btn btn-primary">Check connection</button>
     </div>
   </div>
   <div id='dependencies'>
