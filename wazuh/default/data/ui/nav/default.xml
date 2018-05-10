@@ -1,4 +1,4 @@
-<nav search_view="search" color="#218BC6">
+<nav search_view="search" color="#989ba0 !important">
   <collection label="Overview">
   <a href="general">General</a> 
   <a href="overview_fim">Overview FIM</a> 
