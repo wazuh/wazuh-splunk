@@ -22,9 +22,16 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 
 ##### Indexer or Search head
 1. Install our app Wazuh on each search head that you have.
+
+	Before installing a new app version, please proceed to delete an already existing previous version if exists:
+
+	```
+    # rm $SPLUNK_HOME/etc/apps/wazuh/ -rf
+    ```
+	Then install the new app:
     ######  CLI mode:
     ```
-    $SPLUNK_HOME/bin/splunk install app Wazuh.tgz
+    $SPLUNK_HOME/bin/splunk install app v3.2.2-7.1.0.tgz
     ```
     ######  Web GUI:
     ```
