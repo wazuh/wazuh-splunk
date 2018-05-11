@@ -14,9 +14,9 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 ],
   function (
     mvc,
@@ -41,7 +41,7 @@ require([
        */
       const globalView = async (globalObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/global.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           $('#jsonViewOutput').text(globalObj.global.jsonout_output)
@@ -65,7 +65,7 @@ require([
        */
       const clusterView = async (clusterObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/cluster.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/cluster.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -88,7 +88,7 @@ require([
        */
       const syscheckView = async (syscheckObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/syscheck.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/syscheck.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -126,7 +126,7 @@ require([
        */
       const rootcheckView = async (rootcheckView) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/rootcheck.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/rootcheck.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -146,7 +146,7 @@ require([
        */
       const authView = async (authObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/auth.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/auth.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -173,7 +173,7 @@ require([
        */
       const rulesetView = async (rulesetObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/ruleset.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/ruleset.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -191,7 +191,7 @@ require([
        */
       const commandView = async (commandObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/command.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/command.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -228,7 +228,7 @@ require([
        */
       const remoteView = async (remoteObj) => {
         try {
-          globalUrl = "/static/app/wazuh/views/managerConfigurationViews/remote.html"
+          globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/remote.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
@@ -263,7 +263,7 @@ require([
       const loadConfigurationContent = async () => {
         try {
           const { baseUrl, jsonData } = await service.loadCredentialData()
-          const endPoint = baseUrl + '/custom/wazuh/manager/configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+          const endPoint = baseUrl + '/custom/SplunkAppForWazuh/manager/configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
           const jsonObj = await promisedReq.promisedGet(endPoint)
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
@@ -277,7 +277,7 @@ require([
           $('#authPurge').text(jsonObj.auth.purge)
           $('#authForceInsert').text(jsonObj.auth.force_insert)
           // First load Global view by default
-          let globalUrl = "/static/app/wazuh/views/managerConfigurationViews/global.html"
+          let globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/global.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           $('#jsonViewOutput').text(jsonObj.global.jsonout_output)
           $('#logAll').text(jsonObj.global.logall)
@@ -330,6 +330,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
   }
 )

@@ -42,9 +42,9 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -703,7 +703,7 @@ require([
       element11.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | chart sparkline count by rule.description | sort - count | head 5"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | chart sparkline count by rule.description | sort - count | head 5"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -723,7 +723,7 @@ require([
       element12.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.level\">=9 | table agent.name, rule.level, rule.description"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.level\">=9 | table agent.name, rule.level, rule.description"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -743,7 +743,7 @@ require([
       element13.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -807,7 +807,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
   }
 )
 // ]]>

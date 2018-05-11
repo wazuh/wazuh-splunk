@@ -42,9 +42,9 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -468,7 +468,7 @@ require([
       element1.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -499,7 +499,7 @@ require([
       element2.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -530,7 +530,7 @@ require([
       element3.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" "
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" "
           utils.redirect(url, false, "_blank")
         }
       })
@@ -775,7 +775,7 @@ require([
       element13.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"agent.name\"=\"*\" | top \"agent.name\" showcount=false showperc=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"agent.name\"=\"*\" | top \"agent.name\" showcount=false showperc=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -806,7 +806,7 @@ require([
       element14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"rule.pci_dss{}\"=\"*\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"rule.pci_dss{}\"=\"*\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -837,7 +837,7 @@ require([
       element15.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -868,7 +868,7 @@ require([
       element16.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.path\"=* | top \"syscheck.path\" showcount=false showperc=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.path\"=* | top \"syscheck.path\" showcount=false showperc=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -888,7 +888,7 @@ require([
       element17.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -932,7 +932,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
   }
 )
 // ]]>

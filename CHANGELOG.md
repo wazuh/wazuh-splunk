@@ -3,12 +3,12 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ## Wazuh v3.2.2 - Splunk Enterprise v7.1.0 - Splunk app v3.2.2
 ### Added
-- Wazuh secured API connections are now supported ([#51](https://github.com/wazuh/wazuh-splunk/pull/51)).
-- Error notifications with toasts ([#54](https://github.com/wazuh/wazuh-splunk/pull/54)).
-- New agent group configuration tab added ([#50](https://github.com/wazuh/wazuh-splunk/pull/50)).
-- Inputs need to be validated before being submitted ([#52](https://github.com/wazuh/wazuh-splunk/pull/52)).
+- Wazuh secured API connections are now supported ([#51](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/51)).
+- Error notifications with toasts ([#54](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/54)).
+- New agent group configuration tab added ([#50](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/50)).
+- Inputs need to be validated before being submitted ([#52](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/52)).
 ### Changed
-- Styling improvements ([#57](https://github.com/wazuh/wazuh-splunk/pull/57)).
+- Styling improvements ([#57](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/57)).
 - Users can't navigate over the app without API successful connection.
 - Controllers logic refactor.
 ### Fixed
@@ -16,8 +16,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 - Splunk app v2.2.0
 ### Added
-- New Manager Configuration tab ([#32](https://github.com/wazuh/wazuh-splunk/pull/32))
-- Dynamic tables([#37](https://github.com/wazuh/wazuh-splunk/pull/37))
+- New Manager Configuration tab ([#32](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/32))
+- Dynamic tables([#37](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/37))
   - Now the app uses dynamic tables improving the pagination and filtering.
   - Backend endpoints were adapted to pagination and better interaction with Wazuh API.
 
@@ -61,19 +61,19 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 -  Splunk app v2.0.0
 ### Added
-- New Manager Logs tab ([#6](https://github.com/wazuh/wazuh-splunk/pull/6)):
+- New Manager Logs tab ([#6](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/6)):
   - New module implemented to show Manager logs.
   - Data is fetched directly from Wazuh API.
-- Back-end ([#14](https://github.com/wazuh/wazuh-splunk/pull/14))
+- Back-end ([#14](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/14))
   - Now the Splunk App has its own backend in order to modularize any REST routes it might need.
   -  Several code refactoring for a better handling of possible use cases.
   -  All queries along the App where bootstrapped in order to use the new back-end instead using indexes.
 
 ### Changed
-- Ruleset and Decoders data will be fetched from API ([#12](https://github.com/wazuh/wazuh-splunk/pull/12)):
+- Ruleset and Decoders data will be fetched from API ([#12](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/12)):
   - Now the app will avoid indexing Ruleset and Decoders data.
-- Manager info will be fetched from API ([#14](https://github.com/wazuh/wazuh-splunk/pull/14)):
+- Manager info will be fetched from API ([#14](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/14)):
   - Now the app will avoid indexing Manager info data.
-- Agents data will be fetched from API ([#15](https://github.com/wazuh/wazuh-splunk/pull/15)):
+- Agents data will be fetched from API ([#15](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/15)):
   - Now the app will avoid indexing Agents info data.
 - And the best thing, it's no longer needed any extra index and the TA-wazuh-api-connector anymore.

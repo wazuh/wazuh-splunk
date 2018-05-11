@@ -38,7 +38,7 @@ logger = setup_logger(logging.DEBUG)
 
 class agents(controllers.BaseController):
 
-    # /custom/wazuh/agents/info/:id
+    # /custom/SplunkAppForWazuh/agents/info/:id
     @expose_page(must_login=False, methods=['GET'])
     def group_configuration(self,**kwargs):
         group_id = kwargs['id']
@@ -54,7 +54,7 @@ class agents(controllers.BaseController):
         result = json.dumps(files)
         return result
 
-    # /custom/wazuh/agents/info/:id
+    # /custom/SplunkAppForWazuh/agents/info/:id
     @expose_page(must_login=False, methods=['GET'])
     def info(self,**kwargs):
         agent_id = kwargs['id']
@@ -70,7 +70,7 @@ class agents(controllers.BaseController):
         result = json.dumps(files)
         return result
 
-    # /custom/wazuh/agents/filescontent?id=idgroup&filename=agent.conf
+    # /custom/SplunkAppForWazuh/agents/filescontent?id=idgroup&filename=agent.conf
     @expose_page(must_login=False, methods=['GET'])
     def filescontent(self,**kwargs):
         group_id = kwargs['id']
@@ -87,7 +87,7 @@ class agents(controllers.BaseController):
         # files = json.dumps(files)
         return json.dumps([{'data':files}], sort_keys=True,indent=4, separators=(',', ': '))
 
-    # /custom/wazuh/agents/files?id=idgroup
+    # /custom/SplunkAppForWazuh/agents/files?id=idgroup
     @expose_page(must_login=False, methods=['GET'])
     def files(self,**kwargs):
         group_id = kwargs["id"]
@@ -118,7 +118,7 @@ class agents(controllers.BaseController):
         result = json.dumps(request)
         return result
 
-    # /custom/wazuh/agents/groups/:id
+    # /custom/SplunkAppForWazuh/agents/groups/:id
     @expose_page(must_login=False, methods=['GET'])
     def check_agents_groups(self,**kwargs):
         group_id = kwargs["id"]
@@ -133,7 +133,7 @@ class agents(controllers.BaseController):
         result = json.dumps(request)
         return result
 
-    # /custom/wazuh/agents/groups/:id
+    # /custom/SplunkAppForWazuh/agents/groups/:id
     @expose_page(must_login=False, methods=['GET'])
     def groups(self,**kwargs):
         group_id = kwargs["id"]
@@ -175,7 +175,7 @@ class agents(controllers.BaseController):
         result = json.dumps(request)
         return result
 
-    # /custom/wazuh/agents/summary
+    # /custom/SplunkAppForWazuh/agents/summary
     @expose_page(must_login=False, methods=['GET'])
     def summary(self, **kwargs):
         opt_username = kwargs["user"]
@@ -194,7 +194,7 @@ class agents(controllers.BaseController):
         result = json.dumps(data)
         return result
 
-    # /custom/wazuh/agents/agentschecks
+    # /custom/SplunkAppForWazuh/agents/agentschecks
     @expose_page(must_login=False, methods=['GET'])
     def agents_checks(self, **kwargs):
         opt_username = kwargs["user"]
@@ -256,7 +256,7 @@ class agents(controllers.BaseController):
             results.append(data)
         return json.dumps(results)
     
-    # /custom/wazuh/agents/agentschecks
+    # /custom/SplunkAppForWazuh/agents/agentschecks
     @expose_page(must_login=False, methods=['GET'])
     def agents(self, **kwargs):
         opt_username = kwargs["user"]
@@ -370,7 +370,7 @@ class agents(controllers.BaseController):
 
         return json.dumps(response)
 
-    # /custom/wazuh/agents/agents_name
+    # /custom/SplunkAppForWazuh/agents/agents_name
     @expose_page(must_login=False, methods=['GET'])
     def agents_name(self, **kwargs):
         opt_username = kwargs["user"]

@@ -43,10 +43,10 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/customViews/tableView.js",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
@@ -163,7 +163,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myTable'))
-          table.build(baseUrl + '/custom/wazuh/manager/rules?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/rules?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
           table.click(function (data) {
             setToken("showDetails", "true")
             setToken("id", data.id || "-")
@@ -324,7 +324,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
 
   }
 )

@@ -13,9 +13,9 @@
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
 
 
 ],
@@ -40,7 +40,7 @@ require([
        */
       const fileIntegrityContent = async (data) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/fileIntegrity.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/fileIntegrity.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           $('#fileIntegrityDisabledView').text(data.disabled)
           $('#fileIntegrityFrequencyView').text(data.frequency)
@@ -102,7 +102,7 @@ require([
        */
       const policyMonitoring = async (data) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/policyMonitoring.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/policyMonitoring.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
           $('#policyMonitoringDisabledView').text(data.disabled)
@@ -195,7 +195,7 @@ require([
        */
       const sysCollector = async (data) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/syscollector.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/syscollector.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           $('#syscollectorDisabledView').text(data.disabled)
           $('#syscollectorHardwareView').text(data.hardware)
@@ -214,7 +214,7 @@ require([
        */
       const openSCAP = async (data) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/openSCAP.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/openSCAP.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           $('#openscapDisabledView').text(data.disabled)
           $('#openscapIntervalView').text(data.interval)
@@ -231,7 +231,7 @@ require([
        */
       const cisCat = async (data) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/ciscat.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/ciscat.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           $('#ciscatPathView').text(data.ciscat_path)
           $('#ciscatDisabledView').text(data.disabled)
@@ -250,7 +250,7 @@ require([
        */
       const logCollection = async (files) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/logCollection.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/logCollection.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           for (const item of files) {
             $('#logCollectionFiles').append(
@@ -317,7 +317,7 @@ require([
        */
       const remoteCommands = async (files) => {
         try {
-          const globalUrl = "/static/app/wazuh/views/agentConfigurationViews/remoteCommand.html"
+          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/remoteCommand.html"
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
           for (const item of files) {
@@ -569,15 +569,15 @@ require([
       const loadData = async (id) => {
         try {
           const { baseUrl, jsonData } = await service.loadCredentialData()
-          let endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + id
+          let endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + id
           let parsedJson = await promisedReq.promisedGet(endPoint)
-          const agentListEndpoint = baseUrl + '/custom/wazuh/agents/agents_name?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+          const agentListEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/agents_name?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
           await agentList(agentListEndpoint)
 
           let group = parsedJson.group
           let groupInformationEndpoint = ''
           if (typeof group !== 'undefined') {
-            groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
+            groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
           } else {
             $('#dynamicContent').html(
@@ -588,14 +588,14 @@ require([
           }
 
           $('#agentList').on('change', async function () {
-            endPoint = baseUrl + '/custom/wazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + this.value
+            endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + this.value
             parsedJson = await promisedReq.promisedGet(endPoint)
             group = parsedJson.group
 
             if (typeof group !== 'undefined') {
               $('#dynamicList').hide()
               $('#dynamicContent').empty()
-              groupInformationEndpoint = baseUrl + '/custom/wazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
+              groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
               await loadAgentConfig(groupInformationEndpoint)
               $('#dynamicList').show()
 
@@ -628,6 +628,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0]);
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
   }
 )

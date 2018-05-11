@@ -1,9 +1,9 @@
 # Wazuh App for Splunk
 
 [![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://goo.gl/forms/M2AoZC4b2R9A9Zy12)
-[![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)
+[![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/SplunkAppForWazuh)
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
-[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
+[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://SplunkAppForWazuh.com)
 
 ###  Wazuh v3.2.2 for Splunk Enterprise v7.1.0
 
@@ -100,5 +100,5 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 #### More info
 
 More info at [Splunk Documentation](https://docs.splunk.com/Documentation/SplunkCloud/6.6.1/Forwarding/Enableareceiver)
-[Check our Github Repo.](https://github.com/wazuh/wazuh-splunk)
+[Check our Github Repo.](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk)
 

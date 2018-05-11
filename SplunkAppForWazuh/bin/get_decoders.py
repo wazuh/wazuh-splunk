@@ -10,7 +10,7 @@ import requests
 import json
 
 try:
-    request = requests.get(sys.argv[1]+":"+sys.argv[2]+"/en-US/custom/wazuh/manager/decoders?ip="+sys.argv[3]+"&port="+sys.argv[4]+"&user="+sys.argv[5]+"&pass="+sys.argv[6])
+    request = requests.get(sys.argv[1]+":"+sys.argv[2]+"/en-US/custom/SplunkAppForWazuh/manager/decoders?ip="+sys.argv[3]+"&port="+sys.argv[4]+"&user="+sys.argv[5]+"&pass="+sys.argv[6])
     data = json.loads(request.text)
 except Exception as err:
         import traceback

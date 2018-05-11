@@ -57,7 +57,7 @@ logger = setup_logger(logging.DEBUG)
 class manager(controllers.BaseController):
   def __init__(self):
     controllers.BaseController.__init__(self)
-    # /custom/wazuh/manager/status
+    # /custom/SplunkAppForWazuh/manager/status
     # self.cached_search_column = ""
     # self.cached_direction = ""
 
@@ -92,7 +92,7 @@ class manager(controllers.BaseController):
     result = json.dumps(data)
     return result
       
-  # /custom/wazuh/manager/info
+  # /custom/SplunkAppForWazuh/manager/info
   @expose_page(must_login=False, methods=['GET'])
   def info(self, **kwargs):
     opt_username = kwargs["user"]
@@ -111,7 +111,7 @@ class manager(controllers.BaseController):
     result = json.dumps(data)
     return result
 
-  # /custom/wazuh/manager/configuration
+  # /custom/SplunkAppForWazuh/manager/configuration
   @expose_page(must_login=False, methods=['GET'])
   def configuration(self, **kwargs):
     opt_username = kwargs["user"]
@@ -126,7 +126,7 @@ class manager(controllers.BaseController):
     result = json.dumps(manager_config)
     return result
 
-  # /custom/wazuh/manager/logs
+  # /custom/SplunkAppForWazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
   def logs(self, **kwargs):
     opt_username = kwargs["user"]
@@ -167,7 +167,7 @@ class manager(controllers.BaseController):
     result = json.dumps(request)
     return result
 
-  # /custom/wazuh/manager/groups
+  # /custom/SplunkAppForWazuh/manager/groups
   @expose_page(must_login=False, methods=['GET'])
   def groups(self, **kwargs):
     opt_username = kwargs["user"]
@@ -198,7 +198,7 @@ class manager(controllers.BaseController):
     result = json.dumps(request)
     return result
 
-  # /custom/wazuh/manager/rules
+  # /custom/SplunkAppForWazuh/manager/rules
   @expose_page(must_login=False, methods=['GET'])
   def rules(self, **kwargs):
     opt_username = kwargs["user"]
@@ -249,7 +249,7 @@ class manager(controllers.BaseController):
     result = json.dumps(request)
     return result
 
-  # /custom/wazuh/manager/decoders
+  # /custom/SplunkAppForWazuh/manager/decoders
   @expose_page(must_login=False, methods=['GET'])
   def decoders(self, **kwargs):
     opt_username = kwargs["user"]

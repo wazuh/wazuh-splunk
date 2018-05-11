@@ -43,9 +43,9 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -441,7 +441,7 @@ require([
       element1.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest"
+          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -472,7 +472,7 @@ require([
       element2.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/wazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest"
+          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -503,7 +503,7 @@ require([
       element3.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest"
+          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -794,7 +794,7 @@ require([
       element13.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)"
+          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -814,7 +814,7 @@ require([
       element14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/wazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
+          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -878,7 +878,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
 
   }
 )

@@ -103,7 +103,7 @@ define(function (require, exports, module) {
     async checkConnection() {
       try {
         const { baseUrl, jsonData } = await this.loadCredentialData()
-        const endpoint = baseUrl + '/custom/wazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+        const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
         const parsedData = await asyncReq.promisedGet(endpoint)
         return
       } catch (err) {

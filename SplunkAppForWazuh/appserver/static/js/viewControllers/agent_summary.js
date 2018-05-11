@@ -13,10 +13,10 @@
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/wazuh/js/customViews/agentsTable.js",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/customViews/agentsTable.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 
 ],
   function (
@@ -66,7 +66,7 @@ require([
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
 
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
   }
 )
 

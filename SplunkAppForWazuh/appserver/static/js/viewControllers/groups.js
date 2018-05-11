@@ -14,10 +14,10 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/wazuh/js/customViews/tableView.js",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 ],
   function (
     mvc,
@@ -47,7 +47,7 @@ require([
       const clickOnFile = async (data, baseUrl, groupName, jsonData) => {
         try {
 
-          const dataFile = await promisedReq.promisedGet(baseUrl + '/custom/wazuh/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi)
+          const dataFile = await promisedReq.promisedGet(baseUrl + '/custom/SplunkAppForWazuh/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi)
           $('#precode').empty()
           $('#precode').prepend('<pre style="height: 100%" class="wz-pre json-beautifier jsonbeauty scroll "><code>' + JSON.stringify(dataFile, null, 2) + '</code></pre>')
           $('#row3').show(200)
@@ -78,9 +78,9 @@ require([
             ]
           }
           const groupName = data.name
-          tableFiles.build(baseUrl + '/custom/wazuh/agents/files?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + data.name, optsFiles)
-          const agentsUrl = baseUrl + '/custom/wazuh/agents/groups?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + data.name
-          const parsedData = await promisedReq.promisedGet(baseUrl + '/custom/wazuh/agents/check_agents_groups?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + data.name)
+          tableFiles.build(baseUrl + '/custom/SplunkAppForWazuh/agents/files?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + data.name, optsFiles)
+          const agentsUrl = baseUrl + '/custom/SplunkAppForWazuh/agents/groups?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + data.name
+          const parsedData = await promisedReq.promisedGet(baseUrl + '/custom/SplunkAppForWazuh/agents/check_agents_groups?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + data.name)
           if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
             $('#panel3').empty()
             $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>last_keepalive</th></tr></thead></table>')
@@ -145,7 +145,7 @@ require([
           }
           const tableGroups = new tableView()
           tableGroups.element($('#myGroupTable'))
-          tableGroups.build(baseUrl + '/custom/wazuh/manager/groups?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, optsGroups)
+          tableGroups.build(baseUrl + '/custom/SplunkAppForWazuh/manager/groups?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, optsGroups)
           $('#row2').hide()
           $('#row3').hide()
           tableFiles.element($('#myFilesTable'))
@@ -167,6 +167,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
   }
 )

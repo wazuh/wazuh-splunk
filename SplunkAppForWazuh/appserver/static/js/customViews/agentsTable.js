@@ -61,7 +61,7 @@ define(function (require, exports, module) {
      * @param {Object} opt: options
      */
     build(urlArg) {
-      const url = urlArg.baseUrl + '/custom/wazuh/agents/agents?ip=' + urlArg.ipApi + '&port=' + urlArg.portApi + '&user=' + urlArg.userApi + '&pass=' + urlArg.passApi
+      const url = urlArg.baseUrl + '/custom/SplunkAppForWazuh/agents/agents?ip=' + urlArg.ipApi + '&port=' + urlArg.portApi + '&user=' + urlArg.userApi + '&pass=' + urlArg.passApi
       super.build(url, this.opts)
     }
   }

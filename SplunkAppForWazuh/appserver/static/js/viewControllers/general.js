@@ -43,9 +43,9 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/wazuh/js/utilLib/services.js",
-  "/static/app/wazuh/js/customViews/toaster.js",
-  "/static/app/wazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",
   // "splunkjs/mvc/tokenforwarder"
@@ -435,7 +435,7 @@ require([
       element1.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=\"wazuh\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -467,7 +467,7 @@ require([
       element2.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 "
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 "
           utils.redirect(url, false, "_blank")
         }
       })
@@ -498,7 +498,7 @@ require([
       element3.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -529,7 +529,7 @@ require([
       element4.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -730,7 +730,7 @@ require([
       element10.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -761,7 +761,7 @@ require([
       element11.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -792,7 +792,7 @@ require([
       element12.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -823,7 +823,7 @@ require([
       element13.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -843,7 +843,7 @@ require([
       element14.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/wazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 "
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 "
           utils.redirect(url, false, "_blank")
         }
       })
@@ -887,7 +887,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/wazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
 
   }
 )
