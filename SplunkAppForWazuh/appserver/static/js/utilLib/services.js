@@ -74,6 +74,8 @@ define(function (require, exports, module) {
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
+        console.log('jsonData',jsonData)
+        console.log('url',url)
         return { baseUrl, jsonData }
       } catch (err) {
         console.error("loadCredentialData", err.message || err)
@@ -111,9 +113,7 @@ define(function (require, exports, module) {
         return Promise.reject(err)
       }
     }
-
   }
-
 
   // Return class
   return service

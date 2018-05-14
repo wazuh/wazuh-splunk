@@ -11,42 +11,22 @@
  */
 require([
   "splunkjs/mvc",
-  "splunkjs/mvc/utils",
   "splunkjs/mvc/tokenutils",
   "underscore",
   "jquery",
-  "splunkjs/mvc/simplexml",
   "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simpleform/input/text",
-  "splunkjs/mvc/simpleform/input/submit",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
-
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
 ],
   function (
     mvc,
-    utils,
     TokenUtils,
     _,
     $,
-    DashboardController,
     LayoutView,
     Dashboard,
-    TableElement,
-    FormUtils,
-    TextInput,
-    SubmitButton,
-    SearchManager,
-    UrlTokenModel,
     asyncReq,
     services,
     Toast
@@ -55,46 +35,7 @@ require([
     // ...UrlTokenModel, 
     // TokenForwarder
   ) {
-
-    let pageLoading = true
-    // 
-    // TOKENS
-    //
-    // Create token namespaces
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
-    $('li > a').removeAttr('data-selected')
-    $('li > a').attr('myattr')
-
-    urlTokenModel.on('url:navigate', () => {
-      defaultTokenModel.set(urlTokenModel.toJSON())
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens()
-      } else {
-        submittedTokenModel.clear()
-      }
-    })
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON())
-
-    const submitTokens = () => {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading })
-    }
-
-    const setToken = (name, value) => {
-      defaultTokenModel.set(name, value)
-      submittedTokenModel.set(name, value)
-    }
-
-    const unsetToken = (name) => {
-      defaultTokenModel.unset(name)
-      submittedTokenModel.unset(name)
-    }
 
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
@@ -108,7 +49,6 @@ require([
     const errorWhenDeletingRow = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
     const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
     const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
-
 
     /**
      * Check if an URL is valid or not
@@ -160,7 +100,7 @@ require([
      */
     const firstLoad = async () => {
       try {
-        const data = await service.get("storage/collections/data/credentials/")
+        await service.get("storage/collections/data/credentials/")
         await showStatusConnectionToast()
       } catch (err) {
         console.error('error at loading data', err.message || err)
@@ -170,25 +110,6 @@ require([
      * On document ready
      */
     $(document).ready(() => firstLoad())
-
-    /**
-     * Searches and draws for already stored credentials
-     */
-    const search1 = new SearchManager({
-      "id": "search1",
-      "status_buckets": 0,
-      "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as URL, portapi as Port, userapi as Username",
-      "latest_time": "now",
-      "earliest_time": "-24h@h",
-      "cancelOnUnload": true,
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true })
 
     $('header').remove()
     new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
@@ -204,64 +125,8 @@ require([
       id: 'dashboard',
       el: $('.dashboard-body'),
       showTitle: true,
-      editable: true
+      editable: false
     }, { tokens: true }).render()
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    const element1 = new TableElement({
-      "id": "element1",
-      "drilldown": "none",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-    //
-    // VIEWS: FORM INPUTS
-    //
-
-    const input3 = new TextInput({
-      "id": "input3",
-      "value": "$form.url$",
-      "el": $('#input3')
-    }, { tokens: true }).render()
-
-    input3.on("change", (newValue) => {
-      FormUtils.handleValueChange(input3)
-    })
-
-    const input4 = new TextInput({
-      "id": "input4",
-      "value": "$form.apiport$",
-      "el": $('#input4')
-    }, { tokens: true }).render()
-
-    input4.on("change", (newValue) => {
-      FormUtils.handleValueChange(input4)
-    })
-
-    const input5 = new TextInput({
-      "id": "input5",
-      "value": "$form.apiuser$",
-      "el": $('#input5')
-    }, { tokens: true }).render()
-
-    input5.on("change", (newValue) => {
-      FormUtils.handleValueChange(input5)
-    })
-
-    const input6 = new TextInput({
-      "id": "input6",
-      "value": "$form.apipass$",
-      "el": $('#input6')
-    }, { tokens: true }).render()
-
-    input6.on("change", (newValue) => {
-      FormUtils.handleValueChange(input6)
-    })
-
 
     /**
      * Reject a promise error
@@ -290,28 +155,17 @@ require([
     }
 
     // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(() => deleteRecord().catch( (err) => errorHandleDeleting()))
+    $("#deleteRecord").click(() => deleteRecord().catch((err) => errorHandleDeleting()))
     // 
     // SERVICE OBJECT
     //
-
-    // Create a service object using the Splunk SDK for JavaScript
-    // to send REST requests
-
-    const submit = new SubmitButton({
-      id: 'submit',
-      el: $('#search_btn')
-    }, { tokens: true }).render()
 
     /**
      * Check connection when click on button
      */
     $('#checkConnection').click(() => showStatusConnectionToast())
 
-    /**
-     *  Click on submit button
-     */
-    submit.on("submit", async () => {
+    const clickOnSubmit = async () => {
       try {
         // When the Submit button is clicked, get all the form fields by accessing token values
         const tokens = mvc.Components.get("default")
@@ -345,23 +199,12 @@ require([
       } catch (err) {
         console.error('error at submit ', err)
       }
-    })
-
-    // Initialize time tokens to default
-    if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' })
     }
 
-    if (!_.isEmpty(urlTokenModel.toJSON())) {
-      submitTokens()
-    }
-
-    //
-    // DASHBOARD READY
-    //
-
-    DashboardController.ready()
-    pageLoading = false
+    /**
+     * On submit click
+     */
+    // submit.on("submit", async () => clickOnSubmit())
 
   }
 )
