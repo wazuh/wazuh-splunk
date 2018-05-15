@@ -11,7 +11,6 @@
  */
 require([
   "splunkjs/mvc",
-  "splunkjs/mvc/tokenutils",
   "underscore",
   "jquery",
   "splunkjs/mvc/layoutview",
@@ -22,7 +21,6 @@ require([
 ],
   function (
     mvc,
-    TokenUtils,
     _,
     $,
     LayoutView,
@@ -31,12 +29,8 @@ require([
     services,
     Toast
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
     const service = new services()
-
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -96,16 +90,61 @@ require([
     }
 
     /**
+     * Draws the API list
+     * @param {Array} apis 
+     */
+    const drawApiList = async apis => {
+      try {
+        const { baseUrl, jsonData } = await service.loadCredentialData()
+        console.log('baseurl', baseUrl)
+        console.log('apis', jsonData)
+        if (jsonData && jsonData.length > 0) {
+          $('#apiList').empty()
+          $('#apiList').html(
+            '<table class="highlight"> ' +
+            '  <thead> ' +
+            '    <tr> ' +
+            '        <th>URL</th> ' +
+            '        <th>Port</th> ' +
+            '        <th>Username</th> ' +
+            '        <th>Actions</th> ' +
+            '    </tr> ' +
+            '  </thead> ' +
+            '  <tbody id="tableBody"> ' +
+            '  </tbody> ' +
+            '</table> '
+          )
+          for (const api of jsonData) {
+            $('#tableBody').append(
+              '    <tr> ' +
+              '      <td>' + api.url + '</td> ' +
+              '      <td>' + api.portapi + '</td> ' +
+              '      <td>' + api.userapi + '</td> ' +
+              '      <td><i ng-click="setDefault(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i ng-click="removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i ng-click="checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i ng-click="toggleEditor(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
+              '    </tr> '
+            )
+          }
+        }
+      } catch (err) {
+        Promise.reject(err)
+      }
+    }
+
+    /**
      * Check if connection is OK at starting view
      */
     const firstLoad = async () => {
       try {
-        await service.get("storage/collections/data/credentials/")
-        await showStatusConnectionToast()
+        await drawApiList()
+        //await showStatusConnectionToast()
       } catch (err) {
         console.error('error at loading data', err.message || err)
       }
     }
+
     /**
      * On document ready
      */
@@ -117,16 +156,12 @@ require([
       .getContainerElement()
       .appendChild($('.dashboard-body')[0])
 
-    //
-    // DASHBOARD EDITOR
-    //
-
     new Dashboard({
       id: 'dashboard',
       el: $('.dashboard-body'),
       showTitle: true,
       editable: false
-    }, { tokens: true }).render()
+    }, { tokens: false }).render()
 
     /**
      * Reject a promise error
@@ -141,14 +176,12 @@ require([
      */
     const deleteRecord = async () => {
       try {
-        // Get the value of the key ID field
-        const tokens = mvc.Components.get("default")
         // Delete the record that corresponds to the key ID using
         // the del method to send a DELETE request
         // to the storage/collections/data/{collection}/ endpoint
         await service.delete("storage/collections/data/credentials/")
+        $('#apiList').empty()
         // Run the search again to update the table
-        search1.startSearch()
       } catch (err) {
         return Promise.reject(err)
       }
@@ -156,43 +189,50 @@ require([
 
     // Call this function when the Delete Record button is clicked
     $("#deleteRecord").click(() => deleteRecord().catch((err) => errorHandleDeleting()))
-    // 
-    // SERVICE OBJECT
-    //
 
     /**
      * Check connection when click on button
      */
     $('#checkConnection').click(() => showStatusConnectionToast())
 
+    /**
+     * Clears the data inputs
+     */
+    const clearForm = () => {
+      $('#credentialPortInput').val('')
+      $('#credentialUserInput').val('')
+      $('#credentialUrlInput').val('')
+      $('#credentialPassInput').val('')
+    }
+    /**
+     * Actions when submit
+     */
     const clickOnSubmit = async () => {
       try {
-        // When the Submit button is clicked, get all the form fields by accessing token values
-        const tokens = mvc.Components.get("default")
-        const form_url = tokens.get("url")
-        const form_apiport = tokens.get("apiport")
-        const form_apiuser = tokens.get("apiuser")
-        const form_apipass = tokens.get("apipass")
+        // When the Submit button is clicked, get all the form fields by accessing input values
+        const form_url = $('#credentialUrlInput').val()
+        const form_apiport = $('#credentialPortInput').val()
+        const form_apiuser = $('#credentialUserInput').val()
+        const form_apipass = $('#credentialPassInput').val()
 
         if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
-          await service.delete("storage/collections/data/credentials/")
 
           // Create a dictionary to store the field names and values
           const record = {
             "url": form_url,
             "portapi": form_apiport,
             "userapi": form_apiuser,
-            "passapi": form_apipass
+            "passapi": form_apipass,
+            "selected": false
           }
-          // Use the request method to send a REST POST request
+          // Use the request method to send and insert a new record
           // to the storage/collections/data/{collection}/ endpoint
-          await service.post("storage/collections/data/credentials/", record)
+          await service.insert(record)
           // Run the search again to update the table
-          const data = await service.get("storage/collections/data/credentials/")
-          await showStatusConnectionToast(data.data)
-          search1.startSearch()
+          //await showStatusConnectionToast(data.filter(item => !item.selected)[0])
+          //search1.startSearch()
           // Clear the form fields 
-          $("#formCustomerInfo input[type=text]").val("")
+          clearForm()
         } else {
           invalidFormatInputToast.show()
         }
@@ -204,7 +244,7 @@ require([
     /**
      * On submit click
      */
-    // submit.on("submit", async () => clickOnSubmit())
+    $('#submitApiForm').on("click", async () => clickOnSubmit())
 
   }
 )

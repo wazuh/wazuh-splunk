@@ -37,7 +37,7 @@ define(function (require, exports, module) {
           { "Content-Type": "application/json" }, (err, data) => {
             if (err)
               return reject(err)
-            resolve(data.data[0])
+            resolve(data.data)
           }
         )
       })
@@ -66,6 +66,18 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Insert a new record in the KVstore DB
+     * @param {Object} record 
+     */
+    async insert(record) {
+      try {
+        await this.post("storage/collections/data/credentials/",record)
+      } catch (err) {
+        Promise.reject(err)
+      }
+    }
+    
+    /**
      * Load API credential data and generates a Base URL
      */
     async loadCredentialData() {
@@ -74,8 +86,6 @@ define(function (require, exports, module) {
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-        console.log('jsonData',jsonData)
-        console.log('url',url)
         return { baseUrl, jsonData }
       } catch (err) {
         console.error("loadCredentialData", err.message || err)
@@ -105,6 +115,7 @@ define(function (require, exports, module) {
     async checkConnection() {
       try {
         const { baseUrl, jsonData } = await this.loadCredentialData()
+        const selectedApi = jsonData.filter(item => !item.selected)[0]
         const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
         const parsedData = await asyncReq.promisedGet(endpoint)
         return
