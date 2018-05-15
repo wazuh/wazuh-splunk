@@ -10,7 +10,6 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 ![](https://i.imgur.com/rgBaSai.png)
 ### Documentation
 
--   [Full Wazuh documentation](https://documentation.wazuh.com)
 -   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installation-guide/installing-splunk/index.htm)
 
 
