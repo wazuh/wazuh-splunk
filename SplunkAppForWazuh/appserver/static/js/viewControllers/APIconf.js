@@ -89,6 +89,10 @@ require([
       }
     }
 
+    const removeManager = async (key) => {
+      console.log('delete a row')
+    }
+
     /**
      * Draws the API list
      * @param {Array} apis 
@@ -120,10 +124,10 @@ require([
               '      <td>' + api.url + '</td> ' +
               '      <td>' + api.portapi + '</td> ' +
               '      <td>' + api.userapi + '</td> ' +
-              '      <td><i ng-click="setDefault(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i ng-click="removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i ng-click="checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i ng-click="toggleEditor(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
+              '      <td><i onClick="setDefault(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i onClick="removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i onClick="checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i onClick="toggleEditor(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
               '    </tr> '
             )
           }
@@ -215,9 +219,10 @@ require([
         const form_apiuser = $('#credentialUserInput').val()
         const form_apipass = $('#credentialPassInput').val()
 
+        // If values are valid, register them
         if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
 
-          // Create a dictionary to store the field names and values
+          // Create an object to store the field names and values
           const record = {
             "url": form_url,
             "portapi": form_apiport,
@@ -233,6 +238,7 @@ require([
           //search1.startSearch()
           // Clear the form fields 
           clearForm()
+          await drawApiList()
         } else {
           invalidFormatInputToast.show()
         }

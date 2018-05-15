@@ -11,24 +11,20 @@
  */
 
 define(function (require, exports, module) {
-  const $ = require('jquery')
-  const mvc = require('splunkjs/mvc')
-  const asyncReq = require('./promisedReq.js')
-
   /**
    * Encapsulates Local Storage service functionality
    */
   const localStorage = class LocalStorage {
     constructor() {
-      this.storage = window.localStorage
+      this.storage.setItem(key,value)
     }
 
-    set(value) {
-      this.storage = value
+    set(key,value) {
+      this.storage.setItem(key,value)
     }
 
-    get() {
-      return this.storage
+    get(key) {
+      return this.storage.getItem(key)
     }
   }
 

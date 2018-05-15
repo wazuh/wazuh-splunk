@@ -44,6 +44,18 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Update a record
+     * @param {String} key 
+     */
+    async update(key, newRegister) {
+      try {
+        await this.post("storage/collections/data/credentials/"+key,newRegister)
+      } catch (err) {
+        Promise.reject(err)
+      }
+    }
+
+    /**
      * POST method
      * @param {String} url 
      * @param {Object} record 
@@ -71,12 +83,12 @@ define(function (require, exports, module) {
      */
     async insert(record) {
       try {
-        await this.post("storage/collections/data/credentials/",record)
+        await this.post("storage/collections/data/credentials/", record)
       } catch (err) {
         Promise.reject(err)
       }
     }
-    
+
     /**
      * Load API credential data and generates a Base URL
      */
