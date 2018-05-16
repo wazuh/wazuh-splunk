@@ -1,6 +1,7 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
-
+## Wazuh v3.2.3 - Splunk Enterprise v7.1.0 - Splunk app v3.2.3
+There are no changes for Splunk app in this version.
 ## Wazuh v3.2.2 - Splunk Enterprise v7.1.0 - Splunk app v3.2.2
 ### Added
 - Wazuh secured API connections are now supported ([#51](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/51)).
