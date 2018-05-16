@@ -40,8 +40,8 @@ require([
 
     // Toast definition
     const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Connection error', 1000, 250, 250)
-    const errorWhenDeletingRow = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
-    const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
+    const errorWhenDeletingRowToast = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
+    const successConnectionToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
     const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
 
     /**
@@ -83,7 +83,7 @@ require([
     const showStatusConnectionToast = async () => {
       try {
         await service.checkConnection()
-        successToast.show()
+        successConnectionToast.show()
       } catch (err) {
         errorConnectionToast.show()
       }
@@ -93,24 +93,26 @@ require([
      * Deletes a manager by id
      * @param {String} key 
      */
-    const removeManager = (key) => {
-      console.log('delete a row')
+    const removeManager = async (key) => {
+      try{
+        await service.remove(key)
+        await drawApiList()
+      } catch (err) {
+        errorWhenDeletingRow.show()
+      }
     }
 
     /**
      * Checks connection with a manager API
      * @param {String} key 
      */
-    const checkManagerConnection = (key) => {
-      console.log('check a row', key)
-    }
-
-    /**
-     * Edits a manager connection
-     * @param {String} key 
-     */
-    const editManager = (key) => {
-      console.log('edit a row', key)
+    const checkManagerConnection = async (key) => {
+      try {
+        await service.checkApiConnection(key)
+        successConnectionToast.show()
+      } catch (err) {
+        errorConnectionToast.show()
+      }
     }
 
     /**
@@ -155,8 +157,7 @@ require([
               '      <td>' + api.userapi + '</td> ' +
               '      <td><i id="'+api._key+'" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
               ' <i id="'+api._key+'" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i id="'+api._key+'" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i id="'+api._key+'" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
+              ' <i id="'+api._key+'" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
               ' </tr> '
             )
           }
@@ -171,13 +172,6 @@ require([
      */
     $('#apiList').on("click", "#tableBody tr td i.fa-trash", function(e) {
       removeManager(this.id)
-    })
-
-    /**
-     * Click on update manager
-     */
-    $('#apiList').on("click", "#tableBody tr td i.fa-pencil", function(e) {
-      editManager(this.id)
     })
 
     /**
@@ -229,7 +223,7 @@ require([
      * @param {object} err 
      */
     const errorHandleDeleting = async (err) => {
-      errorWhenDeletingRow.show()
+      errorWhenDeletingRowToast.show()
     }
 
     /**

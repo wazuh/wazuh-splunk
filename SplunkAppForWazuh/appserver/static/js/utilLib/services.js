@@ -42,31 +42,7 @@ define(function (require, exports, module) {
         )
       })
     }
-
-    /**
-     * Update a record
-     * @param {String} key 
-     */
-    async update(key, newRegister) {
-      try {
-        await this.post("storage/collections/data/credentials/"+key,newRegister)
-      } catch (err) {
-        Promise.reject(err)
-      }
-    }
-
-    /**
-     * Delete a record
-     * @param {String} key 
-     */
-    async remove(key) {
-      try {
-        await this.delete("storage/collections/data/credentials/"+key)
-      } catch (err) {
-        Promise.reject(err)
-      }
-    }
-
+    
     /**
      * POST method
      * @param {String} url 
@@ -90,14 +66,65 @@ define(function (require, exports, module) {
     }
 
     /**
+     * DELETE method
+     * @param {String} url 
+     */
+    delete(url) {
+      return new Promise((resolve, reject) => {
+        this.service.del(url, {}, (err, data) => {
+          if (err) {
+            return reject(err)
+          }
+          return resolve(data)
+        })
+      })
+    }
+
+    /**
+     * Update a record
+     * @param {String} key 
+     */
+    async update(key, newRegister) {
+      try {
+        await this.post("storage/collections/data/credentials/" + key, newRegister)
+        return
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Delete a record
+     * @param {String} key 
+     */
+    async remove(key) {
+      try {
+        await this.delete("storage/collections/data/credentials/" + key)
+        return
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    async obtain(key) {
+      try {
+        const manager = await this.get("storage/collections/data/credentials/" + key)
+        return manager
+      } catch (err) {
+        return Promise.reject(err)
+      }     
+    }
+
+    /**
      * Insert a new record in the KVstore DB
      * @param {Object} record 
      */
     async insert(record) {
       try {
         await this.post("storage/collections/data/credentials/", record)
+        return
       } catch (err) {
-        Promise.reject(err)
+        return Promise.reject(err)
       }
     }
 
@@ -118,21 +145,6 @@ define(function (require, exports, module) {
     }
 
     /**
-     * DELETE method
-     * @param {String} url 
-     */
-    delete(url) {
-      return new Promise((resolve, reject) => {
-        this.service.del(url, {}, (err, data) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(data)
-        })
-      })
-    }
-
-    /**
      * Check if connection with API was successful
      * @param {Object} jsonData 
      */
@@ -142,6 +154,23 @@ define(function (require, exports, module) {
         const selectedApi = jsonData.filter(item => !item.selected)[0]
         const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
         const parsedData = await asyncReq.promisedGet(endpoint)
+        return
+      } catch (err) {
+        console.error("checkConnection", err.message || err)
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Check if connection with API was successful
+     * @param {String} key 
+     */
+    async checkApiConnection(key) {
+      try {
+        const manager = await this.obtain(key)
+        const { baseUrl, jsonData } = await this.loadCredentialData()
+        const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
+        await asyncReq.promisedGet(endpoint)
         return
       } catch (err) {
         console.error("checkConnection", err.message || err)
