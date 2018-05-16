@@ -89,9 +89,38 @@ require([
       }
     }
 
-    const removeManager = async (key) => {
+    /**
+     * Deletes a manager by id
+     * @param {String} key 
+     */
+    const removeManager = (key) => {
       console.log('delete a row')
     }
+
+    /**
+     * Checks connection with a manager API
+     * @param {String} key 
+     */
+    const checkManagerConnection = (key) => {
+      console.log('check a row', key)
+    }
+
+    /**
+     * Edits a manager connection
+     * @param {String} key 
+     */
+    const editManager = (key) => {
+      console.log('edit a row', key)
+    }
+
+    /**
+     * Edits a manager connection
+     * @param {String} key 
+     */
+    const selectManager = (key) => {
+      console.log('select a row', key)
+    }
+
 
     /**
      * Draws the API list
@@ -124,11 +153,11 @@ require([
               '      <td>' + api.url + '</td> ' +
               '      <td>' + api.portapi + '</td> ' +
               '      <td>' + api.userapi + '</td> ' +
-              '      <td><i onClick="setDefault(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i onClick="removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i onClick="checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i onClick="toggleEditor(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
-              '    </tr> '
+              '      <td><i id="'+api._key+'" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="'+api._key+'" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="'+api._key+'" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="'+api._key+'" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
+              ' </tr> '
             )
           }
         }
@@ -136,6 +165,34 @@ require([
         Promise.reject(err)
       }
     }
+
+    /**
+     * Click on delete manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-trash", function(e) {
+      removeManager(this.id)
+    })
+
+    /**
+     * Click on update manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-pencil", function(e) {
+      editManager(this.id)
+    })
+
+    /**
+     * Click on select manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-star", function(e) {
+      selectManager(this.id)
+    })
+
+    /**
+     * Click on check manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-refresh", function(e) {
+      checkManagerConnection(this.id)
+    })
 
     /**
      * Check if connection is OK at starting view
@@ -178,7 +235,7 @@ require([
     /**
      * Delete a record
      */
-    const deleteRecord = async () => {
+    const deleteAllRecords = async () => {
       try {
         // Delete the record that corresponds to the key ID using
         // the del method to send a DELETE request
@@ -192,7 +249,7 @@ require([
     }
 
     // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(() => deleteRecord().catch((err) => errorHandleDeleting()))
+    $("#deleteRecord").click(() => deleteAllRecords().catch((err) => errorHandleDeleting()))
 
     /**
      * Check connection when click on button

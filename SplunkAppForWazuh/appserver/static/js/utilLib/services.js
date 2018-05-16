@@ -56,6 +56,18 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Delete a record
+     * @param {String} key 
+     */
+    async remove(key) {
+      try {
+        await this.delete("storage/collections/data/credentials/"+key)
+      } catch (err) {
+        Promise.reject(err)
+      }
+    }
+
+    /**
      * POST method
      * @param {String} url 
      * @param {Object} record 
