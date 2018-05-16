@@ -106,9 +106,28 @@ define(function (require, exports, module) {
       }
     }
 
-    async obtain(key) {
+    /**
+     * Select an API by ID
+     * @param {String} key 
+     */
+    async select(key) {
       try {
         const manager = await this.get("storage/collections/data/credentials/" + key)
+        return manager
+      } catch (err) {
+        return Promise.reject(err)
+      }     
+    }
+
+    /**
+     * Select an API by ID
+     * @param {String} key 
+     */
+    async chose(key) {
+      try {
+        let manager = await this.select(key)
+        manager.selected = true
+        this.update(key,manager)
         return manager
       } catch (err) {
         return Promise.reject(err)
@@ -167,7 +186,7 @@ define(function (require, exports, module) {
      */
     async checkApiConnection(key) {
       try {
-        const manager = await this.obtain(key)
+        const manager = await this.select(key)
         const { baseUrl, jsonData } = await this.loadCredentialData()
         const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
         await asyncReq.promisedGet(endpoint)

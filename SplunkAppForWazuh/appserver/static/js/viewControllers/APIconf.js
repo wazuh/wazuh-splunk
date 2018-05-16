@@ -17,6 +17,7 @@ require([
   "splunkjs/mvc/simplexml/dashboardview",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/localStorage.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
@@ -27,10 +28,12 @@ require([
     Dashboard,
     asyncReq,
     services,
+    LocalStorage,
     Toast
 
   ) {
     const service = new services()
+    const localStorage = new LocalStorage()
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -116,15 +119,6 @@ require([
     }
 
     /**
-     * Edits a manager connection
-     * @param {String} key 
-     */
-    const selectManager = (key) => {
-      console.log('select a row', key)
-    }
-
-
-    /**
      * Draws the API list
      * @param {Array} apis 
      */
@@ -143,6 +137,7 @@ require([
             '        <th>Port</th> ' +
             '        <th>Username</th> ' +
             '        <th>Actions</th> ' +
+            '        <th>Selected</th> ' +
             '    </tr> ' +
             '  </thead> ' +
             '  <tbody id="tableBody"> ' +
@@ -158,12 +153,28 @@ require([
               '      <td><i id="'+api._key+'" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
               ' <i id="'+api._key+'" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
               ' <i id="'+api._key+'" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
+              ' <td>' +  (api.selected === false ? '' : 'yes') + '</td> ' +
               ' </tr> '
             )
           }
         }
       } catch (err) {
         Promise.reject(err)
+      }
+    }
+
+    /**
+     * Edits a manager connection
+     * @param {String} key 
+     */
+    const selectManager = async (key) => {
+      try {
+        await service.checkApiConnection(key)
+        const selectedApi = await service.chose(key)
+        console.log(selectedApi)
+        await drawApiList()
+      } catch (err) {
+        errorConnectionToast.show()
       }
     }
 

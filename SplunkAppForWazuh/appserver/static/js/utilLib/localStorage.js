@@ -16,7 +16,7 @@ define(function (require, exports, module) {
    */
   const localStorage = class LocalStorage {
     constructor() {
-      this.storage.setItem(key,value)
+      this.storage = window.localStorage
     }
 
     set(key,value) {
