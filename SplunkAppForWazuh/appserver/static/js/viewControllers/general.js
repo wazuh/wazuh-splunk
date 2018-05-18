@@ -97,7 +97,7 @@ require([
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       // 
       // TOKENS
@@ -138,12 +138,12 @@ require([
 
       const loadAndSetCredentialData = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const { baseUrl } = await service.loadCredentialData()
           setToken('baseip', baseUrl)
-          setToken('url', jsonData.url)
-          setToken('portapi', jsonData.portapi)
-          setToken('userapi', jsonData.userapi)
-          setToken('passwordapi', jsonData.passapi)
+          setToken('url', api.url)
+          setToken('portapi', api.portapi)
+          setToken('userapi', api.userapi)
+          setToken('passwordapi', api.passapi)
           setToken("loadedtokens", "true")
         } catch (err) {
           errorToast.show()
