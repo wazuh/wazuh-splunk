@@ -211,7 +211,7 @@ define(function (require, exports, module) {
         await asyncReq.promisedGet(endpoint)
         return
       } catch (err) {
-        console.error("checkConnection", err.message || err)
+        console.error("checkApiConnection", err.message || err)
         return Promise.reject(err)
       }
     }
