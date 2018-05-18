@@ -70,7 +70,7 @@ class manager(controllers.BaseController):
     url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url, auth=auth, verify=verify).json()
+    request = requests.get(url + '/version', auth=auth, verify=verify).json()
     result = json.dumps(request)
     return result
     
