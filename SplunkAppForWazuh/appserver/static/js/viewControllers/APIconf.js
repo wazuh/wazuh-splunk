@@ -104,6 +104,13 @@ require([
     }
 
     /**
+     * Clears the API table
+     */
+    const clearTable = () => {
+      $('#apiList').empty()
+    }
+
+    /**
      * Draws the API list
      * @param {Array} apis 
      */
@@ -111,7 +118,7 @@ require([
       try {
         const { apiList } = await service.loadCredentialData()
         if (apiList && apiList.length > 0) {
-          $('#apiList').empty()
+          clearTable()
           $('#apiList').html(
             '<table class="highlight"> ' +
             '  <thead> ' +
@@ -141,7 +148,8 @@ require([
             )
           }
         } else {
-          $('#apiList').empty()
+          clearTable()
+          $('#apiList').html('<h4>Any API was inserted. You must have at least one API for using Splunk app for Wazuh.</h4>')
         }
       } catch (err) {
         Promise.reject(err)
@@ -182,6 +190,19 @@ require([
     $('#apiList').on("click", "#tableBody tr td i.fa-refresh", function (e) {
       checkManagerConnection(this.id)
     })
+
+    /**
+     * Intercepts an HTTP requests before it's sended
+     * @param {Object} xhr 
+     */
+    const httpInterceptor = async (xhr) => {
+      try {
+        await service.checkConnection()
+      } catch (err) {
+        errorConnectionToast.show()
+        xhr.abort()
+      }
+    }
 
     /**
      * Check if connection is OK at starting view
@@ -232,7 +253,7 @@ require([
         // the del method to send a DELETE request
         // to the storage/collections/data/{collection}/ endpoint
         await service.delete("storage/collections/data/credentials/")
-        $('#apiList').empty()
+        clearTable()
         // Run the search again to update the table
       } catch (err) {
         return Promise.reject(err)
