@@ -14,12 +14,15 @@ define(function (require, exports, module) {
   const $ = require('jquery')
   const mvc = require('splunkjs/mvc')
   const asyncReq = require('./promisedReq.js')
+  const LocalStorage = require('./localStorage.js')
+
   /**
    * Encapsulates Splunk service functionality
    */
   const service = class Service {
     constructor() {
       this.service = mvc.createService({ owner: "nobody" })
+      this.localStorage = new LocalStorage()
     }
 
     /**
@@ -42,7 +45,7 @@ define(function (require, exports, module) {
         )
       })
     }
-    
+
     /**
      * POST method
      * @param {String} url 
@@ -99,6 +102,10 @@ define(function (require, exports, module) {
      */
     async remove(key) {
       try {
+        const api = await this.select(key)
+        if (api.selected) {
+          localStorage.clear('selectedApi')
+        }
         await this.delete("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
@@ -116,22 +123,35 @@ define(function (require, exports, module) {
         return manager
       } catch (err) {
         return Promise.reject(err)
-      }     
+      }
     }
 
     /**
-     * Select an API by ID
+     * Select an API as the default one, 'select' field to true
      * @param {String} key 
      */
     async chose(key) {
       try {
-        let manager = await this.select(key)
-        manager.selected = true
-        this.update(key,manager)
-        return manager
+        const { apiList } = await this.loadCredentialData()
+        console.log('starting invalidating array of apiList ', apiList)
+        for (let api of apiList) {
+          if (api._key === key) {
+            const manager = api
+            manager.selected = true
+            console.log('validating ', api)
+            await this.update(api._key, manager)
+            localStorage.clear('selectedApi')
+            localStorage.setItem('selectedApi',JSON.stringify(api))
+          } else {
+            console.log('invalidating ', api)
+            api.selected = false
+            await this.update(api._key, api)
+          }
+        }
+        return 
       } catch (err) {
         return Promise.reject(err)
-      }     
+      }
     }
 
     /**
@@ -152,11 +172,11 @@ define(function (require, exports, module) {
      */
     async loadCredentialData() {
       try {
-        const jsonData = await this.get("storage/collections/data/credentials/")
+        const apiList = await this.get("storage/collections/data/credentials/")
         const url = window.location.href
         const arr = url.split("/")
         const baseUrl = arr[0] + "//" + arr[2]
-        return { baseUrl, jsonData }
+        return { baseUrl, apiList }
       } catch (err) {
         console.error("loadCredentialData", err.message || err)
         return Promise.reject(err)
@@ -164,18 +184,17 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Check if connection with API was successful
-     * @param {Object} jsonData 
+     * Check if connection with selected API was successful
+     * @param {Object} apiList 
      */
     async checkConnection() {
       try {
-        const { baseUrl, jsonData } = await this.loadCredentialData()
-        const selectedApi = jsonData.filter(item => !item.selected)[0]
-        const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
-        const parsedData = await asyncReq.promisedGet(endpoint)
-        return
+        const currentApi = this.localStorage.get('selectedApi')
+        if(!currentApi) throw new Error('No API')
+        const apiInJsonFormat = JSON.parse(currentApi)
+        await this.checkApiConnection(apiInJsonFormat._key)
+        return apiInJsonFormat
       } catch (err) {
-        console.error("checkConnection", err.message || err)
         return Promise.reject(err)
       }
     }
@@ -187,7 +206,7 @@ define(function (require, exports, module) {
     async checkApiConnection(key) {
       try {
         const manager = await this.select(key)
-        const { baseUrl, jsonData } = await this.loadCredentialData()
+        const { baseUrl, apiList } = await this.loadCredentialData()
         const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
         await asyncReq.promisedGet(endpoint)
         return
