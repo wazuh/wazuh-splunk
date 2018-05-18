@@ -19,12 +19,29 @@ define(function (require, exports, module) {
       this.storage = window.localStorage
     }
 
+    /**
+     * Sets a value for a key
+     * @param {String} key 
+     * @param {String} value 
+     */
     set(key,value) {
       this.storage.setItem(key,value)
     }
 
+    /**
+     * Obtains the value for a key
+     * @param {String} key 
+     */
     get(key) {
       return this.storage.getItem(key)
+    }
+
+    /**
+     * Removes values for a key
+     * @param {String} key 
+     */
+    clear(key) {
+      this.set(key,'')
     }
   }
 
