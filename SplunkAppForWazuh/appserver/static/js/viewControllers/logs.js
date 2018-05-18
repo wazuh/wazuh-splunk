@@ -34,7 +34,7 @@ require([
     /**
      * Check connection before load the content
      */
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager logs list', 1000, 250, 250)
 
@@ -43,7 +43,7 @@ require([
        */
       const initializeManagerLogs = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const { baseUrl } = await service.loadCredentialData()
           const opts = {
             pages: 10,
             processing: true,
@@ -58,7 +58,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myLogTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/logs?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/logs?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
         } catch (err) {
           errorToast.show()
         }

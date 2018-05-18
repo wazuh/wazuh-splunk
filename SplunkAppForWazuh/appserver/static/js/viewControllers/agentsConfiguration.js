@@ -29,7 +29,7 @@ require([
   ) {
 
     const service = new services()
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
@@ -568,16 +568,16 @@ require([
        */
       const loadData = async (id) => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
-          let endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + id
+          const { baseUrl } = await service.loadCredentialData()
+          let endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + id
           let parsedJson = await promisedReq.promisedGet(endPoint)
-          const agentListEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/agents_name?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+          const agentListEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           await agentList(agentListEndpoint)
 
           let group = parsedJson.group
           let groupInformationEndpoint = ''
           if (typeof group !== 'undefined') {
-            groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
+            groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
           } else {
             $('#dynamicContent').html(
@@ -588,14 +588,14 @@ require([
           }
 
           $('#agentList').on('change', async function () {
-            endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + this.value
+            endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + this.value
             parsedJson = await promisedReq.promisedGet(endPoint)
             group = parsedJson.group
 
             if (typeof group !== 'undefined') {
               $('#dynamicList').hide()
               $('#dynamicContent').empty()
-              groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi + '&id=' + group
+              groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
               await loadAgentConfig(groupInformationEndpoint)
               $('#dynamicList').show()
 

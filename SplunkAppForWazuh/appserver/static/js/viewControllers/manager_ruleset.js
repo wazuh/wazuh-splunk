@@ -109,7 +109,7 @@ require([
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading ruleset info', 1000, 250, 250)
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -143,7 +143,7 @@ require([
        */
       const initializeRuleset = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const { baseUrl } = await service.loadCredentialData()
 
           const opts = {
             pages: 10,
@@ -163,7 +163,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/rules?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/rules?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.click(function (data) {
             setToken("showDetails", "true")
             setToken("id", data.id || "-")

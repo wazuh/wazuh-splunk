@@ -32,20 +32,20 @@ require([
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       /**
        * Initializes agent table
        */
       const initializeAgentTable = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const { baseUrl } = await service.loadCredentialData()
           const urlData = {
             baseUrl: baseUrl,
-            ipApi: jsonData.url,
-            portApi: jsonData.portapi,
-            userApi: jsonData.userapi,
-            passApi: jsonData.passapi
+            ipApi: api.url,
+            portApi: api.portapi,
+            userApi: api.userapi,
+            passApi: api.passapi
           }
           const table = new agentsTable($('#row1'))
           table.build(urlData)

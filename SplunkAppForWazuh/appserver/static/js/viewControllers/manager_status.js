@@ -102,7 +102,7 @@ require([
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -136,12 +136,12 @@ require([
        */
       const loadTokensWithCredentialAPI = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const { baseUrl } = await service.loadCredentialData()
           setToken('baseip', baseUrl)
-          setToken('url', jsonData.url)
-          setToken('portapi', jsonData.portapi)
-          setToken('userapi', jsonData.userapi)
-          setToken('passwordapi', jsonData.passapi)
+          setToken('url', api.url)
+          setToken('portapi', api.portapi)
+          setToken('userapi', api.userapi)
+          setToken('passwordapi', api.passapi)
           setToken("loadedtokens", "true")
         } catch (err) {
           errorToast.show()
