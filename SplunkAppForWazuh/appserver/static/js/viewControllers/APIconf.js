@@ -17,7 +17,6 @@ require([
   "splunkjs/mvc/simplexml/dashboardview",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/localStorage.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
@@ -28,12 +27,10 @@ require([
     Dashboard,
     asyncReq,
     services,
-    LocalStorage,
     Toast
 
   ) {
     const service = new services()
-    const localStorage = new LocalStorage()
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -46,6 +43,7 @@ require([
     const errorWhenDeletingRowToast = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
     const successConnectionToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
     const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
+    const selectedApiErrorToast = new Toast('error', 'toast-bottom-right', 'Selected API is down. Please check the connection or change to another API', 1000, 250, 250)
 
     /**
      * Check if an URL is valid or not
@@ -80,28 +78,15 @@ require([
     }
 
     /**
-     * Set a status (green/red) light for API connecting
-     * @param {object} jsonData 
-     */
-    const showStatusConnectionToast = async () => {
-      try {
-        await service.checkConnection()
-        successConnectionToast.show()
-      } catch (err) {
-        errorConnectionToast.show()
-      }
-    }
-
-    /**
      * Deletes a manager by id
      * @param {String} key 
      */
     const removeManager = async (key) => {
-      try{
+      try {
         await service.remove(key)
         await drawApiList()
       } catch (err) {
-        errorWhenDeletingRow.show()
+        errorWhenDeletingRowToast.show()
       }
     }
 
@@ -124,10 +109,8 @@ require([
      */
     const drawApiList = async apis => {
       try {
-        const { baseUrl, jsonData } = await service.loadCredentialData()
-        console.log('baseurl', baseUrl)
-        console.log('apis', jsonData)
-        if (jsonData && jsonData.length > 0) {
+        const { apiList } = await service.loadCredentialData()
+        if (apiList && apiList.length > 0) {
           $('#apiList').empty()
           $('#apiList').html(
             '<table class="highlight"> ' +
@@ -144,19 +127,21 @@ require([
             '  </tbody> ' +
             '</table> '
           )
-          for (const api of jsonData) {
+          for (const api of apiList) {
             $('#tableBody').append(
               '    <tr> ' +
               '      <td>' + api.url + '</td> ' +
               '      <td>' + api.portapi + '</td> ' +
               '      <td>' + api.userapi + '</td> ' +
-              '      <td><i id="'+api._key+'" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i id="'+api._key+'" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>' +
-              ' <i id="'+api._key+'" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i></td> ' +
-              ' <td>' +  (api.selected === false ? '' : 'yes') + '</td> ' +
+              '      <td><i id="' + api._key + '" tooltip="Set as default Manager" class="fa fa-star font-size-18 wz-cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="' + api._key + '" class="fa fa-trash wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
+              ' <td>' + (api.selected === false ? '' : 'yes') + '</td> ' +
               ' </tr> '
             )
           }
+        } else {
+          $('#apiList').empty()
         }
       } catch (err) {
         Promise.reject(err)
@@ -170,8 +155,7 @@ require([
     const selectManager = async (key) => {
       try {
         await service.checkApiConnection(key)
-        const selectedApi = await service.chose(key)
-        console.log(selectedApi)
+        await service.chose(key)
         await drawApiList()
       } catch (err) {
         errorConnectionToast.show()
@@ -181,21 +165,21 @@ require([
     /**
      * Click on delete manager
      */
-    $('#apiList').on("click", "#tableBody tr td i.fa-trash", function(e) {
+    $('#apiList').on("click", "#tableBody tr td i.fa-trash", function (e) {
       removeManager(this.id)
     })
 
     /**
      * Click on select manager
      */
-    $('#apiList').on("click", "#tableBody tr td i.fa-star", function(e) {
+    $('#apiList').on("click", "#tableBody tr td i.fa-star", function (e) {
       selectManager(this.id)
     })
 
     /**
      * Click on check manager
      */
-    $('#apiList').on("click", "#tableBody tr td i.fa-refresh", function(e) {
+    $('#apiList').on("click", "#tableBody tr td i.fa-refresh", function (e) {
       checkManagerConnection(this.id)
     })
 
@@ -205,9 +189,11 @@ require([
     const firstLoad = async () => {
       try {
         await drawApiList()
-        //await showStatusConnectionToast()
+        await service.checkConnection()
+        successConnectionToast.show()
       } catch (err) {
         console.error('error at loading data', err.message || err)
+        selectedApiErrorToast.show()
       }
     }
 
@@ -257,11 +243,6 @@ require([
     $("#deleteRecord").click(() => deleteAllRecords().catch((err) => errorHandleDeleting()))
 
     /**
-     * Check connection when click on button
-     */
-    $('#checkConnection').click(() => showStatusConnectionToast())
-
-    /**
      * Clears the data inputs
      */
     const clearForm = () => {
@@ -296,7 +277,6 @@ require([
           // to the storage/collections/data/{collection}/ endpoint
           await service.insert(record)
           // Run the search again to update the table
-          //await showStatusConnectionToast(data.filter(item => !item.selected)[0])
           //search1.startSearch()
           // Clear the form fields 
           clearForm()
