@@ -59,6 +59,54 @@
   margin: 0px !important;
 }
 
+.wz-cursor-pointer {
+  cursor: pointer;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.wz-tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.wz-tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.wz-tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.btn-primary {
+  background-color: #005571 !important;
+}
+
+.btn-primary:hover {
+  background-color: #0079a5 !important;
+}
+
 /* Classes for custom widths */
 
 .wz-width-15 {
