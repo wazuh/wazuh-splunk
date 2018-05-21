@@ -6,6 +6,7 @@
   <a href="overview_scap">Overview OpenSCAP</a> 
   <a href="overview_audit">Overview audit</a> 
   <a href="overview_pci_dss">Overview PCI-DSS</a> 
+  <a href="overview_gdpr">Overview GDPR</a> 
 </collection>
   <collection label="Manager">
   <a href="manager_status">Status</a> 
@@ -25,6 +26,7 @@
   <a href="openscap">OpenSCAP</a> 
   <a href="audit">Audit</a>
   <a href="pcidss">PCI-DSS</a>
+  <a href="gdpr">GDPR</a>
 </collection>
 <collection label="Configuration">
   <view name="API" default='true' />
