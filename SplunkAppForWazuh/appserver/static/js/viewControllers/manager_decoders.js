@@ -109,7 +109,7 @@ require([
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -142,7 +142,7 @@ require([
        */
       const initializeRulesetTable = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const { baseUrl } = await service.loadCredentialData()
 
           const opts = {
             pages: 10,
@@ -159,7 +159,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/decoders?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/decoders?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.click(data => {
             setToken("showDetails", "true")
             setToken("Name", data.name)

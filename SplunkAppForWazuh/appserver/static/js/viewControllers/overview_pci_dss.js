@@ -96,7 +96,7 @@ require([
 
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
 
       var pageLoading = true;

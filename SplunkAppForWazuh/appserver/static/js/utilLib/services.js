@@ -14,12 +14,15 @@ define(function (require, exports, module) {
   const $ = require('jquery')
   const mvc = require('splunkjs/mvc')
   const asyncReq = require('./promisedReq.js')
+  const LocalStorage = require('./localStorage.js')
+
   /**
    * Encapsulates Splunk service functionality
    */
   const service = class Service {
     constructor() {
       this.service = mvc.createService({ owner: "nobody" })
+      this.localStorage = new LocalStorage()
     }
 
     /**
@@ -37,7 +40,7 @@ define(function (require, exports, module) {
           { "Content-Type": "application/json" }, (err, data) => {
             if (err)
               return reject(err)
-            resolve(data.data[0])
+            resolve(data.data)
           }
         )
       })
@@ -66,22 +69,6 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Load API credential data and generates a Base URL
-     */
-    async loadCredentialData() {
-      try {
-        const jsonData = await this.get("storage/collections/data/credentials/")
-        const url = window.location.href
-        const arr = url.split("/")
-        const baseUrl = arr[0] + "//" + arr[2]
-        return { baseUrl, jsonData }
-      } catch (err) {
-        console.error("loadCredentialData", err.message || err)
-        return Promise.reject(err)
-      }
-    }
-
-    /**
      * DELETE method
      * @param {String} url 
      */
@@ -97,23 +84,138 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Check if connection with API was successful
-     * @param {Object} jsonData 
+     * Update a record
+     * @param {String} key 
      */
-    async checkConnection() {
+    async update(key, newRegister) {
       try {
-        const { baseUrl, jsonData } = await this.loadCredentialData()
-        const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
-        const parsedData = await asyncReq.promisedGet(endpoint)
+        await this.post("storage/collections/data/credentials/" + key, newRegister)
         return
       } catch (err) {
-        console.error("checkConnection", err.message || err)
         return Promise.reject(err)
       }
     }
 
-  }
+    /**
+     * Delete a record
+     * @param {String} key 
+     */
+    async remove(key) {
+      try {
+        const api = await this.select(key)
+        if (api.selected) {
+          localStorage.clear('selectedApi')
+        }
+        await this.delete("storage/collections/data/credentials/" + key)
+        return
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
 
+    /**
+     * Select an API by ID
+     * @param {String} key 
+     */
+    async select(key) {
+      try {
+        const manager = await this.get("storage/collections/data/credentials/" + key)
+        return manager
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Select an API as the default one, 'select' field to true
+     * @param {String} key 
+     */
+    async chose(key) {
+      try {
+        const { apiList } = await this.loadCredentialData()
+        console.log('starting invalidating array of apiList ', apiList)
+        for (let api of apiList) {
+          if (api._key === key) {
+            const manager = api
+            manager.selected = true
+            console.log('validating ', api)
+            await this.update(api._key, manager)
+            localStorage.clear('selectedApi')
+            localStorage.setItem('selectedApi',JSON.stringify(api))
+          } else {
+            console.log('invalidating ', api)
+            api.selected = false
+            await this.update(api._key, api)
+          }
+        }
+        return 
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Insert a new record in the KVstore DB
+     * @param {Object} record 
+     */
+    async insert(record) {
+      try {
+        await this.post("storage/collections/data/credentials/", record)
+        return
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Load API credential data and generates a Base URL
+     */
+    async loadCredentialData() {
+      try {
+        const apiList = await this.get("storage/collections/data/credentials/")
+        const url = window.location.href
+        const arr = url.split("/")
+        const baseUrl = arr[0] + "//" + arr[2]
+        return { baseUrl, apiList }
+      } catch (err) {
+        console.error("loadCredentialData", err.message || err)
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Check if connection with selected API was successful
+     * @param {Object} apiList 
+     */
+    async checkConnection() {
+      try {
+        const currentApi = this.localStorage.get('selectedApi')
+        if(!currentApi) throw new Error('No API')
+        const apiInJsonFormat = JSON.parse(currentApi)
+        await this.checkApiConnection(apiInJsonFormat._key)
+        return apiInJsonFormat
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Check if connection with API was successful
+     * @param {String} key 
+     */
+    async checkApiConnection(key) {
+      try {
+        const manager = await this.select(key)
+        const { baseUrl, apiList } = await this.loadCredentialData()
+        const endpoint = baseUrl + '/custom/SplunkAppForWazuh/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
+        await asyncReq.promisedGet(endpoint)
+        return
+      } catch (err) {
+        console.error("checkApiConnection", err.message || err)
+        return Promise.reject(err)
+      }
+    }
+  }
 
   // Return class
   return service

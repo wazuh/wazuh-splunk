@@ -29,7 +29,7 @@ require([
   ) {
 
     const service = new services()
-    service.checkConnection().then(() => {
+    service.checkConnection().then((api) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
@@ -262,8 +262,8 @@ require([
        */
       const loadConfigurationContent = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
-          const endPoint = baseUrl + '/custom/SplunkAppForWazuh/manager/configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
+          const { baseUrl } = await service.loadCredentialData()
+          const endPoint = baseUrl + '/custom/SplunkAppForWazuh/manager/configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           const jsonObj = await promisedReq.promisedGet(endPoint)
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output)

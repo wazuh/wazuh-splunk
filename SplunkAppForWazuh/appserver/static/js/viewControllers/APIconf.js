@@ -11,91 +11,26 @@
  */
 require([
   "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
   "underscore",
   "jquery",
-  "splunkjs/mvc/simplexml",
   "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simpleform/input/text",
-  "splunkjs/mvc/simpleform/input/submit",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
-
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
 ],
   function (
     mvc,
-    utils,
-    TokenUtils,
     _,
     $,
-    DashboardController,
     LayoutView,
     Dashboard,
-    TableElement,
-    FormUtils,
-    TextInput,
-    SubmitButton,
-    SearchManager,
-    UrlTokenModel,
     asyncReq,
     services,
     Toast
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
-
-    let pageLoading = true
-    // 
-    // TOKENS
-    //
-    // Create token namespaces
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
-    $('li > a').removeAttr('data-selected')
-    $('li > a').attr('myattr')
-
-    urlTokenModel.on('url:navigate', () => {
-      defaultTokenModel.set(urlTokenModel.toJSON())
-      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-        submitTokens()
-      } else {
-        submittedTokenModel.clear()
-      }
-    })
-
-    // Initialize tokens
-    defaultTokenModel.set(urlTokenModel.toJSON())
-
-    const submitTokens = () => {
-      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-      FormUtils.submitForm({ replaceState: pageLoading })
-    }
-
-    const setToken = (name, value) => {
-      defaultTokenModel.set(name, value)
-      submittedTokenModel.set(name, value)
-    }
-
-    const unsetToken = (name) => {
-      defaultTokenModel.unset(name)
-      submittedTokenModel.unset(name)
-    }
-
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -105,10 +40,10 @@ require([
 
     // Toast definition
     const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Connection error', 1000, 250, 250)
-    const errorWhenDeletingRow = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
-    const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
+    const errorWhenDeletingRowToast = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
+    const successConnectionToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
     const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
-
+    const selectedApiErrorToast = new Toast('error', 'toast-bottom-right', 'Selected API is down. Please check the connection or change to another API', 1000, 250, 250)
 
     /**
      * Check if an URL is valid or not
@@ -143,15 +78,129 @@ require([
     }
 
     /**
-     * Set a status (green/red) light for API connecting
-     * @param {object} jsonData 
+     * Deletes a manager by id
+     * @param {String} key 
      */
-    const showStatusConnectionToast = async () => {
+    const removeManager = async (key) => {
       try {
-        await service.checkConnection()
-        successToast.show()
+        await service.remove(key)
+        await drawApiList()
+      } catch (err) {
+        errorWhenDeletingRowToast.show()
+      }
+    }
+
+    /**
+     * Checks connection with a manager API
+     * @param {String} key 
+     */
+    const checkManagerConnection = async (key) => {
+      try {
+        await service.checkApiConnection(key)
+        successConnectionToast.show()
       } catch (err) {
         errorConnectionToast.show()
+      }
+    }
+
+    /**
+     * Clears the API table
+     */
+    const clearTable = () => {
+      $('#apiList').empty()
+    }
+
+    /**
+     * Draws the API list
+     * @param {Array} apis 
+     */
+    const drawApiList = async apis => {
+      try {
+        const { apiList } = await service.loadCredentialData()
+        if (apiList && apiList.length > 0) {
+          clearTable()
+          $('#apiList').html(
+            '<table class="highlight"> ' +
+            '  <thead> ' +
+            '    <tr> ' +
+            '        <th>URL</th> ' +
+            '        <th>Port</th> ' +
+            '        <th>Username</th> ' +
+            '        <th>Actions</th> ' +
+            '        <th>Selected</th> ' +
+            '    </tr> ' +
+            '  </thead> ' +
+            '  <tbody id="tableBody"> ' +
+            '  </tbody> ' +
+            '</table> '
+          )
+          for (const api of apiList) {
+            $('#tableBody').append(
+              '    <tr> ' +
+              '      <td>' + api.url + '</td> ' +
+              '      <td>' + api.portapi + '</td> ' +
+              '      <td>' + api.userapi + '</td> ' +
+              '      <td><i id="' + api._key + '" tooltip="Set as default Manager" class="fa fa-star font-size-18 wz-cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="' + api._key + '" class="fa fa-trash wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i>' +
+              ' <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
+              ' <td>' + (api.selected === false ? '' : 'yes') + '</td> ' +
+              ' </tr> '
+            )
+          }
+        } else {
+          clearTable()
+          $('#apiList').html('<h4>Any API was inserted. You must have at least one API for using Splunk app for Wazuh.</h4>')
+        }
+      } catch (err) {
+        Promise.reject(err)
+      }
+    }
+
+    /**
+     * Edits a manager connection
+     * @param {String} key 
+     */
+    const selectManager = async (key) => {
+      try {
+        await service.checkApiConnection(key)
+        await service.chose(key)
+        await drawApiList()
+      } catch (err) {
+        errorConnectionToast.show()
+      }
+    }
+
+    /**
+     * Click on delete manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-trash", function (e) {
+      removeManager(this.id)
+    })
+
+    /**
+     * Click on select manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-star", function (e) {
+      selectManager(this.id)
+    })
+
+    /**
+     * Click on check manager
+     */
+    $('#apiList').on("click", "#tableBody tr td i.fa-refresh", function (e) {
+      checkManagerConnection(this.id)
+    })
+
+    /**
+     * Intercepts an HTTP requests before it's sended
+     * @param {Object} xhr 
+     */
+    const httpInterceptor = async (xhr) => {
+      try {
+        await service.checkConnection()
+      } catch (err) {
+        errorConnectionToast.show()
+        xhr.abort()
       }
     }
 
@@ -160,35 +209,19 @@ require([
      */
     const firstLoad = async () => {
       try {
-        const data = await service.get("storage/collections/data/credentials/")
-        await showStatusConnectionToast()
+        await drawApiList()
+        await service.checkConnection()
+        successConnectionToast.show()
       } catch (err) {
         console.error('error at loading data', err.message || err)
+        selectedApiErrorToast.show()
       }
     }
+
     /**
      * On document ready
      */
     $(document).ready(() => firstLoad())
-
-    /**
-     * Searches and draws for already stored credentials
-     */
-    const search1 = new SearchManager({
-      "id": "search1",
-      "status_buckets": 0,
-      "sample_ratio": null,
-      "search": "| inputlookup kvstore_lookup | eval  KeyID = _key | table url,portapi,userapi | rename url as URL, portapi as Port, userapi as Username",
-      "latest_time": "now",
-      "earliest_time": "-24h@h",
-      "cancelOnUnload": true,
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": false
-    }, { tokens: true })
 
     $('header').remove()
     new LayoutView({ "hideSplunkBar": false, "hideFooter": false, "hideChrome": false, "hideAppBar": false })
@@ -196,172 +229,91 @@ require([
       .getContainerElement()
       .appendChild($('.dashboard-body')[0])
 
-    //
-    // DASHBOARD EDITOR
-    //
-
     new Dashboard({
       id: 'dashboard',
       el: $('.dashboard-body'),
       showTitle: true,
-      editable: true
-    }, { tokens: true }).render()
-
-    //
-    // VIEWS: VISUALIZATION ELEMENTS
-    //
-
-    const element1 = new TableElement({
-      "id": "element1",
-      "drilldown": "none",
-      "managerid": "search1",
-      "el": $('#element1')
-    }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-    //
-    // VIEWS: FORM INPUTS
-    //
-
-    const input3 = new TextInput({
-      "id": "input3",
-      "value": "$form.url$",
-      "el": $('#input3')
-    }, { tokens: true }).render()
-
-    input3.on("change", (newValue) => {
-      FormUtils.handleValueChange(input3)
-    })
-
-    const input4 = new TextInput({
-      "id": "input4",
-      "value": "$form.apiport$",
-      "el": $('#input4')
-    }, { tokens: true }).render()
-
-    input4.on("change", (newValue) => {
-      FormUtils.handleValueChange(input4)
-    })
-
-    const input5 = new TextInput({
-      "id": "input5",
-      "value": "$form.apiuser$",
-      "el": $('#input5')
-    }, { tokens: true }).render()
-
-    input5.on("change", (newValue) => {
-      FormUtils.handleValueChange(input5)
-    })
-
-    const input6 = new TextInput({
-      "id": "input6",
-      "value": "$form.apipass$",
-      "el": $('#input6')
-    }, { tokens: true }).render()
-
-    input6.on("change", (newValue) => {
-      FormUtils.handleValueChange(input6)
-    })
-
+      editable: false
+    }, { tokens: false }).render()
 
     /**
      * Reject a promise error
      * @param {object} err 
      */
     const errorHandleDeleting = async (err) => {
-      errorWhenDeletingRow.show()
+      errorWhenDeletingRowToast.show()
     }
 
     /**
      * Delete a record
      */
-    const deleteRecord = async () => {
+    const deleteAllRecords = async () => {
       try {
-        // Get the value of the key ID field
-        const tokens = mvc.Components.get("default")
         // Delete the record that corresponds to the key ID using
         // the del method to send a DELETE request
         // to the storage/collections/data/{collection}/ endpoint
         await service.delete("storage/collections/data/credentials/")
+        clearTable()
         // Run the search again to update the table
-        search1.startSearch()
       } catch (err) {
         return Promise.reject(err)
       }
     }
 
     // Call this function when the Delete Record button is clicked
-    $("#deleteRecord").click(() => deleteRecord().catch( (err) => errorHandleDeleting()))
-    // 
-    // SERVICE OBJECT
-    //
-
-    // Create a service object using the Splunk SDK for JavaScript
-    // to send REST requests
-
-    const submit = new SubmitButton({
-      id: 'submit',
-      el: $('#search_btn')
-    }, { tokens: true }).render()
+    $("#deleteRecord").click(() => deleteAllRecords().catch((err) => errorHandleDeleting()))
 
     /**
-     * Check connection when click on button
+     * Clears the data inputs
      */
-    $('#checkConnection').click(() => showStatusConnectionToast())
-
+    const clearForm = () => {
+      $('#credentialPortInput').val('')
+      $('#credentialUserInput').val('')
+      $('#credentialUrlInput').val('')
+      $('#credentialPassInput').val('')
+    }
     /**
-     *  Click on submit button
+     * Actions when submit
      */
-    submit.on("submit", async () => {
+    const clickOnSubmit = async () => {
       try {
-        // When the Submit button is clicked, get all the form fields by accessing token values
-        const tokens = mvc.Components.get("default")
-        const form_url = tokens.get("url")
-        const form_apiport = tokens.get("apiport")
-        const form_apiuser = tokens.get("apiuser")
-        const form_apipass = tokens.get("apipass")
+        // When the Submit button is clicked, get all the form fields by accessing input values
+        const form_url = $('#credentialUrlInput').val()
+        const form_apiport = $('#credentialPortInput').val()
+        const form_apiuser = $('#credentialUserInput').val()
+        const form_apipass = $('#credentialPassInput').val()
 
+        // If values are valid, register them
         if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
-          await service.delete("storage/collections/data/credentials/")
 
-          // Create a dictionary to store the field names and values
+          // Create an object to store the field names and values
           const record = {
             "url": form_url,
             "portapi": form_apiport,
             "userapi": form_apiuser,
-            "passapi": form_apipass
+            "passapi": form_apipass,
+            "selected": false
           }
-          // Use the request method to send a REST POST request
+          // Use the request method to send and insert a new record
           // to the storage/collections/data/{collection}/ endpoint
-          await service.post("storage/collections/data/credentials/", record)
+          await service.insert(record)
           // Run the search again to update the table
-          const data = await service.get("storage/collections/data/credentials/")
-          await showStatusConnectionToast(data.data)
-          search1.startSearch()
+          //search1.startSearch()
           // Clear the form fields 
-          $("#formCustomerInfo input[type=text]").val("")
+          clearForm()
+          await drawApiList()
         } else {
           invalidFormatInputToast.show()
         }
       } catch (err) {
         console.error('error at submit ', err)
       }
-    })
-
-    // Initialize time tokens to default
-    if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-      defaultTokenModel.set({ earliest: '0', latest: '' })
     }
 
-    if (!_.isEmpty(urlTokenModel.toJSON())) {
-      submitTokens()
-    }
-
-    //
-    // DASHBOARD READY
-    //
-
-    DashboardController.ready()
-    pageLoading = false
+    /**
+     * On submit click
+     */
+    $('#submitApiForm').on("click", async () => clickOnSubmit())
 
   }
 )
