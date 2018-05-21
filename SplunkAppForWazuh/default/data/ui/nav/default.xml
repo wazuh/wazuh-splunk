@@ -30,5 +30,6 @@
 </collection>
 <collection label="Configuration">
   <view name="API" default='true' />
+  <a href="about">About</a>
 </collection>
 </nav>
