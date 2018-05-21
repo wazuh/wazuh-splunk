@@ -1,5 +1,5 @@
 /*
- * Wazuh app - Overview PCI-DSS view controller
+ * Wazuh app - Overview GDPR view controller
  * Copyright (C) 2018 Wazuh, Inc.
  *
  * This program is free software you can redistribute it and/or modify
@@ -149,7 +149,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}",
+        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -165,7 +165,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups",
+        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -181,7 +181,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name",
+        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -197,7 +197,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name",
+        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -213,7 +213,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -229,7 +229,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "now",
-        "search": "| inputlookup pci1.csv  |search REQUIREMENT=\"$pci$\" | table REQUIREMENT,DESCRIPTION",
+        "search": "| inputlookup gdpr.csv  |search REQUIREMENT=\"$gdpr$\" | table REQUIREMENT,DESCRIPTION",
         "earliest_time": "-24h@h",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -245,7 +245,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "now",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
+        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
         "earliest_time": "-24h@h",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -434,7 +434,7 @@ require([
       element5.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
+          var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
           utils.redirect(url, false, "_blank");
         }
       });
@@ -476,13 +476,13 @@ require([
           { "label": "ALL", "value": "*" }
         ],
         "searchWhenChanged": true,
-        "valueField": "rule.pci_dss{}",
+        "valueField": "rule.gdpr{}",
         "showClearButton": true,
         "initialValue": "*",
         "default": "*",
-        "labelField": "rule.pci_dss{}",
+        "labelField": "rule.gdpr{}",
         "selectFirstChoice": false,
-        "value": "$form.pci$",
+        "value": "$form.gdpr$",
         "managerid": "search7",
         "el": $('#input2')
       }, { tokens: true }).render();
