@@ -34,7 +34,7 @@ require([
     /**
      * Check connection before load the content
      */
-    service.checkConnection().then((api) => {
+    service.checkSelectedApiConnection().then((api) => {
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager logs list', 1000, 250, 250)
 

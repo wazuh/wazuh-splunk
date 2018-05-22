@@ -97,7 +97,7 @@ require([
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
-    service.checkConnection().then((api) => {
+    service.checkSelectedApiConnection().then((api) => {
 
       // 
       // TOKENS

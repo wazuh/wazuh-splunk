@@ -29,7 +29,7 @@ require([
   ) {
 
     const service = new services()
-    service.checkConnection().then((api) => {
+    service.checkSelectedApiConnection().then((api) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()

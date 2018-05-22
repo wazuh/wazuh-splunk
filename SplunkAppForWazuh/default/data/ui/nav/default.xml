@@ -29,6 +29,7 @@
   <a href="gdpr">GDPR</a>
 </collection>
 <collection label="Configuration">
-  <view name="API" default='true' />
+  <a href="API" default='true'>API</a>
+  <a href="about">About</a>
 </collection>
 </nav>

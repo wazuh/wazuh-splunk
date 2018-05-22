@@ -43,7 +43,7 @@ require([
     const errorWhenDeletingRowToast = new Toast('error', 'toast-bottom-right', 'Error when deleting API', 1000, 250, 250)
     const successConnectionToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
     const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
-    const selectedApiErrorToast = new Toast('error', 'toast-bottom-right', 'Selected API is down. Please check the connection or change to another API', 1000, 250, 250)
+    const selectedApiErrorToast = new Toast('error', 'toast-bottom-right', 'No working API was selected.', 1000, 250, 250)
 
     /**
      * Check if an URL is valid or not
@@ -197,7 +197,7 @@ require([
      */
     const httpInterceptor = async (xhr) => {
       try {
-        await service.checkConnection()
+        await service.checkSelectedApiConnection()
       } catch (err) {
         errorConnectionToast.show()
         xhr.abort()
@@ -209,11 +209,13 @@ require([
      */
     const firstLoad = async () => {
       try {
+        await service.checkSelectedApiConnection()
         await drawApiList()
-        await service.checkConnection()
         successConnectionToast.show()
       } catch (err) {
         console.error('error at loading data', err.message || err)
+        await service.deselectAllApis()
+        await drawApiList()
         selectedApiErrorToast.show()
       }
     }
