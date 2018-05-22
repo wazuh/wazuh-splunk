@@ -15,26 +15,22 @@ require([
   "jquery",
   "splunkjs/mvc/layoutview",
   "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+    "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
     mvc,
     $,
     LayoutView,
     tableView,
-    services,
-    Toast,
-    promisedReq
+    ApiService,
+    Toast
   ) {
-
-    const service = new services()
 
     /**
      * Check connection before load the content
      */
-    service.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager logs list', 1000, 250, 250)
 
@@ -43,7 +39,6 @@ require([
        */
       const initializeManagerLogs = async () => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
           const opts = {
             pages: 10,
             processing: true,
@@ -58,7 +53,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myLogTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/logs?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
+          table.build('/manager/logs?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
         } catch (err) {
           errorToast.show()
         }

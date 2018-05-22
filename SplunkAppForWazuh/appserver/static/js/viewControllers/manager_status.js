@@ -43,10 +43,9 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js"
+
 ],
   function (
     mvc,
@@ -81,29 +80,19 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    services,
-    Toast
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
+    CredentialService,
+    Toast,
+    ApiService
   ) {
 
     let pageLoading = true
 
-
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
     const urlTokenModel = new UrlTokenModel()
     mvc.Components.registerInstance('url', urlTokenModel)
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
-    service.checkSelectedApiConnection().then((api) => {
-
+    CredentialService.checkSelectedApiConnection().then((api) => {
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -136,7 +125,7 @@ require([
        */
       const loadTokensWithCredentialAPI = async () => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
+          const baseUrl = await ApiService.getBaseUrl()
           setToken('baseip', baseUrl)
           setToken('url', api.url)
           setToken('portapi', api.portapi)
@@ -148,10 +137,7 @@ require([
         }
       }
 
-
-
       $(document).ready(() => loadTokensWithCredentialAPI())
-
 
       const search1 = new SearchManager({
         "id": "search1",

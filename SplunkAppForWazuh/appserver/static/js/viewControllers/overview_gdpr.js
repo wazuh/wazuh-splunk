@@ -43,11 +43,7 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
     mvc,
@@ -82,59 +78,45 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    services,
-    Toast,
-    promisedReq
-
-    // Add comma-separated parameter names here, for example:
-    // ...UrlTokenModel,
-    // TokenForwarder
+    CredentialService,
+    Toast
   ) {
 
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
-    const service = new services()
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
-    service.checkSelectedApiConnection().then((api) => {
+      let pageLoading = true
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
-
-      var pageLoading = true;
-
-
-      //
-      // TOKENS
-      //
-
-      // Create token namespaces
-      var urlTokenModel = new UrlTokenModel();
-      mvc.Components.registerInstance('url', urlTokenModel);
-      var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-      var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
       urlTokenModel.on('url:navigate', function () {
-        defaultTokenModel.set(urlTokenModel.toJSON());
+        defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens();
+          submitTokens()
         } else {
-          submittedTokenModel.clear();
+          submittedTokenModel.clear()
         }
-      });
+      })
 
       // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON());
+      defaultTokenModel.set(urlTokenModel.toJSON())
 
-      function submitTokens() {
+      const submitTokens = () => {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-        FormUtils.submitForm({ replaceState: pageLoading });
+        FormUtils.submitForm({ replaceState: pageLoading })
       }
 
-      function setToken(name, value) {
-        defaultTokenModel.set(name, value);
-        submittedTokenModel.set(name, value);
+      const setToken = (name, value) => {
+        defaultTokenModel.set(name, value)
+        submittedTokenModel.set(name, value)
       }
 
-      function unsetToken(name) {
-        defaultTokenModel.unset(name);
-        submittedTokenModel.unset(name);
+      const unsetToken = (name) => {
+        defaultTokenModel.unset(name)
+        submittedTokenModel.unset(name)
       }
 
 
@@ -144,7 +126,7 @@ require([
       //
 
 
-      var search1 = new SearchManager({
+      const search1 = new SearchManager({
         "id": "search1",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -158,9 +140,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search2 = new SearchManager({
+      const search2 = new SearchManager({
         "id": "search2",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -174,9 +156,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search3 = new SearchManager({
+      const search3 = new SearchManager({
         "id": "search3",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -190,9 +172,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search4 = new SearchManager({
+      const search4 = new SearchManager({
         "id": "search4",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -206,9 +188,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search5 = new SearchManager({
+      const search5 = new SearchManager({
         "id": "search5",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -222,9 +204,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search6 = new SearchManager({
+      const search6 = new SearchManager({
         "id": "search6",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -238,9 +220,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search7 = new SearchManager({
+      const search7 = new SearchManager({
         "id": "search7",
         "status_buckets": 0,
         "sample_ratio": null,
@@ -254,18 +236,18 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true });
+      }, { tokens: true })
 
 
       //
       // SPLUNK LAYOUT
       //
 
-      $('header').remove();
+      $('header').remove()
       new LayoutView({ "hideAppBar": false, "hideChrome": false, "hideSplunkBar": false })
         .render()
         .getContainerElement()
-        .appendChild($('.dashboard-body')[0]);
+        .appendChild($('.dashboard-body')[0])
 
       //
       // DASHBOARD EDITOR
@@ -276,14 +258,14 @@ require([
         el: $('.dashboard-body'),
         showTitle: true,
         editable: true
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
 
       //
       // VIEWS: VISUALIZATION ELEMENTS
       //
 
-      var element1 = new ChartElement({
+      const element1 = new ChartElement({
         "id": "element1",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -314,10 +296,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search1",
         "el": $('#element1')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element2 = new ChartElement({
+      const element2 = new ChartElement({
         "id": "element2",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -348,10 +330,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search2",
         "el": $('#element2')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element3 = new ChartElement({
+      const element3 = new ChartElement({
         "id": "element3",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -382,10 +364,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search3",
         "el": $('#element3')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element4 = new ChartElement({
+      const element4 = new ChartElement({
         "id": "element4",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -416,10 +398,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search4",
         "el": $('#element4')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element5 = new TableElement({
+      const element5 = new TableElement({
         "id": "element5",
         "dataOverlayMode": "heatmap",
         "drilldown": "cell",
@@ -429,17 +411,17 @@ require([
         "wrap": "false",
         "managerid": "search5",
         "el": $('#element5')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       element5.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
-      var element6 = new TableElement({
+      const element6 = new TableElement({
         "id": "element6",
         "count": 20,
         "dataOverlayMode": "none",
@@ -450,27 +432,27 @@ require([
         "wrap": "true",
         "managerid": "search6",
         "el": $('#element6')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       //
       // VIEWS: FORM INPUTS
       //
 
-      var input1 = new TimeRangeInput({
+      const input1 = new TimeRangeInput({
         "id": "input1",
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "earliest_time": "$form.when.earliest$",
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       input1.on("change", function (newValue) {
-        FormUtils.handleValueChange(input1);
-      });
+        FormUtils.handleValueChange(input1)
+      })
 
-      var input2 = new DropdownInput({
+      const input2 = new DropdownInput({
         "id": "input2",
         "choices": [
           { "label": "ALL", "value": "*" }
@@ -485,32 +467,32 @@ require([
         "value": "$form.gdpr$",
         "managerid": "search7",
         "el": $('#input2')
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       input2.on("change", function (newValue) {
-        FormUtils.handleValueChange(input2);
-      });
+        FormUtils.handleValueChange(input2)
+      })
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' });
+          submittedTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
+        defaultTokenModel.set({ earliest: '0', latest: '' })
       }
 
-      submitTokens();
+      submitTokens()
 
 
       //
       // DASHBOARD READY
       //
 
-      DashboardController.ready();
-      pageLoading = false;
+      DashboardController.ready()
+      pageLoading = false
     }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
 
   }
