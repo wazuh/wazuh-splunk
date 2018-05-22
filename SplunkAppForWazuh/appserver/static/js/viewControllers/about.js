@@ -14,9 +14,10 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialServices.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js"
 ],
   function (
     mvc,
@@ -24,7 +25,8 @@ require([
     LayoutView,
     credentialServices,
     Toast,
-    promisedReq
+    promisedReq,
+    ApiService
 
   ) {
 
@@ -36,18 +38,11 @@ require([
      */
     const loadAboutContent = async () => {
       try {
-        const baseUrl = await credentialServices.apiGet('/manager/check_version')
-        // const versionData = await promisedReq.get()
-        // $('#jsonOutput').text(jsonObj.global.jsonout_output)
-        // $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)
-        // $('#nameCluster').text(jsonObj.cluster.name)
-        // $('#typeCluster').text(jsonObj.cluster.node_type)
-        // $('#sysFreq').text(jsonObj.syscheck.frequency)
-        // $('#sysAlertNewFiles').text(jsonObj.syscheck.alert_new_files)
-        // $('#rootFreq').text(jsonObj.rootcheck.frequency)
-        // $('#rootSkipNFS').text(jsonObj.rootcheck.skip_nfs)
-        // $('#authPurge').text(jsonObj.auth.purge)
-        // $('#authForceInsert').text(jsonObj.auth.force_insert)
+        const versions = await ApiService.get('/manager/current_version')
+        console.log('versions',versions)
+        $('#wazuhVersion').text(versions[0].wazuhversion)
+        $('#appVersion').text(versions[0].appversion)
+        $('#appRevision').text(versions[0].apprevision)
 
       } catch (err) {
         errorConnectionToast.show()
