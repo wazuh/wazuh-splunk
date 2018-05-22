@@ -133,17 +133,14 @@ define(function (require, exports, module) {
     async chose(key) {
       try {
         const { apiList } = await this.loadCredentialData()
-        console.log('starting invalidating array of apiList ', apiList)
         for (let api of apiList) {
           if (api._key === key) {
             const manager = api
             manager.selected = true
-            console.log('validating ', api)
             await this.update(api._key, manager)
             localStorage.clear('selectedApi')
             localStorage.setItem('selectedApi',JSON.stringify(api))
           } else {
-            console.log('invalidating ', api)
             api.selected = false
             await this.update(api._key, api)
           }
@@ -153,6 +150,27 @@ define(function (require, exports, module) {
         return Promise.reject(err)
       }
     }
+
+    /**
+     * Deselect all stored APIs 
+     * @param {String} key 
+     */
+    async deselectAllApis() {
+      try {
+        const { apiList } = await this.loadCredentialData()
+        for (let api of apiList) {
+          if (api.selected) {
+            const manager = api
+            manager.selected = false
+            await this.update(api._key, manager)
+          } 
+        }
+        return 
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
 
     /**
      * Insert a new record in the KVstore DB
@@ -187,7 +205,7 @@ define(function (require, exports, module) {
      * Check if connection with selected API was successful
      * @param {Object} apiList 
      */
-    async checkConnection() {
+    async checkSelectedApiConnection() {
       try {
         const currentApi = this.localStorage.get('selectedApi')
         if(!currentApi) throw new Error('No API')
