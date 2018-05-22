@@ -11,7 +11,6 @@
  */
 
 define(function (require, exports, module) {
-  const $ = require('jquery')
   const mvc = require('splunkjs/mvc')
   const asyncReq = require('./promisedReq.js')
   const LocalStorage = require('./localStorage.js')
