@@ -15,31 +15,29 @@ require([
   "splunkjs/mvc/layoutview",
   "/static/app/SplunkAppForWazuh/js/customViews/agentsTable.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
-
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
     $,
     LayoutView,
     agentsTable,
-    services,
-    Toast,
-    promisedReq
+    CredentialService,
+    ApiService,
+    Toast
 
   ) {
 
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
-    service.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
       /**
        * Initializes agent table
        */
       const initializeAgentTable = async () => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
+          const baseUrl = await ApiService.getBaseUrl()
           const urlData = {
             baseUrl: baseUrl,
             ipApi: api.url,
