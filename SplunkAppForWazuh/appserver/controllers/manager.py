@@ -16,11 +16,13 @@ import sys
 import json
 import requests
 # from splunk import AuthorizationFailed as AuthorizationFailed
+from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-_APPNAME = 'wazuh'
+_APPNAME = 'SplunkAppForWazuh'
+
 def setup_logger(level):
   """
   Setup a logger for the REST handler.
@@ -74,6 +76,22 @@ class manager(controllers.BaseController):
     result = json.dumps(request)
     return result
     
+  @expose_page(must_login=False, methods=['GET'])
+  def current_version(self, **kwargs):
+    app = cli.getConfStanza('version','app')
+    app_version = app.get('version')
+    app_revision = app.get('revision')
+    wazuh = cli.getConfStanza('version','wazuh')
+    wazuh_version = wazuh.get('version')
+    my_arr = []
+    version_dict = {}
+    version_dict['appversion'] = app_version
+    version_dict['apprevision'] = app_revision
+    version_dict['wazuhversion'] = wazuh_version
+    my_arr.append(version_dict)
+    data_temp = json.dumps(my_arr)
+    return data_temp
+
   @expose_page(must_login=False, methods=['GET'])
   def status(self, **kwargs):
     opt_username = kwargs["user"]
