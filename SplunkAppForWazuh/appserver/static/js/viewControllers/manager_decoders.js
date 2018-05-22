@@ -93,7 +93,6 @@ require([
     mvc.Components.registerInstance('url', urlTokenModel)
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
     CredentialService.checkSelectedApiConnection().then((api) => {
       urlTokenModel.on('url:navigate', () => {

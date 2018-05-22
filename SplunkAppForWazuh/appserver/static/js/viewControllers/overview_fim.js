@@ -84,9 +84,6 @@ require([
 
     let pageLoading = true
 
-    const service = new services()
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
-
     CredentialService.checkSelectedApiConnection().then((api) => {
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel()
@@ -94,6 +91,7 @@ require([
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
       let baseUrl = ""
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())

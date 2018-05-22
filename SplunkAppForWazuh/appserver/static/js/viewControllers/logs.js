@@ -15,7 +15,8 @@ require([
   "jquery",
   "splunkjs/mvc/layoutview",
   "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-    "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
@@ -24,6 +25,7 @@ require([
     LayoutView,
     tableView,
     ApiService,
+    CredentialService,
     Toast
   ) {
 

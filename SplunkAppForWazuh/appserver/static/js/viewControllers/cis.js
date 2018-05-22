@@ -85,7 +85,6 @@ require([
 
     let pageLoading = true
 
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
     CredentialService.checkSelectedApiConnection().then((api) => {
 
