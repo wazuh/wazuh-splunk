@@ -43,12 +43,9 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
     mvc,
@@ -83,9 +80,9 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    services,
-    Toast,
-    promisedReq
+    CredentialService,
+    ApiService,
+    Toast
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -93,11 +90,9 @@ require([
   ) {
 
     let pageLoading = true
-
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
-    service.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
       // 
       // TOKENS
@@ -138,7 +133,7 @@ require([
 
       const loadAndSetCredentialData = async () => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
+          const baseUrl = await ApiService.getBaseUrl()
           setToken('baseip', baseUrl)
           setToken('url', api.url)
           setToken('portapi', api.portapi)

@@ -13,23 +13,22 @@
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
-
-
+  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 ],
   function (
     $,
     LayoutView,
-    services,
+    CredentialService,
+    ApiService,
     Toast,
     promisedReq
 
   ) {
 
-    const service = new services()
-    service.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
@@ -540,7 +539,7 @@ require([
        */
       const loadAgentConfig = async groupInformationEndpoint => {
         try {
-          const groupConfJSON = await promisedReq.promisedGet(groupInformationEndpoint)
+          const groupConfJSON = await ApiService.get(groupInformationEndpoint)
           await initializeData(groupConfJSON.items[0].config)
         } catch (err) {
           return Promise.reject(err)
@@ -553,7 +552,7 @@ require([
        */
       const agentList = async agentListEndpoint => {
         try {
-          const agentListJson = await promisedReq.promisedGet(agentListEndpoint)
+          const agentListJson = await ApiService.get(agentListEndpoint)
           for (const agent of agentListJson.data.items)
             $('#agentList').append(
               '<option value="' + agent.id + '">' + agent.name + ' - ' + agent.id + '</option>'
@@ -564,20 +563,19 @@ require([
       }
 
       /**
-       * Load backend address,port and request agent configuration data
+       * Request agent configuration data
        */
       const loadData = async (id) => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
-          let endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + id
-          let parsedJson = await promisedReq.promisedGet(endPoint)
-          const agentListEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+          let endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + id
+          let parsedJson = await ApiService.get(endPoint)
+          const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           await agentList(agentListEndpoint)
 
           let group = parsedJson.group
           let groupInformationEndpoint = ''
           if (typeof group !== 'undefined') {
-            groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
+            groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
           } else {
             $('#dynamicContent').html(
@@ -588,14 +586,14 @@ require([
           }
 
           $('#agentList').on('change', async function () {
-            endPoint = baseUrl + '/custom/SplunkAppForWazuh/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + this.value
-            parsedJson = await promisedReq.promisedGet(endPoint)
+            endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + this.value
+            parsedJson = await ApiService.get(endPoint)
             group = parsedJson.group
 
             if (typeof group !== 'undefined') {
               $('#dynamicList').hide()
               $('#dynamicContent').empty()
-              groupInformationEndpoint = baseUrl + '/custom/SplunkAppForWazuh/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
+              groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
               await loadAgentConfig(groupInformationEndpoint)
               $('#dynamicList').show()
 

@@ -28,12 +28,36 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Generated and returns the browser base URL + Splunk Port
+     */
+    static getWellFormedUri(endpoint) {
+      return ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint
+    }
+
+    /**
      * GET method
      * @param {String} url 
      */
     static async get(endpoint) {
       try {
-        return await asyncReq.promisedGet(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint)
+        let result = await asyncReq.promisedGet(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh' + endpoint)
+        if (typeof result !== 'object') {
+          result = JSON.parse(result)
+        }
+        return result
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * POST method
+     * @param {String} url 
+     * @param {Object} payload 
+     */
+    static async post(endpoint, payload) {
+      try {
+        return await asyncReq.promisedPost(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh' + endpoint, payload)
       } catch (err) {
         return Promise.reject(err)
       }

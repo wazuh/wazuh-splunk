@@ -14,7 +14,8 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 ],
@@ -22,14 +23,14 @@ require([
     mvc,
     $,
     LayoutView,
-    services,
+    CredentialService,
+    ApiService,
     Toast,
     promisedReq
 
   ) {
 
-    const service = new services()
-    service.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
@@ -262,9 +263,8 @@ require([
        */
       const loadConfigurationContent = async () => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
-          const endPoint = baseUrl + '/custom/SplunkAppForWazuh/manager/configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-          const jsonObj = await promisedReq.promisedGet(endPoint)
+          const endPoint = '/manager/configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+          const jsonObj = await ApiService.get(endPoint)
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)

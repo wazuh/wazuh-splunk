@@ -16,7 +16,7 @@ require([
   "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
@@ -26,11 +26,10 @@ require([
     LayoutView,
     Dashboard,
     asyncReq,
-    services,
+    CredentialService,
     Toast
 
   ) {
-    const service = new services()
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -83,7 +82,7 @@ require([
      */
     const removeManager = async (key) => {
       try {
-        await service.remove(key)
+        await CredentialService.remove(key)
         await drawApiList()
       } catch (err) {
         errorWhenDeletingRowToast.show()
@@ -96,7 +95,7 @@ require([
      */
     const checkManagerConnection = async (key) => {
       try {
-        await service.checkApiConnection(key)
+        await CredentialService.checkApiConnection(key)
         successConnectionToast.show()
       } catch (err) {
         errorConnectionToast.show()
@@ -114,9 +113,9 @@ require([
      * Draws the API list
      * @param {Array} apis 
      */
-    const drawApiList = async apis => {
+    const drawApiList = async () => {
       try {
-        const { apiList } = await service.loadCredentialData()
+        const apiList = await CredentialService.getApiList()
         if (apiList && apiList.length > 0) {
           clearTable()
           $('#apiList').html(
@@ -162,10 +161,11 @@ require([
      */
     const selectManager = async (key) => {
       try {
-        await service.checkApiConnection(key)
-        await service.chose(key)
+        await CredentialService.checkApiConnection(key)
+        await CredentialService.chose(key)
         await drawApiList()
       } catch (err) {
+        console.error('error!',err)
         errorConnectionToast.show()
       }
     }
@@ -197,7 +197,7 @@ require([
      */
     const httpInterceptor = async (xhr) => {
       try {
-        await service.checkSelectedApiConnection()
+        await CredentialService.checkSelectedApiConnection()
       } catch (err) {
         errorConnectionToast.show()
         xhr.abort()
@@ -209,12 +209,12 @@ require([
      */
     const firstLoad = async () => {
       try {
-        await service.checkSelectedApiConnection()
+        await CredentialService.checkSelectedApiConnection()
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
         console.error('error at loading data', err.message || err)
-        await service.deselectAllApis()
+        await CredentialService.deselectAllApis()
         await drawApiList()
         selectedApiErrorToast.show()
       }
@@ -252,9 +252,7 @@ require([
     const deleteAllRecords = async () => {
       try {
         // Delete the record that corresponds to the key ID using
-        // the del method to send a DELETE request
-        // to the storage/collections/data/{collection}/ endpoint
-        await service.delete("storage/collections/data/credentials/")
+        await CredentialService.delete()
         clearTable()
         // Run the search again to update the table
       } catch (err) {
@@ -297,8 +295,7 @@ require([
             "selected": false
           }
           // Use the request method to send and insert a new record
-          // to the storage/collections/data/{collection}/ endpoint
-          await service.insert(record)
+          await CredentialService.insert(record)
           // Run the search again to update the table
           //search1.startSearch()
           // Clear the form fields 

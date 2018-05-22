@@ -12,7 +12,8 @@
 
 define(function (require, exports, module) {
   const $ = require('jquery')
-  const tableLib = require("../thirdPartyLibs/dataTables.min.js")
+  const ApiService = require('../utilLib/apiService.js')
+  const tableLib = require("https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js")
 
   // Exportable DataTable class
   const table = class DataTable {
@@ -47,10 +48,10 @@ define(function (require, exports, module) {
           "serverSide": opt.serverSide || true,
           "pageLength": opt.pages || 10,
           "ajax": {
-            url: urlArg,
+            url: ApiService.getWellFormedUri(urlArg),
             type: opt.method || 'get',
             dataFilter: (data) => {
-              let json = jQuery.parseJSON(data)
+              let json = JSON.parse(data)
               json.recordsTotal = json.data.totalItems
               json.recordsFiltered = json.data.totalItems
               json.data = json.data.items

@@ -44,13 +44,8 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
-
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (
     mvc,
@@ -86,30 +81,18 @@ require([
     PostProcessManager,
     UrlTokenModel,
     tableView,
-    services,
-    Toast,
-    promisedReq
-
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
+    CredentialService,
+    Toast
   ) {
 
     let pageLoading = true
 
-
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
     const urlTokenModel = new UrlTokenModel()
     mvc.Components.registerInstance('url', urlTokenModel)
     const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading ruleset info', 1000, 250, 250)
-    service.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then((api) => {
 
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -143,8 +126,6 @@ require([
        */
       const initializeRuleset = async () => {
         try {
-          const { baseUrl } = await service.loadCredentialData()
-
           const opts = {
             pages: 10,
             processing: true,
@@ -163,7 +144,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/rules?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
+          table.build('/manager/rules?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.click(function (data) {
             setToken("showDetails", "true")
             setToken("id", data.id || "-")
