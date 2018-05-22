@@ -29,7 +29,7 @@ require([
   ) {
 
     const service = new services()
-    service.checkConnection().then((api) => {
+    service.checkSelectedApiConnection().then((api) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)

@@ -102,7 +102,7 @@ require([
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
-    service.checkConnection().then((api) => {
+    service.checkSelectedApiConnection().then((api) => {
 
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
