@@ -42,7 +42,7 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
   // Add comma-separated libraries and modules manually here, for example:
   // ..."splunkjs/mvc/simplexml/urltokenmodel",

@@ -44,7 +44,7 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
 

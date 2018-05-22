@@ -13,7 +13,7 @@
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
 

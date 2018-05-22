@@ -16,7 +16,7 @@ require([
   "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
   "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
+  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
 ],
   function (

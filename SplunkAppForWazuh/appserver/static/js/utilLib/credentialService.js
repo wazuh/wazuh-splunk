@@ -139,13 +139,13 @@ define(function (require, exports, module) {
             manager.selected = true
             await this.update(api._key, manager)
             localStorage.clear('selectedApi')
-            localStorage.setItem('selectedApi',JSON.stringify(api))
+            localStorage.setItem('selectedApi', JSON.stringify(api))
           } else {
             api.selected = false
             await this.update(api._key, api)
           }
         }
-        return 
+        return
       } catch (err) {
         return Promise.reject(err)
       }
@@ -163,9 +163,9 @@ define(function (require, exports, module) {
             const manager = api
             manager.selected = false
             await this.update(api._key, manager)
-          } 
+          }
         }
-        return 
+        return
       } catch (err) {
         return Promise.reject(err)
       }
@@ -208,7 +208,7 @@ define(function (require, exports, module) {
     async checkSelectedApiConnection() {
       try {
         const currentApi = this.localStorage.get('selectedApi')
-        if(!currentApi) throw new Error('No API')
+        if (!currentApi) throw new Error('No API')
         const apiInJsonFormat = JSON.parse(currentApi)
         await this.checkApiConnection(apiInJsonFormat._key)
         return apiInJsonFormat
