@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
-## Wazuh v3.2.3 - Splunk Enterprise v7.1.0 - Splunk app v3.2.3
+## Wazuh v3.2.3 - Splunk Enterprise v7.1.0 - Splunk app v3.2.3-rev-6
+### Added
+- New About tab ([#67](https://github.com/wazuh/wazuh-splunk/pull/67))
+- New GDPR tabs ([#66](https://github.com/wazuh/wazuh-splunk/pull/66))
+### Changed
+- Multi-API support ([#65](https://github.com/wazuh/wazuh-splunk/pull/65))
+
+## Wazuh v3.2.3 - Splunk Enterprise v7.1.0 - Splunk app v3.2.3-rev-5
 There are no changes for Splunk app for Wazuh in this version.
 ## Wazuh v3.2.2 - Splunk Enterprise v7.1.0 - Splunk app v3.2.2
 ### Added
