@@ -11,25 +11,122 @@
  */
 require([
   "splunkjs/mvc",
+  "splunkjs/mvc/utils",
+  "splunkjs/mvc/simplexml",
+  "splunkjs/mvc/simplexml/dashboardview",
   "underscore",
+  "splunkjs/mvc/tokenutils",
   "jquery",
   "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js",
   "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/utilLib/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
+  "splunkjs/mvc/simplexml/searcheventhandler",
+  "splunkjs/mvc/simpleform/input/dropdown",
+  "splunkjs/mvc/searchmanager",
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "splunkjs/mvc/simpleform/formutils"
+
 ],
   function (
     mvc,
+    utils,
+    DashboardController,
+    Dashboard,
     _,
+    TokenUtils,
     $,
     LayoutView,
     Dashboard,
-    asyncReq,
     CredentialService,
-    Toast
-
+    IndexService,
+    Toast,
+    SearchEventHandler,
+    DropdownInput,
+    SearchManager,
+    UrlTokenModel,
+    FormUtils
   ) {
+    let pageLoading = true
+    const urlTokenModel = new UrlTokenModel()
+    mvc.Components.registerInstance('url', urlTokenModel)
+    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    let baseUrl = ''
+    urlTokenModel.on('url:navigate', () => {
+      defaultTokenModel.set(urlTokenModel.toJSON())
+      if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+        submitTokens()
+      } else {
+        submittedTokenModel.clear()
+      }
+    })
+
+    // Initialize tokens
+    defaultTokenModel.set(urlTokenModel.toJSON())
+
+    const submitTokens = () => {
+      // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+      FormUtils.submitForm({ replaceState: pageLoading })
+    }
+
+    const setToken = (name, value) => {
+      defaultTokenModel.set(name, value)
+      submittedTokenModel.set(name, value)
+    }
+
+    const unsetToken = (name) => {
+      defaultTokenModel.unset(name)
+      submittedTokenModel.unset(name)
+    }
+
+    $(document).ready(() => {
+      const urlTemp = window.location.href
+      const arr = urlTemp.split("/")
+      baseUrl = arr[0] + "//" + arr[2]
+    })
+
+    const searchIndexes = new SearchManager({
+      "id": "searchIndexes",
+      "cancelOnUnload": true,
+      "sample_ratio": null,
+      "earliest_time": "-24h@h",
+      "status_buckets": 0,
+      "search": "| metasearch index=\"*\" sourcetype=wazuh | stats count by index, sourcetype | fields index",
+      "latest_time": "now",
+      "app": utils.getCurrentApp(),
+      "auto_cancel": 90,
+      "preview": true,
+      "tokenDependencies": {
+      },
+      "runWhenTimeIsUndefined": false
+    }, { tokens: true })
+
+
+    const inputIndexes = new DropdownInput({
+      "id": "inputIndexes",
+      "choices": [
+        { "label": "ALL", "value": "*" }
+      ],
+      "labelField": "index",
+      "searchWhenChanged": true,
+      "default": "*",
+      "valueField": "index",
+      "initialValue": "*",
+      "selectFirstChoice": false,
+      "showClearButton": true,
+      "value": "$form.index$",
+      "managerid": "searchIndexes",
+      "el": $('#inputIndexes')
+    }, { tokens: true }).render()
+
+    inputIndexes.on("change", (newValue) => {
+      IndexService.select(newValue)
+      FormUtils.handleValueChange(inputIndexes)
+    })
+
+
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -127,6 +224,7 @@ require([
             '        <th>Username</th> ' +
             '        <th>Actions</th> ' +
             '        <th>Selected</th> ' +
+            '        <th>Cluster</th> ' +
             '    </tr> ' +
             '  </thead> ' +
             '  <tbody id="tableBody"> ' +
@@ -143,6 +241,7 @@ require([
               ' <i id="' + api._key + '" class="fa fa-trash wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i>' +
               ' <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
               ' <td>' + (api.selected === false ? '' : 'yes') + '</td> ' +
+              ' <td>' + (api.clustered === false ? 'disabled' : 'enabled') + '</td> ' +
               ' </tr> '
             )
           }
@@ -204,11 +303,29 @@ require([
       }
     }
 
+    const selectOption = (evt, tabName) => {
+      console.log('selectoption',tabName)
+      let i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("wz-tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+  }
+  
+
     /**
      * Check if connection is OK at starting view
      */
     const firstLoad = async () => {
       try {
+        $('#mainFrame').removeClass('wz-loading')
+        $('#apiTab').click()
         await CredentialService.checkSelectedApiConnection()
         await drawApiList()
         successConnectionToast.show()
@@ -223,6 +340,10 @@ require([
     /**
      * On document ready
      */
+    $('#apiTab').click( () => selectOption(event,'API'))
+    $('#indexesTab').click( () => selectOption(event,'Indexes'))
+    $('#aboutTab').click( () => selectOption(event,'About'))
+
     $(document).ready(() => firstLoad())
 
     $('header').remove()
@@ -313,6 +434,23 @@ require([
      * On submit click
      */
     $('#submitApiForm').on("click", async () => clickOnSubmit())
+
+    
+    DashboardController.onReady(() => {
+      if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
+        submittedTokenModel.set({ earliest: '0', latest: '' })
+      }
+    })
+
+    // Initialize time tokens to default
+    if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+      defaultTokenModel.set({ earliest: '0', latest: '' })
+    }
+
+    submitTokens()
+
+    DashboardController.ready()
+    pageLoading = false
 
   }
 )

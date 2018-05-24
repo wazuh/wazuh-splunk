@@ -130,7 +130,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}",
+        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -146,7 +146,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups",
+        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -162,7 +162,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name",
+        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -178,7 +178,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name",
+        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -194,7 +194,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -226,7 +226,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "now",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
+        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
         "earliest_time": "-24h@h",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -415,7 +415,7 @@ require([
       element5.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })
