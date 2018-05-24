@@ -27,7 +27,7 @@
   </script>
 </head>
 
-<body class="simplexml preload locale-en" data-splunk-version="7.0.3" data-splunk-product="enterprise">
+<body class="simplexml preload locale-en" data-splunk-version="7.1.0" data-splunk-product="enterprise">
   <header>
     <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
     <div class="header splunk-header">
@@ -38,52 +38,75 @@
       </div>
       <div id="placeholder-app-bar"></div>
     </div>
-    <a id="navSkip"></a>
+    <!-- <a id="navSkip"></a> -->
   </header>
-  <div class="dashboard-body container-fluid main-section-body" data-role="main">
-    <h3>API configuration</h3>
-    <div>
-      <div class="fieldset">
 
-        <div class="input input-text">
-          <label>URL</label>
-          <input type="text" id='credentialUrlInput'>
-        </div>
-        <div class="input input-text">
-          <label>Port</label>
-          <input type="text"  id='credentialPortInput'>
+  <div class="dashboard-body" id='dashboardBody'>
+    <div id='mainFrame' class='dashboardBody'>
+      <div class="wz-tab">
+        <button class="tablinks" id="apiTab">API</button>
+        <button class="tablinks" id="indexesTab">Indexes</button>
+        <button class="tablinks" id="aboutTab">About</button>
+      </div>
+      <!-- API TAB SECTION-->
+      <div id="API" class="wz-tabcontent">
 
-        </div>
-        <div class="input input-text">
-          <label>Username</label>
-          <input type="text"  id='credentialUserInput'>
+        <h3>API configuration</h3>
+        <div>
+          <div class="fieldset">
 
-        </div>
-        <div class="input input-text">
-          <label>Password</label>
-          <input type="text"  id='credentialPassInput'>
+            <div class="input input-text">
+              <label>URL</label>
+              <input type="text" id='credentialUrlInput'>
+            </div>
+            <div class="input input-text">
+              <label>Port</label>
+              <input type="text" id='credentialPortInput'>
 
+            </div>
+            <div class="input input-text">
+              <label>Username</label>
+              <input type="text" id='credentialUserInput'>
+
+            </div>
+            <div class="input input-text">
+              <label>Password</label>
+              <input type="text" id='credentialPassInput'>
+
+            </div>
+            <div class="form-submit">
+              <button class="btn btn-primary submit" id='submitApiForm'>Submit</button>
+            </div>
+          </div>
         </div>
-        <div class="form-submit">
-          <button class="btn btn-primary submit" id='submitApiForm'>Submit</button>
+        <div id="row1" class="dashboard-row dashboard-row1">
+          <div id='apiList'></div>
+        </div>
+
+      </div>
+      <!-- INDEXES TAB SECTION-->
+      <div id="Indexes" class="wz-tabcontent">
+        <div class="dashboard-header clearfix">
+          <h3>Select index</h3>
+        </div>
+        <div class="fieldset">
+          <div class="input input-dropdown" id="inputIndexes">
+            <label>Indexes</label>
+          </div>
         </div>
       </div>
+      <!-- ABOUT TAB SECTION-->
+
+      <div id="About" class="wz-tabcontent">
+        <p>ABOUT SECTION HERE</p>
+      </div>
     </div>
-    <div id="row1" class="dashboard-row dashboard-row1">
-      <div id='apiList'></div>
-    </div>
-    <!-- <div id="row2" class="dashboard-row dashboard-row2">
-      <button id="deleteRecord" class="btn btn-primary">Clear credentials</button>
-      <button id="checkConnection" class="btn btn-primary">Check connection</button>
-    </div> -->
-  </div>
-  <div id='dependencies'>
     <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
     <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
     <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
     <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+    <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/viewControllers/APIconf.js"></script>
   </div>
-  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/viewControllers/APIconf.js"></script>
 </body>
 
 </html>
