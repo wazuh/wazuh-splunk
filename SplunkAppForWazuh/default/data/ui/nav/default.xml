@@ -28,8 +28,7 @@
   <a href="pcidss">PCI-DSS</a>
   <a href="gdpr">GDPR</a>
 </collection>
-<collection label="Configuration">
-  <a href="API" default='true'>API</a>
-  <a href="about">About</a>
-</collection>
+<!-- <collection label="Settings"> -->
+  <a href="API" default='true'>Settings</a>
+<!-- </collection> -->
 </nav>
