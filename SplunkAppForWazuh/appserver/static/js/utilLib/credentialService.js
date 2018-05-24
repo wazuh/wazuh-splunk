@@ -208,7 +208,9 @@ define(function (require, exports, module) {
       try {
         const manager = await CredentialService.select(key)
         const endpoint = '/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
-        await ApiService.get(endpoint)
+        const clusterData = await ApiService.get(endpoint)
+        console.log('clusterData',clusterData)
+        manager.clusterData = clusterData
         return manager
       } catch (err) {
         console.error("checkApiConnection", err.message || err)
