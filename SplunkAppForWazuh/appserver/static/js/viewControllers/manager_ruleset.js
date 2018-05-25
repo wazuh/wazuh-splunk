@@ -91,7 +91,7 @@ require([
     let pageLoading = true
 
    CredentialService.checkSelectedApiConnection().then((api) => {
-      let selectedIndex = IndexService.get()
+      let selectedIndex = IndexService.get() || "*"
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })

@@ -89,7 +89,7 @@ require([
 
     CredentialService.checkSelectedApiConnection().then((api) => {
       // Create token namespaces
-      let selectedIndex = IndexService.get()
+      let selectedIndex = IndexService.get() || "*"
 
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)

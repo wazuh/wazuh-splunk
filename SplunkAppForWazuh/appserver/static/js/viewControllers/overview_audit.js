@@ -88,7 +88,7 @@ require([
     let pageLoading = true
 
     CredentialService.checkSelectedApiConnection().then((api) => {
-      let selectedIndex = IndexService.get()
+      let selectedIndex = IndexService.get() || "*"
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
       const urlTokenModel = new UrlTokenModel()
