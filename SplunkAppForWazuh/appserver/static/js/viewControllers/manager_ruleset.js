@@ -45,7 +45,9 @@ require([
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/directives/tableView.js",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/directives/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js"
+
 ],
   function (
     mvc,
@@ -82,7 +84,8 @@ require([
     UrlTokenModel,
     tableView,
     CredentialService,
-    Toast
+    Toast,
+    IndexService
   ) {
 
     let pageLoading = true
@@ -168,7 +171,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh | top rule.id",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh | top rule.id",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -184,7 +187,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh | top rule.groups",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh | top rule.groups",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -200,7 +203,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh | top rule.pci_dss{} useother=f",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh | top rule.pci_dss{} useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -216,7 +219,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh  | top rule.level",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh  | top rule.level",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

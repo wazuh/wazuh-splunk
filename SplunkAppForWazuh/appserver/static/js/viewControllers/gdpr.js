@@ -43,7 +43,8 @@ require([
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/directives/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js"
 ],
   function (
     mvc,
@@ -79,7 +80,8 @@ require([
     PostProcessManager,
     UrlTokenModel,
     CredentialService,
-    Toast
+    Toast,
+    IndexService
 
   ) {
 
@@ -133,7 +135,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\" | timechart count by rule.gdpr",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\" | timechart count by rule.gdpr",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -149,7 +151,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\" | top rule.gdpr{} useother=f",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\" | top rule.gdpr{} useother=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -165,7 +167,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.gdpr{}=II_5.1.f agent.name=\"$agent$\" | timechart count",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=II_5.1.f agent.name=\"$agent$\" | timechart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -181,7 +183,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.gdpr{}=IV_30.1.g agent.name=\"$agent$\" | timechart count",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=IV_30.1.g agent.name=\"$agent$\" | timechart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -197,7 +199,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.gdpr{}=IV_32.2 agent.name=\"$agent$\" | timechart count",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=IV_32.2 agent.name=\"$agent$\" | timechart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -213,7 +215,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh rule.gdpr{}=IV_35.7.d agent.name=\"$agent$\"| timechart count",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=IV_35.7.d agent.name=\"$agent$\"| timechart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -229,7 +231,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\"| top rule.groups",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\"| top rule.groups",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -245,7 +247,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\" | stats count(rule.gdpr{}) by agent.name",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\" | stats count(rule.gdpr{}) by agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -261,7 +263,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh \"rule.gdpr{}\">=10 agent.name=\"$agent$\" | timechart count(rule.level) by rule.gdpr{} useother=f usenull=f",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh \"rule.gdpr{}\">=10 agent.name=\"$agent$\" | timechart count(rule.level) by rule.gdpr{} useother=f usenull=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -277,7 +279,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh \"rule.gdpr{}\">=* agent.name=\"$agent$\"| timechart count by rule.description useother=f usenull=f",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh \"rule.gdpr{}\">=* agent.name=\"$agent$\"| timechart count by rule.description useother=f usenull=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -293,7 +295,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\" | timechart count by syscheck.path useother=f usenull=f",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\" | timechart count by syscheck.path useother=f usenull=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -309,7 +311,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\" | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.gdpr{}",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\" | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.gdpr{}",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -325,7 +327,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh  agent.name=\"$agent$\"| table agent.name, rule.level, rule.gdpr{}, rule.description",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh  agent.name=\"$agent$\"| table agent.name, rule.level, rule.gdpr{}, rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -341,7 +343,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"$agent$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"$agent$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -357,7 +359,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -778,7 +780,7 @@ require([
       element13.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.gdpr{}"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=wazuh  | stats count by syscheck.path, syscheck.md5_before, syscheck.md5_after, rule.gdpr{}"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -798,7 +800,7 @@ require([
       element14.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh  | table agent.name, rule.level, rule.gdpr{}, rule.description"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=wazuh  | table agent.name, rule.level, rule.gdpr{}, rule.description"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -818,7 +820,7 @@ require([
       element15.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh  | stats count sparkline by agent.name, rule.gdpr{}, rule.description"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=wazuh  | stats count sparkline by agent.name, rule.gdpr{}, rule.description"
           utils.redirect(url, false, "_blank")
         }
       })

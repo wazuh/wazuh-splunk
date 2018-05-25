@@ -15,7 +15,6 @@ define(function (require, exports, module) {
   const LocalStorage = require('./localStorage.js')
   const service = mvc.createService({ owner: "nobody" })
   const ApiService = require('./apiService.js')
-  const localStorage = new LocalStorage()
 
   /**
    * Encapsulates Splunk service functionality
@@ -92,7 +91,7 @@ define(function (require, exports, module) {
       try {
         const api = await CredentialService.select(key)
         if (api.selected) {
-          localStorage.clear('selectedApi')
+          LocalStorage.clear('selectedApi')
         }
         await CredentialService.delete("storage/collections/data/credentials/" + key)
         return
@@ -126,8 +125,8 @@ define(function (require, exports, module) {
             const manager = api
             manager.selected = true
             await CredentialService.update(api._key, manager)
-            localStorage.clear('selectedApi')
-            localStorage.set('selectedApi', JSON.stringify(api))
+            LocalStorage.clear('selectedApi')
+            LocalStorage.set('selectedApi', JSON.stringify(api))
           } else {
             api.selected = false
             await CredentialService.update(api._key, api)
@@ -191,8 +190,8 @@ define(function (require, exports, module) {
      */
     static async checkSelectedApiConnection() {
       try {
-        const currentApi = localStorage.get('selectedApi')
-        if (!currentApi) throw new Error('No selected API in localStorage')
+        const currentApi = LocalStorage.get('selectedApi')
+        if (!currentApi) throw new Error('No selected API in LocalStorage')
         const selectedApi = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         return selectedApi
       } catch (err) {

@@ -12,7 +12,6 @@
 
 define(function (require, exports, module) {
   const LocalStorage = require('./localStorage.js')
-  const localStorage = new LocalStorage()
 
   /**
    * Encapsulates Splunk service functionality
@@ -20,18 +19,26 @@ define(function (require, exports, module) {
   const indexService = class IndexService {
 
     /**
-     * Delete a record by ID
+     * Delete selected index
      */
     static remove() {
-      localStorage.clear('selectedIndex')
+      LocalStorage.clear('selectedIndex')
     }
 
     /**
-     * Select an API by ID
+     * Select an Index by name
      * @param {String} index 
      */
     static select(index) {
-      localStorage.set('selectedIndex',index)
+      LocalStorage.set('selectedIndex', index)
+    }
+
+    /**
+     * Returns currently selected index
+     * @param {String} index 
+     */
+    static get() {
+      LocalStorage.get('selectedIndex')
     }
 
   }

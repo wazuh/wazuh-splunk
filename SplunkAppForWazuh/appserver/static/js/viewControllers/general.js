@@ -175,7 +175,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.window.localStorage['selectedIndex']+" sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh \"rule.level\">=12 | chart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

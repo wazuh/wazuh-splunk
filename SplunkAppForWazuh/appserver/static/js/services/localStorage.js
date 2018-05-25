@@ -28,9 +28,10 @@ define(function (require, exports, module) {
     /**
      * Obtains the value for a key
      * @param {String} key 
+     * @returns {String} 
      */
     static get(key) {
-      return JSON.parse(window.localStorage.getItem(key))
+      return window.localStorage.getItem(key)
     }
 
     /**

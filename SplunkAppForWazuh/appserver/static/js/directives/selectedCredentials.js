@@ -12,10 +12,12 @@
 
 define(function (require, exports, module) {
   const $ = require('jquery')
-
+  const LocalStorage = require('../services/localStorage.js')
   const selectedCredentials = class SelectedCredentials {
-
+    static getSelectedApi(){
+      return JSON.parse(LocalStorage.get('selectedAPI'))
+    }
   }
 
-  return table
+  return selectedCredentials
 })
