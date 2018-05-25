@@ -42,9 +42,9 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js"
 
 ],
   function (

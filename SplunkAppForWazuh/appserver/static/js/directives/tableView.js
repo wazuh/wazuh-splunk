@@ -12,7 +12,7 @@
 
 define(function (require, exports, module) {
   const $ = require('jquery')
-  const ApiService = require('../utilLib/apiService.js')
+  const ApiService = require('../services/apiService.js')
   const tableLib = require("https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js")
 
   // Exportable DataTable class

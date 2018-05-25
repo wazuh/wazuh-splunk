@@ -14,10 +14,10 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/promisedReq.js"
 ],
   function (
     mvc,
