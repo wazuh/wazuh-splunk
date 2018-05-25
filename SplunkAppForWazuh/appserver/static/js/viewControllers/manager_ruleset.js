@@ -90,13 +90,14 @@ require([
 
     let pageLoading = true
 
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading ruleset info', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then((api) => {
-
+   CredentialService.checkSelectedApiConnection().then((api) => {
+      let selectedIndex = IndexService.get()
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading ruleset info', 1000, 250, 250)
+     
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -171,7 +172,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh | top rule.id",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top rule.id",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -187,7 +188,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh | top rule.groups",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top rule.groups",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -203,7 +204,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh | top rule.pci_dss{} useother=f",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top rule.pci_dss{} useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -219,7 +220,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh  | top rule.level",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  | top rule.level",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

@@ -45,7 +45,9 @@ require([
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/services/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/directives/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+
 ],
   function (
     mvc,
@@ -82,7 +84,8 @@ require([
     UrlTokenModel,
     CredentialService,
     ApiService,
-    Toast
+    Toast,
+    IndexService
 
     // Add comma-separated parameter names here, for example: 
     // ...UrlTokenModel, 
@@ -94,11 +97,8 @@ require([
 
     CredentialService.checkSelectedApiConnection().then((api) => {
 
-      // 
-      // TOKENS
-      //
-
       // Create token namespaces
+      let selectedIndex = IndexService.get()
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -134,6 +134,7 @@ require([
       const loadAndSetCredentialData = async () => {
         try {
           const baseUrl = await ApiService.getBaseUrl()
+          console.log('selectedIndex',selectedIndex)
           setToken('baseip', baseUrl)
           setToken('url', api.url)
           setToken('portapi', api.portapi)
@@ -147,19 +148,13 @@ require([
 
       $(document).ready(() => loadAndSetCredentialData())
 
-
-      //
-      // SEARCH MANAGERS
-      //
-
-
       const search1 = new SearchManager({
         "id": "search1",
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" | stats count",
+        "search": "index="+selectedIndex+" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -175,7 +170,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.level\">=12 | chart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -191,7 +186,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -207,7 +202,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -223,7 +218,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh rule.level=*| timechart count by rule.level",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.level=*| timechart count by rule.level",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -239,7 +234,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | timechart span=2h count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | timechart span=2h count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -255,7 +250,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top \"agent.name\"",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top \"agent.name\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -271,7 +266,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -303,7 +298,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -319,7 +314,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -335,7 +330,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -351,7 +346,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false",
+        "search": "index="+selectedIndex+" sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -367,7 +362,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+window.localStorage['selectedIndex']+" sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+        "search": "index="+selectedIndex+" sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -430,7 +425,7 @@ require([
       element1.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=\"wazuh\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -462,7 +457,7 @@ require([
       element2.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh \"rule.level\">=12 "
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh \"rule.level\">=12 "
           utils.redirect(url, false, "_blank")
         }
       })
@@ -493,7 +488,7 @@ require([
       element3.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -524,7 +519,7 @@ require([
       element4.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh  \"rule.groups\"=\"authentication_success\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"authentication_success\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -725,7 +720,7 @@ require([
       element10.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 srcuser showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh | top limit=1 srcuser showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -756,7 +751,7 @@ require([
       element11.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 srcip showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh | top limit=1 srcip showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -787,7 +782,7 @@ require([
       element12.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 rule.groups showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh | top limit=1 rule.groups showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -818,7 +813,7 @@ require([
       element13.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -838,7 +833,7 @@ require([
       element14.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+window.localStorage['selectedIndex']+" sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 "
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 "
           utils.redirect(url, false, "_blank")
         }
       })
@@ -882,7 +877,10 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { 
+      console.error('error!',err)
+      // window.location.href = '/en-US/app/SplunkAppForWazuh/API'
+     })
 
   }
 )

@@ -31,6 +31,7 @@ define(function (require, exports, module) {
      * @returns {String} 
      */
     static get(key) {
+      console.log('returning ',window.localStorage.getItem(key))
       return window.localStorage.getItem(key)
     }
 

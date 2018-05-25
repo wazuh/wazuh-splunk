@@ -91,6 +91,7 @@ require([
     CredentialService.checkSelectedApiConnection().then((api) => {
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
+      let selectedIndex = IndexService.get()
 
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -133,7 +134,7 @@ require([
       const search2 = new SearchManager({
         "id": "search2",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.description usenull=f useother=f",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.description usenull=f useother=f",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -149,7 +150,7 @@ require([
       const search3 = new SearchManager({
         "id": "search3",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.level usenull=f useother=f",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.level usenull=f useother=f",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -165,7 +166,7 @@ require([
       const search4 = new SearchManager({
         "id": "search4",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.groups usenull=f useother=f",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count by rule.groups usenull=f useother=f",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -181,7 +182,7 @@ require([
       const search5 = new SearchManager({
         "id": "search5",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | timechart count",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -197,7 +198,7 @@ require([
       const search6 = new SearchManager({
         "id": "search6",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | iplocation srcip | geostats latfield=lat longfield=lon count",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | iplocation srcip | geostats latfield=lat longfield=lon count",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -213,7 +214,7 @@ require([
       const search7 = new SearchManager({
         "id": "search7",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | stats count by agent.name",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | stats count by agent.name",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -229,7 +230,7 @@ require([
       const search8 = new SearchManager({
         "id": "search8",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" rule.description=* agent.name=\"$agent$\" | stats count by rule.description",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" rule.description=* agent.name=\"$agent$\" | stats count by rule.description",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -245,7 +246,7 @@ require([
       const search9 = new SearchManager({
         "id": "search9",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | iplocation srcip| top  Country useother=f",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | iplocation srcip| top  Country useother=f",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -261,7 +262,7 @@ require([
       const search10 = new SearchManager({
         "id": "search10",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | top rule.groups limit=5",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | top rule.groups limit=5",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -277,7 +278,7 @@ require([
       const search11 = new SearchManager({
         "id": "search11",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | chart sparkline count by rule.description | sort - count | head 5",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | chart sparkline count by rule.description | sort - count | head 5",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -293,7 +294,7 @@ require([
       const search12 = new SearchManager({
         "id": "search12",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" \"rule.level\">=9 agent.name=\"$agent$\" | table agent.name, rule.level, rule.description",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" \"rule.level\">=9 agent.name=\"$agent$\" | table agent.name, rule.level, rule.description",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -309,7 +310,7 @@ require([
       const search13 = new SearchManager({
         "id": "search13",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time",
+        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" agent.name=\"$agent$\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time",
         "latest_time": "$when.latest$",
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -325,7 +326,7 @@ require([
       const search14 = new SearchManager({
         "id": "search14",
         "status_buckets": 0,
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
         "latest_time": "now",
         "cancelOnUnload": true,
         "sample_ratio": null,
@@ -693,7 +694,7 @@ require([
       element11.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=\"wazuh\"  | chart sparkline count by rule.description | sort - count | head 5"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\"  | chart sparkline count by rule.description | sort - count | head 5"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -713,7 +714,7 @@ require([
       element12.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" \"rule.level\">=9 | table agent.name, rule.level, rule.description"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" \"rule.level\">=9 | table agent.name, rule.level, rule.description"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -733,7 +734,7 @@ require([
       element13.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=\"wazuh\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" | table agent.name, agent.ip, rule.id, rule.level, rule.description, full_log | sort _time"
           utils.redirect(url, false, "_blank")
         }
       })

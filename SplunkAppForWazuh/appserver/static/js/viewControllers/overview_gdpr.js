@@ -89,6 +89,7 @@ require([
 
       let pageLoading = true
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
+      let selectedIndex = IndexService.get()
 
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -134,7 +135,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -150,7 +151,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -166,7 +167,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -182,7 +183,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -198,7 +199,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -230,7 +231,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "now",
-        "search": "index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
         "earliest_time": "-24h@h",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -419,7 +420,7 @@ require([
       element5.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index="+IndexService.get() || '*'+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })

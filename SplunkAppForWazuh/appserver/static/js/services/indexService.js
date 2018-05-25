@@ -38,7 +38,7 @@ define(function (require, exports, module) {
      * @param {String} index 
      */
     static get() {
-      LocalStorage.get('selectedIndex')
+      return LocalStorage.get('selectedIndex')
     }
 
   }
