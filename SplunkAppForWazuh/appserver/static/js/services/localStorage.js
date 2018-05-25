@@ -30,7 +30,7 @@ define(function (require, exports, module) {
      * @param {String} key 
      */
     static get(key) {
-      return window.localStorage.getItem(key)
+      return JSON.parse(window.localStorage.getItem(key))
     }
 
     /**
@@ -38,7 +38,7 @@ define(function (require, exports, module) {
      * @param {String} key 
      */
     static clear(key) {
-      LocalStorage.set(key,'')
+      window.localStorage.removeItem(key)
     }
   }
 
