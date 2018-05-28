@@ -93,7 +93,7 @@ require([
       "id": "searchIndexes",
       "cancelOnUnload": true,
       "sample_ratio": null,
-      "earliest_time": "-24h@h",
+      "earliest_time": "2017-03-14T10:0:0",
       "status_buckets": 0,
       "search": "| metasearch index=\"*\" sourcetype=wazuh | stats count by index, sourcetype | fields index",
       "latest_time": "now",
