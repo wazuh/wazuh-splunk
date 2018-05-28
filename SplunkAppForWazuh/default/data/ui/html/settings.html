@@ -96,9 +96,32 @@
         </div>
       </div>
       <!-- ABOUT TAB SECTION-->
-
       <div id="About" class="wz-tabcontent">
-        <p>ABOUT SECTION HERE</p>
+        <div class="dashboard-row">
+
+          <div class="dashboard-cell wz-dashboard-cell wz-width-45">
+            <div class="dashboard-panel wz-dashboard-panel">
+              <div id='dynamicContent' class="panel-body">
+                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                  <h3 class="wz-headline-title">About</h3>
+                </div>
+                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                  <p>Wazuh version</p>
+                  <p id='wazuhVersion'></p>
+                </div>
+                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                  <p>App version</p>
+                  <p id='appVersion'></p>
+                </div>
+                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                  <p>App revision</p>
+                  <p id='appRevision'></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
     <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>

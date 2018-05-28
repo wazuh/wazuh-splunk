@@ -61,18 +61,21 @@ class manager(controllers.BaseController):
 
   @expose_page(must_login=False, methods=['GET'])
   def current_version(self, **kwargs):
-    app = cli.getConfStanza('version','app')
-    app_version = app.get('version')
-    app_revision = app.get('revision')
-    wazuh = cli.getConfStanza('version','wazuh')
-    wazuh_version = wazuh.get('version')
-    my_arr = []
-    version_dict = {}
-    version_dict['appversion'] = app_version
-    version_dict['apprevision'] = app_revision
-    version_dict['wazuhversion'] = wazuh_version
-    my_arr.append(version_dict)
-    data_temp = json.dumps(my_arr)
+    try:
+      app = cli.getConfStanza('package','app')
+      app_version = app.get('version')
+      app_revision = app.get('revision')
+      wazuh = cli.getConfStanza('package','wazuh')
+      wazuh_version = wazuh.get('version')
+      my_arr = []
+      version_dict = {}
+      version_dict['appversion'] = app_version
+      version_dict['apprevision'] = app_revision
+      version_dict['wazuhversion'] = wazuh_version
+      my_arr.append(version_dict)
+      data_temp = json.dumps(my_arr)
+    except Exception as e:
+      return json.dumps("{error:"+str(err)+"}")
     return data_temp
 
   @expose_page(must_login=False, methods=['GET'])

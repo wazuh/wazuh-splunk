@@ -20,6 +20,7 @@ require([
   "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
   "/static/app/SplunkAppForWazuh/js/services/indexService.js",
   "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
   "splunkjs/mvc/simplexml/searcheventhandler",
@@ -40,6 +41,7 @@ require([
     LayoutView,
     Dashboard,
     CredentialService,
+    ApiService,
     IndexService,
     Toast,
     SearchEventHandler,
@@ -126,7 +128,6 @@ require([
       FormUtils.handleValueChange(inputIndexes)
     })
 
-
     // Validation RegEx
     const userRegEx = new RegExp(/^.{3,100}$/)
     const passRegEx = new RegExp(/^.{3,100}$/)
@@ -198,6 +199,24 @@ require([
         errorConnectionToast.show()
       }
     }
+
+     /**
+     * Loads and distributes manager configuration content
+     */
+    const loadAboutContent = async () => {
+      try {
+        const versions = await ApiService.get('/manager/current_version')
+        console.log('versions',versions)
+        $('#wazuhVersion').text(versions[0].wazuhversion)
+        $('#appVersion').text(versions[0].appversion)
+        $('#appRevision').text(versions[0].apprevision)
+
+      } catch (err) {
+        errorConnectionToast.show()
+        console.error(err.message || err)
+      }
+    }
+
 
     /**
      * Clears the API table
@@ -326,6 +345,7 @@ require([
       try {
         $('#mainFrame').removeClass('wz-loading')
         $('#apiTab').click()
+        loadAboutContent()
         await CredentialService.checkSelectedApiConnection()
         await drawApiList()
         successConnectionToast.show()
