@@ -40,7 +40,7 @@ define(function (require, exports, module) {
      * @param {jQuery}  
      */
     static render($el) {
-      $el.append('<div class="wz-flex-container wz-flex-row wz-flex-align-space-between"><div><h4>Current API: </h4><p>' + SelectedCredentials.getSelectedApi() + '</p> - <h4>Index: </h4><p>' + SelectedCredentials.getSelectedIndex() + '.</p></div></div>')
+      $el.append('<div class="wz-flex-container wz-flex-row wz-flex-align-space-between"><div><h4>Current API: </h4><p>' + SelectedCredentials.getSelectedApi() + '</p><h4>Index: </h4><p>' + SelectedCredentials.getSelectedIndex() + '.</p></div></div>')
     }
   }
 
