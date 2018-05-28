@@ -38,6 +38,7 @@ define(function (require, exports, module) {
      * @param {String} index 
      */
     static get() {
+      console.log('IndexService calling to LocalStorage get()')
       return LocalStorage.get('selectedIndex')
     }
 

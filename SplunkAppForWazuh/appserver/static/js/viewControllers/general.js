@@ -46,7 +46,7 @@ require([
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/services/apiService.js",
   "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentials.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js",
 
 ],
   function (
@@ -87,18 +87,14 @@ require([
     Toast,
     SelectedCredentials
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
 
     let pageLoading = true
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
-
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
       // Create token namespaces
-      const selectedIndex = SelectedCredentials.getSelectedIndex()
+      //const selectedIndex = SelectedCredentials.getSelectedIndex()
       SelectedCredentials.render($('#selectedCredentials'))
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -136,7 +132,6 @@ require([
         try {
 
           const baseUrl = await ApiService.getBaseUrl()
-          console.log('selectedIndex',selectedIndex)
           setToken('baseip', baseUrl)
           setToken('url', api.url)
           setToken('portapi', api.portapi)

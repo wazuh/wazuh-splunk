@@ -15,6 +15,7 @@ define(function (require, exports, module) {
   const LocalStorage = require('./localStorage.js')
   const service = mvc.createService({ owner: "nobody" })
   const ApiService = require('./apiService.js')
+  const IndexService = require('./indexService.js')
 
   /**
    * Encapsulates Splunk service functionality
@@ -193,7 +194,8 @@ define(function (require, exports, module) {
         const currentApi = LocalStorage.get('selectedApi')
         if (!currentApi) throw new Error('No selected API in LocalStorage')
         const selectedApi = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
-        return selectedApi
+        const selectedIndex = IndexService.get()
+        return {selectedApi, selectedIndex}
       } catch (err) {
         return Promise.reject(err)
       }
