@@ -91,14 +91,14 @@ require([
     let pageLoading = true
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
+      defaultTokenModel.set(urlTokenModel.toJSON())
       urlTokenModel.on('url:navigate', () => {
-        SelectedCredentials.render($('#selectedCredentials'))
-        const urlTokenModel = new UrlTokenModel()
-        mvc.Components.registerInstance('url', urlTokenModel)
-        const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-        const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-        const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
-        defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
           submitTokens()
         } else {
@@ -684,7 +684,9 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
+    }).catch((err) => { console.error('err',err);
+    //  window.location.href = '/en-US/app/SplunkAppForWazuh/settings' 
+    })
   }
 )
 // ]]>

@@ -194,7 +194,7 @@ define(function (require, exports, module) {
         const currentApi = LocalStorage.get('selectedApi')
         if (!currentApi) throw new Error('No selected API in LocalStorage')
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
-        let selectedIndex =  IndexService.get()
+        let selectedIndex = IndexService.get()
         if (!selectedIndex || selectedIndex === '') {
           selectedIndex = '*'
         }
@@ -210,12 +210,12 @@ define(function (require, exports, module) {
      */
     static async checkApiConnection(key) {
       try {
-        const manager = await CredentialService.select(key)
-        const endpoint = '/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
-        const clusterData = await ApiService.get(endpoint)
+        const api = await CredentialService.select(key)
+        const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+        const clusterData = await ApiService.get(checkConnectionEndpoint)
         console.log('clusterData',clusterData)
-        manager.clusterData = clusterData
-        return manager
+        api.clusterData = clusterData
+        return api
       } catch (err) {
         console.error("checkApiConnection", err.message || err)
         return Promise.reject(err)
