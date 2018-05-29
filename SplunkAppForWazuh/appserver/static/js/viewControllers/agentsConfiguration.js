@@ -626,6 +626,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0]);
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )

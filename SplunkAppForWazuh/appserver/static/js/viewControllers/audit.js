@@ -829,7 +829,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { console.error('err!',err); window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { console.error('err!',err); window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

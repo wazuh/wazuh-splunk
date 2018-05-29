@@ -472,11 +472,6 @@ require([
         }
       })
 
-
-      //
-      // VIEWS: FORM INPUTS
-      //
-
       const input1 = new DropdownInput({
         "id": "input1",
         "choices": [
@@ -524,14 +519,9 @@ require([
 
       submitTokens()
 
-
-      //
-      // DASHBOARD READY
-      //
-
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

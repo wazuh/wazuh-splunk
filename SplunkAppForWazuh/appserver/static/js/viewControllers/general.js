@@ -876,7 +876,7 @@ require([
       pageLoading = false
     }).catch((err) => { 
       console.error('error!',err)
-      // window.location.href = '/en-US/app/SplunkAppForWazuh/API'
+      // window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
      })
 
   }
