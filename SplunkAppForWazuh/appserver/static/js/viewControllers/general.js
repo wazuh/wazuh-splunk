@@ -877,10 +877,8 @@ require([
       DashboardController.ready()
       pageLoading = false
     }).catch((err) => { 
-      console.error('error!',err)
-      // window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+      window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
      })
-
   }
 )
 // ]]>
