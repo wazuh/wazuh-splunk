@@ -94,6 +94,10 @@ require([
     let pageLoading = true
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      let nameFilter = ""
+      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      }
       SelectedCredentials.render($('#selectedCredentials'))
       
       const urlTokenModel = new UrlTokenModel()
@@ -176,7 +180,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " sourcetype=wazuh | top rule.id",
+        "search":  "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh | top rule.id",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -192,7 +196,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " sourcetype=wazuh | top rule.groups",
+        "search": "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh | top rule.groups",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -208,7 +212,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " sourcetype=wazuh | top rule.pci_dss{} useother=f",
+        "search":  "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh | top rule.pci_dss{} useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -224,7 +228,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " sourcetype=wazuh  | top rule.level",
+        "search":  "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh  | top rule.level",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
