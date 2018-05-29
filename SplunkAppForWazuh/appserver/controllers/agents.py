@@ -377,7 +377,6 @@ class agents(controllers.BaseController):
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
@@ -388,7 +387,6 @@ class agents(controllers.BaseController):
         request = requests.get(final_url, auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
         total_items = json.loads(request.text)["data"]["totalItems"]
-
         results = []
         for agent in agents:
           data = {}
@@ -396,10 +394,37 @@ class agents(controllers.BaseController):
             if attribute == 'name' or attribute == 'id':
               data[attribute] = value 
           results.append(data)
-
-
         response = {}
         response['data'] = {}
         response['data']['items'] = results
-
         return json.dumps(response)
+
+    # /custom/SplunkAppForWazuh/agents/agent/:id
+    @expose_page(must_login=False, methods=['GET'])
+    def agent(self, **kwargs):
+      try:
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        opt_agent_id = kwargs["id"]
+
+        url = opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        final_url = url + '/agents/' + opt_agent_id
+        request = requests.get(final_url, auth=auth, verify=verify)
+        agent = json.loads(request.text)["data"]
+        results = []
+        data = {}
+        for attribute, value in agent.iteritems():
+          if attribute == 'name' or attribute == 'id':
+            data[attribute] = value 
+        results.append(data)
+
+        response = {}
+        response['data'] = {}
+        response['data'] = results
+      except Exception as e:
+        return json.dumps("{error:"+str(e)+"}")
+      return json.dumps(response)
