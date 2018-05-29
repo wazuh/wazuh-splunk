@@ -95,8 +95,6 @@ require([
       SelectedCredentials.render($('#selectedCredentials'))
 
       const urlTokenModel = new UrlTokenModel()
-      
-      let selectedIndex = ''
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
