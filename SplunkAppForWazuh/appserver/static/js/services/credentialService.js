@@ -221,10 +221,14 @@ define(function (require, exports, module) {
         if (clusterData.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await ApiService.get(getClusterNameEndpoint)
+          console.log('cluster.cluster mode',clusterName)
+
           api.filter.push(clusterName.data.cluster)
         } else {
           api.filter.push('manager.name')
           const managerName = await ApiService.get(getManagerNameEndpoint)
+          console.log('manager.name mode',managerName)
+
           api.filter.push(managerName.data[0].name)
         }
 
