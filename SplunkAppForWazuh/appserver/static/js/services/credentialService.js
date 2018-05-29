@@ -198,23 +198,36 @@ define(function (require, exports, module) {
         if (!selectedIndex || selectedIndex === '') {
           selectedIndex = '*'
         }
-        return {api, selectedIndex}
+        return { api, selectedIndex }
       } catch (err) {
         return Promise.reject(err)
       }
     }
 
     /**
-     * Check if connection with API was successful
+     * Check if connection with API was successful, also returns the whole needed information about it
      * @param {String} key 
      */
     static async checkApiConnection(key) {
       try {
         const api = await CredentialService.select(key)
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+        const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+        const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const clusterData = await ApiService.get(checkConnectionEndpoint)
-        console.log('clusterData',clusterData)
-        api.clusterData = clusterData
+        console.log('clusterData enabled:', clusterData.data.enabled)
+        api.filter = []
+        // If cluster is disabled, then filter by manager.name
+        if (clusterData.data.enabled === "yes") {
+          api.filter.push('cluster.name')
+          const clusterName = await ApiService.get(getClusterNameEndpoint)
+          api.filter.push(clusterName.data.cluster)
+        } else {
+          api.filter.push('manager.name')
+          const managerName = await ApiService.get(getManagerNameEndpoint)
+          api.filter.push(managerName.data[0].name)
+        }
+
         return api
       } catch (err) {
         console.error("checkApiConnection", err.message || err)
