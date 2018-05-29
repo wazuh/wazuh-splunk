@@ -28,7 +28,7 @@ require([
 
   ) {
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()

@@ -16,7 +16,9 @@ require([
   "/static/app/SplunkAppForWazuh/js/directives/agentsTable.js",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/services/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/directives/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     $,
@@ -24,19 +26,21 @@ require([
     agentsTable,
     CredentialService,
     ApiService,
-    Toast
+    Toast,
+    SelectedCredentials
 
   ) {
 
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
 
       /**
        * Initializes agent table
        */
       const initializeAgentTable = async () => {
         try {
+          SelectedCredentials.render($('#selectedCredentials'))
           const baseUrl = await ApiService.getBaseUrl()
           const urlData = {
             baseUrl: baseUrl,

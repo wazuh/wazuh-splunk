@@ -44,7 +44,9 @@ require([
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/services/indexService.js"
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 
 ],
   function (
@@ -82,10 +84,13 @@ require([
     UrlTokenModel,
     CredentialService,
     Toast,
-    IndexService
+    IndexService,
+    SelectedCredentials
+
   ) {
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
 
       let pageLoading = true
       let selectedIndex = IndexService.get() || "*"

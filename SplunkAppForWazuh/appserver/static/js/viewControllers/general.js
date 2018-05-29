@@ -93,6 +93,8 @@ require([
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      console.log('API',api)
+      console.log('selected index',selectedIndex)
       // Create token namespaces
       //const selectedIndex = SelectedCredentials.getSelectedIndex()
       SelectedCredentials.render($('#selectedCredentials'))

@@ -45,7 +45,9 @@ require([
   "splunkjs/mvc/simplexml/urltokenmodel",
   "/static/app/SplunkAppForWazuh/js/directives/tableView.js",
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/directives/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 
 ],
   function (
@@ -83,18 +85,21 @@ require([
     UrlTokenModel,
     tableView,
     CredentialService,
-    Toast
+    Toast,
+    SelectedCredentials
 
   ) {
 
     let pageLoading = true
 
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then((api) => {
+   
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
