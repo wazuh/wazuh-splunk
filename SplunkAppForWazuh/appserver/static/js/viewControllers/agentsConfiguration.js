@@ -13,10 +13,10 @@
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/promisedReq.js"
 ],
   function (
     $,
@@ -28,7 +28,7 @@ require([
 
   ) {
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
@@ -626,6 +626,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0]);
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )

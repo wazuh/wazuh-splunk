@@ -13,10 +13,12 @@
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/customViews/agentsTable.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/agentsTable.js",
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     $,
@@ -24,19 +26,21 @@ require([
     agentsTable,
     CredentialService,
     ApiService,
-    Toast
+    Toast,
+    SelectedCredentials
 
   ) {
 
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
 
       /**
        * Initializes agent table
        */
       const initializeAgentTable = async () => {
         try {
+          SelectedCredentials.render($('#selectedCredentials'))
           const baseUrl = await ApiService.getBaseUrl()
           const urlData = {
             baseUrl: baseUrl,
@@ -64,7 +68,7 @@ require([
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
 
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )
 

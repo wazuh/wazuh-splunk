@@ -15,33 +15,31 @@ define(function (require, exports, module) {
    * Encapsulates Local Storage service functionality
    */
   const localStorage = class LocalStorage {
-    constructor() {
-      this.storage = window.localStorage
-    }
 
     /**
      * Sets a value for a key
      * @param {String} key 
      * @param {String} value 
      */
-    set(key,value) {
-      this.storage.setItem(key,value)
+    static set(key,value) {
+      window.localStorage.setItem(key,value)
     }
 
     /**
      * Obtains the value for a key
      * @param {String} key 
+     * @returns {String} 
      */
-    get(key) {
-      return this.storage.getItem(key)
+    static get(key) {
+      return window.localStorage.getItem(key)
     }
 
     /**
      * Removes values for a key
      * @param {String} key 
      */
-    clear(key) {
-      this.set(key,'')
+    static clear(key) {
+      window.localStorage.removeItem(key)
     }
   }
 

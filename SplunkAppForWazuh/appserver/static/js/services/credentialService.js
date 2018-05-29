@@ -15,7 +15,7 @@ define(function (require, exports, module) {
   const LocalStorage = require('./localStorage.js')
   const service = mvc.createService({ owner: "nobody" })
   const ApiService = require('./apiService.js')
-  const localStorage = new LocalStorage()
+  const IndexService = require('./indexService.js')
 
   /**
    * Encapsulates Splunk service functionality
@@ -92,7 +92,7 @@ define(function (require, exports, module) {
       try {
         const api = await CredentialService.select(key)
         if (api.selected) {
-          localStorage.clear('selectedApi')
+          LocalStorage.clear('selectedApi')
         }
         await CredentialService.delete("storage/collections/data/credentials/" + key)
         return
@@ -126,8 +126,8 @@ define(function (require, exports, module) {
             const manager = api
             manager.selected = true
             await CredentialService.update(api._key, manager)
-            localStorage.clear('selectedApi')
-            localStorage.set('selectedApi', JSON.stringify(api))
+            LocalStorage.clear('selectedApi')
+            LocalStorage.set('selectedApi', JSON.stringify(api))
           } else {
             api.selected = false
             await CredentialService.update(api._key, api)
@@ -191,10 +191,14 @@ define(function (require, exports, module) {
      */
     static async checkSelectedApiConnection() {
       try {
-        const currentApi = localStorage.get('selectedApi')
-        if (!currentApi) throw new Error('No selected API in localStorage')
-        const selectedApi = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
-        return selectedApi
+        const currentApi = LocalStorage.get('selectedApi')
+        if (!currentApi) throw new Error('No selected API in LocalStorage')
+        const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
+        let selectedIndex =  IndexService.get()
+        if (!selectedIndex || selectedIndex === '') {
+          selectedIndex = '*'
+        }
+        return {api, selectedIndex}
       } catch (err) {
         return Promise.reject(err)
       }
@@ -208,7 +212,9 @@ define(function (require, exports, module) {
       try {
         const manager = await CredentialService.select(key)
         const endpoint = '/manager/check_connection?ip=' + manager.url + '&port=' + manager.portapi + '&user=' + manager.userapi + '&pass=' + manager.passapi
-        await ApiService.get(endpoint)
+        const clusterData = await ApiService.get(endpoint)
+        console.log('clusterData',clusterData)
+        manager.clusterData = clusterData
         return manager
       } catch (err) {
         console.error("checkApiConnection", err.message || err)

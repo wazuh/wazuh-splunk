@@ -42,9 +42,11 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 
 ],
   function (
@@ -82,18 +84,20 @@ require([
     UrlTokenModel,
     CredentialService,
     Toast,
-    ApiService
+    ApiService,
+    SelectedCredentials
   ) {
 
     let pageLoading = true
 
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
       urlTokenModel.on('url:navigate', () => {
+        SelectedCredentials.render($('#selectedCredentials'))
+        const urlTokenModel = new UrlTokenModel()
+        mvc.Components.registerInstance('url', urlTokenModel)
+        const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+        const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+        const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
           submitTokens()
@@ -533,7 +537,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
 
@@ -680,7 +684,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )
 // ]]>

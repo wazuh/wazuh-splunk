@@ -42,8 +42,12 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
+
 ],
   function (
     mvc,
@@ -79,12 +83,17 @@ require([
     PostProcessManager,
     UrlTokenModel,
     CredentialService,
-    Toast
+    Toast,
+    IndexService,
+    SelectedCredentials
   ) {
 
     let pageLoading = true
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
+
+      let selectedIndex = IndexService.get() || "*"
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
       const urlTokenModel = new UrlTokenModel()
@@ -138,7 +147,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -154,7 +163,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -170,7 +179,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -186,7 +195,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -202,7 +211,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.description=* rule.groups=\"audit\" | stats latest(rule.description)",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.description=* rule.groups=\"audit\" | stats latest(rule.description)",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -218,7 +227,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" | top rule.groups",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" | top rule.groups",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -234,7 +243,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -250,7 +259,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -266,7 +275,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -282,7 +291,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -298,7 +307,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -314,7 +323,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -330,7 +339,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" | top audit.command",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" | top audit.command",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -346,7 +355,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -362,7 +371,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -378,7 +387,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -407,7 +416,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
 
@@ -441,7 +450,7 @@ require([
       element1.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -472,7 +481,7 @@ require([
       element2.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -503,7 +512,7 @@ require([
       element3.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -534,7 +543,7 @@ require([
       element4.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -565,7 +574,7 @@ require([
       element5.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.description=* rule.groups=\"audit\" | stats latest(rule.description)"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.description=* rule.groups=\"audit\" | stats latest(rule.description)"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -925,7 +934,7 @@ require([
       element16.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -968,7 +977,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

@@ -14,10 +14,12 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/promisedReq.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     mvc,
@@ -26,16 +28,19 @@ require([
     CredentialService,
     ApiService,
     Toast,
-    promisedReq
+    promisedReq,
+    SelectedCredentials
 
   ) {
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
       const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
+      SelectedCredentials.render($('#selectedCredentials'))
+
 
       /**
        * Render Global dynamic view
@@ -330,6 +335,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )

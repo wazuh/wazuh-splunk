@@ -38,58 +38,44 @@ def setup_logger(level):
 
 logger = setup_logger(logging.DEBUG)
 
-# class cache:
-#   def __init__(self):
-#     self.cached_search_column = ""
-#     self.cached_direction = ""
-  
-  
-#   def set_cache(column,dir):
-#     self.cached_search_column = ""
-#     self.cached_direction = ""
-
-
-#   def get_cache():
-#     cached = {}
-#     cached['column'] = self.cached_search_column
-#     cached['dir'] = self.cached_direction
-#     return cached
-
-
 class manager(controllers.BaseController):
   def __init__(self):
     controllers.BaseController.__init__(self)
-    # /custom/SplunkAppForWazuh/manager/status
-    # self.cached_search_column = ""
-    # self.cached_direction = ""
 
   @expose_page(must_login=False, methods=['GET'])
   def check_connection(self, **kwargs):
-    opt_username = kwargs["user"]
-    opt_password = kwargs["pass"]
-    opt_base_url = kwargs["ip"]
-    opt_base_port = kwargs["port"]
-    url = opt_base_url + ":" + opt_base_port
-    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-    verify = False
-    request = requests.get(url + '/version', auth=auth, verify=verify).json()
-    result = json.dumps(request)
+    try:
+      opt_username = kwargs["user"]
+      opt_password = kwargs["pass"]
+      opt_base_url = kwargs["ip"]
+      opt_base_port = kwargs["port"]
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      verify = False
+      request = requests.get(url + '/version', auth=auth, verify=verify).json()
+      request_cluster = requests.get(url + '/cluster/status', auth=auth, verify=verify).json()
+      result = json.dumps(request_cluster)
+    except Exception as e:
+      return json.dumps("{error:error}")
     return result
-    
+
   @expose_page(must_login=False, methods=['GET'])
   def current_version(self, **kwargs):
-    app = cli.getConfStanza('version','app')
-    app_version = app.get('version')
-    app_revision = app.get('revision')
-    wazuh = cli.getConfStanza('version','wazuh')
-    wazuh_version = wazuh.get('version')
-    my_arr = []
-    version_dict = {}
-    version_dict['appversion'] = app_version
-    version_dict['apprevision'] = app_revision
-    version_dict['wazuhversion'] = wazuh_version
-    my_arr.append(version_dict)
-    data_temp = json.dumps(my_arr)
+    try:
+      app = cli.getConfStanza('package','app')
+      app_version = app.get('version')
+      app_revision = app.get('revision')
+      wazuh = cli.getConfStanza('package','wazuh')
+      wazuh_version = wazuh.get('version')
+      my_arr = []
+      version_dict = {}
+      version_dict['appversion'] = app_version
+      version_dict['apprevision'] = app_revision
+      version_dict['wazuhversion'] = wazuh_version
+      my_arr.append(version_dict)
+      data_temp = json.dumps(my_arr)
+    except Exception as e:
+      return json.dumps("{error:"+str(err)+"}")
     return data_temp
 
   @expose_page(must_login=False, methods=['GET'])

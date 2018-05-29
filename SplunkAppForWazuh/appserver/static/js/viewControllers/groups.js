@@ -14,10 +14,12 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/apiService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/directives/tableView.js",
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     mvc,
@@ -26,12 +28,14 @@ require([
     tableView,
     CredentialService,
     ApiService,
-    Toast
+    Toast,
+    SelectedCredentials
   ) {
 
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
     const errorClickToast = new Toast('error', 'toast-bottom-right', 'Error at clicking on row', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
 
       const tableFiles = new tableView()
       const tableAgents = new tableView()
@@ -160,6 +164,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )

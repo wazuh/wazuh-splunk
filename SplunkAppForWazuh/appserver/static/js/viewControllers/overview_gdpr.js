@@ -42,8 +42,12 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
+
 ],
   function (
     mvc,
@@ -79,13 +83,17 @@ require([
     PostProcessManager,
     UrlTokenModel,
     CredentialService,
-    Toast
+    Toast,
+    IndexService,
+    SelectedCredentials
   ) {
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
 
       let pageLoading = true
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
+      let selectedIndex = IndexService.get() || "*"
 
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -131,7 +139,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -147,7 +155,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -163,7 +171,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -179,7 +187,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -195,7 +203,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -227,7 +235,7 @@ require([
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "now",
-        "search": "index=wazuh sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
         "earliest_time": "-24h@h",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -257,7 +265,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
 
@@ -416,7 +424,7 @@ require([
       element5.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })
@@ -493,7 +501,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

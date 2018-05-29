@@ -43,8 +43,12 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
+
 ],
   function (
     mvc,
@@ -80,16 +84,20 @@ require([
     PostProcessManager,
     UrlTokenModel,
     CredentialService,
-    Toast
+    Toast,
+    IndexService,
+    SelectedCredentials
   ) {
 
     let pageLoading = true
 
 
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
 
       const urlTokenModel = new UrlTokenModel()
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
+      let selectedIndex = IndexService.get() || "*"
 
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -140,7 +148,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest",
+        "search": "index="+selectedIndex+"  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -156,7 +164,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest",
+        "search": "index="+selectedIndex+"  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -172,7 +180,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -188,7 +196,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -204,7 +212,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.scan.profile.title",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.scan.profile.title",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -220,7 +228,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.scan.content",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.scan.content",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -236,7 +244,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.severity",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.severity",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -252,7 +260,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" oscap.check.severity=\"high\" | chart count by agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" oscap.check.severity=\"high\" | chart count by agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -268,7 +276,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -284,7 +292,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -300,7 +308,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.scan.score=* | stats max(oscap.scan.score)",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.scan.score=* | stats max(oscap.scan.score)",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -316,7 +324,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.scan.score=* | stats min(oscap.scan.score)",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.scan.score=* | stats min(oscap.scan.score)",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -332,7 +340,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -348,7 +356,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content",
+        "search": "index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -364,7 +372,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -393,7 +401,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
 
@@ -427,7 +435,7 @@ require([
       element1.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest"
+          const url = "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+"  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -458,7 +466,7 @@ require([
       element2.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest"
+          const url = "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+"  sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(agent.name) as Latest"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -489,7 +497,7 @@ require([
       element3.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest"
+          const url = "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=* | stats latest(oscap.scan.profile.title) as Latest"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -780,7 +788,7 @@ require([
       element13.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)"
+          const url = "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" | stats latest(oscap.check.title)"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -800,7 +808,7 @@ require([
       element14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
+          const url = "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -864,7 +872,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

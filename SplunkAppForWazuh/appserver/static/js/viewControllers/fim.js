@@ -42,8 +42,11 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/credentialService.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     mvc,
@@ -79,13 +82,18 @@ require([
     PostProcessManager,
     UrlTokenModel,
     CredentialService,
-    Toast
+    Toast,
+    IndexService,
+    SelectedCredentials
 
   ) {
 
     let pageLoading = true
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then((api) => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'))
+
+      let selectedIndex = IndexService.get() || "*"
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
 
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -132,7 +140,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | timechart count by rule.description",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | timechart count by rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -148,7 +156,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"was deleted\"  agent.name=\"$agent$\" | top syscheck.path",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"was deleted\"  agent.name=\"$agent$\" | top syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -164,7 +172,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | top agent.name",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | top agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -180,7 +188,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"syscheck\" \"added\" agent.name=\"$agent$\"| top syscheck.path",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"syscheck\" \"added\" agent.name=\"$agent$\"| top syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -196,7 +204,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"syscheck\" \"Integrity checksum changed\" agent.name=\"$agent$\"| top syscheck.path",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"syscheck\" \"Integrity checksum changed\" agent.name=\"$agent$\"| top syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -212,7 +220,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"syscheck\" \"Group ownership was\" agent.name=\"$agent$\" | top syscheck.gname_after",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"syscheck\" \"Group ownership was\" agent.name=\"$agent$\" | top syscheck.gname_after",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -228,7 +236,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\"  | top rule.description",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\"  | top rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -244,7 +252,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" AND syscheck.perm_before=* agent.name=\"$agent$\" | regex syscheck.perm_after=\"[0-7]{3}([1357]|[0-7]([1357]|[0-7][1357])).*\" | regex syscheck.perm_before!=\"[0-7]{3}([1357]|[0-7]([1357]|[0-7][1357])).*\" | top syscheck.path",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" AND syscheck.perm_before=* agent.name=\"$agent$\" | regex syscheck.perm_after=\"[0-7]{3}([1357]|[0-7]([1357]|[0-7][1357])).*\" | regex syscheck.perm_before!=\"[0-7]{3}([1357]|[0-7]([1357]|[0-7][1357])).*\" | top syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -260,7 +268,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | timechart count by syscheck.path span=8h",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | timechart count by syscheck.path span=8h",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -276,7 +284,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"syscheck\" syscheck.uid_after=0 OR \"syscheck.uid_before=0\" OR syscheck.guid_after=\"root\" OR syscheck.guid_before=0 agent.name=\"$agent$\" | top syscheck.path",
+        "search": "index="+selectedIndex+" sourcetype=wazuh  \"rule.groups\"=\"syscheck\" syscheck.uid_after=0 OR \"syscheck.uid_before=0\" OR syscheck.guid_after=\"root\" OR syscheck.guid_before=0 agent.name=\"$agent$\" | top syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -292,7 +300,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"Ownership was\" agent.name=\"$agent$\" | top syscheck.uname_before",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"Ownership was\" agent.name=\"$agent$\" | top syscheck.uname_before",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -308,7 +316,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"Ownership was\" agent.name=\"$agent$\" | top syscheck.uname_after",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"Ownership was\" agent.name=\"$agent$\" | top syscheck.uname_after",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -324,7 +332,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"Group ownership was\" agent.name=\"$agent$\" | top syscheck.gname_before",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" \"Group ownership was\" agent.name=\"$agent$\" | top syscheck.gname_before",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -340,7 +348,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"Permissions changed from\" \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | top syscheck.perm_before",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"Permissions changed from\" \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | top syscheck.perm_before",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -356,7 +364,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"Permissions changed from\" \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | top syscheck.perm_after",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"Permissions changed from\" \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\" | top syscheck.perm_after",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -372,7 +380,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\"| table agent.name, syscheck.path, full_log, syscheck.mtime_after",
+        "search": "index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\" agent.name=\"$agent$\"| table agent.name, syscheck.path, full_log, syscheck.mtime_after",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -388,7 +396,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
+        "search": "index="+selectedIndex+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -417,7 +425,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
       const element2 = new ChartElement({
@@ -897,7 +905,7 @@ require([
       element17.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh \"rule.groups\"=\"syscheck\"| table agent.name, syscheck.path, full_log, syscheck.mtime_after"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=wazuh \"rule.groups\"=\"syscheck\"| table agent.name, syscheck.path, full_log, syscheck.mtime_after"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -956,7 +964,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )
