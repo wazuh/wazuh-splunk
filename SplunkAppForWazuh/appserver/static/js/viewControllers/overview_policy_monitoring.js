@@ -95,7 +95,7 @@ require([
 
       const urlTokenModel = new UrlTokenModel()
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
-      let selectedIndex = IndexService.get() || "*"
+      
 
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })

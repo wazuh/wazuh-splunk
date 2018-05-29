@@ -93,7 +93,7 @@ require([
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
       SelectedCredentials.render($('#selectedCredentials'))
-      let selectedIndex = IndexService.get() || "*"
+      
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
       const urlTokenModel = new UrlTokenModel()

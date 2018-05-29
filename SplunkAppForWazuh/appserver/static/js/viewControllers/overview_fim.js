@@ -94,7 +94,7 @@ require([
       SelectedCredentials.render($('#selectedCredentials'))
 
       // Create token namespaces
-      let selectedIndex = IndexService.get() || "*"
+      
 
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)

@@ -93,7 +93,7 @@ require([
       SelectedCredentials.render($('#selectedCredentials'))
 
       let pageLoading = true
-      let selectedIndex = IndexService.get() || "*"
+      
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
       const urlTokenModel = new UrlTokenModel()

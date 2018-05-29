@@ -93,7 +93,7 @@ require([
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
       SelectedCredentials.render($('#selectedCredentials'))
-      let selectedIndex = IndexService.get() || "*"
+      
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
