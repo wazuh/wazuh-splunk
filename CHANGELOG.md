@@ -4,6 +4,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 - New About tab ([#67](https://github.com/wazuh/wazuh-splunk/pull/67))
 - New GDPR tabs ([#66](https://github.com/wazuh/wazuh-splunk/pull/66))
+- New
 ### Changed
 - Multi-API support ([#65](https://github.com/wazuh/wazuh-splunk/pull/65))
 
