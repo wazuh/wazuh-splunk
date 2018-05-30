@@ -141,6 +141,7 @@ require([
     const successConnectionToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
     const invalidFormatInputToast = new Toast('error', 'toast-bottom-right', 'Invalid format. Please, check your inputs again', 1000, 250, 250)
     const selectedApiErrorToast = new Toast('error', 'toast-bottom-right', 'No working API was selected.', 1000, 250, 250)
+    const cannotAddApiErrorToast = new Toast('error', 'toast-bottom-right', 'Cannot add API without connection.', 1000, 250, 250)
 
     /**
      * Check if an URL is valid or not
@@ -195,18 +196,18 @@ require([
       try {
         await CredentialService.checkApiConnection(key)
         successConnectionToast.show()
+        await drawApiList()
       } catch (err) {
         errorConnectionToast.show()
       }
     }
 
-     /**
-     * Loads and distributes manager configuration content
-     */
+    /**
+    * Loads and distributes manager configuration content
+    */
     const loadAboutContent = async () => {
       try {
         const versions = await ApiService.get('/manager/current_version')
-        console.log('versions',versions)
         $('#wazuhVersion').text(versions[0].wazuhversion)
         $('#appVersion').text(versions[0].appversion)
         $('#appRevision').text(versions[0].apprevision)
@@ -243,6 +244,7 @@ require([
             '        <th>Username</th> ' +
             '        <th>Actions</th> ' +
             '        <th>Selected</th> ' +
+            '        <th>Manager</th> ' +
             '        <th>Cluster</th> ' +
             '    </tr> ' +
             '  </thead> ' +
@@ -252,16 +254,18 @@ require([
           )
           for (const api of apiList) {
             $('#tableBody').append(
-              '    <tr> ' +
-              '      <td>' + api.url + '</td> ' +
-              '      <td>' + api.portapi + '</td> ' +
-              '      <td>' + api.userapi + '</td> ' +
-              '      <td><i id="' + api._key + '" tooltip="Set as default Manager" class="fa fa-star font-size-18 wz-cursor-pointer" aria-hidden="true"></i>' +
-              ' <i id="' + api._key + '" class="fa fa-trash wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i>' +
-              ' <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
+              '<tr> ' +
+              ' <td>' + api.url + '</td> ' +
+              ' <td>' + api.portapi + '</td> ' +
+              ' <td>' + api.userapi + '</td> ' +
+              ' <td>' +
+              '   <i id="' + api._key + '" tooltip="Set as default Manager" class="fa fa-star font-size-18 wz-cursor-pointer" aria-hidden="true"></i>' +
+              '   <i id="' + api._key + '" class="fa fa-trash wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i>' +
+              '   <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
               ' <td>' + (api.selected === false ? '' : 'yes') + '</td> ' +
-              ' <td>' + (api.clustered === false ? 'disabled' : 'enabled') + '</td> ' +
-              ' </tr> '
+              ' <td>' + api.managerName + '</td> ' +
+              ' <td>' + ( api.cluster !== false  ? api.cluster : 'Disabled') + '</td> ' +
+              '</tr> '
             )
           }
         } else {
@@ -283,7 +287,7 @@ require([
         await CredentialService.chose(key)
         await drawApiList()
       } catch (err) {
-        console.error('error!',err)
+        console.error('error!', err)
         errorConnectionToast.show()
       }
     }
@@ -322,21 +326,24 @@ require([
       }
     }
 
+    /**
+     * Selects a row
+     * @param {Event} evt 
+     * @param {String} tabName 
+     */
     const selectOption = (evt, tabName) => {
-      console.log('selectoption',tabName)
       let i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("wz-tabcontent");
       for (i = 0; i < tabcontent.length; i++) {
-          tabcontent[i].style.display = "none";
+        tabcontent[i].style.display = "none";
       }
       tablinks = document.getElementsByClassName("tablinks");
       for (i = 0; i < tablinks.length; i++) {
-          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
       document.getElementById(tabName).style.display = "block";
       evt.currentTarget.className += " active";
-  }
-  
+    }
 
     /**
      * Check if connection is OK at starting view
@@ -360,9 +367,9 @@ require([
     /**
      * On document ready
      */
-    $('#apiTab').click( () => selectOption(event,'API'))
-    $('#indexesTab').click( () => selectOption(event,'Indexes'))
-    $('#aboutTab').click( () => selectOption(event,'About'))
+    $('#apiTab').click(() => selectOption(event, 'API'))
+    $('#indexesTab').click(() => selectOption(event, 'Indexes'))
+    $('#aboutTab').click(() => selectOption(event, 'About'))
 
     $(document).ready(() => firstLoad())
 
@@ -426,27 +433,37 @@ require([
 
         // If values are valid, register them
         if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
-
           // Create an object to store the field names and values
           const record = {
             "url": form_url,
             "portapi": form_apiport,
             "userapi": form_apiuser,
             "passapi": form_apipass,
-            "selected": false
+            "selected": false,
+            "cluster": false,
+            "managerName": false
           }
           // Use the request method to send and insert a new record
-          await CredentialService.insert(record)
-          // Run the search again to update the table
-          //search1.startSearch()
-          // Clear the form fields 
-          clearForm()
-          await drawApiList()
+          const result = await CredentialService.insert(record)
+
+          try {
+            await CredentialService.checkApiConnection(result.data._key)
+            clearForm()
+            const apiList = await CredentialService.getApiList()
+            if (apiList && apiList.length === 1) { 
+              await selectManager(result.data._key)
+            }
+            await drawApiList()
+          } catch (err) {
+            console.error('cannot insert a new API entry', result.data._key)
+            await CredentialService.remove(result.data._key)
+            cannotAddApiErrorToast.show()
+          }
         } else {
           invalidFormatInputToast.show()
         }
       } catch (err) {
-        console.error('error at submit ', err)
+        console.error('error at submit , deberia borrar')
       }
     }
 
@@ -455,7 +472,7 @@ require([
      */
     $('#submitApiForm').on("click", async () => clickOnSubmit())
 
-    
+
     DashboardController.onReady(() => {
       if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
         submittedTokenModel.set({ earliest: '0', latest: '' })
@@ -471,6 +488,5 @@ require([
 
     DashboardController.ready()
     pageLoading = false
-
   }
 )

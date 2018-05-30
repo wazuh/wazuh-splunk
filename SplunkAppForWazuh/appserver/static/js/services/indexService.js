@@ -38,8 +38,8 @@ define(function (require, exports, module) {
      * @param {String} index 
      */
     static get() {
-      console.log('IndexService calling to LocalStorage get()')
-      return LocalStorage.get('selectedIndex')
+      const currentIndex = (LocalStorage.get('selectedIndex') ? LocalStorage.get('selectedIndex') : '*')
+      return currentIndex
     }
 
   }
