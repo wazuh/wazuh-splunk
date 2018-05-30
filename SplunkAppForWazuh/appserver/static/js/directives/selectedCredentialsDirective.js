@@ -13,6 +13,8 @@
 define(function (require, exports, module) {
   const $ = require('jquery')
   const LocalStorage = require('../services/localStorage.js')
+  const IndexService = require('../services/indexService.js')
+  const ApiService = require('../services/apiService.js')
 
   /**
    * Directive which renders current selected API and Index
@@ -24,7 +26,7 @@ define(function (require, exports, module) {
      * @param {jQuery}  
      */
     static render($el) {
-      $el.append('<div class="wz-flex-container wz-flex-row wz-flex-align-space-between"><div><h4>Current API: </h4><p>' + JSON.parse(LocalStorage.get('selectedApi')).url + '</p><h4>Index: </h4><p>' + LocalStorage.get('selectedIndex') + '.</p></div></div>')
+      $el.append('<div class="wz-flex-container wz-flex-row wz-flex-align-space-between"><div><h4>Current API: </h4><p>' + JSON.parse(LocalStorage.get('selectedApi')).url + '</p><h4>Index: </h4><p>' + IndexService.get() + '.</p></div></div>')
     }
   }
 
