@@ -91,6 +91,10 @@ require([
     let pageLoading = true
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      let nameFilter = ""
+      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      }
       SelectedCredentials.render($('#selectedCredentials'))
 
       // Create token namespaces
@@ -143,7 +147,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\" |stats count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\" |stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -159,7 +163,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -175,7 +179,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -191,7 +195,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -207,7 +211,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -223,7 +227,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -239,7 +243,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" syscheck.event=\"added\" AND location=\"syscheck\" | top \"syscheck.path\"  by _time showcount=false showperc=false | tail 1 | fields - _time | rename syscheck.path as \">\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" syscheck.event=\"added\" AND location=\"syscheck\" | top \"syscheck.path\"  by _time showcount=false showperc=false | tail 1 | fields - _time | rename syscheck.path as \">\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -255,7 +259,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" syscheck.event=\"modified\" AND location=\"syscheck\" | top \"syscheck.path\"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as \">\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" syscheck.event=\"modified\" AND location=\"syscheck\" | top \"syscheck.path\"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as \">\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -271,7 +275,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" syscheck.event=\"deleted\" AND location=\"syscheck\" | top \"syscheck.path\"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as \">\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" syscheck.event=\"deleted\" AND location=\"syscheck\" | top \"syscheck.path\"  by _time showcount=false showperc=false | tail 1 | fields - _time| rename syscheck.path as \">\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -287,7 +291,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -303,7 +307,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=50 syscheck.path showperc=f",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=50 syscheck.path showperc=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -319,7 +323,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  syscheck.path=* syscheck.perm_after=* | regex syscheck.perm_after=\"[0-7]{5}([2367]).*\" | top  syscheck.path",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  syscheck.path=* syscheck.perm_after=* | regex syscheck.perm_after=\"[0-7]{5}([2367]).*\" | top  syscheck.path",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -335,7 +339,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"agent.name\"=\"*\" | top \"agent.name\" showcount=false showperc=false |head 1",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"agent.name\"=\"*\" | top \"agent.name\" showcount=false showperc=false |head 1",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -351,7 +355,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"rule.pci_dss{}\"=\"*\"| top \"rule.pci_dss{}\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"rule.pci_dss{}\"=\"*\"| top \"rule.pci_dss{}\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -367,7 +371,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -383,7 +387,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.path\"=* | top \"syscheck.path\" showcount=false showperc=false | head 1",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.path\"=* | top \"syscheck.path\" showcount=false showperc=false | head 1",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -399,7 +403,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -462,7 +466,7 @@ require([
       element1.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -493,7 +497,7 @@ require([
       element2.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -524,7 +528,7 @@ require([
       element3.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" "
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" "
           utils.redirect(url, false, "_blank")
         }
       })
@@ -769,7 +773,7 @@ require([
       element13.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"agent.name\"=\"*\" | top \"agent.name\" showcount=false showperc=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"agent.name\"=\"*\" | top \"agent.name\" showcount=false showperc=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -800,7 +804,7 @@ require([
       element14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"rule.pci_dss{}\"=\"*\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"rule.pci_dss{}\"=\"*\""
           utils.redirect(url, false, "_blank")
         }
       })
@@ -831,7 +835,7 @@ require([
       element15.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -862,7 +866,7 @@ require([
       element16.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.path\"=* | top \"syscheck.path\" showcount=false showperc=false"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.path\"=* | top \"syscheck.path\" showcount=false showperc=false"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -882,7 +886,7 @@ require([
       element17.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description"
           utils.redirect(url, false, "_blank")
         }
       })

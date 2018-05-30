@@ -34,7 +34,7 @@ require([
 
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
     const errorClickToast = new Toast('error', 'toast-bottom-right', 'Error at clicking on row', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+    CredentialService.checkSelectedApiConnection().then(({api}) => {
       SelectedCredentials.render($('#selectedCredentials'))
 
       const tableFiles = new tableView()

@@ -33,7 +33,7 @@ require([
 
   ) {
 
-    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+    CredentialService.checkSelectedApiConnection().then(({api}) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)

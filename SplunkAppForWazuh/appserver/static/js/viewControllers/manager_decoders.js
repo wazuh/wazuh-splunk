@@ -94,6 +94,11 @@ require([
 
    
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      let nameFilter = ""
+
+      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      }
       SelectedCredentials.render($('#selectedCredentials'))
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -170,7 +175,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=\"wazuh\" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

@@ -35,7 +35,7 @@ require([
     /**
      * Check connection before load the content
      */
-    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+    CredentialService.checkSelectedApiConnection().then(({api}) => {
       SelectedCredentials.render($('#selectedCredentials'))
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager logs list', 1000, 250, 250)

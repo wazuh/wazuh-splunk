@@ -266,7 +266,7 @@ require([
           }
         } else {
           clearTable()
-          $('#apiList').html('<h4>Any API was inserted. You must have at least one API for using Splunk app for Wazuh.</h4>')
+          $('#apiList').html('<h4>No API entries detected. You must have at least one API for using Splunk app for Wazuh.</h4>')
         }
       } catch (err) {
         Promise.reject(err)
