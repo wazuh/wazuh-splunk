@@ -28,10 +28,13 @@ require([
 
   ) {
 
-    CredentialService.checkSelectedApiConnection().then(({api}) => {
+    CredentialService.checkSelectedApiConnection().then(({ api }) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
+      const noConfigHtml = '<p>This agent belongs to a group where actually there`s no configuration.</p></br>' +
+        '<p>Use the following link to learn about the centralized configuration process and how to set it up:</p></br>' +
+        '<a href=https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html>https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>'
 
       /**
        * Render File Integrity data with object received
@@ -540,7 +543,13 @@ require([
       const loadAgentConfig = async groupInformationEndpoint => {
         try {
           const groupConfJSON = await ApiService.get(groupInformationEndpoint)
-          await initializeData(groupConfJSON.items[0].config)
+          if (groupConfJSON && groupConfJSON.items && groupConfJSON.items[0] && groupConfJSON.items[0].config) {
+            await initializeData(groupConfJSON.items[0].config)
+          }
+          else {
+            $('#dynamicContent').html(noConfigHtml)
+          }
+
         } catch (err) {
           return Promise.reject(err)
         }
@@ -578,11 +587,7 @@ require([
             groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
           } else {
-            $('#dynamicContent').html(
-              '<p>This agent belongs to a group where actually there`s no configuration.</p></br>' +
-              '<p>Use the following link to learn about the centralized configuration process and how to set it up:</p></br>' +
-              '<a href=https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html>https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>'
-            )
+            $('#dynamicContent').html(noConfigHtml)
           }
 
           $('#agentList').on('change', async function () {
