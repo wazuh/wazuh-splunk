@@ -165,8 +165,8 @@ define(function (require, exports, module) {
      */
     static async insert(record) {
       try {
-        await CredentialService.post("storage/collections/data/credentials/", record)
-        return
+        const result = await CredentialService.post("storage/collections/data/credentials/", record)
+        return result
       } catch (err) {
         return Promise.reject(err)
       }
@@ -214,24 +214,36 @@ define(function (require, exports, module) {
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+
         const clusterData = await ApiService.get(checkConnectionEndpoint)
-        console.log('clusterData enabled:', clusterData.data.enabled)
+
         api.filter = []
+        // Get manager name. Necessary for both cases
+        const managerName = await ApiService.get(getManagerNameEndpoint)
+        if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name ) {
+          if (!api.managerName || api.managerName !== managerName.data[0].name ) {
+            api.managerName = managerName.data[0].name
+            await CredentialService.update(api._key, api)
+          }
+        }
+
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await ApiService.get(getClusterNameEndpoint)
-          console.log('cluster.cluster mode',clusterName)
-
-          api.filter.push(clusterName.data.cluster)
+          api.filter.push(clusterName.cluster)
+          if (!api.cluster || api.cluster !== clusterName.cluster) {
+            api.cluster = clusterName.cluster
+            await CredentialService.update(api._key, api)
+          }
         } else {
+          if(api.cluster) {
+            api.cluster = false
+            await CredentialService.update(api._key, api)
+          }
           api.filter.push('manager.name')
-          const managerName = await ApiService.get(getManagerNameEndpoint)
-          console.log('manager.name mode',managerName)
-
-          api.filter.push(managerName.data[0].name)
+          api.filter.push(api.managerName)
         }
-
         return api
       } catch (err) {
         console.error("checkApiConnection", err.message || err)

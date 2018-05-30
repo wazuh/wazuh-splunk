@@ -94,7 +94,7 @@ require([
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
       let nameFilter = ""
-
+      console.log("API",api)
       if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
         nameFilter = api.filter[0] + '=' + api.filter[1]
       } 
