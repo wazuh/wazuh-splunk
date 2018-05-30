@@ -1,6 +1,6 @@
 <nav search_view="search" color="#0079A5">
   <collection label="Overview">
-  <a href="general">General</a> 
+  <a href="ab_general">General</a> 
   <a href="overview_fim">Overview FIM</a> 
   <a href="overview_policy_monitoring">Overview policy monitoring</a> 
   <a href="overview_scap">Overview OpenSCAP</a> 
@@ -10,7 +10,7 @@
 </collection>
   <collection label="Manager">
   <a href="manager_status">Status</a> 
-  <a href="Configuration">Configuration</a> 
+  <a href="configuration">Configuration</a> 
   <a href="manager_ruleset">Ruleset</a> 
   <a href="manager_decoders">Decoders</a> 
   <a href="logs">Logs</a> 
@@ -30,6 +30,6 @@
 </collection>
 <!-- <collection label="Settings"> -->
 
-  <a href="settings" default='true'>Settings</a>
+  <a href="settings">Settings</a>
 <!-- </collection> -->
 </nav>
