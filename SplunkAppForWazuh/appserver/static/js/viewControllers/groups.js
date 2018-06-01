@@ -116,7 +116,6 @@ require([
        */
       const initializeGroupsData = async () => {
         try {
-          console.log("api",api)
           // Options for Groups table
           const optsGroups = {
             pages: 10,

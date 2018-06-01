@@ -39,7 +39,6 @@ require([
     const loadAboutContent = async () => {
       try {
         const versions = await ApiService.get('/manager/current_version')
-        console.log('versions',versions)
         $('#wazuhVersion').text(versions[0].wazuhversion)
         $('#appVersion').text(versions[0].appversion)
         $('#appRevision').text(versions[0].apprevision)

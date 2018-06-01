@@ -181,7 +181,6 @@ require([
     }, { tokens: true }).render()
 
     inputIndexes.on("change", (newValue) => {
-      console.log('index changed: ',newValue)
       FormUtils.handleValueChange(inputIndexes)
     })
 
