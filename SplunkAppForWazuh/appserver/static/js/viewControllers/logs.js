@@ -14,27 +14,29 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/directives/tableView.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     mvc,
     $,
     LayoutView,
     tableView,
-    services,
+    ApiService,
+    CredentialService,
     Toast,
-    promisedReq
+    SelectedCredentials
   ) {
-
-    const service = new services()
 
     /**
      * Check connection before load the content
      */
-    service.checkConnection().then(() => {
+    CredentialService.checkSelectedApiConnection().then(({api}) => {
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
 
       const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager logs list', 1000, 250, 250)
 
@@ -43,7 +45,6 @@ require([
        */
       const initializeManagerLogs = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
           const opts = {
             pages: 10,
             processing: true,
@@ -58,7 +59,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myLogTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/logs?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.build('/manager/logs?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
         } catch (err) {
           errorToast.show()
         }
@@ -74,6 +75,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )

@@ -42,12 +42,11 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     mvc,
@@ -82,27 +81,24 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    services,
+    CredentialService,
     Toast,
-    promisedReq
+    IndexService,
+    SelectedCredentials
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
 
     let pageLoading = true
 
-
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
-    const service = new services()
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
-    service.checkConnection().then(() => {
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      let nameFilter = ""
 
+      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      } 
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+      
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -148,7 +144,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | timechart count by rule.cis{} usenull=f useother=f",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh agent.name=\"$agent$\" | timechart count by rule.cis{} usenull=f useother=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -164,7 +160,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\" | rename rule.cis{} as rule.cis |chart count by rule.cis,agent.name| transpose header_field=rule.cis | rename column as agent.client",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh agent.name=\"$agent$\" | rename rule.cis{} as rule.cis |chart count by rule.cis,agent.name| transpose header_field=rule.cis | rename column as agent.client",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -180,7 +176,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh agent.name=\"$agent$\"| rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh agent.name=\"$agent$\"| rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -196,7 +192,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\" | chart count by agent.name,rule.cis{} useother=f",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\" | chart count by agent.name,rule.cis{} useother=f",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -212,7 +208,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| timechart count(agent.name) by rule.cis{}",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| timechart count(agent.name) by rule.cis{}",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -228,7 +224,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| chart count(rule.cis{}) as \"Agent name\"  by agent.name",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| chart count(rule.cis{}) as \"Agent name\"  by agent.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -244,7 +240,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| chart count by rule.cis{} | rename rule.cis{} as \"Rule CIS\"",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| chart count by rule.cis{} | rename rule.cis{} as \"Rule CIS\"",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -260,7 +256,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| stats count by _time, agent.name, rule.level, rule.cis{}, full_log",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.cis{}=* agent.name=\"$agent$\"| stats count by _time, agent.name, rule.level, rule.cis{}, full_log",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -274,9 +270,9 @@ require([
         "id": "search10",
         "cancelOnUnload": true,
         "sample_ratio": null,
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -305,7 +301,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
       const element2 = new ChartElement({
@@ -372,7 +368,7 @@ require([
       element4.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh | rename rule.cis{} as rule.cis |chart count by rule.cis,rule.groups"
           utils.redirect(url, false, "_blank")
         }
       })
@@ -480,15 +476,10 @@ require([
       element9.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log"
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.cis{}=* | stats count by _time, agent.name, rule.level, rule.cis{}, full_log"
           utils.redirect(url, false, "_blank")
         }
       })
-
-
-      //
-      // VIEWS: FORM INPUTS
-      //
 
       const input1 = new DropdownInput({
         "id": "input1",
@@ -537,14 +528,9 @@ require([
 
       submitTokens()
 
-
-      //
-      // DASHBOARD READY
-      //
-
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

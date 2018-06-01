@@ -43,14 +43,12 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/customViews/tableView.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/directives/tableView.js",
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
 
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+
 ],
   function (
     mvc,
@@ -86,30 +84,27 @@ require([
     PostProcessManager,
     UrlTokenModel,
     tableView,
-    services,
+    CredentialService,
     Toast,
-    promisedReq
+    SelectedCredentials
 
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
   ) {
 
     let pageLoading = true
 
+   
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      let nameFilter = ""
 
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = new services()
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
-    service.checkConnection().then(() => {
+      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      }
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading decoders info', 1000, 250, 250)
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -142,8 +137,6 @@ require([
        */
       const initializeRulesetTable = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
-
           const opts = {
             pages: 10,
             processing: true,
@@ -159,7 +152,7 @@ require([
           }
           const table = new tableView()
           table.element($('#myTable'))
-          table.build(baseUrl + '/custom/SplunkAppForWazuh/manager/decoders?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi, opts)
+          table.build('/manager/decoders?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.click(data => {
             setToken("showDetails", "true")
             setToken("Name", data.name)
@@ -182,7 +175,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index=\"wazuh\" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -211,7 +204,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
       const element2 = new HtmlElement({
@@ -270,7 +263,7 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )
 // ]]>

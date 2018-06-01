@@ -14,27 +14,33 @@ require([
   "splunkjs/mvc",
   "jquery",
   "splunkjs/mvc/layoutview",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/promisedReq.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     mvc,
     $,
     LayoutView,
-    services,
+    CredentialService,
+    ApiService,
     Toast,
-    promisedReq
+    promisedReq,
+    SelectedCredentials
 
   ) {
 
-    const service = new services()
-    service.checkConnection().then(() => {
+    CredentialService.checkSelectedApiConnection().then(({api}) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
       const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+
 
       /**
        * Render Global dynamic view
@@ -262,9 +268,8 @@ require([
        */
       const loadConfigurationContent = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
-          const endPoint = baseUrl + '/custom/SplunkAppForWazuh/manager/configuration?ip=' + jsonData.url + '&port=' + jsonData.portapi + '&user=' + jsonData.userapi + '&pass=' + jsonData.passapi
-          const jsonObj = await promisedReq.promisedGet(endPoint)
+          const endPoint = '/manager/configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+          const jsonObj = await ApiService.get(endPoint)
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)
@@ -330,6 +335,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )

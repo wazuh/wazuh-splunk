@@ -55,13 +55,14 @@ define(function (require, exports, module) {
       $element.prepend('<table id="myAgentTable" class="display compact"><thead><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
       super.element($('#myAgentTable'))
     }
+
     /**
      * Build: generates and draws an agents datatable
      * @param {*} urlArg : url to get the data from
      * @param {Object} opt: options
      */
     build(urlArg) {
-      const url = urlArg.baseUrl + '/custom/SplunkAppForWazuh/agents/agents?ip=' + urlArg.ipApi + '&port=' + urlArg.portApi + '&user=' + urlArg.userApi + '&pass=' + urlArg.passApi
+      const url = '/agents/agents?ip=' + urlArg.ipApi + '&port=' + urlArg.portApi + '&user=' + urlArg.userApi + '&pass=' + urlArg.passApi
       super.build(url, this.opts)
     }
   }

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Manager Configuration</title>
+  <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" >
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/wazuh_decorations.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/toast.css">
+  <style>
+    div[data-view="views/shared/appbar/Master"] {
+      background-color: #00445A;
+    }
+  </style>
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+</head>
+
+<body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
+
+  <header>
+    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
+    <div class="header splunk-header">
+      <div id="placeholder-splunk-bar">
+        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
+          <strong>&gt;</strong>
+        </a>
+      </div>
+      <div id="placeholder-app-bar"></div>
+    </div>
+    <a id="navSkip"></a>
+  </header>
+  <div class="dashboard-body container-fluid main-section-body">
+
+    <div class="row">
+      <div class="dashboard-header clearfix">
+          <div id=selectedCredentials></div>
+
+      </div>
+    </div>
+
+    <!-- Two cells in a same row -->
+
+    <div class="dashboard-row">
+
+      <!-- First cell -->
+      <div class="dashboard-cell wz-dashboard-cell wz-width-15">
+        <div class="dashboard-panel wz-dashboard-panel">
+          <div class="panel-body">
+            <!-- Manager info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='global' class="wz-headline-title wz-text-link">Global</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>JSON output</p>
+                      <p id='jsonOutput'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Log alert level</p>
+                      <p id='logAlertLevel'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!-- Cluster info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='cluster' class="wz-headline-title wz-text-link">Cluster</h3>
+                  </div>
+                  <div class="panel-body" id='clusterRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Name</p>
+                      <p id='nameCluster'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Type</p>
+                      <p id='typeCluster'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!-- Syscheck info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='syscheck' class="wz-headline-title wz-text-link">Syscheck</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+
+                      <p>Frequency</p>
+                      <p id='sysFreq'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+
+                      <p>Alert new files</p>
+                      <p id='sysAlertNewFiles'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rootcheck info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='rootcheck' class="wz-headline-title wz-text-link">Rootcheck</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Frequency</p>
+                      <p id='rootFreq'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Skip NFS</p>
+                      <p id='rootSkipNFS'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Auth info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='auth' class="wz-headline-title wz-text-link">Auth</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Purge</p>
+                      <p id='authPurge'></p>
+                    </div>
+                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                      <p>Force insert</p>
+                      <p id='authForceInsert'></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ruleset info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='ruleset' class="wz-headline-title wz-text-link">Ruleset</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <p>Ruleset settings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Command info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='command' class="wz-headline-title wz-text-link">Command</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <p>Command settings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Remote info -->
+            <div class="dashboard-row">
+              <div class="dashboard-cell">
+                <div>
+                  <div>
+                    <h3 id='remote' class="wz-headline-title wz-text-link">Remote</h3>
+                  </div>
+                  <div class="panel-body" id='managerRow'>
+                    <p>Agents events listening settings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second cell -->
+      <div class="dashboard-cell wz-dashboard-cell wz-width-65">
+        <div class="dashboard-panel wz-dashboard-panel">
+          <div id='dynamicContent' class="panel-body">
+            <!-- Place panel contents here -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Place the next row here -->
+
+  </div>
+  <!-- 
+END LAYOUT
+-->
+
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/viewControllers/configuration.js"></script>
+</body>
+
+</html>

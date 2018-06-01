@@ -1,16 +1,14 @@
-
-// <![CDATA[
-//
-// LIBRARY REQUIREMENTS
-//
-// In the require function, we include the necessary libraries and modules for
-// the HTML dashboard. Then, we pass variable names for these libraries and
-// modules as function parameters, in order.
-//
-// When you add libraries or modules, remember to retain this mapping order
-// between the library or module and its function parameter. You can do this by
-// adding to the end of these lists, as shown in the commented examples below.
-
+/*
+ * Wazuh app - Overview PCI-DSS view controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 require([
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
@@ -44,12 +42,12 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/utilLib/promisedReq.js"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/indexService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
+
 ],
   function (
     mvc,
@@ -84,59 +82,55 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    services,
+    CredentialService,
     Toast,
-    promisedReq
+    IndexService,
+    SelectedCredentials
 
-    // Add comma-separated parameter names here, for example:
-    // ...UrlTokenModel,
-    // TokenForwarder
   ) {
 
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
 
-    const service = new services()
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
-    service.checkConnection().then(() => {
+      let pageLoading = true
+      
 
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      let nameFilter = ""
 
-      var pageLoading = true;
-
-
-      //
-      // TOKENS
-      //
-
-      // Create token namespaces
-      var urlTokenModel = new UrlTokenModel();
-      mvc.Components.registerInstance('url', urlTokenModel);
-      var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-      var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      } 
 
       urlTokenModel.on('url:navigate', function () {
-        defaultTokenModel.set(urlTokenModel.toJSON());
+        defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens();
+          submitTokens()
         } else {
-          submittedTokenModel.clear();
+          submittedTokenModel.clear()
         }
-      });
+      })
 
       // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON());
+      defaultTokenModel.set(urlTokenModel.toJSON())
 
-      function submitTokens() {
+      const submitTokens = () => {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-        FormUtils.submitForm({ replaceState: pageLoading });
+        FormUtils.submitForm({ replaceState: pageLoading })
       }
 
-      function setToken(name, value) {
-        defaultTokenModel.set(name, value);
-        submittedTokenModel.set(name, value);
+      const setToken = (name, value) => {
+        defaultTokenModel.set(name, value)
+        submittedTokenModel.set(name, value)
       }
 
-      function unsetToken(name) {
-        defaultTokenModel.unset(name);
-        submittedTokenModel.unset(name);
+      const unsetToken = (name) => {
+        defaultTokenModel.unset(name)
+        submittedTokenModel.unset(name)
       }
 
 
@@ -146,12 +140,12 @@ require([
       //
 
 
-      var search1 = new SearchManager({
+      const search1 = new SearchManager({
         "id": "search1",
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -160,14 +154,14 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search2 = new SearchManager({
+      const search2 = new SearchManager({
         "id": "search2",
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -176,14 +170,14 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search3 = new SearchManager({
+      const search3 = new SearchManager({
         "id": "search3",
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -192,14 +186,14 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search4 = new SearchManager({
+      const search4 = new SearchManager({
         "id": "search4",
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -208,14 +202,14 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search5 = new SearchManager({
+      const search5 = new SearchManager({
         "id": "search5",
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -224,9 +218,9 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search6 = new SearchManager({
+      const search6 = new SearchManager({
         "id": "search6",
         "status_buckets": 0,
         "sample_ratio": 1,
@@ -240,15 +234,15 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      var search7 = new SearchManager({
+      const search7 = new SearchManager({
         "id": "search7",
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "now",
-        "search": "index=wazuh sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
-        "earliest_time": "-24h@h",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
+        "earliest_time": "-24h@y",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -256,18 +250,18 @@ require([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true });
+      }, { tokens: true })
 
 
       //
       // SPLUNK LAYOUT
       //
 
-      $('header').remove();
+      $('header').remove()
       new LayoutView({ "hideAppBar": false, "hideChrome": false, "hideSplunkBar": false })
         .render()
         .getContainerElement()
-        .appendChild($('.dashboard-body')[0]);
+        .appendChild($('.dashboard-body')[0])
 
       //
       // DASHBOARD EDITOR
@@ -277,15 +271,15 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
-      }, { tokens: true }).render();
+        editable: false
+      }, { tokens: true }).render()
 
 
       //
       // VIEWS: VISUALIZATION ELEMENTS
       //
 
-      var element1 = new ChartElement({
+      const element1 = new ChartElement({
         "id": "element1",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -316,10 +310,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search1",
         "el": $('#element1')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element2 = new ChartElement({
+      const element2 = new ChartElement({
         "id": "element2",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -350,10 +344,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search2",
         "el": $('#element2')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element3 = new ChartElement({
+      const element3 = new ChartElement({
         "id": "element3",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -384,10 +378,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search3",
         "el": $('#element3')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element4 = new ChartElement({
+      const element4 = new ChartElement({
         "id": "element4",
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
@@ -418,10 +412,10 @@ require([
         "trellis.scales.shared": "1",
         "managerid": "search4",
         "el": $('#element4')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      var element5 = new TableElement({
+      const element5 = new TableElement({
         "id": "element5",
         "dataOverlayMode": "heatmap",
         "drilldown": "cell",
@@ -431,17 +425,17 @@ require([
         "wrap": "false",
         "managerid": "search5",
         "el": $('#element5')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       element5.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
-      var element6 = new TableElement({
+      const element6 = new TableElement({
         "id": "element6",
         "count": 20,
         "dataOverlayMode": "none",
@@ -452,27 +446,27 @@ require([
         "wrap": "true",
         "managerid": "search6",
         "el": $('#element6')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       //
       // VIEWS: FORM INPUTS
       //
 
-      var input1 = new TimeRangeInput({
+      const input1 = new TimeRangeInput({
         "id": "input1",
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "earliest_time": "$form.when.earliest$",
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       input1.on("change", function (newValue) {
-        FormUtils.handleValueChange(input1);
-      });
+        FormUtils.handleValueChange(input1)
+      })
 
-      var input2 = new DropdownInput({
+      const input2 = new DropdownInput({
         "id": "input2",
         "choices": [
           { "label": "ALL", "value": "*" }
@@ -487,33 +481,33 @@ require([
         "value": "$form.pci$",
         "managerid": "search7",
         "el": $('#input2')
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       input2.on("change", function (newValue) {
-        FormUtils.handleValueChange(input2);
-      });
+        FormUtils.handleValueChange(input2)
+      })
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' });
+          submittedTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
+        defaultTokenModel.set({ earliest: '0', latest: '' })
       }
 
-      submitTokens();
+      submitTokens()
 
 
       //
       // DASHBOARD READY
       //
 
-      DashboardController.ready();
-      pageLoading = false;
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+      DashboardController.ready()
+      pageLoading = false
+    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
 
   }
 )

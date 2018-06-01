@@ -42,11 +42,12 @@ require([
   "splunkjs/mvc/savedsearchmanager",
   "splunkjs/mvc/postprocessmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "/static/app/SplunkAppForWazuh/js/utilLib/services.js",
-  "/static/app/SplunkAppForWazuh/js/customViews/toaster.js"
-  // Add comma-separated libraries and modules manually here, for example:
-  // ..."splunkjs/mvc/simplexml/urltokenmodel",
-  // "splunkjs/mvc/tokenforwarder"
+  "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
+  "/static/app/SplunkAppForWazuh/js/services/apiService.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
+
 ],
   function (
     mvc,
@@ -81,31 +82,23 @@ require([
     SavedSearchManager,
     PostProcessManager,
     UrlTokenModel,
-    services,
-    Toast
-    // Add comma-separated parameter names here, for example: 
-    // ...UrlTokenModel, 
-    // TokenForwarder
+    CredentialService,
+    Toast,
+    ApiService,
+    SelectedCredentials
   ) {
 
     let pageLoading = true
 
-
-    // 
-    // TOKENS
-    //
-
-    // Create token namespaces
-    const urlTokenModel = new UrlTokenModel()
-    mvc.Components.registerInstance('url', urlTokenModel)
-    const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    const service = new services()
-    const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
-    service.checkConnection().then(() => {
-
+    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+      const urlTokenModel = new UrlTokenModel()
+      mvc.Components.registerInstance('url', urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading manager status', 1000, 250, 250)
+      defaultTokenModel.set(urlTokenModel.toJSON())
       urlTokenModel.on('url:navigate', () => {
-        defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
           submitTokens()
         } else {
@@ -136,22 +129,19 @@ require([
        */
       const loadTokensWithCredentialAPI = async () => {
         try {
-          const { baseUrl, jsonData } = await service.loadCredentialData()
+          const baseUrl = await ApiService.getBaseUrl()
           setToken('baseip', baseUrl)
-          setToken('url', jsonData.url)
-          setToken('portapi', jsonData.portapi)
-          setToken('userapi', jsonData.userapi)
-          setToken('passwordapi', jsonData.passapi)
+          setToken('url', api.url)
+          setToken('portapi', api.portapi)
+          setToken('userapi', api.userapi)
+          setToken('passwordapi', api.passapi)
           setToken("loadedtokens", "true")
         } catch (err) {
           errorToast.show()
         }
       }
 
-
-
       $(document).ready(() => loadTokensWithCredentialAPI())
-
 
       const search1 = new SearchManager({
         "id": "search1",
@@ -547,7 +537,7 @@ require([
         id: 'dashboard',
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render()
 
 
@@ -694,7 +684,9 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/API' })
+    }).catch((err) => { console.error('err',err);
+    //  window.location.href = '/en-US/app/SplunkAppForWazuh/settings' 
+    })
   }
 )
 // ]]>
