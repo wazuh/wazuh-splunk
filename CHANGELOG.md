@@ -12,6 +12,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Make General dashboard the default one [#2e59564](https://github.com/wazuh/wazuh-splunk/commit/2e595642295b117de67d76e4cd2cc863fa9c5ea7)
 - Fixed the case when an already selected index is deleted from cookie [#3024da4](https://github.com/wazuh/wazuh-splunk/commit/3024da4f68b28ab8463c3a5628980138305adb7f)
 - Fixed warning message in agent group configuration [#27ab703](https://github.com/wazuh/wazuh-splunk/commit/27ab7033f61476241a4b72bf2af770321a8c853c)
+- Added style and alignment to the current selected API and index [#89](https://github.com/wazuh/wazuh-splunk/issues/89)
 
 ## Wazuh v3.2.3 - Splunk Enterprise v7.1.0 - Splunk app v3.2.3-rev-5
 There are no changes for Splunk app for Wazuh in this version.
