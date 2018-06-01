@@ -262,7 +262,7 @@ require([
               '   <i id="' + api._key + '" tooltip="Set as default Manager" class="fa fa-star font-size-18 wz-cursor-pointer" aria-hidden="true"></i>' +
               '   <i id="' + api._key + '" class="fa fa-trash wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i>' +
               '   <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
-              ' <td>' + (api.selected === false ? '' : 'yes') + '</td> ' +
+              ' <td>' + (!api.selected ? '' : 'yes') + '</td> ' +
               ' <td>' + api.managerName + '</td> ' +
               ' <td>' + ( api.cluster !== false  ? api.cluster : 'Disabled') + '</td> ' +
               '</tr> '
@@ -352,7 +352,7 @@ require([
       try {
         $('#mainFrame').removeClass('wz-loading')
         $('#apiTab').click()
-        loadAboutContent()
+        await loadAboutContent()
         await CredentialService.checkSelectedApiConnection()
         await drawApiList()
         successConnectionToast.show()

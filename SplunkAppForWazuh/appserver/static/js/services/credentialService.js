@@ -123,15 +123,9 @@ define(function (require, exports, module) {
         const apiList = await CredentialService.getApiList()
         for (let api of apiList) {
           if (api._key === key) {
-            const manager = api
-            manager.selected = true
-            await CredentialService.update(api._key, manager)
             LocalStorage.clear('selectedApi')
             LocalStorage.set('selectedApi', JSON.stringify(api))
-          } else {
-            api.selected = false
-            await CredentialService.update(api._key, api)
-          }
+          } 
         }
         return
       } catch (err) {
@@ -145,14 +139,7 @@ define(function (require, exports, module) {
      */
     static async deselectAllApis() {
       try {
-        const apiList = await CredentialService.getApiList()
-        for (let api of apiList) {
-          if (api.selected) {
-            const manager = api
-            manager.selected = false
-            await CredentialService.update(api._key, manager)
-          }
-        }
+        LocalStorage.clear('selectedApi')
         return
       } catch (err) {
         return Promise.reject(err)
@@ -178,6 +165,11 @@ define(function (require, exports, module) {
     static async getApiList() {
       try {
         const apiList = await CredentialService.get("storage/collections/data/credentials/")
+        for(let i=0 ; i<apiList.length; i++) {
+          if (apiList[i].url === LocalStorage.get('selectedApi').url) {
+            apiList[i].selected = true
+          }
+        }
         return apiList
       } catch (err) {
         console.error("getApiList", err.message || err)
@@ -200,6 +192,7 @@ define(function (require, exports, module) {
         }
         return { api, selectedIndex }
       } catch (err) {
+        console.error('error at checkselectedapiconnection', err.message || err)
         return Promise.reject(err)
       }
     }
