@@ -14,9 +14,9 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed warning message in agent group configuration [#27ab703](https://github.com/wazuh/wazuh-splunk/commit/27ab7033f61476241a4b72bf2af770321a8c853c)
 - Added style and alignment to the current selected API and index [#89](https://github.com/wazuh/wazuh-splunk/issues/89)
 
-## Wazuh v3.2.3 - Splunk Enterprise v7.1.0 - Splunk app v3.2.3-rev-5
+## Wazuh v3.2.3 - Splunk Enterprise v7.1.1 - Splunk app v3.2.3-rev-5
 There are no changes for Splunk app for Wazuh in this version.
-## Wazuh v3.2.2 - Splunk Enterprise v7.1.0 - Splunk app v3.2.2
+## Wazuh v3.2.2 - Splunk Enterprise v7.1.1 - Splunk app v3.2.2
 ### Added
 - Wazuh secured API connections are now supported ([#51](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/51)).
 - Error notifications with toasts ([#54](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/54)).
