@@ -91,7 +91,7 @@ require([
     let pageLoading = true
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
-      SelectedCredentials.render($('#selectedCredentials'))
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })

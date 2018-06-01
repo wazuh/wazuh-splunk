@@ -90,7 +90,7 @@ require([
   ) {
 
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
-      SelectedCredentials.render($('#selectedCredentials'))
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
 
       let pageLoading = true
       

@@ -97,7 +97,7 @@ require([
       if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
         nameFilter = api.filter[0] + '=' + api.filter[1]
       } 
-      SelectedCredentials.render($('#selectedCredentials'))
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
       
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
@@ -270,7 +270,7 @@ require([
         "id": "search10",
         "cancelOnUnload": true,
         "sample_ratio": null,
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "status_buckets": 0,
         "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
         "latest_time": "now",

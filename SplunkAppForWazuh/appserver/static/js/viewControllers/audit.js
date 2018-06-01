@@ -92,7 +92,7 @@ require([
 
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
     CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
-      SelectedCredentials.render($('#selectedCredentials'))
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
 
       const urlTokenModel = new UrlTokenModel()
       
@@ -367,7 +367,7 @@ require([
         "id": "search16",
         "cancelOnUnload": true,
         "sample_ratio": null,
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "status_buckets": 0,
         "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh agent.name=\"*\"| stats count by \"agent.name\" | sort \"agent.name\" ASC | fields - count",
         "latest_time": "now",

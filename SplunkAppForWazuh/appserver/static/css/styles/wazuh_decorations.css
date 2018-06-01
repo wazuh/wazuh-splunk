@@ -176,6 +176,11 @@
   cursor: pointer !important;
   color: #0079a5 !important;
 }
+
+.wz-text-right {
+  text-align: right !important;
+}
+
 .wz-headline-title {
   font-size: 17px !important;
   padding: 0 10px !important;

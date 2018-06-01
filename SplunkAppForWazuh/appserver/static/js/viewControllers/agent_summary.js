@@ -40,7 +40,7 @@ require([
        */
       const initializeAgentTable = async () => {
         try {
-          SelectedCredentials.render($('#selectedCredentials'))
+          SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
           const baseUrl = await ApiService.getBaseUrl()
           const urlData = {
             baseUrl: baseUrl,

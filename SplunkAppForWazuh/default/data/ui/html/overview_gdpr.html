@@ -8,6 +8,8 @@
   <link rel="shortcut icon" href="/en-US/static/@E6BBD5BB182F99D8E9B6462CB77D3B0EFE601649661606276C0709ED975CA44D/img/favicon.ico"/>
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/splunkjs-dashboard.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/wazuh_decorations.css">
+
   <style>
     div[data-view="views/shared/appbar/Master"] {
       background-color: #00445A;
@@ -45,6 +47,9 @@ styles in <div> tags, similar to Bootstrap's grid system.
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
       <h2>Overview GDPR</h2>
+      <!-- Current API and index block-->
+      <div id=selectedCredentials></div>
+      <!-- End Current API and index block-->
     </div>
     <div class="fieldset">
       <div class="input input-timerangepicker" id="input1">
@@ -53,7 +58,6 @@ styles in <div> tags, similar to Bootstrap's grid system.
       <div class="input input-dropdown" id="input2">
         <label>GDPR Requirement</label>
       </div>
-      <div id=selectedCredentials></div>
 
     </div>
 

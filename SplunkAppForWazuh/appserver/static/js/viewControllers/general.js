@@ -100,7 +100,7 @@ require([
 
       // Create token namespaces
       //const selectedIndex = SelectedCredentials.getSelectedIndex()
-      SelectedCredentials.render($('#selectedCredentials'))
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })

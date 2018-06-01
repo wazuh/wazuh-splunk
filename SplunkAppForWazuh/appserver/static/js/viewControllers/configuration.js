@@ -39,7 +39,7 @@ require([
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
       const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
-      SelectedCredentials.render($('#selectedCredentials'))
+      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
 
 
       /**

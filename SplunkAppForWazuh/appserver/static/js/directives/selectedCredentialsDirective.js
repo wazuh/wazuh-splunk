@@ -25,8 +25,8 @@ define(function (require, exports, module) {
      * Renders HTML code into the passed element
      * @param {jQuery}  
      */
-    static render($el) {
-      $el.append('<div class="wz-flex-container wz-flex-row wz-flex-align-space-between"><div><h4>Current API: </h4><p>' + JSON.parse(LocalStorage.get('selectedApi')).url + '</p><h4>Index: </h4><p>' + IndexService.get() + '.</p></div></div>')
+    static render($el,name) {
+      $el.append('<div class="wz-text-right"><p>' + name + ' - ' + IndexService.get() + '</p></div>')
     }
   }
 
