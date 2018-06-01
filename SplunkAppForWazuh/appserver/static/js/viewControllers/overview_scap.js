@@ -374,7 +374,7 @@ require([
         "id": "search15",
         "cancelOnUnload": true,
         "sample_ratio": null,
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "status_buckets": 0,
         "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count",
         "latest_time": "now",

@@ -338,7 +338,7 @@ require([
         "latest_time": "now",
         "cancelOnUnload": true,
         "sample_ratio": null,
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,

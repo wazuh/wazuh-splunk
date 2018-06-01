@@ -240,7 +240,7 @@ require([
         "sample_ratio": null,
         "latest_time": "now",
         "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

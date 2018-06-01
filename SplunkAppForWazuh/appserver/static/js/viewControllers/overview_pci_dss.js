@@ -242,7 +242,7 @@ require([
         "sample_ratio": null,
         "latest_time": "now",
         "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
-        "earliest_time": "-24h@h",
+        "earliest_time": "-24h@y",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
