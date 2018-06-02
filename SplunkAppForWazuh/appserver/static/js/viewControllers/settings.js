@@ -214,7 +214,7 @@ require([
 
       } catch (err) {
         errorConnectionToast.show()
-        console.error(err.message || err)
+        console.error("error at loading about content",err.message || err)
       }
     }
 
@@ -401,6 +401,7 @@ require([
       try {
         // Delete the record that corresponds to the key ID using
         await CredentialService.delete()
+        LocalStorage.clear('selectedApi')
         clearTable()
         // Run the search again to update the table
       } catch (err) {
@@ -420,6 +421,7 @@ require([
       $('#credentialUrlInput').val('')
       $('#credentialPassInput').val('')
     }
+
     /**
      * Actions when submit
      */
@@ -439,17 +441,18 @@ require([
             "portapi": form_apiport,
             "userapi": form_apiuser,
             "passapi": form_apipass,
-            "selected": false,
             "cluster": false,
             "managerName": false
           }
           // Use the request method to send and insert a new record
           const result = await CredentialService.insert(record)
-
+          console.log('inserted first time')
           try {
-            await CredentialService.checkApiConnection(result.data._key)
+            const resultConnection = await CredentialService.checkApiConnection(result.data._key)
+            console.log('resultConnection',resultConnection)
             clearForm()
             const apiList = await CredentialService.getApiList()
+            console.log('apiList',apiList)
             if (apiList && apiList.length === 1) { 
               await selectManager(result.data._key)
             }
@@ -459,11 +462,12 @@ require([
             await CredentialService.remove(result.data._key)
             cannotAddApiErrorToast.show()
           }
+          console.log('after try')
         } else {
           invalidFormatInputToast.show()
         }
       } catch (err) {
-        console.error('error at submit , deberia borrar')
+        console.error('error at submit , should remove',err.message || err)
       }
     }
 
@@ -471,6 +475,12 @@ require([
      * On submit click
      */
     $('#submitApiForm').on("click", async () => clickOnSubmit())
+
+    /**
+     * On Remove all click
+     */
+    $('#removeAll').on("click", async () => deleteAllRecords().catch( (err) => { errorWhenDeletingRowToast.show()}))
+
 
 
     DashboardController.onReady(() => {

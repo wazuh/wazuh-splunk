@@ -52,8 +52,8 @@ class manager(controllers.BaseController):
       url = opt_base_url + ":" + opt_base_port
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
       verify = False
-      request = requests.get(url + '/version', auth=auth, verify=verify).json()
-      request_cluster = requests.get(url + '/cluster/status', auth=auth, verify=verify).json()
+      request = requests.get(url + '/version', auth=auth,timeout=0.5,verify=verify).json()
+      request_cluster = requests.get(url + '/cluster/status', auth=auth, timeout=0.5, verify=verify).json()
       result = json.dumps(request_cluster)
     except Exception as e:
       return json.dumps("{error:error}")
