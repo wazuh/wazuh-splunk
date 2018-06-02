@@ -91,7 +91,7 @@ define(function (require, exports, module) {
     static async remove(key) {
       try {
         const api = await CredentialService.select(key)
-        if (api.selected) {
+        if (LocalStorage.get('selectedApi') && LocalStorage.get('selectedApi').url === api.url) {
           LocalStorage.clear('selectedApi')
         }
         await CredentialService.delete("storage/collections/data/credentials/" + key)
@@ -160,19 +160,19 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Load API credential data and generates a Base URL
+     * Returns the API list
      */
     static async getApiList() {
       try {
         const apiList = await CredentialService.get("storage/collections/data/credentials/")
+        const selectedApi = LocalStorage.get('selectedApi')
         for(let i=0 ; i<apiList.length; i++) {
-          if (apiList[i].url === LocalStorage.get('selectedApi').url) {
+          if (typeof selectedApi === 'string' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
             apiList[i].selected = true
           }
         }
         return apiList
       } catch (err) {
-        console.error("getApiList", err.message || err)
         return Promise.reject(err)
       }
     }
@@ -184,7 +184,7 @@ define(function (require, exports, module) {
     static async checkSelectedApiConnection() {
       try {
         const currentApi = LocalStorage.get('selectedApi')
-        if (!currentApi) throw new Error('No selected API in LocalStorage')
+        if (!currentApi) { return Promise.reject(new Error('No selected API in LocalStorage')) }
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
         if (!selectedIndex || selectedIndex === '') {
@@ -209,7 +209,6 @@ define(function (require, exports, module) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
         const clusterData = await ApiService.get(checkConnectionEndpoint)
-
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await ApiService.get(getManagerNameEndpoint)
