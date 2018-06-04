@@ -7,51 +7,56 @@ import sys
 import json
 import requests
 import re
-
-# try:
-#     from utils import parse
-# except ImportError:
-#     raise Exception("Add the SDK repository to your PYTHONPATH to run the examples "
-#                     "(e.g., export PYTHONPATH=~/splunk-sdk-python.")
-
+from splunk.clilib import cli_common as cli
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from splunklib.client import connect
 
-# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../framework/contrib/requests/"))
-
+def current_credentials():
+  try:
+    app = cli.getConfStanza('config','credentials')
+    current_username = app.get('username')
+    current_pwd = app.get('password')
+    my_arr = []
+    credential_dict = {}
+    credential_dict['username'] = current_username
+    credential_dict['password'] = current_pwd
+  except Exception as e:
+    return json.dumps("{error:"+str(e)+"}")
+  return credential_dict
 
 def check_status():
   try:
-    # opts = parse(sys.argv[1:], {}, ".splunkrc")
     kwargs = {}
     kwargs["owner"] = "nobody"
     kwargs["username"] = "admin"
     kwargs["password"] = "changeme"
     kwargs["app"] = "SplunkAppForWazuh"
     service = connect(**kwargs)
-    for collection in service.kvstore:
-        print("  %s" % collection.name)
-      
-    collection_name = "credentials"
-    collection = service.kvstore[collection_name]
-    if collection_name in service.kvstore:
-      print ("Collection {} found!".format(collection_name) )
     
-    print ("Collection data: %s" % json.dumps(collection.data.query(), indent=1))
-    # opt_username = "wazuh"
-    # opt_password = "wazuh2018"
-    # opt_base_url = "https://192.168.1.78"
-    # opt_base_port = "55000"
+    if (current_credentials()["username"] is None or current_credentials()["password"] is None) or (current_credentials()["username"] == "" or current_credentials()["password"] == ""):
+      raise Exception('No username or password')
 
-    # url = opt_base_url + ":" + opt_base_port
-    # auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-    # verify = False
-    # final_url = url + '/agents'
-    # request = requests.get(final_url, auth=auth, verify=verify)
-    # cluster = json.loads(request.text)["data"]
+    user = current_credentials()["username"]
+    pwd = current_credentials()["password"]
+    collection = service.kvstore["credentials"]
+    apis = collection.data.query()
+    # obtains 
+    for api in apis:
+      # print (api)
+      opt_password = api["passapi"]
+      opt_username = api["userapi"]
+      opt_base_url = api["url"]
+      opt_base_port = api["portapi"]
+
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      verify = False
+      final_url = url + '/agents'
+      request = requests.get(final_url, auth=auth, verify=verify)
+      # print (request)
+
   except Exception as e:
-    print ("Caught exception: " + str(e))
-    return json.dumps("{error:"+str(e)+"}")
-  # return json.dumps(cluster)
+    print ("")
+
 check_status()
