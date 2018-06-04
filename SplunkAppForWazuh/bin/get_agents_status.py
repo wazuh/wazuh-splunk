@@ -53,8 +53,8 @@ def check_status():
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
       verify = False
       final_url = url + '/agents'
-      request = requests.get(final_url, auth=auth, verify=verify)
-      # print (request)
+      request = requests.get(final_url, auth=auth, verify=verify).json()
+      print (json.dumps(request))
 
   except Exception as e:
     print ("")
