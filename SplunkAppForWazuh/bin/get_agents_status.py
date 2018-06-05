@@ -42,6 +42,8 @@ def check_status():
     pwd = current_credentials()["password"]
     collection = service.kvstore["credentials"]
     apis = collection.data.query()
+    date = str(datetime.datetime.utcnow())[:-7]
+
     # obtains 
     for api in apis:
       # print (api)
@@ -73,7 +75,6 @@ def check_status():
           if cluster_status == "yes":
             item["cluster"] = {}
             item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
-          date = str(datetime.datetime.utcnow())[:-7]
           item["timestamp"] = date
 
           # print("fecha " + str(date))
