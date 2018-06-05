@@ -184,6 +184,7 @@ require([
         await CredentialService.remove(key)
         await drawApiList()
       } catch (err) {
+        console.error('[settings][removeManager]',err.message || err)
         errorWhenDeletingRowToast.show()
       }
     }
@@ -287,7 +288,7 @@ require([
         await CredentialService.chose(key)
         await drawApiList()
       } catch (err) {
-        console.error('error!', err)
+        console.error('[selectManager][error]: ', err)
         errorConnectionToast.show()
       }
     }
@@ -401,10 +402,11 @@ require([
       try {
         // Delete the record that corresponds to the key ID using
         await CredentialService.delete()
-        LocalStorage.clear('selectedApi')
-        clearTable()
+        CredentialService.deselectAllApis()
+        await drawApiList()
         // Run the search again to update the table
       } catch (err) {
+        console.error("[deleteAllRecords][error]",err.message || err)
         return Promise.reject(err)
       }
     }

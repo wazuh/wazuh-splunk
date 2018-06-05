@@ -62,6 +62,7 @@ define(function (require, exports, module) {
       return new Promise((resolve, reject) => {
         service.del(url, {}, (err, data) => {
           if (err) {
+            console.error('[CredentialService.delete][error]',err)
             return reject(err)
           }
           return resolve(data)
@@ -91,12 +92,14 @@ define(function (require, exports, module) {
     static async remove(key) {
       try {
         const api = await CredentialService.select(key)
-        if (LocalStorage.get('selectedApi') && LocalStorage.get('selectedApi').url === api.url) {
+        if (LocalStorage.get('selectedApi') && JSON.parse(LocalStorage.get('selectedApi')) && JSON.parse(LocalStorage.get('selectedApi')).url === api.url) {
           LocalStorage.clear('selectedApi')
         }
         await CredentialService.delete("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
+        console.error('[CredentialService][remove]',err.message || err)
+
         return Promise.reject(err)
       }
     }
@@ -137,7 +140,7 @@ define(function (require, exports, module) {
      * Deselect all stored APIs. 'selected' field to false.
      * @param {String} key 
      */
-    static async deselectAllApis() {
+    static deselectAllApis() {
       try {
         LocalStorage.clear('selectedApi')
         return
@@ -184,6 +187,7 @@ define(function (require, exports, module) {
     static async checkSelectedApiConnection() {
       try {
         const currentApi = LocalStorage.get('selectedApi')
+        console.log('checkSelectedApiConnection currentAPi',currentApi)
         if (!currentApi) { return Promise.reject(new Error('No selected API in LocalStorage')) }
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
@@ -238,7 +242,7 @@ define(function (require, exports, module) {
         }
         return api
       } catch (err) {
-        console.error("checkApiConnection", err.message || err)
+        console.error("[checkApiConnection][error]: ", err.message || err)
         return Promise.reject(err)
       }
     }
