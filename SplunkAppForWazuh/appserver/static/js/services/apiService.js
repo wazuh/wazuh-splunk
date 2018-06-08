@@ -43,12 +43,16 @@ define(function (require, exports, module) {
         let result = await asyncReq.promisedGet(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh' + endpoint)
         if (result && typeof result !== 'object' && !result.error) {
           result = JSON.parse(result)
-        } else if(result.error) {
-          return Promise.reject(new Error('No connectivity'))
+          if (result.error) {
+            return Promise.reject(new Error('No connectivity. Error: ' + result.error))
+          }
+
+        } else if (result.error) {
+          return Promise.reject(new Error('No connectivity. Error: ' + result.error))
         }
         return result
       } catch (err) {
-        console.error('No connectivity 2')
+        console.error('error at GET request ', err)
         return Promise.reject(err)
       }
     }

@@ -59,10 +59,10 @@ def check_status():
       try:
         # print ("making request ..." + api["url"])
 
-        request_agents = requests.get(agents_url_total_items, auth=auth, timeout = 0.5, verify=verify).json()
+        request_agents = requests.get(agents_url_total_items, auth=auth, timeout = 1, verify=verify).json()
         total_items = request_agents["data"]["totalItems"]
         agents_url = url + '/agents?select=id,ip,manager_host,status&offset=0&limit='+str(total_items)
-        request_agents = requests.get(agents_url, auth=auth, timeout = 0.5, verify=verify).json()
+        request_agents = requests.get(agents_url, auth=auth, timeout = 1, verify=verify).json()
 
         final_obj = request_agents["data"]["items"]
         final_url_cluster = url + '/cluster/status'
