@@ -163,7 +163,7 @@ require([
             "status_buckets": 0,
             "sample_ratio": null,
             "cancelOnUnload": true,
-            "search": "index=\"wazuh-monitoring-3x\" "+ filter +" status=* | timechart span=1m count by status usenull=f",
+            "search": "index=\"wazuh-monitoring-3x\" "+ filter +" status=* | timechart span=1h count by status usenull=f",
             "app": utils.getCurrentApp(),
             "auto_cancel": 90,
             "preview": true,
