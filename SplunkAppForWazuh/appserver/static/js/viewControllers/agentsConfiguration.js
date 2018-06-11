@@ -598,7 +598,7 @@ require([
             parsedJson = await ApiService.get(endPoint)
             group = parsedJson.group
 
-            if (typeof group !== 'undefined') {
+            if (typeof group !== 'undefined' && Object.keys(group).length) {
               $('#dynamicList').hide()
               $('#dynamicContent').empty()
               groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
