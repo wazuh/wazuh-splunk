@@ -93,13 +93,13 @@ require([
 
     let pageLoading = true
 
-    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+    CredentialService.checkSelectedApiConnection().then(({ api, selectedIndex }) => {
       let nameFilter = ""
-      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+      if (api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
         nameFilter = api.filter[0] + '=' + api.filter[1]
       }
-      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
-      
+      SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
+
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -158,14 +158,16 @@ require([
           table.element($('#myTable'))
           table.build('/manager/rules?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.click(function (data) {
-            setToken("showDetails", "true")
-            setToken("id", data.id || "-")
-            setToken("description", data.description || "-")
-            setToken("Groups", data.groups)
-            setToken("details-if_sid", data.details.if_sid || "-")
-            setToken("details-regex", data.details.regex || "-")
-            setToken("details-info", data.details.info || "-")
-            setToken("details-frequency", data.details.frequency || "-")
+            if (data && data.id) {
+              setToken("showDetails", "true")
+              setToken("id", data.id || "-")
+              setToken("description", data.description || "-")
+              setToken("Groups", data.groups)
+              setToken("details-if_sid", data.details.if_sid || "-")
+              setToken("details-regex", data.details.regex || "-")
+              setToken("details-info", data.details.info || "-")
+              setToken("details-frequency", data.details.frequency || "-")
+            }
           })
         } catch (err) {
           errorToast.show()
@@ -180,7 +182,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search":  "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh | top rule.id",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.id",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -196,7 +198,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh | top rule.groups",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.groups",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -212,7 +214,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search":  "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh | top rule.pci_dss{} useother=f",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.pci_dss{} useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -228,7 +230,7 @@ require([
         "sample_ratio": null,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search":  "index="+selectedIndex+" "+nameFilter+ " sourcetype=wazuh  | top rule.level",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  | top rule.level",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

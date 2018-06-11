@@ -5,8 +5,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ## Wazuh v3.3 - Splunk Enterprise v7.1.1 - Splunk app v3.3-rev-7
 ### Added
 - Polling and index agent status data ([#101](https://github.com/wazuh/wazuh-splunk/pull/101))
-- New GDPR tabs ([#66](https://github.com/wazuh/wazuh-splunk/pull/66))
-- New multi Index support ([#79](https://github.com/wazuh/wazuh-splunk/pull/79))
 ### Changed
 - Selecting 'wazuh' index when any other is selected ([#100](https://github.com/wazuh/wazuh-splunk/issues/100))
 ### Fixed

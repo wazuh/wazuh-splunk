@@ -53,7 +53,6 @@ require([
           table.build(urlData)
         } catch (err) {
           errorToast.show()
-          console.error(err)
         }
       }
 

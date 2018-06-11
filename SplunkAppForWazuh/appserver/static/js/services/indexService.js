@@ -38,7 +38,7 @@ define(function (require, exports, module) {
      * @param {String} index 
      */
     static get() {
-      const currentIndex = (LocalStorage.get('selectedIndex') ? LocalStorage.get('selectedIndex') : '*')
+      const currentIndex = (LocalStorage.get('selectedIndex') ? LocalStorage.get('selectedIndex') : 'wazuh')
       return currentIndex
     }
 

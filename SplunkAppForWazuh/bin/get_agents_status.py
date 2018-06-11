@@ -29,17 +29,16 @@ def current_credentials():
 def check_status():
   try:
     kwargs = {}
+    credentials = current_credentials()
     kwargs["owner"] = "nobody"
-    kwargs["username"] = "admin"
-    kwargs["password"] = "changeme"
+    kwargs["username"] = credentials["username"]
+    kwargs["password"] = credentials["password"]
     kwargs["app"] = "SplunkAppForWazuh"
     service = connect(**kwargs)
     
     if (current_credentials()["username"] is None or current_credentials()["password"] is None) or (current_credentials()["username"] == "" or current_credentials()["password"] == ""):
       raise Exception('No username or password')
 
-    user = current_credentials()["username"]
-    pwd = current_credentials()["password"]
     collection = service.kvstore["credentials"]
     apis = collection.data.query()
     date = str(datetime.datetime.utcnow())[:-7]

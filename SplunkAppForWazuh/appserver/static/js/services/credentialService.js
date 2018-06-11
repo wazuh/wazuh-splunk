@@ -62,7 +62,6 @@ define(function (require, exports, module) {
       return new Promise((resolve, reject) => {
         service.del(url, {}, (err, data) => {
           if (err) {
-            console.error('[CredentialService.delete][error]', err)
             return reject(err)
           }
           return resolve(data)
@@ -86,6 +85,13 @@ define(function (require, exports, module) {
     // -------- CRUD METHODS ------------ //
 
     /**
+     * Returns the already selected API from LocalStorage
+     */
+    static getSelectedApi() {
+      return LocalStorage.get('selectedApi')
+    }
+
+    /**
      * Delete a record by ID
      * @param {String} key 
      */
@@ -98,8 +104,6 @@ define(function (require, exports, module) {
         await CredentialService.delete("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
-        console.error('[CredentialService][remove]', err.message || err)
-
         return Promise.reject(err)
       }
     }
@@ -187,16 +191,15 @@ define(function (require, exports, module) {
     static async checkSelectedApiConnection() {
       try {
         const currentApi = LocalStorage.get('selectedApi')
-        console.log('checkSelectedApiConnection currentAPi', currentApi)
         if (!currentApi) { return Promise.reject(new Error('No selected API in LocalStorage')) }
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
         if (!selectedIndex || selectedIndex === '') {
-          selectedIndex = '*'
+          selectedIndex = 'wazuh'
         }
         return { api, selectedIndex }
       } catch (err) {
-        console.error('error at checkselectedapiconnection', err.message || err)
+
         return Promise.reject(err)
       }
     }
@@ -207,7 +210,6 @@ define(function (require, exports, module) {
     static async checkPollingState() {
       const getPollingState = '/manager/polling_state/'
       const pollingStatus = await ApiService.get(getPollingState)
-      console.log('pollingStatus ', pollingStatus)
       return (pollingStatus.disabled === "true") ? false : true
     }
 
@@ -224,11 +226,9 @@ define(function (require, exports, module) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
         const clusterData = await ApiService.get(checkConnectionEndpoint)
-        console.log('checkconnectiondata', clusterData)
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await ApiService.get(getManagerNameEndpoint)
-        console.log('managernamedata ', managerName)
 
         if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name) {
           if (!api.managerName || api.managerName !== managerName.data[0].name) {
@@ -241,7 +241,6 @@ define(function (require, exports, module) {
         if (clusterData.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await ApiService.get(getClusterNameEndpoint)
-          console.log('clusternamedata', clusterName)
           api.filter.push(clusterName.cluster)
           if (!api.cluster || api.cluster !== clusterName.cluster) {
             api.cluster = clusterName.cluster
@@ -257,7 +256,6 @@ define(function (require, exports, module) {
         }
         return api
       } catch (err) {
-        console.error("[checkApiConnection][error]: ", err.message || err)
         return Promise.reject(err)
       }
     }
