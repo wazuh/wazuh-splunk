@@ -184,7 +184,6 @@ require([
         await CredentialService.remove(key)
         await drawApiList()
       } catch (err) {
-        console.error('[settings][removeManager]', err.message || err)
         errorWhenDeletingRowToast.show()
       }
     }
@@ -215,7 +214,6 @@ require([
 
       } catch (err) {
         errorConnectionToast.show()
-        console.error("error at loading about content", err.message || err)
       }
     }
 
@@ -288,7 +286,6 @@ require([
         await CredentialService.chose(key)
         await drawApiList()
       } catch (err) {
-        console.error('[selectManager][error]: ', err)
         errorConnectionToast.show()
       }
     }
@@ -385,7 +382,6 @@ require([
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
-        console.error('error at loading data', err.message || err)
         await CredentialService.deselectAllApis()
         await drawApiList()
         selectedApiErrorToast.show()
@@ -433,7 +429,6 @@ require([
         await drawApiList()
         // Run the search again to update the table
       } catch (err) {
-        console.error("[deleteAllRecords][error]", err.message || err)
         return Promise.reject(err)
       }
     }
@@ -484,7 +479,6 @@ require([
             }
             await drawApiList()
           } catch (err) {
-            console.error('cannot insert a new API entry', result.data._key)
             await CredentialService.remove(result.data._key)
             cannotAddApiErrorToast.show()
           }
@@ -492,7 +486,6 @@ require([
           invalidFormatInputToast.show()
         }
       } catch (err) {
-        console.error('error at submit , should remove', err.message || err)
       }
     }
 

@@ -57,7 +57,7 @@ class manager(controllers.BaseController):
       request_cluster = self.session.get(url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
       result = json.dumps(request_cluster)
     except Exception as e:
-      return json.dumps("{error:"+str(e)+"}")
+      return json.dumps({"error":str(e)})
     return result
 
   @expose_page(must_login=False, methods=['GET'])

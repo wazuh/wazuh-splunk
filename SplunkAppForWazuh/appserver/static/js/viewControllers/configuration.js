@@ -320,7 +320,6 @@ require([
 
         } catch (err) {
           errorConnectionToast.show()
-          console.error(err.message || err)
         }
       }
 

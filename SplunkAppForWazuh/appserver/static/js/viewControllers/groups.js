@@ -55,7 +55,6 @@ require([
             $('#row3').show(200)
           }
         } catch (err) {
-          console.error(err.message || err)
           errorClickToast.show()
         }
       }
@@ -110,7 +109,6 @@ require([
             $('#row2').show(200)
           }
         } catch (err) {
-          console.error(err.message || err)
           errorClickToast.show()
         }
       }
@@ -152,7 +150,6 @@ require([
           tableGroups.click(data => clickOnGroup(data))
         } catch (err) {
           errorToast.show()
-          console.error(err)
         }
       }
 

@@ -928,7 +928,6 @@ require([
         pollingErrorToast.show()
       })
     }).catch((err) => {
-      //console.error(err)
       window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
     })
   }

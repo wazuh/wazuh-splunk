@@ -62,7 +62,6 @@ define(function (require, exports, module) {
       return new Promise((resolve, reject) => {
         service.del(url, {}, (err, data) => {
           if (err) {
-            console.error('[CredentialService.delete][error]', err)
             return reject(err)
           }
           return resolve(data)
@@ -105,7 +104,6 @@ define(function (require, exports, module) {
         await CredentialService.delete("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
-        console.error('[CredentialService][remove]', err.message || err)
         return Promise.reject(err)
       }
     }
@@ -201,7 +199,7 @@ define(function (require, exports, module) {
         }
         return { api, selectedIndex }
       } catch (err) {
-        console.error('error at checkselectedapiconnection', err.message || err)
+
         return Promise.reject(err)
       }
     }
@@ -258,7 +256,6 @@ define(function (require, exports, module) {
         }
         return api
       } catch (err) {
-        console.error("[checkApiConnection][error]: ", err.message || err)
         return Promise.reject(err)
       }
     }
