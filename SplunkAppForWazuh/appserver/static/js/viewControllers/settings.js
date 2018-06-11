@@ -448,13 +448,10 @@ require([
           }
           // Use the request method to send and insert a new record
           const result = await CredentialService.insert(record)
-          console.log('inserted first time')
           try {
             const resultConnection = await CredentialService.checkApiConnection(result.data._key)
-            console.log('resultConnection',resultConnection)
             clearForm()
             const apiList = await CredentialService.getApiList()
-            console.log('apiList',apiList)
             if (apiList && apiList.length === 1) { 
               await selectManager(result.data._key)
             }
@@ -464,7 +461,6 @@ require([
             await CredentialService.remove(result.data._key)
             cannotAddApiErrorToast.show()
           }
-          console.log('after try')
         } else {
           invalidFormatInputToast.show()
         }
