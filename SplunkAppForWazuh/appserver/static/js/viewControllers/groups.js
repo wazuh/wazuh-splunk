@@ -84,7 +84,7 @@ require([
             const parsedData = await ApiService.get('/agents/check_agents_groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name)
             if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
               $('#panel3').empty()
-              $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>last_keepalive</th></tr></thead></table>')
+              $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>lastKeepAlive</th></tr></thead></table>')
               tableAgents.element($('#myAgentsGroupTable'))
               // Options for Agents Group table
               const optsAgentsGroup = {
@@ -93,10 +93,10 @@ require([
                 serverSide: true,
                 filterVisible: false,
                 columns: [
-                  { "data": "id", 'orderable': false, defaultContent: "-" },
-                  { "data": "name", 'orderable': false, defaultContent: "-" },
-                  { "data": "ip", 'orderable': false, defaultContent: "-" },
-                  { "data": "last_keepalive", 'orderable': false, defaultContent: "-" }
+                  { "data": "id", 'orderable': true, defaultContent: "-" },
+                  { "data": "name", 'orderable': true, defaultContent: "-" },
+                  { "data": "ip", 'orderable': true, defaultContent: "-" },
+                  { "data": "lastKeepAlive", 'orderable': true, defaultContent: "-" }
                 ]
               }
               tableAgents.build(agentsUrl, optsAgentsGroup)
