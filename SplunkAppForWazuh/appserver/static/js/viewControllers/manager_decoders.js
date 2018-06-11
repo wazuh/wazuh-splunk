@@ -92,14 +92,14 @@ require([
 
     let pageLoading = true
 
-   
-    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
+
+    CredentialService.checkSelectedApiConnection().then(({ api, selectedIndex }) => {
       let nameFilter = ""
 
-      if ( api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+      if (api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
         nameFilter = api.filter[0] + '=' + api.filter[1]
       }
-      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+      SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -154,13 +154,15 @@ require([
           table.element($('#myTable'))
           table.build('/manager/decoders?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.click(data => {
-            setToken("showDetails", "true")
-            setToken("Name", data.name)
-            setToken("Program", data.details.program_name || "-")
-            setToken("Path", data.path)
-            setToken("Order", data.details.order || "-")
-            setToken("Parent", data.details.parent || "-")
-            setToken("Regex", data.details.regex || "-")
+            if (data && data.name) {
+              setToken("showDetails", "true")
+              setToken("Name", data.name)
+              setToken("Program", data.details.program_name || "-")
+              setToken("Path", data.path)
+              setToken("Order", data.details.order || "-")
+              setToken("Parent", data.details.parent || "-")
+              setToken("Regex", data.details.regex || "-")
+            }
           })
         } catch (err) {
           errorToast.show()
@@ -175,7 +177,7 @@ require([
         "sample_ratio": 1,
         "earliest_time": "-24h@h",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\"| timechart count by \"decoder.name\" useother=f",
         "latest_time": "now",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
