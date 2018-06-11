@@ -108,16 +108,16 @@ require([
 
     const inputIndexes = new DropdownInput({
       "id": "inputIndexes",
-      "choices": [
-        { "label": "ALL", "value": "*" }
-      ],
+      // "choices": [
+        // { "label": "all", "value": "*" }
+      // ],
       "labelField": "index",
-      "searchWhenChanged": true,
-      "default": "*",
+      "searchWhenChanged": false,
+      "default": "wazuh",
       "valueField": "index",
-      "initialValue": "*",
-      "selectFirstChoice": false,
-      "showClearButton": true,
+      // "initialValue": "wazuh",
+      "selectFirstChoice": true,
+      "showClearButton": false,
       "value": "$form.index$",
       "managerid": "searchIndexes",
       "el": $('#inputIndexes')
