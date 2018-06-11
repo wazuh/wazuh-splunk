@@ -34,8 +34,8 @@ require([
 
     const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
     const errorClickToast = new Toast('error', 'toast-bottom-right', 'Error at clicking on row', 1000, 250, 250)
-    CredentialService.checkSelectedApiConnection().then(({api}) => {
-      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+    CredentialService.checkSelectedApiConnection().then(({ api }) => {
+      SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
 
       const tableFiles = new tableView()
       const tableAgents = new tableView()
@@ -47,13 +47,15 @@ require([
        */
       const clickOnFile = async (data, groupName) => {
         try {
-          const endPointFileContent = '/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-          const dataFile = await ApiService.get(endPointFileContent)
-          $('#precode').empty()
-          $('#precode').prepend('<pre style="height: 100%" class="wz-pre json-beautifier jsonbeauty scroll "><code>' + JSON.stringify(dataFile, null, 2) + '</code></pre>')
-          $('#row3').show(200)
+          if (data && groupName && groupName !== "") {
+            const endPointFileContent = '/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+            const dataFile = await ApiService.get(endPointFileContent)
+            $('#precode').empty()
+            $('#precode').prepend('<pre style="height: 100%" class="wz-pre json-beautifier jsonbeauty scroll "><code>' + JSON.stringify(dataFile, null, 2) + '</code></pre>')
+            $('#row3').show(200)
+          }
         } catch (err) {
-          console.error(err.message || err )
+          console.error(err.message || err)
           errorClickToast.show()
         }
       }
@@ -64,48 +66,49 @@ require([
        */
       const clickOnGroup = async (data) => {
         try {
-
-          // Options for Files Group table
-          const optsFiles = {
-            pages: 10,
-            processing: true,
-            serverSide: true,
-            filterVisible: false,
-            columns: [
-              { "data": "filename", 'orderable': true, defaultContent: "-" },
-              { "data": "hash", 'orderable': true, defaultContent: "-" }
-            ]
-          }
-          const groupName = data.name
-          tableFiles.build('/agents/files?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name, optsFiles)
-          const agentsUrl = '/agents/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name
-          const parsedData = await ApiService.get('/agents/check_agents_groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name)
-          if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
-            $('#panel3').empty()
-            $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>last_keepalive</th></tr></thead></table>')
-            tableAgents.element($('#myAgentsGroupTable'))
-            // Options for Agents Group table
-            const optsAgentsGroup = {
+          if (data) {
+            // Options for Files Group table
+            const optsFiles = {
               pages: 10,
               processing: true,
               serverSide: true,
               filterVisible: false,
               columns: [
-                { "data": "id", 'orderable': false, defaultContent: "-" },
-                { "data": "name", 'orderable': false, defaultContent: "-" },
-                { "data": "ip", 'orderable': false, defaultContent: "-" },
-                { "data": "last_keepalive", 'orderable': false, defaultContent: "-" }
+                { "data": "filename", 'orderable': true, defaultContent: "-" },
+                { "data": "hash", 'orderable': true, defaultContent: "-" }
               ]
             }
-            tableAgents.build(agentsUrl, optsAgentsGroup)
-          }
-          else {
-            $('#panel3').empty()
-            $('#panel3').html('<p>No agents were found in this group.</p>')
-          }
+            const groupName = data.name
+            tableFiles.build('/agents/files?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name, optsFiles)
+            const agentsUrl = '/agents/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name
+            const parsedData = await ApiService.get('/agents/check_agents_groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name)
+            if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
+              $('#panel3').empty()
+              $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>last_keepalive</th></tr></thead></table>')
+              tableAgents.element($('#myAgentsGroupTable'))
+              // Options for Agents Group table
+              const optsAgentsGroup = {
+                pages: 10,
+                processing: true,
+                serverSide: true,
+                filterVisible: false,
+                columns: [
+                  { "data": "id", 'orderable': false, defaultContent: "-" },
+                  { "data": "name", 'orderable': false, defaultContent: "-" },
+                  { "data": "ip", 'orderable': false, defaultContent: "-" },
+                  { "data": "last_keepalive", 'orderable': false, defaultContent: "-" }
+                ]
+              }
+              tableAgents.build(agentsUrl, optsAgentsGroup)
+            }
+            else {
+              $('#panel3').empty()
+              $('#panel3').html('<p>No agents were found in this group.</p>')
+            }
 
-          tableFiles.click(data => clickOnFile(data, groupName))
-          $('#row2').show(200)
+            tableFiles.click(data => clickOnFile(data, groupName))
+            $('#row2').show(200)
+          }
         } catch (err) {
           console.error(err.message || err)
           errorClickToast.show()
