@@ -1,5 +1,18 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+
+
+## Wazuh v3.3 - Splunk Enterprise v7.1.1 - Splunk app v3.3-rev-7
+### Added
+- Polling and index agent status data ([#101](https://github.com/wazuh/wazuh-splunk/pull/101))
+- New GDPR tabs ([#66](https://github.com/wazuh/wazuh-splunk/pull/66))
+- New multi Index support ([#79](https://github.com/wazuh/wazuh-splunk/pull/79))
+### Changed
+- Selecting 'wazuh' index when any other is selected ([#100](https://github.com/wazuh/wazuh-splunk/issues/100))
+### Fixed
+- Extending response timeout in checking connection endpoint ([#509cb7b](https://github.com/wazuh/wazuh-splunk/pull/101/commits/509cb7bab923294dcd5c5d2f93fff9425356f056))
+- Deprecated interval field in manager configuration cluster section ([#93](https://github.com/wazuh/wazuh-splunk/issues/93))
+
 ## Wazuh v3.2.4 - Splunk Enterprise v7.1.1 - Splunk app v3.2.4-rev-6
 There are no changes for Splunk app for Wazuh in this version.
 
