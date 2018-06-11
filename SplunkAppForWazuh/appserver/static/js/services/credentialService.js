@@ -62,6 +62,7 @@ define(function (require, exports, module) {
       return new Promise((resolve, reject) => {
         service.del(url, {}, (err, data) => {
           if (err) {
+            console.error('[CredentialService.delete][error]', err)
             return reject(err)
           }
           return resolve(data)
@@ -91,12 +92,14 @@ define(function (require, exports, module) {
     static async remove(key) {
       try {
         const api = await CredentialService.select(key)
-        if (LocalStorage.get('selectedApi') && LocalStorage.get('selectedApi').url === api.url) {
+        if (LocalStorage.get('selectedApi') && JSON.parse(LocalStorage.get('selectedApi')) && JSON.parse(LocalStorage.get('selectedApi')).url === api.url) {
           LocalStorage.clear('selectedApi')
         }
         await CredentialService.delete("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
+        console.error('[CredentialService][remove]', err.message || err)
+
         return Promise.reject(err)
       }
     }
@@ -125,7 +128,7 @@ define(function (require, exports, module) {
           if (api._key === key) {
             LocalStorage.clear('selectedApi')
             LocalStorage.set('selectedApi', JSON.stringify(api))
-          } 
+          }
         }
         return
       } catch (err) {
@@ -137,7 +140,7 @@ define(function (require, exports, module) {
      * Deselect all stored APIs. 'selected' field to false.
      * @param {String} key 
      */
-    static async deselectAllApis() {
+    static deselectAllApis() {
       try {
         LocalStorage.clear('selectedApi')
         return
@@ -166,7 +169,7 @@ define(function (require, exports, module) {
       try {
         const apiList = await CredentialService.get("storage/collections/data/credentials/")
         const selectedApi = LocalStorage.get('selectedApi')
-        for(let i=0 ; i<apiList.length; i++) {
+        for (let i = 0; i < apiList.length; i++) {
           if (typeof selectedApi === 'string' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
             apiList[i].selected = true
           }
@@ -184,6 +187,7 @@ define(function (require, exports, module) {
     static async checkSelectedApiConnection() {
       try {
         const currentApi = LocalStorage.get('selectedApi')
+        console.log('checkSelectedApiConnection currentAPi', currentApi)
         if (!currentApi) { return Promise.reject(new Error('No selected API in LocalStorage')) }
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
@@ -198,6 +202,17 @@ define(function (require, exports, module) {
     }
 
     /**
+    * Check the current state of agents status history
+    */
+    static async checkPollingState() {
+      const getPollingState = '/manager/polling_state/'
+      const pollingStatus = await ApiService.get(getPollingState)
+      console.log('pollingStatus ', pollingStatus)
+      return (pollingStatus.disabled === "true") ? false : true
+    }
+
+
+    /**
      * Check if connection with API was successful, also returns the whole needed information about it
      * @param {String} key 
      */
@@ -209,11 +224,14 @@ define(function (require, exports, module) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
         const clusterData = await ApiService.get(checkConnectionEndpoint)
+        console.log('checkconnectiondata', clusterData)
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await ApiService.get(getManagerNameEndpoint)
-        if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name ) {
-          if (!api.managerName || api.managerName !== managerName.data[0].name ) {
+        console.log('managernamedata ', managerName)
+
+        if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name) {
+          if (!api.managerName || api.managerName !== managerName.data[0].name) {
             api.managerName = managerName.data[0].name
             await CredentialService.update(api._key, api)
           }
@@ -223,13 +241,14 @@ define(function (require, exports, module) {
         if (clusterData.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await ApiService.get(getClusterNameEndpoint)
+          console.log('clusternamedata', clusterName)
           api.filter.push(clusterName.cluster)
           if (!api.cluster || api.cluster !== clusterName.cluster) {
             api.cluster = clusterName.cluster
             await CredentialService.update(api._key, api)
           }
         } else {
-          if(api.cluster) {
+          if (api.cluster) {
             api.cluster = false
             await CredentialService.update(api._key, api)
           }
@@ -238,7 +257,7 @@ define(function (require, exports, module) {
         }
         return api
       } catch (err) {
-        console.error("checkApiConnection", err.message || err)
+        console.error("[checkApiConnection][error]: ", err.message || err)
         return Promise.reject(err)
       }
     }
