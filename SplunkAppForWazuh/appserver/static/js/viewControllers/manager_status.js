@@ -90,8 +90,8 @@ require([
 
     let pageLoading = true
 
-    CredentialService.checkSelectedApiConnection().then(({api,selectedIndex}) => {
-      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+    CredentialService.checkSelectedApiConnection().then(({ api, selectedIndex }) => {
+      SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
       const urlTokenModel = new UrlTokenModel()
       mvc.Components.registerInstance('url', urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -684,8 +684,9 @@ require([
 
       DashboardController.ready()
       pageLoading = false
-    }).catch((err) => { console.error('err',err);
-    //  window.location.href = '/en-US/app/SplunkAppForWazuh/settings' 
+    }).catch((err) => {
+     // console.error('err', err);
+      window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
     })
   }
 )
