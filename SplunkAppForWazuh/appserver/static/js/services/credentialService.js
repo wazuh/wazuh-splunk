@@ -86,6 +86,13 @@ define(function (require, exports, module) {
     // -------- CRUD METHODS ------------ //
 
     /**
+     * Returns the already selected API from LocalStorage
+     */
+    static getSelectedApi() {
+      return LocalStorage.get('selectedApi')
+    }
+
+    /**
      * Delete a record by ID
      * @param {String} key 
      */
@@ -99,7 +106,6 @@ define(function (require, exports, module) {
         return
       } catch (err) {
         console.error('[CredentialService][remove]', err.message || err)
-
         return Promise.reject(err)
       }
     }
