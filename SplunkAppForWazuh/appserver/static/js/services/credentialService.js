@@ -197,7 +197,7 @@ define(function (require, exports, module) {
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
         if (!selectedIndex || selectedIndex === '') {
-          selectedIndex = '*'
+          selectedIndex = 'wazuh'
         }
         return { api, selectedIndex }
       } catch (err) {
