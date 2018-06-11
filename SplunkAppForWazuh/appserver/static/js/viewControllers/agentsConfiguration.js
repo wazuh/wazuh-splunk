@@ -562,10 +562,13 @@ require([
       const agentList = async agentListEndpoint => {
         try {
           const agentListJson = await ApiService.get(agentListEndpoint)
-          for (const agent of agentListJson.data.items)
-            $('#agentList').append(
-              '<option value="' + agent.id + '">' + agent.name + ' - ' + agent.id + '</option>'
-            )
+          for (const agent of agentListJson.data.items) {
+            if (agent.id !== "000") {
+              $('#agentList').append(
+                '<option value="' + agent.id + '">' + agent.name + ' - ' + agent.id + '</option>'
+              )
+            }
+          }
         } catch (err) {
           return Promise.reject(err)
         }
@@ -583,7 +586,7 @@ require([
 
           let group = parsedJson.group
           let groupInformationEndpoint = ''
-          if (typeof group !== 'undefined') {
+          if (group && typeof group !== 'undefined') {
             groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
           } else {
