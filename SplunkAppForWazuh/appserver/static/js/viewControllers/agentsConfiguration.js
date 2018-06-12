@@ -31,10 +31,13 @@ require([
     CredentialService.checkSelectedApiConnection().then(({ api }) => {
 
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
+      const errorChangeAgent = new Toast('error', 'toast-bottom-right', 'Error when change agent', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
       const noConfigHtml = '<p>This agent belongs to a group where actually there`s no configuration.</p></br>' +
         '<p>Use the following link to learn about the centralized configuration process and how to set it up:</p></br>' +
         '<a href=https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html>https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>'
+
+      const noAgents = '<p>There are no registered agents.</p>'
 
       /**
        * Render File Integrity data with object received
@@ -543,8 +546,8 @@ require([
       const loadAgentConfig = async groupInformationEndpoint => {
         try {
           const groupConfJSON = await ApiService.get(groupInformationEndpoint)
-          if (groupConfJSON && groupConfJSON.items && groupConfJSON.items[1] && groupConfJSON.items[1].config) {
-            await initializeData(groupConfJSON.items[1].config)
+          if (groupConfJSON && groupConfJSON.items && groupConfJSON.items[0] && groupConfJSON.items[0].config) {
+            await initializeData(groupConfJSON.items[0].config)
           }
           else {
             $('#dynamicContent').html(noConfigHtml)
@@ -561,10 +564,9 @@ require([
       const getFirstAgent = async () => {
         try {
           const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-
           const agentListJson = await ApiService.get(agentListEndpoint)
           if (agentListJson && agentListJson.data && agentListJson.data.items && agentListJson.data.items.length > 1) {
-            return  agentListJson.data.items[1]
+            return agentListJson.data.items[1]
           } else {
             return false
           }
@@ -577,8 +579,9 @@ require([
        * Agent list for dropdown
        * @param {String} agentListEndpoint 
        */
-      const agentList = async agentListEndpoint => {
+      const agentList = async () => {
         try {
+          const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           const agentListJson = await ApiService.get(agentListEndpoint)
           for (const agent of agentListJson.data.items) {
             if (agent.id !== "000") {
@@ -593,14 +596,22 @@ require([
       }
 
       /**
+       * Attaches event to dropdown change
+       */
+      $('#agentList').on('change', function () {
+        loadDataById($(this).val()).then().catch(err => {
+          errorChangeAgent.show()
+        })
+      })
+
+      /**
        * Request agent configuration data
        */
-      const loadData = async (id) => {
+      const loadDataById = async (id) => {
         try {
           let endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + id
           let parsedJson = await ApiService.get(endPoint)
           const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-          await agentList(agentListEndpoint)
           let group = parsedJson.group
           let groupInformationEndpoint = ''
           if (group && typeof group !== 'undefined') {
@@ -609,32 +620,6 @@ require([
           } else {
             $('#dynamicContent').html(noConfigHtml)
           }
-
-          $('#agentList').on('change', async function () {
-            endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + this.value
-            parsedJson = await ApiService.get(endPoint)
-            group = parsedJson.group
-            console.log('---------------------------------')
-            console.log(group)
-            console.log(typeof group)
-            console.log(Object.keys(group))
-            console.log('---------------------------------')
-            if (typeof group !== 'undefined' && Object.keys(group).length) {
-              $('#dynamicList').hide()
-              $('#dynamicContent').empty()
-              groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
-              await loadAgentConfig(groupInformationEndpoint)
-              $('#dynamicList').show()
-
-            } else {
-              $('#dynamicList').hide()
-              $('#dynamicContent').html(
-                '<p>This agent belongs to a group where actually there`s no configuration.</p></br>' +
-                '<p>Use the following link to learn about the centralized configuration process and how to set it up:</p></br>' +
-                '<a href=https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html>https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>'
-              )
-            }
-          })
           return
         } catch (err) {
           return Promise.reject(err)
@@ -642,16 +627,17 @@ require([
       }
 
       /**
-       * Initializes agent list
+       * Initializes agent list and shows information about the first agent
        */
       const initialize = async () => {
         try {
+          await agentList()
           const agent = await getFirstAgent()
-          console.log('agent ',agent)
           if (agent && agent.id) {
-            loadData(agent.id)
+            loadDataById(agent.id)
           } else {
-            console.error('There are no agents.')
+            $('#dynamicContent').empty()
+            $('#dynamicContent').html(noAgents)
           }
         } catch (err) {
           return Promise.reject(err)
@@ -659,19 +645,20 @@ require([
       }
 
       /**
-       * Initialize visualizations and data when DOM is ready
+       * Initializes visualizations and data when DOM is ready
        */
-      try {
-        $(document).ready(() => initialize().catch(err => { return Promise.reject(new Error(err))}))
-      } catch (error) {
+      $(document).ready(() => initialize().then().catch(err => {
         errorConnectionToast.show()
-      }
+      }))
+
 
       $('header').remove();
       new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": false, "hideChrome": false })
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0]);
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
+    }).catch((err) => {
+      window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+    })
   }
 )
