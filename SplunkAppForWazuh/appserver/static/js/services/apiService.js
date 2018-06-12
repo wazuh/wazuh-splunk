@@ -42,7 +42,6 @@ define(function (require, exports, module) {
       try {
         let result = await asyncReq.promisedGet(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh' + endpoint)
         if (result && typeof result !== 'object') {
-          console.log(result, " ",typeof result)
           result = JSON.parse(result)
           if (result.error) {
             return Promise.reject(new Error('No connectivity. Error: ' + result.error))
