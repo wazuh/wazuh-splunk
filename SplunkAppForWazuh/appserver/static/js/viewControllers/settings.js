@@ -272,6 +272,7 @@ require([
           $('#apiList').html('<h4>No API entries detected. You must have at least one API for using Splunk app for Wazuh.</h4>')
         }
       } catch (err) {
+        console.error(err)
         return Promise.reject(err)
       }
     }
@@ -350,19 +351,15 @@ require([
       try {
         if (!CredentialService.getSelectedApi()) {
           const apiList = await CredentialService.getApiList()
-          console.log('bringing api list', apiList)
           let selected = false
           for (let i = 0; i < apiList.length && !selected; i++) {
-            console.log('an api ', apiList[i])
             if (CredentialService.checkApiConnection(apiList[i]._key)) {
-              console.log('successfull conection with ', apiList[i])
               await CredentialService.chose(apiList[i]._key)
               selected = true
             }
           }
 
         } else {
-          console.log('already registered API')
         }
       } catch (err) {
         return Promise.reject(err)
@@ -382,6 +379,7 @@ require([
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
+        console.error(err)
         await CredentialService.deselectAllApis()
         await drawApiList()
         selectedApiErrorToast.show()
@@ -391,9 +389,9 @@ require([
     /**
      * On document ready
      */
-    $('#apiTab').click(() => selectOption(event, 'API'))
-    $('#indexesTab').click(() => selectOption(event, 'Indexes'))
-    $('#aboutTab').click(() => selectOption(event, 'About'))
+    $('#apiTab').click((event) => selectOption(event, 'API'))
+    $('#indexesTab').click((event) => selectOption(event, 'Indexes'))
+    $('#aboutTab').click((event) => selectOption(event, 'About'))
 
     $(document).ready(() => firstLoad())
 
