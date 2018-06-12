@@ -272,7 +272,7 @@ require([
           $('#apiList').html('<h4>No API entries detected. You must have at least one API for using Splunk app for Wazuh.</h4>')
         }
       } catch (err) {
-        Promise.reject(err)
+        return Promise.reject(err)
       }
     }
 
