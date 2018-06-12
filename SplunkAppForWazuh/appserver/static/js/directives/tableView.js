@@ -29,6 +29,10 @@ define(function (require, exports, module) {
       // this.$el.DataTable({"retrieve": true}) 
     }
 
+    /**
+     * Attaches an element to a table
+     * @param {jQuery}  
+     */
     element($el) {
       this.$el = $el
     }

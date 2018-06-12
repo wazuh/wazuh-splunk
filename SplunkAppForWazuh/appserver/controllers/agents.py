@@ -144,30 +144,30 @@ class agents(controllers.BaseController):
         limit =  kwargs['length'] if kwargs['length'] != "" else 10
         offset = kwargs['start'] if kwargs['start'] != "" else 0
         search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-        # sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
+        sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
         direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
         sort_chain = ""
 
-        # if sorting_column == "0":
-        #   if direction == 'asc':
-        #     sort_chain = '+id'
-        #   if direction == 'desc':
-        #     sort_chain = '-id'
-        # elif sorting_column == "1":
-        #   if direction == 'asc':
-        #     sort_chain = '+name'
-        #   if direction == 'desc':
-        #     sort_chain = '-name'
-        # elif sorting_column == "2":
-        #   if direction == 'asc':
-        #     sort_chain = '+ip'
-        #   if direction == 'desc':
-        #     sort_chain = '-ip'
-        # elif sorting_column == "3":
-        #   if direction == 'asc':
-        #     sort_chain = '+last_keepalive'
-        #   if direction == 'desc':
-        #     sort_chain = '-last_keepalive'
+        if sorting_column == "0":
+          if direction == 'asc':
+            sort_chain = '+id'
+          if direction == 'desc':
+            sort_chain = '-id'
+        elif sorting_column == "1":
+          if direction == 'asc':
+            sort_chain = '+name'
+          if direction == 'desc':
+            sort_chain = '-name'
+        elif sorting_column == "2":
+          if direction == 'asc':
+            sort_chain = '+ip'
+          if direction == 'desc':
+            sort_chain = '-ip'
+        elif sorting_column == "3":
+          if direction == 'asc':
+            sort_chain = '+lastKeepAlive'
+          if direction == 'desc':
+            sort_chain = '-lastKeepAlive'
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False

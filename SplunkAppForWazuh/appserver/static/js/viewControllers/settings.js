@@ -108,16 +108,16 @@ require([
 
     const inputIndexes = new DropdownInput({
       "id": "inputIndexes",
-      "choices": [
-        { "label": "ALL", "value": "*" }
-      ],
+      // "choices": [
+      // { "label": "all", "value": "*" }
+      // ],
       "labelField": "index",
-      "searchWhenChanged": true,
-      "default": "*",
+      "searchWhenChanged": false,
+      "default": "wazuh",
       "valueField": "index",
-      "initialValue": "*",
-      "selectFirstChoice": false,
-      "showClearButton": true,
+      // "initialValue": "wazuh",
+      "selectFirstChoice": true,
+      "showClearButton": false,
       "value": "$form.index$",
       "managerid": "searchIndexes",
       "el": $('#inputIndexes')
@@ -214,7 +214,6 @@ require([
 
       } catch (err) {
         errorConnectionToast.show()
-        console.error("error at loading about content",err.message || err)
       }
     }
 
@@ -264,7 +263,7 @@ require([
               '   <i id="' + api._key + '" class="fa fa-refresh wz-margin-left-7 wz-cursor-pointer" aria-hidden="true"></i></td> ' +
               ' <td>' + (!api.selected ? '' : 'yes') + '</td> ' +
               ' <td>' + api.managerName + '</td> ' +
-              ' <td>' + ( api.cluster !== false  ? api.cluster : 'Disabled') + '</td> ' +
+              ' <td>' + (api.cluster !== false ? api.cluster : 'Disabled') + '</td> ' +
               '</tr> '
             )
           }
@@ -287,7 +286,6 @@ require([
         await CredentialService.chose(key)
         await drawApiList()
       } catch (err) {
-        console.error('error!', err)
         errorConnectionToast.show()
       }
     }
@@ -346,18 +344,44 @@ require([
     }
 
     /**
+     * Autoselects the first working API if any of them was selected
+     */
+    const autoSelectApi = async () => {
+      try {
+        if (!CredentialService.getSelectedApi()) {
+          const apiList = await CredentialService.getApiList()
+          console.log('bringing api list', apiList)
+          let selected = false
+          for (let i = 0; i < apiList.length && !selected; i++) {
+            console.log('an api ', apiList[i])
+            if (CredentialService.checkApiConnection(apiList[i]._key)) {
+              console.log('successfull conection with ', apiList[i])
+              await CredentialService.chose(apiList[i]._key)
+              selected = true
+            }
+          }
+
+        } else {
+          console.log('already registered API')
+        }
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
      * Check if connection is OK at starting view
      */
     const firstLoad = async () => {
       try {
         $('#mainFrame').removeClass('wz-loading')
         $('#apiTab').click()
+        await autoSelectApi()
         await loadAboutContent()
         await CredentialService.checkSelectedApiConnection()
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
-        console.error('error at loading data', err.message || err)
         await CredentialService.deselectAllApis()
         await drawApiList()
         selectedApiErrorToast.show()
@@ -401,8 +425,8 @@ require([
       try {
         // Delete the record that corresponds to the key ID using
         await CredentialService.delete()
-        LocalStorage.clear('selectedApi')
-        clearTable()
+        CredentialService.deselectAllApis()
+        await drawApiList()
         // Run the search again to update the table
       } catch (err) {
         return Promise.reject(err)
@@ -446,28 +470,22 @@ require([
           }
           // Use the request method to send and insert a new record
           const result = await CredentialService.insert(record)
-          console.log('inserted first time')
           try {
             const resultConnection = await CredentialService.checkApiConnection(result.data._key)
-            console.log('resultConnection',resultConnection)
             clearForm()
             const apiList = await CredentialService.getApiList()
-            console.log('apiList',apiList)
-            if (apiList && apiList.length === 1) { 
+            if (apiList && apiList.length === 1) {
               await selectManager(result.data._key)
             }
             await drawApiList()
           } catch (err) {
-            console.error('cannot insert a new API entry', result.data._key)
             await CredentialService.remove(result.data._key)
             cannotAddApiErrorToast.show()
           }
-          console.log('after try')
         } else {
           invalidFormatInputToast.show()
         }
       } catch (err) {
-        console.error('error at submit , should remove',err.message || err)
       }
     }
 
@@ -479,7 +497,7 @@ require([
     /**
      * On Remove all click
      */
-    $('#removeAll').on("click", async () => deleteAllRecords().catch( (err) => { errorWhenDeletingRowToast.show()}))
+    $('#removeAll').on("click", async () => deleteAllRecords().catch((err) => { errorWhenDeletingRowToast.show() }))
 
 
 

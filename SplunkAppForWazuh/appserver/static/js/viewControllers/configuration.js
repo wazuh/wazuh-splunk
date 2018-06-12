@@ -78,7 +78,6 @@ require([
           $('#disabled').text(clusterObj.disabled)
           $('#hidden').text(clusterObj.hidden)
           $('#name').text(clusterObj.name)
-          $('#interval').text(clusterObj.interval)
           $('#nodeName').text(clusterObj.node_name)
           $('#nodeType').text(clusterObj.node_type)
           $('#port').text(clusterObj.port)
@@ -321,7 +320,6 @@ require([
 
         } catch (err) {
           errorConnectionToast.show()
-          console.error(err.message || err)
         }
       }
 

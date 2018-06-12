@@ -85,13 +85,20 @@ define(function (require, exports, module) {
     // -------- CRUD METHODS ------------ //
 
     /**
+     * Returns the already selected API from LocalStorage
+     */
+    static getSelectedApi() {
+      return LocalStorage.get('selectedApi')
+    }
+
+    /**
      * Delete a record by ID
      * @param {String} key 
      */
     static async remove(key) {
       try {
         const api = await CredentialService.select(key)
-        if (LocalStorage.get('selectedApi') && LocalStorage.get('selectedApi').url === api.url) {
+        if (LocalStorage.get('selectedApi') && JSON.parse(LocalStorage.get('selectedApi')) && JSON.parse(LocalStorage.get('selectedApi')).url === api.url) {
           LocalStorage.clear('selectedApi')
         }
         await CredentialService.delete("storage/collections/data/credentials/" + key)
@@ -125,7 +132,7 @@ define(function (require, exports, module) {
           if (api._key === key) {
             LocalStorage.clear('selectedApi')
             LocalStorage.set('selectedApi', JSON.stringify(api))
-          } 
+          }
         }
         return
       } catch (err) {
@@ -137,7 +144,7 @@ define(function (require, exports, module) {
      * Deselect all stored APIs. 'selected' field to false.
      * @param {String} key 
      */
-    static async deselectAllApis() {
+    static deselectAllApis() {
       try {
         LocalStorage.clear('selectedApi')
         return
@@ -166,7 +173,7 @@ define(function (require, exports, module) {
       try {
         const apiList = await CredentialService.get("storage/collections/data/credentials/")
         const selectedApi = LocalStorage.get('selectedApi')
-        for(let i=0 ; i<apiList.length; i++) {
+        for (let i = 0; i < apiList.length; i++) {
           if (typeof selectedApi === 'string' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
             apiList[i].selected = true
           }
@@ -188,14 +195,24 @@ define(function (require, exports, module) {
         const api = await CredentialService.checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
         if (!selectedIndex || selectedIndex === '') {
-          selectedIndex = '*'
+          selectedIndex = 'wazuh'
         }
         return { api, selectedIndex }
       } catch (err) {
-        console.error('error at checkselectedapiconnection', err.message || err)
+
         return Promise.reject(err)
       }
     }
+
+    /**
+    * Check the current state of agents status history
+    */
+    static async checkPollingState() {
+      const getPollingState = '/manager/polling_state/'
+      const pollingStatus = await ApiService.get(getPollingState)
+      return (pollingStatus.disabled === "true") ? false : true
+    }
+
 
     /**
      * Check if connection with API was successful, also returns the whole needed information about it
@@ -212,8 +229,9 @@ define(function (require, exports, module) {
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await ApiService.get(getManagerNameEndpoint)
-        if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name ) {
-          if (!api.managerName || api.managerName !== managerName.data[0].name ) {
+
+        if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name) {
+          if (!api.managerName || api.managerName !== managerName.data[0].name) {
             api.managerName = managerName.data[0].name
             await CredentialService.update(api._key, api)
           }
@@ -229,7 +247,7 @@ define(function (require, exports, module) {
             await CredentialService.update(api._key, api)
           }
         } else {
-          if(api.cluster) {
+          if (api.cluster) {
             api.cluster = false
             await CredentialService.update(api._key, api)
           }
@@ -238,7 +256,6 @@ define(function (require, exports, module) {
         }
         return api
       } catch (err) {
-        console.error("checkApiConnection", err.message || err)
         return Promise.reject(err)
       }
     }

@@ -543,13 +543,32 @@ require([
       const loadAgentConfig = async groupInformationEndpoint => {
         try {
           const groupConfJSON = await ApiService.get(groupInformationEndpoint)
-          if (groupConfJSON && groupConfJSON.items && groupConfJSON.items[0] && groupConfJSON.items[0].config) {
-            await initializeData(groupConfJSON.items[0].config)
+          if (groupConfJSON && groupConfJSON.items && groupConfJSON.items[1] && groupConfJSON.items[1].config) {
+            await initializeData(groupConfJSON.items[1].config)
           }
           else {
             $('#dynamicContent').html(noConfigHtml)
           }
 
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Gets the first agent
+       */
+      const getFirstAgent = async () => {
+        try {
+          const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+
+          const agentListJson = await ApiService.get(agentListEndpoint)
+          console.log('agentlist ',agentListJson)
+          if (agentListJson && agentListJson.data && agentListJson.data.items && agentListJson.data.items.length > 1) {
+            return  agentListJson.data.items[1]
+          } else {
+            return false
+          }
         } catch (err) {
           return Promise.reject(err)
         }
@@ -562,10 +581,13 @@ require([
       const agentList = async agentListEndpoint => {
         try {
           const agentListJson = await ApiService.get(agentListEndpoint)
-          for (const agent of agentListJson.data.items)
-            $('#agentList').append(
-              '<option value="' + agent.id + '">' + agent.name + ' - ' + agent.id + '</option>'
-            )
+          for (const agent of agentListJson.data.items) {
+            if (agent.id !== "000") {
+              $('#agentList').append(
+                '<option value="' + agent.id + '">' + agent.name + ' - ' + agent.id + '</option>'
+              )
+            }
+          }
         } catch (err) {
           return Promise.reject(err)
         }
@@ -576,14 +598,16 @@ require([
        */
       const loadData = async (id) => {
         try {
+          console.log('load data id ', id)
           let endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + id
           let parsedJson = await ApiService.get(endPoint)
           const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           await agentList(agentListEndpoint)
 
           let group = parsedJson.group
+          console.log('group ',group)
           let groupInformationEndpoint = ''
-          if (typeof group !== 'undefined') {
+          if (group && typeof group !== 'undefined') {
             groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
             await loadAgentConfig(groupInformationEndpoint)
           } else {
@@ -594,8 +618,12 @@ require([
             endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + this.value
             parsedJson = await ApiService.get(endPoint)
             group = parsedJson.group
-
-            if (typeof group !== 'undefined') {
+            console.log('---------------------------------')
+            console.log(group)
+            console.log(typeof group)
+            console.log(Object.keys(group))
+            console.log('---------------------------------')
+            if (typeof group !== 'undefined' && Object.keys(group).length) {
               $('#dynamicList').hide()
               $('#dynamicContent').empty()
               groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
@@ -618,10 +646,27 @@ require([
       }
 
       /**
+       * Initializes agent list
+       */
+      const initialize = async () => {
+        try {
+          const agent = await getFirstAgent()
+          console.log('agent ',agent)
+          if (agent && agent.id) {
+            loadData(agent.id)
+          } else {
+            console.error('There are no agents.')
+          }
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
        * Initialize visualizations and data when DOM is ready
        */
       try {
-        $(document).ready(() => loadData('000'))
+        $(document).ready(() => initialize().catch(err => { return Promise.reject(new Error(err))}))
       } catch (error) {
         errorConnectionToast.show()
       }
