@@ -563,7 +563,6 @@ require([
           const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
           const agentListJson = await ApiService.get(agentListEndpoint)
-          console.log('agentlist ',agentListJson)
           if (agentListJson && agentListJson.data && agentListJson.data.items && agentListJson.data.items.length > 1) {
             return  agentListJson.data.items[1]
           } else {
@@ -598,14 +597,11 @@ require([
        */
       const loadData = async (id) => {
         try {
-          console.log('load data id ', id)
           let endPoint = '/agents/info?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + id
           let parsedJson = await ApiService.get(endPoint)
           const agentListEndpoint = '/agents/agents_name?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           await agentList(agentListEndpoint)
-
           let group = parsedJson.group
-          console.log('group ',group)
           let groupInformationEndpoint = ''
           if (group && typeof group !== 'undefined') {
             groupInformationEndpoint = '/agents/group_configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + group
