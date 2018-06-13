@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Agents summary</title>
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
-  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
+  <!-- <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css"> -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/wazuh_decorations.css">
   <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/toast.css">
@@ -17,40 +17,19 @@
       background-color: #00445A;
     }
   </style>
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
 
-  <script>
-    window._splunk_metrics_events = {
-      push: function () { },
-      active: false,
-    }
-  </script>
-</head>
+<body data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-<body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
-  <div class="dashboard-body container-fluid main-section-body" data-role="main">
+  <div class="dashboard-body" data-role="main">
 
-    <div class="dashboard-header clearfix">
+    <div>
       <h2>Agents summary</h2>
       <!-- Current API and index block-->
       <div id=selectedCredentials></div>
       <!-- End Current API and index block-->
 
     </div>
-    <div id="row1" class="dashboard-row dashboard-row1"></div>
+    <div id="row1" class="stripe"></div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>

@@ -61,7 +61,7 @@ require([
        */
       $(document).ready(() => initializeAgentTable())
 
-      $('header').remove()
+      // $('header').remove()
       new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
         .render()
         .getContainerElement()
