@@ -361,3 +361,11 @@ table span.badge {
 .wz-no-padding {
   padding: 0 !important;
 }
+
+.data-table-container {
+  padding: 10px;
+}
+
+.dt-buttons .btn {
+  margin-right: 3px;
+}

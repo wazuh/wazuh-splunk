@@ -65,7 +65,7 @@ define(function (require, exports, module) {
           // "bFilter": opt.filterVisible || false,
           // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
           "columns": opt.columns,
-          "error": (xhr,error,thrown) => {
+          "error": (xhr, error, thrown) => {
             return Promise.reject(error)
           }
         })
