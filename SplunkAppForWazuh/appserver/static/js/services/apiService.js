@@ -40,7 +40,7 @@ define(function (require, exports, module) {
      */
     static async get(endpoint) {
       try {
-        let result = await asyncReq.promisedGet(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh' + endpoint)
+        let result = await asyncReq.promisedGet(ApiService.getWellFormedUri(endpoint))
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.error) {
@@ -63,7 +63,7 @@ define(function (require, exports, module) {
      */
     static async post(endpoint, payload) {
       try {
-        return await asyncReq.promisedPost(ApiService.getBaseUrl() + '/custom/SplunkAppForWazuh' + endpoint, payload)
+        return await asyncReq.promisedPost(ApiService.getWellFormedUri(endpoint), payload)
       } catch (err) {
         return Promise.reject(err)
       }
