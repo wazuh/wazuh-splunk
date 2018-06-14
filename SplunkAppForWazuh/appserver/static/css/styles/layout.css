@@ -371,6 +371,9 @@
   justify-content: space-around;
 }
 
+.wz-flex-align-space-evenly {
+  justify-content: space-evenly;
+}
 
 .wz-flex-align-flex-start {
   justify-content: flex-start;
