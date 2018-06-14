@@ -149,25 +149,6 @@
   margin-right: 0 !important;
 }
 
-.wz-flex-container {
-  display: flex;
-}
-
-.wz-flex-column {
-  flex-flow: column wrap;
-}
-
-.wz-flex-row {
-  flex-flow: row wrap;
-}
-
-.wz-flex-align-space-between {
-  justify-content: space-between;
-}
-
-.wz-flex-align-flex-start {
-  justify-content: flex-start;
-}
 
 .wz-text-link:hover {
   text-decoration: underline;
