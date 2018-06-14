@@ -34,7 +34,7 @@
     <div class="dashboard-row">
 
       <!-- First cell -->
-      <div class="dashboard-cell wz-dashboard-cell wz-width-45">
+      <div class="dashboard-cell wz-dashboard-cell wz-width-48">
         <!-- margins  -->
         <div class="dashboard-panel wz-dashboard-panel">
           <!-- pretty white background -->
@@ -47,11 +47,15 @@
               <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                 <p>Active</p>
                 <p>1</p>
+                <p>Never connected</p>
+                <p>1</p>
                 <!-- <p id='jsonOutput'></p> -->
               </div>
               <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                <p>Never connected</p>
-                <p id='logAlertLevel'></p>
+                <p>Disconnected</p>
+                <p>10</p>
+                <p>Agents coverage</p>
+                <p>1%</p>
               </div>
             </div>
           </div>
@@ -61,7 +65,7 @@
 
 
       <!-- First cell -->
-      <div class="dashboard-cell wz-dashboard-cell wz-width-45">
+      <div class="dashboard-cell wz-dashboard-cell wz-width-48">
         <!-- margins  -->
         <div class="dashboard-panel wz-dashboard-panel">
           <!-- pretty white background -->
@@ -83,11 +87,13 @@
           </div>
         </div>
       </div>
-
     </div>
-
     <!--  -->
-    <div id="row1" class="table stripe"></div>
+    <div class='dashboard-row wz-margin-top-20'>
+      <div class="dashboard-cell wz-dashboard-cell wz-dashboard-panel">
+        <div id="row1" class="table stripe"></div>
+      </div>
+    </div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>

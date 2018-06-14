@@ -121,6 +121,10 @@
   width: 45% !important;
 }
 
+.wz-width-48 {
+  width: 48.8% !important;
+}
+
 .wz-width-100 {
   width: 100% !important;
 }
@@ -349,4 +353,12 @@ table span.badge {
 
 .dt-buttons .btn {
   margin-right: 3px;
+}
+
+.wz-dashboard-panel {
+  background-color: white !important;
+  padding: 5px !important;
+}
+.wz-margin-top-20 {
+  margin-top: 20px;
 }
