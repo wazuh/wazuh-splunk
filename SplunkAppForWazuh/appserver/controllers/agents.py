@@ -265,7 +265,7 @@ class agents(controllers.BaseController):
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
 
-        limit =  kwargs['length'] if 'length' in kwargs else "10"
+        limit =  kwargs['length'] if 'length' in kwargs else "1"
         # limit =  "50"
         offset = kwargs['start'] if 'start' in kwargs else "0"
         # offset = "0"
@@ -275,7 +275,7 @@ class agents(controllers.BaseController):
         # sorting_column = '0'
         direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
         # direction = 'asc'
-        sort_chain = ""
+        sort_chain = "-dateAdd"
 
         if sorting_column == "0":
           if direction == 'asc':
