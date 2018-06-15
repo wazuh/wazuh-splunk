@@ -224,9 +224,9 @@ class agents(controllers.BaseController):
             sort_chain = '-ip'
         elif sorting_column == "3":
           if direction == 'asc':
-            sort_chain = '+last_keepalive'
+            sort_chain = '+lastKeepAlive'
           if direction == 'desc':
-            sort_chain = '-last_keepalive'
+            sort_chain = '-lastKeepAlive'
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
@@ -259,14 +259,15 @@ class agents(controllers.BaseController):
     # /custom/SplunkAppForWazuh/agents/agentschecks
     @expose_page(must_login=False, methods=['GET'])
     def agents(self, **kwargs):
+      try:
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
 
-        limit =  kwargs['length'] if 'length' in kwargs else 10
+        limit =  kwargs['length'] if 'length' in kwargs else "10"
         # limit =  "50"
-        offset = kwargs['start'] if 'start' in kwargs else 0
+        offset = kwargs['start'] if 'start' in kwargs else "0"
         # offset = "0"
         search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
         # search_value = '""'
@@ -367,8 +368,9 @@ class agents(controllers.BaseController):
         response['data'] = {}
         response['data']['totalItems'] = total_items
         response['data']['items'] = results
-
-        return json.dumps(response)
+      except Exception as e:
+        return json.dumps({"error":e})
+      return json.dumps(response)
 
     # /custom/SplunkAppForWazuh/agents/agents_name
     @expose_page(must_login=False, methods=['GET'])
