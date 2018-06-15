@@ -51,6 +51,11 @@ require([
 
     CredentialService.checkSelectedApiConnection().then(({ api, selectedIndex }) => {
 
+      let nameFilter = ""
+      if (api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
+        nameFilter = api.filter[0] + '=' + api.filter[1]
+      }
+
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
@@ -75,52 +80,59 @@ require([
         submittedTokenModel.unset(name)
       }
 
-      setToken('tokHTML', '--')
-      // Listen for a change to the token tokHTML value
-
-      const searchTopAgent = new SearchManager({
-        "id": "searchTopAgent",
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": "index=wazuh | top agent.name",
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-
-      new SearchEventHandler({
-        managerid: "searchTopAgent",
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "tokHTML", "value": "$result.agent.name$" },
-            ]
-          }
-        ]
-      })
-
-      submittedTokenModel.on("change:tokHTML", function (model, tokHTML, options) {
-        var tokHTMLJS = submittedTokenModel.get("tokHTML");
-        if (tokHTMLJS !== undefined) {
-          $("#higherActivity").html(tokHTMLJS);
-        }
-      })
-
       /**
        * Initializes agent table and data from API
        */
       const initializeData = async () => {
         try {
+
+
+          // Listen for a change to the token tokHTML value
+
+          const searchTopAgent = new SearchManager({
+            "id": "searchTopAgent",
+            "cancelOnUnload": true,
+            "sample_ratio": 1,
+            "earliest_time": "$when.earliest$",
+            "status_buckets": 0,
+            "search": "index=" + selectedIndex + " " + nameFilter + "| top agent.name",
+            "latest_time": "$when.latest$",
+            "app": utils.getCurrentApp(),
+            "auto_cancel": 90,
+            "preview": true,
+            "tokenDependencies": {
+            },
+            "runWhenTimeIsUndefined": true
+          }, { tokens: true, tokenNamespace: "submitted" })
+
+
+          new SearchEventHandler({
+            managerid: "searchTopAgent",
+            event: "done",
+            conditions: [
+              {
+                attr: "any",
+                value: "*",
+                actions: [
+                  { "type": "set", "token": "tokHTML", "value": "$result.agent.name$" },
+                ]
+              }
+            ]
+          })
+
+          submittedTokenModel.on("change:tokHTML", function (model, tokHTML, options) {
+            const tokHTMLJS = submittedTokenModel.get("tokHTML");
+            if (tokHTMLJS !== undefined) {
+              $("#higherActivity").text(tokHTMLJS);
+            }
+          })
+
+
+          const tokHTMLJS = submittedTokenModel.get("tokHTML")
+          console.log("value ", $("#higherActivity").text())
+          if ($("#higherActivity").text() === "$result.agent.name$") {
+            $("#higherActivity").text('-');
+          }
 
           const data = await Promise.all([
             ApiService.get('/agents/summary?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi),
