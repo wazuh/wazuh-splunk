@@ -9,7 +9,6 @@
  *
  * Find more information about this on the LICENSE file.
  */
-
 require([
   "jquery",
   "splunkjs/mvc/layoutview",
@@ -46,8 +45,6 @@ require([
     EventHandler,
     SearchEventHandler
   ) {
-
-
 
     CredentialService.checkSelectedApiConnection().then(({ api, selectedIndex }) => {
 
@@ -86,9 +83,7 @@ require([
       const initializeData = async () => {
         try {
 
-
           // Listen for a change to the token tokHTML value
-
           const searchTopAgent = new SearchManager({
             "id": "searchTopAgent",
             "cancelOnUnload": true,
@@ -104,7 +99,6 @@ require([
             },
             "runWhenTimeIsUndefined": true
           }, { tokens: true, tokenNamespace: "submitted" })
-
 
           new SearchEventHandler({
             managerid: "searchTopAgent",
@@ -139,11 +133,13 @@ require([
             ApiService.get('/agents/summary?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi),
             ApiService.get('/agents/agents?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi)
           ])
+
           $('#activeUsers').text(data[0][0].agent_summary_active)
           $('#neverConnected').text(data[0][0].agent_summary_neverconnected)
           $('#disconnectedUsers').text(data[0][0].agent_summary_disconnected)
           $('#agentsCoverage').text(Math.round((data[0][0].agent_summary_active / data[0][0].agent_summary_total * 100)))
           $('#lastRegisteredAgent').text((data[1].data.items[0].name))
+
 
           SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
           const baseUrl = ApiService.getBaseUrl()
@@ -156,6 +152,8 @@ require([
           }
           const table = new agentsTable($('#row1'))
           table.build(urlData)
+          $('.dataTables_filter').addClass('wz-table-element-pull-left');
+
         } catch (err) {
           customErrorToast(err).show()
         }
@@ -171,8 +169,6 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-
     }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
   }
 )
-

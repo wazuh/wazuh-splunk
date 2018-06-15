@@ -43,6 +43,7 @@ define(function (require, exports, module) {
      */
     build(urlArg, opt) {
       try {
+
         this.table = this.$el.DataTable({
           "ordering": opt.ordering || true,
           "retrieve": opt.retrieve || true,
@@ -62,6 +63,7 @@ define(function (require, exports, module) {
               return JSON.stringify(json) // return JSON string
             },
           },
+           "dom": '<"top"f>rt<"bottom"ipl>',
           // "bFilter": opt.filterVisible || false,
           // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
           "columns": opt.columns,

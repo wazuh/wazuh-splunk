@@ -362,3 +362,7 @@ table span.badge {
 .wz-margin-top-20 {
   margin-top: 20px;
 }
+
+.wz-table-element-pull-left{
+  float: left !important;
+}
