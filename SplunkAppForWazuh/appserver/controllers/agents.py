@@ -323,9 +323,9 @@ class agents(controllers.BaseController):
             sort_chain = '-os.version'
         elif sorting_column == "9":
           if direction == 'asc':
-            sort_chain = '+date_add'
+            sort_chain = '+dateAdd'
           if direction == 'desc':
-            sort_chain = '-date_add'
+            sort_chain = '-dateAdd'
         elif sorting_column == "13":
           if direction == 'asc':
             sort_chain = '+version'
