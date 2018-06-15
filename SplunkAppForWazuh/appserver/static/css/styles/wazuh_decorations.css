@@ -355,9 +355,9 @@ table span.badge {
   margin-right: 3px;
 }
 
-.wz-dashboard-panel {
+.wz-dashboard-panel-table {
   background-color: white !important;
-  padding: 8px !important;
+  padding: 10px !important;
 }
 .wz-margin-top-20 {
   margin-top: 20px;

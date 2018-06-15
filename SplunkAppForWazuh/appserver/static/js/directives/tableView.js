@@ -69,7 +69,7 @@ define(function (require, exports, module) {
             return Promise.reject(error)
           }
         })
-        this.table.draw()
+       // this.table.draw()
       } catch (err) {
         return Promise.reject(err)
       }
