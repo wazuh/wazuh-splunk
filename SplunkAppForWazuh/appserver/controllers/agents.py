@@ -333,7 +333,6 @@ class agents(controllers.BaseController):
           if direction == 'desc':
             sort_chain = '-version'
 
-
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
@@ -369,7 +368,7 @@ class agents(controllers.BaseController):
         response['data']['totalItems'] = total_items
         response['data']['items'] = results
       except Exception as e:
-        return json.dumps({"error":e})
+        return json.dumps({"error":str(e)})
       return json.dumps(response)
 
     # /custom/SplunkAppForWazuh/agents/agents_name
