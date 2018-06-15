@@ -36,12 +36,21 @@ require([
     CredentialService.checkSelectedApiConnection().then(({api}) => {
 
       /**
-       * Initializes agent table
+       * Initializes agent table and data from API
        */
-      const initializeAgentTable = async () => {
+      const initializeData = async () => {
         try {
+
+          const data = await Promise.all([
+            ApiService.get('/agents/summary?ip='+api.url+'&port='+api.portapi+'&pass='+api.passapi+'&user='+api.userapi)
+          ])
+          $('#activeUsers').text(data[0][0].agent_summary_active)
+          $('#neverConnected').text(data[0][0].agent_summary_neverconnected)
+          $('#disconnectedUsers').text(data[0][0].agent_summary_disconnected)
+          $('#agentsCoverage').text(round((data[0][0].agent_summary_active / data[0][0].agent_summary_total * 100)))
+
           SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
-          const baseUrl = await ApiService.getBaseUrl()
+          const baseUrl = ApiService.getBaseUrl()
           const urlData = {
             baseUrl: baseUrl,
             ipApi: api.url,
@@ -59,7 +68,7 @@ require([
       /**
        * On document ready load agent table
        */
-      $(document).ready(() => initializeAgentTable())
+      $(document).ready(() => initializeData())
 
       // $('header').remove()
       new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
