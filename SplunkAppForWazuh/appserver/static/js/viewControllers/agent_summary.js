@@ -123,7 +123,8 @@ require([
           submittedTokenModel.on("change:tokHTML", function (model, tokHTML, options) {
             const tokHTMLJS = submittedTokenModel.get("tokHTML");
             if (tokHTMLJS !== undefined) {
-              $("#higherActivity").text(tokHTMLJS);
+              const url = `${ApiService.getBaseUrl()}/app/SplunkAppForWazuh/search?q=index=${selectedIndex} ${nameFilter} sourcetype=wazuh user.name=${tokHTMLJS}`
+              $("#higherActivity").html(`<a href=${url}>${tokHTMLJS}</a>`)
             }
           })
 
