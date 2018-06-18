@@ -133,6 +133,44 @@ class agents(controllers.BaseController):
         result = json.dumps(request)
         return result
 
+    # /custom/SplunkAppForWazuh/agents/versions
+    @expose_page(must_login=False, methods=['GET'])
+    def versions(self,**kwargs):
+      try:
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request_number = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        agents_qty = json.loads(request_number.text)["data"]["totalItems"]
+        request = requests.get(url + '/agents?offset=0&select=version&limit=' + str(agents_qty), auth=auth, verify=verify).json()
+        result = json.dumps(request)
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return result
+
+    # # /custom/SplunkAppForWazuh/agents/platforms
+    @expose_page(must_login=False, methods=['GET'])
+    def platforms(self,**kwargs):
+      try:
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request_number = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        agents_qty = json.loads(request_number.text)["data"]["totalItems"]
+        request = requests.get(url + '/agents?offset=0&select=os.platform&limit=' + str(agents_qty), auth=auth, verify=verify).json()
+        result = json.dumps(request)
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return result
+
     # /custom/SplunkAppForWazuh/agents/groups/:id
     @expose_page(must_login=False, methods=['GET'])
     def groups(self,**kwargs):
@@ -256,12 +294,10 @@ class agents(controllers.BaseController):
             results.append(data)
         return json.dumps(results)
     
-    # /custom/SplunkAppForWazuh/agents/agentschecks
+    # /custom/SplunkAppForWazuh/agents/agents
     @expose_page(must_login=False, methods=['GET'])
     def agents(self, **kwargs):
       try:
-        file = open("/home/wazuh/logagent.txt","w")
-        file.write(json.dumps(kwargs,indent=4, separators=(',', ': ')))
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
@@ -272,7 +308,6 @@ class agents(controllers.BaseController):
         offset = kwargs['start'] if 'start' in kwargs else "0"
         # offset = "0"
         search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
-        file.write("Searchvalue is "+search_value)
         # search_value = '""'
         sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
         # sorting_column = '0'
