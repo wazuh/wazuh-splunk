@@ -37,12 +37,8 @@ require([
     SelectedCredentials,
     mvc,
     SearchManager,
-    TableElement,
     utils,
-    TokenUtils,
-    DashboardController,
     LayoutView,
-    EventHandler,
     SearchEventHandler
   ) {
 
@@ -52,31 +48,11 @@ require([
       if (api.filter[0] && typeof api.filter[0] === "string" && api.filter[1] && typeof api.filter[1] === "string") {
         nameFilter = api.filter[0] + '=' + api.filter[1]
       }
-
-      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
-      const errorToast = new Toast('error', 'toast-bottom-right', 'Error at loading agent list', 1000, 250, 250)
 
       const customErrorToast = (msg) => {
         return new Toast('error', 'toast-bottom-right', msg, 1000, 250, 250)
       }
-
-      const submitTokens = () => {
-        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-        FormUtils.submitForm({ replaceState: pageLoading })
-      }
-
-      const setToken = (name, value) => {
-        defaultTokenModel.set(name, value)
-        submittedTokenModel.set(name, value)
-      }
-
-      const unsetToken = name => {
-        defaultTokenModel.unset(name)
-        submittedTokenModel.unset(name)
-      }
-
 
       /**
        * Initializes agent table and data from API
@@ -121,8 +97,6 @@ require([
               $("#higherActivity").html(`<a href=${url}>${tokHTMLJS}</a>`)
             }
           })
-
-
           const tokHTMLJS = submittedTokenModel.get("tokHTML")
           console.log("value ", $("#higherActivity").text())
           if ($("#higherActivity").text() === "$result.agent.name$") {
@@ -157,7 +131,6 @@ require([
        */
       $(document).ready(() => initializeData())
 
-      // $('header').remove()
       new LayoutView({ "hideFooter": false, "hideChrome": false, "hideSplunkBar": false, "hideAppBar": false })
         .render()
         .getContainerElement()
