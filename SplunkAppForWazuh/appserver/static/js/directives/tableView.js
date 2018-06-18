@@ -62,8 +62,12 @@ define(function (require, exports, module) {
               json.data = json.data.items
               return JSON.stringify(json) // return JSON string
             },
+            data : {
+              filters: opt.filters || {},
+              search: opt.search || {}
+            }
           },
-           "dom": '<"top">rt<"bottom"ip>',
+          "dom": '<"top">rt<"bottom"ip>',
           // "bFilter": opt.filterVisible || false,
           // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
           "columns": opt.columns,
@@ -71,10 +75,14 @@ define(function (require, exports, module) {
             return Promise.reject(error)
           }
         })
-       // this.table.draw()
+        // this.table.draw()
       } catch (err) {
         return Promise.reject(err)
       }
+    }
+
+    draw() {
+      this.table.draw()
     }
 
     search($el) {

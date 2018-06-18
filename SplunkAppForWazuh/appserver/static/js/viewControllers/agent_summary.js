@@ -77,12 +77,12 @@ require([
         submittedTokenModel.unset(name)
       }
 
+
       /**
        * Initializes agent table and data from API
        */
       const initializeData = async () => {
         try {
-
           // Listen for a change to the token tokHTML value
           const searchTopAgent = new SearchManager({
             "id": "searchTopAgent",
@@ -142,17 +142,10 @@ require([
 
 
           SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
-          const baseUrl = ApiService.getBaseUrl()
-          const urlData = {
-            baseUrl: baseUrl,
-            ipApi: api.url,
-            portApi: api.portapi,
-            userApi: api.userapi,
-            passApi: api.passapi
-          }
-          const table = new agentsTable($('#row1'))
-          table.build(urlData)
-          $('.dataTables_filter').addClass('wz-table-element-pull-left');
+
+          let table = new agentsTable($('#row1'),api)
+          table.build()
+          $('.dataTables_filter').addClass('wz-table-element-pull-left')
 
         } catch (err) {
           customErrorToast(err).show()

@@ -260,6 +260,8 @@ class agents(controllers.BaseController):
     @expose_page(must_login=False, methods=['GET'])
     def agents(self, **kwargs):
       try:
+        file = open("/home/wazuh/logagent.txt","w")
+        file.write(json.dumps(kwargs,indent=4, separators=(',', ': ')))
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
@@ -270,6 +272,7 @@ class agents(controllers.BaseController):
         offset = kwargs['start'] if 'start' in kwargs else "0"
         # offset = "0"
         search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
+        file.write("Searchvalue is "+search_value)
         # search_value = '""'
         sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
         # sorting_column = '0'
@@ -336,7 +339,12 @@ class agents(controllers.BaseController):
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
+        if 'filters[status]' in kwargs and kwargs['filters[status]'] != "":
+          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+ '&status=' + kwargs['filters[status]']
+        elif 'filters[platform]' in kwargs and kwargs['filters[platform]'] != "":
+          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+ '&os.platform=' + kwargs['filters[platform]']
+        else:
+          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
 
         request = requests.get(final_url, auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
