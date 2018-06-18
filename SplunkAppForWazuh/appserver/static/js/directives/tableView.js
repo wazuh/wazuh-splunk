@@ -63,7 +63,7 @@ define(function (require, exports, module) {
               return JSON.stringify(json) // return JSON string
             },
           },
-           "dom": '<"top"f>rt<"bottom"ipl>',
+           "dom": '<"top">rt<"bottom"ip>',
           // "bFilter": opt.filterVisible || false,
           // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
           "columns": opt.columns,
