@@ -3,6 +3,21 @@
   display: flex;
 }
 
+/* Display: inline-block*/
+.wz-display-inline-block {
+  display: inline-block;
+}
+
+.wz-witdth-100{
+  width:100%;
+}
+
+/* Center selected index and api */
+.wz-center-selected-index {
+  float: right;
+  margin-top: 10px;
+}
+
 /* A column flex container */
 .wz-flex-column {
   flex-flow: column wrap;

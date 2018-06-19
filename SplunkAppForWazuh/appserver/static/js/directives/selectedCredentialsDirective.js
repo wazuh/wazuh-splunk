@@ -26,7 +26,7 @@ define(function (require, exports, module) {
      * @param {jQuery}  
      */
     static render($el,name) {
-      $el.append('<div class="wz-text-right"><p>' + name + ' - ' + IndexService.get() + '</p></div>')
+      $el.append('<div><p><i class="wz-color-orange fa fa-fw fa-star font-size-18" aria-hidden="true"></i>' + name + ' - ' + IndexService.get() + '</p></div>')
     }
   }
 

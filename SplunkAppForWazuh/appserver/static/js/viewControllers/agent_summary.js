@@ -23,7 +23,6 @@ require([
   "splunkjs/mvc/utils",
   "splunkjs/mvc/tokenutils",
   "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/eventhandler",
   "splunkjs/mvc/simplexml/searcheventhandler"
 ],
@@ -37,8 +36,11 @@ require([
     SelectedCredentials,
     mvc,
     SearchManager,
+    TableElement,
     utils,
-    LayoutView,
+    TokenUtils,
+    DashboardController,
+    EventHandler,
     SearchEventHandler
   ) {
 
@@ -98,7 +100,6 @@ require([
             }
           })
           const tokHTMLJS = submittedTokenModel.get("tokHTML")
-          console.log("value ", $("#higherActivity").text())
           if ($("#higherActivity").text() === "$result.agent.name$") {
             $("#higherActivity").text('-');
           }
@@ -135,6 +136,8 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { window.location.href = '/en-US/app/SplunkAppForWazuh/settings' })
+    }).catch((err) => { 
+      // window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+     })
   }
 )

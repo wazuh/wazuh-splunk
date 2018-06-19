@@ -78,7 +78,8 @@ define(function (require, exports, module) {
      */
     generateTableView($element) {
       // $element.remove()
-      $element.html('<table id="myAgentTable" class="display compact"><thead><input id="searchBar" type="text" placeholder="Search" width="60%"/><select id="platformSearch"> <option value="" selected disabled hidden>Platform</option><option value=Ubuntu18>Ubuntu18</option></select><select id="statusSearch"> <option value="" selected disabled hidden>Status</option><option value="neverConnected">Never Connected</option><option value="Active">Active</option><option value="disconnected">Disconnected</option></select><select> <option value="" selected disabled hidden>Version</option><option value=v3.3.1>Wazuh v3.3.1</option></select><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
+
+      $element.html('<table id="myAgentTable" class="wz-width-100"><thead><input id="searchBar" type="text" placeholder="Search" style="width:62%;"/><select id="platformSearch" style="float:right; margin-right: 10px;"> <option value="" selected disabled hidden>Platform</option><option value=Ubuntu18>Ubuntu18</option></select><select style="float:right; margin-right: 10px;" id="statusSearch"> <option value="" selected disabled hidden>Status</option><option value="neverConnected">Never Connected</option><option value="Active">Active</option><option value="disconnected">Disconnected</option></select><select style="float:right; margin-right: 10px;"> <option value="" selected disabled hidden>Version</option><option value=v3.3.1>Wazuh v3.3.1</option></select><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
       super.element($('#myAgentTable'))
     }
 
@@ -105,7 +106,7 @@ define(function (require, exports, module) {
       })
 
       $('#statusSearch').change((e) => {
-        console.log('change status')
+        console.log('change status ',$('#statusSearch').val())
         let opts = this.getOpts()
         if (!opts.filters)
           opts.filters = {}
