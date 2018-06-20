@@ -13,21 +13,21 @@ def collect_events(helper, ew):
     opt_base_url = helper.get_arg('base_url')
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-
-    request = requests.get(opt_base_url + '/agents?limit=0', auth=auth, verify=verify)
-    total_agents = json.loads(request.text)["data"]["totalItems"]
-    limit = 10
+    limit = 500
     offset = 0
 
     request = requests.get(opt_base_url + '/agents?offset='+str(offset)+'&limit=' + str(limit), auth=auth, verify=verify)
     agents = json.loads(request.text)["data"]["items"]
+    total_agents = json.loads(request.text)["data"]["totalItems"]
+
     for agent in agents:
         event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(agent))
         ew.write_event(event)
-    while (offset <= total_agents-limit):
-        offset+=limit
-        request = requests.get(opt_base_url + '/agents?offset='+str(offset)+'&limit=' + str(limit), auth=auth, verify=verify)
-        agents = json.loads(request.text)["data"]["items"]
-        for agent in agents:
-            event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(agent))
-            ew.write_event(event)
+    if (total_agents > limit):
+        while (offset <= total_agents-limit):
+            offset+=limit
+            request = requests.get(opt_base_url + '/agents?offset='+str(offset)+'&limit=' + str(limit), auth=auth, verify=verify)
+            agents = json.loads(request.text)["data"]["items"]
+            for agent in agents:
+                event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(agent))
+                ew.write_event(event)
