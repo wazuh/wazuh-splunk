@@ -15,11 +15,9 @@ def collect_events(helper, ew):
     verify = False
     limit = 500
     offset = 0
-
     request = requests.get(opt_base_url + '/agents?offset='+str(offset)+'&limit=' + str(limit), auth=auth, verify=verify)
     agents = json.loads(request.text)["data"]["items"]
     total_agents = json.loads(request.text)["data"]["totalItems"]
-
     for agent in agents:
         event = helper.new_event(source=helper.get_input_type(), index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=json.dumps(agent))
         ew.write_event(event)
