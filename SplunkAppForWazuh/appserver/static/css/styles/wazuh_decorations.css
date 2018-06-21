@@ -372,3 +372,25 @@ table span.badge {
 .wz-color-orange {
   color: #f39c12 !important;
 }
+
+.wz-status-round {
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+}
+
+.wz-teal {
+  background-color: #00a69b;
+}
+
+.wz-teal {
+  background-color: #00a69b;
+}
+
+.wz-red {
+  background-color: #ff645c;
+}
+
+.wz-metric-color {
+  background-color: #e4f2f5;
+}
