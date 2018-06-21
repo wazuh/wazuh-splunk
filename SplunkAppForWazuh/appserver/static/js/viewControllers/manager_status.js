@@ -47,28 +47,33 @@ require([
        * @param {Object} status 
        */
       const applyStatusesToView = (statuses) => {
+
+        const active = Number(statuses[1][0].agent_summary_active)
+        const disconnected = Number(statuses[1][0].agent_summary_disconnected)
+        const neverConnected = Number(statuses[1][0].agent_summary_neverconnected)
+        const total = Number(statuses[1][0].agent_summary_total)
+        const coverage = (active / total) * 100
+        const managerInfo = statuses[2].data
+
         console.log('the data to parse ', statuses)
         for (let status in statuses[0].data) {
           if (statuses[0].data.hasOwnProperty(status)) {
+            const color = (statuses[0].data[status] === 'running' ) ? 'wz-teal' : 'wz-red'
             $('#firstRow').append(
-              `<div class="dashboard-cell wz-flex-container wz-flex-item"> ` +
-              `  <div class="dashboard-panel wz-flex-container wz-flex-column wz-align-center"> ` +
+              `<div class="wz-flex-item-10"> ` +
+              `  <div class="wz-dashboard-cell wz-dashboard-panel-table wz-flex-container wz-flex-column wz-align-center"> ` +
               `    <div class="panel-head"> ` +
               `      <h3>${status}</h3> ` +
               `    </div> ` +
               `    <div class="panel-body"> ` +
-              `      <p class="wz-status-round wz-red"></p> ` +
+              `      <p class="wz-status-round ${color}"></p> ` +
               `    </div> ` +
               `  </div> ` +
               `</div> `
             )
           }
         }
-        const active = Number(statuses[1][0].agent_summary_active)
-        const disconnected = Number(statuses[1][0].agent_summary_disconnected)
-        const neverConnected = Number(statuses[1][0].agent_summary_neverconnected)
-        const total = Number(statuses[1][0].agent_summary_total)
-        const coverage = (active / total) * 100
+
         $('#secondRow').append(
           `<div class='wz-flex-item'>` + 
           `<p>` + 
@@ -96,6 +101,15 @@ require([
           `</p>` + 
           `</div>` 
         )
+
+        $('#version').text(managerInfo.version)
+        $('#compilationDate').text(managerInfo['compilation_date'])
+        $('#installationPath').text(managerInfo.path)
+        $('#installationType').text(managerInfo.type)
+        $('#agentsLimit').text(managerInfo.max_agents)
+        $('#opensslSupport').text(managerInfo['openssl_support'])
+        $('#totalRules').text(statuses[3].data.totalItems)
+        $('#totalDecoders').text(statuses[4].data.totalItems)
         // ( statuses.data['wazuh-modulesd'] === 'running ' ) ? $('#modulesd').addClass('wz-teal') : $('#modulesd').addClass('wz-red')
       }
 
@@ -107,7 +121,9 @@ require([
           const data = await Promise.all([
             ApiService.get(`/manager/status?ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
             ApiService.get(`/agents/summary?ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
-            ApiService.get(`/manager/info?ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`)
+            ApiService.get(`/manager/info?ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
+            ApiService.get(`/manager/rules?length=1&ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
+            ApiService.get(`/manager/decoders?length=1&ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`)
           ])
           applyStatusesToView(data)
         } catch (err) {
@@ -132,7 +148,8 @@ require([
 
 
     }).catch((err) => {
-      window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+      // window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+      console.error(err)
     })
   }
 )
