@@ -178,127 +178,135 @@ class manager(controllers.BaseController):
   # /custom/SplunkAppForWazuh/manager/groups
   @expose_page(must_login=False, methods=['GET'])
   def groups(self, **kwargs):
-    opt_username = kwargs["user"]
-    opt_password = kwargs["pass"]
-    opt_base_url = kwargs["ip"]
-    opt_base_port = kwargs["port"]
-    url = opt_base_url + ":" + opt_base_port
-    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-    verify = False
-    limit = kwargs["length"]
-    offset = kwargs["start"]
-    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-    sorting_column = kwargs["order[0][column]"]
-    direction = kwargs['order[0][dir]']
-    sort_chain = ""
-    if sorting_column == "0":
-      if direction == 'asc':
-        sort_chain = '+name'
-      if direction == 'desc':
-        sort_chain = '-name'
-    elif sorting_column == "1":
-      if direction == 'asc':
-        sort_chain = '+merged_sum'
-      if direction == 'desc':
-        sort_chain = '-merged_sum'
-    
-    request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
-    result = json.dumps(request)
+    try:
+      opt_username = kwargs["user"]
+      opt_password = kwargs["pass"]
+      opt_base_url = kwargs["ip"]
+      opt_base_port = kwargs["port"]
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      verify = False
+      limit = kwargs["length"]
+      offset = kwargs["start"]
+      search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+      sorting_column = kwargs["order[0][column]"]
+      direction = kwargs['order[0][dir]']
+      sort_chain = ""
+      if sorting_column == "0":
+        if direction == 'asc':
+          sort_chain = '+name'
+        if direction == 'desc':
+          sort_chain = '-name'
+      elif sorting_column == "1":
+        if direction == 'asc':
+          sort_chain = '+merged_sum'
+        if direction == 'desc':
+          sort_chain = '-merged_sum'
+      
+      request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+      result = json.dumps(request)
+    except Exception as e:
+      return json.dumps({"error":str(e)})
     return result
 
   # /custom/SplunkAppForWazuh/manager/rules
   @expose_page(must_login=False, methods=['GET'])
   def rules(self, **kwargs):
-    opt_username = kwargs["user"]
-    opt_password = kwargs["pass"]
-    opt_base_url = kwargs["ip"]
-    opt_base_port = kwargs["port"]
-    url = opt_base_url + ":" + opt_base_port
-    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-    verify = False
-    limit = kwargs["length"]
-    offset = kwargs["start"]
-    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-    sorting_column = kwargs["order[0][column]"]
-    direction = kwargs['order[0][dir]']
-    sort_chain = ""
-    if sorting_column == "0":
-      if direction == 'asc':
-        sort_chain = '+id'
-      if direction == 'desc':
-        sort_chain = '-id'
-    elif sorting_column == "1":
-      if direction == 'asc':
-        sort_chain = '+path'
-      if direction == 'desc':
-        sort_chain = '-path'
-    elif sorting_column == "2":
-      if direction == 'asc':
-        sort_chain = '+status'
-      if direction == 'desc':
-        sort_chain = '-status'
-    elif sorting_column == "3":
-      if direction == 'asc':
-        sort_chain = '+file'
-      if direction == 'desc':
-        sort_chain = '-file'
-    elif sorting_column == "5":
-      if direction == 'asc':
-        sort_chain = '+description'
-      if direction == 'desc':
-        sort_chain = '-description'
-    elif sorting_column == "6":
-      if direction == 'asc':
-        sort_chain = '+level'
-      if direction == 'desc':
-        sort_chain = '-level'
-
-    request = requests.get(url + '/rules' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
-    result = json.dumps(request)
+    try:
+      opt_username = kwargs["user"]
+      opt_password = kwargs["pass"]
+      opt_base_url = kwargs["ip"]
+      opt_base_port = kwargs["port"]
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      verify = False
+      limit =  kwargs['length'] if 'length' in kwargs else "10"
+      offset = kwargs['start'] if 'start' in kwargs else "0"
+      search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
+      sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
+      direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
+      sort_chain = "-id"
+      if sorting_column == "0":
+        if direction == 'asc':
+          sort_chain = '+id'
+        if direction == 'desc':
+          sort_chain = '-id'
+      elif sorting_column == "1":
+        if direction == 'asc':
+          sort_chain = '+path'
+        if direction == 'desc':
+          sort_chain = '-path'
+      elif sorting_column == "2":
+        if direction == 'asc':
+          sort_chain = '+status'
+        if direction == 'desc':
+          sort_chain = '-status'
+      elif sorting_column == "3":
+        if direction == 'asc':
+          sort_chain = '+file'
+        if direction == 'desc':
+          sort_chain = '-file'
+      elif sorting_column == "5":
+        if direction == 'asc':
+          sort_chain = '+description'
+        if direction == 'desc':
+          sort_chain = '-description'
+      elif sorting_column == "6":
+        if direction == 'asc':
+          sort_chain = '+level'
+        if direction == 'desc':
+          sort_chain = '-level'
+      request = requests.get(url + '/rules' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+      result = json.dumps(request)
+    except Exception as e:
+      return json.dumps({"error":str(e)})
     return result
 
   # /custom/SplunkAppForWazuh/manager/decoders
   @expose_page(must_login=False, methods=['GET'])
   def decoders(self, **kwargs):
-    opt_username = kwargs["user"]
-    opt_password = kwargs["pass"]
-    opt_base_url = kwargs["ip"]
-    opt_base_port = kwargs["port"]
-    url = opt_base_url + ":" + opt_base_port
-    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-    verify = False
-    limit = kwargs["length"]
-    offset = kwargs["start"]
-    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-    sorting_column = kwargs["order[0][column]"]
-    direction = kwargs['order[0][dir]']
-    sort_chain = ""
-    if sorting_column == "0":
-      if direction == 'asc':
-        sort_chain = '+name'
-      if direction == 'desc':
-        sort_chain = '-name'
-    elif sorting_column == "1":
-      if direction == 'asc':
-        sort_chain = '+status'
-      if direction == 'desc':
-        sort_chain = '-status'
-    elif sorting_column == "2":
-      if direction == 'asc':
-        sort_chain = '+path'
-      if direction == 'desc':
-        sort_chain = '-path'
-    elif sorting_column == "3":
-      if direction == 'asc':
-        sort_chain = '+file'
-      if direction == 'desc':
-        sort_chain = '-file'
-    elif sorting_column == "4":
-      if direction == 'asc':
-        sort_chain = '+position'
-      if direction == 'desc':
-        sort_chain = '-position'
-    
-    request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
-    result = json.dumps(request)
+    try:
+      opt_username = kwargs["user"]
+      opt_password = kwargs["pass"]
+      opt_base_url = kwargs["ip"]
+      opt_base_port = kwargs["port"]
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      verify = False
+      limit =  kwargs['length'] if 'length' in kwargs else "10"
+      offset = kwargs['start'] if 'start' in kwargs else "0"
+      search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
+      sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
+      direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
+      sort_chain = "-name"
+      if sorting_column == "0":
+        if direction == 'asc':
+          sort_chain = '+name'
+        if direction == 'desc':
+          sort_chain = '-name'
+      elif sorting_column == "1":
+        if direction == 'asc':
+          sort_chain = '+status'
+        if direction == 'desc':
+          sort_chain = '-status'
+      elif sorting_column == "2":
+        if direction == 'asc':
+          sort_chain = '+path'
+        if direction == 'desc':
+          sort_chain = '-path'
+      elif sorting_column == "3":
+        if direction == 'asc':
+          sort_chain = '+file'
+        if direction == 'desc':
+          sort_chain = '-file'
+      elif sorting_column == "4":
+        if direction == 'asc':
+          sort_chain = '+position'
+        if direction == 'desc':
+          sort_chain = '-position'
+      
+      request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+      result = json.dumps(request)
+    except Exception as e:
+      return json.dumps({"error":str(e)})
     return result
