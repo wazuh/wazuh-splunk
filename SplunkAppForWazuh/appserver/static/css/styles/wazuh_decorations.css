@@ -121,12 +121,16 @@
   width: 45% !important;
 }
 
+.wz-width-40 {
+  width: 40% !important;
+}
+
 .wz-width-48 {
   width: 48.8% !important;
 }
 
 .wz-width-49 {
-  width: 49.6% !important;
+  width: 49% !important;
 }
 
 .wz-width-100 {
@@ -135,12 +139,27 @@
 
 /* Custom margin styles */
 
+.wz-margin-left-5 {
+  margin-left: 5px;
+}
+
 .wz-margin-left-10 {
   margin-left: 10px;
+}
+.wz-margin-right-5 {
+  margin-right: 5px;
 }
 
 .wz-margin-right-10 {
   margin-right: 10px;
+}
+
+.wz-margin-right-24 {
+  margin-right: 24px;
+}
+
+.wz-margin-right-30 {
+  margin-right: 30px;
 }
 
 /* Classes for custom shadows for dashboard cells */

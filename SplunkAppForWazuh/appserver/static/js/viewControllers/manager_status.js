@@ -64,10 +64,10 @@ require([
               `<div class="wz-flex-item-10"> ` +
               `  <div class="wz-dashboard-cell wz-dashboard-panel-table wz-flex-container wz-flex-column wz-align-center wz-margin-5"> ` +
               `    <div class="panel-head"> ` +
-              `      <p class="wz-status-round ${color}"></p> ` +
+              `      <p class=" wz-margin-top-10 wz-status-round ${color}"></p> ` +
               `    </div> ` +
               `    <div class="panel-body"> ` +
-              `      <p>${status}</p> ` +
+              `      <p'>${status}</p> ` +
               `    </div> ` +
               `  </div> ` +
               `</div> `
@@ -162,7 +162,7 @@ require([
 
 
     }).catch((err) => {
-      // window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+      window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
       console.error(err)
     })
   }
