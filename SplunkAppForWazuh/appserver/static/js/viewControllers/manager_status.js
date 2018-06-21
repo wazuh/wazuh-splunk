@@ -54,6 +54,7 @@ require([
         const total = Number(statuses[1][0].agent_summary_total)
         const coverage = (active / total) * 100
         const managerInfo = statuses[2].data
+        const agentInfo = statuses[5].data.items[0]
 
         console.log('the data to parse ', statuses)
         for (let status in statuses[0].data) {
@@ -102,6 +103,7 @@ require([
           `</div>`
         )
 
+        // Manager info
         $('#version').text(managerInfo.version)
         $('#compilationDate').text(managerInfo['compilation_date'])
         $('#installationPath').text(managerInfo.path)
@@ -110,6 +112,17 @@ require([
         $('#opensslSupport').text(managerInfo['openssl_support'])
         $('#totalRules').text(statuses[3].data.totalItems)
         $('#totalDecoders').text(statuses[4].data.totalItems)
+
+        // Last agent info
+        $('#agentName').text(agentInfo.name)
+        $('#agentId').text(agentInfo.id)
+        $('#agentStatus').text(agentInfo.status)
+        $('#agentIpAddress').text(agentInfo.ip)
+        $('#agentDate').text(agentInfo.dateAdd)
+        $('#agentVersion').text(agentInfo.version)
+        $('#agentOs').text(`${agentInfo['os-name']} ${agentInfo['os-codename']} - ${agentInfo['os-version']} - ${agentInfo['os-arch']}`)
+        $('#agentLastKeepAlive').text(agentInfo.lastKeepAlive)
+
         // ( statuses.data['wazuh-modulesd'] === 'running ' ) ? $('#modulesd').addClass('wz-teal') : $('#modulesd').addClass('wz-red')
       }
 
@@ -123,7 +136,8 @@ require([
             ApiService.get(`/agents/summary?ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
             ApiService.get(`/manager/info?ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
             ApiService.get(`/manager/rules?length=1&ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
-            ApiService.get(`/manager/decoders?length=1&ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`)
+            ApiService.get(`/manager/decoders?length=1&ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`),
+            ApiService.get(`/agents/agents?length=1&ip=${api.url}&port=${api.portapi}&pass=${api.passapi}&user=${api.userapi}`)
           ])
           applyStatusesToView(data)
         } catch (err) {
