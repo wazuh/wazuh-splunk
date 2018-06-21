@@ -58,15 +58,15 @@ require([
         console.log('the data to parse ', statuses)
         for (let status in statuses[0].data) {
           if (statuses[0].data.hasOwnProperty(status)) {
-            const color = (statuses[0].data[status] === 'running' ) ? 'wz-teal' : 'wz-red'
+            const color = (statuses[0].data[status] === 'running') ? 'wz-teal' : 'wz-red'
             $('#firstRow').append(
               `<div class="wz-flex-item-10"> ` +
-              `  <div class="wz-dashboard-cell wz-dashboard-panel-table wz-flex-container wz-flex-column wz-align-center"> ` +
+              `  <div class="wz-dashboard-cell wz-dashboard-panel-table wz-flex-container wz-flex-column wz-align-center wz-margin-5"> ` +
               `    <div class="panel-head"> ` +
-              `      <h3>${status}</h3> ` +
+              `      <p class="wz-status-round ${color}"></p> ` +
               `    </div> ` +
               `    <div class="panel-body"> ` +
-              `      <p class="wz-status-round ${color}"></p> ` +
+              `      <p>${status}</p> ` +
               `    </div> ` +
               `  </div> ` +
               `</div> `
@@ -75,31 +75,31 @@ require([
         }
 
         $('#secondRow').append(
-          `<div class='wz-flex-item'>` + 
-          `<p>` + 
-          `Total agents: ${total}` + 
-          `</p>` + 
-          `</div>` + 
-          `<div class='wz-flex-item'>` + 
-          `<p>` + 
-          `Active: ${active}` + 
-          `</p>` + 
-          `</div>` + 
-          `<div class='wz-flex-item'>` + 
-          `<p>` + 
-          `Disconnected: ${disconnected}` + 
-          `</p>` + 
-          `</div>` + 
-          `<div class='wz-flex-item'>` + 
-          `<p>` + 
-          `Never connected:  ${neverConnected}` + 
-          `</p>` + 
-          `</div>` + 
-          `<div class='wz-flex-item'>` + 
-          `<p>` + 
-          `Agents coverage: ${coverage}%` + 
-          `</p>` + 
-          `</div>` 
+          `<div class='wz-flex-item wz-flex-container wz-align-center'>` +
+          `<span>` +
+          `Total agents: <span class="wz-text-bold">${total}</span>` +
+          `</span>` +
+          `</div>` +
+          `<div class='wz-flex-item wz-flex-container wz-align-center'>` +
+          `<span>` +
+          `Active: <span class="wz-text-bold">${active}</span>` +
+          `</span>` +
+          `</div>` +
+          `<div class='wz-flex-item wz-flex-container wz-align-center'>` +
+          `<span>` +
+          `Disconnected: <span class="wz-text-bold">${disconnected}</span>` +
+          `</span>` +
+          `</div>` +
+          `<div class='wz-flex-item wz-flex-container wz-align-center'>` +
+          `<span>` +
+          `Never connected:  <span class="wz-text-bold">${neverConnected}</span>` +
+          `</span>` +
+          `</div>` +
+          `<div class='wz-flex-item wz-flex-container wz-align-center'>` +
+          `<span>` +
+          `Agents coverage: <span class="wz-text-bold">${coverage}%</span>` +
+          `</span>` +
+          `</div>`
         )
 
         $('#version').text(managerInfo.version)

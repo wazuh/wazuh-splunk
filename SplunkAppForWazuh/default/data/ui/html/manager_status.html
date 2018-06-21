@@ -27,52 +27,95 @@
     <div id='firstRow' class="dashboard-row wz-flex-container wz-flex-row wz-align-stretch"></div>
 
     <!-- Agent status and coverity. Second row -->
-    <div id='secondRow' class="wz-dashboard-cell wz-margin-top-20 wz-metric-color dashboard-row wz-flex-container wz-flex-row wz-align-stretch"></div>
+    <div id='secondRow' class="wz-dashboard-cell wz-margin-top-10 wz-padding-5 wz-metric-color dashboard-row wz-flex-container wz-flex-row wz-align-stretch"></div>
 
-    <!-- Third row with manager info -->
-    <div class="wz-margin-top-20 wz-dashboard-cell wz-width-65">
-      <div class="wz-dashboard-panel-table">
-        <div id='managerInfo' class="panel-body">
-          <!-- Place panel contents here -->
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <h3 class="wz-headline-title">Info</h3>
+    <div id='thirdRow' class="wz-margin-top-10 dashboard-row wz-flex-container wz-flex-row wz-align-stretch">
+
+      <!-- Third row with manager info -->
+      <div class="wz-margin-top-20 wz-dashboard-cell wz-flex-item wz-width-45">
+        <div class="wz-dashboard-panel-table">
+          <div id='managerInfo' class="panel-body">
+            <!-- Place panel contents here -->
+            <div class="wz-flex-container wz-flex-row">
+              <h4 class="wz-headline-title">Manager information</h4>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50' >Version</p>
+              <p id='version'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Compilation date</p>
+              <p id='compilationDate'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Installation path</p>
+              <p id='installationPath'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Installation type</p>
+              <p id='installationType'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Agents limit</p>
+              <p id='agentsLimit'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>OpenSSL support</p>
+              <p id='opensslSupport'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Total rules</p>
+              <p id='totalRules'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Total decoders</p>
+              <p id='totalDecoders'></p>
+            </div>
           </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Version</p>
-            <p id='version'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Compilation date</p>
-            <p id='compilationDate'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Installation path</p>
-            <p id='installationPath'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Installation type</p>
-            <p id='installationType'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Agents limit</p>
-            <p id='agentsLimit'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>OpenSSL support</p>
-            <p id='opensslSupport'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Total rules</p>
-            <p id='totalRules'></p>
-          </div>
-          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-            <p>Total decoders</p>
-            <p id='totalDecoders'></p>
+        </div>
+      </div>
+
+      <!-- Last registered agent -->
+
+      <div class="wz-margin-top-20 wz-dashboard-cell wz-flex-item wz-width-45">
+        <div class="wz-dashboard-panel-table">
+          <div id='managerInfo' class="panel-body">
+            <!-- Place panel contents here -->
+            <div class="wz-flex-container wz-flex-row">
+              <h4 class="wz-headline-title">Last registered agent</h4>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Name</p>
+              <p id='version'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>ID</p>
+              <p id='compilationDate'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Status</p>
+              <p id='installationPath'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>IP address</p>
+              <p id='installationType'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Date add</p>
+              <p id='agentsLimit'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Version</p>
+              <p id='opensslSupport'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Operating system</p>
+              <p id='totalRules'></p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>

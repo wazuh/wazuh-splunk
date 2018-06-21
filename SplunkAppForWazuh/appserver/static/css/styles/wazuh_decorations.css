@@ -168,6 +168,10 @@
   text-align: right !important;
 }
 
+.wz-text-bold {
+  font-weight: bold;
+}
+
 .wz-headline-title {
   font-size: 17px !important;
   padding: 0 10px !important;
@@ -363,6 +367,18 @@ table span.badge {
 }
 .wz-margin-top-20 {
   margin-top: 20px;
+}
+
+.wz-margin-top-10 {
+  margin-top: 10px;
+}
+
+.wz-margin-5 {
+  margin: 5px;
+}
+
+.wz-padding-5 {
+  padding: 5px;
 }
 
 .wz-table-element-pull-left{
