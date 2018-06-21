@@ -101,13 +101,8 @@ class manager(controllers.BaseController):
     url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url + '/manager/status', auth=auth, verify=verify)
-    manager_status = json.loads(request.text)['data']
-    data = {}
-    for key in manager_status:
-        data['manager-status_' + key.lower()] = manager_status[key]
-    data = [data]
-    result = json.dumps(data)
+    request = requests.get(url + '/manager/status', auth=auth, verify=verify).json()
+    result = json.dumps(request)
     return result
       
   # /custom/SplunkAppForWazuh/manager/info
@@ -120,13 +115,8 @@ class manager(controllers.BaseController):
     url = opt_base_url + ":" + opt_base_port
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
-    request = requests.get(url + '/manager/info', auth=auth, verify=verify)
-    manager_info = json.loads(request.text)['data']
-    data = {}
-    for key in manager_info:
-        data['manager-info_' + key.lower()] = manager_info[key]
-    data = [data]
-    result = json.dumps(data)
+    request = requests.get(url + '/manager/info', auth=auth, verify=verify).json()
+    result = json.dumps(request)
     return result
 
   # /custom/SplunkAppForWazuh/manager/configuration
