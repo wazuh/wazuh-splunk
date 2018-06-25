@@ -108,17 +108,14 @@ require([
           for (let i = 0; i < syscheckObj.directories.length; i++) {
             $('#monitoringDirectories').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Path</p>` +
-              `<p class="wz-list-child">${syscheckObj.directories[i].path}</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>${syscheckObj.directories[i].path}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Check all</p>` +
-              `<p class="wz-list-child"> ${syscheckObj.directories[i].check_all}</p>` +
-              `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-
-              `</div>`
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Check all</p>` +
+              `<p> ${syscheckObj.directories[i].check_all}</p>` +
+              `</div>` 
             )
           }
         } catch (err) {
