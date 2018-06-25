@@ -505,7 +505,7 @@ require([
         element1.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=\"wazuh\""
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=\"wazuh\""
             utils.redirect(url, false, "_blank")
           }
         })
@@ -537,7 +537,7 @@ require([
         element2.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh \"rule.level\">=12 "
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh \"rule.level\">=12 "
             utils.redirect(url, false, "_blank")
           }
         })
@@ -568,7 +568,7 @@ require([
         element3.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\""
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\""
             utils.redirect(url, false, "_blank")
           }
         })
@@ -599,7 +599,7 @@ require([
         element4.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_success\""
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh  \"rule.groups\"=\"authentication_success\""
             utils.redirect(url, false, "_blank")
           }
         })
@@ -767,7 +767,7 @@ require([
         element10.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh | top limit=1 srcuser showcount=false"
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh | top limit=1 srcuser showcount=false"
             utils.redirect(url, false, "_blank")
           }
         })
@@ -798,7 +798,7 @@ require([
         element11.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh | top limit=1 srcip showcount=false"
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh | top limit=1 srcip showcount=false"
             utils.redirect(url, false, "_blank")
           }
         })
@@ -829,7 +829,7 @@ require([
         element12.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh | top limit=1 rule.groups showcount=false"
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh | top limit=1 rule.groups showcount=false"
             utils.redirect(url, false, "_blank")
           }
         })
@@ -860,7 +860,7 @@ require([
         element13.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false"
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false"
             utils.redirect(url, false, "_blank")
           }
         })
@@ -880,7 +880,7 @@ require([
         element14.on("click", (e) => {
           if (e.field !== undefined) {
             e.preventDefault()
-            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + nameFilter + " sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 "
+            const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " " + " sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 "
             utils.redirect(url, false, "_blank")
           }
         })

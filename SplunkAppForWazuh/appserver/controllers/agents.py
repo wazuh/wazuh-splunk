@@ -133,6 +133,44 @@ class agents(controllers.BaseController):
         result = json.dumps(request)
         return result
 
+    # /custom/SplunkAppForWazuh/agents/versions
+    @expose_page(must_login=False, methods=['GET'])
+    def versions(self,**kwargs):
+      try:
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request_number = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        agents_qty = json.loads(request_number.text)["data"]["totalItems"]
+        request = requests.get(url + '/agents?offset=0&select=version&limit=' + str(agents_qty), auth=auth, verify=verify).json()
+        result = json.dumps(request)
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return result
+
+    # # /custom/SplunkAppForWazuh/agents/platforms
+    @expose_page(must_login=False, methods=['GET'])
+    def platforms(self,**kwargs):
+      try:
+        opt_username = kwargs["user"]
+        opt_password = kwargs["pass"]
+        opt_base_url = kwargs["ip"]
+        opt_base_port = kwargs["port"]
+        url = opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request_number = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        agents_qty = json.loads(request_number.text)["data"]["totalItems"]
+        request = requests.get(url + '/agents?offset=0&select=os.platform&limit=' + str(agents_qty), auth=auth, verify=verify).json()
+        result = json.dumps(request)
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return result
+
     # /custom/SplunkAppForWazuh/agents/groups/:id
     @expose_page(must_login=False, methods=['GET'])
     def groups(self,**kwargs):
@@ -224,9 +262,9 @@ class agents(controllers.BaseController):
             sort_chain = '-ip'
         elif sorting_column == "3":
           if direction == 'asc':
-            sort_chain = '+last_keepalive'
+            sort_chain = '+lastKeepAlive'
           if direction == 'desc':
-            sort_chain = '-last_keepalive'
+            sort_chain = '-lastKeepAlive'
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
@@ -256,17 +294,18 @@ class agents(controllers.BaseController):
             results.append(data)
         return json.dumps(results)
     
-    # /custom/SplunkAppForWazuh/agents/agentschecks
+    # /custom/SplunkAppForWazuh/agents/agents
     @expose_page(must_login=False, methods=['GET'])
     def agents(self, **kwargs):
+      try:
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
 
-        limit =  kwargs['length'] if 'length' in kwargs else 10
+        limit =  kwargs['length'] if 'length' in kwargs else "1"
         # limit =  "50"
-        offset = kwargs['start'] if 'start' in kwargs else 0
+        offset = kwargs['start'] if 'start' in kwargs else "0"
         # offset = "0"
         search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
         # search_value = '""'
@@ -274,7 +313,7 @@ class agents(controllers.BaseController):
         # sorting_column = '0'
         direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
         # direction = 'asc'
-        sort_chain = ""
+        sort_chain = "-dateAdd"
 
         if sorting_column == "0":
           if direction == 'asc':
@@ -323,20 +362,24 @@ class agents(controllers.BaseController):
             sort_chain = '-os.version'
         elif sorting_column == "9":
           if direction == 'asc':
-            sort_chain = '+date_add'
+            sort_chain = '+dateAdd'
           if direction == 'desc':
-            sort_chain = '-date_add'
+            sort_chain = '-dateAdd'
         elif sorting_column == "13":
           if direction == 'asc':
             sort_chain = '+version'
           if direction == 'desc':
             sort_chain = '-version'
 
-
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
+        if 'filters[status]' in kwargs and kwargs['filters[status]'] != "":
+          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+ '&status=' + kwargs['filters[status]']
+        elif 'filters[platform]' in kwargs and kwargs['filters[platform]'] != "":
+          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+ '&os.platform=' + kwargs['filters[platform]']
+        else:
+          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
 
         request = requests.get(final_url, auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
@@ -367,8 +410,9 @@ class agents(controllers.BaseController):
         response['data'] = {}
         response['data']['totalItems'] = total_items
         response['data']['items'] = results
-
-        return json.dumps(response)
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return json.dumps(response)
 
     # /custom/SplunkAppForWazuh/agents/agents_name
     @expose_page(must_login=False, methods=['GET'])

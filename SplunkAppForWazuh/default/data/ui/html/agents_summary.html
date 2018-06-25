@@ -9,48 +9,90 @@
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/wazuh_decorations.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/toast.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/loader.css">
 
   <style>
     div[data-view="views/shared/appbar/Master"] {
       background-color: #00445A;
     }
   </style>
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
-
-  <script>
-    window._splunk_metrics_events = {
-      push: function () { },
-      active: false,
-    }
-  </script>
 </head>
 
-<body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
-  <div class="dashboard-body container-fluid main-section-body" data-role="main">
+<body data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-    <div class="dashboard-header clearfix">
-      <h2>Agents summary</h2>
+  <div class="dashboard-body" data-role="main">
+
+    <div>
+      <h2 class="wz-display-inline-block">Agents summary</h2>
       <!-- Current API and index block-->
-      <div id=selectedCredentials></div>
+      <div id=selectedCredentials class="wz-center-selected-index"></div>
       <!-- End Current API and index block-->
-
     </div>
-    <div id="row1" class="dashboard-row dashboard-row1"></div>
+    <!--     -->
+
+    <div class="dashboard-row">
+
+      <!-- First cell -->
+      <div class="dashboard-cell wz-dashboard-cell wz-width-49 wz-margin-right-10">
+        <!-- margins  -->
+        <div class="dashboard-panel wz-dashboard-panel">
+          <!-- pretty white background -->
+          <div class="panel-body">
+            <!-- Manager info -->
+            <div class="dashboard-cell">
+              <div>
+                <h3 id='global' class="wz-headline-title wz-text-link">Status</h3>
+              </div>
+              <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                <p>Active</p>
+                <p id='activeUsers'></p>
+                <p>Never connected</p>
+                <p id='neverConnected'></p>
+                <!-- <p id='jsonOutput'></p> -->
+              </div>
+              <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                <p>Disconnected</p>
+                <p id='disconnectedUsers'></p>
+                <p>Agents coverage</p>
+                <p id='agentsCoverage'></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- First cell -->
+      <div class="dashboard-cell wz-dashboard-cell wz-width-49">
+        <!-- margins  -->
+        <div class="dashboard-panel wz-dashboard-panel">
+          <!-- pretty white background -->
+          <div class="panel-body">
+            <!-- Manager info -->
+            <div class="dashboard-cell">
+              <div>
+                <h3 id='global' class="wz-headline-title wz-text-link">Top</h3>
+              </div>
+              <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                <p>Last registered agent</p>
+                <p id='lastRegisteredAgent'></p>
+              </div>
+              <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+                <p>Higher activity</p>
+                <p id='higherActivity'></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+    <div class='dashboard-row wz-margin-top-20'>
+      <div class="dashboard-cell wz-dashboard-cell wz-dashboard-panel-table">
+        <div id="row1" class="table stripe"></div>
+      </div>
+    </div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>

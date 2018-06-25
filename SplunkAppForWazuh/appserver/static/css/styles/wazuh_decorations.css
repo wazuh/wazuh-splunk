@@ -121,18 +121,45 @@
   width: 45% !important;
 }
 
+.wz-width-40 {
+  width: 40% !important;
+}
+
+.wz-width-48 {
+  width: 48.8% !important;
+}
+
+.wz-width-49 {
+  width: 49% !important;
+}
+
 .wz-width-100 {
   width: 100% !important;
 }
 
 /* Custom margin styles */
 
+.wz-margin-left-5 {
+  margin-left: 5px;
+}
+
 .wz-margin-left-10 {
   margin-left: 10px;
+}
+.wz-margin-right-5 {
+  margin-right: 5px;
 }
 
 .wz-margin-right-10 {
   margin-right: 10px;
+}
+
+.wz-margin-right-24 {
+  margin-right: 24px;
+}
+
+.wz-margin-right-30 {
+  margin-right: 30px;
 }
 
 /* Classes for custom shadows for dashboard cells */
@@ -140,8 +167,6 @@
 .wz-dashboard-cell {
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
   border: 1px solid #D9D9D9 !important;
-  margin-left: 10px;
-  margin-right: 10px;
 }
 
 .wz-dashboard-panel {
@@ -149,25 +174,6 @@
   margin-right: 0 !important;
 }
 
-.wz-flex-container {
-  display: flex;
-}
-
-.wz-flex-column {
-  flex-flow: column wrap;
-}
-
-.wz-flex-row {
-  flex-flow: row wrap;
-}
-
-.wz-flex-align-space-between {
-  justify-content: space-between;
-}
-
-.wz-flex-align-flex-start {
-  justify-content: flex-start;
-}
 
 .wz-text-link:hover {
   text-decoration: underline;
@@ -179,6 +185,10 @@
 
 .wz-text-right {
   text-align: right !important;
+}
+
+.wz-text-bold {
+  font-weight: bold;
 }
 
 .wz-headline-title {
@@ -360,4 +370,62 @@ table span.badge {
 
 .wz-no-padding {
   padding: 0 !important;
+}
+
+.data-table-container {
+  padding: 10px;
+}
+
+.dt-buttons .btn {
+  margin-right: 3px;
+}
+
+.wz-dashboard-panel-table {
+  background-color: white !important;
+  padding: 10px !important;
+}
+.wz-margin-top-20 {
+  margin-top: 20px;
+}
+
+.wz-margin-top-10 {
+  margin-top: 10px;
+}
+
+.wz-margin-5 {
+  margin: 5px;
+}
+
+.wz-padding-5 {
+  padding: 5px;
+}
+
+.wz-table-element-pull-left{
+  float: left !important;
+}
+
+.wz-color-orange {
+  color: #f39c12 !important;
+}
+
+.wz-status-round {
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+}
+
+.wz-teal {
+  background-color: #00a69b;
+}
+
+.wz-teal {
+  background-color: #00a69b;
+}
+
+.wz-red {
+  background-color: #ff645c;
+}
+
+.wz-metric-color {
+  background-color: #e4f2f5;
 }

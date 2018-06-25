@@ -8,257 +8,121 @@
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/wazuh_decorations.css">
-  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/toast.css">
+  <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/loader.css">
   <style>
     div[data-view="views/shared/appbar/Master"] {
       background-color: #00445A;
     }
   </style>
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
-
-  <script>
-    window._splunk_metrics_events = {
-      push: function () { },
-      active: false,
-    }
-  </script>
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-      <h2>Manager Status</h2>
-      <div id=selectedCredentials></div>
-
+      <h2 class="wz-display-inline-block wz-margin-left-5">Manager Status</h2>
+      <div id=selectedCredentials class="wz-center-selected-index wz-margin-left-5"></div>
     </div>
+    <!-- Statuses in the first row -->
+    <div id='firstRow' class=" wz-flex-container wz-flex-row wz-align-stretch"></div>
 
+    <!-- Agent status and coverity. Second row -->
+    <div id='secondRow' class="wz-margin-left-5 wz-margin-right-5 wz-dashboard-cell wz-margin-top-10 wz-padding-5 wz-metric-color wz-flex-container wz-flex-row wz-align-stretch"></div>
 
-    <div id="row1" class="dashboard-row dashboard-row1">
-      <div id="panel1" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">analysisd</h2>
+    <div id='thirdRow' class="wz-margin-top-10  wz-flex-container wz-flex-row wz-align-stretch">
 
-          <div class="panel-element-row">
-            <div id="element1" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value  $range1$">
-                </div>
-              </div>
+      <!-- Third row with manager info -->
+      <div class="wz-dashboard-cell wz-width-49 wz-margin-left-5 wz-margin-right-24 {
+        margin-right: 10px;
+      }">
+        <div class="wz-dashboard-panel-table">
+          <div id='managerInfo' class="panel-body">
+            <!-- Place panel contents here -->
+            <div class="wz-flex-container wz-flex-row">
+              <h4 class="wz-headline-title">Manager information</h4>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50' >Version</p>
+              <p id='version'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Compilation date</p>
+              <p id='compilationDate'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Installation path</p>
+              <p id='installationPath'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Installation type</p>
+              <p id='installationType'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Agents limit</p>
+              <p id='agentsLimit'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>OpenSSL support</p>
+              <p id='opensslSupport'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Total rules</p>
+              <p id='totalRules'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Total decoders</p>
+              <p id='totalDecoders'></p>
             </div>
           </div>
         </div>
       </div>
-      <div id="panel2" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">execd</h2>
 
-          <div class="panel-element-row">
-            <div id="element2" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range2$">
-                </div>
-              </div>
+      <!-- Last registered agent -->
+
+      <div class="wz-dashboard-cell wz-width-49">
+        <div class="wz-dashboard-panel-table">
+          <div id='managerInfo' class="panel-body">
+            <!-- Place panel contents here -->
+            <div class="wz-flex-container wz-flex-row">
+              <h4 class="wz-headline-title">Last registered agent</h4>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel3" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">logcollector</h2>
-
-          <div class="panel-element-row">
-            <div id="element3" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range3$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Name</p>
+              <p id='agentName'></p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel4" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">monitord</h2>
-
-          <div class="panel-element-row">
-            <div id="element4" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range4$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>ID</p>
+              <p id='agentId'></p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel5" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">remoted</h2>
-
-          <div class="panel-element-row">
-            <div id="element5" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range5$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Status</p>
+              <p id='agentStatus'></p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel6" class="dashboard-cell" style="width: 25%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">modulesd</h2>
-
-          <div class="panel-element-row">
-            <div id="element6" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range8$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>IP address</p>
+              <p id='agentIpAddress'></p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel7" class="dashboard-cell" style="width: 25%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">syscheckd</h2>
-
-          <div class="panel-element-row">
-            <div id="element7" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range9$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Date add</p>
+              <p id='agentDate'></p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel8" class="dashboard-cell" style="width: 25%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">maild</h2>
-
-          <div class="panel-element-row">
-            <div id="element8" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range6$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Version</p>
+              <p id='agentVersion'></p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel9" class="dashboard-cell" style="width: 25%;">
-        <div class="dashboard-panel clearfix">
-          <h2 class="panel-title">authd</h2>
-
-          <div class="panel-element-row">
-            <div id="element9" class="dashboard-element html" style="width: 100%">
-              <div class="panel-body html">
-                <div class="custom-result-value $range7$">
-                </div>
-              </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Operating system</p>
+              <p id='agentOs'></p>
+            </div>
+            <div class="wz-flex-container wz-flex-row">
+              <p class='wz-flex-item-50'>Last keep alive</p>
+              <p id='agentLastKeepAlive'></p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div id="row3" class="dashboard-row dashboard-row3">
-      <div id="panel10" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element10" class="dashboard-element single" style="width: 100%">
-              <div class="panel-head">
-                <h3>Total Agents</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel11" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element11" class="dashboard-element single" style="width: 100%">
-              <div class="panel-head">
-                <h3>Active</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel12" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element12" class="dashboard-element single" style="width: 100%">
-              <div class="panel-head">
-                <h3>Disconnected</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel13" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element13" class="dashboard-element single" style="width: 100%">
-              <div class="panel-head">
-                <h3>Never connected</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="panel14" class="dashboard-cell" style="width: 20%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element14" class="dashboard-element single" style="width: 100%">
-              <div class="panel-head">
-                <h3>Agent Coverage</h3>
-              </div>
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Uncomment when this query was fixed -->
-    <!-- <div id="row4" class="dashboard-row dashboard-row4">
-      <div id="panel15" class="dashboard-cell" style="width: 100%;">
-        <div class="dashboard-panel clearfix">
-
-          <div class="panel-element-row">
-            <div id="element15" class="dashboard-element table" style="width: 100%">
-              <div class="panel-body"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
-
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>

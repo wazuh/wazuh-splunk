@@ -13,6 +13,7 @@
 define(function (require, exports, module) {
   const $ = require('jquery')
   const TableView = require("./tableView.js")
+  const ApiService = require("../services/apiService.js")
 
   const table = class TableAgents extends TableView {
 
@@ -20,9 +21,17 @@ define(function (require, exports, module) {
      * Constructor method
      * @param {*} $el: DOM table element to attach the table 
      */
-    constructor($el) {
+    constructor($el,api) {
       super()
       this.generateTableView($el)
+      this.urlData = {
+        baseUrl: ApiService.getBaseUrl(),
+        ipApi: api.url,
+        portApi: api.portapi,
+        userApi: api.userapi,
+        passApi: api.passapi
+      }
+      
       this.opts = {
         pages: 10,
         processing: true,
@@ -45,6 +54,22 @@ define(function (require, exports, module) {
           { "data": "version", 'orderable': false, defaultContent: "-" }
         ]
       }
+      this.eventListeners()
+    }
+
+    /**
+     * Gets the options
+     */
+    getOpts() {
+      return this.opts
+    }
+
+    /**
+     * Sets the options
+     * @param {Object} opts 
+     */
+    setOpts(opts) {
+      this.opts = opts
     }
 
     /**
@@ -52,8 +77,53 @@ define(function (require, exports, module) {
      * @param {*} jQuery element  
      */
     generateTableView($element) {
-      $element.prepend('<table id="myAgentTable" class="display compact"><thead><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
+      // $element.remove()
+
+      $element.html('<table id="myAgentTable" class="wz-width-100"><thead><input id="searchBar" type="text" placeholder="Search" style="width:62%;"/><select id="platformSearch" style="float:right; margin-right: 10px;"> <option value="" selected disabled hidden>Platform</option><option value=Ubuntu18>Ubuntu18</option></select><select style="float:right; margin-right: 10px;" id="statusSearch"> <option value="" selected disabled hidden>Status</option><option value="neverConnected">Never Connected</option><option value="Active">Active</option><option value="disconnected">Disconnected</option></select><select style="float:right; margin-right: 10px;"> <option value="" selected disabled hidden>Version</option><option value=v3.3.1>Wazuh v3.3.1</option></select><tr><th>id</th><th>ip</th><th>name</th><th>status</th><th>os-platform</th><th>os-uname</th><th>os-name</th><th>os-arch</th><th>os-version</th><th>dateAdd</th><th>lastKeepAlive</th><th>last_rootcheck</th><th>last_syscheck</th><th>version</th></tr></thead></table>')
       super.element($('#myAgentTable'))
+    }
+
+    eventListeners() {
+      $('#platformSearch').change((e) => {
+        console.log('change platform')
+
+        let opts = this.getOpts()
+        if (!opts.filters)
+          opts.filters = {}
+        opts.filters.platform = $('#platformSearch').val()
+        this.generateTableView($('#row1'))
+        this.build(opts)
+      })
+
+      $('#searchBar').keyup((e) => {
+        console.log('keyup!')
+        let opts = this.getOpts()
+        if (!opts.search)
+          opts.search = {}
+        opts.search.value = $('#searchBar').val()
+        this.generateTableView($('#row1'))
+        this.build(opts)
+      })
+
+      $('#statusSearch').change((e) => {
+        console.log('change status ',$('#statusSearch').val())
+        let opts = this.getOpts()
+        if (!opts.filters)
+          opts.filters = {}
+        opts.filters.status = $('#statusSearch').val()
+        this.generateTableView($('#row1'))
+        this.build(opts)
+      })
+
+      $('#versionSearch').change((e) => {
+        console.log('change version')
+        let opts = this.getOpts()
+        if (!opts.filters)
+          opts.filters = {}
+        opts.filters.version = $('#versionSearch').val()
+        this.generateTableView($('#row1'))
+        this.build(opts)
+      })
     }
 
     /**
@@ -61,8 +131,13 @@ define(function (require, exports, module) {
      * @param {*} urlArg : url to get the data from
      * @param {Object} opt: options
      */
-    build(urlArg) {
-      const url = '/agents/agents?ip=' + urlArg.ipApi + '&port=' + urlArg.portApi + '&user=' + urlArg.userApi + '&pass=' + urlArg.passApi
+    build(options) {
+      const url = '/agents/agents?ip=' + this.urlData.ipApi + '&port=' + this.urlData.portApi + '&user=' + this.urlData.userApi + '&pass=' + this.urlData.passApi
+      if (options) {
+        this.opts = Object.assign(this.opts, options)
+        console.log('reassigned options', this.opts)
+      }
+      this.eventListeners()
       super.build(url, this.opts)
     }
   }
