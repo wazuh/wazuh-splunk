@@ -132,6 +132,9 @@
 .wz-width-49 {
   width: 49% !important;
 }
+.wz-width-95 {
+  width: 95% !important;
+}
 
 .wz-width-100 {
   width: 100% !important;
@@ -212,9 +215,10 @@ hr {
   padding: 0;
   margin: 8px auto;
   height: 0;
-  width: 100%;
+  width: 97%;
   max-height: 0;
   font-size: 1px;
+  opacity:.5;
   line-height: 0;
   clear: both;
   border: none;
