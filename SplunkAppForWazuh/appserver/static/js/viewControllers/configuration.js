@@ -33,13 +33,13 @@ require([
 
   ) {
 
-    CredentialService.checkSelectedApiConnection().then(({api}) => {
+    CredentialService.checkSelectedApiConnection().then(({ api }) => {
 
       // Toast definition
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error at loading data', 1000, 250, 250)
       const successToast = new Toast('success', 'toast-bottom-right', 'Connection successful', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
-      SelectedCredentials.render($('#selectedCredentials'),api.filter[1])
+      SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
 
 
       /**
@@ -107,18 +107,18 @@ require([
           //$('#sysMonitoringDirectories').text(syscheckObj.directories)
           for (let i = 0; i < syscheckObj.directories.length; i++) {
             $('#monitoringDirectories').append(
-              '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Path</p>' +
-              '<p class="wz-list-child">' + syscheckObj.directories[i].path + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Check all</p>' +
-              '<p class="wz-list-child">' + syscheckObj.directories[i].check_all + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Path</p>` +
+              `<p class="wz-list-child">${syscheckObj.directories[i].path}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Check all</p>` +
+              `<p class="wz-list-child"> ${syscheckObj.directories[i].check_all}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
 
-              '</div>'
+              `</div>`
             )
           }
         } catch (err) {
@@ -202,25 +202,25 @@ require([
 
           for (let i = 0; i < commandObj.length; i++) {
             $('#commandChilds').append(
-              '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Name</p>' +
-              '<p>' + commandObj[i].name + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Expect</p>' +
-              '<p>' + commandObj[i].expect + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Executable</p>' +
-              '<p>' + commandObj[i].executable + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Timeout allowed</p>' +
-              '<p>' + commandObj[i].timeout_allowed + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '</div>'
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Name</p>` +
+              `<p>${commandObj[i].name}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Expect</p>` +
+              `<p> ${commandObj[i].expect} </p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Executable</p>` +
+              `<p> ${commandObj[i].executable} </p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Timeout allowed</p>` +
+              `<p>${commandObj[i].timeout_allowed}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `</div>`
             )
           }
         } catch (err) {
@@ -239,21 +239,21 @@ require([
 
           for (let i = 0; i < remoteObj.remote.length; i++) {
             $('#remoteChilds').append(
-              '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Connection</p>' +
-              '<p>' + remoteObj.remote[i].connection + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Port</p>' +
-              '<p>' + remoteObj.remote[i].port + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Protocol</p>' +
-              '<p>' + remoteObj.remote[i].protocol + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '</div>'
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Connection</p>` +
+              `<p>${remoteObj.remote[i].connection}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Port</p>` +
+              `<p>${remoteObj.remote[i].port}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<p class="wz-list-child">Protocol</p>` +
+              `<p>${remoteObj.remote[i].protocol}</p>` +
+              `</div>` +
+              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `</div>`
             )
           }
 
