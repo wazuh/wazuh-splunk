@@ -131,13 +131,22 @@ require([
           globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/rootcheck.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
-
+          console.log(rootcheckView)
           $('#rootDisabled').text(rootcheckView.disabled)
           $('#rootFiles').text(rootcheckView.rootkit_files)
           $('#rootTrojans').text(rootcheckView.rootkit_trojans)
           $('#rootViewFreq').text(rootcheckView.frequency)
           $('#rootSkipNfs').text(rootcheckView.skip_nfs)
-          $('#rootSysAuditFiles').text(rootcheckView.system_audit)
+          // $('#rootSysAuditFiles').text(rootcheckView.system_audit)
+          for (let file of rootcheckView.system_audit) {
+            $('#rootSysAuditFiles').append(
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>File</p>` +
+              `<p>${file}</p>` +
+              `</div>` 
+            )
+          }
         } catch (err) {
           return Promise.reject(err)
         }
