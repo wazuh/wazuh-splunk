@@ -186,12 +186,55 @@ require([
         try {
           globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/ruleset.html"
           $('#dynamicContent').empty()
+          console.log(rulesetObj)
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
-          $('#ruleDecoderDirs').text(rulesetObj.decoder_dir)
-          $('#ruleRulesDirs').text(rulesetObj.rule_dir)
-          $('#ruleRuleExcludes').text(rulesetObj.rule_exclude)
-          $('#ruleCdbLists').text(rulesetObj.list)
+          // $('#ruleDecoderDirs').text(rulesetObj.decoder_dir)
+          // $('#ruleRulesDirs').text(rulesetObj.rule_dir)
+          // $('#ruleRuleExcludes').text(rulesetObj.rule_exclude)
+          // $('#ruleCdbLists').text(rulesetObj.list)
+
+          for (let rule of rulesetObj.decoder_dir) {
+            $('#ruleDecoderDirs').append(
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>${rule}</p>` +
+              `</div>` 
+            )
+          }
+
+          for (let rule of rulesetObj.rule_dir) {
+            $('#ruleRulesDirs').append(
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>${rule}</p>` +
+              `</div>` 
+            )
+          }
+
+          for (let rule of rulesetObj.rule_exclude) {
+            $('#ruleRuleExcludes').append(
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>${rule}</p>` +
+              `</div>` 
+            )
+          }
+
+          for (let rule of rulesetObj.list) {
+            $('#ruleCdbLists').append(
+              `<hr>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>${rule}</p>` +
+              `</div>` 
+            )
+          }
+
+
         } catch (err) {
           return Promise.reject(err)
         }
