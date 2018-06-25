@@ -252,23 +252,23 @@ require([
           for (let i = 0; i < commandObj.length; i++) {
             $('#commandChilds').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Name</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Name</p>` +
               `<p>${commandObj[i].name}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Expect</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Expect</p>` +
               `<p> ${commandObj[i].expect} </p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Executable</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Executable</p>` +
               `<p> ${commandObj[i].executable} </p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Timeout allowed</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Timeout allowed</p>` +
               `<p>${commandObj[i].timeout_allowed}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<div class="wz-flex-container wz-flex-row">` +
               `</div>`
             )
           }
@@ -289,19 +289,19 @@ require([
           for (let i = 0; i < remoteObj.remote.length; i++) {
             $('#remoteChilds').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Connection</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Connection</p>` +
               `<p>${remoteObj.remote[i].connection}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Port</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Port</p>` +
               `<p>${remoteObj.remote[i].port}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Protocol</p>` +
+              `<div class="wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Protocol</p>` +
               `<p>${remoteObj.remote[i].protocol}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
+              `<div class="wz-flex-container wz-flex-row">` +
               `</div>`
             )
           }
