@@ -31,164 +31,122 @@
 
     <!-- Two cells in a same row -->
 
-    <div class="dashboard-row">
+    <div class="wz-flex-container">
 
       <!-- First cell -->
-      <div class="dashboard-cell wz-dashboard-cell wz-width-15">
-        <div class="dashboard-panel wz-dashboard-panel">
-          <div class="panel-body">
-            <!-- Manager info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='global' class="wz-headline-title wz-text-link">Global</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>JSON output</p>
-                      <p id='jsonOutput'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Log alert level</p>
-                      <p id='logAlertLevel'></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!---->
-            <!-- Cluster info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='cluster' class="wz-headline-title wz-text-link">Cluster</h3>
-                  </div>
-                  <div class="panel-body" id='clusterRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Name</p>
-                      <p id='nameCluster'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Type</p>
-                      <p id='typeCluster'></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!---->
-            <!-- Syscheck info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='syscheck' class="wz-headline-title wz-text-link">Syscheck</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+      <div class="wz-width-25">
 
-                      <p>Frequency</p>
-                      <p id='sysFreq'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
 
-                      <p>Alert new files</p>
-                      <p id='sysAlertNewFiles'></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Rootcheck info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='rootcheck' class="wz-headline-title wz-text-link">Rootcheck</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Frequency</p>
-                      <p id='rootFreq'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Skip NFS</p>
-                      <p id='rootSkipNFS'></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Auth info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='auth' class="wz-headline-title wz-text-link">Auth</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Purge</p>
-                      <p id='authPurge'></p>
-                    </div>
-                    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                      <p>Force insert</p>
-                      <p id='authForceInsert'></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Ruleset info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='ruleset' class="wz-headline-title wz-text-link">Ruleset</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <p>Ruleset settings</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Command info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='command' class="wz-headline-title wz-text-link">Command</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <p>Command settings</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Remote info -->
-            <div class="dashboard-row">
-              <div class="dashboard-cell">
-                <div>
-                  <div>
-                    <h3 id='remote' class="wz-headline-title wz-text-link">Remote</h3>
-                  </div>
-                  <div class="panel-body" id='managerRow'>
-                    <p>Agents events listening settings</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-container wz-flex-row">
+            <h3 id='global' class="wz-headline-title wz-text-link">Global</h3>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>JSON output</p>
+            <p id='jsonOutput'></p>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Log all</p>
+            <p id='logAlertLevel'></p>
           </div>
         </div>
+
+
+        <!-- Cluster info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <h3 id='cluster' class="wz-headline-title wz-text-link">Cluster</h3>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Name</p>
+            <p id='nameCluster'></p>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Type</p>
+            <p id='typeCluster'></p>
+          </div>
+        </div>
+
+
+        <!-- Syscheck info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <h3 id='syscheck' class="wz-headline-title wz-text-link">Syscheck</h3>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Frequency</p>
+            <p id='sysFreq'></p>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Alert new files</p>
+            <p id='sysAlertNewFiles'></p>
+          </div>
+        </div>
+
+        <!-- Rootcheck info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <h3 id='rootcheck' class="wz-headline-title wz-text-link">Rootcheck</h3>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Frequency</p>
+            <p id='rootFreq'></p>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Skip NFS</p>
+            <p id='rootSkipNFS'></p>
+          </div>
+        </div>
+
+        <!-- Auth info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <h3 id='auth' class="wz-headline-title wz-text-link">Auth</h3>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Purge</p>
+            <p id='authPurge'></p>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Force insert</p>
+            <p id='authForceInsert'></p>
+          </div>
+        </div>
+
+        <!-- Ruleset info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <h3 id='ruleset' class="wz-headline-title wz-text-link">Ruleset</h3>
+          </div>
+          <div class="wz-flex-align-space-between wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Ruleset settings</p>
+          </div>
+        </div>
+
+        <!-- Command info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class=" wz-flex-container">
+            <h3 id='command' class="wz-headline-title wz-text-link">Command</h3>
+          </div>
+          <div class="wz-flex-container">
+            <p class='wz-flex-item-30'>Command settings</p>
+          </div>
+        </div>
+
+        <!-- Remote info -->
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div class="wz-flex-container wz-flex-row">
+            <h3 id='remote' class="wz-headline-title wz-text-link">Remote</h3>
+          </div>
+          <div class="wz-flex-container wz-flex-row">
+            <p class='wz-flex-item-30'>Remote settings</p>
+          </div>
+        </div>
+
       </div>
 
       <!-- Second cell -->
-      <div class="wz-margin-left-10 dashboard-cell wz-dashboard-cell wz-width-65">
+      <div class="wz-margin-bottom-10 wz-margin-left-10 wz-dashboard-cell wz-width-100 wz-dashboard-panel-table">
         <div class="dashboard-panel wz-dashboard-panel">
           <div id='dynamicContent' class="panel-body">
             <!-- Place panel contents here -->

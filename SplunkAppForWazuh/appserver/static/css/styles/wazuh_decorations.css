@@ -117,6 +117,14 @@
   width: 65% !important;
 }
 
+.wz-width-25 {
+  width: 25% !important;
+}
+
+.wz-width-30 {
+  width: 30% !important;
+}
+
 .wz-width-45 {
   width: 45% !important;
 }
@@ -163,6 +171,10 @@
 
 .wz-margin-right-30 {
   margin-right: 30px;
+}
+
+.wz-margin-bottom-10 {
+  margin-bottom: 10px;
 }
 
 /* Classes for custom shadows for dashboard cells */

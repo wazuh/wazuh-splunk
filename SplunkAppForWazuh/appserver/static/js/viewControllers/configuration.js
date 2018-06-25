@@ -108,11 +108,11 @@ require([
           for (let i = 0; i < syscheckObj.directories.length; i++) {
             $('#monitoringDirectories').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Path</p>` +
               `<p>${syscheckObj.directories[i].path}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Check all</p>` +
               `<p> ${syscheckObj.directories[i].check_all}</p>` +
               `</div>` 
@@ -131,7 +131,6 @@ require([
           globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/rootcheck.html"
           $('#dynamicContent').empty()
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
-          console.log(rootcheckView)
           $('#rootDisabled').text(rootcheckView.disabled)
           $('#rootFiles').text(rootcheckView.rootkit_files)
           $('#rootTrojans').text(rootcheckView.rootkit_trojans)
@@ -141,7 +140,7 @@ require([
           for (let file of rootcheckView.system_audit) {
             $('#rootSysAuditFiles').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>File</p>` +
               `<p>${file}</p>` +
               `</div>` 
@@ -186,18 +185,11 @@ require([
         try {
           globalUrl = "/static/app/SplunkAppForWazuh/views/managerConfigurationViews/ruleset.html"
           $('#dynamicContent').empty()
-          console.log(rulesetObj)
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
-
-          // $('#ruleDecoderDirs').text(rulesetObj.decoder_dir)
-          // $('#ruleRulesDirs').text(rulesetObj.rule_dir)
-          // $('#ruleRuleExcludes').text(rulesetObj.rule_exclude)
-          // $('#ruleCdbLists').text(rulesetObj.list)
-
           for (let rule of rulesetObj.decoder_dir) {
             $('#ruleDecoderDirs').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Path</p>` +
               `<p>${rule}</p>` +
               `</div>` 
@@ -207,7 +199,7 @@ require([
           for (let rule of rulesetObj.rule_dir) {
             $('#ruleRulesDirs').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Path</p>` +
               `<p>${rule}</p>` +
               `</div>` 
@@ -217,7 +209,7 @@ require([
           for (let rule of rulesetObj.rule_exclude) {
             $('#ruleRuleExcludes').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Path</p>` +
               `<p>${rule}</p>` +
               `</div>` 
@@ -227,7 +219,7 @@ require([
           for (let rule of rulesetObj.list) {
             $('#ruleCdbLists').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Path</p>` +
               `<p>${rule}</p>` +
               `</div>` 
@@ -252,19 +244,19 @@ require([
           for (let i = 0; i < commandObj.length; i++) {
             $('#commandChilds').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Name</p>` +
               `<p>${commandObj[i].name}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Expect</p>` +
               `<p> ${commandObj[i].expect} </p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Executable</p>` +
               `<p> ${commandObj[i].executable} </p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Timeout allowed</p>` +
               `<p>${commandObj[i].timeout_allowed}</p>` +
               `</div>` +
@@ -289,19 +281,19 @@ require([
           for (let i = 0; i < remoteObj.remote.length; i++) {
             $('#remoteChilds').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Connection</p>` +
               `<p>${remoteObj.remote[i].connection}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Port</p>` +
               `<p>${remoteObj.remote[i].port}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `<p class='wz-flex-item-30'>Protocol</p>` +
               `<p>${remoteObj.remote[i].protocol}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
               `</div>`
             )
           }
@@ -318,6 +310,7 @@ require([
         try {
           const endPoint = '/manager/configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           const jsonObj = await ApiService.get(endPoint)
+          console.log('data ',jsonObj)
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)
