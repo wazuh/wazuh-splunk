@@ -63,9 +63,9 @@ require([
             const item = typeof element !== 'object' ? element : element.item
             $('#fileIntegrityNoDiff').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">File</p>` +
-              `<p class="wz-list-child">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>File</p>` +
+              `<p>` +
               `${item}` +
               `</p>` +
               `</div>`
@@ -74,15 +74,15 @@ require([
           for (const path of data.directories) {
             $('#fileIntegrityMonitoredFiles').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Path</p>` +
-              `<p class="wz-list-child">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>` +
               `${path.path}` +
               `</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">Check all</p>` +
-              `<p class="wz-list-child">` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Check all</p>` +
+              `<p>` +
               `${path.check_all}` +
               `</p>` +
               `</div>`
@@ -92,9 +92,9 @@ require([
             const element = typeof ignore !== 'object' ? ignore : ignore.item
             $('#fileIntegrityIgnoredFiles').append(
               `<hr>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p class="wz-list-child">File</p>` +
-              `<p class="wz-list-child">` +
+              `<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class="wz-flex-item-30">File</p>` +
+              `<p >` +
               `${element}` +
               `</p>` +
               `</div>`
@@ -133,9 +133,9 @@ require([
             const item = data.windows_audit[i] !== 'object' ? data.windows_audit[i] : data.windows_audit[i].item
             $('#policyMonitoringWinAuditFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">File</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -146,9 +146,9 @@ require([
             const item = data.windows_apps[i] !== 'object' ? data.windows_apps[i] : data.windows_apps[i].item
             $('#policyMonitoringWinAppsFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">File</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -159,9 +159,9 @@ require([
             const item = data.windows_malware[i] !== 'object' ? data.windows_malware[i] : data.windows_malware[i].item
             $('#policyMonitoringWinMalwareFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">File</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -172,9 +172,9 @@ require([
             const item = data.rootkit_files[i] !== 'object' ? data.rootkit_files[i] : data.rootkit_files[i].item
             $('#policyMonitoringRootkitFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Files</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">Files</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -185,9 +185,9 @@ require([
             const item = data.rootkit_trojans[i] !== 'object' ? data.rootkit_trojans[i] : data.rootkit_trojans[i].item
             $('#policyMonitoringRootkitTrojans').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Trojans</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">Trojans</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -267,50 +267,50 @@ require([
             )
             if (item["log_format"])
               $(`#logCollectionFiles`).append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Log format</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Log format</p>` +
                 `<p>${item['log_format']}</p>` +
                 `</div>`
               )
             if (item.location)
               $('#logCollectionFiles').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Location</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Location</p>` +
                 `<p>${item.location}</p>` +
                 `</div>`
               )
             if (item.query)
               $('#logCollectionFiles').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Query</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Query</p>` +
                 `<p>${item.query}</p>` +
                 `</div>`
               )
             if (item.frequency)
               $('#logCollectionFiles').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Frecuency</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Frecuency</p>` +
                 `<p>${item.frequency}</p>` +
                 `</div>`
               )
             if (item.command)
               $('#logCollectionFiles').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Command</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Command</p>` +
                 `<p>${item.command}</p>` +
                 `</div>`
               )
             if (item.alias)
               $('#logCollectionFiles').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Alias</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Alias</p>` +
                 `<p>${item.alias}</p>` +
                 `</div>`
               )
             if (item['only-future-events'])
               $('#logCollectionFiles').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Only future events</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Only future events</p>` +
                 `<p>${item['only-future-events']}</p>` +
                 `</div>`
               )
@@ -335,43 +335,43 @@ require([
             )
             if (item["command"])
               $('#remoteCommands').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Command</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Command</p>` +
                 `<p>${item.command}</p>` +
                 `</div>`
               )
             if (item.disabled)
               $('#remoteCommands').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Disabled</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Disabled</p>` +
                 `<p>${item.disabled}</p>` +
                 `</div>`
               )
             if (item['ignore_output'])
               $('#remoteCommands').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Ignore output</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Ignore output</p>` +
                 `<p>${item['ignore_output']}</p>` +
                 `</div>`
               )
             if (item.interval)
               $('#remoteCommands').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Interval</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Interval</p>` +
                 `<p>${item.interval}</p>` +
                 `</div>`
               )
             if (item['run_on_start'])
               $('#remoteCommands').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Run on start</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Run on start</p>` +
                 `<p>${item['run_on_start']}</p>` +
                 `</div>`
               )
             if (item.tag)
               $('#remoteCommands').append(
-                `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-                `<p class="wz-list-child">Tag</p>` +
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Tag</p>` +
                 `<p>${item.tag}</p>` +
                 `</div>`
               )
