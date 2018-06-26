@@ -386,21 +386,18 @@ require([
           // If there is syscheck data then render
           if (data.syscheck) {
             $('#ifSyscheck').html(
-              `<div>` +
-              `<div>` +
-              `<h3 id="fileIntegrity" class="wz-headline-title wz-text-link">File Integrity</h3>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="fileIntegrity" class="wz-headline-title wz-text-link">File Integrity</h3>` +
               `</div>` +
-              `<div class="panel-body" id="managerRow">` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p>Disabled</p>` +
-              `<p>${data.syscheck.disabled}` || `-` + `</p>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data.syscheck.disabled}</p>` +
               `</div>` +
-              `<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">` +
-              `<p>Frequency</p>` +
-              `<p>${data.syscheck.frequency}` || `-` + `</p>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Frequency</p>` +
+              `<p>${data.syscheck.frequency}</p>` +
               `</div>` +
-              `</div>` +
-              `</div>`
+              `</div>` 
             )
 
             // If click on Syscheck section
@@ -412,21 +409,18 @@ require([
           // If there is rootcheck data then render it
           if (data.rootcheck) {
             $('#ifRootcheck').html(
-              `  <div> ` +
-              `  <div> ` +
-              `    <h3 id="policyMonitoring" class="wz-headline-title wz-text-link">Policy Monitoring</h3> ` +
-              `  </div> ` +
-              `  <div class="panel-body" id="clusterRow"> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Disabled</p> ` +
-              `      <p>${data.rootcheck.disabled}` || `-` + `</p> ` +
-              `    </div> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Base directory</p> ` +
-              `      <p>${data.rootcheck.base_directory}` || `-` + `</p> ` +
-              `    </div> ` +
-              `  </div> ` +
-              `</div> `
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="policyMonitoring" class="wz-headline-title wz-text-link">Policy Monitoring</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data.rootcheck.disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Base directory</p>` +
+              `<p>${data.rootcheck.base_directory}</p>` +
+              `</div>` +
+              `</div>`
             )
 
             // Click on Policy Monitoring
@@ -435,24 +429,21 @@ require([
 
           if (data.syscollector) {
             $('#ifSyscollector').html(
-              `  <div> ` +
-              `  <div> ` +
-              `    <h3 id="syscollector" class="wz-headline-title wz-text-link">Syscollector</h3> ` +
-              `  </div> ` +
-              `  <div class="panel-body" id="managerRow"> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Disabled</p> ` +
-              `      <p id="syscollectorDisabled"></p> ` +
-              `    </div> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Scan on start</p> ` +
-              `      <p id="syscollectorScan"></p> ` +
-              `    </div> ` +
-              `  </div> ` +
-              `</div> `
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="syscollector" class="wz-headline-title wz-text-link">Syscollector</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data.syscollector.disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Scan on start</p>` +
+              `<p>${data.syscollector.scan_on_start}</p>` +
+              `</div>` +
+              `</div>`
             )
-            $('#syscollectorDisabled').text(data.syscollector.disabled)
-            $('#syscollectorScan').text(data.syscollector.scan_on_start)
+            // $('#syscollectorDisabled').text(data.syscollector.disabled)
+            // $('#syscollectorScan').text(data.syscollector.scan_on_start)
 
             // Click on Syscollector
             $('#syscollector').click(() => sysCollector(data.syscollector).catch(handleError))
@@ -460,49 +451,43 @@ require([
 
           if (data['open-scap']) {
             $('#ifOpenScap').html(
-              `  <div> ` +
-              `  <div> ` +
-              `    <h3 id="openscap" class="wz-headline-title wz-text-link">OpenSCAP</h3> ` +
-              `  </div> ` +
-              `  <div class="panel-body" id="managerRow"> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Disabled</p> ` +
-              `      <p id="openscapDisabled"></p> ` +
-              `    </div> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Interval</p> ` +
-              `      <p id="openscapInterval"></p> ` +
-              `    </div> ` +
-              `  </div> ` +
-              `</div> `
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="openscap" class="wz-headline-title wz-text-link">OpenSCAP</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data['open-scap'].disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Interval</p>` +
+              `<p>${data['open-scap'].interval}</p>` +
+              `</div>` +
+              `</div>`
             )
-            $('#openscapDisabled').text(data['open-scap'].disabled)
-            $('#openscapInterval').text(data['open-scap'].interval)
+            // $('#openscapDisabled').text(data['open-scap'].disabled)
+            // $('#openscapInterval').text(data['open-scap'].interval)
             // Click on Syscollector
             $('#openscap').click(() => openSCAP(data['open-scap']).catch(handleError))
           }
 
           if (data['cis-cat']) {
             $('#ifCisCat').html(
-              `  <div> ` +
-              `  <div> ` +
-              `    <h3 id="ciscat" class="wz-headline-title wz-text-link">CIS-CAT</h3> ` +
-              `  </div> ` +
-              `  <div class="panel-body" id="managerRow"> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Disabled</p> ` +
-              `      <p id="ciscatDisabled"></p> ` +
-              `    </div> ` +
-              `    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ` +
-              `      <p>Interval</p> ` +
-              `      <p id="ciscatInterval"></p> ` +
-              `    </div> ` +
-              `  </div> ` +
-              `</div> `
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="ciscat" class="wz-headline-title wz-text-link">CIS-CAT</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data['cis-cat'].disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Interval</p>` +
+              `<p>${data['cis-cat'].interval}</p>` +
+              `</div>` +
+              `</div>`
             )
 
-            $('#ciscatDisabled').text(data['cis-cat'].disabled)
-            $('#ciscatInterval').text(data['cis-cat'].interval)
+            // $('#ciscatDisabled').text(data['cis-cat'].disabled)
+            // $('#ciscatInterval').text(data['cis-cat'].interval)
 
             // Click on cis-cat
             $('#ciscat').click(() => cisCat(data['cis-cat']).catch(handleError))
@@ -511,14 +496,12 @@ require([
 
           if (data.localfile) {
             $('#ifLog').html(
-              `  <div> ` +
-              `  <div> ` +
-              `    <h3 id="logcollection" class="wz-headline-title wz-text-link">Log Collection</h3> ` +
-              `  </div> ` +
-              `  <div class="panel-body" id="managerRow"> ` +
-              `    <p>Visualize all Log Collection settings</p> ` +
-              `  </div> ` +
-              `</div> `
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="logcollection" class="wz-headline-title wz-text-link">Log Collection</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p>Visualize all Log Collection settings</p>` +
+              `</div>` 
             )
             // Click on Log Collection
             $('#logcollection').click(() => logCollection(data.localfile).catch(handleError))
@@ -526,13 +509,11 @@ require([
 
           if (data.command) {
             $('#ifCommand').html(
-              `  <div>` +
-              `  <div>` +
-              `    <h3 id="remote" class="wz-headline-title wz-text-link">Remote Command</h3>` +
-              `  </div>` +
-              `  <div class="panel-body" id="managerRow">` +
-              `    <p>Visualize all Remote Command settings</p>` +
-              `  </div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="remote" class="wz-headline-title wz-text-link">Remote Command</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p>Visualize all remote command settings</p>` +
               `</div>`
             )
             // Click on Commands

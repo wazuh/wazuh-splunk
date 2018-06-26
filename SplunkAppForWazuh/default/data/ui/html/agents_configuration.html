@@ -22,7 +22,6 @@
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-
   <div class="dashboard-body container-fluid main-section-body">
 
     <div class="dashboard-header clearfix">
@@ -30,70 +29,51 @@
       <div id=selectedCredentials class="wz-center-selected-index wz-margin-left-5"></div>
     </div>
 
-    <div class="dashboard-row">
-      <!-- Two cells in a same row -->
+    <!-- Two cells in a same row -->
+    <div class="wz-flex-container">
 
       <!-- First cell -->
-      <div class="dashboard-cell wz-dashboard-cell wz-width-15">
-        <div class="dashboard-panel wz-dashboard-panel">
-          <div class="panel-body">
-            <div class='wz-padding-5'> 
-              <select class="input input-dropdown" id='agentList'></select>
-            </div>
-            <div id='dynamicList'>
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifSyscheck'></div>
-                </div>
-              </div>
-              <!---->
-              <!-- Policy Monitoring -->
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifRootcheck'></div>
-                </div>
-              </div>
-              <!---->
-              <!-- Syscollector -->
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifSyscollector'></div>
-                </div>
-              </div>
+      <div class="wz-width-25">
 
-              <!-- OpenSCAP -->
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifOpenScap'></div>
-                </div>
-              </div>
-              <!-- CIS-CAT -->
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifCisCat'></div>
-                </div>
-              </div>
-
-              <!-- Log collection  -->
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifLog'></div>
-                </div>
-              </div>
-
-              <!-- Remote info -->
-              <div class="dashboard-row">
-                <div class="dashboard-cell">
-                  <div id='ifCommand'></div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- Dropdown -->
+        <div class="panel-body dashboard-panel wz-dashboard-panel">
+          <select class="wz-padding-5 input input-dropdown wz-width-100" id='agentList'></select>
         </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifSyscheck'></div>
+        </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifRootcheck'></div>
+        </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifSyscollector'></div>
+        </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifOpenScap'></div>
+        </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifCisCat'></div>
+        </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifLog'></div>
+        </div>
+
+        <div class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10">
+          <div id='ifCommand'></div>
+        </div>
+
+
+
       </div>
 
       <!-- Second cell -->
-      <div class="wz-margin-left-10 dashboard-cell wz-dashboard-cell wz-width-65">
+      <div class="wz-margin-bottom-10 wz-margin-left-10 wz-dashboard-cell wz-width-100 wz-dashboard-panel-table">
         <div class="dashboard-panel wz-dashboard-panel">
           <div id='dynamicContent' class="panel-body">
             <!-- Place panel contents here -->
