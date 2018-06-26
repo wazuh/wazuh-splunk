@@ -66,6 +66,9 @@ require([
       const clickOnGroup = async (data) => {
         try {
           if (data) {
+            $('#row1').removeClass('wz-dashboard-panel-table')
+            $('#row1').removeClass('wz-dashboard-cell')
+            $('#row1').removeClass('wz-margin-5')
             console.log('data', data)
             // Empty groups table
             $('#row1').empty()
