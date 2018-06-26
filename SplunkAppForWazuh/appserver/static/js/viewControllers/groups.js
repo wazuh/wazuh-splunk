@@ -47,6 +47,12 @@ require([
        */
       const clickOnFile = async (data, groupName) => {
         try {
+          $('#row2').hide(200)
+          $('#closeContent').click( (e) => {
+            $('#row3').hide(200)
+            $('#row2').show(200)
+          })
+
           if (data && groupName && groupName !== "") {
             const endPointFileContent = '/agents/filescontent?id=' + groupName + '&filename=' + data.filename + '&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
             const dataFile = await ApiService.get(endPointFileContent)
