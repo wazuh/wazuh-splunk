@@ -118,7 +118,7 @@ require([
 
           SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
 
-          let table = new agentsTable($('#row1'),api)
+          let table = new agentsTable($('#row1'), api)
           table.build()
           $('.dataTables_filter').addClass('wz-table-element-pull-left')
 
@@ -136,8 +136,8 @@ require([
         .render()
         .getContainerElement()
         .appendChild($('.dashboard-body')[0])
-    }).catch((err) => { 
-      // window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
-     })
+    }).catch((err) => {
+      window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
+    })
   }
 )

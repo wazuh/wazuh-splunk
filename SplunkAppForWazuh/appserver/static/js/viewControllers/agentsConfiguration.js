@@ -16,7 +16,9 @@ require([
   "/static/app/SplunkAppForWazuh/js/services/credentialService.js",
   "/static/app/SplunkAppForWazuh/js/services/apiService.js",
   "/static/app/SplunkAppForWazuh/js/directives/toaster.js",
-  "/static/app/SplunkAppForWazuh/js/services/promisedReq.js"
+  "/static/app/SplunkAppForWazuh/js/services/promisedReq.js",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
+
 ],
   function (
     $,
@@ -24,18 +26,20 @@ require([
     CredentialService,
     ApiService,
     Toast,
-    promisedReq
+    promisedReq,
+    SelectedCredentials
 
   ) {
 
     CredentialService.checkSelectedApiConnection().then(({ api }) => {
-
+      SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
       const errorConnectionToast = new Toast('error', 'toast-bottom-right', 'Error when loading data', 1000, 250, 250)
       const errorChangeAgent = new Toast('error', 'toast-bottom-right', 'Error when change agent', 1000, 250, 250)
       const handleError = err => errorConnectionToast.show()
-      const noConfigHtml = '<p>This agent belongs to a group where actually there`s no configuration.</p></br>' +
-        '<p>Use the following link to learn about the centralized configuration process and how to set it up:</p></br>' +
-        '<a href=https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html>https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>'
+      const noConfigHtml =
+        `<p>This agent belongs to a group where actually there's no configuration.</p></br>` +
+        `<p>Use the following link to learn about the centralized configuration process and how to set it up:</p></br>` +
+        `<a href=https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html>https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>`
 
       const noAgents = '<p>There are no registered agents.</p>'
 
@@ -58,42 +62,42 @@ require([
           for (const element of data.nodiff) {
             const item = typeof element !== 'object' ? element : element.item
             $('#fileIntegrityNoDiff').append(
-              '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
-              item +
-              '</p>' +
-              '</div>'
+              `<hr>` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>File</p>` +
+              `<p>` +
+              `${item}` +
+              `</p>` +
+              `</div>`
             )
           }
           for (const path of data.directories) {
             $('#fileIntegrityMonitoredFiles').append(
-              '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Path</p>' +
-              '<p class="wz-list-child">' +
-              path.path +
-              '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Check all</p>' +
-              '<p class="wz-list-child">' +
-              path.check_all +
-              '</p>' +
-              '</div>'
+              `<hr>` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Path</p>` +
+              `<p>` +
+              `${path.path}` +
+              `</p>` +
+              `</div>` +
+              `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Check all</p>` +
+              `<p>` +
+              `${path.check_all}` +
+              `</p>` +
+              `</div>`
             )
           }
           for (const ignore of data.ignore) {
             const element = typeof ignore !== 'object' ? ignore : ignore.item
             $('#fileIntegrityIgnoredFiles').append(
-              '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
-              element +
-              '</p>' +
-              '</div>'
+              `<hr>` +
+              `<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+              `<p class="wz-flex-item-30">File</p>` +
+              `<p >` +
+              `${element}` +
+              `</p>` +
+              `</div>`
             )
           }
         } catch (err) {
@@ -129,9 +133,9 @@ require([
             const item = data.windows_audit[i] !== 'object' ? data.windows_audit[i] : data.windows_audit[i].item
             $('#policyMonitoringWinAuditFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">File</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -142,9 +146,9 @@ require([
             const item = data.windows_apps[i] !== 'object' ? data.windows_apps[i] : data.windows_apps[i].item
             $('#policyMonitoringWinAppsFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">File</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -155,9 +159,9 @@ require([
             const item = data.windows_malware[i] !== 'object' ? data.windows_malware[i] : data.windows_malware[i].item
             $('#policyMonitoringWinMalwareFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">File</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">File</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -168,9 +172,9 @@ require([
             const item = data.rootkit_files[i] !== 'object' ? data.rootkit_files[i] : data.rootkit_files[i].item
             $('#policyMonitoringRootkitFiles').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Files</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">Files</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -181,9 +185,9 @@ require([
             const item = data.rootkit_trojans[i] !== 'object' ? data.rootkit_trojans[i] : data.rootkit_trojans[i].item
             $('#policyMonitoringRootkitTrojans').append(
               '<hr>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p class="wz-list-child">Trojans</p>' +
-              '<p class="wz-list-child">' +
+              '<div  class="wz-margin-left-10 wz-flex-container wz-flex-row">' +
+              '<p class="wz-flex-item-30">Trojans</p>' +
+              '<p >' +
               item +
               '</p>' +
               '</div>'
@@ -259,56 +263,56 @@ require([
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
           for (const item of files) {
             $('#logCollectionFiles').append(
-              '<hr>'
+              `<hr>`
             )
             if (item["log_format"])
-              $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Log format</p>' +
-                '<p>' + item.log_format + '</p>' +
-                '</div>'
+              $(`#logCollectionFiles`).append(
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Log format</p>` +
+                `<p>${item['log_format']}</p>` +
+                `</div>`
               )
             if (item.location)
               $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Location</p>' +
-                '<p>' + item.location + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Location</p>` +
+                `<p>${item.location}</p>` +
+                `</div>`
               )
             if (item.query)
               $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Query</p>' +
-                '<p>' + item.query + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Query</p>` +
+                `<p>${item.query}</p>` +
+                `</div>`
               )
             if (item.frequency)
               $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Frecuency</p>' +
-                '<p>' + item.frequency + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Frecuency</p>` +
+                `<p>${item.frequency}</p>` +
+                `</div>`
               )
             if (item.command)
               $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Command</p>' +
-                '<p>' + item.command + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Command</p>` +
+                `<p>${item.command}</p>` +
+                `</div>`
               )
             if (item.alias)
               $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Alias</p>' +
-                '<p>' + item.alias + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Alias</p>` +
+                `<p>${item.alias}</p>` +
+                `</div>`
               )
             if (item['only-future-events'])
               $('#logCollectionFiles').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Only future events</p>' +
-                '<p>' + item['only-future-events'] + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Only future events</p>` +
+                `<p>${item['only-future-events']}</p>` +
+                `</div>`
               )
           }
         } catch (err) {
@@ -322,54 +326,54 @@ require([
        */
       const remoteCommands = async (files) => {
         try {
-          const globalUrl = "/static/app/SplunkAppForWazuh/views/agentConfigurationViews/remoteCommand.html"
+          const globalUrl = '/static/app/SplunkAppForWazuh/views/agentConfigurationViews/remoteCommand.html'
           await promisedReq.promisedLoad($('#dynamicContent'), globalUrl)
 
           for (const item of files) {
             $('#remoteCommands').append(
-              '<hr>'
+              `<hr>`
             )
             if (item["command"])
               $('#remoteCommands').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Command</p>' +
-                '<p>' + item.command + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Command</p>` +
+                `<p>${item.command}</p>` +
+                `</div>`
               )
             if (item.disabled)
               $('#remoteCommands').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Disabled</p>' +
-                '<p>' + item.disabled + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Disabled</p>` +
+                `<p>${item.disabled}</p>` +
+                `</div>`
               )
             if (item['ignore_output'])
               $('#remoteCommands').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Ignore output</p>' +
-                '<p>' + item['ignore_output'] + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Ignore output</p>` +
+                `<p>${item['ignore_output']}</p>` +
+                `</div>`
               )
             if (item.interval)
               $('#remoteCommands').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Interval</p>' +
-                '<p>' + item.interval + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Interval</p>` +
+                `<p>${item.interval}</p>` +
+                `</div>`
               )
             if (item['run_on_start'])
               $('#remoteCommands').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Run on start</p>' +
-                '<p>' + item['run_on_start'] + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Run on start</p>` +
+                `<p>${item['run_on_start']}</p>` +
+                `</div>`
               )
             if (item.tag)
               $('#remoteCommands').append(
-                '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-                '<p class="wz-list-child">Tag</p>' +
-                '<p>' + item.tag + '</p>' +
-                '</div>'
+                `<div class="wz-margin-left-10 wz-flex-container wz-flex-row">` +
+                `<p class='wz-flex-item-30'>Tag</p>` +
+                `<p>${item.tag}</p>` +
+                `</div>`
               )
           }
         } catch (err) {
@@ -382,21 +386,18 @@ require([
           // If there is syscheck data then render
           if (data.syscheck) {
             $('#ifSyscheck').html(
-              '<div>' +
-              '<div>' +
-              '<h3 id="fileIntegrity" class="wz-headline-title wz-text-link">File Integrity</h3>' +
-              '</div>' +
-              '<div class="panel-body" id="managerRow">' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p>Disabled</p>' +
-              '<p>' + data.syscheck.disabled || '-' + '</p>' +
-              '</div>' +
-              '<div class="wz-flex-container wz-flex-row wz-flex-align-space-between">' +
-              '<p>Frequency</p>' +
-              '<p>' + data.syscheck.frequency || '-' + '</p>' +
-              '</div>' +
-              '</div>' +
-              '</div >'
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="fileIntegrity" class="wz-headline-title wz-text-link">File Integrity</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data.syscheck.disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Frequency</p>` +
+              `<p>${data.syscheck.frequency}</p>` +
+              `</div>` +
+              `</div>`
             )
 
             // If click on Syscheck section
@@ -408,21 +409,18 @@ require([
           // If there is rootcheck data then render it
           if (data.rootcheck) {
             $('#ifRootcheck').html(
-              '  <div> ' +
-              '  <div> ' +
-              '    <h3 id="policyMonitoring" class="wz-headline-title wz-text-link">Policy Monitoring</h3> ' +
-              '  </div> ' +
-              '  <div class="panel-body" id="clusterRow"> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Disabled</p> ' +
-              '      <p>' + data.rootcheck.disabled || '-' + '</p> ' +
-              '    </div> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Base directory</p> ' +
-              '      <p>' + data.rootcheck.base_directory || '-' + '</p> ' +
-              '    </div> ' +
-              '  </div> ' +
-              '</div> '
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="policyMonitoring" class="wz-headline-title wz-text-link">Policy Monitoring</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data.rootcheck.disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Base directory</p>` +
+              `<p>${data.rootcheck.base_directory}</p>` +
+              `</div>` +
+              `</div>`
             )
 
             // Click on Policy Monitoring
@@ -431,24 +429,21 @@ require([
 
           if (data.syscollector) {
             $('#ifSyscollector').html(
-              '  <div> ' +
-              '  <div> ' +
-              '    <h3 id="syscollector" class="wz-headline-title wz-text-link">Syscollector</h3> ' +
-              '  </div> ' +
-              '  <div class="panel-body" id="managerRow"> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Disabled</p> ' +
-              '      <p id="syscollectorDisabled"></p> ' +
-              '    </div> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Scan on start</p> ' +
-              '      <p id="syscollectorScan"></p> ' +
-              '    </div> ' +
-              '  </div> ' +
-              '</div> '
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="syscollector" class="wz-headline-title wz-text-link">Syscollector</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data.syscollector.disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Scan on start</p>` +
+              `<p>${data.syscollector.scan_on_start}</p>` +
+              `</div>` +
+              `</div>`
             )
-            $('#syscollectorDisabled').text(data.syscollector.disabled)
-            $('#syscollectorScan').text(data.syscollector.scan_on_start)
+            // $('#syscollectorDisabled').text(data.syscollector.disabled)
+            // $('#syscollectorScan').text(data.syscollector.scan_on_start)
 
             // Click on Syscollector
             $('#syscollector').click(() => sysCollector(data.syscollector).catch(handleError))
@@ -456,49 +451,43 @@ require([
 
           if (data['open-scap']) {
             $('#ifOpenScap').html(
-              '  <div> ' +
-              '  <div> ' +
-              '    <h3 id="openscap" class="wz-headline-title wz-text-link">OpenSCAP</h3> ' +
-              '  </div> ' +
-              '  <div class="panel-body" id="managerRow"> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Disabled</p> ' +
-              '      <p id="openscapDisabled"></p> ' +
-              '    </div> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Interval</p> ' +
-              '      <p id="openscapInterval"></p> ' +
-              '    </div> ' +
-              '  </div> ' +
-              '</div> '
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="openscap" class="wz-headline-title wz-text-link">OpenSCAP</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data['open-scap'].disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Interval</p>` +
+              `<p>${data['open-scap'].interval}</p>` +
+              `</div>` +
+              `</div>`
             )
-            $('#openscapDisabled').text(data['open-scap'].disabled)
-            $('#openscapInterval').text(data['open-scap'].interval)
+            // $('#openscapDisabled').text(data['open-scap'].disabled)
+            // $('#openscapInterval').text(data['open-scap'].interval)
             // Click on Syscollector
             $('#openscap').click(() => openSCAP(data['open-scap']).catch(handleError))
           }
 
           if (data['cis-cat']) {
             $('#ifCisCat').html(
-              '  <div> ' +
-              '  <div> ' +
-              '    <h3 id="ciscat" class="wz-headline-title wz-text-link">CIS-CAT</h3> ' +
-              '  </div> ' +
-              '  <div class="panel-body" id="managerRow"> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Disabled</p> ' +
-              '      <p id="ciscatDisabled"></p> ' +
-              '    </div> ' +
-              '    <div class="wz-flex-container wz-flex-row wz-flex-align-space-between"> ' +
-              '      <p>Interval</p> ' +
-              '      <p id="ciscatInterval"></p> ' +
-              '    </div> ' +
-              '  </div> ' +
-              '</div> '
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="ciscat" class="wz-headline-title wz-text-link">CIS-CAT</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Disabled</p>` +
+              `<p>${data['cis-cat'].disabled}</p>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p class='wz-flex-item-30'>Interval</p>` +
+              `<p>${data['cis-cat'].interval}</p>` +
+              `</div>` +
+              `</div>`
             )
 
-            $('#ciscatDisabled').text(data['cis-cat'].disabled)
-            $('#ciscatInterval').text(data['cis-cat'].interval)
+            // $('#ciscatDisabled').text(data['cis-cat'].disabled)
+            // $('#ciscatInterval').text(data['cis-cat'].interval)
 
             // Click on cis-cat
             $('#ciscat').click(() => cisCat(data['cis-cat']).catch(handleError))
@@ -507,14 +496,12 @@ require([
 
           if (data.localfile) {
             $('#ifLog').html(
-              '  <div> ' +
-              '  <div> ' +
-              '    <h3 id="logcollection" class="wz-headline-title wz-text-link">Log Collection</h3> ' +
-              '  </div> ' +
-              '  <div class="panel-body" id="managerRow"> ' +
-              '    <p>Visualize all Log Collection settings</p> ' +
-              '  </div> ' +
-              '</div> '
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="logcollection" class="wz-headline-title wz-text-link">Log Collection</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p>Visualize all Log Collection settings</p>` +
+              `</div>`
             )
             // Click on Log Collection
             $('#logcollection').click(() => logCollection(data.localfile).catch(handleError))
@@ -522,14 +509,12 @@ require([
 
           if (data.command) {
             $('#ifCommand').html(
-              '  <div>' +
-              '  <div>' +
-              '    <h3 id="remote" class="wz-headline-title wz-text-link">Remote Command</h3>' +
-              '  </div>' +
-              '  <div class="panel-body" id="managerRow">' +
-              '    <p>Visualize all Remote Command settings</p>' +
-              '  </div>' +
-              '</div>'
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              ` <h3 id="remote" class="wz-headline-title wz-text-link">Remote Command</h3>` +
+              `</div>` +
+              `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
+              `<p>Visualize all remote command settings</p>` +
+              `</div>`
             )
             // Click on Commands
             $('#remote').click(() => remoteCommands(data.command).catch(handleError))
