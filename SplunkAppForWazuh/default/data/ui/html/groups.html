@@ -16,37 +16,19 @@
     }
   </style>
 
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
-
-  <script>
-    window._splunk_metrics_events = {
-      push: function () { },
-      active: false,
-    }
-  </script>
 </head>
 
-<body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
+<body class='simplexml preload locale-en' data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
-    <div class="dashboard-header clearfix">
-      <h2>Groups</h2>
-      <div id=selectedCredentials></div>
-
+    <div>
+      <h2 class="wz-display-inline-block">Groups</h2>
+      <!-- Current API and index block-->
+      <div id=selectedCredentials class="wz-center-selected-index"></div>
+      <!-- End Current API and index block-->
     </div>
+
+
     <div id="row1" class="dashboard-row dashboard-row1">
       <table id="myGroupTable" class="display compact">
         <thead>
@@ -57,32 +39,17 @@
         </thead>
       </table>
     </div>
-    <div id="row2" class="dashboard-row dashboard-row2" data-depends="$showDetails$">
-      <div id="panel2" class="dashboard-cell wz-margin-right-10" style="width: 48%;">
-        <h3>Files</h3>
-        <table id="myFilesTable" class="display compact wz-width-100">
-          <thead>
-            <tr>
-              <th>filename</th>
-              <th>hash</th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-      <div id="panel3" class="dashboard-cell wz-margin-left-10" style="width: 48%;">
-        <h3>Agents</h3>
-        <table id="myAgentsGroupTable" class="display compact">
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>name</th>
-              <th>ip</th>
-              <th>last_keepalive</th>
-            </tr>
-          </thead>
-        </table>
-      </div>
+
+
+    <div id="row2" class="dashboard-row dashboard-row2">
+
+      <div id="panel2" class="wz-dashboard-panel-table wz-dashboard-cell wz-margin-5"></div>
+
+      <div id="panel3" class="wz-dashboard-panel-table wz-dashboard-cell wz-margin-5"></div>
+
     </div>
+
+
 
     <div id="row3" class="dashboard-row dashboard-row3">
       <div id="panel4" class="dashboard-cell" style="width: 100%;">
@@ -99,6 +66,7 @@
       </div>
     </div>
   </div>
+
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>

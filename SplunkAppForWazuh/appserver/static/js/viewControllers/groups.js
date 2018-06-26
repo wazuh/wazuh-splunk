@@ -66,6 +66,82 @@ require([
       const clickOnGroup = async (data) => {
         try {
           if (data) {
+            console.log('data', data)
+            // Empty groups table
+            $('#row1').empty()
+            // Hide files table
+            $('#panel2').hide()
+            // Fill row 1 with information panels
+            $('#row1').html(
+              `<div id='thirdRow' class="wz-margin-top-10  wz-flex-container wz-flex-row wz-align-stretch">
+                <div class="wz-dashboard-cell wz-width-49 wz-margin-left-5 wz-margin-right-24 {
+                  margin-right: 10px;
+                }">
+                  <div class="wz-dashboard-panel-table">
+                    <div id='managerInfo' class="panel-body">
+                      <div class="wz-flex-container wz-flex-row">
+                        <h4 class="wz-headline-title">Default</h4>
+                      </div>
+                      <hr style='margin-top:-5px'>
+                      <div class="wz-flex-container wz-flex-row">
+                        <p class='wz-flex-item-50' >Configuration sum</p>
+                        <p id='confSum'>${data.conf_sum}</p>
+                      </div>
+                      <div class="wz-flex-container wz-flex-row">
+                        <p class='wz-flex-item-50'>Merged sum</p>
+                        <p id='mergedSum'>${data.merged_sum}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          
+                <!-- Last registered agent -->
+          
+                <div class="wz-dashboard-cell wz-width-49">
+                  <div class="wz-dashboard-panel-table">
+                    <div id='managerInfo' class="panel-body">
+                      <!-- Place panel contents here -->
+                      <div class="wz-flex-container wz-flex-row">
+                        <h4 class="wz-headline-title">Details</h4>
+                      </div>
+                      <hr style='margin-top:-5px'>
+                      <div class="wz-flex-container wz-flex-row">
+                        <p id="viewAgents" class='wz-headline-title wz-text-link wz-flex-item-50'>Agents</p>
+                        <p class="wz-headline-title wz-text-link" id='agentName'></p>
+                      </div>
+                      <div class="wz-flex-container wz-flex-row">
+                        <p id="viewContent" class='wz-headline-title wz-text-link wz-flex-item-50'>Content</p>
+                        <p class="wz-headline-title wz-text-link" id='agentId'></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>`
+            )
+
+            // If click on agents then show agents table
+            $('#viewAgents').click((e) => {
+              console.log('view agents')
+              $('#panel2').hide()
+              $('#panel3').show(200)
+            })
+
+            // If click on content then show files table
+            $('#viewContent').click((e) => {
+              console.log('view content')
+
+              $('#panel3').hide()
+              $('#panel2').show(200)
+            })
+
+            $('#panel2').empty()
+            $('#panel2').prepend('<h3>Files</h3><table id="myFilesTable" class="wz-width-100 display compact"><thead><tr><th>filename</th><th>hash</th></tr></thead></table>')
+
+            tableFiles.element($('#myFilesTable'))
+
+
+            // Renders both tables
             // Options for Files Group table
             const optsFiles = {
               pages: 10,
@@ -80,30 +156,30 @@ require([
             const groupName = data.name
             tableFiles.build('/agents/files?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name, optsFiles)
             const agentsUrl = '/agents/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name
-            const parsedData = await ApiService.get('/agents/check_agents_groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name)
-            if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
-              $('#panel3').empty()
-              $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>lastKeepAlive</th></tr></thead></table>')
-              tableAgents.element($('#myAgentsGroupTable'))
-              // Options for Agents Group table
-              const optsAgentsGroup = {
-                pages: 10,
-                processing: true,
-                serverSide: true,
-                filterVisible: false,
-                columns: [
-                  { "data": "id", 'orderable': true, defaultContent: "-" },
-                  { "data": "name", 'orderable': true, defaultContent: "-" },
-                  { "data": "ip", 'orderable': true, defaultContent: "-" },
-                  { "data": "lastKeepAlive", 'orderable': true, defaultContent: "-" }
-                ]
-              }
-              tableAgents.build(agentsUrl, optsAgentsGroup)
+            // const parsedData = await ApiService.get('/agents/check_agents_groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name)
+            // if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
+            $('#panel3').empty()
+            $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="wz-width-100 display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>lastKeepAlive</th></tr></thead></table>')
+            tableAgents.element($('#myAgentsGroupTable'))
+            // Options for Agents Group table
+            const optsAgentsGroup = {
+              pages: 10,
+              processing: true,
+              serverSide: true,
+              filterVisible: false,
+              columns: [
+                { "data": "id", 'orderable': true, defaultContent: "-" },
+                { "data": "name", 'orderable': true, defaultContent: "-" },
+                { "data": "ip", 'orderable': true, defaultContent: "-" },
+                { "data": "lastKeepAlive", 'orderable': true, defaultContent: "-" }
+              ]
             }
-            else {
-              $('#panel3').empty()
-              $('#panel3').html('<p>No agents were found in this group.</p>')
-            }
+            tableAgents.build(agentsUrl, optsAgentsGroup)
+            // }
+            //  else {
+            //   $('#panel3').empty()
+            //   $('#panel3').html('<p>No agents were found in this group.</p>')
+            // }
 
             tableFiles.click(data => clickOnFile(data, groupName))
             $('#row2').show(200)
@@ -129,24 +205,11 @@ require([
             ]
           }
 
-          // Options for Files Group table
-          const optsFiles = {
-            pages: 10,
-            processing: true,
-            serverSide: true,
-            filterVisible: false,
-            columns: [
-              { "data": "filename", 'orderable': true, defaultContent: "-" },
-              { "data": "hash", 'orderable': true, defaultContent: "-" }
-            ]
-          }
           const tableGroups = new tableView()
           tableGroups.element($('#myGroupTable'))
           tableGroups.build('/manager/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, optsGroups)
           $('#row2').hide()
           $('#row3').hide()
-          tableFiles.element($('#myFilesTable'))
-          tableAgents.element($('#myAgentsGroupTable'))
           tableGroups.click(data => clickOnGroup(data))
         } catch (err) {
           errorToast.show()
