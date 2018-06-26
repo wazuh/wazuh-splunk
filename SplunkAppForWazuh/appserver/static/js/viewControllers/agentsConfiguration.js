@@ -397,7 +397,7 @@ require([
               `<p class='wz-flex-item-30'>Frequency</p>` +
               `<p>${data.syscheck.frequency}</p>` +
               `</div>` +
-              `</div>` 
+              `</div>`
             )
 
             // If click on Syscheck section
@@ -501,7 +501,7 @@ require([
               `</div>` +
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               `<p>Visualize all Log Collection settings</p>` +
-              `</div>` 
+              `</div>`
             )
             // Click on Log Collection
             $('#logcollection').click(() => logCollection(data.localfile).catch(handleError))
