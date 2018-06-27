@@ -125,7 +125,7 @@ define(function (require, exports, module) {
     */
     setFilterInputMaxWidth(placeholder) {
       const idElement = `#${this.$el.attr('id')}_filter`
-      // console.log('idelement')
+      console.log('idelement ',idElement)
       $(`${idElement} > label > input`).each(function () {
         $(this).insertBefore($(this).parent());
       })

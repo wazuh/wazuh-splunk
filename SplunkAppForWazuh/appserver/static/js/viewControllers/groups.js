@@ -104,9 +104,7 @@ require([
                     </div>
                   </div>
                 </div>
-          
-                <!-- Last registered agent -->
-          
+                    
                 <div class="wz-dashboard-cell wz-width-49">
                   <div class="wz-dashboard-panel-table">
                     <div id='managerInfo' class="panel-body">
@@ -116,12 +114,10 @@ require([
                       </div>
                       <hr style='margin-top:-5px'>
                       <div class="wz-flex-container wz-flex-row">
-                        <p id="viewAgents" class='wz-headline-title wz-text-link wz-flex-item-50'>Agents</p>
-                        <p class="wz-headline-title wz-text-link" id='agentName'></p>
+                        <p id="viewAgents" style="font-weight: bold;" class='wz-headline-title wz-text-link wz-flex-item-50'>Agents</p>
                       </div>
                       <div class="wz-flex-container wz-flex-row">
                         <p id="viewContent" class='wz-headline-title wz-text-link wz-flex-item-50'>Content</p>
-                        <p class="wz-headline-title wz-text-link" id='agentId'></p>
                       </div>
                     </div>
                   </div>
@@ -132,15 +128,16 @@ require([
 
             // If click on agents then show agents table
             $('#viewAgents').click((e) => {
-              console.log('view agents')
+              $('#viewAgents').css('font-weight', 'bold')
+              $('#viewContent').css('font-weight', 'normal')
               $('#panel2').hide()
               $('#panel3').show(200)
             })
 
             // If click on content then show files table
             $('#viewContent').click((e) => {
-              console.log('view content')
-
+              $('#viewContent').css('font-weight', 'bold')
+              $('#viewAgents').css('font-weight', 'normal')
               $('#panel3').hide()
               $('#panel2').show(200)
             })
@@ -148,8 +145,7 @@ require([
             $('#panel2').empty()
             $('#panel2').prepend('<h3>Files</h3><table id="myFilesTable" class="wz-width-100 display compact"><thead><tr><th>filename</th><th>hash</th></tr></thead></table>')
 
-            tableFiles.element($('#myFilesTable'), 'Search agents')
-
+            tableFiles.element($('#myFilesTable'))
 
             // Renders both tables
             // Options for Files Group table
@@ -157,6 +153,7 @@ require([
               pages: 10,
               processing: true,
               serverSide: true,
+              dom: '<"top"f>rt<"bottom"ip>',
               filterVisible: false,
               columns: [
                 { "data": "filename", 'orderable': true, defaultContent: "-" },
@@ -165,9 +162,9 @@ require([
             }
             const groupName = data.name
             tableFiles.build('/agents/files?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name, optsFiles)
+            tableFiles.setFilterInputMaxWidth('Search file')
+
             const agentsUrl = '/agents/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name
-            // const parsedData = await ApiService.get('/agents/check_agents_groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name)
-            // if (parsedData && !parsedData.error && parsedData.data && parsedData.data.items && parsedData.data.items.length > 0 && parsedData.data.totalItems) {
             $('#panel3').empty()
             $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="wz-width-100 display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>lastKeepAlive</th></tr></thead></table>')
             tableAgents.element($('#myAgentsGroupTable'))
