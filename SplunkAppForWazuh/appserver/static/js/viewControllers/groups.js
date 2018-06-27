@@ -48,7 +48,7 @@ require([
       const clickOnFile = async (data, groupName) => {
         try {
           $('#row2').hide(200)
-          $('#closeContent').click( (e) => {
+          $('#closeContent').click((e) => {
             $('#row3').hide(200)
             $('#row2').show(200)
           })
@@ -64,6 +64,7 @@ require([
           errorClickToast.show()
         }
       }
+
 
       /**
        * Click on a row containing a group
@@ -147,7 +148,7 @@ require([
             $('#panel2').empty()
             $('#panel2').prepend('<h3>Files</h3><table id="myFilesTable" class="wz-width-100 display compact"><thead><tr><th>filename</th><th>hash</th></tr></thead></table>')
 
-            tableFiles.element($('#myFilesTable'))
+            tableFiles.element($('#myFilesTable'), 'Search agents')
 
 
             // Renders both tables
@@ -174,6 +175,7 @@ require([
             const optsAgentsGroup = {
               pages: 10,
               processing: true,
+              dom: '<"top"f>rt<"bottom"ip>',
               serverSide: true,
               filterVisible: false,
               columns: [
@@ -184,11 +186,10 @@ require([
               ]
             }
             tableAgents.build(agentsUrl, optsAgentsGroup)
-            // }
-            //  else {
-            //   $('#panel3').empty()
-            //   $('#panel3').html('<p>No agents were found in this group.</p>')
-            // }
+
+
+            tableAgents.setFilterInputMaxWidth('Search agents')
+
 
             tableFiles.click(data => clickOnFile(data, groupName))
             $('#row2').show(200)
