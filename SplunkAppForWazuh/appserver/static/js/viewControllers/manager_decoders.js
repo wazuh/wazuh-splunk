@@ -155,6 +155,7 @@ require([
           table.element($('#myTable'))
           table.build('/manager/decoders?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
           table.setFilterInputMaxWidth('Filter decoders')
+          table.dropdownSearch($('#dropdown'),1)
           table.click(data => {
             if (data && data.name) {
               setToken("showDetails", "true")
@@ -167,6 +168,8 @@ require([
             }
           })
         } catch (err) {
+          console.error(err)
+
           errorToast.show()
         }
       }

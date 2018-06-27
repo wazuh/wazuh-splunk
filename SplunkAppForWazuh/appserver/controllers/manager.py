@@ -304,8 +304,11 @@ class manager(controllers.BaseController):
           sort_chain = '+position'
         if direction == 'desc':
           sort_chain = '-position'
-      
-      request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+
+      if kwargs['columns[1][search][value]'] == 'parents':
+        request = requests.get(url + '/decoders/parents' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+      else:
+        request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
       result = json.dumps(request)
     except Exception as e:
       return json.dumps({"error":str(e)})

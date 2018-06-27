@@ -45,16 +45,16 @@ define(function (require, exports, module) {
      */
     build(urlArg, opt) {
       try {
-        console.log('options of table ',opt)
+        console.log('options of table ', opt)
         this.table = this.$el.DataTable({
-          "ordering": opt.ordering || true,
-          "retrieve": opt.retrieve || true,
-          "orderMulti": true,
-          "paging": true,
-          "processing": opt.processing || true,
-          "serverSide": opt.serverSide || true,
-          "pageLength": opt.pages || 10,
-          "ajax": {
+          'ordering': opt.ordering || true,
+          'retrieve': opt.retrieve || true,
+          'orderMulti': true,
+          'paging': true,
+          'processing': opt.processing || true,
+          'serverSide': opt.serverSide || true,
+          'pageLength': opt.pages || 10,
+          'ajax': {
             url: ApiService.getWellFormedUri(urlArg),
             type: opt.method || 'get',
             dataFilter: (data) => {
@@ -69,11 +69,9 @@ define(function (require, exports, module) {
               search: opt.search || {}
             }
           },
-          "dom": opt.dom || '<"top">rt<"bottom"ip>',
-          // "bFilter": opt.filterVisible || false,
-          // 'sDom': '<"top"i>rt<"bottom"flp><"clear">',
-          "columns": opt.columns,
-          "error": (xhr, error, thrown) => {
+          'dom': opt.dom || '<"top">rt<"bottom"ip>',
+          'columns': opt.columns,
+          'error': (xhr, error, thrown) => {
             return Promise.reject(error)
           }
         })
@@ -87,18 +85,33 @@ define(function (require, exports, module) {
       this.table.draw()
     }
 
-    search($el) {
+    /**
+     * Performs a search and filter by column from a dropdown
+     * @param {jQuery} $el 
+     * @param {Number} column 
+     */
+    dropdownSearch($el, idColumn) {
       try {
-        console.log('searching')
-        this.table.columns().every(function () {
-          const that = this;
-          $el.on('keyup change', function () {
-            if (that.search() !== this.value) {
-              that
-                .search(this.value)
-            }
+        const self = this
+        if (idColumn && typeof idColumn === 'number' && idColumn > 0) {
+          $el.on('change', function () {
+            const currentOption = this
+            self.table.columns().every(function () {
+              const column = this
+              if (idColumn === column['0']['0']) {
+                if (column.search() !== currentOption.value) {
+                  column.search(currentOption.value)
+                  self.draw()
+                }
+              }
+            })
           })
-        })
+        } else {
+          $el.on('change', function () {
+            self.table.search(this.value)
+            self.draw()
+          })
+        }
       } catch (err) {
         return Promise.reject(err)
       }
@@ -125,7 +138,7 @@ define(function (require, exports, module) {
     */
     setFilterInputMaxWidth(placeholder) {
       const idElement = `#${this.$el.attr('id')}_filter`
-      console.log('idelement ',idElement)
+      console.log('idelement ', idElement)
       $(`${idElement} > label > input`).each(function () {
         $(this).insertBefore($(this).parent());
       })
