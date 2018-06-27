@@ -45,7 +45,7 @@ define(function (require, exports, module) {
      */
     build(urlArg, opt) {
       try {
-
+        console.log('options of table ',opt)
         this.table = this.$el.DataTable({
           "ordering": opt.ordering || true,
           "retrieve": opt.retrieve || true,

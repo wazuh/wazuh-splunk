@@ -142,6 +142,7 @@ require([
             pages: 10,
             processing: true,
             serverSide: true,
+            dom: '<"top"f>rt<"bottom"ip>',
             filterVisible: false,
             columns: [
               { "data": "id", 'orderable': true, defaultContent: "-" },
@@ -157,6 +158,7 @@ require([
           const table = new tableView()
           table.element($('#myTable'))
           table.build('/manager/rules?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
+          table.setFilterInputMaxWidth('Filter rules')
           table.click(function (data) {
             if (data && data.id) {
               setToken("showDetails", "true")
