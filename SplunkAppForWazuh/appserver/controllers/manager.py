@@ -144,6 +144,8 @@ class manager(controllers.BaseController):
     limit = kwargs["length"]
     offset = kwargs["start"]
     search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
+    category = kwargs['columns[1][search][value]'] if kwargs['columns[1][search][value]'] != "" else 'all'
+    type_log = kwargs['columns[3][search][value]'] if kwargs['columns[3][search][value]'] != "" else 'all'
     sorting_column = kwargs["order[0][column]"]
     direction = kwargs['order[0][dir]']
     sort_chain = ""
@@ -171,7 +173,23 @@ class manager(controllers.BaseController):
     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
     verify = False
 
-    request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+    request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+'&category='+category+'&type_log='+type_log, auth=auth, verify=verify).json()
+    result = json.dumps(request)
+    return result
+
+  # /custom/SplunkAppForWazuh/manager/logs
+  @expose_page(must_login=False, methods=['GET'])
+  def logs_summary(self, **kwargs):
+    opt_username = kwargs["user"]
+    opt_password = kwargs["pass"]
+    opt_base_url = kwargs["ip"]
+    opt_base_port = kwargs["port"]
+    
+    url = opt_base_url + ":" + opt_base_port
+    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+    verify = False
+
+    request = requests.get(url + '/manager/logs/summary', auth=auth, verify=verify).json()
     result = json.dumps(request)
     return result
 
