@@ -232,67 +232,23 @@ class agents(controllers.BaseController):
         result = json.dumps(data)
         return result
 
-    # /custom/SplunkAppForWazuh/agents/agentschecks
+    # /custom/SplunkAppForWazuh/agents/uniq
     @expose_page(must_login=False, methods=['GET'])
-    def agents_checks(self, **kwargs):
+    def agents_uniq(self, **kwargs):
+      try:
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        limit =  kwargs['length'] if kwargs['length'] != "" else 10
-        offset = kwargs['start'] if kwargs['start'] != "" else 0
-        search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-        sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
-        direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
-        sort_chain = ""
-        if sorting_column == "0":
-          if direction == 'asc':
-            sort_chain = '+id'
-          if direction == 'desc':
-            sort_chain = '-id'
-        elif sorting_column == "1":
-          if direction == 'asc':
-            sort_chain = '+name'
-          if direction == 'desc':
-            sort_chain = '-name'
-        elif sorting_column == "2":
-          if direction == 'asc':
-            sort_chain = '+ip'
-          if direction == 'desc':
-            sort_chain = '-ip'
-        elif sorting_column == "3":
-          if direction == 'asc':
-            sort_chain = '+lastKeepAlive'
-          if direction == 'desc':
-            sort_chain = '-lastKeepAlive'
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
         request = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(url + '/agents?offset=0&limit=' + str(agents_qty), auth=auth, verify=verify)
-        agents = json.loads(request.text)["data"]["items"]
-        results = []
-        for agent in agents:
-            data = {}
-            for attribute, value in agent.iteritems():
-                if attribute == 'os':
-                    for key,val in agent['os'].iteritems():
-                        data['os-'+key] = val
-                else:
-                    data[attribute] = value 
-            
-            request = requests.get(url + '/rootcheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
-            rootcheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            request = requests.get(url + '/syscheck/' + agent["id"] + '/last_scan', auth=auth, verify=verify)
-            syscheck_lastscan = json.loads(request.text)["data"]["start"]
-
-            data["last_rootcheck"] = rootcheck_lastscan
-            data["last_syscheck"] = syscheck_lastscan
-
-            results.append(data)
-        return json.dumps(results)
+        request = requests.get(url + '/agents?select=version,os.platform&offset=0&limit=' + str(agents_qty), auth=auth, verify=verify).json()
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return json.dumps(request)
     
     # /custom/SplunkAppForWazuh/agents/agents
     @expose_page(must_login=False, methods=['GET'])
@@ -313,6 +269,10 @@ class agents(controllers.BaseController):
         # sorting_column = '0'
         direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
         # direction = 'asc'
+
+        sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
+
+
         sort_chain = "-dateAdd"
 
         if sorting_column == "0":
@@ -374,12 +334,10 @@ class agents(controllers.BaseController):
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        if 'filters[status]' in kwargs and kwargs['filters[status]'] != "":
-          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+ '&status=' + kwargs['filters[status]']
-        elif 'filters[platform]' in kwargs and kwargs['filters[platform]'] != "":
-          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+ '&os.platform=' + kwargs['filters[platform]']
-        else:
-          final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain
+        os_platform = kwargs['columns[4][search][value]'] if 'columns[4][search][value]' in kwargs and ( kwargs['columns[4][search][value]'] != "" and kwargs['columns[4][search][value]'] != "All") else 'all'
+        version = kwargs['columns[5][search][value]'] if 'columns[5][search][value]' in kwargs and ( kwargs['columns[5][search][value]'] != "" and kwargs['columns[5][search][value]'] != 'All') else 'all'
+        status = kwargs['columns[3][search][value]'] if 'columns[3][search][value]' in kwargs and ( kwargs['columns[3][search][value]'] != "" and kwargs['columns[3][search][value]'] != 'All' ) else 'all'
+        final_url = url + '/agents?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+'&os.platform='+os_platform+'&version='+version+'&status='+status
 
         request = requests.get(final_url, auth=auth, verify=verify)
         agents = json.loads(request.text)["data"]["items"]
