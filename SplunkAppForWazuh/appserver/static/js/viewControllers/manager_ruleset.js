@@ -158,7 +158,7 @@ require([
           const table = new tableView()
           table.element($('#myTable'))
           table.build('/manager/rules?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
-          table.setFilterInputMaxWidth('Filter rules')
+          table.setFilterInputMaxWidth('Filter rules',100)
           table.click(function (data) {
             if (data && data.id) {
               setToken("showDetails", "true")

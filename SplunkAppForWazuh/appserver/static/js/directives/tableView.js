@@ -89,7 +89,7 @@ define(function (require, exports, module) {
 
 
     /**
-    * Sets filter width to 100% and deletes label
+    * Sets DataTables native filter position, width and deletes label
     * @param {String} placeholder Text to show inside the input
     * @param {String} width The width of the element
     * @param {String} position Position [left/right]
@@ -143,6 +143,7 @@ define(function (require, exports, module) {
 
     /**
      * Generates a random ID
+     * @returns {String} The generated ID
      */
     makeId() {
       let text = ''
@@ -157,7 +158,7 @@ define(function (require, exports, module) {
      * @param {Array} options Array of options
      * @param {Number} column Column to filter
      * @param {Number} width Width that the element will have
-     * @param {String} position Position that the element will have [left/right]
+     * @param {String} position Position that the element will have. Default:inherit. Values [left/right]
      */
     generateDropdownFilter(options, width, position, column) {
       let opts = ''
