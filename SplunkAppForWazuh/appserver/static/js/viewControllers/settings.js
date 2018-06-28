@@ -332,16 +332,34 @@ require([
      * @param {String} tabName 
      */
     const selectOption = (evt, tabName) => {
-      let i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("wz-tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+      console.log('tabname ',tabName)
+      let i, tablinks;
+      switch (tabName) {
+        case 'API':
+          $('#Indexes').hide()
+          $('#About').hide()
+          $('#API').show(200)
+          break
+        case 'Indexes':
+          $('#API').hide()
+          $('#About').hide()
+          $('#Indexes').show(200)
+
+          break
+        case 'About':
+          $('#Indexes').hide()
+          $('#API').hide()
+          $('#About').show(200)
+          break
+        default:
+          $('#Indexes').hide()
+          $('#About').hide()
+          $('#API').show(200)
       }
       tablinks = document.getElementsByClassName("tablinks");
       for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-      document.getElementById(tabName).style.display = "block";
       evt.currentTarget.className += " active";
     }
 
@@ -381,12 +399,12 @@ require([
         successConnectionToast.show()
       } catch (err) {
         try {
-          console.error('first load catch ',err)
+          console.error('first load catch ', err)
           await CredentialService.deselectAllApis()
           await drawApiList()
           selectedApiErrorToast.show()
         } catch (err) {
-          console.error('all went wrong  ',err)
+          console.error('all went wrong  ', err)
 
           selectedApiErrorToast.show()
         }

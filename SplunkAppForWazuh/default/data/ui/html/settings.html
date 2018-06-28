@@ -17,40 +17,21 @@
   <meta name="referrer" content="never" />
   <meta name="referrer" content="no-referrer" />
 
-  <script>
-    window._splunk_metrics_events = {
-      push: function () { },
-      active: false,
-    }
-  </script>
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <!-- <a id="navSkip"></a> -->
-  </header>
-
   <div class="dashboard-body wz-no-padding" id='dashboardBody'>
     <div id='mainFrame' class='dashboardBody'>
       <div class="wz-tab">
-        <button class="tablinks" id="apiTab">API</button>
+        <h3 style="margin-left:10px; float:left;">API configuration</h3>
+        <button class="tablinks wz-margin-left-35pc" id="apiTab">API</button>
         <button class="tablinks" id="indexesTab">Indexes</button>
         <button class="tablinks" id="aboutTab">About</button>
       </div>
       <!-- API TAB SECTION-->
-      <div id="API" class="wz-tabcontent">
+      <div id="API" class="wz-margin-10">
 
-        <h3>API configuration</h3>
-        <div>
+        <div class="wz-dashboard-cell wz-dashboard-panel-table">
           <div class="fieldset">
 
             <div class="input input-text">
@@ -78,42 +59,42 @@
             </div>
           </div>
         </div>
-        <div id="row1" class="dashboard-row dashboard-row1">
+        <div id="row1" class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-top-10">
           <div id='apiList'></div>
         </div>
 
       </div>
       <!-- INDEXES TAB SECTION-->
-      <div id="Indexes" class="wz-tabcontent">
-        <div class="dashboard-header clearfix">
-          <h3>Select index</h3>
-        </div>
-        <div class="fieldset">
+      <div id="Indexes" class="wz-margin-10">
+        <div class="fieldset wz-dashboard-cell wz-dashboard-panel-table">
+          <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
+            <h3 class="wz-headline-title">Select index</h3>
+          </div>
           <div class="input input-dropdown" id="inputIndexes">
             <label>Indexes</label>
           </div>
         </div>
       </div>
       <!-- ABOUT TAB SECTION-->
-      <div id="About" class="wz-tabcontent">
+      <div id="About" class="wz-margin-10">
         <div class="dashboard-row">
 
-          <div class="dashboard-cell wz-dashboard-cell wz-width-45">
+          <div class="dashboard-cell wz-dashboard-cell">
             <div class="dashboard-panel wz-dashboard-panel">
               <div id='dynamicContent' class="panel-body">
                 <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
                   <h3 class="wz-headline-title">About</h3>
                 </div>
-                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                  <p>Wazuh version</p>
+                <div class="wz-align-center wz-flex-container wz-margin-left-10">
+                  <p class='wz-flex-item-30'>Wazuh version</p>
                   <p id='wazuhVersion'></p>
                 </div>
-                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                  <p>App version</p>
+                <div class="wz-align-center wz-flex-container wz-margin-left-10">
+                  <p class='wz-flex-item-30'>App version</p>
                   <p id='appVersion'></p>
                 </div>
-                <div class="wz-flex-container wz-flex-row wz-flex-align-space-between">
-                  <p>App revision</p>
+                <div class="wz-align-center wz-flex-container wz-margin-left-10">
+                  <p class='wz-flex-item-30'>App revision</p>
                   <p id='appRevision'></p>
                 </div>
               </div>
