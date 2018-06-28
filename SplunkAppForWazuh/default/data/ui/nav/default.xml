@@ -11,7 +11,7 @@
   <collection label="Manager">
   <a href="manager_status">Status</a> 
   <a href="configuration">Configuration</a> 
-  <a href="manager_ruleset">Ruleset</a> 
+  <a href="manager_ruleset">Rules</a> 
   <a href="manager_decoders">Decoders</a> 
   <a href="logs">Logs</a> 
   <a href="groups">Groups</a> 
