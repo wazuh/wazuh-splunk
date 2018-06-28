@@ -48,6 +48,7 @@ require([
           const opts = {
             pages: 10,
             processing: true,
+            dom: '<"top"f>rt<"bottom"ip>',
             serverSide: true,
             filterVisible: false,
             columns: [
@@ -57,10 +58,20 @@ require([
               { "data": "level", 'orderable': true, defaultContent: "-" }
             ]
           }
+          const managerLogsSummary = `/manager/logs_summary/?ip=${api.url}&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
+          let daemons = await ApiService.get(managerLogsSummary)
+          let allDaemons = ['all',...Object.keys(daemons.data)]
+          daemons = Object.keys(daemons.data)
+          // console.log('daemons ',Object.keys(daemons.data))
           const table = new tableView()
           table.element($('#myLogTable'))
-          table.build('/manager/logs?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
+          table.build(`/manager/logs?ip=${api.url}&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`,opts)
+          table.setFilterInputMaxWidth('Filter decoders',61,'left')
+          table.generateDropdownFilter(['all','error','info','warning'],19,'right',3)
+          table.generateDropdownFilter(allDaemons, 19,'right',1)
+          // table.generateDropdownFilter(['ERROR','INFO','WARNING'],20,right,1)
         } catch (err) {
+          console.error(err.message || err)
           errorToast.show()
         }
       }
