@@ -213,6 +213,7 @@ require([
         $('#appRevision').text(versions[0].apprevision)
 
       } catch (err) {
+        console.log(err.message || err)
         errorConnectionToast.show()
       }
     }
@@ -379,10 +380,16 @@ require([
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
-        console.error(err)
-        await CredentialService.deselectAllApis()
-        await drawApiList()
-        selectedApiErrorToast.show()
+        try {
+          console.error('first load catch ',err)
+          await CredentialService.deselectAllApis()
+          await drawApiList()
+          selectedApiErrorToast.show()
+        } catch (err) {
+          console.error('all went wrong  ',err)
+
+          selectedApiErrorToast.show()
+        }
       }
     }
 

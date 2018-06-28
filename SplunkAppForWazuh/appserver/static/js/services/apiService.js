@@ -44,11 +44,11 @@ define(function (require, exports, module) {
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.error) {
-            return Promise.reject(new Error('Error from backend: ' + result.error))
+            throw new Error('Error from backend: ' + result.error)
           }
 
         } else if (result.error) {
-          return Promise.reject(new Error('Error from backend: ' + result.error))
+          throw new Error('Error from backend: ' + result.error)
         }
         return result
       } catch (err) {

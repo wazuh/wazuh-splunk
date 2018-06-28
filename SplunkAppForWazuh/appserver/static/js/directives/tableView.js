@@ -154,7 +154,7 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Generates a 
+     * Generates a dropdown that filters by column
      * @param {Array} options Array of options
      * @param {Number} column Column to filter
      * @param {Number} width Width that the element will have
