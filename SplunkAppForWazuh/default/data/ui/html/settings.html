@@ -14,17 +14,20 @@
       background-color: #00445A;
     }
   </style>
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
 
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
   <div class="dashboard-body wz-no-padding" id='dashboardBody'>
     <div id='mainFrame' class='dashboardBody'>
+      <div>
+        <h3 class="wz-margin-left-10 wz-display-inline-block">Settings</h3>
+        <!-- Current API and index block-->
+        <div id=selectedCredentials class="wz-margin-right-10 wz-center-selected-index"></div>
+        <!-- End Current API and index block-->
+      </div>
       <div class="wz-tab">
-        <h3 style="margin-left:10px; float:left;">API configuration</h3>
-        <button class="tablinks wz-margin-left-35pc" id="apiTab">API</button>
+        <button class="tablinks" id="apiTab">API</button>
         <button class="tablinks" id="indexesTab">Indexes</button>
         <button class="tablinks" id="aboutTab">About</button>
       </div>

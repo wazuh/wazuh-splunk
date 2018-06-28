@@ -357,8 +357,6 @@ table span.badge {
 /* Style the tab */
 .wz-tab {
   overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
 }
 
 /* Style the buttons inside the tab */
@@ -375,12 +373,12 @@ table span.badge {
 
 /* Change background color of buttons on hover */
 .wz-tab button:hover {
-  background-color: #ddd;
+  background-color:white;
 }
 
 /* Create an active/current tablink class */
 .wz-tab button.active {
-  background-color: #ccc;
+  background-color:white;
 }
 
 /* Style the tab content */

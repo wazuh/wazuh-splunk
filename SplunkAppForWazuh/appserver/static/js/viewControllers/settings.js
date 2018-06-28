@@ -27,7 +27,8 @@ require([
   "splunkjs/mvc/simpleform/input/dropdown",
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "splunkjs/mvc/simpleform/formutils"
+  "splunkjs/mvc/simpleform/formutils",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
 
 ],
   function (
@@ -48,7 +49,9 @@ require([
     DropdownInput,
     SearchManager,
     UrlTokenModel,
-    FormUtils
+    FormUtils,
+    SelectedCredentials
+
   ) {
     let pageLoading = true
     const urlTokenModel = new UrlTokenModel()
@@ -314,19 +317,6 @@ require([
     })
 
     /**
-     * Intercepts an HTTP requests before it's sended
-     * @param {Object} xhr 
-     */
-    const httpInterceptor = async (xhr) => {
-      try {
-        await CredentialService.checkSelectedApiConnection()
-      } catch (err) {
-        errorConnectionToast.show()
-        xhr.abort()
-      }
-    }
-
-    /**
      * Selects a row
      * @param {Event} evt 
      * @param {String} tabName 
@@ -394,7 +384,9 @@ require([
         $('#apiTab').click()
         await autoSelectApi()
         await loadAboutContent()
-        await CredentialService.checkSelectedApiConnection()
+        const { api } = await CredentialService.checkSelectedApiConnection()
+        console.log(api)
+        SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
