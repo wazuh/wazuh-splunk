@@ -373,7 +373,7 @@ table span.badge {
 
 /* Change background color of buttons on hover */
 .wz-tab button:hover {
-  background-color:white;
+  background-color:rgb(230, 230, 230);
 }
 
 /* Create an active/current tablink class */

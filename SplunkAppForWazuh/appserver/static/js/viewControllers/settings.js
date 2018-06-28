@@ -216,7 +216,6 @@ require([
         $('#appRevision').text(versions[0].apprevision)
 
       } catch (err) {
-        console.log(err.message || err)
         errorConnectionToast.show()
       }
     }
@@ -276,7 +275,6 @@ require([
           $('#apiList').html('<h4>No API entries detected. You must have at least one API for using Splunk app for Wazuh.</h4>')
         }
       } catch (err) {
-        console.error(err)
         return Promise.reject(err)
       }
     }
@@ -322,7 +320,6 @@ require([
      * @param {String} tabName 
      */
     const selectOption = (evt, tabName) => {
-      console.log('tabname ',tabName)
       let i, tablinks;
       switch (tabName) {
         case 'API':
@@ -385,19 +382,15 @@ require([
         await autoSelectApi()
         await loadAboutContent()
         const { api } = await CredentialService.checkSelectedApiConnection()
-        console.log(api)
         SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
         try {
-          console.error('first load catch ', err)
           await CredentialService.deselectAllApis()
           await drawApiList()
           selectedApiErrorToast.show()
         } catch (err) {
-          console.error('all went wrong  ', err)
-
           selectedApiErrorToast.show()
         }
       }
