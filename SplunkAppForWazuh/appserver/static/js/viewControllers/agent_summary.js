@@ -103,11 +103,15 @@ require([
           if ($("#higherActivity").text() === "$result.agent.name$") {
             $("#higherActivity").text('-');
           }
-
+          const start = new Date()
           const data = await Promise.all([
             ApiService.get('/agents/summary?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi),
-            ApiService.get('/agents/agents?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi)
+            ApiService.get('/agents/agents?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi),
+            ApiService.get('/agents/agents_uniq?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi)
           ])
+          const end = new Date()
+          console.log('time of response ', (end - start) / 1000)
+          console.log('data ', data)
 
           $('#activeUsers').text(data[0][0].agent_summary_active)
           $('#neverConnected').text(data[0][0].agent_summary_neverconnected)
@@ -115,14 +119,27 @@ require([
           $('#agentsCoverage').text(Math.round((data[0][0].agent_summary_active / data[0][0].agent_summary_total * 100)))
           $('#lastRegisteredAgent').text((data[1].data.items[0].name))
 
-
           SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
 
           let table = new agentsTable($('#row1'), api)
           table.build()
-          $('.dataTables_filter').addClass('wz-table-element-pull-left')
+
+          // Building operating system filter
+          const rawPlatforms = data[2].data.items.map(one => one.os)
+          const cleanUndefinedPlatforms = rawPlatforms.filter(one => typeof one !== 'undefined')
+          const platforms = ['All',...new Set(cleanUndefinedPlatforms.map(one => one.platform))]
+
+          // Building version filter
+          const rawVersions = data[2].data.items.map(one => one.version);
+          const versions = ['All',... new Set(rawVersions.filter(one => typeof one !== 'undefined'))]
+
+          table.setFilterInputMaxWidth('Search agents', 50, 'left')
+          table.generateDropdownFilter(['All', 'Active', 'Disconnected', 'Never Connected'], 16, 'right', 3)
+          table.generateDropdownFilter(platforms, 16, 'right', 4)
+          table.generateDropdownFilter(versions, 16, 'right', 5)
 
         } catch (err) {
+          console.error(err)
           customErrorToast(err).show()
         }
       }
