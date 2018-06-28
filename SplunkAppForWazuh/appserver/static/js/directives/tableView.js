@@ -25,6 +25,7 @@ define(function (require, exports, module) {
     constructor() {
       this.$el = ''
       this.elementName = ''
+      this.idFilter = ''
       this.table = ''
       $.fn.dataTable.ext.errMode = 'throw'
       // this.$el.DataTable({"retrieve": true}) 
@@ -36,6 +37,7 @@ define(function (require, exports, module) {
      */
     element($el) {
       this.$el = $el
+      this.idFilter = `#${this.$el.attr('id')}_filter`
       this.elementName = String($el)
     }
     /**
@@ -85,10 +87,32 @@ define(function (require, exports, module) {
       this.table.draw()
     }
 
+
+    /**
+    * Sets filter width to 100% and deletes label
+    * @param {String} placeholder Text to show inside the input
+    * @param {String} width The width of the element
+    * @param {String} position Position [left/right]
+    */
+    setFilterInputMaxWidth(placeholder, width, position) {
+      const idElement = this.idFilter
+      const alignment = position || `inherit`
+      console.log('idelement ', idElement)
+      $(`${idElement} > label > input`).each(function () {
+        $(this).insertBefore($(this).parent());
+      })
+      $(`${idElement}`).css('width', '100%')
+      $(`${idElement} > input`).css('width', `${width}%`)
+      $(`${idElement} > input`).css('float', `${alignment}`)
+      $(`${idElement} > input`).attr('placeholder', placeholder)
+      $(`${idElement} > label`).text('')
+    }
+
+
     /**
      * Performs a search and filter by column from a dropdown
      * @param {jQuery} $el 
-     * @param {Number} column 
+     * @param {Number} idColumn the column to filter
      */
     dropdownSearch($el, idColumn) {
       try {
@@ -118,7 +142,40 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Generates a random ID
+     */
+    makeId() {
+      let text = ''
+      const possible = 'abcdefghijklmnopqrstuvwxyz'
+      for (let i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
+      return text
+    }
+
+    /**
+     * Generates a 
+     * @param {Array} options Array of options
+     * @param {Number} column Column to filter
+     * @param {Number} width Width that the element will have
+     * @param {String} position Position that the element will have [left/right]
+     */
+    generateDropdownFilter(options, width, position, column) {
+      let opts = ''
+      const randomId = this.makeId()
+      const alignment = position || `right`
+      console.log('id of dropdown ',randomId)
+      for (let option of options)
+        opts += `<option value="${option}">${option}</option>`
+      const dropDown = `<select style="float:${alignment}; width:${width}%;" class="wz-margin-left-5" id=${randomId}>${opts}</select>`
+      console.log('the new dropdown ',dropDown)
+      $(this.idFilter).prepend(dropDown)
+      this.dropdownSearch($(`#${randomId}`),column)
+      return
+    }
+
+    /**
      * Click: perform a click in a row
+     * @param {Function} callback
      */
     click(cb) {
       try {
@@ -131,23 +188,6 @@ define(function (require, exports, module) {
       }
     }
 
-    /**
-    * Sets filter width to 100% and deletes label
-    * @param {String} $id 
-    * @param {String} placeholder 
-    */
-    setFilterInputMaxWidth(placeholder) {
-      const idElement = `#${this.$el.attr('id')}_filter`
-      console.log('idelement ', idElement)
-      $(`${idElement} > label > input`).each(function () {
-        $(this).insertBefore($(this).parent());
-      })
-      $(`${idElement}`).css('width', '100%')
-      $(`${idElement} > input`).css('width', '100%')
-      $(`${idElement} > input`).css('float', 'inherit')
-      $(`${idElement} > input`).attr('placeholder', placeholder || 'Search')
-      $(`${idElement} > label`).text('')
-    }
 
   }
 
