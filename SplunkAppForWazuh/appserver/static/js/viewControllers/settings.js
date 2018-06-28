@@ -27,7 +27,8 @@ require([
   "splunkjs/mvc/simpleform/input/dropdown",
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/simplexml/urltokenmodel",
-  "splunkjs/mvc/simpleform/formutils"
+  "splunkjs/mvc/simpleform/formutils",
+  "/static/app/SplunkAppForWazuh/js/directives/selectedCredentialsDirective.js"
 
 ],
   function (
@@ -48,7 +49,9 @@ require([
     DropdownInput,
     SearchManager,
     UrlTokenModel,
-    FormUtils
+    FormUtils,
+    SelectedCredentials
+
   ) {
     let pageLoading = true
     const urlTokenModel = new UrlTokenModel()
@@ -213,7 +216,6 @@ require([
         $('#appRevision').text(versions[0].apprevision)
 
       } catch (err) {
-        console.log(err.message || err)
         errorConnectionToast.show()
       }
     }
@@ -273,7 +275,6 @@ require([
           $('#apiList').html('<h4>No API entries detected. You must have at least one API for using Splunk app for Wazuh.</h4>')
         }
       } catch (err) {
-        console.error(err)
         return Promise.reject(err)
       }
     }
@@ -314,34 +315,38 @@ require([
     })
 
     /**
-     * Intercepts an HTTP requests before it's sended
-     * @param {Object} xhr 
-     */
-    const httpInterceptor = async (xhr) => {
-      try {
-        await CredentialService.checkSelectedApiConnection()
-      } catch (err) {
-        errorConnectionToast.show()
-        xhr.abort()
-      }
-    }
-
-    /**
      * Selects a row
      * @param {Event} evt 
      * @param {String} tabName 
      */
     const selectOption = (evt, tabName) => {
-      let i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("wz-tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+      let i, tablinks;
+      switch (tabName) {
+        case 'API':
+          $('#Indexes').hide()
+          $('#About').hide()
+          $('#API').show(200)
+          break
+        case 'Indexes':
+          $('#API').hide()
+          $('#About').hide()
+          $('#Indexes').show(200)
+
+          break
+        case 'About':
+          $('#Indexes').hide()
+          $('#API').hide()
+          $('#About').show(200)
+          break
+        default:
+          $('#Indexes').hide()
+          $('#About').hide()
+          $('#API').show(200)
       }
       tablinks = document.getElementsByClassName("tablinks");
       for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-      document.getElementById(tabName).style.display = "block";
       evt.currentTarget.className += " active";
     }
 
@@ -376,18 +381,16 @@ require([
         $('#apiTab').click()
         await autoSelectApi()
         await loadAboutContent()
-        await CredentialService.checkSelectedApiConnection()
+        const { api } = await CredentialService.checkSelectedApiConnection()
+        SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
         try {
-          console.error('first load catch ',err)
           await CredentialService.deselectAllApis()
           await drawApiList()
           selectedApiErrorToast.show()
         } catch (err) {
-          console.error('all went wrong  ',err)
-
           selectedApiErrorToast.show()
         }
       }

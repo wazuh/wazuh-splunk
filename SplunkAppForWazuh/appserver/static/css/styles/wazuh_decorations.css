@@ -157,6 +157,23 @@
 .wz-margin-left-10 {
   margin-left: 10px;
 }
+
+.wz-margin-left-40pc {
+  margin-left: 40%;
+}
+
+.wz-margin-left-25 {
+  margin-left: 25px;
+}
+
+.wz-margin-left-35 {
+  margin-left: 35px;
+}
+
+.wz-margin-left-35pc {
+  margin-left: 35%;
+}
+
 .wz-margin-right-5 {
   margin-right: 5px;
 }
@@ -171,6 +188,10 @@
 
 .wz-margin-right-30 {
   margin-right: 30px;
+}
+
+.wz-margin-right-40 {
+  margin-right: 40px;
 }
 
 .wz-margin-bottom-10 {
@@ -336,8 +357,6 @@ table span.badge {
 /* Style the tab */
 .wz-tab {
   overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
 }
 
 /* Style the buttons inside the tab */
@@ -349,17 +368,17 @@ table span.badge {
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 /* Change background color of buttons on hover */
 .wz-tab button:hover {
-  background-color: #ddd;
+  background-color:rgb(230, 230, 230);
 }
 
 /* Create an active/current tablink class */
 .wz-tab button.active {
-  background-color: #ccc;
+  background-color:white;
 }
 
 /* Style the tab content */
@@ -410,6 +429,10 @@ table span.badge {
 
 .wz-margin-5 {
   margin: 5px;
+}
+
+.wz-margin-10 {
+  margin: 10px;
 }
 
 .wz-padding-5 {
