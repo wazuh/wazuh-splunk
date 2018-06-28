@@ -141,6 +141,7 @@ require([
             pages: 10,
             processing: true,
             serverSide: true,
+            dom: '<"top"f>rt<"bottom"ip>',
             filterVisible: false,
             columns: [
               { "data": "name", 'orderable': true, defaultContent: "-" },
@@ -153,6 +154,8 @@ require([
           const table = new tableView()
           table.element($('#myTable'))
           table.build('/manager/decoders?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, opts)
+          table.setFilterInputMaxWidth('Filter decoders',79,'left')
+          table.generateDropdownFilter(['all','parents'],20,'right',1)
           table.click(data => {
             if (data && data.name) {
               setToken("showDetails", "true")
@@ -165,6 +168,8 @@ require([
             }
           })
         } catch (err) {
+          console.error(err)
+
           errorToast.show()
         }
       }

@@ -143,7 +143,7 @@ require([
             })
 
             $('#panel2').empty()
-            $('#panel2').prepend('<h3>Files</h3><table id="myFilesTable" class="wz-width-100 display compact"><thead><tr><th>filename</th><th>hash</th></tr></thead></table>')
+            $('#panel2').prepend('<h3>Files</h3><table id="myFilesTable" class="wz-width-100 display"><thead><tr><th>filename</th><th>hash</th></tr></thead></table>')
 
             tableFiles.element($('#myFilesTable'))
 
@@ -166,7 +166,7 @@ require([
 
             const agentsUrl = '/agents/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name
             $('#panel3').empty()
-            $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="wz-width-100 display compact"><thead><tr><th>id</th><th>name</th><th>ip</th><th>lastKeepAlive</th></tr></thead></table>')
+            $('#panel3').prepend('<h3>Agents</h3><table id="myAgentsGroupTable" class="wz-width-100 display"><thead><tr><th>id</th><th>name</th><th>ip</th><th>lastKeepAlive</th></tr></thead></table>')
             tableAgents.element($('#myAgentsGroupTable'))
             // Options for Agents Group table
             const optsAgentsGroup = {

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Manager ruleset</title>
+  <title>Rules</title>
   <link rel="shortcut icon" href="/en-US/static/@D29613BFA55A6A86E763E8B3BFC27BC3BD51205D97FAE114856B46EFA051FD84/img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css">
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
@@ -16,41 +16,20 @@
     }
   </style>
 
-  <meta name="referrer" content="never" />
-  <meta name="referrer" content="no-referrer" />
-
-  <script>
-    window._splunk_metrics_events = {
-      push: function () { },
-      active: false,
-    }
-  </script>
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
-    <div class="dashboard-header clearfix">
-      <h2>Manager Ruleset</h2>
-      <div id=selectedCredentials></div>
-
+    <div>
+      <h3 class="wz-margin-left-10 wz-display-inline-block">Rules</h3>
+      <!-- Current API and index block-->
+      <div id=selectedCredentials class="wz-margin-right-10 wz-center-selected-index"></div>
+      <!-- End Current API and index block-->
     </div>
 
-
-    <div id="row1" class="dashboard-row dashboard-row1">
-      <table id="myTable"  class="display compact">
+    <div id="row1" class="wz-dashboard-panel-table wz-dashboard-cell">
+      <table id="myTable" class="wz-width-100 display">
         <thead>
           <tr>
             <th>id</th>
@@ -65,7 +44,7 @@
         </thead>
       </table>
     </div>
-    <div id="row2" class="dashboard-row dashboard-row2" data-depends="$showDetails$">
+    <div id="row2" class="dashboard-row wz-dashboard-cell" data-depends="$showDetails$">
       <div id="panel2" class="dashboard-cell" style="width: 100%;">
         <div class="dashboard-panel clearfix">
 
@@ -113,7 +92,7 @@
         </div>
       </div>
     </div>
-    <div id="row3" class="dashboard-row dashboard-row3">
+    <div id="row3" class="dashboard-row wz-margin-top-10">
       <div id="panel3" class="dashboard-cell" style="width: 25%;">
         <div class="dashboard-panel clearfix">
 
