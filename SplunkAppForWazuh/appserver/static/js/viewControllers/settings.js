@@ -382,10 +382,7 @@ require([
         await autoSelectApi()
         await loadAboutContent()
         const { api } = await CredentialService.checkSelectedApiConnection()
-        const parentElement = $('img[src="/en-US/splunkd/__raw/servicesNS/admin/SplunkAppForWazuh/static/appLogo.png"]').parent().parent().parent().parent()
-        const logo = $('img[src="/en-US/splunkd/__raw/servicesNS/admin/SplunkAppForWazuh/static/appLogo.png"]')
-        $(parentElement).prepend('<p>TESTING</p>')
-        SelectedCredentials.render(element, api.filter[1])
+        SelectedCredentials.render($('#selectedCredentials'), api.filter[1])
         await drawApiList()
         successConnectionToast.show()
       } catch (err) {
