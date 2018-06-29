@@ -1,8 +1,9 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.3.0 - Splunk Enterprise v7.1.1 - Splunk app v3.3.0-rev-8
+## Wazuh v3.3.0/v3.3.1 - Splunk Enterprise v7.1.1 - Splunk app v3.3.0-rev-8
 ### Added
+- Support for Wazuh v3.3.1
 - Redesigned agents summary dashboard ([#115](https://github.com/wazuh/wazuh-splunk/pull/115))
 - Manager status dashboard redesigned ([#117](https://github.com/wazuh/wazuh-splunk/pull/117))
 - Manager configuration dashboard redesigned ([#120](https://github.com/wazuh/wazuh-splunk/pull/120))
