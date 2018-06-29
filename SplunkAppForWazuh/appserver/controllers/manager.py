@@ -57,7 +57,7 @@ class manager(controllers.BaseController):
       request_cluster = self.session.get(url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
       result = json.dumps(request_cluster)
     except Exception as e:
-      return json.dumps({"error:error"})
+      return json.dumps({"error":str(e)})
     return result
 
   @expose_page(must_login=False, methods=['GET'])
@@ -323,7 +323,7 @@ class manager(controllers.BaseController):
         if direction == 'desc':
           sort_chain = '-position'
 
-      if kwargs['columns[1][search][value]'] == 'parents':
+      if 'columns[1][search][value]' in kwargs and kwargs['columns[1][search][value]'] != "" and kwargs['columns[1][search][value]'] == 'parents' :
         request = requests.get(url + '/decoders/parents' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
       else:
         request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()

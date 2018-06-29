@@ -52,7 +52,7 @@ require([
         const disconnected = Number(statuses[1][0].agent_summary_disconnected)
         const neverConnected = Number(statuses[1][0].agent_summary_neverconnected)
         const total = Number(statuses[1][0].agent_summary_total)
-        const coverage = (active / total) * 100
+        const coverage = ((active / total) * 100).toFixed(2)
         const managerInfo = statuses[2].data
         const agentInfo = statuses[5].data.items[0]
 
@@ -140,7 +140,8 @@ require([
           ])
           applyStatusesToView(data)
         } catch (err) {
-          customErrorToast(err).show()
+          console.error(err)
+          customErrorToast('Error when requesting data to API').show()
         }
       }
 
