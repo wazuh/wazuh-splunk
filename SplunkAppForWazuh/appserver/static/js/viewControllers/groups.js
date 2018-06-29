@@ -161,7 +161,8 @@ require([
             }
             const groupName = data.name
             tableFiles.build('/agents/files?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name, optsFiles)
-            tableFiles.setFilterInputMaxWidth('Search file')
+            
+            tableFiles.setFilterInputMaxWidth('Filter files',100)
 
             const agentsUrl = '/agents/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi + '&id=' + data.name
             $('#panel3').empty()
@@ -184,7 +185,7 @@ require([
             tableAgents.build(agentsUrl, optsAgentsGroup)
 
 
-            tableAgents.setFilterInputMaxWidth('Search agents')
+            tableAgents.setFilterInputMaxWidth('Filter agents',100)
 
 
             tableFiles.click(data => clickOnFile(data, groupName))
@@ -204,6 +205,7 @@ require([
             pages: 10,
             processing: true,
             serverSide: true,
+            dom: '<"top"f>rt<"bottom"ip>',
             filterVisible: false,
             columns: [
               { "data": "name", 'orderable': true, defaultContent: "-" },
@@ -214,6 +216,8 @@ require([
           const tableGroups = new tableView()
           tableGroups.element($('#myGroupTable'))
           tableGroups.build('/manager/groups?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi, optsGroups)
+          tableGroups.setFilterInputMaxWidth('Filter groups',100)
+
           $('#row2').hide()
           $('#row3').hide()
           tableGroups.click(data => clickOnGroup(data))
