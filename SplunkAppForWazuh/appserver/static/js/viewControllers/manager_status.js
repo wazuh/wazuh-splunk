@@ -56,7 +56,6 @@ require([
         const managerInfo = statuses[2].data
         const agentInfo = statuses[5].data.items[0]
 
-        console.log('the data to parse ', statuses)
         for (let status in statuses[0].data) {
           if (statuses[0].data.hasOwnProperty(status)) {
             const color = (statuses[0].data[status] === 'running') ? 'wz-teal' : 'wz-red'
@@ -163,7 +162,6 @@ require([
 
     }).catch((err) => {
       window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
-      console.error(err)
     })
   }
 )

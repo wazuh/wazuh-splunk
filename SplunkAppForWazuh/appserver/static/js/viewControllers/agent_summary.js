@@ -110,8 +110,6 @@ require([
             ApiService.get('/agents/agents_uniq?ip=' + api.url + '&port=' + api.portapi + '&pass=' + api.passapi + '&user=' + api.userapi)
           ])
           const end = new Date()
-          console.log('time of response ', (end - start) / 1000)
-          console.log('data ', data)
 
           $('#activeUsers').text(data[0][0].agent_summary_active)
           $('#neverConnected').text(data[0][0].agent_summary_neverconnected)
@@ -139,7 +137,6 @@ require([
           table.generateDropdownFilter(versions, 16, 'right', 5)
 
         } catch (err) {
-          console.error(err)
           customErrorToast(err).show()
         }
       }
