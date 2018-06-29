@@ -15,7 +15,15 @@
       background-color: #00445A;
     }
   </style>
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
 
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
@@ -23,7 +31,7 @@
 
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div>
-      <h3 class="wz-margin-left-10 wz-display-inline-block">Decoders</h3>
+      <h2 class="wz-display-inline-block">Decoders</h2>
       <!-- Current API and index block-->
       <div id=selectedCredentials class="wz-margin-right-10 wz-center-selected-index"></div>
       <!-- End Current API and index block-->

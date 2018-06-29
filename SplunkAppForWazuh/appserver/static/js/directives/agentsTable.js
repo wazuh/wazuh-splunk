@@ -31,7 +31,6 @@ define(function (require, exports, module) {
         userApi: api.userapi,
         passApi: api.passapi
       }
-      console.log('constructor table')
       this.opts = {
         pages: 10,
         processing: true,
@@ -113,7 +112,6 @@ define(function (require, exports, module) {
       const url = '/agents/agents?ip=' + this.urlData.ipApi + '&port=' + this.urlData.portApi + '&user=' + this.urlData.userApi + '&pass=' + this.urlData.passApi
       if (options) {
         this.opts = Object.assign(this.opts, options)
-        console.log('reassigned options', this.opts)
       }
       super.build(url, this.opts)
     }

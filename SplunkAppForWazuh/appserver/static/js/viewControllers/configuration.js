@@ -310,7 +310,6 @@ require([
         try {
           const endPoint = '/manager/configuration?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           const jsonObj = await ApiService.get(endPoint)
-          console.log('data ',jsonObj)
           // Fill the initial data
           $('#jsonOutput').text(jsonObj.global.jsonout_output)
           $('#logAlertLevel').text(jsonObj.alerts.log_alert_level)

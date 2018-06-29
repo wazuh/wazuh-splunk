@@ -168,8 +168,6 @@ require([
             }
           })
         } catch (err) {
-          console.error(err)
-
           errorToast.show()
         }
       }

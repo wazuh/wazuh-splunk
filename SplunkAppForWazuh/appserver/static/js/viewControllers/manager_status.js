@@ -52,11 +52,10 @@ require([
         const disconnected = Number(statuses[1][0].agent_summary_disconnected)
         const neverConnected = Number(statuses[1][0].agent_summary_neverconnected)
         const total = Number(statuses[1][0].agent_summary_total)
-        const coverage = (active / total) * 100
+        const coverage = ((active / total) * 100).toFixed(2)
         const managerInfo = statuses[2].data
         const agentInfo = statuses[5].data.items[0]
 
-        console.log('the data to parse ', statuses)
         for (let status in statuses[0].data) {
           if (statuses[0].data.hasOwnProperty(status)) {
             const color = (statuses[0].data[status] === 'running') ? 'wz-teal' : 'wz-red'
@@ -141,7 +140,8 @@ require([
           ])
           applyStatusesToView(data)
         } catch (err) {
-          customErrorToast(err).show()
+          console.error(err)
+          customErrorToast('Error when requesting data to API').show()
         }
       }
 
@@ -163,7 +163,6 @@ require([
 
     }).catch((err) => {
       window.location.href = '/en-US/app/SplunkAppForWazuh/settings'
-      console.error(err)
     })
   }
 )

@@ -4,8 +4,9 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Overview PCI DSS</title>
-  <link rel="shortcut icon" href="/en-US/static/@E6BBD5BB182F99D8E9B6462CB77D3B0EFE601649661606276C0709ED975CA44D/img/favicon.ico"/>
+  <title>Overview PCI-DSS</title>
+  <link rel="shortcut icon" href="/en-US/static/@E6BBD5BB182F99D8E9B6462CB77D3B0EFE601649661606276C0709ED975CA44D/img/favicon.ico"
+  />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
   <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/splunkjs-dashboard.css" />
   <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/loader.css">
@@ -15,6 +16,7 @@
       background-color: #00445A;
     }
   </style>
+
   <meta name="referrer" content="never" />
   <meta name="referrer" content="no-referrer" />
 
@@ -27,28 +29,12 @@
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
-  <!--
-BEGIN LAYOUT
-This section contains the layout for the dashboard. Splunk uses proprietary
-styles in <div> tags, similar to Bootstrap's grid system.
--->
-  <header>
-    <a aria-label="Screen reader users, click here to skip the navigation bar" class="navSkip" href="#navSkip" tabIndex="1">Skip Navigation &gt;</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
+
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
-    <div class="dashboard-header clearfix">
-      <h2>Overview PCI DSS</h2>
+    <div>
+      <h2 class="wz-display-inline-block">Overview PCI-DSS</h2>
       <!-- Current API and index block-->
-      <div id=selectedCredentials></div>
+      <div id=selectedCredentials class="wz-margin-right-10 wz-center-selected-index"></div>
       <!-- End Current API and index block-->
     </div>
     <div class="fieldset">
@@ -59,7 +45,6 @@ styles in <div> tags, similar to Bootstrap's grid system.
         <label>PCI Requirement</label>
       </div>
     </div>
-
 
     <div id="row1" class="dashboard-row dashboard-row1">
       <div id="panel1" class="dashboard-cell" style="width: 50%;">

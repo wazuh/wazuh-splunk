@@ -47,7 +47,6 @@ define(function (require, exports, module) {
      */
     build(urlArg, opt) {
       try {
-        console.log('options of table ', opt)
         this.table = this.$el.DataTable({
           'ordering': opt.ordering || true,
           'retrieve': opt.retrieve || true,
@@ -97,7 +96,6 @@ define(function (require, exports, module) {
     setFilterInputMaxWidth(placeholder, width, position) {
       const idElement = this.idFilter
       const alignment = position || `inherit`
-      console.log('idelement ', idElement)
       $(`${idElement} > label > input`).each(function () {
         $(this).insertBefore($(this).parent());
       })
@@ -164,11 +162,9 @@ define(function (require, exports, module) {
       let opts = ''
       const randomId = this.makeId()
       const alignment = position || `right`
-      console.log('id of dropdown ',randomId)
       for (let option of options)
         opts += `<option value="${option}">${option}</option>`
       const dropDown = `<select style="float:${alignment}; width:${width}%;" class="wz-margin-left-5" id=${randomId}>${opts}</select>`
-      console.log('the new dropdown ',dropDown)
       $(this.idFilter).prepend(dropDown)
       this.dropdownSearch($(`#${randomId}`),column)
       return

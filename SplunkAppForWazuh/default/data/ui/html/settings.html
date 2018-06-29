@@ -15,21 +15,31 @@
     }
   </style>
 
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+
 </head>
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
   <div class="dashboard-body wz-no-padding" id='dashboardBody'>
     <div id='mainFrame' class='dashboardBody'>
       <div>
-        <h3 class="wz-margin-left-10 wz-display-inline-block">Settings</h3>
+        <h2 class="wz-display-inline-block wz-margin-left-10">Settings</h2>
         <!-- Current API and index block-->
         <div id=selectedCredentials class="wz-margin-right-10 wz-center-selected-index"></div>
         <!-- End Current API and index block-->
       </div>
       <div class="wz-tab">
-        <button class="tablinks" style="width:100px; margin-left:13px;" id="apiTab">API</button>
-        <button class="tablinks" style="width:100px;" id="indexesTab">Indexes</button>
-        <button class="tablinks" style="width:100px;" id="aboutTab">About</button>
+        <button class="tablinks wz-dashboard-cell" style="width:100px; margin-left:11px;" id="apiTab">API</button>
+        <button class="tablinks wz-dashboard-cell" style="width:100px;" id="indexesTab">Indexes</button>
+        <button class="tablinks wz-dashboard-cell" style="width:100px;" id="aboutTab">About</button>
       </div>
       <!-- API TAB SECTION-->
       <div id="API" class="wz-margin-10">
@@ -38,22 +48,22 @@
           <div class="fieldset">
 
             <div class="input input-text">
-              <label>URL</label>
-              <input type="text" id='credentialUrlInput'>
+              <label>URL*</label>
+              <input placeholder="http(s)://" type="text" id='credentialUrlInput'>
             </div>
             <div class="input input-text">
-              <label>Port</label>
+              <label>Port*</label>
               <input type="text" id='credentialPortInput'>
 
             </div>
             <div class="input input-text">
-              <label>Username</label>
+              <label>Username*</label>
               <input type="text" id='credentialUserInput'>
 
             </div>
             <div class="input input-text">
-              <label>Password</label>
-              <input type="text" id='credentialPassInput'>
+              <label>Password*</label>
+              <input type="password" id='credentialPassInput'>
 
             </div>
             <div class="form-submit">

@@ -385,6 +385,7 @@ require([
         try {
           // If there is syscheck data then render
           if (data.syscheck) {
+            $('#ifSyscheck').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifSyscheck').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="fileIntegrity" class="wz-headline-title wz-text-link">File Integrity</h3>` +
@@ -408,6 +409,7 @@ require([
 
           // If there is rootcheck data then render it
           if (data.rootcheck) {
+            $('#ifRootcheck').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifRootcheck').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="policyMonitoring" class="wz-headline-title wz-text-link">Policy Monitoring</h3>` +
@@ -428,6 +430,7 @@ require([
           }
 
           if (data.syscollector) {
+            $('#ifSyscollector').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifSyscollector').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="syscollector" class="wz-headline-title wz-text-link">Syscollector</h3>` +
@@ -450,6 +453,7 @@ require([
           }
 
           if (data['open-scap']) {
+            $('#ifOpenScap').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifOpenScap').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="openscap" class="wz-headline-title wz-text-link">OpenSCAP</h3>` +
@@ -471,6 +475,7 @@ require([
           }
 
           if (data['cis-cat']) {
+            $('#ifCisCat').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifCisCat').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="ciscat" class="wz-headline-title wz-text-link">CIS-CAT</h3>` +
@@ -495,6 +500,7 @@ require([
           }
 
           if (data.localfile) {
+            $('#ifLog').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifLog').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="logcollection" class="wz-headline-title wz-text-link">Log Collection</h3>` +
@@ -508,6 +514,7 @@ require([
           }
 
           if (data.command) {
+            $('#ifCommand').parent().addClass('wz-dashboard-cell wz-dashboard-panel-table wz-margin-bottom-10')
             $('#ifCommand').html(
               `<div class="wz-flex-align-space-between wz-flex-container wz-flex-row">` +
               ` <h3 id="remote" class="wz-headline-title wz-text-link">Remote Command</h3>` +

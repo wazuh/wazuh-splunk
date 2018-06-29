@@ -29,22 +29,12 @@
 
 <body class="simplexml preload locale-en" data-splunk-version="7.1.1" data-splunk-product="enterprise">
 
-  <header>
-    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
-    <div class="header splunk-header">
-      <div id="placeholder-splunk-bar">
-        <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk
-          <strong>&gt;</strong>
-        </a>
-      </div>
-      <div id="placeholder-app-bar"></div>
-    </div>
-    <a id="navSkip"></a>
-  </header>
   <div class="dashboard-body container-fluid main-section-body" data-role="main">
-    <div class="dashboard-header clearfix">
-      <h2>Wazuh alerts</h2>
-      <div id=selectedCredentials></div>
+    <div>
+      <h2 class="wz-display-inline-block">Wazuh alerts</h2>
+      <!-- Current API and index block-->
+      <div id=selectedCredentials class="wz-margin-right-10 wz-center-selected-index"></div>
+      <!-- End Current API and index block-->
     </div>
     <div class="fieldset">
       <div class="input input-dropdown" id="input1">
