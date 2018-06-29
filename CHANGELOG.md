@@ -1,8 +1,23 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.3.0 - Splunk Enterprise v7.1.1 - Splunk app v3.3.0-rev-8
+### Added
+- Redesigned agents summary dashboard ([#115](https://github.com/wazuh/wazuh-splunk/pull/115))
+- Manager status dashboard redesigned ([#117](https://github.com/wazuh/wazuh-splunk/pull/117))
+- Manager configuration dashboard redesigned ([#120](https://github.com/wazuh/wazuh-splunk/pull/120))
+- Agent group configuration dashboard redesigned ([#122](https://github.com/wazuh/wazuh-splunk/pull/122))
+- Groups configuration dashboard redesigned ([#125](https://github.com/wazuh/wazuh-splunk/pull/125))
+- Rules and decoders dashboards redesigned ([#128](https://github.com/wazuh/wazuh-splunk/pull/128))
+- Logs dashboard redesigned ([#130](https://github.com/wazuh/wazuh-splunk/pull/130))
+- Settings dashboard redesigned ([#133](https://github.com/wazuh/wazuh-splunk/pull/133))
 
-## Wazuh v3.3 - Splunk Enterprise v7.1.1 - Splunk app v3.3-rev-7
+### Fixed
+- Fixed Firefox bug ([#114](https://github.com/wazuh/wazuh-splunk/pull/114))
+- Fixed table filters ([#131](https://github.com/wazuh/wazuh-splunk/pull/131))
+- Minor fixes ([#136](https://github.com/wazuh/wazuh-splunk/pull/136))
+
+## Wazuh v3.3.0 - Splunk Enterprise v7.1.1 - Splunk app v3.3.0-rev-7
 ### Added
 - Polling and index agent status data ([#101](https://github.com/wazuh/wazuh-splunk/pull/101))
 ### Changed
