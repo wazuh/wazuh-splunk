@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Wazuh App for Splunk</title>
+
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/loader.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Passion+One" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oxygen" />
+  <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Passion+One' />
+  <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Oxygen' />
+  <link rel="stylesheet" type="text/css" href='http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css'>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
+
+<base href="/">
+
+  <meta name="referrer" content="never" />
+  <meta name="referrer" content="no-referrer" />
+
+  <script>
+    window._splunk_metrics_events = {
+      push: function () { },
+      active: false,
+    }
+  </script>
+</head>
+
+<body>
+
+
+  <div>
+ 
+    <!-- <md-button ng-href="overview">Overview</md-button>
+    <md-button ng-href="manager">Manager</md-button> -->
+    <wz-menu></wz-menu>
+    <div ng-view></div>
+
+  </div>
+
+
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/main.js" type="text/javascript"></script>
+
+
+</body>
+
+</html>

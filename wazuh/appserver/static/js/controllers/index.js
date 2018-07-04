@@ -1,4 +1,0 @@
-define([
-  './overviewCtrl',
-  './managerCtrl'
-], function () {});
