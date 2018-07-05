@@ -65,7 +65,7 @@ define([
         "selectFirstChoice": true,
         "showClearButton": false,
         "value": "$form.index$",
-        "managerid": "searchIndexes",
+        "managerid": "searchIndexes" + epoch,
         "el": $('#inputIndexes')
       }, { tokens: true }).render()
 
