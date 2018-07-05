@@ -16,7 +16,7 @@
   <link rel="stylesheet" type="text/css" href='http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css'>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
 
-<base href="/">
+  <base href="/">
 
   <meta name="referrer" content="never" />
   <meta name="referrer" content="no-referrer" />
@@ -32,13 +32,11 @@
 <body>
 
 
-  <div>
- 
-    <!-- <md-button ng-href="overview">Overview</md-button>
-    <md-button ng-href="manager">Manager</md-button> -->
-    <wz-menu></wz-menu>
-    <div ng-view></div>
+  <div class='empty-body-class' ng-controller='mainCtrl'>
 
+
+    <wz-menu></wz-menu>
+    <div ui-view></div>
   </div>
 
 

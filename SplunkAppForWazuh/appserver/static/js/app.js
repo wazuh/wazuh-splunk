@@ -5,8 +5,8 @@ define([
   './controllers/index',
   './directives/index',
   
-], function (ng,ngMaterial,ngRoute) {
+], function (ng) {
   'use strict';
   console.log('loaded app')
-  return ng.module('wazuhApp', ['ngMaterial','ngRoute','app.controllers','app.directives']);
+  return ng.module('wazuhApp', ['ngMaterial','ui.router','app.controllers','app.directives']);
 });

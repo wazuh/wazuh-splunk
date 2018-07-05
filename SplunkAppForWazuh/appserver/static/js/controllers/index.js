@@ -1,4 +1,5 @@
 define([
   './overviewCtrl',
-  './managerCtrl'
+  './managerCtrl',
+  './mainCtrl'
 ], function () {});

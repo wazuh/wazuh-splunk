@@ -2,5 +2,9 @@
 @import "toast.css";
 @import "table_decorations.css";
 @import "layout.css";
+@import "common.css";
+@import "component.css";
+@import "typography.css";
+@import "height.css";
 @import "../thirdPartyStyles/font-awesome/css/font-awesome.css";
 @import "../../js/directives/wz-menu/wz-menu.css";

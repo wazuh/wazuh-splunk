@@ -1,4 +1,5 @@
-define(['./module',
+define([
+  './module',
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
   "splunkjs/mvc/tokenutils",
@@ -100,7 +101,7 @@ define(['./module',
       let overviewElement13 = ''
       let overviewElement14 = ''
       $scope.$on('$destroy', () => {
-
+        console.log('destroyed controller')
         overviewSearch1 = null
         overviewSearch2 = null
         overviewSearch3 = null

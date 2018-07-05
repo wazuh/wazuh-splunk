@@ -408,7 +408,7 @@ define(['./module',
       // DASHBOARD EDITOR
       //
 
-    
+
 
       //
       // VIEWS: VISUALIZATION ELEMENTS
