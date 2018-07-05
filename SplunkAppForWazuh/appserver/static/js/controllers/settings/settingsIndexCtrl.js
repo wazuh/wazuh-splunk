@@ -35,7 +35,6 @@ define([
       let searchIndexes = ''
       let inputIndexes = ''
       $scope.$on('$destroy', () => {
-        console.log('destroying')
         searchIndexes = null
         inputIndexes = null
       })
