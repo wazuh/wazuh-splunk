@@ -1,5 +1,5 @@
 define([
-  './module',
+  '../module',
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
   "splunkjs/mvc/tokenutils",
@@ -66,70 +66,70 @@ define([
   PostProcessManager,
   UrlTokenModel) {
     'use strict';
-    controllers.controller('overviewCtrl', function ($scope) {
-      $scope.message = 'Overview'
+    controllers.controller('managerCtrl', function ($scope) {
+      $scope.message = 'Manager'
       // 
       // TOKENS
       //
       let pageLoading = true
-      let overviewSearch1 = ''
-      let overviewSearch2 = ''
-      let overviewSearch3 = ''
-      let overviewSearch4 = ''
-      let overviewSearch5 = ''
-      let overviewSearch6 = ''
-      let overviewSearch7 = ''
-      let overviewSearch8 = ''
-      let overviewSearch9 = ''
-      let overviewSearch10 = ''
-      let overviewSearch11 = ''
-      let overviewSearch12 = ''
-      let overviewSearch13 = ''
-      let overviewSearch14 = ''
-      let overviewElement1 = ''
-      let overviewElement2 = ''
-      let overviewElement3 = ''
-      let overviewElement4 = ''
-      let overviewElement5 = ''
-      let overviewElement6 = ''
-      let overviewElement7 = ''
-      let overviewElement8 = ''
-      let overviewElement9 = ''
-      let overviewElement10 = ''
-      let overviewElement11 = ''
-      let overviewElement12 = ''
-      let overviewElement13 = ''
-      let overviewElement14 = ''
+      let search1 = ''
+      let search2 = ''
+      let search3 = ''
+      let search4 = ''
+      let search5 = ''
+      let search6 = ''
+      let search7 = ''
+      let search8 = ''
+      let search9 = ''
+      let search10 = ''
+      let search11 = ''
+      let search12 = ''
+      let search13 = ''
+      let search14 = ''
+      let managerElement1 = ''
+      let managerElement2 = ''
+      let managerElement3 = ''
+      let managerElement4 = ''
+      let managerElement5 = ''
+      let managerElement6 = ''
+      let managerElement7 = ''
+      let managerElement8 = ''
+      let managerElement9 = ''
+      let managerElement10 = ''
+      let managerElement11 = ''
+      let managerElement12 = ''
+      let managerElement13 = ''
+      let managerElement14 = ''
       $scope.$on('$destroy', () => {
-        console.log('destroyed controller')
-        overviewSearch1 = null
-        overviewSearch2 = null
-        overviewSearch3 = null
-        overviewSearch4 = null
-        overviewSearch5 = null
-        overviewSearch6 = null
-        overviewSearch7 = null
-        overviewSearch8 = null
-        overviewSearch9 = null
-        overviewSearch10 = null
-        overviewSearch11 = null
-        overviewSearch12 = null
-        overviewSearch13 = null
-        overviewSearch14 = null
-        overviewElement1 = null
-        overviewElement2 = null
-        overviewElement3 = null
-        overviewElement4 = null
-        overviewElement5 = null
-        overviewElement6 = null
-        overviewElement7 = null
-        overviewElement8 = null
-        overviewElement9 = null
-        overviewElement10 = null
-        overviewElement11 = null
-        overviewElement12 = null
-        overviewElement13 = null
-        overviewElement14 = null
+
+        search1 = null
+        search2 = null
+        search3 = null
+        search4 = null
+        search5 = null
+        search6 = null
+        search7 = null
+        search8 = null
+        search9 = null
+        search10 = null
+        search11 = null
+        search12 = null
+        search13 = null
+        search14 = null
+        managerElement1 = null
+        managerElement2 = null
+        managerElement3 = null
+        managerElement4 = null
+        managerElement5 = null
+        managerElement6 = null
+        managerElement7 = null
+        managerElement8 = null
+        managerElement9 = null
+        managerElement10 = null
+        managerElement11 = null
+        managerElement12 = null
+        managerElement13 = null
+        managerElement14 = null
 
       })
       // Create token namespaces
@@ -175,7 +175,7 @@ define([
       //
 
 
-      overviewSearch1 = new SearchManager({
+      search1 = new SearchManager({
         "id": "search1" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -191,7 +191,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch2 = new SearchManager({
+      search2 = new SearchManager({
         "id": "search2" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -207,7 +207,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch3 = new SearchManager({
+      search3 = new SearchManager({
         "id": "search3" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -223,7 +223,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch4 = new SearchManager({
+      search4 = new SearchManager({
         "id": "search4" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -239,7 +239,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch5 = new SearchManager({
+      search5 = new SearchManager({
         "id": "search5" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -255,7 +255,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch6 = new SearchManager({
+      search6 = new SearchManager({
         "id": "search6" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -271,7 +271,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch7 = new SearchManager({
+      search7 = new SearchManager({
         "id": "search7" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -287,7 +287,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch8 = new SearchManager({
+      search8 = new SearchManager({
         "id": "search8" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -303,7 +303,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch9 = new SearchManager({
+      search9 = new SearchManager({
         "id": "search9" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -319,7 +319,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch10 = new SearchManager({
+      search10 = new SearchManager({
         "id": "search10" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -335,7 +335,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch11 = new SearchManager({
+      search11 = new SearchManager({
         "id": "search11" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -351,7 +351,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch12 = new SearchManager({
+      search12 = new SearchManager({
         "id": "search12" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -367,7 +367,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch13 = new SearchManager({
+      search13 = new SearchManager({
         "id": "search13" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -383,7 +383,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch14 = new SearchManager({
+      search14 = new SearchManager({
         "id": "search14" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -409,20 +409,14 @@ define([
       // DASHBOARD EDITOR
       //
 
-      new Dashboard({
-        id: 'dashboard' + epoch,
-        el: $('.dashboard-body'),
-        showTitle: true,
-        editable: true
-      }, { tokens: true }).render();
 
 
       //
       // VIEWS: VISUALIZATION ELEMENTS
       //
 
-      overviewElement1 = new SingleElement({
-        "id": "overviewElement1" + epoch,
+      managerElement1 = new SingleElement({
+        "id": "managerElement1" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0x6db7c6\",\"0xf7bc38\",\"0xf58f39\",\"0xd93f3c\"]",
         "numberPrecision": "0",
@@ -441,10 +435,10 @@ define([
         "height": "50",
         "trellis.scales.shared": "1",
         "managerid": "search1" + epoch,
-        "el": $('#overviewElement1')
+        "el": $('#managerElement1')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement1.on("click", function (e) {
+      managerElement1.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -452,8 +446,8 @@ define([
         }
       });
 
-      overviewElement2 = new SingleElement({
-        "id": "overviewElement2" + epoch,
+      managerElement2 = new SingleElement({
+        "id": "managerElement2" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0xd93f3c\"]",
         "numberPrecision": "0",
@@ -473,10 +467,10 @@ define([
         "height": "55",
         "trellis.scales.shared": "1",
         "managerid": "search2" + epoch,
-        "el": $('#overviewElement2')
+        "el": $('#managerElement2')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement2.on("click", function (e) {
+      managerElement2.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -484,8 +478,8 @@ define([
         }
       });
 
-      overviewElement3 = new SingleElement({
-        "id": "overviewElement3" + epoch,
+      managerElement3 = new SingleElement({
+        "id": "managerElement3" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0x6db7c6\",\"0xf7bc38\",\"0xf58f39\",\"0xd93f3c\"]",
         "numberPrecision": "0",
@@ -504,10 +498,10 @@ define([
         "height": "52",
         "trellis.scales.shared": "1",
         "managerid": "search3" + epoch,
-        "el": $('#overviewElement3')
+        "el": $('#managerElement3')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement3.on("click", function (e) {
+      managerElement3.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -515,8 +509,8 @@ define([
         }
       });
 
-      overviewElement4 = new SingleElement({
-        "id": "overviewElement4" + epoch,
+      managerElement4 = new SingleElement({
+        "id": "managerElement4" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0x6db7c6\",\"0xf7bc38\",\"0xf58f39\",\"0xd93f3c\"]",
         "numberPrecision": "0",
@@ -535,10 +529,10 @@ define([
         "height": "54",
         "trellis.scales.shared": "1",
         "managerid": "search4" + epoch,
-        "el": $('#overviewElement4')
+        "el": $('#managerElement4')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement4.on("click", function (e) {
+      managerElement4.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -546,8 +540,8 @@ define([
         }
       });
 
-      overviewElement5 = new ChartElement({
-        "id": "overviewElement5" + epoch,
+      managerElement5 = new ChartElement({
+        "id": "managerElement5" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "none",
@@ -576,12 +570,12 @@ define([
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
         "managerid": "search5" + epoch,
-        "el": $('#overviewElement5')
+        "el": $('#managerElement5')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-      overviewElement6 = new ChartElement({
-        "id": "overviewElement6" + epoch,
+      managerElement6 = new ChartElement({
+        "id": "managerElement6" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "all",
@@ -610,12 +604,12 @@ define([
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
         "managerid": "search6" + epoch,
-        "el": $('#overviewElement6')
+        "el": $('#managerElement6')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-      overviewElement7 = new ChartElement({
-        "id": "overviewElement7" + epoch,
+      managerElement7 = new ChartElement({
+        "id": "managerElement7" + epoch,
         "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "none",
@@ -644,12 +638,12 @@ define([
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
         "managerid": "search7" + epoch,
-        "el": $('#overviewElement7')
+        "el": $('#managerElement7')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-      overviewElement8 = new ChartElement({
-        "id": "overviewElement8" + epoch,
+      managerElement8 = new ChartElement({
+        "id": "managerElement8" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "minmax",
@@ -678,12 +672,12 @@ define([
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
         "managerid": "search8" + epoch,
-        "el": $('#overviewElement8')
+        "el": $('#managerElement8')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-      overviewElement9 = new ChartElement({
-        "id": "overviewElement9" + epoch,
+      managerElement9 = new ChartElement({
+        "id": "managerElement9" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "all",
@@ -712,12 +706,12 @@ define([
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
         "managerid": "search9" + epoch,
-        "el": $('#overviewElement9')
+        "el": $('#managerElement9')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
 
-      overviewElement10 = new SingleElement({
-        "id": "overviewElement10" + epoch,
+      managerElement10 = new SingleElement({
+        "id": "managerElement10" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
         "numberPrecision": "0",
@@ -736,10 +730,10 @@ define([
         "height": "50",
         "trellis.scales.shared": "1",
         "managerid": "search10" + epoch,
-        "el": $('#overviewElement10')
+        "el": $('#managerElement10')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement10.on("click", function (e) {
+      managerElement10.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -747,8 +741,8 @@ define([
         }
       });
 
-      overviewElement11 = new SingleElement({
-        "id": "overviewElement11" + epoch,
+      managerElement11 = new SingleElement({
+        "id": "managerElement11" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
         "numberPrecision": "0",
@@ -767,10 +761,10 @@ define([
         "height": "50",
         "trellis.scales.shared": "1",
         "managerid": "search11" + epoch,
-        "el": $('#overviewElement11')
+        "el": $('#managerElement11')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement11.on("click", function (e) {
+      managerElement11.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -778,8 +772,8 @@ define([
         }
       });
 
-      overviewElement12 = new SingleElement({
-        "id": "overviewElement12" + epoch,
+      managerElement12 = new SingleElement({
+        "id": "managerElement12" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0x555\"]",
         "numberPrecision": "0",
@@ -798,10 +792,10 @@ define([
         "height": "50",
         "trellis.scales.shared": "1",
         "managerid": "search12" + epoch,
-        "el": $('#overviewElement12')
+        "el": $('#managerElement12')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement12.on("click", function (e) {
+      managerElement12.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -809,8 +803,8 @@ define([
         }
       });
 
-      overviewElement13 = new SingleElement({
-        "id": "overviewElement13" + epoch,
+      managerElement13 = new SingleElement({
+        "id": "managerElement13" + epoch,
         "trellis.size": "medium",
         "rangeColors": "[\"0x65a637\",\"0xd93f3c\"]",
         "numberPrecision": "0",
@@ -829,10 +823,10 @@ define([
         "height": "50",
         "trellis.scales.shared": "1",
         "managerid": "search13" + epoch,
-        "el": $('#overviewElement13')
+        "el": $('#managerElement13')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement13.on("click", function (e) {
+      managerElement13.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
@@ -840,8 +834,8 @@ define([
         }
       });
 
-      overviewElement14 = new TableElement({
-        "id": "overviewElement14" + epoch,
+      managerElement14 = new TableElement({
+        "id": "managerElement14" + epoch,
         "dataOverlayMode": "none",
         "drilldown": "cell",
         "percentagesRow": "false",
@@ -849,10 +843,10 @@ define([
         "totalsRow": "false",
         "wrap": "true",
         "managerid": "search14" + epoch,
-        "el": $('#overviewElement14')
+        "el": $('#managerElement14')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-      overviewElement14.on("click", function (e) {
+      managerElement14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault();
           var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));

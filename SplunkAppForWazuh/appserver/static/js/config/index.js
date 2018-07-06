@@ -1,0 +1,4 @@
+define([
+  './routes',
+
+], function () {});

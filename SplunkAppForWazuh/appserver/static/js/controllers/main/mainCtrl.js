@@ -1,17 +1,15 @@
 define([
-  './module',
+  '../module',
   'splunkjs/mvc',
   'splunkjs/mvc/layoutview'
 ], function (
-  controllers,
+  module,
   mvc,
   LayoutView
   ) {
     'use strict';
-    controllers.controller('mainCtrl', function ($scope) {
+    module.controller('mainCtrl', function ($scope) {
       $scope.message = 'Manager'
-      console.log('main ctrl')
-      // $('header').remove()
       new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": true, "hideChrome": false })
         .render()
         .getContainerElement()

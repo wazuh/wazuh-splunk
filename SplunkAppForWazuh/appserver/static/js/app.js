@@ -2,11 +2,14 @@ define([
   'angular',
   'ngMaterial',
   'ngRoute',
-  './controllers/index',
+  './services/index',
   './directives/index',
+  './controllers/index',
+  './run/index',
+  './config/index',
   
 ], function (ng) {
-  'use strict';
+  'use strict'
   console.log('loaded app')
-  return ng.module('wazuhApp', ['ngMaterial','ui.router','app.controllers','app.directives']);
-});
+  return ng.module('wazuhApp', ['ngMaterial','ui.router','app.services','app.directives','app.controllers','app.run','app.config'])
+})

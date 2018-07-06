@@ -3,8 +3,7 @@
  */
 define([
   'angular',
-  'js/app',
-  'js/routes'
+  'js/app'
 ], function (ng) {
   'use strict';
   console.log('loaded bootstrap')

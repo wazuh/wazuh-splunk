@@ -1,7 +1,8 @@
 define([
-  './overviewCtrl',
-  './managerCtrl',
+  './overview/overviewGeneralCtrl',
+  './management/managerCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
-  './mainCtrl'
+  './settings/settingsApiCtrl',
+  './main/mainCtrl'
 ], function () {});
