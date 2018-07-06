@@ -3,12 +3,19 @@ define(['../module'], function (module) {
 
   module.service('$navigationService', function ($state) {
     const service = {
+      hello: () => {
+        console.log('hello navigation!')
+      },
       storeRoute: (params) => {
         sessionStorage.params = params
       },
-      getLastState: () => {
+      goToLastState: () => {
         if(sessionStorage.params)
           $state.go(sessionStorage.params)
+      },
+      getLastState: () => {
+        if(sessionStorage.params)
+          return sessionStorage.params
       }
     }
 
