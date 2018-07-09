@@ -1,0 +1,78 @@
+<div flex layout="column" layout-align="start stretch">
+
+  <!-- Headline -->
+  <div layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview</span>
+    <span>Visualize the current overall status of your cluster</span>
+  </div>
+  <!-- End headline -->
+
+  <!-- Host monitoring card -->
+  <div layout="row" layout-align="start stretch" layout-wrap>
+    <md-card flex class="wz-md-card">
+      <md-card-content flex layout="column">
+        <span class="wz-headline-title">
+          <i class="fa fa-fw fa-server" aria-hidden="true"></i> Host monitoring</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <md-button ui-sref="general" class="small wz-text-link">General</md-button>
+          <md-button ng-click="switchTab('fim')" class="small wz-text-link">File integrity</md-button>
+          <md-button ng-show="extensions.aws" ng-click="switchTab('aws')" class="small wz-text-link">AWS</md-button>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End Host monitoring card -->
+
+  <!-- System audit card -->
+  <div layout="row" layout-align="start stretch" layout-wrap>
+    <md-card flex class="wz-md-card">
+      <md-card-content flex layout="column">
+        <span class="wz-headline-title">
+          <i class="fa fa-fw fa-flag" aria-hidden="true"></i> System audit</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <md-button ng-click="switchTab('pm')" class="small wz-text-link">Policy monitoring</md-button>
+          <md-button ng-show="extensions.audit" ng-click="switchTab('audit')" class="small wz-text-link">Audit</md-button>
+          <md-button ng-show="extensions.oscap" ng-click="switchTab('oscap')" class="small wz-text-link">Open SCAP</md-button>
+          <md-button ng-show="extensions.ciscat" ng-click="switchTab('ciscat')" class="small wz-text-link">CIS-CAT</md-button>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End System audit card -->
+
+  <!-- Security card -->
+  <div layout="row" layout-align="start stretch" layout-wrap>
+    <md-card flex class="wz-md-card">
+      <md-card-content flex layout="column">
+        <span class="wz-headline-title">
+          <i class="fa fa-fw fa-shield" aria-hidden="true"></i> Security</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <md-button ng-click="switchTab('vuls')" class="small wz-text-link">Vulnerabilities</md-button>
+          <md-button ng-show="extensions.virustotal" ng-click="switchTab('virustotal')" class="small wz-text-link">VirusTotal</md-button>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End Security card -->
+
+  <!-- Compliance card -->
+  <div layout="row" layout-align="start stretch" layout-wrap ng-show="extensions.pci || extensions.gdpr">
+    <md-card flex class="wz-md-card">
+      <md-card-content flex layout="column">
+        <span class="wz-headline-title">
+          <i class="fa fa-fw fa-check" aria-hidden="true"></i> Compliance</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <md-button ng-show="extensions.pci" ng-click="switchTab('pci')" class="small wz-text-link">PCI DSS</md-button>
+          <md-button ng-show="extensions.gdpr" ng-click="switchTab('gdpr')" class="small wz-text-link">GDPR</md-button>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End Compliance card -->
+
+</div>

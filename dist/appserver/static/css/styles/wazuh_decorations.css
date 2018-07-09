@@ -1,0 +1,470 @@
+.custom-result-value {
+    font-size: 30px;
+    margin: 35px auto;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(85, 85, 85);
+}
+.custom-result-value:before {
+    font-family: "Splunk Icons";
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-size: 110%;
+}
+.down.custom-result-value:before {
+    content: "\2297";
+}
+.down.custom-result-value {
+    color: rgb(217, 63, 60);
+}
+.up.custom-result-value {
+    color: rgb(101, 166, 55);
+}
+.up.custom-result-value:before {
+    content: "\ECD3";
+}
+.custom-result-value.icon-only {
+    font-size: 60px;
+}
+
+.json-key {
+  color: brown;
+}
+
+.json-value {
+  color: navy;
+}
+
+.json-string {
+  color: olive;
+}
+
+.json-beautifier {
+  background-color: ghostwhite;
+  border: 1px solid silver;
+  padding: 10px 20px;
+  margin: 20px;
+}
+
+.wz-pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  height: 200px;
+  line-height: 20px !important;
+}
+
+.jsonbeauty {
+  min-height: 300px;
+  margin: 0px !important;
+}
+
+.wz-cursor-pointer {
+  cursor: pointer;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.wz-tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.wz-tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.wz-tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.btn-primary {
+  background-color: #005571 !important;
+}
+
+.btn-primary:hover {
+  background-color: #0079a5 !important;
+}
+
+/* Classes for custom widths */
+
+.wz-width-15 {
+  width: 15% !important;
+}
+
+.wz-width-65 {
+  width: 65% !important;
+}
+
+.wz-width-25 {
+  width: 25% !important;
+}
+
+.wz-width-30 {
+  width: 30% !important;
+}
+
+.wz-width-45 {
+  width: 45% !important;
+}
+
+.wz-width-40 {
+  width: 40% !important;
+}
+
+.wz-width-48 {
+  width: 48.8% !important;
+}
+
+.wz-width-49 {
+  width: 49% !important;
+}
+.wz-width-95 {
+  width: 95% !important;
+}
+
+.wz-width-100 {
+  width: 100% !important;
+}
+
+/* Custom margin styles */
+
+.wz-margin-left-5 {
+  margin-left: 5px;
+}
+
+.wz-margin-left-10 {
+  margin-left: 10px;
+}
+
+.wz-margin-left-40pc {
+  margin-left: 40%;
+}
+
+.wz-margin-left-25 {
+  margin-left: 25px;
+}
+
+.wz-margin-left-35 {
+  margin-left: 35px;
+}
+
+.wz-margin-left-35pc {
+  margin-left: 35%;
+}
+
+.wz-margin-right-5 {
+  margin-right: 5px;
+}
+
+.wz-margin-right-10 {
+  margin-right: 10px;
+}
+
+.wz-margin-right-24 {
+  margin-right: 24px;
+}
+
+.wz-margin-right-30 {
+  margin-right: 30px;
+}
+
+.wz-margin-right-40 {
+  margin-right: 40px;
+}
+
+.wz-margin-bottom-10 {
+  margin-bottom: 10px;
+}
+
+/* Classes for custom shadows for dashboard cells */
+
+.wz-dashboard-cell {
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #D9D9D9 !important;
+}
+
+.wz-dashboard-panel {
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
+}
+
+
+.wz-text-link:hover {
+  text-decoration: underline;
+}
+.wz-text-link {
+  cursor: pointer !important;
+  color: #0079a5 !important;
+}
+
+.wz-text-right {
+  text-align: right !important;
+}
+
+.wz-text-bold {
+  font-weight: bold;
+}
+
+.wz-headline-title {
+  font-size: 17px !important;
+  padding: 0 10px !important;
+}
+
+.wz-line-separator {
+  height:1px;
+  background:#717171;
+  border-bottom:1px solid #313030;
+}
+
+.wz-list-child {
+  padding: 0 50px !important;
+}
+
+hr {
+  display: block;
+  position: relative;
+  padding: 0;
+  margin: 8px auto;
+  height: 0;
+  width: 97%;
+  max-height: 0;
+  font-size: 1px;
+  opacity:.5;
+  line-height: 0;
+  clear: both;
+  border: none;
+  border-top: 1px solid #aaaaaa;
+  border-bottom: 1px solid #ffffff;
+}
+
+scroll {
+  overflow: scroll;
+}
+
+.wz-green-led {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #ABFF00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+}
+
+.wz-red-led {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #bd0606;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, rgb(230, 29, 3) 0 2px 12px;
+}
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+ legend {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  /* 1 */
+  color: inherit;
+  /* 2 */
+  display: table;
+  /* 1 */
+  max-width: 100%;
+  /* 1 */
+  padding: 0;
+  /* 3 */
+  white-space: normal;
+  /* 1 */
+}
+
+
+table, th, td {
+  border: none;
+}
+
+table {
+  width: 100%;
+  display: table;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table.highlight > tbody > tr {
+  -webkit-transition: background-color .25s ease;
+  transition: background-color .25s ease;
+}
+
+table.highlight > tbody > tr:hover {
+  background-color: rgba(180, 180, 180, 0.5);
+}
+
+tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+td, th {
+  padding: 15px 5px;
+  display: table-cell;
+  text-align: left;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+table span.badge {
+  display: inline-block;
+  float: none;
+  margin-left: auto;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+.tap-target-content {
+  position: relative;
+  display: table-cell;
+}
+
+/* Style the tab */
+.wz-tab {
+  overflow: hidden;
+}
+
+/* Style the buttons inside the tab */
+.wz-tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+/* Change background color of buttons on hover */
+.wz-tab button:hover {
+  background-color:rgb(230, 230, 230);
+}
+
+/* Create an active/current tablink class */
+.wz-tab button.active {
+  background-color:white;
+}
+
+/* Style the tab content */
+.wz-tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.wz-loading {
+  display:    none;
+  position:   fixed;
+  z-index:    1000;
+  top:        0;
+  left:       0;
+  height:     100%;
+  width:      100%;
+  background: rgba( 255, 255, 255, .8 ) 
+              url('http://sampsonresume.com/labs/pIkfp.gif') 
+              50% 50% 
+              no-repeat;
+}
+
+.wz-no-padding {
+  padding: 0 !important;
+}
+
+.data-table-container {
+  padding: 10px;
+}
+
+.dt-buttons .btn {
+  margin-right: 3px;
+}
+
+.wz-dashboard-panel-table {
+  background-color: white !important;
+  padding: 10px !important;
+}
+.wz-margin-top-20 {
+  margin-top: 20px;
+}
+
+.wz-margin-top-10 {
+  margin-top: 10px;
+}
+
+.wz-margin-5 {
+  margin: 5px;
+}
+
+.wz-margin-10 {
+  margin: 10px;
+}
+
+.wz-padding-5 {
+  padding: 5px;
+}
+
+.wz-table-element-pull-left{
+  float: left !important;
+}
+
+.wz-color-orange {
+  color: #f39c12 !important;
+}
+
+.wz-status-round {
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+}
+
+.wz-teal {
+  background-color: #00a69b;
+}
+
+.wz-teal {
+  background-color: #00a69b;
+}
+
+.wz-red {
+  background-color: #ff645c;
+}
+
+.wz-metric-color {
+  background-color: #e4f2f5;
+}

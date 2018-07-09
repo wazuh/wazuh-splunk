@@ -1,5 +1,6 @@
 define([
-  './credentials/credentialService',
+  './appState/appState',
   './navigation/navigationService',
+  './apiRequest/apiRequest',
 
 ], function () {});

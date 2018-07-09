@@ -1,0 +1,189 @@
+
+<!-- 
+BEGIN LAYOUT
+This section contains the layout for the dashboard. Splunk uses proprietary
+styles in <div> tags, similar to Bootstrap's grid system. 
+-->
+
+<div ng-cloak ng-controller='managerCtrl'>
+    <div class="dashboard-header clearfix">
+    <h2 id="pepe" >Top alerts {{message}}</h2>
+    </div>
+    <div class="fieldset">
+    <div class="input input-timerangepicker" id="input1">
+    <label>When?</label>
+    </div>
+    </div>
+    
+    
+    <div id="row1" class="dashboard-row dashboard-row1">
+    <div id="panel1" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Alerts</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement1" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel2" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Level 12 or above alerts</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement2" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel3" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Authentication failure</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement3" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel4" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Authentication success</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement4" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="row2" class="dashboard-row dashboard-row2">
+    <div id="panel5" class="dashboard-cell" style="width: 50%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Alert level evolution</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement5" class="dashboard-element chart" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel6" class="dashboard-cell" style="width: 50%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Alerts</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement6" class="dashboard-element chart" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="row3" class="dashboard-row dashboard-row3">
+    <div id="panel7" class="dashboard-cell" style="width: 33.33%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Top 5 agents</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement7" class="dashboard-element chart" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel8" class="dashboard-cell" style="width: 33.33%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Alerts evolution - Top 5 agents</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement8" class="dashboard-element chart" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel9" class="dashboard-cell" style="width: 33.33%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Agents status</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement9" class="dashboard-element chart" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="row4" class="dashboard-row dashboard-row4">
+    <div id="panel10" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Top source user</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement10" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel11" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Top source ip</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement11" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel12" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Top group</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement12" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="panel13" class="dashboard-cell" style="width: 25%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Top PCI DSS requirement</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement13" class="dashboard-element single" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="row5" class="dashboard-row dashboard-row5">
+    <div id="panel14" class="dashboard-cell" style="width: 100%;">
+    <div class="dashboard-panel clearfix">
+    <h2 class="panel-title">Alerts summary</h2>
+    
+    <div class="panel-element-row">
+    <div id="managerElement14" class="dashboard-element table" style="width: 100%">
+    <div class="panel-body"></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <script>
+        console.log('loaded script in manager');
+    </script>
+    <!-- 
+    END LAYOUT
+    -->
