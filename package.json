@@ -1,0 +1,45 @@
+{
+  "name": "wazuh-splunk",
+  "version": "3.3.1",
+  "description": "Splunk app for Wazuh",
+  "main": "./dist/index.js",
+  "keywords": [
+    "es6",
+    "tail",
+    "tailf",
+    "node",
+    "babel",
+    "es7",
+    "fs",
+    "file"
+  ],
+  "scripts": {
+    "build": "babel SplunkAppForWazuh -d dist --presets es2015,stage-2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wazuh/wazuh-splunk.git"
+  },
+  "author": "Wazuh, Inc",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/wazuh/wazuh-splunk/issues"
+  },
+  "homepage": "https://github.com/wazuh/wazuh-splunk#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-help": "^1.6.1",
+    "gulp-watch": "^5.0.0"
+  },
+  "dependencies": {
+    "g": "^2.0.1"
+  }
+}
