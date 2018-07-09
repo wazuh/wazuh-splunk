@@ -4,6 +4,7 @@ define([
   controllers
   ) {
     'use strict';
+    // import 'babel-polyfill';
     controllers.controller('settingsApiCtrl', function ($scope,$apiRequest) {
       $scope.message = 'API'
       const epoch = (new Date).getTime()
