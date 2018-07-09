@@ -1,5 +1,5 @@
 define([
-  './appState/appState',
+  './credentialService/credentialService',
   './navigation/navigationService',
   './apiRequest/apiRequest',
 

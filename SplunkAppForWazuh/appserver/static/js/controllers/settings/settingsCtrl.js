@@ -7,7 +7,6 @@ define([
     controllers.controller('settingsCtrl', function ($scope, $navigationService) {
       $scope.message = 'Settings'
       $scope.tabName = ''
-      $navigationService.hello()
       const lastState = $navigationService.getLastState()
       console.log('laststate ',lastState)
       switch (lastState) {

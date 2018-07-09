@@ -5,22 +5,24 @@ define([
   ) {
     'use strict';
     // import 'babel-polyfill';
-    controllers.controller('settingsApiCtrl', function ($scope,$apiRequest) {
-      $scope.message = 'API'
+    controllers.controller('settingsApiCtrl',function ($apiRequest,apiList) {
+      const vm = this;
       const epoch = (new Date).getTime()
-      $scope.selected = [];
+      vm.selected = [];
+      vm.apiList = apiList.data.items || [];
+      vm.selectedApi = []
   
-      $scope.query = {
+      vm.query = {
         order: 'name',
         limit: 5,
         page: 1
       };
       
       function success(desserts) {
-        $scope.desserts = desserts;
+        vm.desserts = desserts;
       }
       
-      $scope.apis = async () => {
+      vm.apis = async () => {
         $scope.promise = $apiRequest.get($scope.query, success).$promise;
       };
       

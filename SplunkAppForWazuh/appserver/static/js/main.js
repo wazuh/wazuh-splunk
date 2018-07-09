@@ -9,7 +9,7 @@ require.config({
         'ngMessages': 'http://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min',
         'ngMaterial': 'http://ajax.googleapis.com/ajax/libs/angular_material/1.1.7/angular-material.min',
         'ngRoute': 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.18/angular-ui-router.min',
-        'mdDataTable': 'https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table.min'
+        'mdDataTable': 'https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table'
     },
 
     // Add angular modules that does not support AMD out of the box, put it in a shim
