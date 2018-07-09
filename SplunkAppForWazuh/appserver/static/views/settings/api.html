@@ -28,7 +28,7 @@
       </div>
     </div>
   </div>
-  <div id="row1" class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-top-10">
+  <div ng-show='sac.visibleTable' id="row1" class="wz-dashboard-cell wz-dashboard-panel-table wz-margin-top-10">
     <md-table-container>
       <table md-table="md-table" md-row-select="true" multiple="true" ng-model="sac.selectedApi">
         <thead md-head="md-head" md-order="sac.query.order">
