@@ -1,6 +1,6 @@
 define(['../module', 'splunkjs/mvc'], function (module, mvc) {
   'use strict';
-  module.service('$credentialService', function ($http) {
+  module.service('$credentialService', function ($http, $apiService) {
     const service = mvc.createService({ owner: "nobody" })
 
     /**
@@ -154,7 +154,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const apiList = await get("storage/collections/data/credentials/")
         const selectedApi = sessionStorage.selectedApi
         for (let i = 0; i < apiList.length; i++) {
-          if (typeof selectedApi === 'string' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
+          if (selectedApi && typeof selectedApi === 'string' && typeof JSON.parse(selectedApi) === 'object' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
             apiList[i].selected = true
           }
         }
@@ -189,7 +189,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     */
     const checkPollingState = async () => {
       const getPollingState = '/manager/polling_state/'
-      const pollingStatus = await ApiService.get(getPollingState)
+      const pollingStatus = await $apiService.get(getPollingState)
       return (pollingStatus.disabled === "true") ? false : true
     }
 
@@ -204,10 +204,10 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
-        const clusterData = await ApiService.get(checkConnectionEndpoint)
+        const clusterData = await $apiService.get(checkConnectionEndpoint)
         api.filter = []
         // Get manager name. Necessary for both cases
-        const managerName = await ApiService.get(getManagerNameEndpoint)
+        const managerName = await $apiService.get(getManagerNameEndpoint)
 
         if (managerName && managerName.data && managerName.data.length > 0 && managerName.data[0].name) {
           if (!api.managerName || api.managerName !== managerName.data[0].name) {
@@ -219,7 +219,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.enabled === "yes") {
           api.filter.push('cluster.name')
-          const clusterName = await ApiService.get(getClusterNameEndpoint)
+          const clusterName = await $apiService.get(getClusterNameEndpoint)
           api.filter.push(clusterName.cluster)
           if (!api.cluster || api.cluster !== clusterName.cluster) {
             api.cluster = clusterName.cluster

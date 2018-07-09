@@ -26,7 +26,7 @@ define(['./module'], function (module) {
             return $credentialService.getApiList()
               .then(function (response) {
                 console.log('list of apis ',response)
-                return response.data;
+                return response;
               }, function (response) {
                 console.log('errored request ',response)
                 return response;
