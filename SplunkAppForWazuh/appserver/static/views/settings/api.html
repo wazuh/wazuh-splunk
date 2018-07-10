@@ -29,8 +29,8 @@
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
             <p flex="15">
               <i ng-show="(entry._id === currentDefault)" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
-                aria-hidden="true"></i> {{entry.cluster_info.cluster}}</p>
-            <p flex="20">{{entry.cluster_info.manager}}</p>
+                aria-hidden="true"></i> {{entry.cluster}}</p>
+            <p flex="20">{{entry.cluster}}</p>
             <p flex="15">{{entry.url}}</p>
             <p flex="15">{{entry.portapi}}</p>
             <p flex="15">{{entry.userapi}}</p>
@@ -85,6 +85,9 @@
           <md-button ng-click="switch()" class="wz-button md-raised md-primary" aria-label="Add new API button">
             <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new API
           </md-button>
+          <md-button ng-click="sac.deleteAllRecords()" class="wz-button md-raised md-primary" aria-label="Remove all APIs">
+              <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Remove All
+            </md-button>
         </div>
         <!-- End add API button section -->
 
@@ -95,26 +98,26 @@
             <!-- Input section -->
             <md-input-container class="wz-input-container">
               <label>Username</label>
-              <input ng-model="formData.user" type="text" placeholder="" aria-label="username" required/>
+              <input ng-model="sac.user" type="text" placeholder="" aria-label="username" required/>
             </md-input-container>
             <md-input-container class="wz-input-container">
               <label>Password</label>
-              <input ng-model="formData.password" type="password" placeholder="" aria-label="password" required/>
+              <input ng-model="sac.pass" type="password" placeholder="" aria-label="password" required/>
             </md-input-container>
             <md-input-container class="wz-input-container">
               <label>URL</label>
-              <input ng-model="formData.url" type="url" placeholder="http(s)://" aria-label="full url" required/>
+              <input ng-model="sac.url" type="url" placeholder="http(s)://" aria-label="full url" required/>
             </md-input-container>
             <md-input-container class="wz-input-container">
               <label>Port</label>
-              <input ng-model="formData.port" type="text" placeholder="" aria-label="port" required/>
+              <input ng-model="sac.port" type="text" placeholder="" aria-label="port" required/>
             </md-input-container>
             <!-- Button and errors section -->
             <div layout="row" layout-align="center center">
               <p class="color-f9">{{messageError}}</p>
             </div>
             <div layout="row" layout-align="center center">
-              <md-button type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+              <md-button ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save API
               </md-button>
             </div>
