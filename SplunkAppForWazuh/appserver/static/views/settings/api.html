@@ -28,14 +28,14 @@
           <!-- API entry -->
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
             <p flex="15">
-              <i ng-show="(entry._id === currentDefault)" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
+              <i ng-show="(entry.selected)" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
                 aria-hidden="true"></i> {{entry.cluster}}</p>
-            <p flex="20">{{entry.cluster}}</p>
+            <p flex="20">{{entry.managerName}}</p>
             <p flex="15">{{entry.url}}</p>
             <p flex="15">{{entry.portapi}}</p>
             <p flex="15">{{entry.userapi}}</p>
             <p flex="20">
-              <i ng-click="sac.setDefault(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>
+              <i ng-click="sac.selectManager(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.toggleEditor(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
@@ -50,9 +50,6 @@
           <md-button ng-click='sac.addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
             <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new API
           </md-button>
-          <md-button ng-click="sac.deleteAllRecords()" class="wz-button md-raised md-primary" aria-label="Remove all APIs">
-              <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Remove All
-            </md-button>
         </div>
         <!-- End add API button section -->
 
@@ -82,9 +79,12 @@
               <p class="color-f9">{{messageError}}</p>
             </div>
             <div layout="row" layout-align="center center">
-              <md-button ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save API
+              <md-button ng-show='!sac.edit' ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Add API
               </md-button>
+              <md-button ng-show='sac.edit' ng-click='sac.updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update API
+                </md-button>
             </div>
           </form>
           <!-- End add API form -->

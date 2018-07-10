@@ -55,6 +55,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const update = async (key, newRegister) => {
       try {
+        console.log('key ',key)
+        console.log('newregister ',newRegister)
         await post("storage/collections/data/credentials/" + key, newRegister)
         return
       } catch (err) {
@@ -111,7 +113,9 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       try {
         const apiList = await getApiList()
         for (let api of apiList) {
+          console.log('an api ',api)
           if (api._key === key) {
+            console.log('api key == api key')
             sessionStorage.selectedApi = ''
             sessionStorage.selectedApi = JSON.stringify(api)
           }

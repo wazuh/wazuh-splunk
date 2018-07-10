@@ -9,6 +9,7 @@ define([
       vm.addManagerContainer = false
       vm.isEditing = false
       vm.showForm = (apiList.length === 0) ? true : false
+      vm.entry = {}
       const epoch = (new Date).getTime()
       // Validation RegEx
       const userRegEx = new RegExp(/^.{3,100}$/)
@@ -24,17 +25,11 @@ define([
         vm.selected = []
         vm.apiList = apiList
         vm.selectedApi = []
+        vm.saveOrUpdate = 'Add'
         if (vm.apiList && vm.apiList.length > 0)
           vm.visibleTable = true
         else
           vm.visibleTable = false
-      }
-
-      /**
-       * Select an API as the default one
-       * @param {Object} entry 
-       */
-      vm.setDefault = (entry) => {
       }
 
       /**
@@ -68,24 +63,51 @@ define([
       }
 
       /**
-       * Edits an API entry
-       * @param {Object} entry 
+       * Set form visible
        */
-      vm.toggleEditor = (entry) => {
-
-      }
-
       vm.addNewApiClick = () => {
         vm.showForm = !vm.showForm
       }
 
       /**
-       * Delete all API records
+       * Shows form for editting an API entry
+       * @param {Object} entry 
        */
-      vm.deleteAllRecords = async () => {
-        // vm.apiList.push({url:'otra'})
+      vm.toggleEditor = (entry) => {
+        try {
+          vm.showForm = true
+          vm.edit = !vm.edit
+          vm.url = entry.url
+          vm.port = entry.portapi
+          vm.user = entry.userapi
+          vm.entry = entry
+
+        } catch (err) {
+          console.error('error when update ', err)
+        }
       }
 
+      /**
+       * Edits an entry
+       * @param {Object} entry 
+       */
+      vm.updateEntry = async () => {
+        try {
+          vm.entry.url = vm.url
+          vm.entry.portapi = vm.port
+          vm.entry.passapi = vm.pass
+          vm.entry.userapi = vm.user
+          const key = vm.entry._key
+          delete vm.entry['$$hashKey']
+          delete vm.entry._key
+          delete vm.entry._user
+          delete vm.entry.filter
+          console.log('the vm.entry ',vm.entry)
+          await $credentialService.update(key, vm.entry)
+        } catch (err) {
+          console.error('err ',err)
+        }
+      }
       /**
        * Check if an URL is valid or not
        * @param {String} url 
@@ -129,13 +151,15 @@ define([
       }
 
       /**
-       * Edits a manager connection
-       * @param {String} key 
+       * Select an API as the default one
+       * @param {Object} entry 
        */
-      const selectManager = async (key) => {
+      vm.selectManager = async (entry) => {
         try {
-          await $credentialService.checkApiConnection(key)
-          await $credentialService.chose(key)
+          console.log('selectManager')
+          await $credentialService.checkApiConnection(entry._key)
+          await $credentialService.chose(entry._key)
+          entry.selected = true
           vm.visibleTable = true
         } catch (err) {
           console.error('[selectManager]: ', err)
