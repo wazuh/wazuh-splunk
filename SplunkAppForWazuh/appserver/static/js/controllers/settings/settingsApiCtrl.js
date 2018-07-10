@@ -24,12 +24,10 @@ define([
         vm.selected = []
         vm.apiList = apiList
         vm.selectedApi = []
-        console.log('vm.apiList ', vm.apiList, ' apiList ', apiList)
         if (vm.apiList && vm.apiList.length > 0)
           vm.visibleTable = true
         else
           vm.visibleTable = false
-        console.log('must we see any table? ', vm.visibleTable)
       }
 
       /**
@@ -37,7 +35,6 @@ define([
        * @param {Object} entry 
        */
       vm.setDefault = (entry) => {
-        console.log('entry ', entry)
       }
 
       /**
@@ -46,7 +43,6 @@ define([
 ¡
        */
       vm.removeManager = async (entry) => {
-        console.log('entry ', entry)
         try {
           const index = vm.apiList.indexOf(entry);
           if (index > -1) {
@@ -62,8 +58,13 @@ define([
        * Check API connectivity
        * @param {Object} entry 
        */
-      vm.checkManager = (entry) => {
-        console.log('entry ', entry)
+      vm.checkManager = async (entry) => {
+        try {
+          await $credentialService.checkApiConnection(entry._key)
+          console.log('went OK')
+        } catch (err) {
+          console.error('connection failed')
+        }
       }
 
       /**
@@ -177,7 +178,6 @@ define([
             vm.visibleTable = true
           } catch (err) {
             await $credentialService.remove(result.data._key)
-            console.error('error when connection! rollbacking', err)
           }
         } else {
           // invalidFormatInputToast.show()
