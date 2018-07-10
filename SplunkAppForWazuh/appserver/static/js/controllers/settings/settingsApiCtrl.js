@@ -6,6 +6,9 @@ define([
     'use strict'
     controllers.controller('settingsApiCtrl', function ($credentialService, apiList) {
       const vm = this
+      vm.addManagerContainer = false
+      vm.isEditing = false
+      vm.showForm = (apiList.length === 0) ? true : false
       const epoch = (new Date).getTime()
       // Validation RegEx
       const userRegEx = new RegExp(/^.{3,100}$/)
@@ -14,6 +17,9 @@ define([
       const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
       const portRegEx = new RegExp(/^[0-9]{2,5}$/)
 
+      /**
+       * Initializes the controller
+       */
       vm.init = function () {
         vm.selected = []
         vm.apiList = apiList
@@ -27,18 +33,56 @@ define([
       }
 
       /**
-        * Delete all API records
-        */
-      vm.deleteAllRecords = async () => {
+       * Select an API as the default one
+       * @param {Object} entry 
+       */
+      vm.setDefault = (entry) => {
+        console.log('entry ', entry)
+      }
+
+      /**
+       * Removes an API from the list
+       * @param {Object} entry 
+¡
+       */
+      vm.removeManager = async (entry) => {
+        console.log('entry ', entry)
         try {
-          // Delete the record that corresponds to the key ID using
-          await $credentialService.delete()
-          $credentialService.deselectAllApis()
-          vm.visibleTable = false
-          // Run the search again to update the table
+          const index = vm.apiList.indexOf(entry);
+          if (index > -1) {
+            vm.apiList.splice(index, 1);
+            await $credentialService.remove(entry._key)
+          }
         } catch (err) {
-          return Promise.reject(err)
+          console.error(err)
         }
+      }
+
+      /**
+       * Check API connectivity
+       * @param {Object} entry 
+       */
+      vm.checkManager = (entry) => {
+        console.log('entry ', entry)
+      }
+
+      /**
+       * Edits an API entry
+       * @param {Object} entry 
+       */
+      vm.toggleEditor = (entry) => {
+
+      }
+
+      vm.addNewApiClick = () => {
+        vm.showForm = !vm.showForm
+      }
+
+      /**
+       * Delete all API records
+       */
+      vm.deleteAllRecords = async () => {
+        // vm.apiList.push({url:'otra'})
       }
 
       /**
@@ -73,6 +117,9 @@ define([
         return passRegEx.test(pass)
       }
 
+      /**
+       * Empties the form fields
+       */
       const clearForm = () => {
         vm.url = ''
         vm.port = ''
@@ -121,22 +168,23 @@ define([
             const resultConnection = await $credentialService.checkApiConnection(result.data._key)
             clearForm()
             const apiList = await $credentialService.getApiList()
+            console.log('pushing new api')
+            record._key = result.data._key
+            vm.apiList.push(record)
             if (apiList && apiList.length === 1) {
               await selectManager(result.data._key)
             }
             vm.visibleTable = true
           } catch (err) {
             await $credentialService.remove(result.data._key)
-            console.error('error! rollbacking', err)
+            console.error('error when connection! rollbacking', err)
           }
         } else {
           // invalidFormatInputToast.show()
           console.error('invalid format')
         }
       }
-
       vm.init()
-
     })
   })
 

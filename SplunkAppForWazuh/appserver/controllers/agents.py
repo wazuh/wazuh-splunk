@@ -369,7 +369,7 @@ class agents(controllers.BaseController):
         response['data']['totalItems'] = total_items
         response['data']['items'] = results
       except Exception as e:
-        return json.dumps({"error":str(e)})
+        return json.dumps({'error':str(e)})
       return json.dumps(response)
 
     # /custom/SplunkAppForWazuh/agents/agents_name

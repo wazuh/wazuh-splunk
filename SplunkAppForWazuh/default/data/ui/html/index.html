@@ -14,6 +14,7 @@
   <link rel="stylesheet" type="text/css" href='http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css'>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.css" />
 
   <base href="/">
 
@@ -36,6 +37,8 @@
 
     <wz-menu></wz-menu>
     <div ui-view></div>
+    <toaster-container toaster-options="{'close-button':false, 'time-out':{ 'toast-warning': 2000, 'toast-error': 0 } }"></toaster-container>
+
   </div>
 
 

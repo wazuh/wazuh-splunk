@@ -78,12 +78,14 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const remove = async (key) => {
       try {
         const api = await select(key)
+        console.log('selected api ',api)
         if (sessionStorage.selectedApi && JSON.parse(sessionStorage.selectedApi) && JSON.parse(sessionStorage.selectedApi).url === api.url) {
           sessionStorage.selectedApi = ''
         }
-        await delete ("storage/collections/data/credentials/" + key)
+        await deletes("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
+        console.error('[$credentialService][remove] ',err)
         return Promise.reject(err)
       }
     }
@@ -205,10 +207,17 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
         const clusterData = await $apiService.get(checkConnectionEndpoint)
+        
+        if(clusterData.data.error) {
+          return Promise.reject(clusterData.data.error)
+        }
+        console.log('1. clusterdata ',clusterData)
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await $apiService.get(getManagerNameEndpoint)
-        console.log('MANAGER NAME: ', managerName)
+        console.log('2. manager ',managerName)
+
+
         if (managerName && managerName.data && managerName.data.data.length > 0 && managerName.data.data[0].name) {
           console.log('manager name is: ',managerName.data.data[0].name)
           if (!api.managerName || api.managerName !== managerName.data.data[0].name) {
