@@ -165,6 +165,9 @@ define([
             }
           }
           entry.selected = true
+          toastr.success('Selected API','Success')
+          if(!$scope.$$phase) $scope.$digest()
+
         } catch (err) {
           console.error('[selectManager]: ', err)
           toastr.error('Could not select manager','Error')

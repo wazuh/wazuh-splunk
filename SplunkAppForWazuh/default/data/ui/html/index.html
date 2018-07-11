@@ -31,16 +31,12 @@
 
 <body>
 
-
   <div class='empty-body-class' ng-controller='mainCtrl'>
-
 
     <wz-menu></wz-menu>
     <div ui-view></div>
-    <toaster-container toaster-options="{'close-button':false, 'time-out':{ 'toast-warning': 2000, 'toast-error': 0 } }"></toaster-container>
 
   </div>
-
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
