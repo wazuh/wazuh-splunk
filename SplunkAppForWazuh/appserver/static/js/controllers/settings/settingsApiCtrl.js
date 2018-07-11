@@ -4,13 +4,14 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope,$credentialService, apiList) {
+    controllers.controller('settingsApiCtrl', function ($scope,$credentialService, apiList, toastr) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
       vm.showForm = (apiList.length === 0) ? true : false
       vm.entry = {}
       vm.currentEntryKey = ''
+      console.log('TOASTR ',toastr)
       const epoch = (new Date).getTime()
       // Validation RegEx
       const userRegEx = new RegExp(/^.{3,100}$/)
@@ -40,6 +41,7 @@ define([
             vm.apiList.splice(index, 1);
             await $credentialService.remove(entry._key)
           }
+          toastr.success('Manager removed','Success')
         } catch (err) {
           console.error(err)
         }
@@ -52,9 +54,10 @@ define([
       vm.checkManager = async (entry) => {
         try {
           await $credentialService.checkApiConnection(entry._key)
-          console.log('went OK')
+          toastr.success('Connection success','Success')
+
         } catch (err) {
-          console.error('connection failed')
+          toastr.error('Cannot connect with API','Error')
         }
       }
 
@@ -80,7 +83,7 @@ define([
           vm.user = entry.userapi
           vm.entry = entry
         } catch (err) {
-          console.error('error when update ', err)
+          toastr.error('Could not open API form','Error')
         }
       }
 
@@ -101,9 +104,9 @@ define([
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if(!$scope.$$phase) $scope.$digest()
-          // toastr.success('Updated API')
+          toastr.success('Updated API','Success')
         } catch (err) {
-          console.error('[update] ',err)
+          toastr.error('Could not update API','Error')
         }
       }
       /**
@@ -164,6 +167,7 @@ define([
           entry.selected = true
         } catch (err) {
           console.error('[selectManager]: ', err)
+          toastr.error('Could not select manager','Error')
         }
       }
 
@@ -172,6 +176,8 @@ define([
        */
       vm.submitApiForm = async () => {
         // When the Submit button is clicked, get all the form fields by accessing input values
+        toastr.info('Adding new API','Info')
+
         const form_url = vm.url
         const form_apiport = vm.port
         const form_apiuser = vm.user
@@ -201,12 +207,15 @@ define([
             }
             vm.showForm = false
             if(!$scope.$$phase) $scope.$digest()
+            toastr.success('Added new API','Success')
+
           } catch (err) {
             await $credentialService.remove(result.data._key)
+            toastr.error('Error at adding new API','Error')
+
           }
         } else {
-          // invalidFormatInputToast.show()
-          console.error('invalid format')
+          toastr.error('Invalid format','Error')
         }
       }
       vm.init()
