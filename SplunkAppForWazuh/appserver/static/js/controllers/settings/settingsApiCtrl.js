@@ -159,6 +159,11 @@ define([
           console.log('selectManager')
           await $credentialService.checkApiConnection(entry._key)
           await $credentialService.chose(entry._key)
+          for(let item of vm.apiList) {
+            if (item._key === entry._key) {
+              item.selected = true
+            }
+          }
           entry.selected = true
           vm.visibleTable = true
         } catch (err) {
@@ -197,7 +202,7 @@ define([
             record._key = result.data._key
             vm.apiList.push(record)
             if (apiList && apiList.length === 1) {
-              await selectManager(result.data._key)
+              await vm.selectManager(result.data)
             }
             vm.visibleTable = true
           } catch (err) {
