@@ -8,7 +8,6 @@ define([
       $scope.message = 'Settings'
       $scope.tabName = ''
       const lastState = $navigationService.getLastState()
-      console.log('laststate ',lastState)
       switch (lastState) {
         case 'settings.api':
           $scope.tabName = 'api'

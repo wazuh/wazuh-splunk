@@ -134,8 +134,6 @@ define([
       })
       // Create token namespaces
       const epoch = (new Date).getTime()
-      console.log('controller manager!! ', epoch)
-
       var urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
       mvc.Components.registerInstance('url' + epoch, urlTokenModel);
       var defaultTokenModel = mvc.Components.getInstance('default', { create: true });

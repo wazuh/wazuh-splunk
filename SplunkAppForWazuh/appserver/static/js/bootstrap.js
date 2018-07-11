@@ -6,6 +6,5 @@ define([
   'js/app'
 ], function (ng) {
   'use strict';
-  console.log('loaded bootstrap')
   ng.bootstrap(document, ['wazuhApp']);
 });

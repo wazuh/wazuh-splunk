@@ -55,8 +55,6 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const update = async (key, newRegister) => {
       try {
-        console.log('key ',key)
-        console.log('newregister ',newRegister)
         await post("storage/collections/data/credentials/" + key, newRegister)
         return
       } catch (err) {
@@ -80,7 +78,6 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const remove = async (key) => {
       try {
         const api = await select(key)
-        console.log('selected api ',api)
         if (sessionStorage.selectedApi && JSON.parse(sessionStorage.selectedApi) && JSON.parse(sessionStorage.selectedApi).url === api.url) {
           sessionStorage.selectedApi = ''
         }
@@ -113,9 +110,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       try {
         const apiList = await getApiList()
         for (let api of apiList) {
-          console.log('an api ',api)
           if (api._key === key) {
-            console.log('api key == api key')
             sessionStorage.selectedApi = ''
             sessionStorage.selectedApi = JSON.stringify(api)
           }
@@ -215,17 +210,11 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         if(clusterData.data.error) {
           return Promise.reject(clusterData.data.error)
         }
-        console.log('1. clusterdata ',clusterData)
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await $apiService.get(getManagerNameEndpoint)
-        console.log('2. manager ',managerName)
-
-
         if (managerName && managerName.data && managerName.data.data.length > 0 && managerName.data.data[0].name) {
-          console.log('manager name is: ',managerName.data.data[0].name)
           if (!api.managerName || api.managerName !== managerName.data.data[0].name) {
-            console.log('api.managername!!!',managerName.data.data[0].name)
             api.managerName = managerName.data.data[0].name
             await update(api._key, api)
           }
@@ -241,12 +230,10 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
             await update(api._key, api)
           }
         } else {
-          console.log('is not a cluster')
           if (api.cluster) {
             api.cluster = false
             await update(api._key, api)
           }
-          console.log('manager name ', api)
           api.filter.push('manager.name')
           api.filter.push(api.managerName)
         }

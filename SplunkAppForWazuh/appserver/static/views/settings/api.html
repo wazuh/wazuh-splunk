@@ -38,7 +38,7 @@
               <i ng-click="sac.selectManager(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
-              <i ng-click="sac.toggleEditor(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
+              <i ng-click="sac.editEntry(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
             </p>
           </div>
           <!-- End edit API form -->
@@ -54,7 +54,7 @@
         <!-- End add API button section -->
 
         <!-- Add API section-->
-        <div layout="row" ng-show='sac.showForm'>
+        <div layout="row" ng-show='(sac.showForm && !sac.edit) || (!sac.showForm && sac.edit)'>
           <!-- Add API form -->
           <form flex ng-submit="saveSettings()" layout="column" layout-align="start stretch" class="margin-top-30">
             <!-- Input section -->

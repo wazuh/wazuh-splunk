@@ -14,7 +14,6 @@ define(['../module'], function (directives) {
   directives.directive('wzMenu', function () {
     return {
       controller: function ($scope) {
-        console.log('loaded directive`s controller')
        },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html'
     };

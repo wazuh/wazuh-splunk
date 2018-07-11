@@ -4,7 +4,6 @@ define(['../module'], function (module) {
   module.service('$navigationService', function ($state) {
     const service = {
       hello: () => {
-        console.log('hello navigation!')
       },
       storeRoute: (params) => {
         sessionStorage.params = params

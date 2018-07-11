@@ -73,15 +73,13 @@ define([
        * Shows form for editting an API entry
        * @param {Object} entry 
        */
-      vm.toggleEditor = (entry) => {
+      vm.editEntry = (entry) => {
         try {
-          vm.showForm = true
           vm.edit = !vm.edit
           vm.url = entry.url
           vm.port = entry.portapi
           vm.user = entry.userapi
           vm.entry = entry
-
         } catch (err) {
           console.error('error when update ', err)
         }
@@ -102,7 +100,6 @@ define([
           delete vm.entry._key
           delete vm.entry._user
           delete vm.entry.filter
-          console.log('the vm.entry ',vm.entry)
           await $credentialService.update(key, vm.entry)
         } catch (err) {
           console.error('err ',err)
@@ -156,7 +153,6 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          console.log('selectManager')
           await $credentialService.checkApiConnection(entry._key)
           await $credentialService.chose(entry._key)
           for(let item of vm.apiList) {
@@ -198,7 +194,6 @@ define([
             const resultConnection = await $credentialService.checkApiConnection(result.data._key)
             clearForm()
             const apiList = await $credentialService.getApiList()
-            console.log('pushing new api')
             record._key = result.data._key
             vm.apiList.push(record)
             if (apiList && apiList.length === 1) {

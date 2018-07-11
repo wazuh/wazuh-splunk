@@ -1,7 +1,6 @@
 define(['../module'], function (module) {
   'use strict';
   module.service('$apiRequest', function ($http) {
-    console.log('LOADED SERVICE REQUEST')
     const service = {
       getAgentsList: () => {
         return $http.get(`/custom/SplunkAppForWazuh/agents/agents?ip=http://192.168.1.81&port=55000&user=foo&pass=bar`)

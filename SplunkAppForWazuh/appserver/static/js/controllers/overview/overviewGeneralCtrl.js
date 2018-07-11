@@ -101,7 +101,6 @@ define([
       let overviewElement13 = ''
       let overviewElement14 = ''
       $scope.$on('$destroy', () => {
-        console.log('destroyed controller')
         overviewSearch1 = null
         overviewSearch2 = null
         overviewSearch3 = null
@@ -134,8 +133,6 @@ define([
       })
       // Create token namespaces
       const epoch = (new Date).getTime()
-      console.log('controller manager!! ', epoch)
-
       var urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
       mvc.Components.registerInstance('url' + epoch, urlTokenModel);
       var defaultTokenModel = mvc.Components.getInstance('default', { create: true });

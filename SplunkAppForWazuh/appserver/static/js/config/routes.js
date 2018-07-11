@@ -25,10 +25,8 @@ define(['./module'], function (module) {
           apiList: ['$credentialService', ($credentialService) => {
             return $credentialService.getApiList()
               .then(function (response) {
-                console.log('list of apis ',response)
                 return response;
               }, function (response) {
-                console.log('errored request ',response)
                 return response;
               })
           }]
