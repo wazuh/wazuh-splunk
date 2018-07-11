@@ -32,7 +32,6 @@ define([
       /**
        * Removes an API from the list
        * @param {Object} entry 
-¡
        */
       vm.removeManager = async (entry) => {
         try {
@@ -102,6 +101,7 @@ define([
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if(!$scope.$$phase) $scope.$digest()
+          // toastr.success('Updated API')
         } catch (err) {
           console.error('[update] ',err)
         }

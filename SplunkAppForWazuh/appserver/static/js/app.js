@@ -1,5 +1,6 @@
 define([
   'angular',
+  'ngAnimate',
   'ngMaterial',
   'ngRoute',
   './services/index',
@@ -7,9 +8,9 @@ define([
   './controllers/index',
   './run/index',
   './config/index',
-  'mdDataTable'
-  
+  'mdDataTable',
+  'Toast'
 ], function (ng) {
   'use strict'
-  return ng.module('wazuhApp', ['ngMaterial','ui.router','app.services','app.directives','app.controllers','app.run','app.config','md.data.table'])
+  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config','md.data.table','toastr'])
 })
