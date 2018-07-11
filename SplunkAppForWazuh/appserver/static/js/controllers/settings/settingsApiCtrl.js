@@ -27,7 +27,6 @@ define([
         vm.apiList = apiList
         vm.selectedApi = []
         vm.saveOrUpdate = 'Add'
-
       }
 
       /**
@@ -77,8 +76,6 @@ define([
           vm.edit = !vm.edit
           vm.showForm = false
           vm.currentEntryKey = entry._key
-          console.log('entry ',entry)
-          console.log('editing ',vm.currentEntryKey)
           vm.url = entry.url
           vm.port = entry.portapi
           vm.user = entry.userapi
@@ -98,17 +95,15 @@ define([
           vm.entry.portapi = vm.port
           vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
+          await $credentialService.checkRawConnection(vm.entry)
           delete vm.entry['$$hashKey']
-          // delete vm.entry._key
           delete vm.entry._user
-          console.log('processing update ',vm.currentEntryKey)
-
           const updatedEntry = await $credentialService.update(vm.currentEntryKey, vm.entry)
           vm.currentEntryKey = updatedEntry.data._key
-          console.log('updated entry ',updatedEntry)
           vm.edit = false
+          if(!$scope.$$phase) $scope.$digest()
         } catch (err) {
-          console.error('err ',err)
+          console.error('[update] ',err)
         }
       }
       /**

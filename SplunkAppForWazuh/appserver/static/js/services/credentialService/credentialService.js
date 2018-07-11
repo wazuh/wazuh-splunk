@@ -195,6 +195,21 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     }
 
     /**
+     * Checks a connection passed directly
+     * @param {Object} api 
+     */
+    const checkRawConnection = async (api) => {
+      try {
+        const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+        const result = await $apiService.get(checkConnectionEndpoint)
+        console.log('checkrawconnection went OK ',result)
+        return
+      } catch(err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
      * Check if connection with API was successful, also returns the whole needed information about it
      * @param {String} key 
      */
@@ -257,7 +272,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       select: select,
       remove: remove,
       update: update,
-      getSelectedApi: getSelectedApi
+      getSelectedApi: getSelectedApi,
+      checkRawConnection:checkRawConnection
     }
     return methods;
   })

@@ -27,12 +27,11 @@ define(['../module'], function (module) {
         let result = await $http.get(getWellFormedUri(endpoint))
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
-          if (result.error) {
-            throw new Error('Error from backend: ' + result.error)
+          if (result.data.error) {
+            throw new Error('Error from backend: ' + result.data.error)
           }
-
-        } else if (result.error) {
-          throw new Error('Error from backend: ' + result.error)
+        } else if (result.data.error) {
+          throw new Error('Error from backend: ' + result.data.error)
         }
         return result
       } catch (err) {
