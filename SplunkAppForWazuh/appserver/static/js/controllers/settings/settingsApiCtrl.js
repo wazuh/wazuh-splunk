@@ -4,12 +4,13 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($credentialService, apiList) {
+    controllers.controller('settingsApiCtrl', function ($scope,$credentialService, apiList) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
       vm.showForm = (apiList.length === 0) ? true : false
       vm.entry = {}
+      vm.currentEntryKey = ''
       const epoch = (new Date).getTime()
       // Validation RegEx
       const userRegEx = new RegExp(/^.{3,100}$/)
@@ -26,10 +27,7 @@ define([
         vm.apiList = apiList
         vm.selectedApi = []
         vm.saveOrUpdate = 'Add'
-        if (vm.apiList && vm.apiList.length > 0)
-          vm.visibleTable = true
-        else
-          vm.visibleTable = false
+
       }
 
       /**
@@ -67,6 +65,7 @@ define([
        */
       vm.addNewApiClick = () => {
         vm.showForm = !vm.showForm
+        vm.edit = false
       }
 
       /**
@@ -76,6 +75,10 @@ define([
       vm.editEntry = (entry) => {
         try {
           vm.edit = !vm.edit
+          vm.showForm = false
+          vm.currentEntryKey = entry._key
+          console.log('entry ',entry)
+          console.log('editing ',vm.currentEntryKey)
           vm.url = entry.url
           vm.port = entry.portapi
           vm.user = entry.userapi
@@ -95,12 +98,15 @@ define([
           vm.entry.portapi = vm.port
           vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
-          const key = vm.entry._key
           delete vm.entry['$$hashKey']
-          delete vm.entry._key
+          // delete vm.entry._key
           delete vm.entry._user
-          delete vm.entry.filter
-          await $credentialService.update(key, vm.entry)
+          console.log('processing update ',vm.currentEntryKey)
+
+          const updatedEntry = await $credentialService.update(vm.currentEntryKey, vm.entry)
+          vm.currentEntryKey = updatedEntry.data._key
+          console.log('updated entry ',updatedEntry)
+          vm.edit = false
         } catch (err) {
           console.error('err ',err)
         }
@@ -157,11 +163,10 @@ define([
           await $credentialService.chose(entry._key)
           for(let item of vm.apiList) {
             if (item._key === entry._key) {
-              item.selected = true
+               item.selected = true
             }
           }
           entry.selected = true
-          vm.visibleTable = true
         } catch (err) {
           console.error('[selectManager]: ', err)
         }
@@ -199,7 +204,8 @@ define([
             if (apiList && apiList.length === 1) {
               await vm.selectManager(result.data)
             }
-            vm.visibleTable = true
+            vm.showForm = false
+            if(!$scope.$$phase) $scope.$digest()
           } catch (err) {
             await $credentialService.remove(result.data._key)
           }

@@ -55,8 +55,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const update = async (key, newRegister) => {
       try {
-        await post("storage/collections/data/credentials/" + key, newRegister)
-        return
+        const result = await post("storage/collections/data/credentials/" + key, newRegister)
+        return result
       } catch (err) {
         return Promise.reject(err)
       }
