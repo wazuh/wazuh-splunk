@@ -281,10 +281,6 @@ define([
       let overviewElement7 = ''
       let overviewElement8 = ''
       let overviewElement9 = ''
-      let overviewElement10 = ''
-      let overviewElement11 = ''
-      let overviewElement12 = ''
-      let overviewElement13 = ''
       let overviewElement14 = ''
 
       /**
@@ -310,10 +306,6 @@ define([
         overviewElement7 = null
         overviewElement8 = null
         overviewElement9 = null
-        overviewElement10 = null
-        overviewElement11 = null
-        overviewElement12 = null
-        overviewElement13 = null
         overviewElement14 = null
 
       })
@@ -794,131 +786,6 @@ define([
         "managerid": "search9" + epoch,
         "el": $('#overviewElement9')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-
-      overviewElement10 = new SingleElement({
-        "id": "overviewElement10" + epoch,
-        "trellis.size": "medium",
-        "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
-        "numberPrecision": "0",
-        "useColors": "1",
-        "unitPosition": "after",
-        "colorMode": "block",
-        "trendColorInterpretation": "standard",
-        "trellis.enabled": "0",
-        "colorBy": "value",
-        "trendDisplayMode": "absolute",
-        "drilldown": "all",
-        "showTrendIndicator": "1",
-        "useThousandSeparators": "1",
-        "showSparkline": "1",
-        "rangeValues": "[0]",
-        "height": "50",
-        "trellis.scales.shared": "1",
-        "managerid": "search10" + epoch,
-        "el": $('#overviewElement10')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-      overviewElement10.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
-        }
-      });
-
-      overviewElement11 = new SingleElement({
-        "id": "overviewElement11" + epoch,
-        "trellis.size": "medium",
-        "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
-        "numberPrecision": "0",
-        "useColors": "1",
-        "unitPosition": "after",
-        "colorMode": "block",
-        "trendColorInterpretation": "standard",
-        "trellis.enabled": "0",
-        "colorBy": "value",
-        "trendDisplayMode": "absolute",
-        "drilldown": "all",
-        "showTrendIndicator": "1",
-        "useThousandSeparators": "1",
-        "showSparkline": "1",
-        "rangeValues": "[0]",
-        "height": "50",
-        "trellis.scales.shared": "1",
-        "managerid": "search11" + epoch,
-        "el": $('#overviewElement11')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-      overviewElement11.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
-        }
-      });
-
-      overviewElement12 = new SingleElement({
-        "id": "overviewElement12" + epoch,
-        "trellis.size": "medium",
-        "rangeColors": "[\"0x65a637\",\"0x555\"]",
-        "numberPrecision": "0",
-        "useColors": "1",
-        "unitPosition": "after",
-        "colorMode": "block",
-        "trendColorInterpretation": "standard",
-        "trellis.enabled": "0",
-        "colorBy": "value",
-        "trendDisplayMode": "absolute",
-        "drilldown": "all",
-        "showTrendIndicator": "1",
-        "useThousandSeparators": "1",
-        "showSparkline": "1",
-        "rangeValues": "[0]",
-        "height": "50",
-        "trellis.scales.shared": "1",
-        "managerid": "search12" + epoch,
-        "el": $('#overviewElement12')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-      overviewElement12.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
-        }
-      });
-
-      overviewElement13 = new SingleElement({
-        "id": "overviewElement13" + epoch,
-        "trellis.size": "medium",
-        "rangeColors": "[\"0x65a637\",\"0xd93f3c\"]",
-        "numberPrecision": "0",
-        "useColors": "1",
-        "unitPosition": "after",
-        "colorMode": "block",
-        "trendColorInterpretation": "standard",
-        "trellis.enabled": "0",
-        "colorBy": "value",
-        "trendDisplayMode": "absolute",
-        "drilldown": "all",
-        "showTrendIndicator": "1",
-        "useThousandSeparators": "1",
-        "showSparkline": "1",
-        "rangeValues": "[0]",
-        "height": "50",
-        "trellis.scales.shared": "1",
-        "managerid": "search13" + epoch,
-        "el": $('#overviewElement13')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-      overviewElement13.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
-        }
-      });
 
       overviewElement14 = new TableElement({
         "id": "overviewElement14" + epoch,
