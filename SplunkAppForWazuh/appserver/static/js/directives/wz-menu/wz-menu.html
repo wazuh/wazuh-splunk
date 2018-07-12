@@ -28,7 +28,7 @@
     <!-- Case 1a - There's API -->
     <span ng-show="theresAPI" class="small" tooltip="Selected API" tooltip-placement="bottom">
       <i class="fa fa-star fa-fw wz-color-orange" aria-hidden="true"></i>{{currentAPI}}
-      <span ng-if="showSelector">&nbsp;&ndash;&nbsp;</span>
+      <span>&nbsp;&ndash;&nbsp;</span>
     </span>
 
     <!-- Case 1b - There's no API -->
@@ -37,21 +37,11 @@
       <span ng-if="showSelector">&nbsp;&ndash;&nbsp;</span>
     </span>
 
-    <!-- Case 2a - There's pattern and there's more than one -->
-    <span ng-if="showSelector" ng-show="theresPattern && patternList && patternList.length > 1" class="small" tooltip="Selected index pattern"
-      tooltip-placement="bottom">
-      <select class="wz-menu-select" ng-model="currentSelectedPattern" ng-change="changePattern(currentSelectedPattern)" aria-label="Index pattern selector"
-        placeholder="Index pattern">
-        <option class="wz-menu-select-option" ng-repeat="pattern in patternList" value="{{pattern.id}}">
-          {{pattern.title}}
-        </option>
-      </select>
-    </span>
 
     <!-- Case 2b - There's pattern and there's only one-->
-    <span ng-if="showSelector" ng-show="theresPattern && patternList && patternList.length === 1" class="small" tooltip="Selected index pattern"
+    <span ng-if="theresAPI" class="small" tooltip="Selected index pattern"
       tooltip-placement="bottom">
-      {{patternList[0].title}}
+      {{currentIndex}}
     </span>
 
     <!-- Settings tab button -->

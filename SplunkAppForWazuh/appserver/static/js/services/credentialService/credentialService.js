@@ -1,6 +1,6 @@
 define(['../module', 'splunkjs/mvc'], function (module, mvc) {
   'use strict';
-  module.service('$credentialService', function ($http, $apiService) {
+  module.service('$credentialService', function ($apiService, $currentApiIndexService) {
     const service = mvc.createService({ owner: "nobody" })
 
     /**
@@ -16,6 +16,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         })
       })
     }
+
     /**
      * POST method
      * @param {String} url 
@@ -65,10 +66,10 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     // -------- CRUD METHODS ------------ //
 
     /**
-     * Returns the already selected API from sessionStorage
+     * Returns the already selected API
      */
     const getSelectedApi = () => {
-      return sessionStorage.selectedApi
+      return $currentApiIndexService.getAPI()
     }
 
     /**
@@ -78,13 +79,13 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const remove = async (key) => {
       try {
         const api = await select(key)
-        if (sessionStorage.selectedApi && JSON.parse(sessionStorage.selectedApi) && JSON.parse(sessionStorage.selectedApi).url === api.url) {
-          sessionStorage.selectedApi = ''
+        if ($currentApiIndexService.getAPI() && JSON.parse($currentApiIndexService.getAPI()) && JSON.parse($currentApiIndexService.getAPI()).url === api.url) {
+          $currentApiIndexService.removeAPI()
         }
         await deletes("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
-        console.error('[$credentialService][remove] ',err)
+        console.error('[$credentialService][remove] ', err)
         return Promise.reject(err)
       }
     }
@@ -111,8 +112,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const apiList = await getApiList()
         for (let api of apiList) {
           if (api._key === key) {
-            sessionStorage.selectedApi = ''
-            sessionStorage.selectedApi = JSON.stringify(api)
+            $currentApiIndexService.setAPI(JSON.stringify(api))
           }
         }
         return
@@ -127,7 +127,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const deselectAllApis = () => {
       try {
-        sessionStorage.selectedApi = ''
+        $currentApiIndexService.removeAPI()
         return
       } catch (err) {
         return Promise.reject(err)
@@ -153,7 +153,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const getApiList = async () => {
       try {
         const apiList = await get("storage/collections/data/credentials/")
-        const selectedApi = sessionStorage.selectedApi
+        const selectedApi = $currentApiIndexService.getAPI()
         for (let i = 0; i < apiList.length; i++) {
           if (selectedApi && typeof selectedApi === 'string' && typeof JSON.parse(selectedApi) === 'object' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
             apiList[i].selected = true
@@ -171,7 +171,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const checkSelectedApiConnection = async () => {
       try {
-        const currentApi = sessionStorage.selectedApi
+        const currentApi = $currentApiIndexService.getAPI()
         if (!currentApi) { return Promise.reject(new Error('No selected API in sessionStorage')) }
         const api = await checkApiConnection(JSON.parse(currentApi)._key)
         let selectedIndex = IndexService.get()
@@ -200,11 +200,15 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const checkRawConnection = async (api) => {
       try {
-        const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const result = await $apiService.get(checkConnectionEndpoint)
-        console.log('checkrawconnection went OK ',result)
-        return
-      } catch(err) {
+        if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
+          const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+          const result = await $apiService.get(checkConnectionEndpoint)
+          console.log('checkrawconnection went OK ', result)
+          return
+        } else {
+          throw new Error('Incomplete object passed.')
+        }
+      } catch (err) {
         return Promise.reject(err)
       }
     }
@@ -221,8 +225,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
         const clusterData = await $apiService.get(checkConnectionEndpoint)
-        
-        if(clusterData.data.error) {
+
+        if (clusterData.data.error) {
           return Promise.reject(clusterData.data.error)
         }
         api.filter = []
@@ -245,13 +249,16 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
             await update(api._key, api)
           }
         } else {
+          console.log('cluster not enabled')
           if (api.cluster) {
             api.cluster = false
             await update(api._key, api)
           }
+          console.log('pushing manager.name filter')
           api.filter.push('manager.name')
           api.filter.push(api.managerName)
         }
+        console.log('returning API ', api)
         return api
       } catch (err) {
         return Promise.reject(err)
@@ -273,7 +280,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       remove: remove,
       update: update,
       getSelectedApi: getSelectedApi,
-      checkRawConnection:checkRawConnection
+      checkRawConnection: checkRawConnection
     }
     return methods;
   })

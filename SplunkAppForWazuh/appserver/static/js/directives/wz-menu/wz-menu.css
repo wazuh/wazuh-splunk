@@ -30,7 +30,7 @@
 
 /* Style to override the font on the toolbar */
 .wz-menu-content {
-  font-size: 14px;
+  font-size: 14px !important;
 }
 
 .wz-menu-button {

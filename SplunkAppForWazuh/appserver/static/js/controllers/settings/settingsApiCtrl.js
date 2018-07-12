@@ -4,14 +4,14 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope,$credentialService, apiList, toastr) {
+    controllers.controller('settingsApiCtrl', function ($scope, $credentialService, apiList, toastr) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
       vm.showForm = (apiList.length === 0) ? true : false
       vm.entry = {}
       vm.currentEntryKey = ''
-      console.log('TOASTR ',toastr)
+      console.log('TOASTR ', toastr)
       const epoch = (new Date).getTime()
       // Validation RegEx
       const userRegEx = new RegExp(/^.{3,100}$/)
@@ -41,7 +41,7 @@ define([
             vm.apiList.splice(index, 1);
             await $credentialService.remove(entry._key)
           }
-          toastr.success('Manager removed','Success')
+          toastr.success('Manager removed', 'Success')
         } catch (err) {
           console.error(err)
         }
@@ -54,10 +54,10 @@ define([
       vm.checkManager = async (entry) => {
         try {
           await $credentialService.checkApiConnection(entry._key)
-          toastr.success('Connection success','Success')
+          toastr.success('Connection success', 'Success')
 
         } catch (err) {
-          toastr.error('Cannot connect with API','Error')
+          toastr.error('Cannot connect with API', 'Error')
         }
       }
 
@@ -83,7 +83,7 @@ define([
           vm.user = entry.userapi
           vm.entry = entry
         } catch (err) {
-          toastr.error('Could not open API form','Error')
+          toastr.error('Could not open API form', 'Error')
         }
       }
 
@@ -103,10 +103,10 @@ define([
           const updatedEntry = await $credentialService.update(vm.currentEntryKey, vm.entry)
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
-          if(!$scope.$$phase) $scope.$digest()
-          toastr.success('Updated API','Success')
+          if (!$scope.$$phase) $scope.$digest()
+          toastr.success('Updated API', 'Success')
         } catch (err) {
-          toastr.error('Could not update API','Error')
+          toastr.error('Could not update API', 'Error')
         }
       }
       /**
@@ -159,18 +159,20 @@ define([
         try {
           await $credentialService.checkApiConnection(entry._key)
           await $credentialService.chose(entry._key)
-          for(let item of vm.apiList) {
+          for (let item of vm.apiList) {
             if (item._key === entry._key) {
-               item.selected = true
+              vm.apiList.map(api => api.selected = false)
+              item.selected = true
             }
           }
           entry.selected = true
-          toastr.success('Selected API','Success')
-          if(!$scope.$$phase) $scope.$digest()
+          toastr.success('Selected API', 'Success')
+          if (!$scope.$$phase) $scope.$digest()
+          $scope.$emit('updatedAPI', () => { })
 
         } catch (err) {
           console.error('[selectManager]: ', err)
-          toastr.error('Could not select manager','Error')
+          toastr.error('Could not select manager', 'Error')
         }
       }
 
@@ -179,7 +181,7 @@ define([
        */
       vm.submitApiForm = async () => {
         // When the Submit button is clicked, get all the form fields by accessing input values
-        toastr.info('Adding new API','Info')
+        toastr.info('Adding new API', 'Info')
 
         const form_url = vm.url
         const form_apiport = vm.port
@@ -209,16 +211,16 @@ define([
               await vm.selectManager(result.data)
             }
             vm.showForm = false
-            if(!$scope.$$phase) $scope.$digest()
-            toastr.success('Added new API','Success')
+            if (!$scope.$$phase) $scope.$digest()
+            toastr.success('Added new API', 'Success')
 
           } catch (err) {
             await $credentialService.remove(result.data._key)
-            toastr.error('Error at adding new API','Error')
+            toastr.error('Error at adding new API', 'Error')
 
           }
         } else {
-          toastr.error('Invalid format','Error')
+          toastr.error('Invalid format', 'Error')
         }
       }
       vm.init()

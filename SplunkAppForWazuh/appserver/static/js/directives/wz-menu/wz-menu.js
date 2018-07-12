@@ -13,9 +13,21 @@ define(['../module'], function (directives) {
   'use strict';
   directives.directive('wzMenu', function () {
     return {
-      controller: function ($scope) {
-       },
+      controller: function ($scope, $currentApiIndexService) {
+        $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
+        if ($scope.theresAPI && typeof $scope.theresAPI === 'string') {
+          $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
+        }
+        $scope.currentIndex = $currentApiIndexService.getIndex()
+        // Listens for changes in the selected API
+        $scope.$on('updatedAPI', () => {
+          $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
+          if ($scope.theresAPI && typeof $currentApiIndexService.getAPI() === 'string') {
+            $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
+          }
+        })
+      },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html'
-    };
+    }
   })
 })
