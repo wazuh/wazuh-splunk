@@ -6,7 +6,7 @@ define(['../module'], function (module) {
       /**
     * Delete selected index
     */
-      remove: () => {
+      removeIndex: () => {
         sessionStorage.selectedIndex = ''
       },
 
@@ -14,7 +14,7 @@ define(['../module'], function (module) {
        * Select an Index by name
        * @param {String} index 
        */
-      select: (index) => {
+      selectIndex: (index) => {
         sessionStorage.selectedIndex = index
       },
 
@@ -22,8 +22,31 @@ define(['../module'], function (module) {
        * Returns currently selected index
        * @param {String} index 
        */
-      get: () => {
-        return (sessionStorage.selectedIndex !== '') ? sessionStorage.selectedIndex  : 'wazuh'
+      getIndex: () => {
+        return (sessionStorage.selectedIndex !== '') ? sessionStorage.selectedIndex : 'wazuh'
+      },
+
+      /**
+      * Delete selected API
+      */
+      removeAPI: () => {
+        sessionStorage.selectedAPI = ''
+      },
+
+      /**
+       * Select an API
+       * @param {String} API 
+       */
+      selectAPI: (API) => {
+        sessionStorage.selectedAPI = API
+      },
+
+      /**
+       * Returns currently selected API
+       * @param {String} API 
+       */
+      getAPI: () => {
+        return sessionStorage.selectedAPI
       }
     }
 
