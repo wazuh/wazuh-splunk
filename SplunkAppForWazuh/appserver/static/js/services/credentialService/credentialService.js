@@ -85,7 +85,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         await deletes("storage/collections/data/credentials/" + key)
         return
       } catch (err) {
-        console.error('[$credentialService][remove] ',err)
+        console.error('[$credentialService][remove] ', err)
         return Promise.reject(err)
       }
     }
@@ -200,11 +200,15 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const checkRawConnection = async (api) => {
       try {
-        const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const result = await $apiService.get(checkConnectionEndpoint)
-        console.log('checkrawconnection went OK ',result)
-        return
-      } catch(err) {
+        if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
+          const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+          const result = await $apiService.get(checkConnectionEndpoint)
+          console.log('checkrawconnection went OK ', result)
+          return
+        } else {
+          throw new Error('Incomplete object passed.')
+        }
+      } catch (err) {
         return Promise.reject(err)
       }
     }
@@ -221,8 +225,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
 
         const clusterData = await $apiService.get(checkConnectionEndpoint)
-        
-        if(clusterData.data.error) {
+
+        if (clusterData.data.error) {
           return Promise.reject(clusterData.data.error)
         }
         api.filter = []
@@ -254,7 +258,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
           api.filter.push('manager.name')
           api.filter.push(api.managerName)
         }
-        console.log('returning API ',api)
+        console.log('returning API ', api)
         return api
       } catch (err) {
         return Promise.reject(err)
@@ -276,7 +280,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       remove: remove,
       update: update,
       getSelectedApi: getSelectedApi,
-      checkRawConnection:checkRawConnection
+      checkRawConnection: checkRawConnection
     }
     return methods;
   })
