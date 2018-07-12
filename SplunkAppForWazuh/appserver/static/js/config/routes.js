@@ -9,7 +9,14 @@ define(['./module'], function (module) {
     })
     $stateProvider
       .state('overview', { templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html', onEnter: ($navigationService) => { $navigationService.storeRoute('overview'); } })
-      .state('general', { templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html', onEnter: ($navigationService) => { $navigationService.storeRoute('general'); } })
+      // Overview - General
+      .state('general', { 
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('general') },
+        controller: 'overviewGeneralCtrl',
+        controllerAs: 'ogc',
+      })
+      // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager'); } })
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api'); } })

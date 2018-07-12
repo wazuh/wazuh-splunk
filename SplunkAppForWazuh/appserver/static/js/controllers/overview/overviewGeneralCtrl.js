@@ -66,77 +66,15 @@ define([
   PostProcessManager,
   UrlTokenModel) {
     'use strict';
-    controllers.controller('overviewGeneralCtrl', function ($scope) {
-      $scope.message = 'Overview'
-      // 
-      // TOKENS
-      //
-      let pageLoading = true
-      let overviewSearch1 = ''
-      let overviewSearch2 = ''
-      let overviewSearch3 = ''
-      let overviewSearch4 = ''
-      let overviewSearch5 = ''
-      let overviewSearch6 = ''
-      let overviewSearch7 = ''
-      let overviewSearch8 = ''
-      let overviewSearch9 = ''
-      let overviewSearch10 = ''
-      let overviewSearch11 = ''
-      let overviewSearch12 = ''
-      let overviewSearch13 = ''
-      let overviewSearch14 = ''
-      let overviewElement1 = ''
-      let overviewElement2 = ''
-      let overviewElement3 = ''
-      let overviewElement4 = ''
-      let overviewElement5 = ''
-      let overviewElement6 = ''
-      let overviewElement7 = ''
-      let overviewElement8 = ''
-      let overviewElement9 = ''
-      let overviewElement10 = ''
-      let overviewElement11 = ''
-      let overviewElement12 = ''
-      let overviewElement13 = ''
-      let overviewElement14 = ''
-      $scope.$on('$destroy', () => {
-        overviewSearch1 = null
-        overviewSearch2 = null
-        overviewSearch3 = null
-        overviewSearch4 = null
-        overviewSearch5 = null
-        overviewSearch6 = null
-        overviewSearch7 = null
-        overviewSearch8 = null
-        overviewSearch9 = null
-        overviewSearch10 = null
-        overviewSearch11 = null
-        overviewSearch12 = null
-        overviewSearch13 = null
-        overviewSearch14 = null
-        overviewElement1 = null
-        overviewElement2 = null
-        overviewElement3 = null
-        overviewElement4 = null
-        overviewElement5 = null
-        overviewElement6 = null
-        overviewElement7 = null
-        overviewElement8 = null
-        overviewElement9 = null
-        overviewElement10 = null
-        overviewElement11 = null
-        overviewElement12 = null
-        overviewElement13 = null
-        overviewElement14 = null
 
-      })
-      // Create token namespaces
+    controllers.controller('overviewGeneralCtrl', function ($scope) {
+      const vm = this
       const epoch = (new Date).getTime()
-      var urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
+      // Create token namespaces
+      const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
       mvc.Components.registerInstance('url' + epoch, urlTokenModel);
-      var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-      var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
 
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON());
@@ -165,76 +103,221 @@ define([
         submittedTokenModel.unset(name);
       }
 
-
-
-      //
-      // SEARCH MANAGERS
-      //
-
-
-      overviewSearch1 = new SearchManager({
-        "id": "search1" + epoch,
+      // Listen for a change to the token tokenTotalAlerts value
+      const searchTopAgent = new SearchManager({
+        "id": "searchTopAgent" + epoch,
         "cancelOnUnload": true,
-        "earliest_time": "$when.earliest$",
         "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
         "status_buckets": 0,
+        "search": "index=wazuh| stats count",
         "latest_time": "$when.latest$",
-        "search": "index=wazuh | stats count",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
         "tokenDependencies": {
         },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+        "runWhenTimeIsUndefined": true
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      overviewSearch2 = new SearchManager({
-        "id": "search2" + epoch,
+      new SearchEventHandler({
+        managerid: "searchTopAgent" + epoch,
+        event: "done",
+        conditions: [
+          {
+            attr: "any",
+            value: "*",
+            actions: [
+              { "type": "set", "token": "tokHTML", "value": "$result.count$" },
+            ]
+          }
+        ]
+      })
+
+      submittedTokenModel.on("change:tokHTML", (model, tokHTML, options) => {
+        const tokHTMLJS = submittedTokenModel.get("tokHTML");
+        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
+          console.log('first tokhtmljs ', tokHTMLJS)
+          vm.totalAlerts = tokHTMLJS
+          if(!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+      const searchLevel12 = new SearchManager({
+        "id": "searchLevel12" + epoch,
         "cancelOnUnload": true,
-        "earliest_time": "$when.earliest$",
         "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "latest_time": "$when.latest$",
         "search": "index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
         "tokenDependencies": {
         },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+        "runWhenTimeIsUndefined": true
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      overviewSearch3 = new SearchManager({
-        "id": "search3" + epoch,
+      new SearchEventHandler({
+        managerid: "searchLevel12" + epoch,
+        event: "done",
+        conditions: [
+          {
+            attr: "any",
+            value: "*",
+            actions: [
+              { "type": "set", "token": "level12token", "value": "$result.count$" },
+            ]
+          }
+        ]
+      })
+
+      submittedTokenModel.on("change:level12token", (model, level12token, options) => {
+        const tokHTMLJS = submittedTokenModel.get("level12token");
+        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
+          console.log('second tokhtmljs ', tokHTMLJS)
+          vm.levelTwelve = tokHTMLJS
+          if(!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+
+      const searchAuthFailure = new SearchManager({
+        "id": "searchAuthFailure" + epoch,
         "cancelOnUnload": true,
-        "earliest_time": "$when.earliest$",
         "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "latest_time": "$when.latest$",
         "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
-
-      overviewSearch4 = new SearchManager({
-        "id": "search4" + epoch,
-        "cancelOnUnload": true,
-        "earliest_time": "$when.earliest$",
-        "sample_ratio": 1,
-        "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
         "tokenDependencies": {
         },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+        "runWhenTimeIsUndefined": true
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      new SearchEventHandler({
+        managerid: "searchAuthFailure" + epoch,
+        event: "done",
+        conditions: [
+          {
+            attr: "any",
+            value: "*",
+            actions: [
+              { "type": "set", "token": "authFailureToken", "value": "$result.count$" },
+            ]
+          }
+        ]
+      })
+
+      submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
+        const tokHTMLJS = submittedTokenModel.get("authFailureToken");
+        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
+          console.log('second tokhtmljs ', tokHTMLJS)
+          vm.authFailure = tokHTMLJS
+          if(!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+      const searchAuthSuccess = new SearchManager({
+        "id": "searchAuthSuccess" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": true
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      new SearchEventHandler({
+        managerid: "searchAuthSuccess" + epoch,
+        event: "done",
+        conditions: [
+          {
+            attr: "any",
+            value: "*",
+            actions: [
+              { "type": "set", "token": "authSuccessToken", "value": "$result.count$" },
+            ]
+          }
+        ]
+      })
+
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
+        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
+          console.log('second tokhtmljs ', tokHTMLJS)
+          vm.authSuccess = tokHTMLJS
+          if(!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+      let pageLoading = true
+      let overviewSearch5 = ''
+      let overviewSearch6 = ''
+      let overviewSearch7 = ''
+      let overviewSearch8 = ''
+      let overviewSearch9 = ''
+      let overviewSearch10 = ''
+      let overviewSearch11 = ''
+      let overviewSearch12 = ''
+      let overviewSearch13 = ''
+      let overviewSearch14 = ''
+      let overviewElement1 = ''
+      let overviewElement2 = ''
+      let overviewElement3 = ''
+      let overviewElement4 = ''
+      let overviewElement5 = ''
+      let overviewElement6 = ''
+      let overviewElement7 = ''
+      let overviewElement8 = ''
+      let overviewElement9 = ''
+      let overviewElement10 = ''
+      let overviewElement11 = ''
+      let overviewElement12 = ''
+      let overviewElement13 = ''
+      let overviewElement14 = ''
+
+      /**
+       * When controller is destroyed
+       */
+      $scope.$on('$destroy', () => {
+        overviewSearch5 = null
+        overviewSearch6 = null
+        overviewSearch7 = null
+        overviewSearch8 = null
+        overviewSearch9 = null
+        overviewSearch10 = null
+        overviewSearch11 = null
+        overviewSearch12 = null
+        overviewSearch13 = null
+        overviewSearch14 = null
+        overviewElement1 = null
+        overviewElement2 = null
+        overviewElement3 = null
+        overviewElement4 = null
+        overviewElement5 = null
+        overviewElement6 = null
+        overviewElement7 = null
+        overviewElement8 = null
+        overviewElement9 = null
+        overviewElement10 = null
+        overviewElement11 = null
+        overviewElement12 = null
+        overviewElement13 = null
+        overviewElement14 = null
+
+      })
+
 
       overviewSearch5 = new SearchManager({
         "id": "search5" + epoch,
@@ -410,7 +493,7 @@ define([
         id: 'dashboard' + epoch,
         el: $('.dashboard-body'),
         showTitle: true,
-        editable: true
+        editable: false
       }, { tokens: true }).render();
 
 
@@ -887,7 +970,6 @@ define([
       }
 
       submitTokens();
-
       //
       // DASHBOARD READY
       //
