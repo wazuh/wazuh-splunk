@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict';
 
-  module.service('$currentApiIndexService', function ($state) {
+  module.service('$currentApiIndexService', function () {
     const service = {
       /**
     * Delete selected index
@@ -23,22 +23,25 @@ define(['../module'], function (module) {
        * @param {String} index 
        */
       getIndex: () => {
-        return (sessionStorage.selectedIndex !== '') ? sessionStorage.selectedIndex : 'wazuh'
+        return (sessionStorage.selectedIndex === '' || !sessionStorage.selectedIndex) ? 'wazuh' :  sessionStorage.selectedIndex
       },
 
       /**
       * Delete selected API
       */
       removeAPI: () => {
-        sessionStorage.selectedAPI = ''
+        delete sessionStorage.selectedAPI
       },
 
       /**
        * Select an API
        * @param {String} API 
        */
-      selectAPI: (API) => {
+      setAPI: (API) => {
+        console.log('setting API')
+        delete sessionStorage.selectedAPI
         sessionStorage.selectedAPI = API
+        console.log(sessionStorage.selectedAPI)
       },
 
       /**

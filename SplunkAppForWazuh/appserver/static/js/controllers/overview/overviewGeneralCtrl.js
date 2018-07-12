@@ -273,15 +273,9 @@ define([
         overviewSearch7 = null
         overviewSearch8 = null
         overviewSearch9 = null
-        overviewSearch10 = null
-        overviewSearch11 = null
-        overviewSearch12 = null
-        overviewSearch13 = null
+       
         overviewSearch14 = null
-        overviewElement1 = null
-        overviewElement2 = null
-        overviewElement3 = null
-        overviewElement4 = null
+       
         overviewElement5 = null
         overviewElement6 = null
         overviewElement7 = null
