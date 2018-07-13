@@ -587,12 +587,8 @@ define([
       }
 
       submitTokens();
-      //
-      // DASHBOARD READY
-      //
 
       DashboardController.ready();
 
-    });
-  });
-
+    })
+  })

@@ -21,40 +21,33 @@
   </div>
 
   <!-- second row  -->
-  <div id="row2" layout="row">
-    <div layout="column" flex=70>
-      <div layout="row">
-
-        <!-- second row - first vis -->
-        <md-card class="wz-md-card">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Events over time</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='eventsOverTimeElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
+  <div id="row2" layout="row" style="height:400px !important">
+    <div flex layout="column">
+      <!-- second row - first vis -->
+      <md-card flex class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Events over time</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='eventsOverTimeElement'></div>
+        </md-card-content>
+      </md-card>
     </div>
-    <div layout="column">
-      <div layout="row" flex=30>
-        <!-- second row - second vis -->
-        <md-card class="wz-md-card">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top user owners</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topUserOwnersElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
-      <div layout="row" flex=30>
-        <md-card class="wz-md-card">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top group owners</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topGroupOwnersElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
+    <div flex="30" layout="column">
+      <!-- second row - second vis -->
+      <md-card flex class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top user owners</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='topUserOwnersElement'></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top group owners</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='topGroupOwnersElement'></div>
+        </md-card-content>
+      </md-card>
     </div>
   </div>
 
