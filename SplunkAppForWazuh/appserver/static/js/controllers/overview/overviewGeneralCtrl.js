@@ -204,7 +204,6 @@ define([
         overviewSearch6 = null
         overviewSearch7 = null
         overviewSearch8 = null
-        overviewSearch9 = null
         element9 = null
         overviewSearch14 = null
         search9 = null
@@ -212,7 +211,6 @@ define([
         overviewElement6 = null
         overviewElement7 = null
         overviewElement8 = null
-        overviewElement9 = null
         overviewElement14 = null
 
       })
