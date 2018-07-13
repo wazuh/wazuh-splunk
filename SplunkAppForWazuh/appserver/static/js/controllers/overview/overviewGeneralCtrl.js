@@ -72,8 +72,58 @@ define([
         submittedTokenModel.unset(name);
       }
 
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
+        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
+          console.log('second tokhtmljs ', tokHTMLJS)
+          vm.authSuccess = tokHTMLJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+      let pageLoading = true
+
+      let overviewSearch5 = ''
+      let overviewSearch6 = ''
+      let overviewSearch7 = ''
+      let overviewSearch8 = ''
+      let overviewSearch9 = ''
+      let overviewSearch14 = ''
+      let searchTopAgent = ''
+      let searchLevel12 = ''
+      let searchAuthFailure = ''
+      let searchAuthSuccess = ''
+      let overviewElement5 = ''
+      let overviewElement6 = ''
+      let overviewElement7 = ''
+      let overviewElement8 = ''
+      let overviewElement9 = ''
+      let overviewElement14 = ''
+
+      /**
+       * When controller is destroyed
+       */
+      $scope.$on('$destroy', () => {
+        overviewSearch5 = null
+        overviewSearch6 = null
+        overviewSearch7 = null
+        overviewSearch8 = null
+        overviewSearch9 = null
+
+        overviewSearch14 = null
+
+        overviewElement5 = null
+        overviewElement6 = null
+        overviewElement7 = null
+        overviewElement8 = null
+        overviewElement9 = null
+        overviewElement14 = null
+
+      })
+
+
       // Listen for a change to the token tokenTotalAlerts value
-      const searchTopAgent = new SearchManager({
+      searchTopAgent = new SearchManager({
         "id": "searchTopAgent" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -108,11 +158,11 @@ define([
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           console.log('first tokhtmljs ', tokHTMLJS)
           vm.totalAlerts = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
+          if (!$scope.$$phase) $scope.$digest()
         }
       })
 
-      const searchLevel12 = new SearchManager({
+      searchLevel12 = new SearchManager({
         "id": "searchLevel12" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -147,12 +197,12 @@ define([
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           console.log('second tokhtmljs ', tokHTMLJS)
           vm.levelTwelve = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
+          if (!$scope.$$phase) $scope.$digest()
         }
       })
 
 
-      const searchAuthFailure = new SearchManager({
+      searchAuthFailure = new SearchManager({
         "id": "searchAuthFailure" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -187,11 +237,11 @@ define([
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           console.log('second tokhtmljs ', tokHTMLJS)
           vm.authFailure = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
+          if (!$scope.$$phase) $scope.$digest()
         }
       })
 
-      const searchAuthSuccess = new SearchManager({
+      searchAuthSuccess = new SearchManager({
         "id": "searchAuthSuccess" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -220,53 +270,6 @@ define([
           }
         ]
       })
-
-      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('second tokhtmljs ', tokHTMLJS)
-          vm.authSuccess = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      let pageLoading = true
-
-      let overviewSearch5 = ''
-      let overviewSearch6 = ''
-      let overviewSearch7 = ''
-      let overviewSearch8 = ''
-      let overviewSearch9 = ''
-      let overviewSearch14 = ''
-      
-      let overviewElement5 = ''
-      let overviewElement6 = ''
-      let overviewElement7 = ''
-      let overviewElement8 = ''
-      let overviewElement9 = ''
-      let overviewElement14 = ''
-
-      /**
-       * When controller is destroyed
-       */
-      $scope.$on('$destroy', () => {
-        overviewSearch5 = null
-        overviewSearch6 = null
-        overviewSearch7 = null
-        overviewSearch8 = null
-        overviewSearch9 = null
-       
-        overviewSearch14 = null
-       
-        overviewElement5 = null
-        overviewElement6 = null
-        overviewElement7 = null
-        overviewElement8 = null
-        overviewElement9 = null
-        overviewElement14 = null
-
-      })
-
 
       overviewSearch5 = new SearchManager({
         "id": "search5" + epoch,
