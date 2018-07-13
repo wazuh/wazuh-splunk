@@ -1,0 +1,100 @@
+<md-content flex layout="column" layout-align="end">
+  <div layout="row" class="layout-row layout-align-end">
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
+  <!-- first row  -->
+  <div layout="row">
+
+    <md-card flex class="wz-metric-color wz-md-card">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>Files added:
+          <span class="wz-text-bold">{{ofc.filesAdded}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Files modified:
+          <span class="wz-text-bold">{{ofc.filesModified}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Files deleted:
+          <span class="wz-text-bold">{{ofc.filesDeleted}}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <!-- second row  -->
+  <div id="row2" layout="row">
+    <div layout="column">
+      <!-- second row - first vis -->
+      <md-card flex="40" class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Events over time</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='eventsOverTimeElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div layout="column">
+      <div layout="row">
+        <!-- second row - second vis -->
+        <md-card flex="60" class="wz-md-card">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top user owners</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topUserOwnersElement'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+      <div layout="row">
+        <md-card flex="60" class="wz-md-card">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top group owners</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topGroupOwnersElement'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- third row  -->
+  <div id="row3" layout='row'>
+    <!-- third row - first vis -->
+    <md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top file changes</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='topFileChangesElement'></div>
+      </md-card-content>
+    </md-card>
+    <!-- third row - second vis -->
+    <md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Root user file changes</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='rootUserFileChangesElement'></div>
+      </md-card-content>
+    </md-card>
+    <!-- third row - third vis -->
+    <md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">World writable modified files</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='wordWritableFilesElement'></div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <!-- fourth row  -->
+  <div id="row5" layout='row'>
+
+    <md-card flex="100" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Events summary</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='eventsSummaryElement'></div>
+      </md-card-content>
+    </md-card>
+
+  </div>
+
+  <!-- end document  -->
+</md-content>
