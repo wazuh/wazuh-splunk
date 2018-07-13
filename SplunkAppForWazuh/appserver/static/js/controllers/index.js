@@ -1,5 +1,6 @@
 define([
   './overview/overviewGeneralCtrl',
+  './overview/overviewFimCtrl',
   './management/managerCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
