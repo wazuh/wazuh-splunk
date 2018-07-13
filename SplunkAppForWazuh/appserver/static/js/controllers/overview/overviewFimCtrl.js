@@ -213,7 +213,7 @@ define([
         const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
         if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
           vm.filesModified = filesModifiedTokenJS
-          console.log('files modified ',filesModifiedTokenJS)
+          console.log('files modified ', filesModifiedTokenJS)
 
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -226,7 +226,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -254,18 +254,18 @@ define([
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
           vm.filesDeleted = filesDeletedTokenJS
-          console.log('files deleted ',filesDeletedTokenJS)
+          console.log('files deleted ', filesDeletedTokenJS)
           if (!$scope.$$phase) $scope.$digest()
         }
       })
 
       eventsOverTimeSearch = new SearchManager({
-        "id": "eventsOverTimeSearch"+epoch,
+        "id": "eventsOverTimeSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh rule.groups=syscheck | timechart span=12h count by rule.description",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -277,7 +277,7 @@ define([
 
 
       eventsOverTimeElement = new ChartElement({
-        "id": "eventsOverTimeElement"+epoch,
+        "id": "eventsOverTimeElement" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -305,11 +305,275 @@ define([
         "charting.axisY.scale": "log",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "eventsOverTimeSearch"+epoch,
+        "managerid": "eventsOverTimeSearch" + epoch,
         "el": $('#eventsOverTimeElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      topUserOwnersSearch = new SearchManager({
+        "id": "topUserOwnersSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
 
+      topUserOwnersElement = new ChartElement({
+        "id": "topUserOwnersElement",
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "pie",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "topUserOwnersSearch" + epoch,
+        "el": $('#topUserOwnersElement')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+
+      topGroupOwnersSearch = new SearchManager({
+        "id": "topGroupOwnersSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      topGroupOwnersElement = new ChartElement({
+        "id": "topGroupOwnersElement" + epoch,
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "column",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "collapsed",
+        "charting.axisTitleY.visibility": "collapsed",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "none",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "topGroupOwnersSearch" + epoch,
+        "el": $('#topGroupOwnersElement')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+
+      topFileChangesSearch = new SearchManager({
+        "id": "topFileChangesSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      topFileChangesElement = new ChartElement({
+        "id": "topFileChangesElement" + epoch,
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "pie",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "topFileChangesSearch" + epoch,
+        "el": $('#topFileChangesElement')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      rootUserFileChangesSearch = new SearchManager({
+        "id": "rootUserFileChangesSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      rootUserFileChangesElement = new ChartElement({
+        "id": "rootUserFileChangesElement" + epoch,
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "pie",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "topFileChangesSearch" + epoch,
+        "el": $('#rootUserFileChangesElement')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+
+      wordWritableFilesSearch = new SearchManager({
+        "id": "wordWritableFilesSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      wordWritableFilesElement = new ChartElement({
+        "id": "wordWritableFilesElement" + epoch,
+        "numberPrecision": "0",
+        "trellis.size": "medium",
+        "unitPosition": "after",
+        "useColors": "1",
+        "colorMode": "block",
+        "trendDisplayMode": "absolute",
+        "colorBy": "value",
+        "trendColorInterpretation": "standard",
+        "drilldown": "all",
+        "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
+        "trellis.enabled": "0",
+        "showTrendIndicator": "1",
+        "trellis.scales.shared": "1",
+        "height": "50",
+        "rangeValues": "[0]",
+        "showSparkline": "1",
+        "useThousandSeparators": "0",
+        "managerid": "wordWritableFilesSearch"+epoch,
+        "el": $('#wordWritableFilesSearch' + epoch)
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      eventsSummarySearch = new SearchManager({
+        "id": "eventsSummarySearch"+epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      eventsSummaryElement = new TableElement({
+        "id": "eventsSummaryElement"+epoch,
+        "dataOverlayMode": "heatmap",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "true",
+        "totalsRow": "true",
+        "wrap": "false",
+        "managerid": "eventsSummarySearch"+epoch,
+        "el": $('#eventsSummaryElement')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
