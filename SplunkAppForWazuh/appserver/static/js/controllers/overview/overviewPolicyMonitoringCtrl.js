@@ -12,7 +12,9 @@ define([
   "splunkjs/mvc/simpleform/formutils",
   "splunkjs/mvc/simplexml/searcheventhandler",
   "splunkjs/mvc/simpleform/input/timerange",
-  "splunkjs/mvc/searchmanager"
+  "splunkjs/mvc/searchmanager",
+  "splunkjs/mvc/simplexml/urltokenmodel"
+
 ], function (controllers,
   mvc,
   utils,
@@ -27,7 +29,8 @@ define([
   SearchEventHandler,
   TimeRangeInput,
   SearchManager,
-  ) {
+  UrlTokenModel
+) {
 
     'use strict';
 
@@ -35,49 +38,59 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       const selectedIndex = $currentApiIndexService.getIndex()
+      const urlTokenModel = new UrlTokenModel()
+      const submitTokens = () => {
+        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+        FormUtils.submitForm({ replaceState: pageLoading })
+      }
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      let baseUrl = ""
+      urlTokenModel.on('url:navigate', () => {
+        defaultTokenModel.set(urlTokenModel.toJSON())
+        if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+          submitTokens()
+        } else {
+          submittedTokenModel.clear()
+        }
+      })
 
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
 
       let pageLoading = true
-      let eventsOverTimeSearch = ''
-      let topUserOwnersSearch = ''
-      let topGroupOwnersSearch = ''
-      let topFileChangesSearch = ''
-      let rootUserFileChangesSearch = ''
-      let wordWritableFilesSearch = ''
-      let eventsSummarySearch = ''
-      let filesAddedSearch = ''
-      let filesModifiedSearch = ''
-      let filesDeletedSearch = ''
+      let input1 = ''
+      let elementOverTime = ''
+      let topPciDss = ''
+      let eventsPerAgent = ''
+      let alertsSummary = ''
+      let cisRequirements = ''
 
-      let eventsOverTimeElement = ''
-      let topUserOwnersElement = ''
-      let topGroupOwnersElement = ''
-      let topFileChangesElement = ''
-      let rootUserFileChangesElement = ''
-      let wordWritableFilesElement = ''
-      let eventsSummaryElement = ''
+      let elementOverTimeSearch = ''
+      let topPciDssSearch = ''
+      let eventsPerAgentSearch = ''
+      let alertsSummarySearch = ''
+      let cisRequirementsSearch = ''
 
       /**
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
-        element1 = null
-        element2 = null
-        element3 = null
-        element4 = null
-        element5 = null
-
-        search1 = null
-        search2 = null
-        search3 = null
-        search4 = null
-        search5 = null
+        elementOverTime = null
+        topPciDss = null
+        eventsPerAgent = null
+        alertsSummary = null
+        cisRequirements = null
+        input1 = null
+        elementOverTimeSearch = null
+        topPciDssSearch = null
+        eventsPerAgentSearch = null
+        alertsSummarySearch = null
+        cisRequirementsSearch = null
       })
 
-      const search1 = new SearchManager({
-        "id": "search1",
+      elementOverTimeSearch = new SearchManager({
+        "id": "elementOverTimeSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -92,8 +105,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search2 = new SearchManager({
-        "id": "search2",
+      cisRequirementsSearch = new SearchManager({
+        "id": "cisRequirementsSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -108,8 +121,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search3 = new SearchManager({
-        "id": "search3",
+      topPciDssSearch = new SearchManager({
+        "id": "topPciDssSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -124,8 +137,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search4 = new SearchManager({
-        "id": "search4",
+      eventsPerAgentSearch = new SearchManager({
+        "id": "eventsPerAgentSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -140,8 +153,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search5 = new SearchManager({
-        "id": "search5",
+      alertsSummarySearch = new SearchManager({
+        "id": "alertsSummarySearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -168,8 +181,8 @@ define([
       // VIEWS: VISUALIZATION ELEMENTS
       //
 
-      const element1 = new ChartElement({
-        "id": "element1",
+      elementOverTime = new ChartElement({
+        "id": "elementOverTime" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "stacked100",
@@ -197,13 +210,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search1",
-        "el": $('#element1')
+        "managerid": "elementOverTimeSearch" + epoch,
+        "el": $('#elementOverTime')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element2 = new ChartElement({
-        "id": "element2",
+      cisRequirements = new ChartElement({
+        "id": "cisRequirements" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -231,13 +244,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search2",
-        "el": $('#element2')
+        "managerid": "cisRequirementsSearch" + epoch,
+        "el": $('#cisRequirements')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element3 = new ChartElement({
-        "id": "element3",
+      topPciDss = new ChartElement({
+        "id": "topPciDss",
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -265,13 +278,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search3",
-        "el": $('#element3')
+        "managerid": "topPciDssSearch" + epoch,
+        "el": $('#topPciDss')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element4 = new ChartElement({
-        "id": "element4",
+      eventsPerAgent = new ChartElement({
+        "id": "eventsPerAgent" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "stacked100",
@@ -299,24 +312,24 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "minmax",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search4",
-        "el": $('#element4')
+        "managerid": "eventsPerAgentSearch" + epoch,
+        "el": $('#eventsPerAgent')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element5 = new TableElement({
-        "id": "element5",
+      alertsSummary = new TableElement({
+        "id": "alertsSummary" + epoch,
         "dataOverlayMode": "heatmap",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "true",
         "totalsRow": "true",
         "wrap": "false",
-        "managerid": "search5",
-        "el": $('#element5')
+        "managerid": "alertsSummarySearch" + epoch,
+        "el": $('#alertsSummary')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      element5.on("click", (e) => {
+      alertsSummary.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
           const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control"
@@ -324,8 +337,8 @@ define([
         }
       })
 
-      const input1 = new TimeRangeInput({
-        "id": "input1",
+      input1 = new TimeRangeInput({
+        "id": "input1" + epoch,
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "earliest_time": "$form.when.earliest$",
@@ -336,6 +349,13 @@ define([
       input1.on("change", (newValue) => {
         FormUtils.handleValueChange(input1)
       })
+
+      submitTokens();
+
+      // Initialize time tokens to default
+      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+        defaultTokenModel.set({ earliest: '0', latest: '' });
+      }
 
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
