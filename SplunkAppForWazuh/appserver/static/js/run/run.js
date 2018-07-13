@@ -8,7 +8,8 @@ define([
       $navigationService.goToLastState()
       $transitions.onStart({}, async (trans) => {
         try {
-          await $credentialService.checkRawConnection(JSON.parse($currentApiIndexService.getAPI()))
+          const {api, selectedIndex} = await $credentialService.checkSelectedApiConnection()
+          $currentApiIndexService.setAPI(JSON.stringify(api))
           console.log('API still connecting')
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings')

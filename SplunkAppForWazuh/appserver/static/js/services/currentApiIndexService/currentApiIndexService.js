@@ -3,11 +3,11 @@ define(['../module'], function (module) {
 
   module.service('$currentApiIndexService', function () {
     const service = {
-      /**
-    * Delete selected index
-    */
+      /** 
+       * Delete selected index
+       */
       removeIndex: () => {
-        sessionStorage.selectedIndex = ''
+        delete sessionStorage.selectedIndex
       },
 
       /**
@@ -50,9 +50,21 @@ define(['../module'], function (module) {
        */
       getAPI: () => {
         return sessionStorage.selectedAPI
+      },
+
+      /**
+       * Returns the API filter (manager.name / cluster.name)
+       */
+      getFilter: () => {
+        if (sessionStorage.selectedAPI && typeof sessionStorage.selectedAPI === 'string') {
+          return JSON.parse(sessionStorage.selectedAPI).filter
+        } else {
+          return false
+        }
       }
+
     }
 
     return service;
-  });
-});
+  })
+})
