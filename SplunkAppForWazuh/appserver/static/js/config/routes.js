@@ -16,6 +16,12 @@ define(['./module'], function (module) {
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
       })
+      .state('ow-pm', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pm.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pm') },
+        controller: 'overviewPolicyMonitoringCtrl',
+        controllerAs: 'opm',
+      })
       // Overview - FIM
       .state('fim', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-fim.html',
