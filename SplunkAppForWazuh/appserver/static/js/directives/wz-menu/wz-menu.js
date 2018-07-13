@@ -15,7 +15,7 @@ define(['../module'], function (directives) {
     return {
       controller: function ($scope, $currentApiIndexService) {
         $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
-        if ($scope.theresAPI && typeof $scope.theresAPI === 'string') {
+        if ($scope.theresAPI && typeof $currentApiIndexService.getAPI() === 'string') {
           $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
         }
         $scope.currentIndex = $currentApiIndexService.getIndex()

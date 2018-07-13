@@ -6,19 +6,10 @@ define([
   "underscore",
   "jquery",
   "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/layoutview",
   "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/dashboard/panelref",
   "splunkjs/mvc/simplexml/element/chart",
-  "splunkjs/mvc/simplexml/element/event",
-  "splunkjs/mvc/simplexml/element/html",
-  "splunkjs/mvc/simplexml/element/list",
-  "splunkjs/mvc/simplexml/element/map",
-  "splunkjs/mvc/simplexml/element/single",
   "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simplexml/element/visualization",
   "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simplexml/eventhandler",
   "splunkjs/mvc/simplexml/searcheventhandler",
   "splunkjs/mvc/simpleform/input/timerange",
   "splunkjs/mvc/searchmanager",
@@ -30,39 +21,128 @@ define([
   _,
   $,
   DashboardController,
-  LayoutView,
   Dashboard,
-  PanelRef,
   ChartElement,
-  EventElement,
-  HtmlElement,
-  ListElement,
-  MapElement,
-  SingleElement,
   TableElement,
-  VisualizationElement,
   FormUtils,
-  EventHandler,
   SearchEventHandler,
   TimeRangeInput,
   SearchManager,
   UrlTokenModel) {
     'use strict';
 
-    controllers.controller('overviewGeneralCtrl', function ($scope) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService,$apiService) {
       const vm = this
       const epoch = (new Date).getTime()
+      const selectedIndex = $currentApiIndexService.getIndex()
+
+      const filter = $currentApiIndexService.getFilter()
+      const nameFilter = filter[0] + '=' + filter[1]
+      const api = JSON.parse($currentApiIndexService.getAPI())
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
       mvc.Components.registerInstance('url' + epoch, urlTokenModel);
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
-      $('table').removeClass("table")
-      $('table').removeClass("table-chrome")
-      $('table').removeClass("table-drilldown-cell")
-      $('table').removeClass("table-drilldown-cell")
-      $('table').removeClass("table-stripped")
-      $('table').removeClass("wrapped-results")
+
+      const baseUrl = $apiService.getBaseUrl()
+      setToken('baseip', baseUrl)
+      setToken('url', api.url)
+      setToken('portapi', api.portapi)
+      setToken('userapi', api.userapi)
+      setToken('passwordapi', api.passapi)
+      setToken("loadedtokens", "true")
+
+      // Implement checking polling state!!!
+      let search9 = ''
+      let element9 = ''
+      if (true) {
+        search9 = new SearchManager({
+          "id": "search9",
+          "cancelOnUnload": true,
+          "sample_ratio": 1,
+          "earliest_time": "$when.earliest$",
+          "status_buckets": 0,
+          "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
+          "latest_time": "$when.latest$",
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" })
+
+        element9 = new ChartElement({
+          "id": "element9",
+          "charting.axisY2.scale": "inherit",
+          "trellis.size": "medium",
+          "charting.chart.stackMode": "default",
+          "resizable": true,
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.drilldown": "none",
+          "charting.chart.nullValueMode": "gaps",
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.chart": "pie",
+          "trellis.scales.shared": "1",
+          "charting.layout.splitSeries": "0",
+          "charting.chart.style": "shiny",
+          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.axisTitleY.visibility": "collapsed",
+          "charting.axisX.scale": "linear",
+          "charting.chart.bubbleMinimumSize": "10",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.axisY2.enabled": "0",
+          "trellis.enabled": "0",
+          "charting.legend.placement": "none",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.chart.bubbleMaximumSize": "50",
+          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.axisY.scale": "linear",
+          "charting.chart.showDataLabels": "all",
+          "charting.chart.sliceCollapsingThreshold": "0.01",
+          "managerid": "search9",
+          "el": $('#element9')
+        }, { tokens: true, tokenNamespace: "submitted" }).render()
+      } else {
+        let filterAgent = (filter[0] === 'manager.name') ? 'manager_host' : 'cluster.name'
+        filter+='='+filter[1]
+        search9 = new SearchManager({
+          "id": "search9",
+          "earliest_time": "$when.earliest$",
+          "latest_time": "$when.latest$",
+          "status_buckets": 0,
+          "sample_ratio": null,
+          "cancelOnUnload": true,
+          "search": "index=\"wazuh-monitoring-3x\" "+ filterAgent +" status=* | timechart span=1h count by status usenull=f",
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" })
+
+        element9 = new ChartElement({
+          "id": "element9",
+          "charting.legend.placement": "right",
+          "charting.drilldown": "none",
+          "refresh.display": "progressbar",
+          "charting.chart": "area",
+          "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
+          "trellis.enabled": "0",
+          "resizable": true,
+          "trellis.scales.shared": "1",
+          "charting.axisTitleX.visibility": "visible",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.axisTitleY2.visibility": "visible",
+          "managerid": "search9",
+          "el": $('#element9')
+        }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }
+
+
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON());
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -90,14 +170,60 @@ define([
         submittedTokenModel.unset(name);
       }
 
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
+        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
+          console.log('second tokhtmljs ', tokHTMLJS)
+          vm.authSuccess = tokHTMLJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+      let pageLoading = true
+
+      let overviewSearch5 = ''
+      let overviewSearch6 = ''
+      let overviewSearch7 = ''
+      let overviewSearch8 = ''
+      let overviewSearch14 = ''
+      let searchTopAgent = ''
+      let searchLevel12 = ''
+      let searchAuthFailure = ''
+      let searchAuthSuccess = ''
+      let overviewElement5 = ''
+      let overviewElement6 = ''
+      let overviewElement7 = ''
+      let overviewElement8 = ''
+      let overviewElement14 = ''
+
+      /**
+       * When controller is destroyed
+       */
+      $scope.$on('$destroy', () => {
+        overviewSearch5 = null
+        overviewSearch6 = null
+        overviewSearch7 = null
+        overviewSearch8 = null
+        element9 = null
+        overviewSearch14 = null
+        search9 = null
+        overviewElement5 = null
+        overviewElement6 = null
+        overviewElement7 = null
+        overviewElement8 = null
+        overviewElement14 = null
+
+      })
+
+
       // Listen for a change to the token tokenTotalAlerts value
-      const searchTopAgent = new SearchManager({
+      searchTopAgent = new SearchManager({
         "id": "searchTopAgent" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh| stats count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -126,17 +252,17 @@ define([
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           console.log('first tokhtmljs ', tokHTMLJS)
           vm.totalAlerts = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
+          if (!$scope.$$phase) $scope.$digest()
         }
       })
 
-      const searchLevel12 = new SearchManager({
+      searchLevel12 = new SearchManager({
         "id": "searchLevel12" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh \"rule.level\">=12 | chart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -165,18 +291,18 @@ define([
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           console.log('second tokhtmljs ', tokHTMLJS)
           vm.levelTwelve = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
+          if (!$scope.$$phase) $scope.$digest()
         }
       })
 
 
-      const searchAuthFailure = new SearchManager({
+      searchAuthFailure = new SearchManager({
         "id": "searchAuthFailure" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -205,17 +331,17 @@ define([
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           console.log('second tokhtmljs ', tokHTMLJS)
           vm.authFailure = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
+          if (!$scope.$$phase) $scope.$digest()
         }
       })
 
-      const searchAuthSuccess = new SearchManager({
+      searchAuthSuccess = new SearchManager({
         "id": "searchAuthSuccess" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -239,53 +365,6 @@ define([
         ]
       })
 
-      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('second tokhtmljs ', tokHTMLJS)
-          vm.authSuccess = tokHTMLJS
-          if(!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      let pageLoading = true
-
-      let overviewSearch5 = ''
-      let overviewSearch6 = ''
-      let overviewSearch7 = ''
-      let overviewSearch8 = ''
-      let overviewSearch9 = ''
-      let overviewSearch14 = ''
-      
-      let overviewElement5 = ''
-      let overviewElement6 = ''
-      let overviewElement7 = ''
-      let overviewElement8 = ''
-      let overviewElement9 = ''
-      let overviewElement14 = ''
-
-      /**
-       * When controller is destroyed
-       */
-      $scope.$on('$destroy', () => {
-        overviewSearch5 = null
-        overviewSearch6 = null
-        overviewSearch7 = null
-        overviewSearch8 = null
-        overviewSearch9 = null
-       
-        overviewSearch14 = null
-       
-        overviewElement5 = null
-        overviewElement6 = null
-        overviewElement7 = null
-        overviewElement8 = null
-        overviewElement9 = null
-        overviewElement14 = null
-
-      })
-
-
       overviewSearch5 = new SearchManager({
         "id": "search5" + epoch,
         "cancelOnUnload": true,
@@ -293,7 +372,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.level=*| timechart count by rule.level",
+        "search":  "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.level=*| timechart count by rule.level",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -309,7 +388,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | timechart span=2h count",
+        "search":"index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=2h count",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -325,7 +404,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | top \"agent.name\"",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top \"agent.name\"",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -341,7 +420,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -350,21 +429,6 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" });
 
-      overviewSearch9 = new SearchManager({
-        "id": "search9" + epoch,
-        "cancelOnUnload": true,
-        "earliest_time": "$when.earliest$",
-        "sample_ratio": 1,
-        "status_buckets": 0,
-        "latest_time": "$when.latest$",
-        "search": "index=\"wazuh_api\" sourcetype=\"wazuh:api:info:basic\" | stats latest(agent_summary_active) as \"Active Agents\" | appendcols  [ search index=\"wazuh_api\" sourcetype=\"wazuh:api:info:basic\"  | stats latest(agent_summary_disconnected) as \"Disconnected\"] | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
 
       overviewSearch14 = new SearchManager({
         "id": "search14" + epoch,
@@ -373,7 +437,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -534,40 +598,6 @@ define([
         "el": $('#overviewElement8')
       }, { tokens: true, tokenNamespace: "submitted" }).render();
 
-
-      overviewElement9 = new ChartElement({
-        "id": "overviewElement9" + epoch,
-        "trellis.size": "medium",
-        "charting.axisY2.scale": "inherit",
-        "charting.chart.showDataLabels": "all",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.drilldown": "none",
-        "charting.chart": "pie",
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.chart.nullValueMode": "gaps",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.chart.style": "shiny",
-        "charting.axisTitleY.visibility": "collapsed",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisX.scale": "linear",
-        "trellis.enabled": "0",
-        "charting.axisY2.enabled": "0",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "charting.axisY.scale": "linear",
-        "managerid": "search9" + epoch,
-        "el": $('#overviewElement9')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
-
       overviewElement14 = new TableElement({
         "id": "overviewElement14" + epoch,
         "dataOverlayMode": "none",
@@ -587,7 +617,6 @@ define([
           utils.redirect(url, false, "_blank");
         }
       });
-
 
       //
       // VIEWS: FORM INPUTS

@@ -10,11 +10,18 @@ define(['./module'], function (module) {
     $stateProvider
       .state('overview', { templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html', onEnter: ($navigationService) => { $navigationService.storeRoute('overview'); } })
       // Overview - General
-      .state('general', { 
+      .state('general', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('general') },
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
+      })
+      // Overview - FIM
+      .state('fim', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-fim.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('fim') },
+        controller: 'overviewFimCtrl',
+        controllerAs: 'ofc',
       })
       // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager'); } })

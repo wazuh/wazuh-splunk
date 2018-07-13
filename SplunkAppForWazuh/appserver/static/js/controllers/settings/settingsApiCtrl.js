@@ -180,49 +180,57 @@ define([
        * Adds a new API
        */
       vm.submitApiForm = async () => {
-        // When the Submit button is clicked, get all the form fields by accessing input values
-        toastr.info('Adding new API', 'Info')
+        try {
+          // When the Submit button is clicked, get all the form fields by accessing input values
+          toastr.info('Adding new API', 'Info')
 
-        const form_url = vm.url
-        const form_apiport = vm.port
-        const form_apiuser = vm.user
-        const form_apipass = vm.pass
+          const form_url = vm.url
+          const form_apiport = vm.port
+          const form_apiuser = vm.user
+          const form_apipass = vm.pass
 
-        // If values are valid, register them
-        if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
-          // Create an object to store the field names and values
-          const record = {
-            "url": form_url,
-            "portapi": form_apiport,
-            "userapi": form_apiuser,
-            "passapi": form_apipass,
-            "cluster": false,
-            "managerName": false
-          }
-          // Use the request method to send and insert a new record
-          const result = await $credentialService.insert(record)
-          try {
-            const resultConnection = await $credentialService.checkApiConnection(result.data._key)
-            clearForm()
-            const apiList = await $credentialService.getApiList()
-            record._key = result.data._key
-            vm.apiList.push(record)
-            if (apiList && apiList.length === 1) {
-              await vm.selectManager(result.data)
+          // If values are valid, register them
+          if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
+            // Create an object to store the field names and values
+            const record = {
+              "url": form_url,
+              "portapi": form_apiport,
+              "userapi": form_apiuser,
+              "passapi": form_apipass,
+              "cluster": false,
+              "managerName": false
             }
-            vm.showForm = false
-            if (!$scope.$$phase) $scope.$digest()
-            toastr.success('Added new API', 'Success')
+            // Use the request method to send and insert a new record
+            const result = await $credentialService.insert(record)
+            try {
+              const resultConnection = await $credentialService.checkApiConnection(result.data._key)
+              clearForm()
+              const apiList = await $credentialService.getApiList()
+              record._key = result.data._key
+              vm.apiList.push(record)
+              if (apiList && apiList.length === 1) {
+                await vm.selectManager(result.data)
+              }
+              vm.showForm = false
+              if (!$scope.$$phase) $scope.$digest()
+              toastr.success('Added new API', 'Success')
 
-          } catch (err) {
-            await $credentialService.remove(result.data._key)
-            toastr.error('Error at adding new API', 'Error')
+            } catch (err) {
+              console.error('err!',err)
+              await $credentialService.remove(result.data._key)
+              toastr.error('Error at adding new API', 'Error')
 
+            }
+          } else {
+            toastr.error('Invalid format', 'Error')
           }
-        } else {
-          toastr.error('Invalid format', 'Error')
+        } catch (err) {
+          toastr.error('Error at adding new API', 'Error')
         }
       }
+
+
+
       vm.init()
     })
   })
