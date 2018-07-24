@@ -29,6 +29,13 @@ define(['./module'], function (module) {
         controller: 'overviewFimCtrl',
         controllerAs: 'ofc',
       })
+      // Overview - audit
+      .state('ow-aud', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-aud') },
+        controller: 'overviewAuditCtrl',
+        controllerAs: 'oac',
+      })
       // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager'); } })
       // settings
