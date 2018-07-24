@@ -1,6 +1,7 @@
 define([
   './overview/overviewGeneralCtrl',
   './overview/overviewFimCtrl',
+  './overview/overviewAuditCtrl',
   './overview/overviewPolicyMonitoringCtrl',
   './management/managerCtrl',
   './settings/settingsCtrl',
