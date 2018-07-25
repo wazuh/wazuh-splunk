@@ -170,7 +170,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new Dashboard({
-        id: 'dashboard',
+        id: 'dashboard'+epoch,
         el: $('.dashboard-body'),
         showTitle: true,
         editable: false
@@ -250,7 +250,7 @@ define([
 
 
       topPciDss = new ChartElement({
-        "id": "topPciDss",
+        "id": `topPciDss${epoch}`,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
