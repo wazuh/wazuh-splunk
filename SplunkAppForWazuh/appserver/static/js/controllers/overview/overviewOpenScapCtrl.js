@@ -53,6 +53,7 @@ define([
           submittedTokenModel.clear()
         }
       })
+
       let pageLoading = true
 
       // Initialize tokens
@@ -85,22 +86,58 @@ define([
         console.log('change')
         FormUtils.handleValueChange(input1)
       })
-
+      let filesAddedSearch = ''
+      let readFilesSearch = ''
+      let modifiedFiles = ''
+      let search4 = ''
+      let search5 = ''
+      let search6 = ''
+      let search7 = ''
+      let search8 = ''
+      let search9 = ''
+      let search10 = ''
+      let search14 = ''
+      let element4 = ''
+      let element5 = ''
+      let element6 = ''
+      let element7 = ''
+      let element8 = ''
+      let element9 = ''
+      let element10 = ''
+      let element14 = ''
       /**
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
-
+        filesAddedSearch = null
+        readFilesSearch = null
+        modifiedFiles = null
+        search4 = null
+        search5 = null
+        search6 = null
+        search7 = null
+        search8 = null
+        search9 = null
+        search10 = null
+        search14 = null
+        element4 = null
+        element5 = null
+        element6 = null
+        element7 = null
+        element8 = null
+        element9 = null
+        element10 = null
+        element14 = null
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      let filesAddedSearch = new SearchManager({
+      filesAddedSearch = new SearchManager({
         "id": "filesAddedSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + "  sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -136,7 +173,7 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      let readFilesSearch = new SearchManager({
+      readFilesSearch = new SearchManager({
         "id": "readFilesSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -179,7 +216,7 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      let modifiedFiles = new SearchManager({
+      modifiedFiles = new SearchManager({
         "id": "modifiedFiles" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -221,7 +258,7 @@ define([
       })
 
       // Searches
-      const search4 = new SearchManager({
+      search4 = new SearchManager({
         "id": "search4" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -237,7 +274,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search5 = new SearchManager({
+      search5 = new SearchManager({
         "id": "search5" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -253,7 +290,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search6 = new SearchManager({
+      search6 = new SearchManager({
         "id": "search6" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -269,7 +306,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search7 = new SearchManager({
+      search7 = new SearchManager({
         "id": "search7" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -285,7 +322,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search8 = new SearchManager({
+      search8 = new SearchManager({
         "id": "search8" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -301,7 +338,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search9 = new SearchManager({
+      search9 = new SearchManager({
         "id": "search9" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -317,7 +354,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search10 = new SearchManager({
+      search10 = new SearchManager({
         "id": "search10" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -333,7 +370,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search14 = new SearchManager({
+      search14 = new SearchManager({
         "id": "search14" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -349,7 +386,7 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const element4 = new ChartElement({
+      element4 = new ChartElement({
         "id": "element4" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
@@ -383,7 +420,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element5 = new ChartElement({
+      element5 = new ChartElement({
         "id": "element5" + epoch,
         "charting.drilldown": "none",
         "resizable": true,
@@ -393,7 +430,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element6 = new ChartElement({
+      element6 = new ChartElement({
         "id": "element6" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
@@ -427,7 +464,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element7 = new ChartElement({
+      element7 = new ChartElement({
         "id": "element7" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
@@ -461,7 +498,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element8 = new ChartElement({
+      element8 = new ChartElement({
         "id": "element8" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
@@ -495,7 +532,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element9 = new ChartElement({
+      element9 = new ChartElement({
         "id": "element9" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
@@ -529,7 +566,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element10 = new ChartElement({
+      element10 = new ChartElement({
         "id": "element10" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
@@ -562,7 +599,7 @@ define([
         "el": $('#element10')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      const element14 = new TableElement({
+      element14 = new TableElement({
         "id": "element14" + epoch,
         "dataOverlayMode": "none",
         "drilldown": "cell",
@@ -574,13 +611,13 @@ define([
         "el": $('#element14')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      element14.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url = "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
-          utils.redirect(url, false, "_blank")
-        }
-      })
+      // element14.on("click", function (e) {
+      //   if (e.field !== undefined) {
+      //     e.preventDefault()
+      //     const url = "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
+      //     utils.redirect(url, false, "_blank")
+      //   }
+      // })
 
       //
       // VIEWS: FORM INPUTS
