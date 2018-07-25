@@ -44,7 +44,8 @@ define([
 
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
-      urlTokenModel.on('url:navigate', function () {
+
+      urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
           submitTokens()
