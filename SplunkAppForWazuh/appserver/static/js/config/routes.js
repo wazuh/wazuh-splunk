@@ -16,6 +16,7 @@ define(['./module'], function (module) {
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
       })
+      // Overview - policy monitoring
       .state('ow-pm', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pm.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pm') },
@@ -34,6 +35,13 @@ define(['./module'], function (module) {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-aud') },
         controller: 'overviewAuditCtrl',
+        controllerAs: 'oac',
+      })
+      // Overview - OpenSCAP
+      .state('ow-os', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-openscap.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-os') },
+        controller: 'overviewOpenScapCtrl',
         controllerAs: 'oac',
       })
       // Manager
