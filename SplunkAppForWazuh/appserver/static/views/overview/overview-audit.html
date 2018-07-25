@@ -1,5 +1,4 @@
-<md-content flex layout="column" ng-if="tab === 'audit' && tabView === 'panels'" ng-show="resultState === 'ready' && rendered"
-  layout-align="space-around">
+<md-content flex layout="column" layout-align="space-around">
 
   <div layout="row">
     <md-card flex class="wz-metric-color wz-md-card">
@@ -32,28 +31,28 @@
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Groups</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <kbn-vis id="Wazuh-App-Overview-Audit-Groups" vis-id="'Wazuh-App-Overview-Audit-Groups'"></kbn-vis>
+        <div id="element1" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
     <md-card flex="25" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Agents</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <kbn-vis id="Wazuh-App-Overview-Audit-Agents" vis-id="'Wazuh-App-Overview-Audit-Agents'"></kbn-vis>
+        <div id="element2" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
     <md-card flex="25" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Directories</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <kbn-vis id="Wazuh-App-Overview-Audit-Directories" vis-id="'Wazuh-App-Overview-Audit-Directories'"></kbn-vis>
+        <div id="element3" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
     <md-card flex="25" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Files</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <kbn-vis id="Wazuh-App-Overview-Audit-Files" vis-id="'Wazuh-App-Overview-Audit-Files'"></kbn-vis>
+        <div id="element4" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
   </div>
@@ -63,7 +62,7 @@
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alerts over time</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <kbn-vis id="Wazuh-App-Overview-Audit-Alerts-over-time" vis-id="'Wazuh-App-Overview-Audit-Alerts-over-time'"></kbn-vis>
+        <div id="element5" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
   </div>
@@ -74,15 +73,15 @@
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">File read access</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <kbn-vis id="Wazuh-App-Overview-Audit-File-read-access" vis-id="'Wazuh-App-Overview-Audit-File-read-access'"></kbn-vis>
-        </md-card-content>
+          <div id="element6" class="dashboard-element single" style="width: 100%"></div>
+          </md-card-content>
       </md-card>
       <md-card flex="50" class="wz-md-card">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">File write access</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <kbn-vis id="Wazuh-App-Overview-Audit-File-write-access" vis-id="'Wazuh-App-Overview-Audit-File-write-access'"></kbn-vis>
-        </md-card-content>
+          <div id="element1" class="dashboard-element single" style="width: 100%"></div>
+          </md-card-content>
       </md-card>
     </div>
 
