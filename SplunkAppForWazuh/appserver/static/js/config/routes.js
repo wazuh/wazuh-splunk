@@ -46,7 +46,7 @@ define(['./module'], function (module) {
       })
       // Overview - PCI-DSS
       .state('ow-pci', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pcidss.html',
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pci.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pci') },
         controller: 'overviewOpenScapCtrl',
         controllerAs: 'opd',
