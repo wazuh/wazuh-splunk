@@ -29,7 +29,8 @@ define([
   TimeRangeInput,
   SearchManager,
   UrlTokenModel) {
-    'use strict';
+
+    'use strict'
 
     controllers.controller('overviewFimCtrl', function ($scope, $currentApiIndexService) {
       const vm = this
@@ -55,17 +56,16 @@ define([
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
 
-      function submitTokens() {
-        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+      const submitTokens = () => {
         FormUtils.submitForm({ replaceState: pageLoading })
       }
 
-      function setToken(name, value) {
+      const setToken = (name, value) => {
         defaultTokenModel.set(name, value)
         submittedTokenModel.set(name, value)
       }
 
-      function unsetToken(name) {
+      const unsetToken = (name) => {
         defaultTokenModel.unset(name)
         submittedTokenModel.unset(name)
       }
@@ -91,7 +91,6 @@ define([
       let filesAddedSearch = ''
       let filesModifiedSearch = ''
       let filesDeletedSearch = ''
-
 
       let eventsOverTimeElement = ''
       let topUserOwnersElement = ''
@@ -143,7 +142,7 @@ define([
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      var input1 = new TimeRangeInput({
+      let input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "searchWhenChanged": true,
@@ -154,7 +153,7 @@ define([
 
       input1.on("change", function (newValue) {
         FormUtils.handleValueChange(input1)
-      });
+      })
 
       new SearchEventHandler({
         managerid: "filesAddedSearch" + epoch,
@@ -326,7 +325,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       topUserOwnersElement = new ChartElement({
-        "id": "topUserOwnersElement",
+        "id": "topUserOwnersElement" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -407,7 +406,6 @@ define([
         "managerid": "topGroupOwnersSearch" + epoch,
         "el": $('#topGroupOwnersElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
 
       topFileChangesSearch = new SearchManager({
         "id": "topFileChangesSearch" + epoch,
@@ -544,7 +542,7 @@ define([
         "showSparkline": "1",
         "useThousandSeparators": "0",
         "managerid": "wordWritableFilesSearch"+epoch,
-        "el": $('#wordWritableFilesSearch' + epoch)
+        "el": $('#wordWritableFilesSearch')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       eventsSummarySearch = new SearchManager({
@@ -577,18 +575,18 @@ define([
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' });
+          submittedTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
+        defaultTokenModel.set({ earliest: '0', latest: '' })
       }
 
-      submitTokens();
+      submitTokens()
 
-      DashboardController.ready();
+      DashboardController.ready()
 
     })
   })

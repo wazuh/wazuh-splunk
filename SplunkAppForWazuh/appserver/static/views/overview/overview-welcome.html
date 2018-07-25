@@ -32,10 +32,10 @@
           <i class="fa fa-fw fa-flag" aria-hidden="true"></i> System audit</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-padding-top-10">
-          <md-button ng-click="switchTab('pm')" class="small wz-text-link">Policy monitoring</md-button>
-          <md-button ng-show="extensions.audit" ng-click="switchTab('audit')" class="small wz-text-link">Audit</md-button>
-          <md-button ng-show="extensions.oscap" ng-click="switchTab('oscap')" class="small wz-text-link">Open SCAP</md-button>
-          <md-button ng-show="extensions.ciscat" ng-click="switchTab('ciscat')" class="small wz-text-link">CIS-CAT</md-button>
+          <md-button ui-sref='ow-pm' class="small wz-text-link">Policy monitoring</md-button>
+          <md-button ui-sref='ow-aud' class="small wz-text-link">Audit</md-button>
+          <md-button class="small wz-text-link">Open SCAP</md-button>
+          <md-button class="small wz-text-link">CIS-CAT</md-button>
         </div>
       </md-card-content>
     </md-card>

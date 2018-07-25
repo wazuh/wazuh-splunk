@@ -74,7 +74,7 @@ define([
         }, { tokens: true, tokenNamespace: "submitted" })
 
         element9 = new ChartElement({
-          "id": "element9",
+          "id": "element9"+epoch,
           "charting.axisY2.scale": "inherit",
           "trellis.size": "medium",
           "charting.chart.stackMode": "default",
@@ -102,14 +102,14 @@ define([
           "charting.axisY.scale": "linear",
           "charting.chart.showDataLabels": "all",
           "charting.chart.sliceCollapsingThreshold": "0.01",
-          "managerid": "search9",
+          "managerid": "search9"+epoch,
           "el": $('#element9')
         }, { tokens: true, tokenNamespace: "submitted" }).render()
       } else {
         let filterAgent = (filter[0] === 'manager.name') ? 'manager_host' : 'cluster.name'
         filter+='='+filter[1]
         search9 = new SearchManager({
-          "id": "search9",
+          "id": "search9"+epoch,
           "earliest_time": "$when.earliest$",
           "latest_time": "$when.latest$",
           "status_buckets": 0,
@@ -125,7 +125,7 @@ define([
         }, { tokens: true, tokenNamespace: "submitted" })
 
         element9 = new ChartElement({
-          "id": "element9",
+          "id": "element9"+epoch,
           "charting.legend.placement": "right",
           "charting.drilldown": "none",
           "refresh.display": "progressbar",
@@ -137,7 +137,7 @@ define([
           "charting.axisTitleX.visibility": "visible",
           "charting.axisTitleY.visibility": "visible",
           "charting.axisTitleY2.visibility": "visible",
-          "managerid": "search9",
+          "managerid": "search9"+epoch,
           "el": $('#element9')
         }, { tokens: true, tokenNamespace: "submitted" }).render();
       }
