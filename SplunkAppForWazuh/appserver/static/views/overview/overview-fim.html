@@ -21,8 +21,8 @@
   </div>
 
   <!-- second row  -->
-  <div id="row2" layout="row" style="height:400px !important">
-    <div flex layout="column">
+  <div id="row2" layout="row">
+    <div flex="50">
       <!-- second row - first vis -->
       <md-card flex class="wz-md-card">
         <md-card-content class="wazuh-column">
@@ -32,20 +32,22 @@
         </md-card-content>
       </md-card>
     </div>
-    <div flex="30" layout="column">
-      <!-- second row - second vis -->
+    <div flex="25">
       <md-card flex class="wz-md-card">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top user owners</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='topUserOwnersElement'></div>
-        </md-card-content>
-      </md-card>
-      <md-card flex class="wz-md-card">
-        <md-card-content class="wazuh-column">
+        <md-card-content>
           <span class="wz-headline-title">Top group owners</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div id='topGroupOwnersElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex="25">
+      <!-- second row - second vis -->
+      <md-card flex class="wz-md-card">
+        <md-card-content layout='column'>
+          <span class="wz-headline-title">Top user owners</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div layout-fill id='topUserOwnersElement'></div>
         </md-card-content>
       </md-card>
     </div>
