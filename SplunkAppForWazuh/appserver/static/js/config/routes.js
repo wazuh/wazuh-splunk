@@ -42,7 +42,7 @@ define(['./module'], function (module) {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-openscap.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-os') },
         controller: 'overviewOpenScapCtrl',
-        controllerAs: 'oac',
+        controllerAs: 'oos',
       })
       // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager') } })
