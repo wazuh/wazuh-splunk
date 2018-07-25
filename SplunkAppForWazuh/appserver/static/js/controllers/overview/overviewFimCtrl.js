@@ -142,7 +142,7 @@ define([
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      var input1 = new TimeRangeInput({
+      let input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "searchWhenChanged": true,
@@ -153,7 +153,7 @@ define([
 
       input1.on("change", function (newValue) {
         FormUtils.handleValueChange(input1)
-      });
+      })
 
       new SearchEventHandler({
         managerid: "filesAddedSearch" + epoch,
@@ -575,18 +575,18 @@ define([
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' });
+          submittedTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
+        defaultTokenModel.set({ earliest: '0', latest: '' })
       }
 
-      submitTokens();
+      submitTokens()
 
-      DashboardController.ready();
+      DashboardController.ready()
 
     })
   })

@@ -32,7 +32,7 @@ define([
   UrlTokenModel
 ) {
 
-    'use strict';
+    'use strict'
 
     controllers.controller('overviewPolicyMonitoringCtrl', function ($scope, $currentApiIndexService) {
       const vm = this
@@ -59,7 +59,6 @@ define([
       const nameFilter = filter[0] + '=' + filter[1]
 
       let pageLoading = true
-      let input1 = ''
       let elementOverTime = ''
       let topPciDss = ''
       let eventsPerAgent = ''
@@ -81,7 +80,6 @@ define([
         eventsPerAgent = null
         alertsSummary = null
         cisRequirements = null
-        input1 = null
         elementOverTimeSearch = null
         topPciDssSearch = null
         eventsPerAgentSearch = null
@@ -337,7 +335,7 @@ define([
         }
       })
 
-      input1 = new TimeRangeInput({
+      let input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -350,18 +348,22 @@ define([
         FormUtils.handleValueChange(input1)
       })
 
-      submitTokens();
 
-      // Initialize time tokens to default
-      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
-      }
 
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })
         }
       })
+
+
+      // Initialize time tokens to default
+      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+        defaultTokenModel.set({ earliest: '0', latest: '' })
+      }
+      submitTokens()
+
+      DashboardController.ready()
 
     })
   })
