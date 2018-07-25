@@ -62,16 +62,66 @@ define([
         FormUtils.submitForm({ replaceState: pageLoading })
       }
 
-
+      let filesAddedSearch = ''
+      let readFilesSearch = ''
+      let modifiedFiles = ''
+      let deletedFiles = ''
+      let search6 = ''
+      let search7 = ''
+      let search8 = ''
+      let search9 = ''
+      let search10 = ''
+      let search11 = ''
+      let search12 = ''
+      let search13 = ''
+      let search14 = ''
+      let search15 = ''
+      let search16 = ''
+      let element6 = ''
+      let element7 = ''
+      let element8 = ''
+      let element9 = ''
+      let element10 = ''
+      let element11 = ''
+      let element12 = ''
+      let element13 = ''
+      let element14 = ''
+      let element15 = ''
+      let element16 = ''
       /**
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
-
+        filesAddedSearch = null
+        readFilesSearch = null
+        modifiedFiles = null
+        deletedFiles = null
+        search6 = null
+        search7 = null
+        search8 = null
+        search9 = null
+        search10 = null
+        search11 = null
+        search12 = null
+        search13 = null
+        search14 = null
+        search15 = null
+        search16 = null
+        element6 = null
+        element7 = null
+        element8 = null
+        element9 = null
+        element10 = null
+        element11 = null
+        element12 = null
+        element13 = null
+        element14 = null
+        element15 = null
+        element16 = null
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      let filesAddedSearch = new SearchManager({
+      filesAddedSearch = new SearchManager({
         "id": "filesAddedSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -111,7 +161,7 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      let readFilesSearch = new SearchManager({
+      readFilesSearch = new SearchManager({
         "id": "readFilesSearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -151,7 +201,7 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      let modifiedFiles = new SearchManager({
+      modifiedFiles = new SearchManager({
         "id": "modifiedFiles" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -191,7 +241,7 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      var deletedFiles = new SearchManager({
+      deletedFiles = new SearchManager({
         "id": "deletedFiles" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -230,8 +280,8 @@ define([
         }
       })
 
-      const search6 = new SearchManager({
-        "id": "search6",
+      search6 = new SearchManager({
+        "id": "search6"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -246,8 +296,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search7 = new SearchManager({
-        "id": "search7",
+      search7 = new SearchManager({
+        "id": "search7"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -262,8 +312,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search8 = new SearchManager({
-        "id": "search8",
+      search8 = new SearchManager({
+        "id": "search8"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -278,8 +328,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search9 = new SearchManager({
-        "id": "search9",
+      search9 = new SearchManager({
+        "id": "search9"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -294,8 +344,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search10 = new SearchManager({
-        "id": "search10",
+      search10 = new SearchManager({
+        "id": "search10"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -310,8 +360,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search11 = new SearchManager({
-        "id": "search11",
+      search11 = new SearchManager({
+        "id": "search11"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -326,8 +376,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search12 = new SearchManager({
-        "id": "search12",
+      search12 = new SearchManager({
+        "id": "search12"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -342,8 +392,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search13 = new SearchManager({
-        "id": "search13",
+      search13 = new SearchManager({
+        "id": "search13"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -358,8 +408,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search14 = new SearchManager({
-        "id": "search14",
+      search14 = new SearchManager({
+        "id": "search14"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -374,8 +424,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search15 = new SearchManager({
-        "id": "search15",
+      search15 = new SearchManager({
+        "id": "search15"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -390,8 +440,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      const search16 = new SearchManager({
-        "id": "search16",
+      search16 = new SearchManager({
+        "id": "search16"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -407,8 +457,8 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
 
-      const element6 = new ChartElement({
-        "id": "element6",
+      element6 = new ChartElement({
+        "id": "element6"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -436,13 +486,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search6",
+        "managerid": "search6"+epoch,
         "el": $('#element6')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element7 = new ChartElement({
-        "id": "element7",
+      element7 = new ChartElement({
+        "id": "element7"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -470,13 +520,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search7",
+        "managerid": "search7"+epoch,
         "el": $('#element7')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element8 = new ChartElement({
-        "id": "element8",
+      element8 = new ChartElement({
+        "id": "element8"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -504,13 +554,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search8",
+        "managerid": "search8"+epoch,
         "el": $('#element8')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element9 = new ChartElement({
-        "id": "element9",
+      element9 = new ChartElement({
+        "id": "element9"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -538,13 +588,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search9",
+        "managerid": "search9"+epoch,
         "el": $('#element9')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element10 = new ChartElement({
-        "id": "element10",
+      element10 = new ChartElement({
+        "id": "element10"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "stacked100",
@@ -572,13 +622,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search10",
+        "managerid": "search10"+epoch,
         "el": $('#element10')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element11 = new ChartElement({
-        "id": "element11",
+      element11 = new ChartElement({
+        "id": "element11"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -606,13 +656,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search11",
+        "managerid": "search11"+epoch,
         "el": $('#element11')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element12 = new ChartElement({
-        "id": "element12",
+      element12 = new ChartElement({
+        "id": "element12"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -640,13 +690,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search12",
+        "managerid": "search12"+epoch,
         "el": $('#element12')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element13 = new ChartElement({
-        "id": "element13",
+      element13 = new ChartElement({
+        "id": "element13"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -674,13 +724,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search13",
+        "managerid": "search13"+epoch,
         "el": $('#element13')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element14 = new ChartElement({
-        "id": "element14",
+      element14 = new ChartElement({
+        "id": "element14"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -708,13 +758,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search14",
+        "managerid": "search14"+epoch,
         "el": $('#element14')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element15 = new ChartElement({
-        "id": "element15",
+      element15 = new ChartElement({
+        "id": "element15"+epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -742,20 +792,20 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search15",
+        "managerid": "search15"+epoch,
         "el": $('#element15')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      const element16 = new TableElement({
-        "id": "element16",
+      element16 = new TableElement({
+        "id": "element16"+epoch,
         "dataOverlayMode": "none",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "false",
         "totalsRow": "false",
         "wrap": "false",
-        "managerid": "search16",
+        "managerid": "search16"+epoch,
         "el": $('#element16')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -773,7 +823,7 @@ define([
       //
 
       const input1 = new TimeRangeInput({
-        "id": "input1",
+        "id": "input1"+epoch,
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "earliest_time": "$form.when.earliest$",
