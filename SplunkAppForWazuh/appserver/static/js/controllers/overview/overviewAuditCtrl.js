@@ -66,17 +66,17 @@ define([
       let readFilesSearch = ''
       let modifiedFiles = ''
       let deletedFiles = ''
-      let search6 = ''
-      let search7 = ''
-      let search8 = ''
-      let search9 = ''
-      let search10 = ''
-      let search11 = ''
-      let search12 = ''
-      let search13 = ''
-      let search14 = ''
-      let search15 = ''
-      let search16 = ''
+      let groups = ''
+      let agents = ''
+      let directories = ''
+      let files = ''
+      let alertsOverTime = ''
+      let fileReadAccess = ''
+      let fileWriteAccess = ''
+      let commands = ''
+      let createdFiles = ''
+      let removedFiles = ''
+      let alertsSummary = ''
       let element6 = ''
       let element7 = ''
       let element8 = ''
@@ -96,17 +96,17 @@ define([
         readFilesSearch = null
         modifiedFiles = null
         deletedFiles = null
-        search6 = null
-        search7 = null
-        search8 = null
-        search9 = null
-        search10 = null
-        search11 = null
-        search12 = null
-        search13 = null
-        search14 = null
-        search15 = null
-        search16 = null
+        groups = null
+        agents = null
+        directories = null
+        files = null
+        alertsOverTime = null
+        fileReadAccess = null
+        fileWriteAccess = null
+        commands = null
+        createdFiles = null
+        removedFiles = null
+        alertsSummary = null
         element6 = null
         element7 = null
         element8 = null
@@ -280,8 +280,8 @@ define([
         }
       })
 
-      search6 = new SearchManager({
-        "id": "search6"+epoch,
+      groups = new SearchManager({
+        "id": "groups"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -296,8 +296,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search7 = new SearchManager({
-        "id": "search7"+epoch,
+      agents = new SearchManager({
+        "id": "agents"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -312,8 +312,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search8 = new SearchManager({
-        "id": "search8"+epoch,
+      directories = new SearchManager({
+        "id": "directories"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -328,8 +328,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search9 = new SearchManager({
-        "id": "search9"+epoch,
+      files = new SearchManager({
+        "id": "files"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -344,8 +344,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search10 = new SearchManager({
-        "id": "search10"+epoch,
+      alertsOverTime = new SearchManager({
+        "id": "alertsOverTime"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -360,8 +360,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search11 = new SearchManager({
-        "id": "search11"+epoch,
+      fileReadAccess = new SearchManager({
+        "id": "fileReadAccess"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -376,8 +376,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search12 = new SearchManager({
-        "id": "search12"+epoch,
+      fileWriteAccess = new SearchManager({
+        "id": "fileWriteAccess"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -392,8 +392,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search13 = new SearchManager({
-        "id": "search13"+epoch,
+      commands = new SearchManager({
+        "id": "commands"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -408,8 +408,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search14 = new SearchManager({
-        "id": "search14"+epoch,
+      createdFiles = new SearchManager({
+        "id": "createdFiles"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -424,8 +424,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search15 = new SearchManager({
-        "id": "search15"+epoch,
+      removedFiles = new SearchManager({
+        "id": "removedFiles"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -440,8 +440,8 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      search16 = new SearchManager({
-        "id": "search16"+epoch,
+      alertsSummary = new SearchManager({
+        "id": "alertsSummary"+epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -486,7 +486,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search6"+epoch,
+        "managerid": "groups"+epoch,
         "el": $('#element6')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -520,7 +520,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search7"+epoch,
+        "managerid": "agents"+epoch,
         "el": $('#element7')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -554,7 +554,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search8"+epoch,
+        "managerid": "directories"+epoch,
         "el": $('#element8')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -588,7 +588,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search9"+epoch,
+        "managerid": "files"+epoch,
         "el": $('#element9')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -622,7 +622,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search10"+epoch,
+        "managerid": "alertsOverTime"+epoch,
         "el": $('#element10')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -656,7 +656,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search11"+epoch,
+        "managerid": "fileReadAccess"+epoch,
         "el": $('#element11')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -690,7 +690,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search12"+epoch,
+        "managerid": "fileWriteAccess"+epoch,
         "el": $('#element12')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -724,7 +724,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search13"+epoch,
+        "managerid": "commands"+epoch,
         "el": $('#element13')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -758,7 +758,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search14"+epoch,
+        "managerid": "createdFiles"+epoch,
         "el": $('#element14')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -792,7 +792,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "search15"+epoch,
+        "managerid": "removedFiles"+epoch,
         "el": $('#element15')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -805,7 +805,7 @@ define([
         "rowNumbers": "false",
         "totalsRow": "false",
         "wrap": "false",
-        "managerid": "search16"+epoch,
+        "managerid": "alertsSummary"+epoch,
         "el": $('#element16')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
