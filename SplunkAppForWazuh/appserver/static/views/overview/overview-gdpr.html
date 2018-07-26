@@ -3,10 +3,11 @@
     <div style="margin-right:7px;" id='input1'></div>
     <div id='input2'></div>
   </div>
-  <!-- <div layout="row" layout-align="center stretch">
+
+  <div layout="row" layout-align="center stretch">
     <md-card flex class="wz-md-card">
-      <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom md-dynamic-height id="pciReq_tab">
-        <md-tab ng-repeat="tab in pciTabs" ng-disabled="tab.disabled" label="{{tab.title}}">
+      <md-tabs md-selected="ogdpr.selectedPciIndex" class="wz-md-tab" md-border-bottom md-dynamic-height id="pciReq_tab">
+        <md-tab ng-repeat="tab in ogdpr.gdprTabs track by $index" ng-disabled="tab.disabled" label="{{tab}}">
           <div class="md-padding">
             <span class="wz-headline-title">PCI DSS Requirement: {{tab.title}}</span>
             <md-divider class="wz-margin-top-10"></md-divider>
@@ -17,8 +18,7 @@
         </md-tab>
       </md-tabs>
     </md-card>
-  </div> -->
-
+  </div>
 
   <div layout="row" layout-align="center stretch">
     <md-card flex="70" class="wz-md-card">
