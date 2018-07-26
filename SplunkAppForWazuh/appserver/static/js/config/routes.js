@@ -52,12 +52,12 @@ define(['./module'], function (module) {
         controllerAs: 'opd',
       })
       // Overview - GDPR
-      // .state('ow-gdpr', {
-      //   templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
-      //   onEnter: ($navigationService) => { $navigationService.storeRoute('ow-gdpr') },
-      //   controller: 'overviewOpenScapCtrl',
-      //   controllerAs: 'ogdpr',
-      // })
+      .state('ow-gdpr', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-gdpr') },
+        controller: 'overviewGdprCtrl',
+        controllerAs: 'ogdpr',
+      })
       // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager') } })
       // settings
