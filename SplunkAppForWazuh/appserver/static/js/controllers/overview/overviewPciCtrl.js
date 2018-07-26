@@ -116,6 +116,42 @@ define([
       }, { tokens: true })
 
 
+      new SearchEventHandler({
+        managerid: "dropdownSearch" + epoch,
+        event: "done",
+        conditions: [
+          {
+            attr: "any",
+            value: "*",
+            actions: [
+              { "type": "set", "token": "rulesToken", "value": "$result.rule.pcidss{}$" },
+            ]
+          }
+        ]
+      })
+
+      const myResults = dropdownSearch.data("results")
+      myResults.on("data", () => {
+        if (myResults.data() && myResults.data().rows) {
+          const rulesTokenArray = myResults.data().rows
+          if (rulesTokenArray && rulesTokenArray.length > 0) {
+            vm.pciTabs = []
+            for (let rule of rulesTokenArray) {
+              const currentDescription = $rulesDescription.pciRules()[rule[0]]
+              if (currentDescription) {
+                vm.pciTabs.push({ 'rule': rule[0], 'description': currentDescription })
+              }
+            }
+            if (!$scope.$$phase) $scope.$digest()
+          }
+        } else {
+          console.log('no data result')
+          vm.pciTabs = false
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+
       pciReqSearch = new SearchManager({
         "id": "pciReqSearch"+epoch,
         "status_buckets": 0,
@@ -367,6 +403,7 @@ define([
       }, { tokens: true }).render()
 
       input1.on("change", (newValue) => {
+        console.log(input1)
         FormUtils.handleValueChange(input1)
       })
 
