@@ -58,6 +58,13 @@ define(['./module'], function (module) {
         controller: 'overviewGdprCtrl',
         controllerAs: 'ogdpr',
       })
+      // Overview - GDPR
+      .state('ow-vul', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-vulnerabilities.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-vul') },
+        controller: 'overviewVulnerabilitiesCtrl',
+        controllerAs: 'ovu',
+      })
       // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager') } })
       // settings
