@@ -78,6 +78,7 @@ define([
       let element5 = ''
       let input1 = ''
       let input2 = ''
+
       /**
        * When controller is destroyed
        */
@@ -102,9 +103,9 @@ define([
         "id": "dropdownSearch"+epoch,
         "status_buckets": 0,
         "sample_ratio": null,
-        "latest_time": "now",
+        "latest_time": "$when.latest$",
         "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
-        "earliest_time": "-24h@y",
+        "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -351,7 +352,6 @@ define([
           utils.redirect(url, false, "_blank")
         }
       })
-
 
       //
       // VIEWS: FORM INPUTS
