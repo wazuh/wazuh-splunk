@@ -83,7 +83,6 @@ define([
       }, { tokens: true }).render()
 
       input1.on("change", (newValue) => {
-        console.log('change')
         FormUtils.handleValueChange(input1)
       })
       let filesAddedSearch = ''
@@ -207,7 +206,6 @@ define([
         const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
         if (typeof readFilesTokenJS !== 'undefined' && readFilesTokenJS !== 'undefined' && readFilesTokenJS !== '$result.count$') {
           vm.scapHighestScore = readFilesTokenJS
-          console.log('readed files ', readFilesTokenJS)
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapHighestScore = 0

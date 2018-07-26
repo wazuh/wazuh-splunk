@@ -173,7 +173,6 @@ define([
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
         const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('second tokhtmljs ', tokHTMLJS)
           vm.authSuccess = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -250,7 +249,6 @@ define([
       submittedTokenModel.on("change:tokHTML", (model, tokHTML, options) => {
         const tokHTMLJS = submittedTokenModel.get("tokHTML");
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('first tokhtmljs ', tokHTMLJS)
           vm.totalAlerts = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -289,7 +287,6 @@ define([
       submittedTokenModel.on("change:level12token", (model, level12token, options) => {
         const tokHTMLJS = submittedTokenModel.get("level12token");
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('second tokhtmljs ', tokHTMLJS)
           vm.levelTwelve = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -329,7 +326,6 @@ define([
       submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
         const tokHTMLJS = submittedTokenModel.get("authFailureToken");
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('second tokhtmljs ', tokHTMLJS)
           vm.authFailure = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
         }

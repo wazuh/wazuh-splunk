@@ -195,7 +195,6 @@ define([
         const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
         if (typeof readFilesTokenJS !== 'undefined' && readFilesTokenJS !== 'undefined') {
           vm.readFiles = readFilesTokenJS
-          console.log('readed files ', readFilesTokenJS)
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -235,7 +234,6 @@ define([
         const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
         if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
           vm.filesModifiedToken = filesModifiedToken
-          console.log('files deleted ', filesModifiedTokenJS)
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -275,7 +273,6 @@ define([
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
           vm.filesDeleted = filesDeletedTokenJS
-          console.log('files deleted ', filesDeletedTokenJS)
           if (!$scope.$$phase) $scope.$digest()
         }
       })

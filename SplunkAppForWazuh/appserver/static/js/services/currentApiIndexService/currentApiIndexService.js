@@ -38,10 +38,8 @@ define(['../module'], function (module) {
        * @param {String} API 
        */
       setAPI: (API) => {
-        console.log('setting API')
         delete sessionStorage.selectedAPI
         sessionStorage.selectedAPI = API
-        console.log(sessionStorage.selectedAPI)
       },
 
       /**

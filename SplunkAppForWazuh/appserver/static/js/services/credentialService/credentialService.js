@@ -112,7 +112,6 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const apiList = await getApiList()
         for (let api of apiList) {
           if (api._key === key) {
-            console.log('selecting API ',api)
             $currentApiIndexService.setAPI(JSON.stringify(api))
           }
         }
@@ -204,7 +203,6 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
           const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
           const result = await $apiService.get(checkConnectionEndpoint)
-          console.log('checkrawconnection went OK ', result)
           return
         } else {
           throw new Error('Incomplete object passed.')
@@ -250,16 +248,13 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
             await update(api._key, api)
           }
         } else {
-          console.log('cluster not enabled')
           if (api.cluster) {
             api.cluster = false
             await update(api._key, api)
           }
-          console.log('pushing manager.name filter')
           api.filter.push('manager.name')
           api.filter.push(api.managerName)
         }
-        console.log('returning API ', api)
         return api
       } catch (err) {
         return Promise.reject(err)

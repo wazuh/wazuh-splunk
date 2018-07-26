@@ -11,7 +11,6 @@ define([
       vm.showForm = (apiList.length === 0) ? true : false
       vm.entry = {}
       vm.currentEntryKey = ''
-      console.log('TOASTR ', toastr)
       const epoch = (new Date).getTime()
       // Validation RegEx
       const userRegEx = new RegExp(/^.{3,100}$/)
