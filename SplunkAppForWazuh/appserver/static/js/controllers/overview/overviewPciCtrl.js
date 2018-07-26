@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewPciCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('overviewPciCtrl', function ($scope, $currentApiIndexService, $rulesDescription) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true

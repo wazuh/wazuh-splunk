@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewGdprCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('overviewGdprCtrl', function ($scope, $currentApiIndexService, $rulesDescription) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -103,7 +103,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | sort \"rule.gdpr{}\" ASC | fields - count",
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -113,6 +113,30 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true })
+
+      new SearchEventHandler({
+        managerid: "dropdownSearch" + epoch,
+        event: "done",
+        conditions: [
+          {
+            attr: "any",
+            value: "*",
+            actions: [
+              { "type": "set", "token": "rulesToken", "value": "$result.rule.gdpr{}$" },
+            ]
+          }
+        ]
+      })
+
+      submittedTokenModel.on("change:rulesToken", (model, rulesToken, options) => {
+        const rulesTokenJS = submittedTokenModel.get("rulesToken")
+        console.log('changed value of token')
+        if (typeof rulesTokenJS !== 'undefined' && rulesTokenJS !== 'undefined') {
+          console.log('value of tabs ',rulesTokenJS)
+          vm.gdprTabs = [rulesTokenJS]
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
 
 
       gdprReqSearch = new SearchManager({
