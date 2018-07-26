@@ -48,16 +48,16 @@ define(['./module'], function (module) {
       .state('ow-pci', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pci.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pci') },
-        controller: 'overviewOpenScapCtrl',
+        controller: 'overviewPciCtrl',
         controllerAs: 'opd',
       })
       // Overview - GDPR
-      .state('ow-gdpr', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-gdpr') },
-        controller: 'overviewOpenScapCtrl',
-        controllerAs: 'ogdpr',
-      })
+      // .state('ow-gdpr', {
+      //   templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
+      //   onEnter: ($navigationService) => { $navigationService.storeRoute('ow-gdpr') },
+      //   controller: 'overviewOpenScapCtrl',
+      //   controllerAs: 'ogdpr',
+      // })
       // Manager
       .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager') } })
       // settings
