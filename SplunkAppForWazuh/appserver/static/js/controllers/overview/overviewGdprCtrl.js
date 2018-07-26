@@ -48,7 +48,7 @@ define([
 
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
-
+      vm.gdprTabs = false
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -99,11 +99,11 @@ define([
 
 
       dropdownSearch = new SearchManager({
-        "id": "dropdownSearch"+epoch,
+        "id": "dropdownSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -128,23 +128,33 @@ define([
         ]
       })
 
-      submittedTokenModel.on("change:rulesToken", (model, rulesToken, options) => {
-        const rulesTokenJS = submittedTokenModel.get("rulesToken")
-        console.log('changed value of token')
-        if (typeof rulesTokenJS !== 'undefined' && rulesTokenJS !== 'undefined') {
-          console.log('value of tabs ',rulesTokenJS)
-          vm.gdprTabs = [rulesTokenJS]
+      const myResults = dropdownSearch.data("results")
+      myResults.on("data", () => {
+        if (myResults.data() && myResults.data().rows) {
+          const rulesTokenArray = myResults.data().rows
+          if (rulesTokenArray && rulesTokenArray.length > 0) {
+            vm.gdprTabs = []
+            for (let rule of rulesTokenArray) {
+              const currentDescription = $rulesDescription.gdprRules()[rule[0]]
+              if (currentDescription) {
+                vm.gdprTabs.push({ 'rule': rule[0], 'description': currentDescription })
+              }
+            }
+            if (!$scope.$$phase) $scope.$digest()
+          }
+        } else {
+          console.log('no data result')
+          vm.gdprTabs = false
           if (!$scope.$$phase) $scope.$digest()
         }
       })
 
-
       gdprReqSearch = new SearchManager({
-        "id": "gdprReqSearch"+epoch,
+        "id": "gdprReqSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -156,11 +166,11 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       groupsSearch = new SearchManager({
-        "id": "groupsSearch"+epoch,
+        "id": "groupsSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -172,11 +182,11 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       agentsSearch = new SearchManager({
-        "id": "agentsSearch"+epoch,
+        "id": "agentsSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -188,11 +198,11 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       requirementsByAgents = new SearchManager({
-        "id": "requirementsByAgents"+epoch,
+        "id": "requirementsByAgents" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -204,11 +214,11 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       alertsSummary = new SearchManager({
-        "id": "alertsSummary"+epoch,
+        "id": "alertsSummary" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count",
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -221,7 +231,7 @@ define([
 
 
       element1 = new ChartElement({
-        "id": "element1"+epoch,
+        "id": "element1" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "none",
@@ -249,13 +259,13 @@ define([
         "charting.chart": "column",
         "charting.axisY.scale": "linear",
         "trellis.scales.shared": "1",
-        "managerid": "gdprReqSearch"+epoch,
+        "managerid": "gdprReqSearch" + epoch,
         "el": $('#element1')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element2 = new ChartElement({
-        "id": "element2"+epoch,
+        "id": "element2" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "right",
@@ -283,13 +293,13 @@ define([
         "charting.chart": "pie",
         "charting.axisY.scale": "linear",
         "trellis.scales.shared": "1",
-        "managerid": "groupsSearch"+epoch,
+        "managerid": "groupsSearch" + epoch,
         "el": $('#element2')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element3 = new ChartElement({
-        "id": "element3"+epoch,
+        "id": "element3" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "right",
@@ -317,13 +327,13 @@ define([
         "charting.chart": "pie",
         "charting.axisY.scale": "linear",
         "trellis.scales.shared": "1",
-        "managerid": "agentsSearch"+epoch,
+        "managerid": "agentsSearch" + epoch,
         "el": $('#element3')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element4 = new ChartElement({
-        "id": "element4"+epoch,
+        "id": "element4" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "bottom",
@@ -351,27 +361,27 @@ define([
         "charting.chart": "column",
         "charting.axisY.scale": "log",
         "trellis.scales.shared": "1",
-        "managerid": "requirementsByAgents"+epoch,
+        "managerid": "requirementsByAgents" + epoch,
         "el": $('#element4')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element5 = new TableElement({
-        "id": "element5"+epoch,
+        "id": "element5" + epoch,
         "dataOverlayMode": "heatmap",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "true",
         "totalsRow": "false",
         "wrap": "false",
-        "managerid": "alertsSummary"+epoch,
+        "managerid": "alertsSummary" + epoch,
         "el": $('#element5')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       element5.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames("{{SPLUNKWEB_URL_PREFIX}}/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })
@@ -407,7 +417,7 @@ define([
         "labelField": "rule.gdpr{}",
         "selectFirstChoice": false,
         "value": "$form.gdpr$",
-        "managerid": "dropdownSearch"+epoch,
+        "managerid": "dropdownSearch" + epoch,
         "el": $('#input2')
       }, { tokens: true }).render()
 
