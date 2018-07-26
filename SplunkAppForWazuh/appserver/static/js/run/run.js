@@ -10,7 +10,6 @@ define([
         try {
           const {api, selectedIndex} = await $credentialService.checkSelectedApiConnection()
           $currentApiIndexService.setAPI(JSON.stringify(api))
-          console.log('API still connecting')
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings')
           $state.go('settings.api')

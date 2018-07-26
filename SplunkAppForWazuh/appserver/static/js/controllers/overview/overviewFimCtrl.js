@@ -74,7 +74,6 @@ define([
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
         const tokHTMLJS = submittedTokenModel.get("authSuccessToken")
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          console.log('second tokhtmljs ', tokHTMLJS)
           vm.authSuccess = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -213,8 +212,6 @@ define([
         const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
         if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
           vm.filesModified = filesModifiedTokenJS
-          console.log('files modified ', filesModifiedTokenJS)
-
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -254,7 +251,6 @@ define([
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
           vm.filesDeleted = filesDeletedTokenJS
-          console.log('files deleted ', filesDeletedTokenJS)
           if (!$scope.$$phase) $scope.$digest()
         }
       })
