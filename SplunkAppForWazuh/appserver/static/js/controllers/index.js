@@ -4,6 +4,7 @@ define([
   './overview/overviewPolicyMonitoringCtrl',
   './overview/overviewAuditCtrl',
   './overview/overviewOpenScapCtrl',
+  './overview/overviewPciCtrl',
   './management/managerCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
