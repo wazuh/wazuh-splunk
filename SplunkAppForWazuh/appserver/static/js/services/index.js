@@ -3,5 +3,6 @@ define([
   './navigation/navigationService',
   './apiService/apiService',
   './currentApiIndexService/currentApiIndexService',
+  './rules/rulesDescription',
 
 ], function () {});
