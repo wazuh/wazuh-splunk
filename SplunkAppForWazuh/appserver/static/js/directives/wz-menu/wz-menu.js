@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 define(['../module'], function (directives) {
-  'use strict';
+  'use strict'
   directives.directive('wzMenu', function () {
     return {
       controller: function ($scope, $currentApiIndexService) {

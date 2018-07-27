@@ -1,4 +1,4 @@
 define([
   './run',
 
-], function () {});
+], function () {})

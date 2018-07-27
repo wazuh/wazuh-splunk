@@ -1,5 +1,5 @@
 define(['../module', 'splunkjs/mvc'], function (module, mvc) {
-  'use strict';
+  'use strict'
   module.service('$credentialService', function ($apiService, $currentApiIndexService) {
     const service = mvc.createService({ owner: "nobody" })
 
@@ -278,6 +278,6 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       getSelectedApi: getSelectedApi,
       checkRawConnection: checkRawConnection
     }
-    return methods;
+    return methods
   })
 })

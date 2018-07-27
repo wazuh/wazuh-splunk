@@ -1,4 +1,4 @@
 define(['angular'], function (ng) {
-  'use strict';
-  return ng.module('app.directives', []);
-});
+  'use strict'
+  return ng.module('app.directives', [])
+})

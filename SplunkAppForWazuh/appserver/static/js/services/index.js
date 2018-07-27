@@ -5,4 +5,4 @@ define([
   './currentApiIndexService/currentApiIndexService',
   './rules/rulesDescription',
 
-], function () {});
+], function () {})

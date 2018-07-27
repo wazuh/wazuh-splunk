@@ -35,9 +35,9 @@ define([
        */
       vm.removeManager = async (entry) => {
         try {
-          const index = vm.apiList.indexOf(entry);
+          const index = vm.apiList.indexOf(entry)
           if (index > -1) {
-            vm.apiList.splice(index, 1);
+            vm.apiList.splice(index, 1)
             await $credentialService.remove(entry._key)
           }
           toastr.success('Manager removed', 'Success')

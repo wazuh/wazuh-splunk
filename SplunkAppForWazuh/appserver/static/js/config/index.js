@@ -1,4 +1,4 @@
 define([
   './routes',
 
-], function () {});
+], function () {})

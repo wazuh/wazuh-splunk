@@ -1,5 +1,5 @@
 define(['../module'], function (module) {
-  'use strict';
+  'use strict'
 
   module.service('$apiService', function ($http) {
     /**

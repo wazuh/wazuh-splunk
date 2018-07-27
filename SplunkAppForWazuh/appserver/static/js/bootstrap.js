@@ -5,6 +5,6 @@ define([
   'angular',
   'js/app'
 ], function (ng) {
-  'use strict';
-  ng.bootstrap(document, ['wazuhApp']);
-});
+  'use strict'
+  ng.bootstrap(document, ['wazuhApp'])
+})

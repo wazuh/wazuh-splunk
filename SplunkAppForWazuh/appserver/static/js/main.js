@@ -47,4 +47,4 @@ require.config({
 
     // kick start application
     deps: ['angular','ngMaterial',"ngAnimate", "ngAria",'js/bootstrap','mdDataTable','Toast']
-});
+})

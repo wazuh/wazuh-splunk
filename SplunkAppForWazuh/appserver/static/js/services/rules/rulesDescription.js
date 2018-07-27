@@ -66,6 +66,6 @@ define(['../module'], function (module) {
       }
     }
 
-    return service;
+    return service
   })
 })
