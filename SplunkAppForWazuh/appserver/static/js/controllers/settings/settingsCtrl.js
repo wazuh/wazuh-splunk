@@ -3,7 +3,7 @@ define([
 ], function (
   controllers,
   ) {
-    'use strict';
+    'use strict'
     controllers.controller('settingsCtrl', function ($scope, $navigationService) {
       $scope.message = 'Settings'
       $scope.tabName = ''
@@ -24,5 +24,5 @@ define([
         $scope.tabName = name
       }
     })
-  });
+  })
 

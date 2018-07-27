@@ -3,7 +3,7 @@ define([
 ], function (
   module
 ) {
-    'use strict';
+    'use strict'
     module.run(['$state','$transitions', '$navigationService', '$credentialService', '$currentApiIndexService', function ($state,$transitions, $navigationService, $credentialService, $currentApiIndexService) {
       $navigationService.goToLastState()
       $transitions.onStart({}, async (trans) => {

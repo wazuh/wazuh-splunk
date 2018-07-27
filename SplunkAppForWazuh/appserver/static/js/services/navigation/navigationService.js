@@ -1,5 +1,5 @@
 define(['../module'], function (module) {
-  'use strict';
+  'use strict'
 
   module.service('$navigationService', function ($state) {
     const service = {
@@ -18,6 +18,6 @@ define(['../module'], function (module) {
       }
     }
 
-    return service;
-  });
-});
+    return service
+  })
+})

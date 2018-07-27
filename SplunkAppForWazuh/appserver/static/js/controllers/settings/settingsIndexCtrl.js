@@ -27,7 +27,7 @@ define([
   UrlTokenModel,
   FormUtils,
   ) {
-    'use strict';
+    'use strict'
     controllers.controller('settingsIndexCtrl', function ($scope) {
       $scope.message = 'Settings'
       $scope.tabName = ''
@@ -69,5 +69,5 @@ define([
       }, { tokens: true }).render()
 
     })
-  });
+  })
 

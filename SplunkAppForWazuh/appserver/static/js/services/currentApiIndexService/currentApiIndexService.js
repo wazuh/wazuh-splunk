@@ -1,5 +1,5 @@
 define(['../module'], function (module) {
-  'use strict';
+  'use strict'
 
   module.service('$currentApiIndexService', function () {
     const service = {
@@ -63,6 +63,6 @@ define(['../module'], function (module) {
 
     }
 
-    return service;
+    return service
   })
 })

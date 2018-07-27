@@ -2,6 +2,7 @@ define([
   './overview/overviewGeneralCtrl',
   './overview/overviewFimCtrl',
   './overview/overviewPolicyMonitoringCtrl',
+  './overview/overviewVulnerabilitiesCtrl',
   './overview/overviewAuditCtrl',
   './overview/overviewOpenScapCtrl',
   './overview/overviewPciCtrl',
