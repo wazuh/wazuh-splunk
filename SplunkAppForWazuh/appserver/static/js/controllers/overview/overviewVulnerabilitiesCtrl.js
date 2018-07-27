@@ -251,7 +251,7 @@ define([
       })
 
       alertsSeverityOverTime = new SearchManager({
-        "id": "alertsSeverityOverTime"+epoch,
+        "id": "alertsSeverityOverTime" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -267,7 +267,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       topAgentsSeverity = new SearchManager({
-        "id": "topAgentsSeverity"+epoch,
+        "id": "topAgentsSeverity" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -283,7 +283,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       affectedPackages = new SearchManager({
-        "id": "affectedPackages"+epoch,
+        "id": "affectedPackages" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -299,7 +299,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       alertsSummary = new SearchManager({
-        "id": "alertsSummary"+epoch,
+        "id": "alertsSummary" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -319,26 +319,26 @@ define([
         "id": "element1" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.stackMode": "stacked100",
+        "charting.chart.showDataLabels": "minmax",
+        "charting.chart.stackMode": "default",
         "resizable": true,
         "charting.axisTitleY2.visibility": "visible",
         "charting.drilldown": "none",
-        "charting.chart": "line",
+        "charting.chart": "area",
         "charting.layout.splitSeries.allowIndependentYRanges": "0",
         "charting.chart.nullValueMode": "gaps",
         "trellis.scales.shared": "1",
         "charting.layout.splitSeries": "0",
         "charting.axisTitleX.visibility": "collapsed",
         "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.chart.style": "minimal",
+        "charting.chart.style": "shiny",
         "charting.axisTitleY.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.chart.bubbleMinimumSize": "10",
         "charting.axisX.scale": "linear",
         "trellis.enabled": "0",
         "charting.axisY2.enabled": "0",
-        "charting.legend.placement": "right",
+        "charting.legend.placement": "bottom",
         "charting.chart.bubbleSizeBy": "area",
         "charting.axisLabelsX.majorLabelStyle.rotation": "0",
         "charting.chart.bubbleMaximumSize": "50",
@@ -350,7 +350,7 @@ define([
 
 
       element2 = new ChartElement({
-        "id": "element7"+epoch,
+        "id": "element7" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -378,13 +378,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "topAgentsSeverity"+epoch,
+        "managerid": "topAgentsSeverity" + epoch,
         "el": $('#element7')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element3 = new ChartElement({
-        "id": "element8"+epoch,
+        "id": "element8" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -412,13 +412,13 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "affectedPackages"+epoch,
+        "managerid": "affectedPackages" + epoch,
         "el": $('#element8')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element4 = new ChartElement({
-        "id": "element9"+epoch,
+        "id": "element9" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -446,7 +446,7 @@ define([
         "charting.axisY.scale": "linear",
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "alertsSummary"+epoch,
+        "managerid": "alertsSummary" + epoch,
         "el": $('#element9')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -455,7 +455,7 @@ define([
       //
 
       const input1 = new TimeRangeInput({
-        "id": "input1"+epoch,
+        "id": "input1" + epoch,
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "earliest_time": "$form.when.earliest$",
