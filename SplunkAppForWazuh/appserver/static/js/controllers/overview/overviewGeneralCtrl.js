@@ -58,7 +58,7 @@ define([
       let element9 = ''
       if (true) {
         search9 = new SearchManager({
-          "id": "search9",
+          "id": "search9"+epoch,
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
