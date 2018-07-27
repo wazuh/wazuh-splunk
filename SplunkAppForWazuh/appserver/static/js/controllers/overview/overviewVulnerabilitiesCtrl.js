@@ -100,7 +100,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "",
+        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=critical | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -119,16 +119,16 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesAddedToken", "value": "$result.count$" },
+              { "type": "set", "token": "criticalSeverityToken", "value": "$result.count$" },
             ]
           }
         ]
       })
 
-      submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (typeof filesAddedTokenJS !== 'undefined' && filesAddedTokenJS !== 'undefined') {
-          vm.newFiles = filesAddedTokenJS
+      submittedTokenModel.on("change:criticalSeverityToken", (model, criticalSeverityToken, options) => {
+        const criticalSeverityTokenJS = submittedTokenModel.get("criticalSeverityToken")
+        if (typeof criticalSeverityTokenJS !== 'undefined' && criticalSeverityTokenJS !== 'undefined') {
+          vm.criticalSeverity = criticalSeverityTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -140,7 +140,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "",
+        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=high | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -158,16 +158,16 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "readFilesToken", "value": "$result.count$" },
+              { "type": "set", "token": "highSeverityToken", "value": "$result.count$" },
             ]
           }
         ]
       })
 
-      submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
-        const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
-        if (typeof readFilesTokenJS !== 'undefined' && readFilesTokenJS !== 'undefined') {
-          vm.readFiles = readFilesTokenJS
+      submittedTokenModel.on("change:highSeverityToken", (model, highSeverityToken, options) => {
+        const highSeverityTokenJS = submittedTokenModel.get("highSeverityToken")
+        if (typeof highSeverityTokenJS !== 'undefined' && highSeverityTokenJS !== 'undefined') {
+          vm.highSeverity = highSeverityTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -179,7 +179,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "",
+        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=medium | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -197,16 +197,16 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesModifiedToken", "value": "$result.count$" },
+              { "type": "set", "token": "mediumSeverityToken", "value": "$result.count$" },
             ]
           }
         ]
       })
 
-      submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
-          vm.filesModifiedToken = filesModifiedToken
+      submittedTokenModel.on("change:mediumSeverityToken", (model, mediumSeverityToken, options) => {
+        const mediumSeverityTokenJS = submittedTokenModel.get("mediumSeverityToken")
+        if (typeof mediumSeverityTokenJS !== 'undefined' && mediumSeverityTokenJS !== 'undefined') {
+          vm.mediumSeverity = mediumSeverityTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -218,7 +218,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "",
+        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=low | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -229,23 +229,23 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new SearchEventHandler({
-        managerid: "filesDeletedSearch" + epoch,
+        managerid: "lowSeveritySearch" + epoch,
         event: "done",
         conditions: [
           {
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesDeletedToken", "value": "$result.count$" },
+              { "type": "set", "token": "lowSeverityToken", "value": "$result.count$" },
             ]
           }
         ]
       })
 
-      submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
-          vm.filesDeleted = filesDeletedTokenJS
+      submittedTokenModel.on("change:lowSeverityToken", (model, lowSeverityToken, options) => {
+        const lowSeverityTokenJS = submittedTokenModel.get("lowSeverityToken")
+        if (typeof lowSeverityTokenJS !== 'undefined' && lowSeverityTokenJS !== 'undefined') {
+          vm.lowSeverity = lowSeverityTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
