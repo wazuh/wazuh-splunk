@@ -29,9 +29,9 @@ define([
   TimeRangeInput,
   SearchManager,
   UrlTokenModel) {
-    'use strict';
+    'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService,$apiService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $apiService) {
       const vm = this
       const epoch = (new Date).getTime()
       const selectedIndex = $currentApiIndexService.getIndex()
@@ -40,10 +40,10 @@ define([
       const nameFilter = filter[0] + '=' + filter[1]
       const api = JSON.parse($currentApiIndexService.getAPI())
       // Create token namespaces
-      const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
-      mvc.Components.registerInstance('url' + epoch, urlTokenModel);
-      const defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+      const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
+      mvc.Components.registerInstance('url' + epoch, urlTokenModel)
+      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
       const baseUrl = $apiService.getBaseUrl()
       setToken('baseip', baseUrl)
@@ -74,7 +74,7 @@ define([
         }, { tokens: true, tokenNamespace: "submitted" })
 
         element9 = new ChartElement({
-          "id": "element9"+epoch,
+          "id": "element9" + epoch,
           "charting.axisY2.scale": "inherit",
           "trellis.size": "medium",
           "charting.chart.stackMode": "default",
@@ -102,20 +102,20 @@ define([
           "charting.axisY.scale": "linear",
           "charting.chart.showDataLabels": "all",
           "charting.chart.sliceCollapsingThreshold": "0.01",
-          "managerid": "search9"+epoch,
+          "managerid": "search9" + epoch,
           "el": $('#element9')
         }, { tokens: true, tokenNamespace: "submitted" }).render()
       } else {
         let filterAgent = (filter[0] === 'manager.name') ? 'manager_host' : 'cluster.name'
-        filter+='='+filter[1]
+        filter += '=' + filter[1]
         search9 = new SearchManager({
-          "id": "search9"+epoch,
+          "id": "search9" + epoch,
           "earliest_time": "$when.earliest$",
           "latest_time": "$when.latest$",
           "status_buckets": 0,
           "sample_ratio": null,
           "cancelOnUnload": true,
-          "search": "index=\"wazuh-monitoring-3x\" "+ filterAgent +" status=* | timechart span=1h count by status usenull=f",
+          "search": "index=\"wazuh-monitoring-3x\" " + filterAgent + " status=* | timechart span=1h count by status usenull=f",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -125,7 +125,7 @@ define([
         }, { tokens: true, tokenNamespace: "submitted" })
 
         element9 = new ChartElement({
-          "id": "element9"+epoch,
+          "id": "element9" + epoch,
           "charting.legend.placement": "right",
           "charting.drilldown": "none",
           "refresh.display": "progressbar",
@@ -137,41 +137,41 @@ define([
           "charting.axisTitleX.visibility": "visible",
           "charting.axisTitleY.visibility": "visible",
           "charting.axisTitleY2.visibility": "visible",
-          "managerid": "search9"+epoch,
+          "managerid": "search9" + epoch,
           "el": $('#element9')
-        }, { tokens: true, tokenNamespace: "submitted" }).render();
+        }, { tokens: true, tokenNamespace: "submitted" }).render()
       }
 
 
       urlTokenModel.on('url:navigate', function () {
-        defaultTokenModel.set(urlTokenModel.toJSON());
+        defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens();
+          submitTokens()
         } else {
-          submittedTokenModel.clear();
+          submittedTokenModel.clear()
         }
-      });
+      })
 
       // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON());
+      defaultTokenModel.set(urlTokenModel.toJSON())
 
       function submitTokens() {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-        FormUtils.submitForm({ replaceState: pageLoading });
+        FormUtils.submitForm({ replaceState: pageLoading })
       }
 
       function setToken(name, value) {
-        defaultTokenModel.set(name, value);
-        submittedTokenModel.set(name, value);
+        defaultTokenModel.set(name, value)
+        submittedTokenModel.set(name, value)
       }
 
       function unsetToken(name) {
-        defaultTokenModel.unset(name);
-        submittedTokenModel.unset(name);
+        defaultTokenModel.unset(name)
+        submittedTokenModel.unset(name)
       }
 
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authSuccessToken");
+        const tokHTMLJS = submittedTokenModel.get("authSuccessToken")
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           vm.authSuccess = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
@@ -179,7 +179,7 @@ define([
       })
 
       let pageLoading = true
-
+      let input1 = ''
       let overviewSearch5 = ''
       let overviewSearch6 = ''
       let overviewSearch7 = ''
@@ -211,7 +211,7 @@ define([
         overviewElement7 = null
         overviewElement8 = null
         overviewElement14 = null
-
+        input1 = null
       })
 
 
@@ -247,7 +247,7 @@ define([
       })
 
       submittedTokenModel.on("change:tokHTML", (model, tokHTML, options) => {
-        const tokHTMLJS = submittedTokenModel.get("tokHTML");
+        const tokHTMLJS = submittedTokenModel.get("tokHTML")
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           vm.totalAlerts = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
@@ -285,7 +285,7 @@ define([
       })
 
       submittedTokenModel.on("change:level12token", (model, level12token, options) => {
-        const tokHTMLJS = submittedTokenModel.get("level12token");
+        const tokHTMLJS = submittedTokenModel.get("level12token")
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           vm.levelTwelve = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
@@ -324,7 +324,7 @@ define([
       })
 
       submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authFailureToken");
+        const tokHTMLJS = submittedTokenModel.get("authFailureToken")
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
           vm.authFailure = tokHTMLJS
           if (!$scope.$$phase) $scope.$digest()
@@ -368,14 +368,14 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search":  "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.level=*| timechart count by rule.level",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.level=*| timechart count by rule.level",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       overviewSearch6 = new SearchManager({
         "id": "search6" + epoch,
@@ -384,14 +384,14 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search":"index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=2h count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=2h count",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       overviewSearch7 = new SearchManager({
         "id": "search7" + epoch,
@@ -407,7 +407,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       overviewSearch8 = new SearchManager({
         "id": "search8" + epoch,
@@ -423,7 +423,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
 
       overviewSearch14 = new SearchManager({
@@ -440,7 +440,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
 
       //
@@ -457,7 +457,7 @@ define([
         el: $('.dashboard-body'),
         showTitle: true,
         editable: false
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       overviewElement5 = new ChartElement({
         "id": "overviewElement5" + epoch,
@@ -490,7 +490,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search5" + epoch,
         "el": $('#overviewElement5')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       overviewElement6 = new ChartElement({
@@ -524,7 +524,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search6" + epoch,
         "el": $('#overviewElement6')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       overviewElement7 = new ChartElement({
@@ -558,7 +558,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search7" + epoch,
         "el": $('#overviewElement7')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       overviewElement8 = new ChartElement({
@@ -592,7 +592,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search8" + epoch,
         "el": $('#overviewElement8')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       overviewElement14 = new TableElement({
         "id": "overviewElement14" + epoch,
@@ -604,53 +604,54 @@ define([
         "wrap": "true",
         "managerid": "search14" + epoch,
         "el": $('#overviewElement14')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       overviewElement14.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       //
       // VIEWS: FORM INPUTS
       //
 
-      var input1 = new TimeRangeInput({
+      input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "searchWhenChanged": true,
         "earliest_time": "$form.when.earliest$",
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       input1.on("change", function (newValue) {
-        FormUtils.handleValueChange(input1);
-      });
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
+      })
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' });
+          submittedTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
+        defaultTokenModel.set({ earliest: '0', latest: '' })
       }
 
-      submitTokens();
+      submitTokens()
       //
       // DASHBOARD READY
       //
 
-      DashboardController.ready();
-      pageLoading = false;
+      DashboardController.ready()
+      pageLoading = false
 
 
-    });
-  });
+    })
+  })
 

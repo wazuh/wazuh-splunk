@@ -143,7 +143,6 @@ define([
             if (!$scope.$$phase) $scope.$digest()
           }
         } else {
-          console.log('no data result')
           vm.gdprTabs = false
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -391,19 +390,6 @@ define([
       // VIEWS: FORM INPUTS
       //
 
-      input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "searchWhenChanged": true,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", (newValue) => {
-        FormUtils.handleValueChange(input1)
-      })
-
       input2 = new DropdownInput({
         "id": "input2",
         "choices": [
@@ -425,6 +411,20 @@ define([
         FormUtils.handleValueChange(input2)
       })
 
+      input1 = new TimeRangeInput({
+        "id": "input1" + epoch,
+        "searchWhenChanged": true,
+        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
+        "earliest_time": "$form.when.earliest$",
+        "latest_time": "$form.when.latest$",
+        "el": $('#input1')
+      }, { tokens: true }).render()
+
+      input1.on("change", (newValue) => {
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
+      })
+      
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })

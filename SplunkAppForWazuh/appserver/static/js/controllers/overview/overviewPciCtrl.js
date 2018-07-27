@@ -100,7 +100,7 @@ define([
 
 
       dropdownSearch = new SearchManager({
-        "id": "dropdownSearch"+epoch,
+        "id": "dropdownSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "$when.latest$",
@@ -145,7 +145,6 @@ define([
             if (!$scope.$$phase) $scope.$digest()
           }
         } else {
-          console.log('no data result')
           vm.pciTabs = false
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -153,7 +152,7 @@ define([
 
 
       pciReqSearch = new SearchManager({
-        "id": "pciReqSearch"+epoch,
+        "id": "pciReqSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
@@ -169,7 +168,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       groupsSearch = new SearchManager({
-        "id": "groupsSearch"+epoch,
+        "id": "groupsSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
@@ -185,7 +184,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       agentsSearch = new SearchManager({
-        "id": "agentsSearch"+epoch,
+        "id": "agentsSearch" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
@@ -201,7 +200,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       requirementsByAgents = new SearchManager({
-        "id": "requirementsByAgents"+epoch,
+        "id": "requirementsByAgents" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
@@ -217,7 +216,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       alertsSummary = new SearchManager({
-        "id": "alertsSummary"+epoch,
+        "id": "alertsSummary" + epoch,
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
@@ -234,7 +233,7 @@ define([
 
 
       element1 = new ChartElement({
-        "id": "element1"+epoch,
+        "id": "element1" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "none",
@@ -262,13 +261,13 @@ define([
         "charting.chart": "column",
         "charting.axisY.scale": "linear",
         "trellis.scales.shared": "1",
-        "managerid": "pciReqSearch"+epoch,
+        "managerid": "pciReqSearch" + epoch,
         "el": $('#element1')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element2 = new ChartElement({
-        "id": "element2"+epoch,
+        "id": "element2" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "right",
@@ -296,13 +295,13 @@ define([
         "charting.chart": "pie",
         "charting.axisY.scale": "linear",
         "trellis.scales.shared": "1",
-        "managerid": "groupsSearch"+epoch,
+        "managerid": "groupsSearch" + epoch,
         "el": $('#element2')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element3 = new ChartElement({
-        "id": "element3"+epoch,
+        "id": "element3" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "right",
@@ -330,13 +329,13 @@ define([
         "charting.chart": "pie",
         "charting.axisY.scale": "linear",
         "trellis.scales.shared": "1",
-        "managerid": "agentsSearch"+epoch,
+        "managerid": "agentsSearch" + epoch,
         "el": $('#element3')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element4 = new ChartElement({
-        "id": "element4"+epoch,
+        "id": "element4" + epoch,
         "charting.axisTitleY2.visibility": "visible",
         "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
         "charting.legend.placement": "bottom",
@@ -364,20 +363,20 @@ define([
         "charting.chart": "column",
         "charting.axisY.scale": "log",
         "trellis.scales.shared": "1",
-        "managerid": "requirementsByAgents"+epoch,
+        "managerid": "requirementsByAgents" + epoch,
         "el": $('#element4')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element5 = new TableElement({
-        "id": "element5"+epoch,
+        "id": "element5" + epoch,
         "dataOverlayMode": "heatmap",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "true",
         "totalsRow": "false",
         "wrap": "false",
-        "managerid": "alertsSummary"+epoch,
+        "managerid": "alertsSummary" + epoch,
         "el": $('#element5')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -393,22 +392,8 @@ define([
       // VIEWS: FORM INPUTS
       //
 
-      input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "searchWhenChanged": true,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", (newValue) => {
-        console.log(input1)
-        FormUtils.handleValueChange(input1)
-      })
-
       input2 = new DropdownInput({
-        "id": "input2"+epoch,
+        "id": "input2" + epoch,
         "choices": [
           { "label": "ALL", "value": "*" }
         ],
@@ -420,7 +405,7 @@ define([
         "labelField": "rule.pci_dss{}",
         "selectFirstChoice": false,
         "value": "$form.pci$",
-        "managerid": "dropdownSearch"+epoch,
+        "managerid": "dropdownSearch" + epoch,
         "el": $('#input2')
       }, { tokens: true }).render()
 
@@ -428,6 +413,19 @@ define([
         FormUtils.handleValueChange(input2)
       })
 
+      input1 = new TimeRangeInput({
+        "id": "input1" + epoch,
+        "searchWhenChanged": true,
+        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
+        "earliest_time": "$form.when.earliest$",
+        "latest_time": "$form.when.latest$",
+        "el": $('#input1')
+      }, { tokens: true }).render()
+
+      input1.on("change", (newValue) => {
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
+      })
 
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
@@ -444,7 +442,6 @@ define([
 
       DashboardController.ready()
       pageLoading = false
-
 
     })
   })

@@ -91,7 +91,7 @@ define([
       let filesAddedSearch = ''
       let filesModifiedSearch = ''
       let filesDeletedSearch = ''
-
+      let input1 = ''
       let eventsOverTimeElement = ''
       let topUserOwnersElement = ''
       let topGroupOwnersElement = ''
@@ -114,7 +114,7 @@ define([
         filesAddedSearch = null
         filesModifiedSearch = null
         filesDeletedSearch = null
-
+        input1 = null
         eventsOverTimeElement = null
         topUserOwnersElement = null
         topGroupOwnersElement = null
@@ -141,19 +141,6 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      let input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "searchWhenChanged": true,
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", function (newValue) {
-        FormUtils.handleValueChange(input1)
-      })
 
       new SearchEventHandler({
         managerid: "filesAddedSearch" + epoch,
@@ -538,17 +525,17 @@ define([
         "rangeValues": "[0]",
         "showSparkline": "1",
         "useThousandSeparators": "0",
-        "managerid": "wordWritableFilesSearch"+epoch,
+        "managerid": "wordWritableFilesSearch" + epoch,
         "el": $('#wordWritableFilesSearch')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       eventsSummarySearch = new SearchManager({
-        "id": "eventsSummarySearch"+epoch,
+        "id": "eventsSummarySearch" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -559,17 +546,31 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       eventsSummaryElement = new TableElement({
-        "id": "eventsSummaryElement"+epoch,
+        "id": "eventsSummaryElement" + epoch,
         "dataOverlayMode": "heatmap",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "true",
         "totalsRow": "true",
         "wrap": "false",
-        "managerid": "eventsSummarySearch"+epoch,
+        "managerid": "eventsSummarySearch" + epoch,
         "el": $('#eventsSummaryElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      input1 = new TimeRangeInput({
+        "id": "input1" + epoch,
+        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
+        "searchWhenChanged": true,
+        "earliest_time": "$form.when.earliest$",
+        "latest_time": "$form.when.latest$",
+        "el": $('#input1')
+      }, { tokens: true }).render()
+
+      input1.on("change", function (newValue) {
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
+      })
+      
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })

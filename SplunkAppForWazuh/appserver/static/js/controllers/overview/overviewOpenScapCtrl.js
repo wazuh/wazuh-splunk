@@ -13,7 +13,9 @@ define([
   "splunkjs/mvc/simplexml/searcheventhandler",
   "splunkjs/mvc/simpleform/input/timerange",
   "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
+  "splunkjs/mvc/simplexml/urltokenmodel",
+  "splunkjs/mvc/simpleform/input/dropdown"
+
 ], function (controllers,
   mvc,
   utils,
@@ -28,7 +30,8 @@ define([
   SearchEventHandler,
   TimeRangeInput,
   SearchManager,
-  UrlTokenModel) {
+  UrlTokenModel,
+  DropdownInput) {
 
     'use strict'
 
@@ -72,24 +75,14 @@ define([
         submittedTokenModel.unset(name)
       }
 
-
-      const input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "searchWhenChanged": true,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", (newValue) => {
-        FormUtils.handleValueChange(input1)
-      })
       let filesAddedSearch = ''
       let readFilesSearch = ''
       let modifiedFiles = ''
+      let input1 = ''
+      let input2 = ''
       let search4 = ''
       let search5 = ''
+      let search15 = ''
       let search6 = ''
       let search7 = ''
       let search8 = ''
@@ -111,8 +104,11 @@ define([
         filesAddedSearch = null
         readFilesSearch = null
         modifiedFiles = null
+        input1 = null
+        input2 = null
         search4 = null
         search5 = null
+        search15 = null
         search6 = null
         search7 = null
         search8 = null
@@ -303,6 +299,22 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+
+      search15 = new SearchManager({
+        "id": "search15"+epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": null,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": "index="+selectedIndex+" "+nameFilter+" sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count",
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true })
 
       search7 = new SearchManager({
         "id": "search7" + epoch,
@@ -609,17 +621,40 @@ define([
         "el": $('#element14')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      // element14.on("click", function (e) {
-      //   if (e.field !== undefined) {
-      //     e.preventDefault()
-      //     const url = "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content"
-      //     utils.redirect(url, false, "_blank")
-      //   }
-      // })
+      input1 = new TimeRangeInput({
+        "id": "input1" + epoch,
+        "searchWhenChanged": true,
+        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
+        "earliest_time": "$form.when.earliest$",
+        "latest_time": "$form.when.latest$",
+        "el": $('#input1')
+      }, { tokens: true }).render()
 
-      //
-      // VIEWS: FORM INPUTS
-      //
+      input2 = new DropdownInput({
+        "id": "input2"+epoch,
+        "choices": [
+          { "label": "ALL", "value": "*" }
+        ],
+        "labelField": "oscap.scan.profile.title",
+        "searchWhenChanged": true,
+        "default": "*",
+        "valueField": "oscap.scan.profile.title",
+        "initialValue": "*",
+        "selectFirstChoice": false,
+        "showClearButton": true,
+        "value": "$form.profile$",
+        "managerid": "search15"+epoch,
+        "el": $('#input2')
+      }, { tokens: true }).render()
+
+      input2.on("change", function (newValue) {
+        FormUtils.handleValueChange(input2)
+      })
+
+      input1.on("change", (newValue) => {
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
+      })
 
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {

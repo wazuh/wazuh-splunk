@@ -65,13 +65,14 @@ define([
   SavedSearchManager,
   PostProcessManager,
   UrlTokenModel) {
-    'use strict';
+    'use strict'
     controllers.controller('managerCtrl', function ($scope) {
       $scope.message = 'Manager'
       // 
       // TOKENS
       //
       let pageLoading = true
+      let input1 = ''
       let search1 = ''
       let search2 = ''
       let search3 = ''
@@ -101,7 +102,7 @@ define([
       let managerElement13 = ''
       let managerElement14 = ''
       $scope.$on('$destroy', () => {
-
+        input1 = null
         search1 = null
         search2 = null
         search3 = null
@@ -134,36 +135,36 @@ define([
       })
       // Create token namespaces
       const epoch = (new Date).getTime()
-      var urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch });
-      mvc.Components.registerInstance('url' + epoch, urlTokenModel);
-      var defaultTokenModel = mvc.Components.getInstance('default', { create: true });
-      var submittedTokenModel = mvc.Components.getInstance('submitted', { create: true });
+      let urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
+      mvc.Components.registerInstance('url' + epoch, urlTokenModel)
+      let defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
       urlTokenModel.on('url:navigate', function () {
-        defaultTokenModel.set(urlTokenModel.toJSON());
+        defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens();
+          submitTokens()
         } else {
-          submittedTokenModel.clear();
+          submittedTokenModel.clear()
         }
-      });
+      })
 
       // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON());
+      defaultTokenModel.set(urlTokenModel.toJSON())
 
       function submitTokens() {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-        FormUtils.submitForm({ replaceState: pageLoading });
+        FormUtils.submitForm({ replaceState: pageLoading })
       }
 
       function setToken(name, value) {
-        defaultTokenModel.set(name, value);
-        submittedTokenModel.set(name, value);
+        defaultTokenModel.set(name, value)
+        submittedTokenModel.set(name, value)
       }
 
       function unsetToken(name) {
-        defaultTokenModel.unset(name);
-        submittedTokenModel.unset(name);
+        defaultTokenModel.unset(name)
+        submittedTokenModel.unset(name)
       }
 
 
@@ -187,7 +188,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search2 = new SearchManager({
         "id": "search2" + epoch,
@@ -203,7 +204,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search3 = new SearchManager({
         "id": "search3" + epoch,
@@ -219,7 +220,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search4 = new SearchManager({
         "id": "search4" + epoch,
@@ -235,7 +236,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search5 = new SearchManager({
         "id": "search5" + epoch,
@@ -251,7 +252,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search6 = new SearchManager({
         "id": "search6" + epoch,
@@ -267,7 +268,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search7 = new SearchManager({
         "id": "search7" + epoch,
@@ -283,7 +284,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search8 = new SearchManager({
         "id": "search8" + epoch,
@@ -299,7 +300,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search9 = new SearchManager({
         "id": "search9" + epoch,
@@ -315,7 +316,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search10 = new SearchManager({
         "id": "search10" + epoch,
@@ -331,7 +332,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search11 = new SearchManager({
         "id": "search11" + epoch,
@@ -347,7 +348,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search12 = new SearchManager({
         "id": "search12" + epoch,
@@ -363,7 +364,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search13 = new SearchManager({
         "id": "search13" + epoch,
@@ -379,7 +380,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       search14 = new SearchManager({
         "id": "search14" + epoch,
@@ -395,7 +396,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" });
+      }, { tokens: true, tokenNamespace: "submitted" })
 
 
       //
@@ -434,15 +435,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search1" + epoch,
         "el": $('#managerElement1')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement1.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=\"wazuh\"  | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement2 = new SingleElement({
         "id": "managerElement2" + epoch,
@@ -466,15 +467,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search2" + epoch,
         "el": $('#managerElement2')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement2.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=\"wazuh\" sourcetype=wazuh \"rule.level\">=12 | chart count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement3 = new SingleElement({
         "id": "managerElement3" + epoch,
@@ -497,15 +498,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search3" + epoch,
         "el": $('#managerElement3')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement3.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement4 = new SingleElement({
         "id": "managerElement4" + epoch,
@@ -528,15 +529,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search4" + epoch,
         "el": $('#managerElement4')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement4.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement5 = new ChartElement({
         "id": "managerElement5" + epoch,
@@ -569,7 +570,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search5" + epoch,
         "el": $('#managerElement5')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       managerElement6 = new ChartElement({
@@ -603,7 +604,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search6" + epoch,
         "el": $('#managerElement6')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       managerElement7 = new ChartElement({
@@ -637,7 +638,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search7" + epoch,
         "el": $('#managerElement7')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       managerElement8 = new ChartElement({
@@ -671,7 +672,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search8" + epoch,
         "el": $('#managerElement8')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       managerElement9 = new ChartElement({
@@ -705,7 +706,7 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search9" + epoch,
         "el": $('#managerElement9')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       managerElement10 = new SingleElement({
@@ -729,15 +730,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search10" + epoch,
         "el": $('#managerElement10')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement10.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcuser showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement11 = new SingleElement({
         "id": "managerElement11" + epoch,
@@ -760,15 +761,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search11" + epoch,
         "el": $('#managerElement11')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement11.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 srcip showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement12 = new SingleElement({
         "id": "managerElement12" + epoch,
@@ -791,15 +792,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search12" + epoch,
         "el": $('#managerElement12')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement12.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.groups showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement13 = new SingleElement({
         "id": "managerElement13" + epoch,
@@ -822,15 +823,15 @@ define([
         "trellis.scales.shared": "1",
         "managerid": "search13" + epoch,
         "el": $('#managerElement13')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement13.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh | top limit=1 rule.pci_dss{} showcount=false showperc=false&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
       managerElement14 = new TableElement({
         "id": "managerElement14" + epoch,
@@ -842,55 +843,56 @@ define([
         "wrap": "true",
         "managerid": "search14" + epoch,
         "el": $('#managerElement14')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       managerElement14.on("click", function (e) {
         if (e.field !== undefined) {
-          e.preventDefault();
-          var url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components));
-          utils.redirect(url, false, "_blank");
+          e.preventDefault()
+          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          utils.redirect(url, false, "_blank")
         }
-      });
+      })
 
 
       //
       // VIEWS: FORM INPUTS
       //
 
-      var input1 = new TimeRangeInput({
+      input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "searchWhenChanged": true,
         "earliest_time": "$form.when.earliest$",
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
-      }, { tokens: true }).render();
+      }, { tokens: true }).render()
 
       input1.on("change", function (newValue) {
-        FormUtils.handleValueChange(input1);
-      });
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
+      })
 
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' });
+          submittedTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' });
+        defaultTokenModel.set({ earliest: '0', latest: '' })
       }
 
-      submitTokens();
+      submitTokens()
 
       //
       // DASHBOARD READY
       //
 
-      DashboardController.ready();
-      pageLoading = false;
+      DashboardController.ready()
+      pageLoading = false
 
 
-    });
-  });
+    })
+  })
 
