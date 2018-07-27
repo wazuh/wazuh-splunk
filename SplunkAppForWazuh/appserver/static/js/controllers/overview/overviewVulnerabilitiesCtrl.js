@@ -256,7 +256,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh index=wazuh rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh index=" + selectedIndex + " " + nameFilter + " rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -267,20 +267,20 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       topAgentsSeverity = new SearchManager({
-        "id": "topAgentsSeverity" + epoch,
-        "cancelOnUnload": true,
+        "id": "topAgentsSeverity"+epoch,
         "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
+        "cancelOnUnload": true,
+        "earliest_time": "0",
+        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=*  | spath \"agent.name\"  | search \"agent.name\"=*   | rename agent.id AS RootObject.agent.id agent.ip AS RootObject.agent.ip agent.name AS RootObject.agent.name data.vulnerability.cve AS RootObject.data.vulnerability.cve data.vulnerability.package.condition AS RootObject.data.vulnerability.package.condition data.vulnerability.package.name AS RootObject.data.vulnerability.package.name data.vulnerability.package.version AS RootObject.data.vulnerability.package.version data.vulnerability.published AS RootObject.data.vulnerability.published data.vulnerability.reference AS RootObject.data.vulnerability.reference data.vulnerability.severity AS RootObject.data.vulnerability.severity data.vulnerability.state AS RootObject.data.vulnerability.state data.vulnerability.title AS RootObject.data.vulnerability.title data.vulnerability.updated AS RootObject.data.vulnerability.updated date_hour AS RootObject.date_hour date_mday AS RootObject.date_mday date_minute AS RootObject.date_minute date_month AS RootObject.date_month date_second AS RootObject.date_second date_wday AS RootObject.date_wday date_year AS RootObject.date_year date_zone AS RootObject.date_zone decoder.name AS RootObject.decoder.name id AS RootObject.id index AS RootObject.index linecount AS RootObject.linecount location AS RootObject.location manager.name AS RootObject.manager.name rule.description AS RootObject.rule.description rule.firedtimes AS RootObject.rule.firedtimes \"rule.gdpr{}\" AS \"RootObject.rule.gdpr{}\" rule.groups AS RootObject.rule.groups \"rule.groups{}\" AS \"RootObject.rule.groups{}\" rule.id AS RootObject.rule.id rule.level AS RootObject.rule.level rule.mail AS RootObject.rule.mail splunk_server AS RootObject.splunk_server timeendpos AS RootObject.timeendpos timestamp AS RootObject.timestamp timestartpos AS RootObject.timestartpos | fields \"_time\" \"host\" \"source\" \"sourcetype\" \"RootObject.agent.id\" \"RootObject.agent.ip\" \"RootObject.agent.name\" \"RootObject.data.vulnerability.cve\" \"RootObject.data.vulnerability.package.condition\" \"RootObject.data.vulnerability.package.name\" \"RootObject.data.vulnerability.package.version\" \"RootObject.data.vulnerability.published\" \"RootObject.data.vulnerability.reference\" \"RootObject.data.vulnerability.severity\" \"RootObject.data.vulnerability.state\" \"RootObject.data.vulnerability.title\" \"RootObject.data.vulnerability.updated\" \"RootObject.date_hour\" \"RootObject.date_mday\" \"RootObject.date_minute\" \"RootObject.date_month\" \"RootObject.date_second\" \"RootObject.date_wday\" \"RootObject.date_year\" \"RootObject.date_zone\" \"RootObject.decoder.name\" \"RootObject.id\" \"RootObject.index\" \"RootObject.linecount\" \"RootObject.location\" \"RootObject.manager.name\" \"RootObject.rule.description\" \"RootObject.rule.firedtimes\" \"\\\"RootObject.rule.gdpr{}\\\"\" \"RootObject.rule.groups\" \"\\\"RootObject.rule.groups{}\\\"\" \"RootObject.rule.id\" \"RootObject.rule.level\" \"RootObject.rule.mail\" \"RootObject.splunk_server\" \"RootObject.timeendpos\" \"RootObject.timestamp\" \"RootObject.timestartpos\" | eval \"RootObject.data.vulnerability.severity\"='RootObject.data.vulnerability.severity', \"agent.name\"='RootObject.agent.name' | chart dedup_splitvals=t limit=100 useother=t count AS \"Count of 1532686833.50\"  by agent.name RootObject.data.vulnerability.severity format=$$VAL$$:::$$AGG$$ | sort limit=100 RootObject.agent.name | fields - _span  | fields agent.name *",
+        "latest_time": "$latest$",
         "status_buckets": 0,
-        "search": "",
-        "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
+    }, {tokens: true, tokenNamespace: "submitted"})
 
       affectedPackages = new SearchManager({
         "id": "affectedPackages" + epoch,
@@ -288,7 +288,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "",
+        "search": "index=" + selectedIndex + " " + nameFilter + " | top 5 data.vulnerability.package.name",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -304,7 +304,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "",
+        "search": "index=" + selectedIndex + " " + nameFilter + " | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -346,45 +346,51 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "alertsSeverityOverTime" + epoch,
         "el": $('#element1')
-      }, { tokens: true, tokenNamespace: "submitted" }).render();
-
-
-      element2 = new ChartElement({
-        "id": "element7" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "column",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "topAgentsSeverity" + epoch,
-        "el": $('#element7')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
+      element2 = new ChartElement({
+        "id": "element2",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.text": "Count of 1532686833.50",
+        "charting.axisX.scale": "linear",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.drilldown": "none",
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.chart.showDataLabels": "none",
+        "trellis.enabled": "0",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisY.scale": "linear",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart": "column",
+        "charting.axisY.abbreviation": "none",
+        "charting.axisY2.abbreviation": "none",
+        "charting.lineWidth": "2",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.layout.splitSeries": "0",
+        "charting.axisX.abbreviation": "none",
+        "charting.legend.placement": "right",
+        "charting.axisY2.enabled": "0",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.chart.stackMode": "stacked",
+        "charting.chart.nullValueMode": "gaps",
+        "resizable": true,
+        "charting.legend.mode": "standard",
+        "trellis.scales.shared": "1",
+        "managerid": "topAgentsSeverity"+epoch,
+        "el": $('#element2')
+    }, {tokens: true, tokenNamespace: "submitted"}).render()
+
+
       element3 = new ChartElement({
-        "id": "element8" + epoch,
+        "id": "element3" + epoch,
         "charting.axisY2.scale": "inherit",
         "trellis.size": "medium",
         "charting.chart.stackMode": "default",
@@ -413,41 +419,20 @@ define([
         "charting.chart.showDataLabels": "none",
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "managerid": "affectedPackages" + epoch,
-        "el": $('#element8')
+        "el": $('#element3')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
-      element4 = new ChartElement({
-        "id": "element9" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "alertsSummary" + epoch,
-        "el": $('#element9')
+      element4 = new TableElement({
+        "id": "element4"+epoch,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "false",
+        "totalsRow": "false",
+        "wrap": "false",
+        "managerid": "alertsSummary"+epoch,
+        "el": $('#element4')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       //
