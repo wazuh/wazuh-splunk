@@ -64,7 +64,7 @@ define([
       let eventsPerAgent = ''
       let alertsSummary = ''
       let cisRequirements = ''
-
+      let input1 = ''
       let elementOverTimeSearch = ''
       let topPciDssSearch = ''
       let eventsPerAgentSearch = ''
@@ -85,6 +85,7 @@ define([
         eventsPerAgentSearch = null
         alertsSummarySearch = null
         cisRequirementsSearch = null
+        input1 = null
       })
 
       elementOverTimeSearch = new SearchManager({
@@ -168,7 +169,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new Dashboard({
-        id: 'dashboard'+epoch,
+        id: 'dashboard' + epoch,
         el: $('.dashboard-body'),
         showTitle: true,
         editable: false
@@ -335,7 +336,7 @@ define([
         }
       })
 
-      let input1 = new TimeRangeInput({
+      input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -345,17 +346,15 @@ define([
       }, { tokens: true }).render()
 
       input1.on("change", (newValue) => {
-        FormUtils.handleValueChange(input1)
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
       })
-
-
 
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })
         }
       })
-
 
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {

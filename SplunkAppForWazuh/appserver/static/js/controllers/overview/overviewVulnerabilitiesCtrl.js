@@ -74,6 +74,7 @@ define([
       let element2 = ''
       let element3 = ''
       let element4 = ''
+      let input1 = ''
 
       /**
        * When controller is destroyed
@@ -91,6 +92,7 @@ define([
         element2 = null
         element3 = null
         element4 = null
+        input1 = null
       })
 
       // Listen for a change to the token tokenTotalAlerts value
@@ -267,7 +269,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       topAgentsSeverity = new SearchManager({
-        "id": "topAgentsSeverity"+epoch,
+        "id": "topAgentsSeverity" + epoch,
         "sample_ratio": 1,
         "cancelOnUnload": true,
         "earliest_time": "0",
@@ -280,7 +282,7 @@ define([
         "tokenDependencies": {
         },
         "runWhenTimeIsUndefined": false
-    }, {tokens: true, tokenNamespace: "submitted"})
+      }, { tokens: true, tokenNamespace: "submitted" })
 
       affectedPackages = new SearchManager({
         "id": "affectedPackages" + epoch,
@@ -384,9 +386,9 @@ define([
         "resizable": true,
         "charting.legend.mode": "standard",
         "trellis.scales.shared": "1",
-        "managerid": "topAgentsSeverity"+epoch,
+        "managerid": "topAgentsSeverity" + epoch,
         "el": $('#element2')
-    }, {tokens: true, tokenNamespace: "submitted"}).render()
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
 
       element3 = new ChartElement({
@@ -424,14 +426,14 @@ define([
 
 
       element4 = new TableElement({
-        "id": "element4"+epoch,
+        "id": "element4" + epoch,
         "dataOverlayMode": "none",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "false",
         "totalsRow": "false",
         "wrap": "false",
-        "managerid": "alertsSummary"+epoch,
+        "managerid": "alertsSummary" + epoch,
         "el": $('#element4')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
@@ -439,7 +441,7 @@ define([
       // VIEWS: FORM INPUTS
       //
 
-      const input1 = new TimeRangeInput({
+      input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "searchWhenChanged": true,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -449,7 +451,8 @@ define([
       }, { tokens: true }).render()
 
       input1.on("change", (newValue) => {
-        FormUtils.handleValueChange(input1)
+        if (newValue && input1)
+          FormUtils.handleValueChange(input1)
       })
 
       DashboardController.onReady(() => {
