@@ -77,7 +77,7 @@ define(['./module'], function (module) {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-logs.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-logs') },
         controller: 'managerLogsCtrl',
-        controllerAs: 'mlogs',
+        controllerAs: 'mlog',
       })
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
