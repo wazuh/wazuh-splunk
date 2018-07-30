@@ -1,0 +1,27 @@
+<div flex layout="column" layout-align="start stretch">
+
+  <!-- Headline -->
+  <div layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview</span>
+    <span>Visualize the current overall status of your cluster</span>
+  </div>
+  <!-- End headline -->
+
+  <!-- System audit card -->
+  <div layout="row" layout-align="start stretch" layout-wrap>
+    <md-card flex class="wz-md-card">
+      <md-card-content flex layout="column">
+        <span class="wz-headline-title">
+          <i class="fa fa-fw fa-flag" aria-hidden="true"></i>Administration</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <md-button ui-sref='mg-logs' class="small wz-text-link">Logs</md-button>
+          <md-button ui-sref='ow-aud' class="small wz-text-link">Status</md-button>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End System audit card -->
+
+</div>

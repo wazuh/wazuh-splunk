@@ -67,10 +67,17 @@ define(['./module'], function (module) {
       })
       // Manager
       .state('manager', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager.html',
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-welcome.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
         // controller: 'managerCtrl',
         // controllerAs: 'mc'
+      })
+      // Manager - Logs
+      .state('mg-logs', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-logs.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-logs') },
+        controller: 'managerLogsCtrl',
+        controllerAs: 'mlogs',
       })
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })

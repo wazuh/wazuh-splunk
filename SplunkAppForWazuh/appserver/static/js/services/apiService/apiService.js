@@ -27,9 +27,14 @@ define(['../module'], function (module) {
      * GET method
      * @param {String} url 
      */
-    const get = async (endpoint,includedApi) => {
+    const get = async (endpoint, opts, includedApi) => {
       try {
-        let result = await $http.get(getWellFormedUri(endpoint,includedApi))
+        console.log('OPTS ', opts)
+        let result = ''
+        if (opts)
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), opts, includedApi)
+        else
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), false, includedApi)
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.data.error) {
@@ -51,7 +56,7 @@ define(['../module'], function (module) {
      */
     const post = async (endpoint, payload) => {
       try {
-        return await $http.post(getWellFormedUri(endpoint,includedApi), payload)
+        return await $http.post(getWellFormedUri(endpoint, includedApi), payload)
       } catch (err) {
         return Promise.reject(err)
       }

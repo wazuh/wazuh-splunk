@@ -44,7 +44,6 @@ define(['../module', 'splunkjs/mvc'], function (module) {
 
       addFilter(filterName, value) {
         this.filters = this.filters.filter(filter => filter.name !== filterName)
-
         if (typeof value !== 'undefined') {
           this.filters.push({
             name: filterName,
@@ -66,17 +65,16 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           this.serializeFilters(parameters)
 
           // Fetch next <limit> items
-          const firstPage = await $apiService.get(this.path)
+          const firstPage = await $apiService.get(this.path,parameters,false)
           this.items = this.items.filter(item => !!item)
           this.items.push(...firstPage.data.data.items)
 
           const totalItems = firstPage.data.data.totalItems
 
-          const remaining = this.items.length === totalItems ? 0 :
-            totalItems - this.items.length
+          const remaining = this.items.length === totalItems ? 0 : totalItems - this.items.length
 
           // Ignore manager as an agent, once the team solves this issue, review this line
-          if (this.path === '/agents') this.items = this.items.filter(item => item.id !== '000')
+          if (this.path === '/agents/agents') this.items = this.items.filter(item => item.id !== '000')
 
           if (remaining > 0) this.items.push(...Array(remaining).fill(null))
 
