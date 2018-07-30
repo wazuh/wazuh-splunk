@@ -13,25 +13,24 @@
 // import template from './wz-table.html';
 // import { uiModules } from 'ui/modules';
 // import DataFactory from '../../services/data-factory';
-// import KeyEquivalenece from '../../../util/csv-key-equivalence';
 
 // const app = uiModules.get('app/wazuh', []);
 
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wazhuTable', function () {
+  directives.directive('wazuhTable', function ($dataService) {
     return {
       restrict: 'E',
       scope: {
         path: '=path',
         keys: '=keys',
         allowClick: '=allowClick',
-        implicitFilter: '=implicitFilter',
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
       },
-      controller: function ($scope, apiReq, $timeout, $location, tableFilterService) {
-        $scope.keyEquivalence = KeyEquivalenece
+      controller: function ($scope, $timeout, $location, $tableFilterService) {
+        console.log('tables directive')
+
         $scope.totalItems = 0
 
         $scope.clickAction = item => {
@@ -144,7 +143,7 @@ define(['../module'], function (directives) {
         }
         ////////////////////////////////////
 
-        const instance = new DataFactory(apiReq, $scope.path, $scope.implicitFilter)
+        const instance = new $dataService($scope.path, $scope.implicitFilter)
         $scope.items = []
 
         $scope.sort = async field => {
@@ -167,7 +166,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = true
             if (removeFilters) instance.removeFilters()
             instance.addFilter('search', term)
-            wzTableFilter.set(instance.filters)
+            $tableFilterService.set(instance.filters)
             await fetch()
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
@@ -188,7 +187,7 @@ define(['../module'], function (directives) {
             } else {
               instance.addFilter(filter.name, filter.value)
             }
-            wzTableFilter.set(instance.filters)
+            $tableFilterService.set(instance.filters)
             await fetch()
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
@@ -214,7 +213,7 @@ define(['../module'], function (directives) {
 
         $scope.$on('wazuhRemoveFilter', (event, parameters) => {
           instance.filters = instance.filters.filter(item => item.name !== parameters.filterName)
-          wzTableFilter.set(instance.filters)
+          $tableFilterService.set(instance.filters)
           return init()
         })
 
@@ -254,7 +253,7 @@ define(['../module'], function (directives) {
           try {
             $scope.wazuh_table_loading = true
             await fetch()
-            wzTableFilter.set(instance.filters)
+            $tableFilterService.set(instance.filters)
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
@@ -284,7 +283,7 @@ define(['../module'], function (directives) {
 
         $scope.$on('$destroy', () => {
           realTime = null
-          wzTableFilter.set([])
+          $tableFilterService.set([])
         })
 
         $scope.nonDecoderValue = (key, item) => {
@@ -304,7 +303,7 @@ define(['../module'], function (directives) {
         };
 
       },
-      template: template
+      templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
     }
   })
 })
