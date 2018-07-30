@@ -66,7 +66,12 @@ define(['./module'], function (module) {
         controllerAs: 'ovu',
       })
       // Manager
-      .state('manager', { templateUrl: 'static/app/SplunkAppForWazuh/views/manager.html', onEnter: ($navigationService) => { $navigationService.storeRoute('manager') } })
+      .state('manager', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
+        // controller: 'managerCtrl',
+        // controllerAs: 'mc'
+      })
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
       // settings -> about

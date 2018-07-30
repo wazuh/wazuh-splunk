@@ -10,9 +10,9 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'splunkjs/mvc'], function (module, mvc) {
+define(['../module', 'splunkjs/mvc'], function (module) {
   'use strict'
-  module.service('$dataService', function ($apiService, $currentApiIndexService) {
+  module.service('$dataService', function () {
     return class DataFactory {
       constructor(httpClient, path, implicitFilter) {
         this.implicitFilter = implicitFilter || false;
