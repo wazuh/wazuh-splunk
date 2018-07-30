@@ -4,6 +4,8 @@ define([
   './apiService/apiService',
   './apiRequestService/apiRequestService',
   './currentApiIndexService/currentApiIndexService',
+  './dataService/dataService',
   './rules/rulesDescription',
+  './tableFilterService/tableFilterService'
 
 ], function () {})
