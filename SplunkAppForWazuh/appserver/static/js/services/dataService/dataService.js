@@ -65,7 +65,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           this.serializeFilters(parameters)
 
           // Fetch next <limit> items
-          const firstPage = await $apiService.get(this.path,parameters,false)
+          const firstPage = await $apiService.get(this.path, parameters, false)
           this.items = this.items.filter(item => !!item)
           this.items.push(...firstPage.data.data.items)
 
@@ -84,6 +84,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           return { items: this.items, time: elapsed }
 
         } catch (error) {
+          console.error('data factory ',error)
           return Promise.reject(error)
         }
       }

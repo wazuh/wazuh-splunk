@@ -142,12 +142,14 @@ class manager(controllers.BaseController):
       opt_password = kwargs["pass"]
       opt_base_url = kwargs["ip"]
       opt_base_port = kwargs["port"]
-
+      file = open('/home/wazuh/logs','w')
+      file.write(str(kwargs))
+      opt_sort = kwargs["sort"] if "sort" in kwargs else '-tag'
       url = opt_base_url + ":" + opt_base_port
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
       verify = False
 
-      request = requests.get(url + '/manager/logs', auth=auth, verify=verify).json()
+      request = requests.get(url + '/manager/logs?sort='+opt_sort, auth=auth, verify=verify).json()
       result = json.dumps(request)
       return result
     except Exception as e:
@@ -196,7 +198,6 @@ class manager(controllers.BaseController):
           sort_chain = '+merged_sum'
         if direction == 'desc':
           sort_chain = '-merged_sum'
-      
       request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
       result = json.dumps(request)
     except Exception as e:

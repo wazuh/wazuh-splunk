@@ -32,9 +32,9 @@ define(['../module'], function (module) {
         console.log('OPTS ', opts)
         let result = ''
         if (opts)
-          result = await $http.get(getWellFormedUri(endpoint, includedApi), opts, includedApi)
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), {params:opts})
         else
-          result = await $http.get(getWellFormedUri(endpoint, includedApi), false, includedApi)
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), false)
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.data.error) {
