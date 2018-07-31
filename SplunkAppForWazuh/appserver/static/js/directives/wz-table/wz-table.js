@@ -25,6 +25,7 @@ define(['../module'], function (directives) {
         path: '=path',
         keys: '=keys',
         allowClick: '=allowClick',
+        implicitFilter: '=implicitFilter',
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
       },

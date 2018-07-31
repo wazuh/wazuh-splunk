@@ -12,15 +12,18 @@
 
 define(['../module', 'splunkjs/mvc'], function (module) {
   'use strict'
-  module.service('$dataService', function ($apiService) {
+  module.service('$dataService', function ($apiService,implicitFilter) {
     return class DataFactory {
       constructor(path) {
+        this.implicitFilter = implicitFilter || false
         this.items = []
         this.path = path
         this.filters = []
         this.sortValue = false
         this.sortDir = false
         this.sortValue = false
+        if(this.implicitFilter) this.filters.push(...this.implicitFilter)
+
       }
 
       addSorting(value) {
@@ -30,6 +33,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
 
       removeFilters() {
         this.filters = []
+        if(this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
       serializeFilters(parameters) {
@@ -95,6 +99,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         this.sortValue = false
         this.sortDir = false
         this.sortValue = false
+        if(this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
     }
   })
