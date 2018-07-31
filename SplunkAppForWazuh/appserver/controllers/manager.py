@@ -137,45 +137,23 @@ class manager(controllers.BaseController):
   # /custom/SplunkAppForWazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
   def logs(self, **kwargs):
-    opt_username = kwargs["user"]
-    opt_password = kwargs["pass"]
-    opt_base_url = kwargs["ip"]
-    opt_base_port = kwargs["port"]
-    limit = kwargs["length"]
-    offset = kwargs["start"]
-    search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-    category = kwargs['columns[1][search][value]'] if kwargs['columns[1][search][value]'] != "" else 'all'
-    type_log = kwargs['columns[3][search][value]'] if kwargs['columns[3][search][value]'] != "" else 'all'
-    sorting_column = kwargs["order[0][column]"]
-    direction = kwargs['order[0][dir]']
-    sort_chain = ""
-    if sorting_column == "0":
-      if direction == 'asc':
-        sort_chain = '+timestamp'
-      if direction == 'desc':
-        sort_chain = '-timestamp'
-    elif sorting_column == "1":
-      if direction == 'asc':
-        sort_chain = '+tag'
-      if direction == 'desc':
-        sort_chain = '-tag'
-    elif sorting_column == "2":
-      if direction == 'asc':
-        sort_chain = '+description'
-      if direction == 'desc':
-        sort_chain = '-description'
-    elif sorting_column == "3":
-      if direction == 'asc':
-        sort_chain = '+level'
-      if direction == 'desc':
-        sort_chain = '-level'
-    url = opt_base_url + ":" + opt_base_port
-    auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-    verify = False
-
-    request = requests.get(url + '/manager/logs' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain+'&category='+category+'&type_log='+type_log, auth=auth, verify=verify).json()
-    result = json.dumps(request)
-    return result
+    try:
+      opt_username = kwargs["user"]
+      opt_password = kwargs["pass"]
+      opt_base_url = kwargs["ip"]
+      opt_base_port = kwargs["port"]
+      opt_sort = kwargs["sort"] if "sort" in kwargs else '-tag'
+      opt_type_log = kwargs["type_log"] if "type_log" in kwargs else 'info'
+      opt_search = kwargs["search"] if "search" in kwargs else '""'
+      opt_category = kwargs["category"] if "category" in kwargs else 'all'
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      verify = False
+      request = requests.get(url + '/manager/logs?sort='+opt_sort+'&type_log='+opt_type_log+'&search='+opt_search+'&category='+opt_category, auth=auth, verify=verify).json()
+      result = json.dumps(request)
+      return result
+    except Exception as e:
+      return json.dumps({'error':str(e)})
 
   # /custom/SplunkAppForWazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
@@ -220,7 +198,6 @@ class manager(controllers.BaseController):
           sort_chain = '+merged_sum'
         if direction == 'desc':
           sort_chain = '-merged_sum'
-      
       request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
       result = json.dumps(request)
     except Exception as e:

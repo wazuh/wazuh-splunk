@@ -404,3 +404,65 @@ kbn-vis .vis-container {
 .kuiLocalSearchAssistedInput__assistance {
   display: none !important;
 }
+
+.euiCallOut--warning {
+  border-color: #E5830E;
+  background-color: #fcf3e7;
+}
+
+.euiCallOut {
+  padding: 16px;
+  border-left: 2px solid transparent;
+}
+
+.euiCallOut--warning .euiCallOutHeader__title {
+  color: #a9600a;
+}
+
+.euiCallOutHeader > * + * {
+  margin-left: 8px;
+}
+
+.euiCallOut--warning .euiCallOutHeader__icon {
+  fill: #a9600a;
+}
+.euiIcon--medium {
+  width: 16px;
+  height: 16px;
+}
+
+.euiIcon {
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+.euiCallOutHeader__icon {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  -webkit-transform: translateY(2px);
+  transform: translateY(2px);
+}
+
+.kuiLocalSearchButton {
+  width: 43px;
+  height: 30px;
+  font-size: 14px;
+  line-height: 0;
+  color: #ffffff;
+  background-color: #666;
+  border: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.kuiLocalSearchButton {
+  width: 43px;
+  height: 30px;
+  font-size: 14px;
+  line-height: 0;
+  color: #ffffff;
+  background-color: #666;
+  border: 0;
+  border-radius: 0 4px 4px 0;
+}

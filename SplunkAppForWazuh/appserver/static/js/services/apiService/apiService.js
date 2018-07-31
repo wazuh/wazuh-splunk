@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$apiService', function ($http) {
+  module.service('$apiService', function ($http, $currentApiIndexService) {
     /**
    * Generated and returns the browser base URL + Splunk Port
    */
@@ -14,17 +14,29 @@ define(['../module'], function (module) {
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
-    const getWellFormedUri = (endpoint) => {
-      return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint
+    const getWellFormedUri = (endpoint, includedApi) => {
+      if (!includedApi) {
+        const jsonCurrentAPI = JSON.parse($currentApiIndexService.getAPI())
+        return getBaseUrl() + `/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
+      } else {
+        return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint
+      }
     }
 
     /**
-     * GET method
-     * @param {String} url 
+     * Performs a GET request
+     * @param {String} endpoint 
+     * @param {Object} opts 
+     * @param {Boolean} includedApi 
      */
-    const get = async (endpoint) => {
+    const get = async (endpoint, opts, includedApi) => {
       try {
-        let result = await $http.get(getWellFormedUri(endpoint))
+        console.log('OPTS ', opts)
+        let result = ''
+        if (opts)
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), {params:opts})
+        else
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), false)
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.data.error) {
@@ -46,7 +58,7 @@ define(['../module'], function (module) {
      */
     const post = async (endpoint, payload) => {
       try {
-        return await $http.post(getWellFormedUri(endpoint), payload)
+        return await $http.post(getWellFormedUri(endpoint, includedApi), payload)
       } catch (err) {
         return Promise.reject(err)
       }
