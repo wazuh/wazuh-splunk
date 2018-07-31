@@ -14,15 +14,15 @@
       <div layout="row">
         <input placeholder="Filter logs..." ng-model="mlog.custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="mlog.search(mlog.custom_search)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" ng-click="search(mlog.custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" ng-click="mlog.search(mlog.custom_search)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
     </div>
     <!-- Daemon selector -->
     <div flex="20" layout="column" class="height-40 wz-margin-right-15 wz-select-input">
-      <select flex class="kuiSelect wz-border-none cursor-pointer" ng-disabled="realtime" id="categoryBox" ng-model="category"
-        ng-change="filter({name:'category',value:category})" aria-label="Logs category">
+      <select flex class="kuiSelect wz-border-none cursor-pointer" ng-disabled="realtime" id="categoryBox" ng-model="mlog.category"
+        ng-change="filter({name:'category',value:mlog.category})" aria-label="Logs category">
         <option value="all">All daemons</option>
         <option ng-repeat="(key, value) in summary" value="{{key}}">{{key}}</option>
       </select>
@@ -31,7 +31,7 @@
 
     <!-- Level selector -->
     <div flex="20" layout="column" class="height-40 wz-select-input">
-      <select flex class="kuiSelect wz-border-none cursor-pointer" ng-disabled="mlog.realtime" id="levelBox" ng-model="mlog.type_log" ng-change="mlog.filter({name:'type_log',value:type_log})"
+      <select flex class="kuiSelect wz-border-none cursor-pointer" ng-disabled="mlog.realtime" id="levelBox" ng-model="mlog.type_log" ng-change="mlog.filter({name:'type_log',value:mlog.type_log})"
         aria-label="Logs level">
         <option value="all">All log levels</option>
         <option value="info">Info</option>

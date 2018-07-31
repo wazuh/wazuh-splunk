@@ -18,7 +18,7 @@ define(['../module'], function (controllers) {
     vm.playRealtime = () => {
       vm.realtime = true;
       $scope.$broadcast('wazuhPlayRealTime')
-    };
+    }
 
     vm.stopRealtime = () => {
       vm.realtime = false;

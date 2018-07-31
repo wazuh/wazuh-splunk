@@ -204,10 +204,13 @@ define(['../module'], function (directives) {
         })
 
         $scope.$on('wazuhFilter', (event, parameters) => {
+          console.log('receiving filter event',parameters)
+
           return filter(parameters.filter)
         })
 
         $scope.$on('wazuhSearch', (event, parameters) => {
+          console.log('receiving search event',parameters)
           return search(parameters.term, parameters.removeFilters)
         })
 
