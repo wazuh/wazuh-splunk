@@ -30,7 +30,7 @@
 
     <div layout="column">
 
-      <select class="input input-dropdown" flex id="categoryBox" ng-disabled="mlog.realtime" ng-model="mlog.category" ng-change="filter({name:'category',value:mlog.category})"
+      <select class="input input-dropdown" flex id="categoryBox" ng-disabled="mlog.realtime" ng-model="mlog.category" ng-change="mlog.filter({name:'category',value:mlog.category})"
         aria-label="Logs category" style='width:400px; height: 33px; margin-top:3px;'>
         <option value="all">All daemons</option>
         <option ng-repeat="(key, value) in mlog.summary" value="{{key}}">{{key}}</option>

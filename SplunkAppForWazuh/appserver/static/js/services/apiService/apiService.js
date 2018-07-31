@@ -24,8 +24,10 @@ define(['../module'], function (module) {
     }
 
     /**
-     * GET method
-     * @param {String} url 
+     * Performs a GET request
+     * @param {String} endpoint 
+     * @param {Object} opts 
+     * @param {Boolean} includedApi 
      */
     const get = async (endpoint, opts, includedApi) => {
       try {

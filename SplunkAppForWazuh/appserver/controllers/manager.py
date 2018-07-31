@@ -142,15 +142,14 @@ class manager(controllers.BaseController):
       opt_password = kwargs["pass"]
       opt_base_url = kwargs["ip"]
       opt_base_port = kwargs["port"]
-      # file = open('/home/wazuh/logs','w')
-      # file.write(str(kwargs))
       opt_sort = kwargs["sort"] if "sort" in kwargs else '-tag'
       opt_type_log = kwargs["type_log"] if "type_log" in kwargs else 'info'
       opt_search = kwargs["search"] if "search" in kwargs else '""'
+      opt_category = kwargs["category"] if "category" in kwargs else 'all'
       url = opt_base_url + ":" + opt_base_port
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
       verify = False
-      request = requests.get(url + '/manager/logs?sort='+opt_sort+'&type_log='+opt_type_log+'&search='+opt_search, auth=auth, verify=verify).json()
+      request = requests.get(url + '/manager/logs?sort='+opt_sort+'&type_log='+opt_type_log+'&search='+opt_search+'&category='+opt_category, auth=auth, verify=verify).json()
       result = json.dumps(request)
       return result
     except Exception as e:
