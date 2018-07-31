@@ -9,6 +9,7 @@ define([
   './overview/overviewGdprCtrl',
   './management/managerCtrl',
   './management/managerLogsCtrl',
+  './management/managerRulesetCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',

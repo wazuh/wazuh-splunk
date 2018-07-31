@@ -3,8 +3,8 @@ define(['../module'], function (module) {
 
   module.service('$apiService', function ($http, $currentApiIndexService) {
     /**
-   * Generated and returns the browser base URL + Splunk Port
-   */
+     * Generated and returns the browser base URL + Splunk Port
+     */
     const getBaseUrl = () => {
       const url = window.location.href
       const arr = url.split("/")
