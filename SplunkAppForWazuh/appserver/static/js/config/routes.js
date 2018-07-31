@@ -86,6 +86,24 @@ define(['./module'], function (module) {
         controller: 'managerRulesetCtrl',
         controllerAs: 'mrules',
       })
+      // Manager - Ruleset/:id
+      .state('mg-rules.id', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset-id.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
+        controller: 'managerRulesetIdCtrl',
+        controllerAs: 'mrid',
+        params: { id: null, },
+        resolve: {
+          ruleInfo: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
+            return $apiService.get('/manager/rulesid', { id: $stateParams.id }, false)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
+      })
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
       // settings -> about

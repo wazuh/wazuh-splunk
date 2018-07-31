@@ -31,7 +31,6 @@ define(['../module'], function (module) {
      */
     const get = async (endpoint, opts, includedApi) => {
       try {
-        console.log('OPTS ', opts)
         let result = ''
         if (opts)
           result = await $http.get(getWellFormedUri(endpoint, includedApi), {params:opts})
