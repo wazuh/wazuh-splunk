@@ -27,10 +27,13 @@ define(['../module'], function (controllers) {
 
     const initialize = async () => {
       try {
+        // logs summary
+        // const data = await apiReq.request('GET', '/manager/logs/summary', {});
+        // $scope.summary = data.data.data;
         if (!$scope.$$phase) $scope.$digest();
         return;
       } catch (err) {
-        console.error('error en logs ctrl',err)
+        console.error('error en logs ctrl', err)
       }
       return;
     }
