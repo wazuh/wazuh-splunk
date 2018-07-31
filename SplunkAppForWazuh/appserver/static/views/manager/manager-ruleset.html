@@ -15,61 +15,62 @@
   </div>
   <!-- End headline -->
 
-  <!-- Filters and Realtime button section -->
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div layout="column" flex="40" class="height-40 wz-margin-right-15">
       <div layout="row">
-        <input placeholder="Filter logs..." ng-model="mlog.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-          aria-invalid="false" wz-enter="mlog.search(custom_search)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mlog.search(custom_search)">
+        <input placeholder="Filter logs..." ng-model="mrules.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="mrules.search(mrules.custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mrules.search(mrules.custom_search)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
     </div>
-    <!-- Daemon selector -->
-
-    <!-- Level selector -->
-
-    <div layout="column">
-
-      <select class="input input-dropdown" flex id="levelBox" ng-disabled="mlog.realtime" ng-model="mlog.type_log" placeholder="Log level"
-        class="md-no-underline" ng-change="mlog.filter({name:'type_log',value:mlog.type_log})" aria-label="Logs level" style='width:400px; margin-left:10px; height: 33px;margin-top:3px;'>
-        <option value="all">All log levels</option>
-        <option value="info">Info</option>
-        <option value="error">Error</option>
-        <option value="warning">Warning</option>
-      </select>
-
-    </div>
-
-    <!-- End Level selector -->
-
-    <!-- White space between filters and Realtime button -->
     <span flex></span>
-
-    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' ng-click="mlog.playRealtime()" aria-label="Play realtime button">
+    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Play realtime button">
       <i class="fa fa-play fa-fw" aria-hidden="true"></i>
       Rules
     </md-button>
-    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' ng-click="mlog.stopRealtime()" aria-label="Stop realtime button">
+    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Stop realtime button">
       <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
       Decoders
     </md-button>
   </div>
-  <!-- End Filters and Realtime button section -->
 
-  <!-- Logs table section -->
+  <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="mrules.appliedFilters.length">
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('file')">
+      <span>File: {{mrules.getFilter('file')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('file')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('path')">
+      <span>File: {{mrules.getFilter('path')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('path')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('level')">
+      <span>Level: {{mrules.getFilter('level')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('level')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('group')">
+      <span>Group: {{mrules.getFilter('group')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('group')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('pci')">
+      <span>PCI control: {{mrules.getFilter('pci')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('pci')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('gdpr')">
+      <span>GDPR: {{mrules.getFilter('gdpr')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('gdpr')"></i>
+      </span>
+    </md-chip>
+  </md-chips>
   <div layout="row" layout-padding>
-    <wazuh-table flex extra-limit="true" path="'/manager/logs'" keys="['timestamp',{value:'tag',size:2},'level',{value:'description',size:4,nosortable:true}]"
-      rows-per-page="15">
+    <wazuh-table implicit-filter="appliedFilters" flex path="'/manager/rules'" keys="['id',{value:'file',size:2},{value:'description',size:2},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+      allow-click="true" rows-per-page="14">
     </wazuh-table>
   </div>
-  <!-- End Logs table section -->
-
-  <!-- <div layout="row" layout-padding>
-    <span flex></span>
-    <a class="small" id="btnDownload" ng-click="downloadCsv()">Formatted
-      <i aria-hidden="true" class="fa fa-fw fa-download"></i>
-    </a>
-  </div> -->
 </div>
