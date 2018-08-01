@@ -16,7 +16,7 @@
   <!-- End headline -->
 
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
-    <div flex="100" class="height-40 wz-margin-right-15">
+    <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
         <input placeholder="Filter logs..." ng-model="mrules.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="mrules.search(mrules.custom_search)">
@@ -25,7 +25,6 @@
         </button>
       </div>
     </div>
-    <span flex></span>
     <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Rules section">
       <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i>
       Rules
