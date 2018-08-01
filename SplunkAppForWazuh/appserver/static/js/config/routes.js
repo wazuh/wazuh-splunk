@@ -87,7 +87,7 @@ define(['./module'], function (module) {
         controllerAs: 'mrules',
       })
       // Manager - Ruleset/:id
-      .state('mg-rules.id', {
+      .state('mg-rules-id', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset-id.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetIdCtrl',

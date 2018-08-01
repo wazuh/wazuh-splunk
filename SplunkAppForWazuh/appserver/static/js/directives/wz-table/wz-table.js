@@ -41,7 +41,7 @@ define(['../module'], function (directives) {
           } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/manager/rules') {
-            $state.go('mg-rules.id', {id: item.id})
+            $state.go('mg-rules-id', {id: item.id})
             //$scope.$emit('wazuhShowRule', { rule: item })
           } else if (instance.path === '/decoders') {
             $scope.$emit('wazuhShowDecoder', { decoder: item })
