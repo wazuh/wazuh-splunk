@@ -19,7 +19,7 @@
     <!-- Back button and title -->
     <div layout="row" layout-align="start center">
       <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to rules list" tooltip="Back" tooltip-placement="bottom" ng-click="closeDetailView(true)">
+      <md-button class="md-icon-button" aria-label="Back to rules list" tooltip="Back" tooltip-placement="bottom" ui-sref='mg-rules'>
         <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
       </md-button>
       <!-- Rule title -->
@@ -36,15 +36,15 @@
             <span class="wz-text-bold">{{mrid.ruleInfo.id}}</span>
           </div>
           <div flex="15" ng-if="mrid.ruleInfo.level || mrid.ruleInfo.level == 0" class="wz-text-truncatable">Level:
-            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('level', mrid.ruleInfo.level)" tooltip="Filter by this level"
+            <span class="wz-text-bold wz-text-link" ng-click="mrid.addDetailFilter('level', mrid.ruleInfo.level)" tooltip="Filter by this level"
               tooltip-placement="bottom">{{mrid.ruleInfo.level}}</span>
           </div>
           <div flex="35" ng-if="mrid.ruleInfo.file" class="wz-text-truncatable">File:
-            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('file', mrid.ruleInfo.file)" tooltip="Filter by this file"
+            <span class="wz-text-bold wz-text-link" ng-click="mrid.addDetailFilter('file', mrid.ruleInfo.file)" tooltip="Filter by this file"
               tooltip-placement="bottom">{{mrid.ruleInfo.file}}</span>
           </div>
           <div flex="35" ng-if="mrid.ruleInfo.path" class="wz-text-truncatable">Path:
-            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('path', mrid.ruleInfo.path)" tooltip="Filter by this path"
+            <span class="wz-text-bold wz-text-link" ng-click="mrid.addDetailFilter('path', mrid.ruleInfo.path)" tooltip="Filter by this path"
               tooltip-placement="bottom">{{mrid.ruleInfo.path}}</span>
           </div>
 
@@ -66,7 +66,7 @@
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
               <md-button class="md-primary wz-text-link" tooltip="Filter by this group" tooltip-placement="bottom" ng-repeat="item in mrid.ruleInfo.groups"
-                ng-click="addDetailFilter('group', item)">
+                ng-click="mrid.addDetailFilter('group', item)">
                 {{item}}
               </md-button>
             </div>

@@ -85,6 +85,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetCtrl',
         controllerAs: 'mrules',
+        params: { filters: null, }
       })
       // Manager - Ruleset/:id
       .state('mg-rules-id', {
@@ -92,7 +93,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetIdCtrl',
         controllerAs: 'mrid',
-        params: { id: null, },
+        params: { id: null, filters: null },
         resolve: {
           ruleInfo: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
             return $apiService.get('/manager/rulesid', { id: $stateParams.id }, false)

@@ -16,7 +16,7 @@
   <!-- End headline -->
 
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
-    <div layout="column" flex="40" class="height-40 wz-margin-right-15">
+    <div flex="100" class="height-40 wz-margin-right-15">
       <div layout="row">
         <input placeholder="Filter logs..." ng-model="mrules.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="mrules.search(mrules.custom_search)">
@@ -26,12 +26,12 @@
       </div>
     </div>
     <span flex></span>
-    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Play realtime button">
-      <i class="fa fa-play fa-fw" aria-hidden="true"></i>
+    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Rules section">
+      <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i>
       Rules
     </md-button>
-    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Stop realtime button">
-      <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
+    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Decoders section">
+      <i class="fa fa-fw fa-search" aria-hidden="true"></i>
       Decoders
     </md-button>
   </div>
