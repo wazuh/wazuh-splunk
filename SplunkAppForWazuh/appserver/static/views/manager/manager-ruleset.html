@@ -1,0 +1,75 @@
+<div ng-cloak flex layout="column" style='background-color:white !important;'>
+  <div layout="row" class="layout-row layout-align-end">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+      <span> / Ruleset </span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
+  <!-- Headline -->
+  <div ng-show="!loading" layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Ruleset</span>
+    <span>Review all your current rules and decoders</span>
+  </div>
+  <!-- End headline -->
+
+  <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
+    <div flex class="height-40 wz-margin-right-15">
+      <div layout="row">
+        <input placeholder="Filter logs..." ng-model="mrules.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="mrules.search(mrules.custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mrules.search(mrules.custom_search)">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Rules section">
+      <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i>
+      Rules
+    </md-button>
+    <md-button class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Decoders section">
+      <i class="fa fa-fw fa-search" aria-hidden="true"></i>
+      Decoders
+    </md-button>
+  </div>
+
+  <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="mrules.appliedFilters.length">
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('file')">
+      <span>File: {{mrules.getFilter('file')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('file')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('path')">
+      <span>File: {{mrules.getFilter('path')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('path')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('level')">
+      <span>Level: {{mrules.getFilter('level')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('level')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('group')">
+      <span>Group: {{mrules.getFilter('group')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('group')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('pci')">
+      <span>PCI control: {{mrules.getFilter('pci')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('pci')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="mrules.includesFilter('gdpr')">
+      <span>GDPR: {{mrules.getFilter('gdpr')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('gdpr')"></i>
+      </span>
+    </md-chip>
+  </md-chips>
+  <div layout="row" layout-padding>
+    <wazuh-table implicit-filter="appliedFilters" flex path="'/manager/rules'" keys="['id',{value:'file',size:2},{value:'description',size:2},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+      allow-click="true" rows-per-page="14">
+    </wazuh-table>
+  </div>
+</div>

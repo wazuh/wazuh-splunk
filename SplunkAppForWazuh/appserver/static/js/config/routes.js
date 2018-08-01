@@ -72,12 +72,38 @@ define(['./module'], function (module) {
         // controller: 'managerCtrl',
         // controllerAs: 'mc'
       })
-      // Manager - Logs
+      // Manager - rules
       .state('mg-logs', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-logs.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-logs') },
         controller: 'managerLogsCtrl',
         controllerAs: 'mlog',
+      })
+      // Manager - Ruleset
+      .state('mg-rules', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
+        controller: 'managerRulesetCtrl',
+        controllerAs: 'mrules',
+        params: { filters: null, }
+      })
+      // Manager - Ruleset/:id
+      .state('mg-rules-id', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset-id.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
+        controller: 'managerRulesetIdCtrl',
+        controllerAs: 'mrid',
+        params: { id: null, filters: null },
+        resolve: {
+          ruleInfo: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
+            return $apiService.get('/manager/rulesid', { id: $stateParams.id }, false)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
       })
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })

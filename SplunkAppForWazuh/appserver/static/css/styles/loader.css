@@ -6,5 +6,6 @@
 @import "component.css";
 @import "typography.css";
 @import "height.css";
+@import "media-queries.css";
 @import "../thirdPartyStyles/font-awesome/css/font-awesome.css";
 @import "../../js/directives/wz-menu/wz-menu.css";

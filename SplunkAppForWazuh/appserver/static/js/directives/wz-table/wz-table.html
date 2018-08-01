@@ -4,7 +4,7 @@
   </div>
 </div>
 <div layout="row" ng-show="!wazuh_table_loading && items.length">
-  <table class="table table-striped" style="table-layout: fixed !important" id="wz_table">
+  <table class="table table-striped wz-no-outline" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
         ng-click="!key.nosortable && sort(key)">
@@ -30,7 +30,6 @@
             {{ decoderValue(key,item) }}
           </md-tooltip>
         </td>
-
       </tr>
     </tbody>
     <tfoot>
@@ -41,12 +40,10 @@
             <li ng-show="currentPage" class="md-padding">
               <a href ng-click="prevPage()">« Prev</a>
             </li>
-
             <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) " ng-class="{'wz-text-active': n == currentPage}"
               ng-click="setPage()" class="md-padding">
               <a href ng-bind="n + 1">1</a>
             </li>
-
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
               <a href ng-click="nextPage()">Next »</a>
             </li>

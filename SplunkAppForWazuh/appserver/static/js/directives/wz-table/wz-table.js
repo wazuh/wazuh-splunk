@@ -25,12 +25,11 @@ define(['../module'], function (directives) {
         path: '=path',
         keys: '=keys',
         allowClick: '=allowClick',
+        implicitFilter: '=implicitFilter',
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
       },
-      controller: function ($scope, $timeout, $location, $tableFilterService) {
-        console.log('tables directive')
-
+      controller: function ($scope, $timeout, $location, $tableFilterService, $state) {
         $scope.totalItems = 0
 
         $scope.clickAction = item => {
@@ -41,8 +40,9 @@ define(['../module'], function (directives) {
             $scope.$emit('wazuhShowGroup', { group: item })
           } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
-          } else if (instance.path === '/rules') {
-            $scope.$emit('wazuhShowRule', { rule: item })
+          } else if (instance.path === '/manager/rules') {
+            $state.go('mg-rules-id', {id: item.id})
+            //$scope.$emit('wazuhShowRule', { rule: item })
           } else if (instance.path === '/decoders') {
             $scope.$emit('wazuhShowDecoder', { decoder: item })
           } else if (instance.path === '/cluster/nodes') {
@@ -204,13 +204,10 @@ define(['../module'], function (directives) {
         })
 
         $scope.$on('wazuhFilter', (event, parameters) => {
-          console.log('receiving filter event',parameters)
-
           return filter(parameters.filter)
         })
 
         $scope.$on('wazuhSearch', (event, parameters) => {
-          console.log('receiving search event',parameters)
           return search(parameters.term, parameters.removeFilters)
         })
 

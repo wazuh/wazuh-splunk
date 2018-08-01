@@ -38,6 +38,13 @@ def setup_logger(level):
 
 logger = setup_logger(logging.DEBUG)
 
+def remove_keys(arr):
+  del arr['user']
+  del arr['port']
+  del arr['ip']
+  del arr['pass']
+  return arr
+
 class manager(controllers.BaseController):
   def __init__(self):
     controllers.BaseController.__init__(self)
@@ -142,19 +149,16 @@ class manager(controllers.BaseController):
       opt_password = kwargs["pass"]
       opt_base_url = kwargs["ip"]
       opt_base_port = kwargs["port"]
-      opt_sort = kwargs["sort"] if "sort" in kwargs else '-tag'
-      opt_type_log = kwargs["type_log"] if "type_log" in kwargs else 'info'
-      opt_search = kwargs["search"] if "search" in kwargs else '""'
-      opt_category = kwargs["category"] if "category" in kwargs else 'all'
+      kwargs = remove_keys(kwargs)
+
       url = opt_base_url + ":" + opt_base_port
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
       verify = False
-      request = requests.get(url + '/manager/logs?sort='+opt_sort+'&type_log='+opt_type_log+'&search='+opt_search+'&category='+opt_category, auth=auth, verify=verify).json()
+      request = requests.get(url + '/manager/logs', params=kwargs , auth=auth, verify=verify).json()
       result = json.dumps(request)
       return result
     except Exception as e:
       return json.dumps({'error':str(e)})
-
   # /custom/SplunkAppForWazuh/manager/logs
   @expose_page(must_login=False, methods=['GET'])
   def logs_summary(self, **kwargs):
@@ -198,6 +202,7 @@ class manager(controllers.BaseController):
           sort_chain = '+merged_sum'
         if direction == 'desc':
           sort_chain = '-merged_sum'
+      
       request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
       result = json.dumps(request)
     except Exception as e:
@@ -214,47 +219,32 @@ class manager(controllers.BaseController):
       opt_base_port = kwargs["port"]
       url = opt_base_url + ":" + opt_base_port
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      kwargs = remove_keys(kwargs)
       verify = False
-      limit =  kwargs['length'] if 'length' in kwargs else "10"
-      offset = kwargs['start'] if 'start' in kwargs else "0"
-      search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
-      sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
-      direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
-      sort_chain = "-id"
-      if sorting_column == "0":
-        if direction == 'asc':
-          sort_chain = '+id'
-        if direction == 'desc':
-          sort_chain = '-id'
-      elif sorting_column == "1":
-        if direction == 'asc':
-          sort_chain = '+path'
-        if direction == 'desc':
-          sort_chain = '-path'
-      elif sorting_column == "2":
-        if direction == 'asc':
-          sort_chain = '+status'
-        if direction == 'desc':
-          sort_chain = '-status'
-      elif sorting_column == "3":
-        if direction == 'asc':
-          sort_chain = '+file'
-        if direction == 'desc':
-          sort_chain = '-file'
-      elif sorting_column == "5":
-        if direction == 'asc':
-          sort_chain = '+description'
-        if direction == 'desc':
-          sort_chain = '-description'
-      elif sorting_column == "6":
-        if direction == 'asc':
-          sort_chain = '+level'
-        if direction == 'desc':
-          sort_chain = '-level'
-      request = requests.get(url + '/rules' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+      request = requests.get(url + '/rules', params=kwargs, auth=auth, verify=verify).json()
       result = json.dumps(request)
     except Exception as e:
       return json.dumps({"error":str(e)})
+    return result
+
+  # /custom/SplunkAppForWazuh/manager/rules
+  @expose_page(must_login=False, methods=['GET'])
+  def rulesid(self, **kwargs):
+    try:
+      opt_username = kwargs['user']
+      opt_password = kwargs['pass']
+      opt_base_url = kwargs['ip']
+      opt_base_port = kwargs['port']
+      opt_id = kwargs['id']
+      del kwargs['id']
+      url = opt_base_url + ':' + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      kwargs = remove_keys(kwargs)
+      verify = False
+      request = requests.get(url + '/rules/'+opt_id, params=kwargs, auth=auth, verify=verify).json()
+      result = json.dumps(request)
+    except Exception as e:
+      return json.dumps({'error':str(e)})
     return result
 
   # /custom/SplunkAppForWazuh/manager/decoders

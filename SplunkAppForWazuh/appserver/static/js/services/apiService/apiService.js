@@ -3,8 +3,8 @@ define(['../module'], function (module) {
 
   module.service('$apiService', function ($http, $currentApiIndexService) {
     /**
-   * Generated and returns the browser base URL + Splunk Port
-   */
+     * Generated and returns the browser base URL + Splunk Port
+     */
     const getBaseUrl = () => {
       const url = window.location.href
       const arr = url.split("/")
@@ -31,7 +31,6 @@ define(['../module'], function (module) {
      */
     const get = async (endpoint, opts, includedApi) => {
       try {
-        console.log('OPTS ', opts)
         let result = ''
         if (opts)
           result = await $http.get(getWellFormedUri(endpoint, includedApi), {params:opts})
