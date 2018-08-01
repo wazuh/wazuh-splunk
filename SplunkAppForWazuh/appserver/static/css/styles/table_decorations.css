@@ -44,3 +44,10 @@ td.icon .low {
 .icon-inline i.icon-check {
     color: #5fff5e;
 }
+
+/* Removing outline */
+
+/* .wz-no-outline td:not(:focus) { */
+    /* outline: none !important; */
+    /* font-weight: bold !important; */
+/* } */
