@@ -265,6 +265,24 @@ class manager(controllers.BaseController):
       return json.dumps({"error":str(e)})
     return result
 
+  # /custom/SplunkAppForWazuh/manager/rules
+  @expose_page(must_login=False, methods=['GET'])
+  def parents(self, **kwargs):
+    try:
+      opt_username = kwargs["user"]
+      opt_password = kwargs["pass"]
+      opt_base_url = kwargs["ip"]
+      opt_base_port = kwargs["port"]
+      url = opt_base_url + ":" + opt_base_port
+      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      kwargs = remove_keys(kwargs)
+      verify = False
+      request = requests.get(url + '/decoders/parents', params=kwargs, auth=auth, verify=verify).json()
+      result = json.dumps(request)
+    except Exception as e:
+      return json.dumps({"error":str(e)})
+    return result
+
   # /custom/SplunkAppForWazuh/manager/decoders
   # @expose_page(must_login=False, methods=['GET'])
   # def decodersid(self, **kwargs):
