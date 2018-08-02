@@ -4,7 +4,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('groupsCtrl', function ($scope, $sce, $stateParams) {
+  controllers.controller('groupsCtrl', function ($scope, $apiService) {
     $scope.$on('groupsIsReloaded', () => {
       $scope.currentGroup = false;
       $scope.lookingGroup = false;
@@ -12,23 +12,6 @@ define(['../../module'], function (controllers) {
     });
 
     $scope.load = true;
-
-    $scope.downloadCsv = async data_path => {
-      try {
-        errorHandler.info('Your download should begin automatically...', 'CSV')
-        const currentApi = JSON.parse(appState.getCurrentAPI()).id;
-        const output = await csvReq.fetch(data_path, currentApi, wzTableFilter.get());
-        const blob = new Blob([output], { type: 'text/csv' });
-
-        FileSaver.saveAs(blob, 'groups.csv');
-
-        return;
-
-      } catch (error) {
-        errorHandler.handle(error, 'Download CSV');
-      }
-      return;
-    }
 
     $scope.search = term => {
       $scope.$broadcast('wazuhSearch', { term })
@@ -42,7 +25,7 @@ define(['../../module'], function (controllers) {
         // If come from agents
         if (globalAgent) {
           // Get ALL groups
-          const data = await apiReq.request('GET', '/agents/groups/', { limit: 1000 });
+          const data = await $apiService.get( '/agents/groups/', { limit: 1000 }, false)
 
           const filtered = data.data.data.items.filter(group => group.name === globalAgent.group);
 
@@ -79,7 +62,7 @@ define(['../../module'], function (controllers) {
     $scope.loadGroup = async (group, firstTime) => {
       try {
         if (!firstTime) $scope.lookingGroup = true;
-        const count = await apiReq.request('GET', `/agents/groups/${group.name}/files`, { limit: 1 })
+        const count = await $apiService.get(`/agents/groups/${group.name}/files`, { limit: 1 }, false)
         $scope.totalFiles = count.data.data.totalItems;
         $scope.fileViewer = false;
         $scope.currentGroup = group;
@@ -126,7 +109,7 @@ define(['../../module'], function (controllers) {
         if (fileName === '../ar.conf') fileName = 'ar.conf';
         $scope.fileViewer = true;
         const tmpName = `/agents/groups/${groupName}/files/${fileName}`;
-        const data = await apiReq.request('GET', tmpName, {})
+        const data = await $apiService.get(tmpName, {}, false)
         $scope.file = beautifier.prettyPrint(data.data.data);
         $scope.filename = fileName;
 
@@ -141,7 +124,6 @@ define(['../../module'], function (controllers) {
     $scope.$on("$destroy", () => {
 
     });
-
 
     $scope.$watch('lookingGroup', value => {
       if (!value) {
