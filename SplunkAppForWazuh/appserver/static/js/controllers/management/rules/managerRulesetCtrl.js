@@ -1,8 +1,8 @@
-define(['../module'], function (controllers) {
+define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('managerRulesetCtrl', function ($scope, $sce, $stateParams) {
+  controllers.controller('managerRulesetCtrl', function ($scope, $sce, $stateParams, $injector) {
     const vm = this
     const colors = [
       '#004A65', '#00665F', '#BF4B45', '#BF9037', '#1D8C2E', 'BB3ABF',
@@ -23,12 +23,11 @@ define(['../module'], function (controllers) {
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('level:') && term.split('level:')[1].trim()) {
-        console.log('Filtering by level ',term)
         $scope.custom_search = ''
         const filter = { name: 'level', value: term.split('level:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'level')
         vm.appliedFilters.push(filter)
-        console.log('sending filter ',filter)
+        console.log('3.- Sending event filter ', filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
         $scope.custom_search = ''
@@ -53,10 +52,13 @@ define(['../module'], function (controllers) {
       }
     }
 
-    if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
-      filters = $stateParams.filters
-      $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
-    }
+    $scope.$on('loadedTable', () => {
+      console.log('2.- Controller: Table loaded and received event. Launching filters.')
+      if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
+        vm.appliedFilters = $stateParams.filters
+        $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
+      }
+    })
 
 
     vm.includesFilter = filterName => vm.appliedFilters.map(item => item.name).includes(filterName)
@@ -67,6 +69,8 @@ define(['../module'], function (controllers) {
     }
 
     vm.removeFilter = filterName => {
+      console.log('deleting filter ',filterName)
+      filters = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
       return $scope.$broadcast('wazuhRemoveFilter', { filterName })
     }
@@ -97,17 +101,6 @@ define(['../module'], function (controllers) {
       vm.viewingDetail = false
       if (!$scope.$$phase) $scope.$digest()
     })
-
-    /**
-     * This function takes back to the list but adding a filter from the detail view
-     */
-    vm.addDetailFilter = (name, value) => {
-      vm.appliedFilters.push({ name, value })
-      // Clear the autocomplete component
-      vm.searchTerm = ''
-      // Go back to the list
-      vm.closeDetailView()
-    }
 
     $scope.$on('wazuhShowRule', (event, parameters) => {
       vm.currentRule = parameters.rule

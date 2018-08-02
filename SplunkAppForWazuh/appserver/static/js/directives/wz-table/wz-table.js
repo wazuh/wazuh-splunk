@@ -29,8 +29,9 @@ define(['../module'], function (directives) {
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
       },
-      controller: function ($scope, $timeout, $location, $tableFilterService, $state) {
+      controller: function ($scope, $timeout, $location, $tableFilterService, $state, $keyEquivalenceService) {
         $scope.totalItems = 0
+        $scope.keyEquivalence = $keyEquivalenceService.equivalences()
 
         $scope.clickAction = item => {
           if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
@@ -42,9 +43,9 @@ define(['../module'], function (directives) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/manager/rules') {
             $state.go('mg-rules-id', {id: item.id})
-            //$scope.$emit('wazuhShowRule', { rule: item })
-          } else if (instance.path === '/decoders') {
-            $scope.$emit('wazuhShowDecoder', { decoder: item })
+          } else if (instance.path === '/manager/decoders') {
+            console.log('the item ',item)
+            $state.go('mg-decoders-id', {file: item.file})
           } else if (instance.path === '/cluster/nodes') {
             $scope.$emit('wazuhShowClusterNode', { node: item })
           }
@@ -103,6 +104,7 @@ define(['../module'], function (directives) {
 
         const fetch = async (options = {}) => {
           try {
+            console.log('options ',instance.filters)
             const result = await instance.fetch(options)
             items = options.realTime ? result.items.slice(0, 10) : result.items
             $scope.time = result.time
@@ -142,7 +144,7 @@ define(['../module'], function (directives) {
           $scope.nextPage(this.n)
         }
         ////////////////////////////////////
-
+        
         const instance = new $dataService($scope.path, $scope.implicitFilter)
         $scope.items = []
 
@@ -185,6 +187,7 @@ define(['../module'], function (directives) {
               instance.addFilter('os.platform', platform)
               instance.addFilter('os.version', version)
             } else {
+
               instance.addFilter(filter.name, filter.value)
             }
             $tableFilterService.set(instance.filters)
@@ -204,6 +207,7 @@ define(['../module'], function (directives) {
         })
 
         $scope.$on('wazuhFilter', (event, parameters) => {
+          console.log('received event ',parameters)
           return filter(parameters.filter)
         })
 
@@ -255,6 +259,7 @@ define(['../module'], function (directives) {
             await fetch()
             $tableFilterService.set(instance.filters)
             $scope.wazuh_table_loading = false
+            $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
             console.error(`Error while init table. ${error.message || error}`, 'Data factory')
