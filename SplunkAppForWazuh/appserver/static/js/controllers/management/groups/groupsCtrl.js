@@ -18,43 +18,24 @@ define(['../../module'], function (controllers) {
     }
 
     // Store a boolean variable to check if come from agents
-    const globalAgent = shareAgent.getAgent();
 
     const load = async () => {
       try {
-        // If come from agents
-        if (globalAgent) {
-          // Get ALL groups
-          const data = await $apiService.get( '/agents/groups/', { limit: 1000 }, false)
-
-          const filtered = data.data.data.items.filter(group => group.name === globalAgent.group);
-
-          if (Array.isArray(filtered) && filtered.length) {
-            // Load that our group
-            $scope.loadGroup(filtered[0], true);
-            $scope.lookingGroup = true;
-          } else {
-            throw Error(`Group ${globalAgent.group} not found`);
-          }
-
-          shareAgent.deleteAgent();
-        }
 
         $scope.load = false;
 
         if (!$scope.$$phase) $scope.$digest();
       } catch (error) {
-        errorHandler.handle(error, 'Groups');
+        console.error(error, 'Groups');
       }
       return;
     }
 
     load();
 
-    $scope.toggle = () => $scope.lookingGroup = true;
+    $scope.toggle = () => $scope.lookingGroup = true
 
     $scope.showAgent = agent => {
-      shareAgent.setAgent(agent)
       $location.search('tab', null);
       $location.path('/agents');
     };
@@ -69,10 +50,10 @@ define(['../../module'], function (controllers) {
         $scope.fileViewer = false;
         if (!$scope.$$phase) $scope.$digest();
       } catch (error) {
-        errorHandler.handle(error, 'Groups')
+        console.error(error, 'Groups')
       }
       return;
-    };
+    }
 
     $scope.$on('wazuhShowGroup', (event, parameters) => {
       return $scope.loadGroup(parameters.group)
