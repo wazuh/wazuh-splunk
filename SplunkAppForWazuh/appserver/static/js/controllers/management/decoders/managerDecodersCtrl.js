@@ -34,26 +34,26 @@ define(['../../module'], function (controllers) {
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('level:') && term.split('level:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'level', value: term.split('level:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'level')
         vm.appliedFilters.push(filter)
         console.log('3.- Sending event filter ', filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'pci', value: term.split('pci:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'pci')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('gdpr:') && term.split('gdpr:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'gdpr')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('file:') && term.split('file:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'file', value: term.split('file:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'file')
         vm.appliedFilters.push(filter)
@@ -149,7 +149,7 @@ define(['../../module'], function (controllers) {
      * This function changes to the decoders list view
      */
     vm.closeDetailView = clear => {
-      if (clear) $scope.appliedFilters = $scope.appliedFilters.slice(0, $scope.appliedFilters.length - 1)
+      if (clear) vm.appliedFilters = vm.appliedFilters.slice(0, vm.appliedFilters.length - 1)
       vm.viewingDetail = false
       vm.currentDecoder = false
       if (!$scope.$$phase) $scope.$digest()
