@@ -247,7 +247,7 @@ class manager(controllers.BaseController):
       return json.dumps({'error':str(e)})
     return result
 
-  # /custom/SplunkAppForWazuh/manager/decoders
+  # /custom/SplunkAppForWazuh/manager/rules
   @expose_page(must_login=False, methods=['GET'])
   def decoders(self, **kwargs):
     try:
@@ -257,44 +257,30 @@ class manager(controllers.BaseController):
       opt_base_port = kwargs["port"]
       url = opt_base_url + ":" + opt_base_port
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+      kwargs = remove_keys(kwargs)
       verify = False
-      limit =  kwargs['length'] if 'length' in kwargs else "10"
-      offset = kwargs['start'] if 'start' in kwargs else "0"
-      search_value = kwargs['search[value]'] if 'search[value]' in kwargs and kwargs['search[value]'] != "" else '""'
-      sorting_column = kwargs["order[0][column]"] if "order[0][column]" in kwargs else '""'
-      direction = kwargs['order[0][dir]'] if 'order[0][dir]' in kwargs else '""'
-      sort_chain = "-name"
-      if sorting_column == "0":
-        if direction == 'asc':
-          sort_chain = '+name'
-        if direction == 'desc':
-          sort_chain = '-name'
-      elif sorting_column == "1":
-        if direction == 'asc':
-          sort_chain = '+status'
-        if direction == 'desc':
-          sort_chain = '-status'
-      elif sorting_column == "2":
-        if direction == 'asc':
-          sort_chain = '+path'
-        if direction == 'desc':
-          sort_chain = '-path'
-      elif sorting_column == "3":
-        if direction == 'asc':
-          sort_chain = '+file'
-        if direction == 'desc':
-          sort_chain = '-file'
-      elif sorting_column == "4":
-        if direction == 'asc':
-          sort_chain = '+position'
-        if direction == 'desc':
-          sort_chain = '-position'
-
-      if 'columns[1][search][value]' in kwargs and kwargs['columns[1][search][value]'] != "" and kwargs['columns[1][search][value]'] == 'parents' :
-        request = requests.get(url + '/decoders/parents' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
-      else:
-        request = requests.get(url + '/decoders' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
+      request = requests.get(url + '/decoders', params=kwargs, auth=auth, verify=verify).json()
       result = json.dumps(request)
     except Exception as e:
       return json.dumps({"error":str(e)})
     return result
+
+  # /custom/SplunkAppForWazuh/manager/decoders
+  # @expose_page(must_login=False, methods=['GET'])
+  # def decodersid(self, **kwargs):
+  #   try:
+  #     opt_username = kwargs['user']
+  #     opt_password = kwargs['pass']
+  #     opt_base_url = kwargs['ip']
+  #     opt_base_port = kwargs['port']
+  #     opt_file = kwargs['file']
+  #     del kwargs['file']
+  #     url = opt_base_url + ':' + opt_base_port
+  #     auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+  #     kwargs = remove_keys(kwargs)
+  #     verify = False
+  #     request = requests.get(url + '/decoders/'+opt_file, params=kwargs, auth=auth, verify=verify).json()
+  #     result = json.dumps(request)
+  #   except Exception as e:
+  #     return json.dumps({'error':str(e)})
+  #   return result

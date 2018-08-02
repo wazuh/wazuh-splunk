@@ -6,6 +6,7 @@ define([
   './currentApiIndexService/currentApiIndexService',
   './dataService/dataService',
   './rules/rulesDescription',
-  './tableFilterService/tableFilterService'
+  './tableFilterService/tableFilterService',
+  './key-equivalence/keyEquivalenceService'
 
 ], function () {})
