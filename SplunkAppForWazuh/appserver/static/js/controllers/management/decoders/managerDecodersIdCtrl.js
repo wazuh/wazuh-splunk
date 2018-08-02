@@ -2,7 +2,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('managerDecodersIdCtrl', function (decoderInfo, $sce, $state, $stateParams) {
+  controllers.controller('managerDecodersIdCtrl', function (currentDecoder, $sce, $state, $stateParams) {
     const vm = this
     const filters = []
     const colors = [
@@ -17,8 +17,8 @@ define(['../../module'], function (controllers) {
       filters = $stateParams.filters
     }
 
-    vm.currentDecoder = decoderInfo.data.data.items[0]
-    console.log('decoderInfo ', decoderInfo)
+    vm.currentDecoder = currentDecoder.data.data.items[0]
+    console.log('currentDecoder ', vm.currentDecoder)
     vm.colorRuleArg = ruleArg => {
       ruleArg = ruleArg.toString()
       let valuesArray = ruleArg.match(/\$\(((?!<\/span>).)*?\)(?!<\/span>)/gmi)
@@ -49,7 +49,7 @@ define(['../../module'], function (controllers) {
       console.log('adding filter')
       const filter = { name: name, value: value }
       filters.push(filter)
-      $state.go('mg-rules', { filters: filters })
+      $state.go('mg-decoders', { filters: filters })
     }
 
     vm.colorOrder = order => {

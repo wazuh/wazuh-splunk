@@ -18,13 +18,13 @@
     <div id="content" layout="row" layout-align="start start">
 
       <input flex placeholder="Filter decoders..." ng-model="mdec.custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-top-4 height-36"
-        aria-invalid="false" wz-enter="search(custom_search)">
-      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-36 wz-margin-top-4 wz-margin-right-16" ng-click="mdec.search(custom_search)">
+        aria-invalid="false" wz-enter="mdec.search(mdec.custom_search)">
+      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-36 wz-margin-top-4 wz-margin-right-16" ng-click="mdec.search(mdec.custom_search)">
         <span class="fa fa-search" aria-hidden="true"></span>
       </button>
 
       <div layout="column" class="height-40 wz-select-input wz-margin-right-8">
-        <select flex class="kuiSelect wz-border-none cursor-pointer" ng-model="mdec.typeFilter" ng-change="mdec.onlyParents(typeFilter)"
+        <select flex class="kuiSelect wz-border-none cursor-pointer" ng-model="mdec.typeFilter" ng-change="mdec.onlyParents(mdec.typeFilter)"
           aria-label="Filter by type" ng-init="'All decoders'">
           <option value="all">All decoders</option>
           <option value="parents">Parent decoders</option>

@@ -13,7 +13,6 @@ define(['../../module'], function (controllers) {
     ]
 
     vm.appliedFilters = []
-
     //Initialization
     vm.searchTerm = ''
     vm.viewingDetail = false
@@ -26,6 +25,44 @@ define(['../../module'], function (controllers) {
       const filtered = vm.appliedFilters.filter(item => item.name === filterName)
       return filtered.length ? filtered[0].value : ''
     }
+
+    vm.search = term => {
+      if (term && term.startsWith('group:') && term.split('group:')[1].trim()) {
+        vm.custom_search = ''
+        const filter = { name: 'group', value: term.split('group:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'group')
+        vm.appliedFilters.push(filter)
+        $scope.$broadcast('wazuhFilter', { filter })
+      } else if (term && term.startsWith('level:') && term.split('level:')[1].trim()) {
+        $scope.custom_search = ''
+        const filter = { name: 'level', value: term.split('level:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'level')
+        vm.appliedFilters.push(filter)
+        console.log('3.- Sending event filter ', filter)
+        $scope.$broadcast('wazuhFilter', { filter })
+      } else if (term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
+        $scope.custom_search = ''
+        const filter = { name: 'pci', value: term.split('pci:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'pci')
+        vm.appliedFilters.push(filter)
+        $scope.$broadcast('wazuhFilter', { filter })
+      } else if (term && term.startsWith('gdpr:') && term.split('gdpr:')[1].trim()) {
+        $scope.custom_search = ''
+        const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'gdpr')
+        vm.appliedFilters.push(filter)
+        $scope.$broadcast('wazuhFilter', { filter })
+      } else if (term && term.startsWith('file:') && term.split('file:')[1].trim()) {
+        $scope.custom_search = ''
+        const filter = { name: 'file', value: term.split('file:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'file')
+        vm.appliedFilters.push(filter)
+        $scope.$broadcast('wazuhFilter', { filter })
+      } else {
+        $scope.$broadcast('wazuhSearch', { term, removeFilters: 0 })
+      }
+    }
+
 
     vm.removeFilter = filterName => {
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
@@ -59,6 +96,7 @@ define(['../../module'], function (controllers) {
     })
 
     vm.search = term => {
+      console.log('searching ',term)
       if (term && term.startsWith('path:') && term.split('path:')[1].trim()) {
         vm.custom_search = ''
         const filter = { name: 'path', value: term.split('path:')[1].trim() }
@@ -100,13 +138,20 @@ define(['../../module'], function (controllers) {
       if (!$scope.$$phase) $scope.$digest()
     })
 
+    $scope.$on('loadedTable', () => {
+      console.log('2.- Controller: Table loaded and received event. Launching filters.')
+      if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
+        vm.appliedFilters = $stateParams.filters
+        $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
+      }
+    })
     /**
      * This function changes to the decoders list view
      */
     vm.closeDetailView = clear => {
       if (clear) $scope.appliedFilters = $scope.appliedFilters.slice(0, $scope.appliedFilters.length - 1)
-      $scope.viewingDetail = false
-      $scope.currentDecoder = false
+      vm.viewingDetail = false
+      vm.currentDecoder = false
       if (!$scope.$$phase) $scope.$digest()
     }
   })

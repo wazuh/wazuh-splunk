@@ -113,6 +113,7 @@ define(['./module'], function (module) {
         controllerAs: 'mdec',
         params: { filters: null, }
       })
+      
       // Manager - Decoders/:id
       .state('mg-decoders-id', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-decoders-id.html',
@@ -121,7 +122,7 @@ define(['./module'], function (module) {
         controllerAs: 'mdid',
         params: { id: null, filters: null },
         resolve: {
-          decoderInfo: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
+          currentDecoder: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
             return $apiService.get('/manager/decoders', { file: $stateParams.file }, false)
               .then(function (response) {
                 console.log('the file ',$stateParams.file)
@@ -129,12 +130,12 @@ define(['./module'], function (module) {
                 return response
               }, function (response) {
                 console.log('the error ',response)
-
                 return response
               })
           }]
         }
       })
+
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
       // settings -> about

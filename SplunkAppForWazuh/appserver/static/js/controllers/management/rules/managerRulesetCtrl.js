@@ -55,7 +55,7 @@ define(['../../module'], function (controllers) {
     $scope.$on('loadedTable', () => {
       console.log('2.- Controller: Table loaded and received event. Launching filters.')
       if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
-        filters = $stateParams.filters
+        vm.appliedFilters = $stateParams.filters
         $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
       }
     })
@@ -69,6 +69,8 @@ define(['../../module'], function (controllers) {
     }
 
     vm.removeFilter = filterName => {
+      console.log('deleting filter ',filterName)
+      filters = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
       return $scope.$broadcast('wazuhRemoveFilter', { filterName })
     }
@@ -99,17 +101,6 @@ define(['../../module'], function (controllers) {
       vm.viewingDetail = false
       if (!$scope.$$phase) $scope.$digest()
     })
-
-    /**
-     * This function takes back to the list but adding a filter from the detail view
-     */
-    vm.addDetailFilter = (name, value) => {
-      vm.appliedFilters.push({ name, value })
-      // Clear the autocomplete component
-      vm.searchTerm = ''
-      // Go back to the list
-      vm.closeDetailView()
-    }
 
     $scope.$on('wazuhShowRule', (event, parameters) => {
       vm.currentRule = parameters.rule
