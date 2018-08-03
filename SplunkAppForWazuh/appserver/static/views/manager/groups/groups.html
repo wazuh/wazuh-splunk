@@ -1,5 +1,5 @@
 <div flex layout="column" class="mozilla-table-size-85 wz-white-background">
-  <md-content flex layout="column" class="overflow-hidden" ng-init="lookingGroup=false">
+  <md-content flex layout="column" class="overflow-hidden wz-white-background" ng-init="lookingGroup=false">
 
     <!-- Loading ring -->
     <div class='uil-ring-css' ng-show="load">
@@ -10,7 +10,7 @@
     <div ng-show="!load" layout="column" layout-padding>
       <span class="font-size-18">
         <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-      <span class="md-subheader">List and check your groups, its agents and files</span>
+      <span>List and check your groups, its agents and files</span>
     </div>
     <!-- End headline -->
 
@@ -23,7 +23,6 @@
           <md-card-content>
             <span class="wz-headline-title">{{ mgr.currentGroup.name }}</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-
             <div layout="row" class="wz-padding-top-10">
               <span flex="25">Configuration sum</span>
               <span class="wz-text-right color-grey">{{ mgr.currentGroup.conf_sum }}</span>
@@ -41,7 +40,6 @@
           <md-card-content>
             <span class="wz-headline-title">Details</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-
             <div layout="row" class="wz-padding-top-10">
               <span flex="20" class="wz-text-link" ng-class="mgr.groupsSelectedTab==='agents' ? 'wz-text-active' : ''" ng-click="mgr.goBackToAgents()"
                 tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
@@ -60,7 +58,7 @@
       <!-- End MD5 Sums and Details cards -->
 
       <!-- Search bar -->
-      <div layout="row">
+      <div layout="row" class='md-padding layout-row'>
         <input placeholder="Filter logs..." ng-model="mgr.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="mgr.search(mgr.custom_search)">
         <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mgr.search(mgr.custom_search)">
