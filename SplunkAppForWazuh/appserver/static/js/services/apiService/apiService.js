@@ -63,8 +63,9 @@ define(['../module'], function (module) {
           opts.endpoint = endpoint
           result = await $http.get(getWellFormedUri('/api/request', includedApi), { params: opts })
         }
-        else
-          result = await $http.get(getWellFormedUri('/api/request', includedApi), { endpoint: endpoint })
+        else {
+          result = await $http.get(getWellFormedUri('/api/request', includedApi), { params: {endpoint:endpoint} })
+        }
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.data.error) {

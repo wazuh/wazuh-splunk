@@ -8,9 +8,24 @@ define(['./module'], function (module) {
       'rewriteLinks': false
     })
     $stateProvider
-      .state('overview', { templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html', onEnter: ($navigationService) => { $navigationService.storeRoute('overview') } })
+      .state('overview', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
+        controller: 'overviewWelcomeCtrl',
+        controllerAs: 'owc',
+        resolve: {
+          agentsInfo: ['$apiService', ($apiService) => {
+            return $apiService.request('/agents/summary', false, false)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
+      })
       // Overview - General
-      .state('general', {
+      .state('ow-general', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('general') },
         controller: 'overviewGeneralCtrl',
@@ -24,14 +39,14 @@ define(['./module'], function (module) {
         controllerAs: 'opm',
       })
       // Overview - FIM
-      .state('fim', {
+      .state('ow-fim', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-fim.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('fim') },
         controller: 'overviewFimCtrl',
         controllerAs: 'ofc',
       })
       // Overview - audit
-      .state('ow-aud', {
+      .state('ow-audit', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-aud') },
         controller: 'overviewAuditCtrl',
@@ -125,11 +140,8 @@ define(['./module'], function (module) {
           currentDecoder: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
             return $apiService.get('/manager/decoders', { file: $stateParams.file }, false)
               .then(function (response) {
-                console.log('the file ', $stateParams.file)
-                console.log('the response ', response)
                 return response
               }, function (response) {
-                console.log('the error ', response)
                 return response
               })
           }]

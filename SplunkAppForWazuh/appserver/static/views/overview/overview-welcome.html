@@ -1,77 +1,100 @@
 <div flex layout="column" layout-align="start stretch">
-
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer">Overview</span>
+      <span> / Welcome </span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
   <!-- Headline -->
   <div layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview</span>
-    <span>Visualize the current overall status of your cluster</span>
   </div>
   <!-- End headline -->
-
-  <!-- Host monitoring card -->
-  <div layout="row" layout-align="start stretch" layout-wrap>
-    <md-card flex class="wz-md-card">
-      <md-card-content flex layout="column">
-        <span class="wz-headline-title">
-          <i class="fa fa-fw fa-server" aria-hidden="true"></i> Host monitoring</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-padding-top-10">
-          <md-button ui-sref="general" class="small wz-text-link">General</md-button>
-          <md-button ui-sref="fim" class="small wz-text-link">File integrity</md-button>
+  <div layout="row" layout-padding>
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>
+          Total agents:
+          <span class="wz-text-bold">{{owc.agentsCountTotal >= 0 ? owc.agentsCountTotal : '---'}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          Active agents:
+          <span class="wz-text-bold">{{owc.agentsCountActive >= 0 ? owc.agentsCountActive : '---'}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          Disconnected agents:
+          <span class="wz-text-bold">{{owc.agentsCountDisconnected >= 0 ? owc.agentsCountDisconnected : '---'}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          Never connected agents:
+          <span class="wz-text-bold">{{owc.agentsCountNeverConnected >= 0 ? owc.agentsCountNeverConnected : '---'}}</span>
         </div>
       </md-card-content>
     </md-card>
   </div>
-  <!-- End Host monitoring card -->
 
-  <!-- System audit card -->
-  <div layout="row" layout-align="start stretch" layout-wrap>
-    <md-card flex class="wz-md-card">
-      <md-card-content flex layout="column">
-        <span class="wz-headline-title">
-          <i class="fa fa-fw fa-flag" aria-hidden="true"></i> System audit</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-padding-top-10">
-          <md-button ui-sref='ow-pm' class="small wz-text-link">Policy monitoring</md-button>
-          <md-button ui-sref='ow-aud' class="small wz-text-link">Audit</md-button>
-          <md-button ui-sref='ow-os' class="small wz-text-link">Open SCAP</md-button>
-          <md-button class="small wz-text-link">CIS-CAT</md-button>
+  <div layout="row" layout-padding>
+    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
+      <div class="euiFlexItem">
+        <div class="euiPanel euiPanel--paddingLarge">
+          <h3 class="euiTitle">Host monitoring</h3>
+          <div class="euiSpacer euiSpacer--m"></div>
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'" title="'General'" ui-sref='ow-general' current-tab="'general'"
+              description="'Explore your alerts.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'File integrity'" ui-sref='ow-fim' current-tab="'fim'"
+              description="TabDescription.fim.description"></wz-welcome-card>
+          </div>
         </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <!-- End System audit card -->
-
-  <!-- Security card -->
-  <div layout="row" layout-align="start stretch" layout-wrap>
-    <md-card flex class="wz-md-card">
-      <md-card-content flex layout="column">
-        <span class="wz-headline-title">
-          <i class="fa fa-fw fa-shield" aria-hidden="true"></i> Security</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-padding-top-10">
-          <md-button ui-sref='ow-vul' class="small wz-text-link">Vulnerabilities</md-button>
-          <md-button ng-show="extensions.virustotal" ng-click="switchTab('virustotal')" class="small wz-text-link">VirusTotal</md-button>
+      </div>
+      <div class="euiFlexItem">
+        <div class="euiPanel euiPanel--paddingLarge">
+          <h3 class="euiTitle">System audit</h3>
+          <div class="euiSpacer euiSpacer--m"></div>
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'" ui-sref='ow-pm' current-tab="'pm'"
+              description="TabDescription.pm.description"></wz-welcome-card>
+            <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'" title="'Audit'" ui-sref='ow-audit'
+              current-tab="'audit'" description="TabDescription.audit.description"></wz-welcome-card>
+            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'" title="'Open SCAP'" ui-sref='ow-os'
+              current-tab="'oscap'" description="TabDescription.oscap.description"></wz-welcome-card>
+          </div>
         </div>
-      </md-card-content>
-    </md-card>
+      </div>
+    </div>
   </div>
-  <!-- End Security card -->
 
-  <!-- Compliance card -->
-  <div layout="row" layout-align="start stretch" layout-wrap>
-    <md-card flex class="wz-md-card">
-      <md-card-content flex layout="column">
-        <span class="wz-headline-title">
-          <i class="fa fa-fw fa-check" aria-hidden="true"></i> Compliance</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-padding-top-10">
-          <md-button ui-sref='ow-pci' ui-sref="ow-pci" class="small wz-text-link">PCI DSS</md-button>
-          <md-button ui-sref='ow-gdpr' ui-sref="ow-gdpr" class="small wz-text-link">GDPR</md-button>
+  <div layout="row" layout-padding>
+    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
+      <div class="euiFlexItem">
+        <div class="euiFlexItem">
+          <div class="euiPanel euiPanel--paddingLarge">
+            <h3 class="euiTitle">Security</h3>
+            <div class="euiSpacer euiSpacer--m"></div>
+            <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+              <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'" title="'Vulnerabilities'" ui-sref='ow-vul' current-tab="'vuls'"
+                description="TabDescription.vuls.description"></wz-welcome-card>
+            </div>
+          </div>
         </div>
-      </md-card-content>
-    </md-card>
+      </div>
+      <div class="euiFlexItem" ng-if="extensions && (extensions.pci || extensions.gdpr)">
+        <div class="euiFlexItem">
+          <div class="euiPanel euiPanel--paddingLarge">
+            <h3 class="euiTitle">Compliance</h3>
+            <div class="euiSpacer euiSpacer--m"></div>
+            <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+              <wz-welcome-card ng-if="extensions.pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'" title="'PCI DSS'" ui-sref='ow-pci' current-tab="'pci'"
+                description="TabDescription.pci.description"></wz-welcome-card>
+              <wz-welcome-card ng-if="extensions.gdpr" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" title="'GDPR'" ui-sref='ow-gdpr'
+                current-tab="'gdpr'" description="TabDescription.gdpr.description"></wz-welcome-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- End Compliance card -->
-
 </div>

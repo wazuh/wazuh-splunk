@@ -27,7 +27,6 @@ define(['../../module'], function (controllers) {
         const filter = { name: 'level', value: term.split('level:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'level')
         vm.appliedFilters.push(filter)
-        console.log('3.- Sending event filter ', filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
         $scope.custom_search = ''
@@ -53,7 +52,6 @@ define(['../../module'], function (controllers) {
     }
 
     $scope.$on('loadedTable', () => {
-      console.log('2.- Controller: Table loaded and received event. Launching filters.')
       if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
         vm.appliedFilters = $stateParams.filters
         $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
@@ -69,7 +67,6 @@ define(['../../module'], function (controllers) {
     }
 
     vm.removeFilter = filterName => {
-      console.log('deleting filter ',filterName)
       filters = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
       return $scope.$broadcast('wazuhRemoveFilter', { filterName })

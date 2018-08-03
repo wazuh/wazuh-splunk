@@ -44,7 +44,6 @@ define(['../module'], function (directives) {
           } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', { id: item.id })
           } else if (instance.path === '/decoders') {
-            console.log('the item ', item)
             $state.go('mg-decoders-id', { file: item.file })
           } else if (instance.path === '/cluster/nodes') {
             $scope.$emit('wazuhShowClusterNode', { node: item })
@@ -104,7 +103,6 @@ define(['../module'], function (directives) {
 
         const fetch = async (options = {}) => {
           try {
-            // console.log('options ',instance.filters)
             const result = await instance.fetch(options)
             items = options.realTime ? result.items.slice(0, 10) : result.items
             $scope.time = result.time
@@ -207,7 +205,6 @@ define(['../module'], function (directives) {
         })
 
         $scope.$on('wazuhFilter', (event, parameters) => {
-          console.log('received event ', parameters)
           return filter(parameters.filter)
         })
 
