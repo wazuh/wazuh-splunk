@@ -18,7 +18,6 @@ define(['../../module'], function (controllers) {
     }
 
     vm.ruleInfo = ruleInfo.data.data.items[0]
-    console.log('ruleinfo ', ruleInfo)
     vm.colorRuleArg = ruleArg => {
       ruleArg = ruleArg.toString()
       let valuesArray = ruleArg.match(/\$\(((?!<\/span>).)*?\)(?!<\/span>)/gmi)
@@ -36,7 +35,6 @@ define(['../../module'], function (controllers) {
     }
 
     vm.addDetailFilter = (name, value) => {
-      console.log('adding filter')
       const filter = { name: name, value: value }
       filters.push(filter)
       $state.go('mg-rules',{filters:filters})

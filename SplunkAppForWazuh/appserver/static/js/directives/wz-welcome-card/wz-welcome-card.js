@@ -12,7 +12,6 @@
 define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzWelcomeCard', function () {
-    console.log('welcome directive')
     return {
       restrict: 'E',
       scope: {

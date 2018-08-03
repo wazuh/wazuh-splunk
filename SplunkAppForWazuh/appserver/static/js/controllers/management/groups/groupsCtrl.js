@@ -55,7 +55,6 @@ define(['../../module'], function (controllers) {
     }
 
     $scope.$on('wazuhShowGroup', (event, parameters) => {
-      console.log('received group event')
       return vm.loadGroup(parameters.group)
     })
 
@@ -64,7 +63,6 @@ define(['../../module'], function (controllers) {
     })
 
     vm.goBackToAgents = () => {
-      console.log('goback agents')
       vm.groupsSelectedTab = 'agents'
       vm.file = false
       vm.filename = false

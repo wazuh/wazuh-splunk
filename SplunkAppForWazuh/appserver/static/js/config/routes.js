@@ -125,11 +125,8 @@ define(['./module'], function (module) {
           currentDecoder: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
             return $apiService.get('/manager/decoders', { file: $stateParams.file }, false)
               .then(function (response) {
-                console.log('the file ', $stateParams.file)
-                console.log('the response ', response)
                 return response
               }, function (response) {
-                console.log('the error ', response)
                 return response
               })
           }]
