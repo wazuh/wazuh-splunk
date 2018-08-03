@@ -6,17 +6,17 @@
   </div>
 
   <!-- Headline -->
-  <div ng-show="!load" layout="column" layout-padding>
+  <div ng-show="!mgr.load" layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
     <span class="md-subheader">List and check your groups, its agents and files</span>
   </div>
   <!-- End headline -->
 
-  <div flex layout="column" layout-align="start stretch" ng-show="!load" ng-init="mgr.groupsSelectedTab='agents'">
+  <div flex layout="column" layout-align="start stretch" ng-show="!mgr.load" ng-init="mgr.groupsSelectedTab='agents'">
 
     <!-- MD5 Sums and Details cards -->
-    <div layout="row" class="md-padding" ng-if="lookingGroup">
+    <div layout="row" class="md-padding" ng-if="mgr.lookingGroup">
       <!-- Group MD5 sums section -->
       <md-card flex class="no-margin-left wz-md-card">
         <md-card-content>
@@ -42,14 +42,13 @@
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <div layout="row" class="wz-padding-top-10">
-            <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='agents' ? 'wz-text-active' : ''" ng-click="goBackToAgents()"
-              tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
-            <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right" ng-click="goBackToAgents()">{{ currentGroup.count }}</span>
+            <span flex="20" class="wz-text-link"  tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
+            <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right" ng-click="mgr.goBackToAgents()">{{ currentGroup.count }}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="goBackFiles()"
+            <span flex="20" class="wz-text-link" ng-class="mgr.groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="mgr.goBackFiles()"
               tooltip="Click to open the list of files" tooltip-placement="left">Content</span>
-            <span class="wz-text-link" tooltip="Click to open the list of files" tooltip-placement="right" ng-click="goBackFiles()">{{ totalFiles }}</span>
+            <span class="wz-text-link" tooltip="Click to open the list of files" tooltip-placement="right" ng-click="mgr.goBackFiles()">{{ totalFiles }}</span>
           </div>
         </md-card-content>
       </md-card>
@@ -69,7 +68,7 @@
     <!-- End search bar -->
 
     <!-- Groups table -->
-    <div layout="row" ng-if="!lookingGroup" class="md-padding">
+    <div layout="row" ng-if="!mgr.lookingGroup" class="md-padding">
       <wazuh-table flex extra-limit="true" path="'/agents/groups'" keys="['name',{value:'count',size:1},{value:'merged_sum',size:3}]"
         allow-click="true" rows-per-page="14">
       </wazuh-table>

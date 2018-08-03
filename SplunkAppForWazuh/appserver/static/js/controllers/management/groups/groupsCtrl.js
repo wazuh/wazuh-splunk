@@ -4,12 +4,12 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('groupsCtrl', function ($scope, $apiService) {
+  controllers.controller('groupsCtrl', function ($scope, $apiService, $beautifierJson) {
     const vm = this
     $scope.$on('groupsIsReloaded', () => {
-      vm.currentGroup = false;
-      vm.lookingGroup = false;
-      if (!$scope.$$phase) $scope.$digest();
+      vm.currentGroup = false
+      vm.lookingGroup = false
+      if (!$scope.$$phase) $scope.$digest()
     })
 
     vm.load = true
@@ -23,40 +23,41 @@ define(['../../module'], function (controllers) {
     const load = async () => {
       try {
 
-        vm.load = false;
+        vm.load = false
 
-        if (!$scope.$$phase) $scope.$digest();
+        if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        console.error(error, 'Groups');
+        console.error(error, 'Groups')
       }
-      return;
+      return
     }
 
-    load();
+    load()
 
     vm.toggle = () => vm.lookingGroup = true
 
     vm.showAgent = agent => {
-      $location.search('tab', null);
-      $location.path('/agents');
-    };
+      $location.search('tab', null)
+      $location.path('/agents')
+    }
 
     vm.loadGroup = async (group, firstTime) => {
       try {
-        if (!firstTime) vm.lookingGroup = true;
-        const count = await $apiService.get(`/agents/groups/${group.name}/files`, { limit: 1 }, false)
-        vm.totalFiles = count.data.data.totalItems;
-        vm.fileViewer = false;
-        vm.currentGroup = group;
-        vm.fileViewer = false;
-        if (!$scope.$$phase) $scope.$digest();
+        if (!firstTime) vm.lookingGroup = true
+        const count = await $apiService.request(`/agents/groups/${group.name}/files`, { limit: 1 }, false)
+        vm.totalFiles = count.data.data.totalItems
+        vm.fileViewer = false
+        vm.currentGroup = group
+        vm.fileViewer = false
+        if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
         console.error(error, 'Groups')
       }
-      return;
+      return
     }
 
     $scope.$on('wazuhShowGroup', (event, parameters) => {
+      console.log('received group event')
       return vm.loadGroup(parameters.group)
     })
 
@@ -65,39 +66,39 @@ define(['../../module'], function (controllers) {
     })
 
     vm.goBackToAgents = () => {
-      vm.groupsSelectedTab = 'agents';
-      vm.file = false;
-      vm.filename = false;
-      if (!$scope.$$phase) $scope.$digest();
+      vm.groupsSelectedTab = 'agents'
+      vm.file = false
+      vm.filename = false
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     vm.goBackFiles = () => {
-      vm.groupsSelectedTab = 'files';
-      vm.file = false;
-      vm.filename = false;
-      vm.fileViewer = false;
-      if (!$scope.$$phase) $scope.$digest();
+      vm.groupsSelectedTab = 'files'
+      vm.file = false
+      vm.filename = false
+      vm.fileViewer = false
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     vm.goBackGroups = () => {
-      vm.currentGroup = false;
-      vm.lookingGroup = false;
-      if (!$scope.$$phase) $scope.$digest();
+      vm.currentGroup = false
+      vm.lookingGroup = false
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     vm.showFile = async (groupName, fileName) => {
       try {
         if (vm.filename) vm.filename = ''
         if (fileName === '../ar.conf') fileName = 'ar.conf'
-        vm.fileViewer = true;
+        vm.fileViewer = true
         const tmpName = `/agents/groups/${groupName}/files/${fileName}`
-        const data = await $apiService.get(tmpName, {}, false)
-        vm.file = beautifier.prettyPrint(data.data.data)
-        vm.filename = fileName;
+        const data = await $apiService.request(tmpName, {}, false)
+        vm.file = $beautifierJson.prettyPrint(data.data.data)
+        vm.filename = fileName
 
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        errorHandler.handle(error, 'Groups')
+        console.error('error at showing file ',error)
       }
       return
     }
@@ -109,8 +110,8 @@ define(['../../module'], function (controllers) {
 
     $scope.$watch('lookingGroup', value => {
       if (!value) {
-        vm.file = false;
-        vm.filename = false;
+        vm.file = false
+        vm.filename = false
       }
     })
   })
