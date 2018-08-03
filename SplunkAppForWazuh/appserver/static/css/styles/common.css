@@ -16,6 +16,10 @@
 
 /* Custom healthcheck and blank screen styles */
 
+* {
+  outline-color: transparent !important;
+}
+
 .error-notify {
   font-size: 20px;
   color: black;

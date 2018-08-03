@@ -8,8 +8,7 @@ define([
   LayoutView
   ) {
     'use strict'
-    module.controller('mainCtrl', function ($scope) {
-      $scope.message = 'Manager'
+    module.controller('mainCtrl', function () {
       new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": true, "hideChrome": false })
         .render()
         .getContainerElement()

@@ -1,5 +1,5 @@
-<div ng-cloak flex layout="column" style='background-color:white !important;'>
-  <div layout="row" class="layout-row layout-align-end">
+<div ng-cloak flex layout="column" class='wz-white-background'>
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
     <div class='wz-margin-left-10 wz-margin-top-12'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / Ruleset </span>
@@ -242,10 +242,10 @@
       <!-- Related rules section -->
       <div layout="row" ng-if="mrid.ruleInfo">
         <h1 class="md-headline wz-headline">
-          <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related rules</h1>
+          <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i> Related rules</h1>
       </div>
       <div layout="row" ng-if="mrid.ruleInfo" class="md-padding">
-        <wazuh-table flex path="'/manager/rules'" implicit-filter="[{ name:'file',value: mrid.ruleInfo.file}]" keys="['id',{value:'file',size:2},{value:'description',size:2},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+        <wazuh-table flex path="'/rules'" implicit-filter="[{ name:'file',value: mrid.ruleInfo.file}]" keys="['id',{value:'file',size:2},{value:'description',size:2},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
           allow-click="true">
         </wazuh-table>
       </div>

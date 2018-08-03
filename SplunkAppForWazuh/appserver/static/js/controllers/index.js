@@ -13,6 +13,7 @@ define([
   './management/rules/managerRulesetIdCtrl',
   './management/decoders/managerDecodersCtrl',
   './management/decoders/managerDecodersIdCtrl',
+  './management/groups/groupsCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',

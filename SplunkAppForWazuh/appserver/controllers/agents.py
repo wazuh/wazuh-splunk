@@ -36,6 +36,13 @@ def setup_logger(level):
     return logger
 logger = setup_logger(logging.DEBUG)
 
+def remove_keys(arr):
+  del arr['user']
+  del arr['port']
+  del arr['ip']
+  del arr['pass']
+  return arr
+  
 class agents(controllers.BaseController):
 
     # /custom/SplunkAppForWazuh/agents/info/:id
@@ -171,47 +178,23 @@ class agents(controllers.BaseController):
         return json.dumps({"error":str(e)})
       return result
 
-    # /custom/SplunkAppForWazuh/agents/groups/:id
+    # /custom/SplunkAppForWazuh/manager/rules
     @expose_page(must_login=False, methods=['GET'])
-    def groups(self,**kwargs):
-        group_id = kwargs["id"]
+    def groups(self, **kwargs):
+      try:
         opt_username = kwargs["user"]
         opt_password = kwargs["pass"]
         opt_base_url = kwargs["ip"]
         opt_base_port = kwargs["port"]
-        limit =  kwargs['length'] if kwargs['length'] != "" else 10
-        offset = kwargs['start'] if kwargs['start'] != "" else 0
-        search_value = kwargs['search[value]'] if kwargs['search[value]'] != "" else '""'
-        sorting_column = kwargs["order[0][column]"] if kwargs["order[0][column]"] != "" else '""'
-        direction = kwargs['order[0][dir]'] if kwargs['order[0][dir]'] != "" else '""'
-        sort_chain = ""
-
-        if sorting_column == "0":
-          if direction == 'asc':
-            sort_chain = '+id'
-          if direction == 'desc':
-            sort_chain = '-id'
-        elif sorting_column == "1":
-          if direction == 'asc':
-            sort_chain = '+name'
-          if direction == 'desc':
-            sort_chain = '-name'
-        elif sorting_column == "2":
-          if direction == 'asc':
-            sort_chain = '+ip'
-          if direction == 'desc':
-            sort_chain = '-ip'
-        elif sorting_column == "3":
-          if direction == 'asc':
-            sort_chain = '+lastKeepAlive'
-          if direction == 'desc':
-            sort_chain = '-lastKeepAlive'
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        kwargs = remove_keys(kwargs)
         verify = False
-        request = requests.get(url + '/agents/groups/' + group_id + '?limit=' + limit + '&offset='+offset + '&search='+search_value , auth=auth, verify=verify).json()
+        request = requests.get(url + '/agents/groups', params=kwargs, auth=auth, verify=verify).json()
         result = json.dumps(request)
-        return result
+      except Exception as e:
+        return json.dumps({"error":str(e)})
+      return result
 
     # /custom/SplunkAppForWazuh/agents/summary
     @expose_page(must_login=False, methods=['GET'])

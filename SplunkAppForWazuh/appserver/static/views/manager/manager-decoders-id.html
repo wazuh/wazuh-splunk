@@ -1,5 +1,5 @@
-<div ng-cloak flex layout="column" style='background-color:white !important;'>
-  <div layout="row" class="layout-row layout-align-end">
+<div ng-cloak flex layout="column" class='wz-white-background'>
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
     <div class='wz-margin-left-10 wz-margin-top-12'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / Decoders </span>
@@ -17,7 +17,7 @@
   <!-- Back button and title -->
   <div layout="row" layout-align="start center">
     <!-- Back button -->
-    <md-button class="md-icon-button" aria-label="Back to decoders list" tooltip="Back" tooltip-placement="bottom" ng-click="mdid.closeDetailView()">
+    <md-button class="md-icon-button" aria-label="Back to decoders list" tooltip="Back" tooltip-placement="bottom" ui-sref='mg-decoders'>
       <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
     </md-button>
     <!-- Decoder title -->
@@ -193,7 +193,7 @@
         <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders</h1>
     </div>
     <div layout="row" ng-if="mdid.currentDecoder" class="md-padding">
-      <wazuh-table flex path="'/manager/decoders'" implicit-filter="[{ name:'file',value: mdid.currentDecoder.file}]" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+      <wazuh-table flex path="'/decoders'" implicit-filter="[{ name:'file',value: mdid.currentDecoder.file}]" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true">
       </wazuh-table>
     </div>

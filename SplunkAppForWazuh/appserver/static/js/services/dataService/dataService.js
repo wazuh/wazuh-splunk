@@ -12,8 +12,16 @@
 
 define(['../module', 'splunkjs/mvc'], function (module) {
   'use strict'
+  /**
+   * Class that handles dynamic table methods
+   */
   module.service('$dataService', function ($apiService) {
     return class DataFactory {
+      /**
+       * Class constructor
+       * @param {String} path 
+       * @param {Object} implicitFilter 
+       */
       constructor(path,implicitFilter) {
         this.implicitFilter = implicitFilter || false
         this.items = []
@@ -25,16 +33,27 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         if(this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
+      /**
+       * Sorts table by a value
+       * @param {String} value 
+       */
       addSorting(value) {
         this.sortValue = value
         this.sortDir = !this.sortDir
       }
 
+      /**
+       * Removes filters added to table
+       */
       removeFilters() {
         this.filters = []
         if(this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
+      /**
+       * Serializes filters
+       * @param {Object} parameters 
+       */
       serializeFilters(parameters) {
         if (this.sortValue) {
           parameters.sort = this.sortDir ? '-' + this.sortValue : this.sortValue
@@ -45,6 +64,11 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         }
       }
 
+      /**
+       * Adds a filter to the table
+       * @param {String} filterName 
+       * @param {String} value 
+       */
       addFilter(filterName, value) {
         this.filters = this.filters.filter(filter => filter.name !== filterName)
         if (typeof value !== 'undefined') {
@@ -55,6 +79,10 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         }
       }
 
+      /**
+       * Performs a HTTP request for fetching data
+       * @param {Object} options 
+       */
       async fetch(options = {}) {
         try {
           const start = new Date()
@@ -68,7 +96,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           this.serializeFilters(parameters)
 
           // Fetch next <limit> items
-          const firstPage = await $apiService.get(this.path, parameters, false)
+          const firstPage = await $apiService.request(this.path, parameters, false)
           this.items = this.items.filter(item => !!item)
           this.items.push(...firstPage.data.data.items)
 
@@ -92,6 +120,9 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         }
       }
 
+      /**
+       * Resets table parameters
+       */
       reset() {
         this.items = []
         this.filters = []

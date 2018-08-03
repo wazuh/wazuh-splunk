@@ -1,5 +1,5 @@
-<div ng-cloak flex layout="column" style='background-color:white !important;'>
-  <div layout="row" class="layout-row layout-align-end">
+<div ng-cloak flex layout="column" class='wz-white-background'>
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
     <div class='wz-margin-left-10 wz-margin-top-12'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / Decoders </span>
@@ -53,7 +53,7 @@
     </md-chips>
 
     <div layout="row">
-      <wazuh-table implicit-filter="appliedFilters" flex path="'/manager/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+      <wazuh-table implicit-filter="appliedFilters" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
       </wazuh-table>
     </div>

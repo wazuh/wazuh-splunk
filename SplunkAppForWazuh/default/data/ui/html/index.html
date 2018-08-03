@@ -13,7 +13,7 @@
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oxygen" />
   <link rel="stylesheet" type="text/css" href='http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css'>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table.min.css">
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
 
   <base href="/">
@@ -29,13 +29,11 @@
   </script>
 </head>
 
-<body style='background-color:white !important'>
+<body class='wz-white-background'>
 
-  <div class='empty-body-class' ng-controller='mainCtrl'>
-
+  <div class='empty-body-class wz-white-background' ng-controller='mainCtrl'>
     <wz-menu></wz-menu>
-    <div ui-view></div>
-
+    <div ui-view class='wz-white-background'></div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>

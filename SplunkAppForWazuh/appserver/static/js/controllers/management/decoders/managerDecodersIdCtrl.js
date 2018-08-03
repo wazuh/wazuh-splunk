@@ -62,18 +62,5 @@ define(['../../module'], function (controllers) {
       return $sce.trustAsHtml(coloredString);
     }
 
-    vm.onlyParents = typeFilter => {
-      $scope.appliedFilters = []
-      if (typeFilter === 'all') $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
-      else $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders/parents' })
-    }
-
-    vm.closeDetailView = clear => {
-      if (clear) $scope.appliedFilters = $scope.appliedFilters.slice(0, $scope.appliedFilters.length - 1)
-      $scope.viewingDetail = false
-      $scope.currentDecoder = false
-      if (!$scope.$$phase) $scope.$digest()
-    }
-
   })
 })

@@ -33,9 +33,38 @@ define(['../module'], function (module) {
       try {
         let result = ''
         if (opts)
-          result = await $http.get(getWellFormedUri(endpoint, includedApi), {params:opts})
+          result = await $http.get(getWellFormedUri(endpoint, includedApi), { params: opts })
         else
           result = await $http.get(getWellFormedUri(endpoint, includedApi), false)
+        if (result && typeof result !== 'object') {
+          result = JSON.parse(result)
+          if (result.data.error) {
+            throw new Error('Error from backend: ' + result.data.error)
+          }
+        } else if (result.data.error) {
+          throw new Error('Error from backend: ' + result.data.error)
+        }
+        return result
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Performs a GET request to Wazuh API
+     * @param {String} endpoint 
+     * @param {Object} opts 
+     * @param {Boolean} includedApi 
+     */
+    const request = async (endpoint, opts, includedApi) => {
+      try {
+        let result = ''
+        if (opts) {
+          opts.endpoint = endpoint
+          result = await $http.get(getWellFormedUri('/api/request', includedApi), { params: opts })
+        }
+        else
+          result = await $http.get(getWellFormedUri('/api/request', includedApi), { endpoint: endpoint })
         if (result && typeof result !== 'object') {
           result = JSON.parse(result)
           if (result.data.error) {
@@ -67,7 +96,8 @@ define(['../module'], function (module) {
       post: post,
       get: get,
       getBaseUrl: getBaseUrl,
-      getWellFormedUri: getWellFormedUri
+      getWellFormedUri: getWellFormedUri,
+      request:request
     }
     return service
   })

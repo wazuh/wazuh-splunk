@@ -7,6 +7,7 @@ define([
   './dataService/dataService',
   './rules/rulesDescription',
   './tableFilterService/tableFilterService',
-  './key-equivalence/keyEquivalenceService'
+  './key-equivalence/keyEquivalenceService',
+  './beautifier/beautifier-json'
 
 ], function () {})
