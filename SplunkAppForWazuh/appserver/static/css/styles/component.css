@@ -49,6 +49,9 @@
   color: #FFF;
 }
 
+.wz-white-background {
+  background-color:white !important;
+}
 /* Custom switch styles */
 
 .wz-switch {
