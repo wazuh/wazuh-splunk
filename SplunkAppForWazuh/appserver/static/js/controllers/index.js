@@ -7,6 +7,7 @@ define([
   './overview/overviewOpenScapCtrl',
   './overview/overviewPciCtrl',
   './overview/overviewGdprCtrl',
+  './overview/overviewWelcomeCtrl',
   './management/managerCtrl',
   './management/logs/managerLogsCtrl',
   './management/rules/managerRulesetCtrl',
