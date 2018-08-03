@@ -41,9 +41,9 @@ define(['../module'], function (directives) {
             $scope.$emit('wazuhShowGroup', { group: item })
           } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
-          } else if (instance.path === '/manager/rules') {
+          } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', {id: item.id})
-          } else if (instance.path === '/manager/decoders') {
+          } else if (instance.path === '/decoders') {
             console.log('the item ',item)
             $state.go('mg-decoders-id', {file: item.file})
           } else if (instance.path === '/cluster/nodes') {
@@ -104,7 +104,7 @@ define(['../module'], function (directives) {
 
         const fetch = async (options = {}) => {
           try {
-            console.log('options ',instance.filters)
+            // console.log('options ',instance.filters)
             const result = await instance.fetch(options)
             items = options.realTime ? result.items.slice(0, 10) : result.items
             $scope.time = result.time
