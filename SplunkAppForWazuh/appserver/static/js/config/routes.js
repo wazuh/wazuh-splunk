@@ -156,6 +156,27 @@ define(['./module'], function (module) {
         controllerAs: 'mgr'
       })
 
+
+      // Manager - Groups
+      .state('mg-conf', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-conf') },
+        controller: 'configurationCtrl',
+        controllerAs: 'mcc',
+        resolve: {
+          managerConf: ['$apiService', ($apiService) => {
+            return $apiService.request('/manager/configuration', false, false)
+              .then(function (response) {
+                console.log('manager conf response ',response)
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
+      })
+
+
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
       // settings -> about
