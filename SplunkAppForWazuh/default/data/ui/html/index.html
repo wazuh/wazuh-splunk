@@ -31,11 +31,9 @@
 
 <body class='wz-white-background'>
 
-  <div class='empty-body-class' ng-controller='mainCtrl'>
-
+  <div class='empty-body-class wz-white-background' ng-controller='mainCtrl'>
     <wz-menu></wz-menu>
-    <div ui-view></div>
-
+    <div ui-view class='wz-white-background'></div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
