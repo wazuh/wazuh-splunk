@@ -47,7 +47,11 @@ td.icon .low {
 
 /* Removing outline */
 
-/* .wz-no-outline td:not(:focus) { */
-    /* outline: none !important; */
-    /* font-weight: bold !important; */
-/* } */
+table.wz-no-outline th:focus,
+table.wz-no-outline td:focus {
+    outline-color: transparent !important;
+}
+
+table.wz-no-outline tr:focus td {
+    box-shadow: none !important;
+}
