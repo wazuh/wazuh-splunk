@@ -8,6 +8,7 @@ define([
   './rules/rulesDescription',
   './tableFilterService/tableFilterService',
   './key-equivalence/keyEquivalenceService',
-  './beautifier/beautifier-json'
+  './beautifier/beautifier-json',
+  './xml-beautifier/xml-beautifier'
 
 ], function () {})
