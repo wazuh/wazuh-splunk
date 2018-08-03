@@ -22,9 +22,7 @@ define(['../../module'], function (controllers) {
 
     const load = async () => {
       try {
-
         vm.load = false
-
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
         console.error(error, 'Groups')
@@ -66,6 +64,7 @@ define(['../../module'], function (controllers) {
     })
 
     vm.goBackToAgents = () => {
+      console.log('goback agents')
       vm.groupsSelectedTab = 'agents'
       vm.file = false
       vm.filename = false
