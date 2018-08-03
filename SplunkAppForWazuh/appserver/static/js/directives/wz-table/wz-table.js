@@ -42,10 +42,10 @@ define(['../module'], function (directives) {
           } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/rules') {
-            $state.go('mg-rules-id', {id: item.id})
+            $state.go('mg-rules-id', { id: item.id })
           } else if (instance.path === '/decoders') {
-            console.log('the item ',item)
-            $state.go('mg-decoders-id', {file: item.file})
+            console.log('the item ', item)
+            $state.go('mg-decoders-id', { file: item.file })
           } else if (instance.path === '/cluster/nodes') {
             $scope.$emit('wazuhShowClusterNode', { node: item })
           }
@@ -144,7 +144,7 @@ define(['../module'], function (directives) {
           $scope.nextPage(this.n)
         }
         ////////////////////////////////////
-        
+
         const instance = new $dataService($scope.path, $scope.implicitFilter)
         $scope.items = []
 
@@ -207,11 +207,14 @@ define(['../module'], function (directives) {
         })
 
         $scope.$on('wazuhFilter', (event, parameters) => {
-          console.log('received event ',parameters)
+          console.log('received event ', parameters)
           return filter(parameters.filter)
         })
 
         $scope.$on('wazuhSearch', (event, parameters) => {
+          if (parameters && parameters.specificPath && !instance.path.includes(parameters.specificPath)) {
+            return
+          }
           return search(parameters.term, parameters.removeFilters)
         })
 
