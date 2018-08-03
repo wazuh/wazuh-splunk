@@ -5,6 +5,8 @@
         <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
         <span> / Groups </span>
       </div>
+      <div flex></div>
+      <div style="margin-right:7px;" id='input1'></div>
     </div>
     <!-- Loading ring -->
     <div class='uil-ring-css' ng-show="load">
@@ -80,15 +82,6 @@
       </div>
       <!-- End groups table -->
 
-      <!-- CSV Download button section for groups -->
-      <div layout="row" class="md-padding" ng-if="!mgr.lookingGroup">
-        <span flex></span>
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups')">Formatted
-          <i aria-hidden="true" class="fa fa-fw fa-download"></i>
-        </a>
-      </div>
-      <!-- End CSV Download button section for groups -->
-
       <!-- Group agents table -->
       <div layout="row" ng-if="mgr.lookingGroup && mgr.groupsSelectedTab==='agents' && mgr.currentGroup" class="md-padding">
         <wazuh-table flex path="'/agents/groups/' + mgr.currentGroup.name" keys="['id','name','ip','status','os.name','os.version','version']"
@@ -97,15 +90,6 @@
       </div>
       <!-- End Group agents table -->
 
-      <!-- CSV Download button section for group agents -->
-      <div layout="row" class="md-padding" ng-if="mgr.lookingGroup && mgr.groupsSelectedTab==='agents'">
-        <span flex></span>
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + mgr.currentGroup.name)">Formatted
-          <i aria-hidden="true" class="fa fa-fw fa-download"></i>
-        </a>
-      </div>
-      <!-- End CSV Download button section for group agents -->
-
       <!-- Group files table -->
       <div layout="row" ng-if="mgr.lookingGroup && mgr.groupsSelectedTab==='files' && !mgr.fileViewer && mgr.currentGroup" class="md-padding">
         <wazuh-table extra-limit="true" flex path="'/agents/groups/' + mgr.currentGroup.name + '/files'" keys="[{value:'filename',size:2},{value:'hash',size:6}]"
@@ -113,15 +97,6 @@
         </wazuh-table>
       </div>
       <!-- End Group files table -->
-
-      <!-- CSV Download button section for group files-->
-      <div layout="row" class="md-padding" ng-if="lookingGroup && groupsSelectedTab==='files' && !file">
-        <span flex></span>
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files')">Formatted
-          <i aria-hidden="true" class="fa fa-fw fa-download"></i>
-        </a>
-      </div>
-      <!-- End CSV Download button section for group files -->
 
       <!-- File JSON viewer section -->
       <div flex layout="column" class="md-padding" ng-if="mgr.lookingGroup && mgr.groupsSelectedTab==='files' && mgr.file">

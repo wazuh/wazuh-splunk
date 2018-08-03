@@ -1,5 +1,12 @@
 <div flex layout="column" layout-align="start stretch">
-
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer">Management</span>
+      <span> / Welcome </span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
   <!-- Headline -->
   <div layout="column" layout-padding>
     <span class="font-size-18">
@@ -16,10 +23,12 @@
           <h3 class="euiTitle">Administration</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" wz-logo="'/static/app/SplunkAppForWazuh/css/images/ruleset.png'" title="'Ruleset'" ui-sref='mg-rules' current-tab="'rules'" description="'Explore your Wazuh cluster ruleset.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" wz-logo="'/static/app/SplunkAppForWazuh/css/images/groups.png'" title="'Groups'" ui-sref='mg-groups' current-tab="'groups'" description="'Check your agent groups.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'" ui-sref='mg-configuration' current-tab="'configuration'"
-              description="'Check your Wazuh cluster configuration.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" wz-logo="'/static/app/SplunkAppForWazuh/css/images/ruleset.png'" title="'Ruleset'" ui-sref='mg-rules'
+              current-tab="'rules'" description="'Explore your Wazuh cluster ruleset.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" wz-logo="'/static/app/SplunkAppForWazuh/css/images/groups.png'" title="'Groups'" ui-sref='mg-groups'
+              current-tab="'groups'" description="'Check your agent groups.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
+              ui-sref='mg-configuration' current-tab="'configuration'" description="'Check your Wazuh cluster configuration.'"></wz-welcome-card>
           </div>
         </div>
       </div>
@@ -28,9 +37,10 @@
           <h3 class="euiTitle">Status and reports</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'" title="'Status'" ui-sref='mg-status' current-tab="'status'"
-              description="'Check your Wazuh cluster status.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'Logs'" ui-sref='mg-logs' current-tab="'logs'" description="'Logs from your Wazuh cluster.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'" title="'Status'"
+              ui-sref='mg-status' current-tab="'status'" description="'Check your Wazuh cluster status.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'Logs'" ui-sref='mg-logs'
+              current-tab="'logs'" description="'Logs from your Wazuh cluster.'"></wz-welcome-card>
             <!-- <wz-welcome-card class="euiFlexItem" logo="'app_index_pattern.svg'" title="'Monitoring'" switch-tab="switchTab('monitoring')"
               current-tab="'monitoring'" description="'Visualize your Wazuh cluster.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" wz-logo="'reporting.png'" title="'Reporting'" switch-tab="switchTab('reporting')" current-tab="'reporting'"
