@@ -167,7 +167,6 @@ define(['./module'], function (module) {
           managerConf: ['$apiService', ($apiService) => {
             return $apiService.request('/manager/configuration', false, false)
               .then(function (response) {
-                console.log('manager conf response ', response)
                 return response
               }, function (response) {
                 return response

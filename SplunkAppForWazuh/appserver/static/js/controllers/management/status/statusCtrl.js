@@ -2,12 +2,10 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('statusCtrl', function ($scope, $apiService, overviewData, agentInfo) {
+  controllers.controller('statusCtrl', function ($scope, overviewData, agentInfo) {
     //Initialization
     const vm = this
     vm.load = true
-    console.log('agent info in controller ',agentInfo)
-    console.log('overview info in controller ',overviewData)
     //Functions
     vm.getDaemonStatusClass = daemonStatus => (daemonStatus === 'running') ? 'status teal' : 'status red'
     // Once Wazuh core fixes agent 000 issues, this should be adjusted
