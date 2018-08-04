@@ -67,7 +67,7 @@ define(['../../module'], function (controllers) {
           }
         }
 
-        vm.raw = $beautifierJson.prettyPrint(data.data.data)
+        // vm.raw = $beautifierJson.prettyPrint(data.data.data)
         vm.load = false
         if (!$scope.$$phase) $scope.$digest()
         return
