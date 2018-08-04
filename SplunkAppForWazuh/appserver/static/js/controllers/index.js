@@ -16,6 +16,7 @@ define([
   './management/decoders/managerDecodersIdCtrl',
   './management/groups/groupsCtrl',
   './management/configuration/configurationCtrl',
+  './management/status/statusCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',

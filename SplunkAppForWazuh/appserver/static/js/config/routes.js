@@ -167,7 +167,7 @@ define(['./module'], function (module) {
           managerConf: ['$apiService', ($apiService) => {
             return $apiService.request('/manager/configuration', false, false)
               .then(function (response) {
-                console.log('manager conf response ',response)
+                console.log('manager conf response ', response)
                 return response
               }, function (response) {
                 return response
@@ -176,6 +176,44 @@ define(['./module'], function (module) {
         }
       })
 
+      // Manager - Status
+      .state('mg-status', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/status/status.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-status') },
+        controller: 'statusCtrl',
+        controllerAs: 'mst',
+        resolve: {
+          overviewData: ['$apiService', ($apiService) => {
+            return Promise.all([
+              $apiService.request('/agents/summary', {}, false),
+              $apiService.request('/manager/status', {}, false),
+              $apiService.request('/manager/info', {}, false),
+              $apiService.request('/rules', { offset: 0, limit: 1 }, false),
+              $apiService.request('/decoders', { offset: 0, limit: 1 }, false)
+            ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }],
+          agentInfo: ['$apiService', ($apiService) => {
+            return $apiService.request('/agents', { limit: 1, sort: `-dateAdd` }, false)
+              .then(function (response) {
+                return $apiService.request(`/agents/${response.data.data.items[0].id}`, {}, false)
+                  .then(function (response) {
+                    return response
+                  }, function (response) {
+                    console.error('error getting last agent')
+                    return response
+                  })
+              }, function (response) {
+                console.error('error getting agents')
+                return response
+              })
+          }]
+        }
+      })
 
       // settings
       .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
