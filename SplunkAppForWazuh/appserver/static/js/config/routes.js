@@ -236,5 +236,29 @@ define(['./module'], function (module) {
         }
       })
       .state('settings.index', { templateUrl: '/static/app/SplunkAppForWazuh/views/settings/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
+
+      // agents
+      .state('agents', {
+        templateUrl: '/static/app/SplunkAppForWazuh/views/agents/agents/agents.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        controller: 'agentsCtrl',
+        controllerAs: 'ag',
+        resolve: {
+          data: ['$apiService', ($apiService) => {
+            return Promise.all([
+              $apiService.request('/agents/summary', false, false),
+              $apiService.get('/agents/agents',false,false)
+
+              // $apiService.request('/agents/agents', false, false)
+              // $apiService.get('/agents/agents_uniq', false, false)
+            ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
+      })
   }])
 })
