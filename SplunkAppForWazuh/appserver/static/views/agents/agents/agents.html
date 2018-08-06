@@ -87,7 +87,7 @@
     <!-- Nodes selector -->
     <div ng-show="ag.isClusterEnabled" layout="column">
       <select class="input input-dropdown" flex id="eventBox2" ng-disabled="ag.realtime" ng-model="node_name" ng-change="filter({name:'node',value:node_name})"
-        aria-label="Filter by node" style='width:400px; height: 33px; margin-top:3px;'>
+        aria-label="Filter by node" style='width:400px; height: 33px; margin-top:3px;  margin-left:10px;'>
         <option value="all">All nodes</option>
         <option ng-repeat='node in ag.nodes' value="{{node}}">
           {{node}}
@@ -98,7 +98,7 @@
     <!-- Status selector -->
     <div layout="column">
       <select class="input input-dropdown" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="ag.status"
-        ng-change="filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; margin-left:10px; height: 33px;margin-top:3px;'>
+        ng-change="filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
         <option value="all">All states</option>
         <option value="active">Active</option>
         <option value="disconnected">Disconnected</option>
