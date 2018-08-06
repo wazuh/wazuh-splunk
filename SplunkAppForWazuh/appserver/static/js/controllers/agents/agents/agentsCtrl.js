@@ -104,7 +104,7 @@ define([
           // vm.osPlatforms = unique.osPlatforms
 
           // Building operating system filter
-          const rawPlatforms = data[2].data.data.items.map(agent => !!agent.os)
+          const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
           vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
 
           // Building version filter
