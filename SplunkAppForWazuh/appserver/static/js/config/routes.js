@@ -247,8 +247,29 @@ define(['./module'], function (module) {
           data: ['$apiService', ($apiService) => {
             return Promise.all([
               $apiService.request('/agents/summary', false, false),
-              $apiService.request('/agents',{limit:1, sort:'-dateAdd'},false),
-              $apiService.get('/agents/agents_uniq',false,false)
+              $apiService.request('/agents', { limit: 1, sort: '-dateAdd' }, false),
+              $apiService.get('/agents/agents_uniq', false, false)
+            ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
+      })
+
+      // agents/:id
+      .state('agent-overview', {
+        templateUrl: '/static/app/SplunkAppForWazuh/views/agents/overview/overview.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        controller: 'agentsOverviewCtrl',
+        controllerAs: 'aoc',
+        params: { id: null },
+        resolve: {
+          agent: ['$apiService', ($apiService, $stateParams) => {
+            return Promise.all([
+              $apiService.request(`/agents/${$stateParams.id}`, null, null)
             ])
               .then(function (response) {
                 return response
