@@ -18,7 +18,7 @@
 
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzDynamic', function () {
+  directives.directive('wzDynamic', function ($compile) {
     return {
       restrict: 'A',
       replace: true,
