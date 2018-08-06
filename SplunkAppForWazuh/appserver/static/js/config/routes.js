@@ -267,9 +267,14 @@ define(['./module'], function (module) {
         controllerAs: 'aoc',
         params: { id: null },
         resolve: {
-          agent: ['$apiService', ($apiService, $stateParams) => {
+          agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
+            console.log('state with ID ',$stateParams.id)
             return Promise.all([
-              $apiService.request(`/agents/${$stateParams.id}`, null, null)
+              $apiService.request(`/agents/${$stateParams.id}`, null, null),
+              $apiService.request(`/syscheck/${$stateParams.id}/last_scan`, {}, false),
+              $apiService.request(`/rootcheck/${$stateParams.id}/last_scan`, {}, false),
+              $apiService.request(`/syscollector/${$stateParams.id}/hardware`, {}, false),
+              $apiService.request(`/syscollector/${$stateParams.id}/os`, {}, false)
             ])
               .then(function (response) {
                 return response
