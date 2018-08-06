@@ -1,150 +1,108 @@
-<div flex layout="column" layout-align="start stretch" ng-show="!ag.load">
-
-  <!-- Headline -->
-  <div layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agent overview</span>
-  </div>
-  <!-- End headline -->
-
-  <!-- Agent information section -->
-  <div layout="row" layout-padding class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Name:
-          <span class="wz-text-bold">{{ ag.agent.name }}</span>
-          <md-tooltip ng-if="ag.agent.name.length > 25" md-direction="bottom" class="wz-tooltip">
-            Full name: {{ ag.agent.name }}
-          </md-tooltip>
+<div flex ng-if="!ag.loading" class="md-padding" layout="column" layout-align="start space-around">
+  <div layout="row" layout-align="space-between stretch">
+    <md-card flex class="no-margin-left wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">Status</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row">
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Active</p>
+              <p class="wz-text-right color-grey">{{ag.agentsCountActive}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Disconnected</p>
+              <p class="wz-text-right color-grey">{{ag.agentsCountDisconnected}}</p>
+            </div>
+          </div>
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Never connected</p>
+              <p class="wz-text-right color-grey">{{ag.agentsCountNeverConnected}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Agents coverage</p>
+              <p ng-if="ag.agentsCoverity" class="wz-text-right color-grey">{{(ag.agentsCoverity | number:2)}}%</p>
+              <p ng-if="!ag.agentsCoverity" class="wz-text-right color-grey">---</p>
+            </div>
+          </div>
         </div>
-        <div class="wz-text-truncatable" flex>
-          IP:
-          <span class="wz-text-bold">{{ ag.agent.ip }}</span>
+      </md-card-content>
+    </md-card>
+    <md-card flex class="no-margin-right wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">Top</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <p flex="35" class="manager-status-subtitle">Last registered agent</p>
+          <p ng-if="ag.lastAgent.id !== '000'" class="wz-text-right wz-text-link" tooltip="Click to open this agent" tooltip-placement="right"
+            ng-click="showAgent(lastAgent)">{{ag.lastAgent.name}}</p>
+          <p ng-if="ag.lastAgent.id === '000'" class="wz-text-right" tooltip-placement="right">{{ag.lastAgent.name}} (manager)</p>
         </div>
-        <div class="wz-text-truncatable" flex ng-if="ag.agent.group">
-          Group:
-          <span class="wz-text-bold wz-text-link" ng-click="goGroups(agent)">{{ ag.agent.group }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="ag.agent.version">
-          Version:
-          <span class="wz-text-bold">{{ ag.agent.version }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          OS:
-          <span class="wz-text-bold">{{ ag.agentOS }}</span>
-          <md-tooltip ng-if="ag.agentOS.length > 25" md-direction="bottom" class="wz-tooltip">
-            Full OS name: {{ ag.agentOS }}
-          </md-tooltip>
+        <div layout="row" class="wz-padding-top-10">
+          <p flex="35" class="manager-status-subtitle">Higher activity</p>
+          <p ng-if="ag.mostActiveAgent.id !== '000'" class="wz-text-right wz-text-link" tooltip="Click to open this agent" tooltip-placement="right"
+            ng-click="ag.showAgent(mostActiveAgent)">{{ag.mostActiveAgent}}</p>
+          <p ng-if="ag.mostActiveAgent.id === '000'" class="wz-text-right" tooltip-placement="right">{{ag.mostActiveAgent.name}} (manager)</p>
         </div>
       </md-card-content>
     </md-card>
   </div>
-  <div layout="row" layout-padding class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>Last keep alive:
-          <span class="wz-text-bold"> {{ag.agent.lastKeepAlive || 'Unknown' }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>Registration date:
-          <span class="wz-text-bold"> {{ag.agent.dateAdd}}</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="ag.agent.syscheck.inProgress">Last syscheck scan:
-          <span class="wz-text-bold"> Scan in progress</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="!ag.agent.syscheck.inProgress">Last syscheck scan:
-          <span class="wz-text-bold"> {{ag.agent.syscheck.end || 'Unknown'}}</span>
-          <md-tooltip ng-if="!ag.agent.syscheck.inProgress && ag.agent.syscheck.start && ag.agent.syscheck.end" md-direction="bottom" class="wz-tooltip">
-            Start time: {{ ag.agent.syscheck.start || 'Unknown'}}
-            <br> End time: {{ ag.agent.syscheck.end || 'Unknown'}}
-            <br> Duration time: {{ ag.agent.syscheck.duration +' minutes' || 'Unknown'}}
-          </md-tooltip>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="ag.agent.rootcheck.inProgress">Last rootcheck scan:
-          <span class="wz-text-bold"> Scan in progress</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="!ag.agent.rootcheck.inProgress">Last rootcheck scan:
-          <span class="wz-text-bold"> {{ag.agent.rootcheck.end || 'Unknown'}}</span>
-          <md-tooltip ng-if="!ag.agent.rootcheck.inProgress && ag.agent.rootcheck.start && ag.agent.rootcheck.end" md-direction="bottom" class="wz-tooltip">
-            Start time: {{ ag.agent.rootcheck.start || 'Unknown'}}
-            <br> End time: {{ ag.agent.rootcheck.end || 'Unknown'}}
-            <br> Duration time: {{ ag.agent.rootcheck.duration +' minutes' || 'Unknown'}}
-          </md-tooltip>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <!-- End agent information section -->
 
+  <div layout="row" layout-align="start stretch">
+    <div layout="column" flex="40" class="height-40 wz-margin-top-17 wz-margin-right-15">
+      <div layout="row">
+        <input placeholder="Filter agents..." ng-model="ag.custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="ag.search(ag.custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" ng-click="ag.search(ag.custom_search)">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
 
-  <div layout="row" layout-padding>
-    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
-      <div class="euiFlexItem">
-        <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Host monitoring</h3>
-          <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" logo="'app_dashboard.svg'" title="'General'" switch-tab="ag.switchTab('general')" current-tab="'general'"
-              description="'Explore your alerts.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'app_logging.svg'" title="'File integrity'" switch-tab="ag.switchTab('fim')" current-tab="'fim'"
-              description="ag.TabDescription.fim.description"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'app_devtools.svg'" title="'Configuration'" switch-tab="ag.switchTab('configuration')"
-              current-tab="'configuration'" description="ag.TabDescription.configuration.description"></wz-welcome-card>
-            <wz-welcome-card ng-if="syscollector && syscollector.os && syscollector.os.sysname" class="euiFlexItem" logo="'app_index_pattern.svg'"
-              title="'Inventory'" switch-tab="ag.switchTab('syscollector')" current-tab="'syscollector'" description="ag.TabDescription.syscollector.description"></wz-welcome-card>
-          </div>
-        </div>
-      </div>
-      <div class="euiFlexItem">
-        <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">System audit</h3>
-          <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" logo="'app_advanced_settings.svg'" title="'Policy monitoring'" switch-tab="ag.switchTab('pm')"
-              current-tab="'pm'" description="ag.TabDescription.pm.description"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem" logo="'app_monitoring.svg'" title="'Audit'" switch-tab="ag.switchTab('audit')"
-              current-tab="'audit'" description="ag.TabDescription.audit.description"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem" logo="'app_discover.svg'" title="'Open SCAP'" switch-tab="ag.switchTab('oscap')"
-              current-tab="'oscap'" description="ag.TabDescription.oscap.description"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'app_management.svg'" title="'CIS-CAT'" switch-tab="ag.switchTab('ciscat')"
-              current-tab="'ciscat'" description="ag.TabDescription.ciscat.description"></wz-welcome-card>
-          </div>
-        </div>
-      </div>
+    <div flex layout="column" class="height-40 wz-margin-top-17 wz-margin-right-15 wz-select-input">
+      <select flex class="kuiSelect wz-border-none cursor-pointer" id="eventBox1" ng-model="ag.status" ng-change="ag.filter({name:'status',value:ag.status})"
+        aria-label="Filter by status">
+        <option value="all">All states</option>
+        <option value="active">Active</option>
+        <option value="disconnected">Disconnected</option>
+        <option value="Never Connected">Never connected</option>
+      </select>
+    </div>
+
+    <div flex ng-show="isClusterEnabled" layout="column" class="height-40 wz-margin-top-17 wz-margin-right-15 wz-select-input">
+      <select flex class="kuiSelect wz-border-none cursor-pointer" id="eventBox2" ng-model="ag.node_name" ng-change="ag.filter({name:'node',value:ag.node_name})"
+        aria-label="Filter by node">
+        <option value="all">All nodes</option>
+        <option ng-repeat='node in ag.nodes' value="{{node}}">
+          {{node}}
+        </option>
+      </select>
+    </div>
+
+    <div flex layout="column" class="height-40 wz-margin-top-17 wz-select-input wz-margin-right-15">
+      <select flex class="kuiSelect wz-border-none cursor-pointer" id="eventBox3" ng-model="ag.osPlatform" ng-change="ag.filter({name:'platform',value:ag.osPlatform})"
+        aria-label="Filter by operative system">
+        <option value="all">All OS platforms</option>
+        <option ng-repeat='platform in ag.osPlatforms' value="{{platform.platform}} - {{platform.version}}">
+          {{platform.name}} {{platform.version}}
+        </option>
+      </select>
+    </div>
+    <div flex layout="column" class="height-40 wz-margin-top-17 wz-select-input">
+      <select flex class="kuiSelect wz-border-none cursor-pointer" id="eventBox4" ng-model="version" ng-change="filter({name:'version',value:version})"
+        aria-label="Filter by Wazuh version">
+        <option value="all">All versions</option>
+        <option ng-repeat='version in ag.versions' value="{{version}}">
+          {{version}}
+        </option>
+      </select>
     </div>
   </div>
 
-  <div layout="row" layout-padding>
-    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
-      <div class="euiFlexItem">
-        <div class="euiFlexItem">
-          <div class="euiPanel euiPanel--paddingLarge">
-            <h3 class="euiTitle">Security</h3>
-            <div class="euiSpacer euiSpacer--m"></div>
-            <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-              <wz-welcome-card class="euiFlexItem" logo="'app_security.svg'" title="'Vulnerabilities'" switch-tab="ag.switchTab('vuls')" current-tab="'vuls'"
-                description="ag.TabDescription.vuls.description"></wz-welcome-card>
-              <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem" logo="'app_saved_objects.svg'" title="'Virustotal'" switch-tab="ag.switchTab('virustotal')"
-                current-tab="'virustotal'" description="ag.TabDescription.virustotal.description"></wz-welcome-card>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="euiFlexItem" ng-if="extensions && (extensions.pci || extensions.gdpr)">
-        <div class="euiFlexItem">
-          <div class="euiPanel euiPanel--paddingLarge">
-            <h3 class="euiTitle">Compliance</h3>
-            <div class="euiSpacer euiSpacer--m"></div>
-            <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-              <wz-welcome-card ng-if="extensions.pci" class="euiFlexItem" logo="'app_apm.svg'" title="'PCI DSS'" switch-tab="ag.switchTab('pci')"
-                current-tab="'pci'" description="ag.TabDescription.pci.description"></wz-welcome-card>
-              <wz-welcome-card ng-if="extensions.gdpr" class="euiFlexItem" logo="'app_visualize.svg'" title="'GDPR'" switch-tab="ag.switchTab('gdpr')"
-                current-tab="'gdpr'" description="ag.TabDescription.gdpr.description"></wz-welcome-card>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div layout="row" class="margin-top-30">
+    <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version']"
+      allow-click="true" rows-per-page="17">
+    </wazuh-table>
   </div>
-
 </div>
