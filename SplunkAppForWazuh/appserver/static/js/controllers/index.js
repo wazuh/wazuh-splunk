@@ -22,5 +22,13 @@ define([
   './settings/settingsApiCtrl',
   './agents/agents/agentsCtrl',
   './agents/overview/agentsOverviewCtrl',
+  './agents/general/agentsGeneralCtrl',
+  './agents/fim/agentsFimCtrl',
+  './agents/policy-monitoring/agentsPolicyMonitoringCtrl',
+  './agents/vulnerabilities/agentsVulnerabilitiesCtrl',
+  './agents/audit/agentsAuditCtrl',
+  './agents/scap/agentsOpenScapCtrl',
+  './agents/pcidss/agentsPciCtrl',
+  './agents/gdpr/agentsGdprCtrl',
   './main/mainCtrl'
 ], function () {})
