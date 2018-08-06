@@ -14,8 +14,16 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('agentsOverviewCtrl', function ($scope, $currentApiIndexService, data) {
+  controllers.controller('agentsOverviewCtrl', function ($scope, $currentApiIndexService, agent) {
     const vm = this
-
+    console.log('agent ', agent)
+    vm.agent = agent[0].data.data
+    vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
+    vm.syscheck = agent[1].data.data
+    vm.rootcheck = agent[2].data.data
+    vm.formatAgentStatus = agentStatus => {
+      return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+    }
+    vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
   })
 })
