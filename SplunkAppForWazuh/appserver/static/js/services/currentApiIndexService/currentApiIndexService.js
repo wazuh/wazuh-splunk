@@ -2,7 +2,7 @@ define(['../module'], function (module) {
   'use strict'
 
   module.service('$currentApiIndexService', function () {
-    const service = {
+    return {
       /** 
        * Delete selected index
        */
@@ -51,6 +51,17 @@ define(['../module'], function (module) {
       },
 
       /**
+       * Returns currently selected API
+       * @param {String} API 
+       */
+      getClusterInfo: () => {
+        if (sessionStorage && sessionStorage.selectedAPI && typeof sessionStorage.selectedAPI === 'string' && JSON.parse(sessionStorage.selectedAPI) && JSON.parse(sessionStorage.selectedAPI).cluster )
+          return JSON.parse(sessionStorage.selectedAPI).cluster
+        else
+          return false
+      },
+
+      /**
        * Returns the API filter (manager.name / cluster.name)
        */
       getFilter: () => {
@@ -63,6 +74,5 @@ define(['../module'], function (module) {
 
     }
 
-    return service
   })
 })

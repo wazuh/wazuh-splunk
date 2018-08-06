@@ -35,8 +35,7 @@ define(['../../module'], function (controllers) {
     vm.toggle = () => vm.lookingGroup = true
 
     vm.showAgent = agent => {
-      $location.search('tab', null)
-      $location.path('/agents')
+
     }
 
     vm.loadGroup = async (group, firstTime) => {

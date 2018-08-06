@@ -1,0 +1,116 @@
+<div flex ng-if="!ag.loading" class="md-padding" layout="column" layout-align="start space-around">
+  <div layout="row" layout-align="space-between stretch">
+    <md-card flex class="no-margin-left wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">Status</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row">
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Active</p>
+              <p class="wz-text-right color-grey">{{ag.agentsCountActive}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Disconnected</p>
+              <p class="wz-text-right color-grey">{{ag.agentsCountDisconnected}}</p>
+            </div>
+          </div>
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Never connected</p>
+              <p class="wz-text-right color-grey">{{ag.agentsCountNeverConnected}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Agents coverage</p>
+              <p ng-if="ag.agentsCoverity" class="wz-text-right color-grey">{{(ag.agentsCoverity | number:2)}}%</p>
+              <p ng-if="!ag.agentsCoverity" class="wz-text-right color-grey">---</p>
+            </div>
+          </div>
+        </div>
+      </md-card-content>
+    </md-card>
+    <md-card flex class="no-margin-right wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">Top</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <p flex="35" class="manager-status-subtitle">Last registered agent</p>
+          <p ng-if="ag.lastAgent.id !== '000'" class="wz-text-right wz-text-link" tooltip="Click to open this agent" tooltip-placement="right"
+            ng-click="showAgent(lastAgent)">{{ag.lastAgent.name}}</p>
+          <p ng-if="ag.lastAgent.id === '000'" class="wz-text-right" tooltip-placement="right">{{ag.lastAgent.name}} (manager)</p>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <p flex="35" class="manager-status-subtitle">Higher activity</p>
+          <p ng-if="ag.mostActiveAgent.id !== '000'" class="wz-text-right wz-text-link" tooltip="Click to open this agent" tooltip-placement="right"
+            ng-click="ag.showAgent(mostActiveAgent)">{{ag.mostActiveAgent}}</p>
+          <p ng-if="ag.mostActiveAgent.id === '000'" class="wz-text-right" tooltip-placement="right">{{ag.mostActiveAgent.name}} (manager)</p>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <!-- Search bar -->
+
+  <div ng-show="!loading" layout="row" layout-align="start center">
+    <div layout="column" flex="40" class="height-40 wz-margin-right-15">
+      <div layout="row">
+        <input placeholder="Filter agents..." ng-model="ag.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="ag.search(ag.custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="ag.search(ag.custom_search)">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Platform selector -->
+    <div layout="column">
+      <select class="input input-dropdown" flex id="eventBox1" ng-model="ag.osPlatform" ng-change="ag.filter({name:'platform',value:ag.osPlatform})"
+        aria-label="Filter by operative system" style='width:400px; height: 33px; margin-top:3px;'>
+        <option value="all">All OS platforms</option>
+        <option ng-repeat='platform in ag.osPlatforms' value="{{platform.platform}} - {{platform.version}}">
+          {{platform.platform}} {{platform.version}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Version selector -->
+    <div layout="column">
+      <select class="input input-dropdown" flex id="eventBox1" ng-model="ag.version" ng-change="ag.filter({name:'version',value:ag.version})"
+        aria-label="Filter by operative system" style='width:400px; height: 33px; margin-top:3px;'>
+        <option value="all">All versions</option>
+        <option ng-repeat='version in ag.versions' value="{{version}}">
+          {{version}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Nodes selector -->
+    <div ng-show="ag.isClusterEnabled" layout="column">
+      <select class="input input-dropdown" flex id="eventBox2" ng-disabled="ag.realtime" ng-model="ag.node_name" ng-change="ag.filter({name:'node',value:ag.node_name})"
+        aria-label="Filter by node" style='width:400px; height: 33px; margin-top:3px;  margin-left:10px;'>
+        <option value="all">All nodes</option>
+        <option ng-repeat='node in ag.nodes' value="{{node}}">
+          {{node}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Status selector -->
+    <div layout="column">
+      <select class="input input-dropdown" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="ag.status"
+        ng-change="filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
+        <option value="all">All states</option>
+        <option value="active">Active</option>
+        <option value="disconnected">Disconnected</option>
+        <option value="Never Connected">Never connected</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div layout="row" class="margin-top-30">
+    <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version']"
+      allow-click="true" rows-per-page="17">
+    </wazuh-table>
+  </div>
+</div>
