@@ -21,5 +21,6 @@ define([
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',
   './agents/agents/agentsCtrl',
+  './agents/overview/agentsOverviewCtrl',
   './main/mainCtrl'
 ], function () {})
