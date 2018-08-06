@@ -247,10 +247,8 @@ define(['./module'], function (module) {
           data: ['$apiService', ($apiService) => {
             return Promise.all([
               $apiService.request('/agents/summary', false, false),
-              $apiService.get('/agents/agents',false,false)
-
-              // $apiService.request('/agents/agents', false, false)
-              // $apiService.get('/agents/agents_uniq', false, false)
+              $apiService.request('/agents',{limit:1, sort:'-dateAdd'},false),
+              $apiService.get('/agents/agents_uniq',false,false)
             ])
               .then(function (response) {
                 return response
