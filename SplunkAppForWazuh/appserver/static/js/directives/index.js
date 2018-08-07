@@ -3,5 +3,6 @@ define([
   './wz-table/wz-table',
   './wz-enter/wz-enter',
   './wz-dynamic/wz-dynamic',
-  './wz-welcome-card/wz-welcome-card'
+  './wz-welcome-card/wz-welcome-card',
+  './wz-bar/wz-bar'
 ], function () {})
