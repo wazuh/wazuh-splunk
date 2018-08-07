@@ -3,7 +3,7 @@
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding ng-if="aoc.agent">
     <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div ng-if="tab !== 'welcome'">
+    <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span class="wz-text-link cursor-pointer">{{aoc.agent.name}} ({{aoc.agent.id}})</span>
@@ -103,7 +103,7 @@
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'" title="'General'"
-              ui-sref='ag-general' current-tab="'general'" description="'Explore your alerts.'"></wz-welcome-card>
+              ui-sref='ag-general({id:aoc.agent.id})' current-tab="'general'" description="'Explore your alerts.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'File integrity'"
             ui-sref='ag-fim' current-tab="'fim'" description="TabDescription.fim.description"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"

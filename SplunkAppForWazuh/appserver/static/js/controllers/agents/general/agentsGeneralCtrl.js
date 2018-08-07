@@ -31,11 +31,11 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $currentApiIndexService, $apiService) {
+    controllers.controller('agentsGeneralCtrl', function ($scope, $currentApiIndexService, $apiService, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       const selectedIndex = $currentApiIndexService.getIndex()
-
+      vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
       const api = JSON.parse($currentApiIndexService.getAPI())
@@ -44,7 +44,6 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
       const baseUrl = $apiService.getBaseUrl()
       setToken('baseip', baseUrl)
       setToken('url', api.url)
@@ -56,93 +55,7 @@ define([
       // Implement checking polling state!!!
       let search9 = ''
       let element9 = ''
-      if (true) {
-        search9 = new SearchManager({
-          "id": "search9"+epoch,
-          "cancelOnUnload": true,
-          "sample_ratio": 1,
-          "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
-          "latest_time": "$when.latest$",
-          "app": utils.getCurrentApp(),
-          "auto_cancel": 90,
-          "preview": true,
-          "tokenDependencies": {
-          },
-          "runWhenTimeIsUndefined": false
-        }, { tokens: true, tokenNamespace: "submitted" })
-
-        element9 = new ChartElement({
-          "id": "element9" + epoch,
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "pie",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
-          "charting.chart.style": "shiny",
-          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
-          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-          "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "all",
-          "charting.chart.sliceCollapsingThreshold": "0.01",
-          "managerid": "search9" + epoch,
-          "el": $('#element9')
-        }, { tokens: true, tokenNamespace: "submitted" }).render()
-      } else {
-        let filterAgent = (filter[0] === 'manager.name') ? 'manager_host' : 'cluster.name'
-        filter += '=' + filter[1]
-        search9 = new SearchManager({
-          "id": "search9" + epoch,
-          "earliest_time": "$when.earliest$",
-          "latest_time": "$when.latest$",
-          "status_buckets": 0,
-          "sample_ratio": null,
-          "cancelOnUnload": true,
-          "search": "index=\"wazuh-monitoring-3x\" " + filterAgent + " status=* | timechart span=1h count by status usenull=f",
-          "app": utils.getCurrentApp(),
-          "auto_cancel": 90,
-          "preview": true,
-          "tokenDependencies": {
-          },
-          "runWhenTimeIsUndefined": false
-        }, { tokens: true, tokenNamespace: "submitted" })
-
-        element9 = new ChartElement({
-          "id": "element9" + epoch,
-          "charting.legend.placement": "right",
-          "charting.drilldown": "none",
-          "refresh.display": "progressbar",
-          "charting.chart": "area",
-          "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
-          "trellis.enabled": "0",
-          "resizable": true,
-          "trellis.scales.shared": "1",
-          "charting.axisTitleX.visibility": "visible",
-          "charting.axisTitleY.visibility": "visible",
-          "charting.axisTitleY2.visibility": "visible",
-          "managerid": "search9" + epoch,
-          "el": $('#element9')
-        }, { tokens: true, tokenNamespace: "submitted" }).render()
-      }
-
-
+      
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -212,6 +125,8 @@ define([
         agentsElement8 = null
         agentsElement14 = null
         input1 = null
+        searchAuthFailure = null
+        searchAuthSuccess = null
       })
 
 
@@ -400,7 +315,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top \"agent.name\"",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top \"rule.description\" limit=5",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -416,7 +331,23 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.groups limit=5",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      search9 = new SearchManager({
+        "id": "search9" + epoch,
+        "cancelOnUnload": true,
+        "earliest_time": "$when.earliest$",
+        "sample_ratio": 1,
+        "status_buckets": 0,
+        "latest_time": "$when.latest$",
+        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.pci_dss{} limit=5",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -563,19 +494,19 @@ define([
 
       agentsElement8 = new ChartElement({
         "id": "agentsElement8" + epoch,
-        "trellis.size": "medium",
+        "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
-        "charting.chart.showDataLabels": "minmax",
+        "charting.chart.showDataLabels": "none",
         "charting.chart.stackMode": "default",
         "resizable": true,
         "charting.axisTitleY2.visibility": "visible",
         "charting.drilldown": "none",
-        "charting.chart": "area",
+        "charting.chart": "pie",
         "charting.layout.splitSeries.allowIndependentYRanges": "0",
         "charting.chart.nullValueMode": "gaps",
         "trellis.scales.shared": "1",
         "charting.layout.splitSeries": "0",
-        "charting.axisTitleX.visibility": "collapsed",
+        "charting.axisTitleX.visibility": "visible",
         "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
         "charting.chart.style": "shiny",
         "charting.axisTitleY.visibility": "visible",
@@ -584,7 +515,7 @@ define([
         "charting.axisX.scale": "linear",
         "trellis.enabled": "0",
         "charting.axisY2.enabled": "0",
-        "charting.legend.placement": "bottom",
+        "charting.legend.placement": "right",
         "charting.chart.bubbleSizeBy": "area",
         "charting.axisLabelsX.majorLabelStyle.rotation": "0",
         "charting.chart.bubbleMaximumSize": "50",
@@ -592,6 +523,40 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": "search8" + epoch,
         "el": $('#agentsElement8')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      
+      element9 = new ChartElement({
+        "id": "element9" + epoch,
+        "trellis.size": "large",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "pie",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": "search9" + epoch,
+        "el": $('#element9')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       agentsElement14 = new TableElement({
