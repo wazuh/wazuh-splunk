@@ -14,16 +14,24 @@ define(['../module'], function (module) {
 
       /**
        * Adds a new filter
+       * @param {Object} filter 
        */
       addFilter: (filter) => {
         if (window.localStorage.filters) {
-          console.log('adding filter')
           const filters = JSON.parse(window.localStorage.getItem('filters'))
-          filters.push(filter)
+          let isInIt = false
+          for(const key in filters){
+            if (Object.keys(filter)[0] === key) {
+              filters[key] = filter[key]
+              isInIt = true
+              break;
+            }
+          }
+          if(!isInIt) {
+            filters.push(filter)
+          }
           window.localStorage.setItem('filters', JSON.stringify(filters))
-
         } else {
-          console.log('filters empty, adding first one filter')
           window.localStorage.setItem('filters', JSON.stringify([filter]))
         }
       },
