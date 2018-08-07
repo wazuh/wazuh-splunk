@@ -35,11 +35,11 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       const selectedIndex = $currentApiIndexService.getIndex()
-      $filterService.addFilter(selectedIndex)
+      $filterService.addFilter({'index': selectedIndex})
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
-      $filterService.addFilter(nameFilter)
+      $filterService.addFilter(JSON.parse(`{"${filter[0]}":"${filter[1]}"}`))
       const api = JSON.parse($currentApiIndexService.getAPI())
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
