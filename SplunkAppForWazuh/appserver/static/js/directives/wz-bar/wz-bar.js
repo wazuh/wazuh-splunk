@@ -11,13 +11,23 @@
  */
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wazuhBar', function () {
+  directives.directive('wazuhBar', function ($filterService) {
     return {
       restrict: 'E',
       controller: function ($scope, $filterService) {
         $scope.filters = $filterService.getFilters()
-        $scope.alert = 'alert!'
-        console.log('the current filters ',$scope.filters)
+
+        /**
+         * Removes a filter on click
+         * @param {String} filter 
+         */
+        $scope.removeFilter = (filter) => {
+          console.log('deleting filter ',filter)
+          const index = $scope.filters.indexOf(filter)
+          if (index > -1) {
+            $scope.filters.splice(index, 1)
+          }
+        }
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
     }
