@@ -268,7 +268,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
-            console.log('state with ID ',$stateParams.id)
+            console.log('state with ID ', $stateParams.id)
             return Promise.all([
               $apiService.request(`/agents/${$stateParams.id}`, null, null),
               $apiService.request(`/syscheck/${$stateParams.id}/last_scan`, {}, false),
@@ -291,7 +291,21 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('general') },
         controller: 'agentsGeneralCtrl',
         controllerAs: 'agc',
+        params: { id: null },
+        resolve: {
+          agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
+            console.log('state with ID ', $stateParams.id)
+            return $apiService.request(`/agents/${$stateParams.id}`, null, null)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
       })
+
+
       // agents - policy monitoring
       .state('ag-pm', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/policy-monitoring/agents-pm.html',
