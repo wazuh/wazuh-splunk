@@ -52,8 +52,6 @@ define([
           const clusterInfo = $currentApiIndexService.getClusterInfo()
           const firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
           const epoch = (new Date).getTime()
-
-          console.log('data ', data)
           // const unique = data[0].data.result
           const selectedIndex = $currentApiIndexService.getIndex()
           const filter = $currentApiIndexService.getFilter()

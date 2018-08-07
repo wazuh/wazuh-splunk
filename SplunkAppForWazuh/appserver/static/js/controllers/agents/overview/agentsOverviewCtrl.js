@@ -16,7 +16,6 @@ define(['../../module'], function (controllers) {
 
   controllers.controller('agentsOverviewCtrl', function ($scope, $currentApiIndexService, agent) {
     const vm = this
-    console.log('agent ', agent)
     vm.agent = agent[0].data.data
     vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
     vm.syscheck = agent[1].data.data

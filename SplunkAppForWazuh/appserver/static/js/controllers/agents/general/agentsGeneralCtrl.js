@@ -35,12 +35,19 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       const selectedIndex = $currentApiIndexService.getIndex()
-      $filterService.addFilter({'index': selectedIndex})
+      $filterService.addFilter({ 'index': selectedIndex })
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
-      $filterService.addFilter(JSON.parse(`{"${filter[0]}":"${filter[1]}"}`))
       const api = JSON.parse($currentApiIndexService.getAPI())
+      let nameFilter = ''
+      if (filter.length > 0) {
+        console.log('cluster filter ', filter)
+        const nameFilter = filter[0] + '=' + filter[1]
+        console.log('nameFilter ', nameFilter)
+        $filterService.addFilter(JSON.parse(`{"${filter[0]}":"${filter[1]}"}`))
+      } else {
+        $filterService.addFilter(JSON.parse(`{Manager name::"${api['managerName']}"}`))
+      }
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -57,7 +64,7 @@ define([
       // Implement checking polling state!!!
       let search9 = ''
       let element9 = ''
-      
+
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -527,7 +534,7 @@ define([
         "el": $('#agentsElement8')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      
+
       element9 = new ChartElement({
         "id": "element9" + epoch,
         "trellis.size": "large",

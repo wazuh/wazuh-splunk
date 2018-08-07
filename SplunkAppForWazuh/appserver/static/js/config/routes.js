@@ -268,7 +268,6 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
-            console.log('state with ID ', $stateParams.id)
             return Promise.all([
               $apiService.request(`/agents/${$stateParams.id}`, null, null),
               $apiService.request(`/syscheck/${$stateParams.id}/last_scan`, {}, false),
@@ -294,7 +293,6 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
-            console.log('state with ID ', $stateParams.id)
             return $apiService.request(`/agents/${$stateParams.id}`, null, null)
               .then(function (response) {
                 return response
