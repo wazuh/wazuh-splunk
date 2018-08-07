@@ -31,13 +31,15 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $currentApiIndexService, $apiService, agent) {
+    controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $apiService, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       const selectedIndex = $currentApiIndexService.getIndex()
+      $filterService.addFilter(selectedIndex)
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
+      $filterService.addFilter(nameFilter)
       const api = JSON.parse($currentApiIndexService.getAPI())
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
