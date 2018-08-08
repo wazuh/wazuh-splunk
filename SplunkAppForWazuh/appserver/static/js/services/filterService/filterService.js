@@ -47,16 +47,9 @@ define(['../module'], function (module) {
       removeFilter: (filter) => {
         delete filter['$$hashKey']
         const key = Object.keys(filter)[0]
-        console.log('key ', key)
-        console.log('finding key in ', JSON.parse(window.localStorage.filters))
         const index = JSON.parse(window.localStorage.filters).findIndex(x => { return x[key] == filter[key] })
-        console.log('index ',index)
         if (index > -1) {
-          console.log(' array of filters ',JSON.parse(window.localStorage.filters))
-          console.log('deleting in position ',index)
-          const newArr = JSON.parse(window.localStorage.filters).splice(index, 1)
-          console.log('newArr ', newArr)
-          window.localStorage.setItem('filters', JSON.stringify(newArr))
+          window.localStorage.setItem('filters', JSON.stringify(JSON.parse(window.localStorage.filters).splice(index, 1)))
         }
       },
 
