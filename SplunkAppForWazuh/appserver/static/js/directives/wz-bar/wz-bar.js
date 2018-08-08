@@ -33,8 +33,12 @@ define(['../module'], function (directives) {
          * Applies the written filter to visualizations
          * @param {Object | String} filter 
          */
-        $scope.applyFilters = () => {
+        $scope.applyFilters = (customSearch) => {
+          console.log('applying filters ...')
+          $filterService.addFilter(customSearch)
+          console.log('emitting reloading filters ')
           $scope.$emit('barFilter',$filterService.getFilters())
+          if (!$scope.$$phase) $scope.$digest()
         }
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
