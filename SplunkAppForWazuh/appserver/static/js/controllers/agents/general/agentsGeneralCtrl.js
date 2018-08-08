@@ -42,9 +42,10 @@ define([
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        console.log('nameFilter ',nameFilter)
-        $filterService.addFilter(JSON.parse('{"'+filter[0]+'":"'+filter[1]+'"}'))
+        console.log('nameFilter ', nameFilter)
+        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
+
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -57,6 +58,7 @@ define([
       setToken('userapi', api.userapi)
       setToken('passwordapi', api.passapi)
       setToken("loadedtokens", "true")
+
 
       // Implement checking polling state!!!
       let search9 = ''
@@ -88,6 +90,12 @@ define([
         defaultTokenModel.unset(name)
         submittedTokenModel.unset(name)
       }
+
+      $scope.$on('barFilter', () => {
+        console.log('received event, reloading vis!')
+        FormUtils.handleValueChange(input1)
+        setToken('test',epoch)
+      })
 
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
         const tokHTMLJS = submittedTokenModel.get("authSuccessToken")
@@ -370,7 +378,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+        "search": $filterService.getSerializedFilters() + "sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -595,6 +603,7 @@ define([
         "searchWhenChanged": true,
         "earliest_time": "$form.when.earliest$",
         "latest_time": "$form.when.latest$",
+        "token": "$test$",
         "el": $('#input1')
       }, { tokens: true }).render()
 

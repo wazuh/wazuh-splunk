@@ -2,6 +2,7 @@ define(['../module'], function (module) {
   'use strict'
   module.service('$filterService', function () {
     return {
+
       /**
        * Returns the stored filters
        */
@@ -20,7 +21,13 @@ define(['../module'], function (module) {
         if (window.localStorage.filters) {
           const filters = JSON.parse(window.localStorage.getItem('filters'))
           let isInIt = false
-          for (const fil of filters) {
+          for (let fil of filters) {
+            if (typeof filter === 'string') {
+              const key = filter.split(':')[0]
+              const value = filter.split(':')[1]
+              const newObject = `{"${key}":"${value}"}`
+              filter = JSON.parse(newObject)
+            }
             for (let key in fil) {
               for (let keyDup in filter) {
                 if (keyDup === key) {
@@ -38,6 +45,27 @@ define(['../module'], function (module) {
         } else {
           window.localStorage.setItem('filters', JSON.stringify([filter]))
         }
+      },
+
+      /**
+       * Returns the filters in a way that visualizations can handle
+       * @returns {String} The serialized filters
+       */
+      getSerializedFilters: () => {
+        console.log('serialized filters ', window.localStorage.filters)
+        let filters = window.localStorage.filters
+        // for (const filter of window.localStorage.filters) {
+        //   if (typeof filter === 'object') {
+        //     const key = Object.keys(filter)[0]
+        //     filters += key
+        //     filters += '='
+        //     filters += filter[key]
+        //     filters += ' '
+        //   } else {
+        //     filters += filter + ' '
+        //   }
+        // }
+        return filters
       },
 
       /**
