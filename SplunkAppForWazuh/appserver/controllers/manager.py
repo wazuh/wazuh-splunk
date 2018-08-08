@@ -217,9 +217,9 @@ class manager(controllers.BaseController):
           sort_chain = '-name'
       elif sorting_column == "1":
         if direction == 'asc':
-          sort_chain = '+merged_sum'
+          sort_chain = '+mergedSum'
         if direction == 'desc':
-          sort_chain = '-merged_sum'
+          sort_chain = '-mergedSum'
       
       request = requests.get(url + '/agents/groups' + '?limit=' + limit + '&offset='+offset + '&search='+search_value+'&sort='+sort_chain, auth=auth, verify=verify).json()
       result = json.dumps(request)

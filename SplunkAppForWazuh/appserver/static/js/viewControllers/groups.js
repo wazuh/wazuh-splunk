@@ -94,11 +94,11 @@ require([
                       <hr style='margin-top:-5px'>
                       <div class="wz-flex-container wz-flex-row">
                         <p class='wz-flex-item-50' >Configuration sum</p>
-                        <p id='confSum'>${data.conf_sum}</p>
+                        <p id='confSum'>${data.configSum}</p>
                       </div>
                       <div class="wz-flex-container wz-flex-row">
                         <p class='wz-flex-item-50'>Merged sum</p>
-                        <p id='mergedSum'>${data.merged_sum}</p>
+                        <p id='mergedSum'>${data.mergedSum}</p>
                       </div>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ require([
             filterVisible: false,
             columns: [
               { "data": "name", 'orderable': true, defaultContent: "-" },
-              { "data": "merged_sum", 'orderable': true, defaultContent: "-" }
+              { "data": "mergedSum", 'orderable': true, defaultContent: "-" }
             ]
           }
 
