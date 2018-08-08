@@ -93,8 +93,11 @@ define([
 
       $scope.$on('barFilter', () => {
         console.log('received event, reloading vis!')
-        FormUtils.handleValueChange(input1)
-        setToken('test',epoch)
+        agentsElement5.render()
+        agentsElement6.render()
+        agentsElement7.render()
+        agentsElement8.render()
+        agentsElement14.render()
       })
 
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
