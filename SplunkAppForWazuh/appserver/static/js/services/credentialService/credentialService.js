@@ -174,13 +174,13 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const currentApi = $currentApiIndexService.getAPI()
         if (!currentApi) { return Promise.reject(new Error('No selected API in sessionStorage')) }
         const api = await checkApiConnection(JSON.parse(currentApi)._key)
+        $currentApiIndexService.setAPI(api)
         let selectedIndex = $currentApiIndexService.getIndex()
         if (!selectedIndex || selectedIndex === '') {
           selectedIndex = 'wazuh'
         }
         return { api, selectedIndex }
       } catch (err) {
-
         return Promise.reject(err)
       }
     }
@@ -252,12 +252,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
             api.cluster = false
             await update(api._key, api)
           }
-          console.log('pushing manager name ',api.managerName)
           api.filter.push('manager.name')
-          console.log('api filter ',api.filter)
           api.filter.push(api.managerName)
-          console.log('api filter ',api.filter)
-
         }
         return api
       } catch (err) {

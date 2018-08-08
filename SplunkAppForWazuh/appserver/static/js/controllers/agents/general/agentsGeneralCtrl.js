@@ -41,12 +41,10 @@ define([
       const api = JSON.parse($currentApiIndexService.getAPI())
       let nameFilter = ''
       if (filter.length > 0) {
-        console.log('cluster filter ', filter)
         const nameFilter = filter[0] + '=' + filter[1]
-        console.log('nameFilter ', nameFilter)
         $filterService.addFilter(JSON.parse(`{"${filter[0]}":"${filter[1]}"}`))
       } else {
-        $filterService.addFilter(JSON.parse(`{Manager name::"${api['managerName']}"}`))
+        $filterService.addFilter(JSON.parse(`{manager.name:${api['managerName']}}`))
       }
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
