@@ -28,6 +28,14 @@ define(['../module'], function (directives) {
             $scope.filters.splice(index, 1)
           }
         }
+        
+        /**
+         * Applies the written filter to visualizations
+         * @param {Object | String} filter 
+         */
+        $scope.applyFilters = () => {
+          $scope.$emit('barFilter',$filterService.getFilters())
+        }
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
     }
