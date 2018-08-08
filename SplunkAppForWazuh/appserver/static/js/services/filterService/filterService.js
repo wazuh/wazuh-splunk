@@ -41,6 +41,21 @@ define(['../module'], function (module) {
       },
 
       /**
+       * Removes a filter
+       */
+      removeFilter: (filter) => {
+        console.log('filters ',JSON.parse(window.localStorage.filters))
+        delete filter['$$hashKey']
+        console.log('deleting filter ',filter)
+
+        const index = JSON.parse(window.localStorage.filters).indexOf(filter)
+        console.log('index ',index)
+        if (index > -1) {
+          window.localStorage.setItem('filters',JSON.parse(window.localStorage.filters).splice(index, 1))
+        }
+      },
+
+      /**
        * Sets the filters empty
        */
       cleanFilters: () => {

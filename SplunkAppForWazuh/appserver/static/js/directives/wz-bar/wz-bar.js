@@ -24,6 +24,7 @@ define(['../module'], function (directives) {
         $scope.removeFilter = (filter) => {
           const index = $scope.filters.indexOf(filter)
           if (index > -1) {
+            $filterService.removeFilter($scope.filters[index])
             $scope.filters.splice(index, 1)
           }
         }

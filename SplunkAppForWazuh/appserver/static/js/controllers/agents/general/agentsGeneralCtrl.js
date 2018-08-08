@@ -39,12 +39,11 @@ define([
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
       const api = JSON.parse($currentApiIndexService.getAPI())
-      let nameFilter = ''
-      if (filter.length > 0) {
-        const nameFilter = filter[0] + '=' + filter[1]
-        $filterService.addFilter(JSON.parse(`{"${filter[0]}":"${filter[1]}"}`))
-      } else {
-        $filterService.addFilter(JSON.parse(`{manager.name:${api['managerName']}}`))
+      let nameFilter = ' '
+      if (filter.length === 2) {
+        nameFilter = filter[0] + '=' + filter[1]
+        console.log('nameFilter ',nameFilter)
+        $filterService.addFilter(JSON.parse('{"'+filter[0]+'":"'+filter[1]+'"}'))
       }
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
