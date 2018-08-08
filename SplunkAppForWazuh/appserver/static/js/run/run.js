@@ -24,6 +24,15 @@ define([
           $state.go('settings.api')
         }
       })
+      $transitions.onStart({ to: 'agents' }, async (trans) => {
+        try {
+          const { api, selectedIndex } = await $credentialService.checkSelectedApiConnection()
+          $currentApiIndexService.setAPI(JSON.stringify(api))
+        } catch (err) {
+          console.error('no more connectivity with API, redirecting to settings')
+          $state.go('settings.api')
+        }
+      })
     }])
   })
 
