@@ -34,8 +34,6 @@ define([
     controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $apiService, agent) {
       const vm = this
       const epoch = (new Date).getTime()
-      // const selectedIndex = $currentApiIndexService.getIndex()
-      // $filterService.addFilter({ 'index': selectedIndex })
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
       const api = $currentApiIndexService.getAPI()
@@ -58,7 +56,6 @@ define([
       setToken('userapi', api.userapi)
       setToken('passwordapi', api.passapi)
       setToken("loadedtokens", "true")
-
 
       // Implement checking polling state!!!
       let search9 = ''

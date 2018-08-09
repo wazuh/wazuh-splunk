@@ -38,6 +38,7 @@ define(['../module'], function (directives) {
           $filterService.addFilter(customSearch)
           console.log('emitting reloading filters ')
           $scope.$emit('barFilter',$filterService.getFilters())
+          $scope.filters = $filterService.getFilters()
           if (!$scope.$$phase) $scope.$digest()
         }
       },
