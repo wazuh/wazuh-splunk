@@ -41,10 +41,8 @@ define(['../module'], function (module) {
           if (!isInIt) {
             filters.push(filter)
           }
-          console.log('adding filters ',filters)
           window.localStorage.setItem('filters', JSON.stringify(filters))
         } else {
-          console.log('creating filte in local storage ',filter)
           window.localStorage.setItem('filters', JSON.stringify([filter]))
         }
       },
@@ -54,19 +52,19 @@ define(['../module'], function (module) {
        * @returns {String} The serialized filters
        */
       getSerializedFilters: () => {
-        console.log('serialized filters ', window.localStorage.filters)
         let filters = window.localStorage.filters
-        // for (const filter of window.localStorage.filters) {
-        //   if (typeof filter === 'object') {
-        //     const key = Object.keys(filter)[0]
-        //     filters += key
-        //     filters += '='
-        //     filters += filter[key]
-        //     filters += ' '
-        //   } else {
-        //     filters += filter + ' '
-        //   }
-        // }
+        let filterStr = ' '
+        for (const filter of JSON.parse(window.localStorage.filters)) {
+          if (typeof filter === 'object') {
+            const key = Object.keys(filter)[0]
+            filterStr += key
+            filterStr += '='
+            filterStr += filter[key]
+            filterStr += ' '
+          } else {
+            filterStr += filter + ' '
+          }
+        }
         return filters
       },
 
@@ -75,17 +73,12 @@ define(['../module'], function (module) {
        * @param {Object}: The filter to be removed
        */
       removeFilter: (filter) => {
-        console.log('filter in service to delete ',filter, typeof filter)
-        filter = JSON.parse(`{"${filter.split(':')[0]}":${filter.split(':')[1]})`)
+        filter = JSON.parse(`{"${filter.split(':')[0]}":"${filter.split(':')[1]}"}`)
         const key = `"${Object.keys(filter)[0]}"`
-        console.log('key in service ', key)
         const objectFilters = JSON.parse(window.localStorage.filters)
-        console.log('key to delete ', key)
         const index = objectFilters.findIndex(x => { return x[key] == filter[key] })
-        console.log('positiion ', index)
         if (index > -1) {
           objectFilters.splice(index, 1)
-          console.log('tempObj after delete', objectFilters)
           window.localStorage.setItem('filters', JSON.stringify(objectFilters))
         }
       },

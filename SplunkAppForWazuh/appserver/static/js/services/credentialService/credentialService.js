@@ -172,12 +172,9 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const checkSelectedApiConnection = async () => {
       try {
         const currentApi = $currentApiIndexService.getAPI()
-        console.log('checking current API ',currentApi)
         if (!currentApi) { console.error('no current api'); return Promise.reject(new Error('No selected API in sessionStorage')) }
         const api = await checkApiConnection(currentApi._key)
-        console.log('api after checking ',api)
         let selectedIndex = $currentApiIndexService.getIndex()
-        console.log('index after checking ',selectedIndex)
         return { api, selectedIndex }
       } catch (err) {
         return Promise.reject(err)
@@ -217,16 +214,11 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const checkApiConnection = async (key) => {
       try {
-        console.log('checkApiConnection ')
         const api = await select(key)
-        console.log('checkApiConnection selected api ',api)
-
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-
         const clusterData = await $apiService.get(checkConnectionEndpoint,false,true)
-        console.log('checkApiConnection clusterData ',clusterData)
         if (clusterData.data.error) {
           console.error('eror en clusterdata ',clusterData.data.error)
           return Promise.reject(clusterData.data.error)
