@@ -89,6 +89,21 @@ define([
         submittedTokenModel.unset(name)
       }
 
+      $scope.$on('deletedFilter', () => {
+        filters = $filterService.getSerializedFilters()
+        console.log('filters after ',filters)
+        $state.reload();
+        agentsSearch5.startSearch()
+        agentsSearch6.startSearch()
+        agentsSearch7.startSearch()
+        agentsSearch8.startSearch()
+        agentsSearch14.startSearch()
+        searchTopAgent.startSearch()
+        searchLevel12.startSearch()
+        searchAuthFailure.startSearch()
+        searchAuthSuccess.startSearch()
+      })
+
       $scope.$on('barFilter', () => {
         filters = $filterService.getSerializedFilters()
         console.log('filters after ',filters)

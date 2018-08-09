@@ -43,6 +43,8 @@ define(['../module'], function (directives) {
             $filterService.removeFilter($scope.filters[index])
             $scope.filters.splice(index, 1)
           }
+          $scope.$emit('deletedFilter', {})
+
         }
 
         /**
@@ -51,7 +53,7 @@ define(['../module'], function (directives) {
          */
         $scope.applyFilters = (customSearch) => {
           $filterService.addFilter(customSearch)
-          $scope.$emit('barFilter', $filterService.getFilters())
+          $scope.$emit('barFilter', {})
           $scope.filters = getPrettyFilters()
           if (!$scope.$$phase) $scope.$digest()
         }
