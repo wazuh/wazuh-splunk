@@ -38,7 +38,7 @@ define([
 
       const filter = $currentApiIndexService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
-      const api = JSON.parse($currentApiIndexService.getAPI())
+      const api = $currentApiIndexService.getAPI()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)

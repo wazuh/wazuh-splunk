@@ -28,7 +28,7 @@ define([
   FormUtils,
   ) {
     'use strict'
-    controllers.controller('settingsIndexCtrl', function ($scope) {
+    controllers.controller('settingsIndexCtrl', function ($scope,$currentApiIndexService) {
       $scope.message = 'Settings'
       $scope.tabName = ''
       const epoch = (new Date).getTime()
@@ -67,6 +67,11 @@ define([
         "managerid": "searchIndexes" + epoch,
         "el": $('#inputIndexes')
       }, { tokens: true }).render()
+
+      inputIndexes.on("change", (newValue) => {
+        $currentApiIndexService.setIndex(newValue)
+        FormUtils.handleValueChange(inputIndexes)
+      })
 
     })
   })

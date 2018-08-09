@@ -34,11 +34,11 @@ define([
     controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $apiService, agent) {
       const vm = this
       const epoch = (new Date).getTime()
-      const selectedIndex = $currentApiIndexService.getIndex()
-      $filterService.addFilter({ 'index': selectedIndex })
+      // const selectedIndex = $currentApiIndexService.getIndex()
+      // $filterService.addFilter({ 'index': selectedIndex })
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
-      const api = JSON.parse($currentApiIndexService.getAPI())
+      const api = $currentApiIndexService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
@@ -92,12 +92,15 @@ define([
       }
 
       $scope.$on('barFilter', () => {
-        console.log('received event, reloading vis!')
-        agentsElement5.render()
-        agentsElement6.render()
-        agentsElement7.render()
-        agentsElement8.render()
-        agentsElement14.render()
+        agentsSearch5.startSearch()
+        agentsSearch6.startSearch()
+        agentsSearch7.startSearch()
+        agentsSearch8.startSearch()
+        agentsSearch14.startSearch()
+        searchTopAgent.startSearch()
+        searchLevel12.startSearch()
+        searchAuthFailure.startSearch()
+        searchAuthSuccess.startSearch()
       })
 
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
@@ -154,7 +157,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " | stats count",
+        "search": "index=wazuh | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -192,7 +195,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "search": "index=wazuh sourcetype=wazuh \"rule.level\">=12 | chart count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -231,7 +234,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
+        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -269,7 +272,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -300,7 +303,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.level=*| timechart count by rule.level",
+        "search": "index=wazuh sourcetype=wazuh rule.level=*| timechart count by rule.level",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -316,7 +319,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=2h count",
+        "search": "index=wazuh sourcetype=wazuh | timechart span=2h count",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -332,7 +335,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top \"rule.description\" limit=5",
+        "search": "index=wazuh sourcetype=wazuh | top \"rule.description\" limit=5",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -348,7 +351,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.groups limit=5",
+        "search": "index=wazuh sourcetype=wazuh | top rule.groups limit=5",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -364,7 +367,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top rule.pci_dss{} limit=5",
+        "search": "index=wazuh sourcetype=wazuh | top rule.pci_dss{} limit=5",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -381,7 +384,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": $filterService.getSerializedFilters() + "sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+        "search": "index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
