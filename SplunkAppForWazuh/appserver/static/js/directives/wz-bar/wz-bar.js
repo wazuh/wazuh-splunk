@@ -15,20 +15,38 @@ define(['../module'], function (directives) {
     return {
       restrict: 'E',
       controller: function ($scope, $filterService) {
-        $scope.filters = $filterService.getFilters()
+
+        /**
+         * Prettifies filters for md-chips
+         */
+        const getPrettyFilters = () => {
+          const prettyFilters = []
+          const uglyFilters = $filterService.getFilters()
+          console.log('uglyfilters ',uglyFilters)
+          if (uglyFilters && uglyFilters.length > 0) {
+            for (const filter of uglyFilters) {
+              const key = Object.keys(filter)[0]
+              prettyFilters.push(`${key}:${filter[key]}`)
+            }
+          }
+          return prettyFilters
+        }
+
+        $scope.filters = getPrettyFilters()
 
         /**
          * Removes a filter on click
-         * @param {String} filter 
+         * @param {String}: The filter to be removed 
          */
         $scope.removeFilter = (filter) => {
           const index = $scope.filters.indexOf(filter)
           if (index > -1) {
+            console.log('deleting ',$scope.filters[index])
             $filterService.removeFilter($scope.filters[index])
             $scope.filters.splice(index, 1)
           }
         }
-        
+
         /**
          * Applies the written filter to visualizations
          * @param {Object | String} filter 
@@ -37,8 +55,8 @@ define(['../module'], function (directives) {
           console.log('applying filters ...')
           $filterService.addFilter(customSearch)
           console.log('emitting reloading filters ')
-          $scope.$emit('barFilter',$filterService.getFilters())
-          $scope.filters = $filterService.getFilters()
+          $scope.$emit('barFilter', $filterService.getFilters())
+          $scope.filters = getPrettyFilters()
           if (!$scope.$$phase) $scope.$digest()
         }
       },

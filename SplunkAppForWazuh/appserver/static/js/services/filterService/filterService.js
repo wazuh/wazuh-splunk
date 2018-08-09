@@ -41,8 +41,10 @@ define(['../module'], function (module) {
           if (!isInIt) {
             filters.push(filter)
           }
+          console.log('adding filters ',filters)
           window.localStorage.setItem('filters', JSON.stringify(filters))
         } else {
+          console.log('creating filte in local storage ',filter)
           window.localStorage.setItem('filters', JSON.stringify([filter]))
         }
       },
@@ -73,14 +75,17 @@ define(['../module'], function (module) {
        * @param {Object}: The filter to be removed
        */
       removeFilter: (filter) => {
-        const key = Object.keys(filter)[0]
+        console.log('filter in service to delete ',filter, typeof filter)
+        filter = JSON.parse(`{"${filter.split(':')[0]}":${filter.split(':')[1]})`)
+        const key = `"${Object.keys(filter)[0]}"`
+        console.log('key in service ', key)
         const objectFilters = JSON.parse(window.localStorage.filters)
-        console.log('key to delete ',key)
+        console.log('key to delete ', key)
         const index = objectFilters.findIndex(x => { return x[key] == filter[key] })
-        console.log('positiion ',index)
+        console.log('positiion ', index)
         if (index > -1) {
           objectFilters.splice(index, 1)
-          console.log('tempObj after delete',objectFilters)
+          console.log('tempObj after delete', objectFilters)
           window.localStorage.setItem('filters', JSON.stringify(objectFilters))
         }
       },
