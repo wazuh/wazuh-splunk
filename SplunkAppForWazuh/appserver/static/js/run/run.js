@@ -9,27 +9,27 @@ define([
       $transitions.onStart({ to: 'manager' }, async (trans) => {
         try {
           const { api, selectedIndex } = await $credentialService.checkSelectedApiConnection()
-          $currentApiIndexService.setAPI(JSON.stringify(api))
+          $currentApiIndexService.setAPI(api)
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings')
+          console.error('no more connectivity with API, redirecting to settings',err)
           $state.go('settings.api')
         }
       })
       $transitions.onStart({ to: 'overview' }, async (trans) => {
         try {
           const { api, selectedIndex } = await $credentialService.checkSelectedApiConnection()
-          $currentApiIndexService.setAPI(JSON.stringify(api))
+          $currentApiIndexService.setAPI(api)
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings')
+          console.error('no more connectivity with API, redirecting to settings',err)
           $state.go('settings.api')
         }
       })
       $transitions.onStart({ to: 'agents' }, async (trans) => {
         try {
           const { api, selectedIndex } = await $credentialService.checkSelectedApiConnection()
-          $currentApiIndexService.setAPI(JSON.stringify(api))
+          $currentApiIndexService.setAPI(api)
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings')
+          console.error('no more connectivity with API, redirecting to settings',err)
           $state.go('settings.api')
         }
       })

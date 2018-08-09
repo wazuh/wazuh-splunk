@@ -14,18 +14,21 @@ define(['../module'], function (directives) {
   directives.directive('wzMenu', function () {
     return {
       controller: function ($scope, $currentApiIndexService) {
-        $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
-        if ($scope.theresAPI && typeof $currentApiIndexService.getAPI() === 'string') {
-          $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
+        const update = () => {
+          console.log('updating API ')
+          $scope.currentIndex = (!$currentApiIndexService.getIndex()) ? 'wazuh' : $currentApiIndexService.getIndex().index
+          console.log('current index ',$scope.currentIndex)
+          $scope.currentAPI = (!$currentApiIndexService.getAPI()) ? '---' : $currentApiIndexService.getAPI().managerName
+          console.log('current API ',$scope.currentAPI)
+
+          $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
+          if (!$scope.$$phase) $scope.$digest()
         }
-        $scope.currentIndex = $currentApiIndexService.getIndex()
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
-          $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
-          if ($scope.theresAPI && typeof $currentApiIndexService.getAPI() === 'string') {
-            $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
-          }
+          update()
         })
+        update()
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html'
     }
