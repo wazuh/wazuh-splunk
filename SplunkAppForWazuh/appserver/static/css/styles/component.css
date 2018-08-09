@@ -16,6 +16,10 @@
 
 /* Custom nav bar styles */
 
+.md-chips{
+  box-shadow: 0 0px !important;
+}
+
 .wz-nav-bar .md-nav-bar{
   height: auto !important;
 }
