@@ -93,16 +93,6 @@ define([
         filters = $filterService.getSerializedFilters()
         console.log('filters after ',filters)
         $state.reload();
-        agentsSearch5.cancel()
-        agentsSearch6.cancel()
-        agentsSearch7.cancel()
-        agentsSearch8.cancel()
-        agentsSearch14.cancel()
-        searchTopAgent.cancel()
-        searchLevel12.cancel()
-        searchAuthFailure.cancel()
-        searchAuthSuccess.cancel()
-
         agentsSearch5.startSearch()
         agentsSearch6.startSearch()
         agentsSearch7.startSearch()
