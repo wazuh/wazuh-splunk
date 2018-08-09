@@ -8,7 +8,6 @@ define([
   './controllers/index',
   './run/index',
   './config/index',
-  'mdDataTable',
   'Toast'
 ], function (ng) {
   'use strict'
