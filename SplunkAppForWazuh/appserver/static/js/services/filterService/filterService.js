@@ -52,7 +52,6 @@ define(['../module'], function (module) {
        * @returns {String} The serialized filters
        */
       getSerializedFilters: () => {
-        let filters = window.localStorage.filters
         let filterStr = ' '
         for (const filter of JSON.parse(window.localStorage.filters)) {
           if (typeof filter === 'object') {
@@ -65,7 +64,7 @@ define(['../module'], function (module) {
             filterStr += filter + ' '
           }
         }
-        return filters
+        return filterStr
       },
 
       /**

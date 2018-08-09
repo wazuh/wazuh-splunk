@@ -31,11 +31,12 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $apiService, agent) {
+    controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $apiService, agent, $state) {
       const vm = this
       const epoch = (new Date).getTime()
       vm.agent = agent.data.data
       const filter = $currentApiIndexService.getFilter()
+      $filterService.addFilter($currentApiIndexService.getIndex())
       const api = $currentApiIndexService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
@@ -43,8 +44,7 @@ define([
         console.log('nameFilter ', nameFilter)
         $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
-      const filters = $filterService.getSerializedFilters()
-      console.log('serialized filters ',filters)
+      let filters = $filterService.getSerializedFilters()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -90,6 +90,19 @@ define([
       }
 
       $scope.$on('barFilter', () => {
+        filters = $filterService.getSerializedFilters()
+        console.log('filters after ',filters)
+        $state.reload();
+        agentsSearch5.cancel()
+        agentsSearch6.cancel()
+        agentsSearch7.cancel()
+        agentsSearch8.cancel()
+        agentsSearch14.cancel()
+        searchTopAgent.cancel()
+        searchLevel12.cancel()
+        searchAuthFailure.cancel()
+        searchAuthSuccess.cancel()
+
         agentsSearch5.startSearch()
         agentsSearch6.startSearch()
         agentsSearch7.startSearch()
@@ -155,7 +168,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh | stats count",
+        "search": `${filters} | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -193,7 +206,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "search": `${filters} sourcetype=wazuh \"rule.level\">=12 | chart count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -232,7 +245,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
+        "search": `${filters} sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -270,7 +283,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=wazuh sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+        "search": `${filters} sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -301,7 +314,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh rule.level=*| timechart count by rule.level",
+        "search": `${filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -317,7 +330,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | timechart span=2h count",
+        "search": `${filters} sourcetype=wazuh | timechart span=2h count`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -333,7 +346,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | top \"rule.description\" limit=5",
+        "search": `${filters} sourcetype=wazuh | top \"rule.description\" limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -349,7 +362,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | top rule.groups limit=5",
+        "search": `${filters} sourcetype=wazuh | top rule.groups limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -365,7 +378,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh | top rule.pci_dss{} limit=5",
+        "search": `${filters} sourcetype=wazuh | top rule.pci_dss{} limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -382,7 +395,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+        "search": `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
