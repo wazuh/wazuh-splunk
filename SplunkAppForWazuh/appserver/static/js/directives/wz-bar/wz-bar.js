@@ -22,7 +22,6 @@ define(['../module'], function (directives) {
         const getPrettyFilters = () => {
           const prettyFilters = []
           const uglyFilters = $filterService.getFilters()
-          console.log('uglyfilters ',uglyFilters)
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
@@ -41,7 +40,6 @@ define(['../module'], function (directives) {
         $scope.removeFilter = (filter) => {
           const index = $scope.filters.indexOf(filter)
           if (index > -1) {
-            console.log('deleting ',$scope.filters[index])
             $filterService.removeFilter($scope.filters[index])
             $scope.filters.splice(index, 1)
           }
@@ -52,9 +50,7 @@ define(['../module'], function (directives) {
          * @param {Object | String} filter 
          */
         $scope.applyFilters = (customSearch) => {
-          console.log('applying filters ...')
           $filterService.addFilter(customSearch)
-          console.log('emitting reloading filters ')
           $scope.$emit('barFilter', $filterService.getFilters())
           $scope.filters = getPrettyFilters()
           if (!$scope.$$phase) $scope.$digest()

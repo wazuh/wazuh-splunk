@@ -15,12 +15,8 @@ define(['../module'], function (directives) {
     return {
       controller: function ($scope, $currentApiIndexService) {
         const update = () => {
-          console.log('updating API ')
           $scope.currentIndex = (!$currentApiIndexService.getIndex()) ? 'wazuh' : $currentApiIndexService.getIndex().index
-          console.log('current index ',$scope.currentIndex)
           $scope.currentAPI = (!$currentApiIndexService.getAPI()) ? '---' : $currentApiIndexService.getAPI().managerName
-          console.log('current API ',$scope.currentAPI)
-
           $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
           if (!$scope.$$phase) $scope.$digest()
         }

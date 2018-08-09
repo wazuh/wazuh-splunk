@@ -43,7 +43,8 @@ define([
         console.log('nameFilter ', nameFilter)
         $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
-
+      const filters = $filterService.getSerializedFilters()
+      console.log('serialized filters ',filters)
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
