@@ -51,17 +51,6 @@ define([
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
       const baseUrl = $apiService.getBaseUrl()
-      setToken('baseip', baseUrl)
-      setToken('url', api.url)
-      setToken('portapi', api.portapi)
-      setToken('userapi', api.userapi)
-      setToken('passwordapi', api.passapi)
-      setToken("loadedtokens", "true")
-
-      // Implement checking polling state!!!
-      let search9 = ''
-      let element9 = ''
-
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -74,49 +63,33 @@ define([
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
 
-      function submitTokens() {
+      const launchSearches = () => {
+        filters = $filterService.getSerializedFilters()
+        $state.reload();
+        searches.map(search => search.startSearch())
+      }
+
+      const submitTokens = () => {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
         FormUtils.submitForm({ replaceState: pageLoading })
       }
 
-      function setToken(name, value) {
+      const setToken = (name, value) => {
         defaultTokenModel.set(name, value)
         submittedTokenModel.set(name, value)
       }
 
-      function unsetToken(name) {
+      const unsetToken = (name) => {
         defaultTokenModel.unset(name)
         submittedTokenModel.unset(name)
       }
 
       $scope.$on('deletedFilter', () => {
-        filters = $filterService.getSerializedFilters()
-        console.log('filters after ',filters)
-        $state.reload();
-        agentsSearch5.startSearch()
-        agentsSearch6.startSearch()
-        agentsSearch7.startSearch()
-        agentsSearch8.startSearch()
-        agentsSearch14.startSearch()
-        searchTopAgent.startSearch()
-        searchLevel12.startSearch()
-        searchAuthFailure.startSearch()
-        searchAuthSuccess.startSearch()
+        launchSearches()
       })
 
       $scope.$on('barFilter', () => {
-        filters = $filterService.getSerializedFilters()
-        console.log('filters after ',filters)
-        $state.reload();
-        agentsSearch5.startSearch()
-        agentsSearch6.startSearch()
-        agentsSearch7.startSearch()
-        agentsSearch8.startSearch()
-        agentsSearch14.startSearch()
-        searchTopAgent.startSearch()
-        searchLevel12.startSearch()
-        searchAuthFailure.startSearch()
-        searchAuthSuccess.startSearch()
+        launchSearches()
       })
 
       submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
@@ -128,46 +101,32 @@ define([
       })
 
       let pageLoading = true
-      let input1 = ''
-      let agentsSearch5 = ''
-      let agentsSearch6 = ''
-      let agentsSearch7 = ''
-      let agentsSearch8 = ''
-      let agentsSearch14 = ''
-      let searchTopAgent = ''
-      let searchLevel12 = ''
-      let searchAuthFailure = ''
-      let searchAuthSuccess = ''
-      let agentsElement5 = ''
-      let agentsElement6 = ''
-      let agentsElement7 = ''
-      let agentsElement8 = ''
-      let agentsElement14 = ''
+      let searches = []
+      let vizz = []
+
+      setToken('baseip', baseUrl)
+      setToken('url', api.url)
+      setToken('portapi', api.portapi)
+      setToken('userapi', api.userapi)
+      setToken('passwordapi', api.passapi)
+      setToken("loadedtokens", "true")
+
+      // Implement checking polling state!!!
+
 
       /**
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
-        agentsSearch5 = null
-        agentsSearch6 = null
-        agentsSearch7 = null
-        agentsSearch8 = null
-        element9 = null
-        agentsSearch14 = null
-        search9 = null
-        agentsElement5 = null
-        agentsElement6 = null
-        agentsElement7 = null
-        agentsElement8 = null
-        agentsElement14 = null
-        input1 = null
-        searchAuthFailure = null
-        searchAuthSuccess = null
+        searches.map(search => search = null)
+        vizz.map(viz => viz = null)
+        searches = null
+        vizz = null
       })
 
 
       // Listen for a change to the token tokenTotalAlerts value
-      searchTopAgent = new SearchManager({
+      let searchTopAgent = new SearchManager({
         "id": "searchTopAgent" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -182,7 +141,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      searches.push(searchTopAgent)
       new SearchEventHandler({
         managerid: "searchTopAgent" + epoch,
         event: "done",
@@ -205,7 +164,7 @@ define([
         }
       })
 
-      searchLevel12 = new SearchManager({
+      let searchLevel12 = new SearchManager({
         "id": "searchLevel12" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -220,7 +179,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      searches.push(searchLevel12)
       new SearchEventHandler({
         managerid: "searchLevel12" + epoch,
         event: "done",
@@ -244,7 +203,7 @@ define([
       })
 
 
-      searchAuthFailure = new SearchManager({
+      let searchAuthFailure = new SearchManager({
         "id": "searchAuthFailure" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -259,6 +218,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(searchAuthFailure)
 
       new SearchEventHandler({
         managerid: "searchAuthFailure" + epoch,
@@ -282,7 +242,7 @@ define([
         }
       })
 
-      searchAuthSuccess = new SearchManager({
+      let searchAuthSuccess = new SearchManager({
         "id": "searchAuthSuccess" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
@@ -297,6 +257,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(searchAuthSuccess)
 
       new SearchEventHandler({
         managerid: "searchAuthSuccess" + epoch,
@@ -312,7 +273,7 @@ define([
         ]
       })
 
-      agentsSearch5 = new SearchManager({
+      let agentsSearch5 = new SearchManager({
         "id": "search5" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -327,8 +288,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(agentsSearch5)
 
-      agentsSearch6 = new SearchManager({
+      let agentsSearch6 = new SearchManager({
         "id": "search6" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -343,8 +305,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(agentsSearch6)
 
-      agentsSearch7 = new SearchManager({
+      let agentsSearch7 = new SearchManager({
         "id": "search7" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -359,8 +322,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(agentsSearch7)
 
-      agentsSearch8 = new SearchManager({
+      let agentsSearch8 = new SearchManager({
         "id": "search8" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -375,8 +339,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(agentsSearch8)
 
-      search9 = new SearchManager({
+      let search9 = new SearchManager({
         "id": "search9" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -391,9 +356,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(search9)
 
-
-      agentsSearch14 = new SearchManager({
+      let agentsSearch14 = new SearchManager({
         "id": "search14" + epoch,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
@@ -408,17 +373,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
+      searches.push(agentsSearch14)
 
-
-      //
-      // SPLUNK LAYOUT
-      //
-
-
-      //
-      // DASHBOARD EDITOR
-      //
-
+      // Splunk elements
       new Dashboard({
         id: 'dashboard' + epoch,
         el: $('.dashboard-body'),
@@ -426,7 +383,7 @@ define([
         editable: false
       }, { tokens: true }).render()
 
-      agentsElement5 = new ChartElement({
+      let agentsElement5 = new ChartElement({
         "id": "agentsElement5" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
@@ -458,9 +415,9 @@ define([
         "managerid": "search5" + epoch,
         "el": $('#agentsElement5')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      vizz.push(agentsElement5)
 
-
-      agentsElement6 = new ChartElement({
+      let agentsElement6 = new ChartElement({
         "id": "agentsElement6" + epoch,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
@@ -492,9 +449,10 @@ define([
         "managerid": "search6" + epoch,
         "el": $('#agentsElement6')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      vizz.push(agentsElement6)
 
 
-      agentsElement7 = new ChartElement({
+      let agentsElement7 = new ChartElement({
         "id": "agentsElement7" + epoch,
         "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
@@ -526,9 +484,10 @@ define([
         "managerid": "search7" + epoch,
         "el": $('#agentsElement7')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      vizz.push(agentsElement7)
 
 
-      agentsElement8 = new ChartElement({
+      let agentsElement8 = new ChartElement({
         "id": "agentsElement8" + epoch,
         "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
@@ -560,9 +519,10 @@ define([
         "managerid": "search8" + epoch,
         "el": $('#agentsElement8')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      vizz.push(agentsElement8)
 
 
-      element9 = new ChartElement({
+      let element9 = new ChartElement({
         "id": "element9" + epoch,
         "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
@@ -594,8 +554,9 @@ define([
         "managerid": "search9" + epoch,
         "el": $('#element9')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      vizz.push(element9)
 
-      agentsElement14 = new TableElement({
+      let agentsElement14 = new TableElement({
         "id": "agentsElement14" + epoch,
         "dataOverlayMode": "none",
         "drilldown": "cell",
@@ -606,6 +567,7 @@ define([
         "managerid": "search14" + epoch,
         "el": $('#agentsElement14')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      vizz.push(agentsElement14)
 
       agentsElement14.on("click", function (e) {
         if (e.field !== undefined) {
@@ -619,7 +581,7 @@ define([
       // VIEWS: FORM INPUTS
       //
 
-      input1 = new TimeRangeInput({
+      let input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
         "searchWhenChanged": true,
@@ -628,6 +590,7 @@ define([
         "token": "$test$",
         "el": $('#input1')
       }, { tokens: true }).render()
+      vizz.push(input1)
 
       input1.on("change", function (newValue) {
         if (newValue && input1)
