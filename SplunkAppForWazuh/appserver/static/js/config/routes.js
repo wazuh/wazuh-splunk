@@ -334,7 +334,7 @@ define(['./module'], function (module) {
       })
       // agents - PCI-DSS
       .state('ag-pci', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/pci/agents-pci.html',
+        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/pcidss/agents-pci.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
