@@ -148,16 +148,16 @@
           </div>
         </div>
       </div>
-      <div class="euiFlexItem" ng-if="extensions && (extensions.pci || extensions.gdpr)">
+      <div class="euiFlexItem">
         <div class="euiFlexItem">
           <div class="euiPanel euiPanel--paddingLarge">
             <h3 class="euiTitle">Compliance</h3>
             <div class="euiSpacer euiSpacer--m"></div>
             <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-              <wz-welcome-card ng-if="extensions.pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
+              <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
                 title="'PCI DSS'" ui-sref='ag-pci' current-tab="'pci'" description="TabDescription.pci.description"></wz-welcome-card>
               <wz-welcome-card ng-if="extensions.gdpr" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
-                title="'GDPR'" ui-sref='ag-gdpr' current-tab="'gdpr'" description="TabDescription.gdpr.description"></wz-welcome-card>
+                title="'GDPR'" current-tab="'gdpr'" description="TabDescription.gdpr.description"></wz-welcome-card>
             </div>
           </div>
         </div>
