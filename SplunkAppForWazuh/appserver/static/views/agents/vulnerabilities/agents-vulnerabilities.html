@@ -1,12 +1,25 @@
 <md-content flex layout="column" layout-align="start">
-  <div layout="row" class="layout-row layout-align-end">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
-      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
-      <span> / Vulnerabilities </span>
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ui-sref='agent-overview({id:avu.agent.id})' class="wz-text-link cursor-pointer">{{avu.agent.name}} ({{avu.agent.id}})</span>
+      <span> / </span>
+      <span>Vulnerabilities</span>
+    </div>
+    <div ng-if="avu.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="avu.getAgentStatusClass(avu.agent.status)" aria-label="Agent status indicator">{{avu.formatAgentStatus(avu.agent.status)}}</span>
     </div>
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
+
+  <!-- Filter bar -->
+
+  <wazuh-bar></wazuh-bar>
+  <!-- first row  -->
   <div layout="row">
     <md-card flex class="wz-metric-color wz-md-card">
       <md-card-content layout="row" class="wz-padding-metric">

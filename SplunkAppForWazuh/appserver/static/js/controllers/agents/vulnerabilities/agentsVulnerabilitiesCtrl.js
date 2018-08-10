@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentApiIndexService, $filterService, $stateParams) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
@@ -41,10 +41,38 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentApiIndexService.getIndex()
+
+      vm.agent = $stateParams.agent
+      vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+      vm.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+      }
 
       const filter = $currentApiIndexService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
+      $filterService.addFilter($currentApiIndexService.getIndex())
+      const api = $currentApiIndexService.getAPI()
+      let nameFilter = ' '
+      if (filter.length === 2) {
+        nameFilter = filter[0] + '=' + filter[1]
+        console.log('nameFilter ', nameFilter)
+        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+      }
+      let filters = $filterService.getSerializedFilters()
+
+      const launchSearches = () => {
+        filters = $filterService.getSerializedFilters()
+        $state.reload();
+        // searches.map(search => search.startSearch())
+      }
+
+
+      $scope.$on('deletedFilter', () => {
+        launchSearches()
+      })
+
+      $scope.$on('barFilter', () => {
+        launchSearches()
+      })
 
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -80,6 +108,14 @@ define([
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
+        criticalSeveritySearch.cancel()
+        highSeveritySeach.cancel()
+        mediumSeveritySearch.cancel()
+        lowSeveritySearch.cancel()
+        alertsSeverityOverTime.cancel()
+        topAgentsSeverity.cancel()
+        affectedPackages.cancel()
+        alertsSummary.cancel()
         criticalSeveritySearch = null
         highSeveritySeach = null
         mediumSeveritySearch = null
@@ -102,7 +138,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=critical | stats count",
+        "search": `${filters} data.vulnerability.severity=critical | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -142,7 +178,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=high | stats count",
+        "search": `${filters} data.vulnerability.severity=high | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -181,7 +217,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=medium | stats count",
+        "search": `${filters} data.vulnerability.severity=medium | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -220,7 +256,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=low | stats count",
+        "search": `${filters} data.vulnerability.severity=low | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -258,7 +294,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh index=" + selectedIndex + " " + nameFilter + " rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity",
+        "search": `${filters} sourcetype=wazuh rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -273,7 +309,7 @@ define([
         "sample_ratio": 1,
         "cancelOnUnload": true,
         "earliest_time": "0",
-        "search": "index=" + selectedIndex + " " + nameFilter + " data.vulnerability.severity=*  | spath \"agent.name\"  | search \"agent.name\"=*   | rename agent.id AS RootObject.agent.id agent.ip AS RootObject.agent.ip agent.name AS RootObject.agent.name data.vulnerability.cve AS RootObject.data.vulnerability.cve data.vulnerability.package.condition AS RootObject.data.vulnerability.package.condition data.vulnerability.package.name AS RootObject.data.vulnerability.package.name data.vulnerability.package.version AS RootObject.data.vulnerability.package.version data.vulnerability.published AS RootObject.data.vulnerability.published data.vulnerability.reference AS RootObject.data.vulnerability.reference data.vulnerability.severity AS RootObject.data.vulnerability.severity data.vulnerability.state AS RootObject.data.vulnerability.state data.vulnerability.title AS RootObject.data.vulnerability.title data.vulnerability.updated AS RootObject.data.vulnerability.updated date_hour AS RootObject.date_hour date_mday AS RootObject.date_mday date_minute AS RootObject.date_minute date_month AS RootObject.date_month date_second AS RootObject.date_second date_wday AS RootObject.date_wday date_year AS RootObject.date_year date_zone AS RootObject.date_zone decoder.name AS RootObject.decoder.name id AS RootObject.id index AS RootObject.index linecount AS RootObject.linecount location AS RootObject.location manager.name AS RootObject.manager.name rule.description AS RootObject.rule.description rule.firedtimes AS RootObject.rule.firedtimes \"rule.gdpr{}\" AS \"RootObject.rule.gdpr{}\" rule.groups AS RootObject.rule.groups \"rule.groups{}\" AS \"RootObject.rule.groups{}\" rule.id AS RootObject.rule.id rule.level AS RootObject.rule.level rule.mail AS RootObject.rule.mail splunk_server AS RootObject.splunk_server timeendpos AS RootObject.timeendpos timestamp AS RootObject.timestamp timestartpos AS RootObject.timestartpos | fields \"_time\" \"host\" \"source\" \"sourcetype\" \"RootObject.agent.id\" \"RootObject.agent.ip\" \"RootObject.agent.name\" \"RootObject.data.vulnerability.cve\" \"RootObject.data.vulnerability.package.condition\" \"RootObject.data.vulnerability.package.name\" \"RootObject.data.vulnerability.package.version\" \"RootObject.data.vulnerability.published\" \"RootObject.data.vulnerability.reference\" \"RootObject.data.vulnerability.severity\" \"RootObject.data.vulnerability.state\" \"RootObject.data.vulnerability.title\" \"RootObject.data.vulnerability.updated\" \"RootObject.date_hour\" \"RootObject.date_mday\" \"RootObject.date_minute\" \"RootObject.date_month\" \"RootObject.date_second\" \"RootObject.date_wday\" \"RootObject.date_year\" \"RootObject.date_zone\" \"RootObject.decoder.name\" \"RootObject.id\" \"RootObject.index\" \"RootObject.linecount\" \"RootObject.location\" \"RootObject.manager.name\" \"RootObject.rule.description\" \"RootObject.rule.firedtimes\" \"\\\"RootObject.rule.gdpr{}\\\"\" \"RootObject.rule.groups\" \"\\\"RootObject.rule.groups{}\\\"\" \"RootObject.rule.id\" \"RootObject.rule.level\" \"RootObject.rule.mail\" \"RootObject.splunk_server\" \"RootObject.timeendpos\" \"RootObject.timestamp\" \"RootObject.timestartpos\" | eval \"RootObject.data.vulnerability.severity\"='RootObject.data.vulnerability.severity', \"agent.name\"='RootObject.agent.name' | chart dedup_splitvals=t limit=100 useother=t count AS \"Count of 1532686833.50\"  by agent.name RootObject.data.vulnerability.severity format=$$VAL$$:::$$AGG$$ | sort limit=100 RootObject.agent.name | fields - _span  | fields agent.name *",
+        "search": `${filters} data.vulnerability.severity=*  | spath \"agent.name\"  | search \"agent.name\"=*   | rename agent.id AS RootObject.agent.id agent.ip AS RootObject.agent.ip agent.name AS RootObject.agent.name data.vulnerability.cve AS RootObject.data.vulnerability.cve data.vulnerability.package.condition AS RootObject.data.vulnerability.package.condition data.vulnerability.package.name AS RootObject.data.vulnerability.package.name data.vulnerability.package.version AS RootObject.data.vulnerability.package.version data.vulnerability.published AS RootObject.data.vulnerability.published data.vulnerability.reference AS RootObject.data.vulnerability.reference data.vulnerability.severity AS RootObject.data.vulnerability.severity data.vulnerability.state AS RootObject.data.vulnerability.state data.vulnerability.title AS RootObject.data.vulnerability.title data.vulnerability.updated AS RootObject.data.vulnerability.updated date_hour AS RootObject.date_hour date_mday AS RootObject.date_mday date_minute AS RootObject.date_minute date_month AS RootObject.date_month date_second AS RootObject.date_second date_wday AS RootObject.date_wday date_year AS RootObject.date_year date_zone AS RootObject.date_zone decoder.name AS RootObject.decoder.name id AS RootObject.id index AS RootObject.index linecount AS RootObject.linecount location AS RootObject.location manager.name AS RootObject.manager.name rule.description AS RootObject.rule.description rule.firedtimes AS RootObject.rule.firedtimes \"rule.gdpr{}\" AS \"RootObject.rule.gdpr{}\" rule.groups AS RootObject.rule.groups \"rule.groups{}\" AS \"RootObject.rule.groups{}\" rule.id AS RootObject.rule.id rule.level AS RootObject.rule.level rule.mail AS RootObject.rule.mail splunk_server AS RootObject.splunk_server timeendpos AS RootObject.timeendpos timestamp AS RootObject.timestamp timestartpos AS RootObject.timestartpos | fields \"_time\" \"host\" \"source\" \"sourcetype\" \"RootObject.agent.id\" \"RootObject.agent.ip\" \"RootObject.agent.name\" \"RootObject.data.vulnerability.cve\" \"RootObject.data.vulnerability.package.condition\" \"RootObject.data.vulnerability.package.name\" \"RootObject.data.vulnerability.package.version\" \"RootObject.data.vulnerability.published\" \"RootObject.data.vulnerability.reference\" \"RootObject.data.vulnerability.severity\" \"RootObject.data.vulnerability.state\" \"RootObject.data.vulnerability.title\" \"RootObject.data.vulnerability.updated\" \"RootObject.date_hour\" \"RootObject.date_mday\" \"RootObject.date_minute\" \"RootObject.date_month\" \"RootObject.date_second\" \"RootObject.date_wday\" \"RootObject.date_year\" \"RootObject.date_zone\" \"RootObject.decoder.name\" \"RootObject.id\" \"RootObject.index\" \"RootObject.linecount\" \"RootObject.location\" \"RootObject.manager.name\" \"RootObject.rule.description\" \"RootObject.rule.firedtimes\" \"\\\"RootObject.rule.gdpr{}\\\"\" \"RootObject.rule.groups\" \"\\\"RootObject.rule.groups{}\\\"\" \"RootObject.rule.id\" \"RootObject.rule.level\" \"RootObject.rule.mail\" \"RootObject.splunk_server\" \"RootObject.timeendpos\" \"RootObject.timestamp\" \"RootObject.timestartpos\" | eval \"RootObject.data.vulnerability.severity\"='RootObject.data.vulnerability.severity', \"agent.name\"='RootObject.agent.name' | chart dedup_splitvals=t limit=100 useother=t count AS \"Count of 1532686833.50\"  by agent.name RootObject.data.vulnerability.severity format=$$VAL$$:::$$AGG$$ | sort limit=100 RootObject.agent.name | fields - _span  | fields agent.name *`,
         "latest_time": "$latest$",
         "status_buckets": 0,
         "app": utils.getCurrentApp(),
@@ -290,7 +326,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " | top 5 data.vulnerability.package.name",
+        "search": `${filters} | top 5 data.vulnerability.package.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -306,7 +342,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference",
+        "search": `${filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
