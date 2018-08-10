@@ -290,7 +290,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGeneralCtrl',
         controllerAs: 'agc',
-        params: { id: null },
+        params: {agent: null },
         resolve: {
           agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
             return $apiService.request(`/agents/${$stateParams.id}`, null, null)
@@ -310,7 +310,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPolicyMonitoringCtrl',
         controllerAs: 'apm',
-        params: { id: null }
+        params: {agent: null }
       })
       // agents - FIM
       .state('ag-fim', {
@@ -318,7 +318,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsFimCtrl',
         controllerAs: 'afc',
-        params: { id: null }
+        params: {agent: null }
 
       })
       // agents - audit
@@ -327,7 +327,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsAuditCtrl',
         controllerAs: 'aac',
-        params: { id: null }
+        params: {agent: null }
 
       })
       // agents - OpenSCAP
@@ -336,7 +336,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
-        params: { id: null }
+        params: {agent: null }
 
       })
       // agents - PCI-DSS
@@ -345,7 +345,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
-        params: { id: null }
+        params: {agent: null }
 
       })
       // agents - GDPR
@@ -354,7 +354,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGdprCtrl',
         controllerAs: 'agdpr',
-        params: { id: null }
+        params: {agent: null }
 
       })
       // agents - Vulnerabilities
@@ -363,7 +363,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsVulnerabilitiesCtrl',
         controllerAs: 'avu',
-        params: { id: null }
+        params: {agent: null }
 
       })
   }])

@@ -35,10 +35,17 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsPciCtrl', function ($scope, $currentApiIndexService, $rulesDescription, $state, $filterService) {
+    controllers.controller('agentsPciCtrl', function ($scope, $currentApiIndexService, $rulesDescription, $state, $filterService, $stateParams) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
+      vm.agent = $stateParams.agent
+      vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+      vm.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+      }
+      console.log('the agent  ', vm.agent)
+      console.log('the id in stateparams ', $stateParams)
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -99,11 +106,19 @@ define([
       let element5 = ''
       let input1 = ''
       let input2 = ''
+      let myResults = ''
 
       /**
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
+        dropdownSearch.cancel()
+        pciReqSearch.cancel()
+        groupsSearch.cancel()
+        agentsSearch.cancel()
+        requirementsByAgents.cancel()
+        alertsSummary.cancel()
+        myResults = null
         dropdownSearch = null
         pciReqSearch = null
         groupsSearch = null
@@ -118,7 +133,6 @@ define([
         input1 = null
         input2 = null
       })
-
 
       dropdownSearch = new SearchManager({
         "id": "dropdownSearch" + epoch,
@@ -151,7 +165,7 @@ define([
         ]
       })
 
-      const myResults = dropdownSearch.data("results")
+      myResults = dropdownSearch.data("results")
       myResults.on("data", () => {
         if (myResults.data() && myResults.data().rows) {
           const rulesTokenArray = myResults.data().rows
