@@ -5,12 +5,12 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ui-sref='agent-overview({id:agc.agent.id})' class="wz-text-link cursor-pointer">{{agc.agent.name}} ({{agc.agent.id}})</span>
+      <span ui-sref='agent-overview({id:afc.agent.id})' class="wz-text-link cursor-pointer">{{afc.agent.name}} ({{afc.agent.id}})</span>
       <span> / </span>
       <span>File integrity monitoring</span>
     </div>
-    <div ng-if="agc.agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="agc.getAgentStatusClass(agc.agent.status)" aria-label="Agent status indicator">{{agc.formatAgentStatus(agc.agent.status)}}</span>
+    <div ng-if="afc.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="afc.getAgentStatusClass(afc.agent.status)" aria-label="Agent status indicator">{{afc.formatAgentStatus(afc.agent.status)}}</span>
     </div>
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>

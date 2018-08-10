@@ -32,10 +32,17 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsFimCtrl', function ($state, $scope, $currentApiIndexService, $filterService) {
+    controllers.controller('agentsFimCtrl', function ($stateParams, $state, $scope, $currentApiIndexService, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
+
+      vm.agent = $stateParams.agent
+      vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+      vm.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+      }
+
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
@@ -51,7 +58,7 @@ define([
         $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
       let filters = $filterService.getSerializedFilters()
-      console.log('the filters ',filters)
+      console.log('the filters ', filters)
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -125,6 +132,16 @@ define([
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
+        eventsOverTimeSearch.cancel()
+        topUserOwnersSearch.cancel()
+        topGroupOwnersSearch.cancel()
+        topFileChangesSearch.cancel()
+        rootUserFileChangesSearch.cancel()
+        wordWritableFilesSearch.cancel()
+        eventsSummarySearch.cancel()
+        filesAddedSearch.cancel()
+        filesModifiedSearch.cancel()
+        filesDeletedSearch.cancel()
         eventsOverTimeSearch = null
         topUserOwnersSearch = null
         topGroupOwnersSearch = null
@@ -547,7 +564,7 @@ define([
         "showSparkline": "1",
         "useThousandSeparators": "0",
         "managerid": "wordWritableFilesSearch" + epoch,
-        "el": $('#wordWritableFilesSearch')
+        "el": $('#wordWritableFilesElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       eventsSummarySearch = new SearchManager({
