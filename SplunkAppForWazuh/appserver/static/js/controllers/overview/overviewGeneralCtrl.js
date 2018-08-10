@@ -31,19 +31,26 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $apiService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $apiService, $state, $stateParams, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
-      const selectedIndex = $currentApiIndexService.getIndex()
 
-      const filter = $currentApiIndexService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
-      const api = $currentApiIndexService.getAPI()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+
+      const filter = $currentApiIndexService.getFilter()
+      $filterService.addFilter($currentApiIndexService.getIndex())
+      const api = $currentApiIndexService.getAPI()
+      let nameFilter = ' '
+      if (filter.length === 2) {
+        nameFilter = filter[0] + '=' + filter[1]
+        console.log('nameFilter ', nameFilter)
+        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+      }
+      let filters = $filterService.getSerializedFilters()
 
       const baseUrl = $apiService.getBaseUrl()
       setToken('baseip', baseUrl)
@@ -53,12 +60,26 @@ define([
       setToken('passwordapi', api.passapi)
       setToken("loadedtokens", "true")
 
+      const launchSearches = () => {
+        filters = $filterService.getSerializedFilters()
+        $state.reload();
+        // searches.map(search => search.startSearch())
+      }
+
+      $scope.$on('deletedFilter', () => {
+        launchSearches()
+      })
+
+      $scope.$on('barFilter', () => {
+        launchSearches()
+      })
+
       // Implement checking polling state!!!
       let search9 = ''
       let element9 = ''
       if (true) {
         search9 = new SearchManager({
-          "id": "search9"+epoch,
+          "id": "search9" + epoch,
           "cancelOnUnload": true,
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
@@ -199,6 +220,15 @@ define([
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
+        overviewSearch5.cancel()
+        overviewSearch6.cancel()
+        overviewSearch7.cancel()
+        overviewSearch8.cancel()
+        overviewSearch14.cancel()
+        searchTopAgent.cancel()
+        searchLevel12.cancel()
+        searchAuthFailure.cancel()
+        searchAuthSuccess.cancel()
         overviewSearch5 = null
         overviewSearch6 = null
         overviewSearch7 = null
@@ -212,6 +242,10 @@ define([
         overviewElement8 = null
         overviewElement14 = null
         input1 = null
+        searchTopAgent = null
+        searchLevel12 = null
+        searchAuthFailure = null
+        searchAuthSuccess = null
       })
 
 
@@ -222,7 +256,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " | stats count",
+        "search": `${filters} | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -240,16 +274,17 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "tokHTML", "value": "$result.count$" },
+              { "type": "set", "token": "topAgentToken", "value": "$result.count$" },
             ]
           }
         ]
       })
 
-      submittedTokenModel.on("change:tokHTML", (model, tokHTML, options) => {
-        const tokHTMLJS = submittedTokenModel.get("tokHTML")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.totalAlerts = tokHTMLJS
+      submittedTokenModel.on("change:topAgentToken", (model, topAgentToken, options) => {
+        const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
+        if (typeof topAgentTokenJS !== 'undefined' && topAgentTokenJS !== 'undefined') {
+          console.log('a query result ', topAgentTokenJS)
+          vm.totalAlerts = topAgentTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -260,7 +295,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh \"rule.level\">=12 | chart count",
+        "search": `${filters} sourcetype=wazuh \"rule.level\">=12 | chart count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -285,9 +320,10 @@ define([
       })
 
       submittedTokenModel.on("change:level12token", (model, level12token, options) => {
-        const tokHTMLJS = submittedTokenModel.get("level12token")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.levelTwelve = tokHTMLJS
+        const level12TokenJS = submittedTokenModel.get("level12token")
+        if (typeof level12TokenJS !== 'undefined' && level12TokenJS !== 'undefined') {
+          console.log('level 12 token ', level12TokenJS)
+          vm.levelTwelve = level12TokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -299,7 +335,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count",
+        "search": `${filters} sourcetype=wazuh  \"rule.groups\"=\"authentication_fail*\" | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -324,9 +360,10 @@ define([
       })
 
       submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authFailureToken")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.authFailure = tokHTMLJS
+        const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
+        if (typeof authFailureTokenJS !== 'undefined' && authFailureTokenJS !== 'undefined') {
+          console.log('failure token ', authFailureTokenJS)
+          vm.authFailure = authFailureTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -337,7 +374,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count",
+        "search": `${filters} sourcetype=wazuh  \"rule.groups\"=\"authentication_success\" | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -368,7 +405,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.level=*| timechart count by rule.level",
+        "search": `${filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -384,7 +421,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=2h count",
+        "search": `${filters} sourcetype=wazuh | timechart span=2h count`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -400,7 +437,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | top \"agent.name\"",
+        "search": `${filters} sourcetype=wazuh | top \"agent.name\"`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -416,7 +453,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name",
+        "search": `${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -433,7 +470,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"",
+        "search": `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
