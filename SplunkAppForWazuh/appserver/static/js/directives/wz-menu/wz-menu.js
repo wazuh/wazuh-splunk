@@ -18,12 +18,12 @@ define(['../module'], function (directives) {
           $scope.currentIndex = (!$currentApiIndexService.getIndex()) ? 'wazuh' : $currentApiIndexService.getIndex().index
           $scope.currentAPI = (!$currentApiIndexService.getAPI()) ? '---' : $currentApiIndexService.getAPI().managerName
           $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
-          if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview'))
-            $scope.menuNavItem = 'overview'
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('mg-') || $navigationService.getLastState().includes('manager'))
-            $scope.menuNavItem = 'manager'
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ag-') || $navigationService.getLastState().includes('agents'))
-            $scope.menuNavItem = 'agents'
+          // if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview'))
+          //   $scope.menuNavItem = 'overview'
+          // else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('mg-') || $navigationService.getLastState().includes('manager'))
+          //   $scope.menuNavItem = 'manager'
+          // else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ag-') || $navigationService.getLastState().includes('agents'))
+          //   $scope.menuNavItem = 'agents'
 
           if (!$scope.$$phase) $scope.$digest()
         }
