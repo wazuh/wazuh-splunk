@@ -13,19 +13,29 @@ define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzMenu', function () {
     return {
-      controller: function ($scope, $currentApiIndexService) {
-        $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
-        if ($scope.theresAPI && typeof $currentApiIndexService.getAPI() === 'string') {
-          $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
+      controller: function ($scope, $currentApiIndexService, $navigationService) {
+        const update = () => {
+          $scope.currentIndex = (!$currentApiIndexService.getIndex()) ? 'wazuh' : $currentApiIndexService.getIndex().index
+          $scope.currentAPI = (!$currentApiIndexService.getAPI()) ? '---' : $currentApiIndexService.getAPI().managerName
+          $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
+          // if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview'))
+          //   $scope.menuNavItem = 'overview'
+          // else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('mg-') || $navigationService.getLastState().includes('manager'))
+          //   $scope.menuNavItem = 'manager'
+          // else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ag-') || $navigationService.getLastState().includes('agents'))
+          //   $scope.menuNavItem = 'agents'
+
+          if (!$scope.$$phase) $scope.$digest()
         }
-        $scope.currentIndex = $currentApiIndexService.getIndex()
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
-          $scope.theresAPI = ($currentApiIndexService.getAPI() === '' || !$currentApiIndexService.getAPI()) ? false : true
-          if ($scope.theresAPI && typeof $currentApiIndexService.getAPI() === 'string') {
-            $scope.currentAPI = JSON.parse($currentApiIndexService.getAPI()).managerName
-          }
+          update()
         })
+        $scope.$on('stateChanged', () => {
+          console.log('changing state')
+          update()
+        })
+        update()
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html'
     }

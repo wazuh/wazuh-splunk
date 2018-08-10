@@ -1,0 +1,168 @@
+<div flex layout="column" layout-align="start stretch">
+
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding ng-if="aoc.agent">
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span class="wz-text-link cursor-pointer">{{aoc.agent.name}} ({{aoc.agent.id}})</span>
+      <span> / </span>
+      <span>Welcome</span>
+    </div>
+    <div ng-if="aoc.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="aoc.getAgentStatusClass(aoc.agent.status)" aria-label="Agent status indicator">{{aoc.formatAgentStatus(aoc.agent.status)}}</span>
+    </div>
+  </div>
+  <!-- End breadcrumbs -->
+
+  <!-- Headline -->
+  <div layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agent overview</span>
+  </div>
+  <!-- End headline -->
+
+  <!-- Agent information section -->
+  <div layout="row" layout-padding class="wz-padding-top-0 wz-padding-bottom-0">
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>
+          Name:
+          <span class="wz-text-bold">{{ aoc.agent.name }}</span>
+          <md-tooltip ng-if="agent.name.length > 25" md-direction="bottom" class="wz-tooltip">
+            Full name: {{ aoc.agent.name }}
+          </md-tooltip>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          IP:
+          <span class="wz-text-bold">{{ aoc.agent.ip }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex ng-if="aoc.agent.group">
+          Group:
+          <span class="wz-text-bold wz-text-link" ng-click="aoc.goGroups(aoc.agent)">{{ aoc.agent.group }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex ng-if="aoc.agent.version">
+          Version:
+          <span class="wz-text-bold">{{ aoc.agent.version }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          OS:
+          <span class="wz-text-bold">{{ aoc.agentOS }}</span>
+          <md-tooltip ng-if="aoc.agentOS.length > 25" md-direction="bottom" class="wz-tooltip">
+            Full OS name: {{ aoc.agentOS }}
+          </md-tooltip>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <div layout="row" layout-padding class="wz-padding-top-0 wz-padding-bottom-0">
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>Last keep alive:
+          <span class="wz-text-bold"> {{aoc.agent.lastKeepAlive || 'Unknown' }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Registration date:
+          <span class="wz-text-bold"> {{aoc.agent.dateAdd}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex ng-if="aoc.syscheck.inProgress">Last syscheck scan:
+          <span class="wz-text-bold"> Scan in progress</span>
+        </div>
+        <div class="wz-text-truncatable" flex ng-if="!aoc.syscheck.inProgress">Last syscheck scan:
+          <span class="wz-text-bold"> {{aoc.syscheck.end || 'Unknown'}}</span>
+          <md-tooltip ng-if="!aoc.syscheck.inProgress && aoc.syscheck.start && aoc.syscheck.end" md-direction="bottom"
+            class="wz-tooltip">
+            Start time: {{ aoc.syscheck.start || 'Unknown'}}
+            <br> End time: {{ aoc.syscheck.end || 'Unknown'}}
+            <br> Duration time: {{ aoc.syscheck.duration +' minutes' || 'Unknown'}}
+          </md-tooltip>
+        </div>
+        <div class="wz-text-truncatable" flex ng-if="aoc.rootcheck.inProgress">Last rootcheck scan:
+          <span class="wz-text-bold"> Scan in progress</span>
+        </div>
+        <div class="wz-text-truncatable" flex ng-if="!aoc.rootcheck.inProgress">Last rootcheck scan:
+          <span class="wz-text-bold"> {{aoc.rootcheck.end || 'Unknown'}}</span>
+          <md-tooltip ng-if="!aoc.rootcheck.inProgress && aoc.rootcheck.start && aoc.rootcheck.end" md-direction="bottom"
+            class="wz-tooltip">
+            Start time: {{ aoc.rootcheck.start || 'Unknown'}}
+            <br> End time: {{ aoc.rootcheck.end || 'Unknown'}}
+            <br> Duration time: {{ aoc.rootcheck.duration +' minutes' || 'Unknown'}}
+          </md-tooltip>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End agent information section -->
+
+
+  <div layout="row" layout-padding>
+    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
+      <div class="euiFlexItem">
+        <div class="euiPanel euiPanel--paddingLarge">
+          <h3 class="euiTitle">Host monitoring</h3>
+          <div class="euiSpacer euiSpacer--m"></div>
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'" title="'General'"
+              ui-sref='ag-general({agent:aoc.agent})' current-tab="'general'" description="'Explore your alerts.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'File integrity'"
+            ui-sref='ag-fim({agent:aoc.agent})' current-tab="'fim'" description="TabDescription.fim.description"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
+              switch-tab="switchTab('configuration')" current-tab="'configuration'" description="TabDescription.configuration.description"></wz-welcome-card>
+            <wz-welcome-card ng-if="syscollector && syscollector.os && syscollector.os.sysname" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
+              title="'Inventory'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="TabDescription.syscollector.description"></wz-welcome-card>
+          </div>
+        </div>
+      </div>
+      <div class="euiFlexItem">
+        <div class="euiPanel euiPanel--paddingLarge">
+          <h3 class="euiTitle">System audit</h3>
+          <div class="euiSpacer euiSpacer--m"></div>
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'"
+            ui-sref='ag-pm({agent:aoc.agent})' current-tab="'pm'" description="TabDescription.pm.description"></wz-welcome-card>
+            <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+              title="'Audit'" ui-sref='ag-audit({agent:aoc.agent})' current-tab="'audit'" description="TabDescription.audit.description"></wz-welcome-card>
+            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+              title="'Open SCAP'" ui-sref='ag-os({agent:aoc.agent})' current-tab="'oscap'" description="TabDescription.oscap.description"></wz-welcome-card>
+            <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
+              title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="TabDescription.ciscat.description"></wz-welcome-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div layout="row" layout-padding>
+    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
+      <div class="euiFlexItem">
+        <div class="euiFlexItem">
+          <div class="euiPanel euiPanel--paddingLarge">
+            <h3 class="euiTitle">Security</h3>
+            <div class="euiSpacer euiSpacer--m"></div>
+            <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+              <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'" title="'Vulnerabilities'"
+              ui-sref='ag-vul({agent:aoc.agent})' current-tab="'vuls'" description="TabDescription.vuls.description"></wz-welcome-card>
+              <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
+                title="'Virustotal'" switch-tab="switchTab('virustotal')" current-tab="'virustotal'" description="TabDescription.virustotal.description"></wz-welcome-card>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="euiFlexItem">
+        <div class="euiFlexItem">
+          <div class="euiPanel euiPanel--paddingLarge">
+            <h3 class="euiTitle">Compliance</h3>
+            <div class="euiSpacer euiSpacer--m"></div>
+            <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+              <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
+                title="'PCI DSS'" ui-sref='ag-pci({agent:aoc.agent})' current-tab="'pci'" description="TabDescription.pci.description"></wz-welcome-card>
+              <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+                title="'GDPR'" ui-sref='ag-gdpr({agent:aoc.agent})' current-tab="'gdpr'" description="TabDescription.gdpr.description"></wz-welcome-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,15 @@
+<div layout="row" layout-align="start center">
+  <div layout="column" flex='100' class="wz-margin-left-10 height-40 wz-margin-right-15">
+    <div layout="row">
+      <input placeholder="Add filters..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        aria-invalid="false" wz-enter="applyFilters(custom_search)">
+    </div>
+  </div>
+</div>
+<md-chips class="wz-chips" layout="row" readonly="true" ng-model='filters'>
+  <md-chip-template class="wz-chip">
+    <span> {{ $chip }}
+      <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter($chip)"></i>
+    </span>
+  </md-chip-template>
+</md-chips>

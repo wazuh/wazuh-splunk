@@ -79,7 +79,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const remove = async (key) => {
       try {
         const api = await select(key)
-        if ($currentApiIndexService.getAPI() && $currentApiIndexService.getAPI() !== 'undefined' && typeof $currentApiIndexService.getAPI() === 'string' && JSON.parse($currentApiIndexService.getAPI()) && JSON.parse($currentApiIndexService.getAPI()).url === api.url) {
+        if ($currentApiIndexService.getAPI() && $currentApiIndexService.getAPI().url === api.url) {
           $currentApiIndexService.removeAPI()
         }
         await deletes("storage/collections/data/credentials/" + key)
@@ -112,7 +112,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const apiList = await getApiList()
         for (let api of apiList) {
           if (api._key === key) {
-            $currentApiIndexService.setAPI(JSON.stringify(api))
+            $currentApiIndexService.setAPI(api)
           }
         }
         return
@@ -172,15 +172,11 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const checkSelectedApiConnection = async () => {
       try {
         const currentApi = $currentApiIndexService.getAPI()
-        if (!currentApi) { return Promise.reject(new Error('No selected API in sessionStorage')) }
-        const api = await checkApiConnection(JSON.parse(currentApi)._key)
+        if (!currentApi) { console.error('no current api'); return Promise.reject(new Error('No selected API in sessionStorage')) }
+        const api = await checkApiConnection(currentApi._key)
         let selectedIndex = $currentApiIndexService.getIndex()
-        if (!selectedIndex || selectedIndex === '') {
-          selectedIndex = 'wazuh'
-        }
         return { api, selectedIndex }
       } catch (err) {
-
         return Promise.reject(err)
       }
     }
@@ -222,10 +218,9 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-
         const clusterData = await $apiService.get(checkConnectionEndpoint,false,true)
-
         if (clusterData.data.error) {
+          console.error('eror en clusterdata ',clusterData.data.error)
           return Promise.reject(clusterData.data.error)
         }
         api.filter = []

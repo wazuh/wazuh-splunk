@@ -16,7 +16,7 @@ define(['../module'], function (module) {
      */
     const getWellFormedUri = (endpoint, includedApi) => {
       if (!includedApi) {
-        const jsonCurrentAPI = JSON.parse($currentApiIndexService.getAPI())
+        const jsonCurrentAPI = $currentApiIndexService.getAPI()
         return getBaseUrl() + `/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
       } else {
         return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint

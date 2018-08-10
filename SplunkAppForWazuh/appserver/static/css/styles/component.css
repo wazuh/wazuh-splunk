@@ -16,6 +16,10 @@
 
 /* Custom nav bar styles */
 
+.md-chips{
+  box-shadow: 0 0px !important;
+}
+
 .wz-nav-bar .md-nav-bar{
   height: auto !important;
 }
@@ -62,13 +66,15 @@
 
 .wz-chips .md-chips {
   box-shadow: none !important;
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
+  margin: 0 8px !important;
 }
 
-.wz-chip {
-  font-size: 12px;
-  color: white;
-  background-color: #0079a5;
+md-chip {
+  font-family: monospace !important;
+  font-size: 12px !important;
+  color: white !important;
+  background-color: #0079a5 !important;
   height: 26px !important;
   line-height: 26px !important;
   margin: 0 8px 0 0 !important;

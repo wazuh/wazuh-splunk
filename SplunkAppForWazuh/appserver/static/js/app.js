@@ -8,9 +8,8 @@ define([
   './controllers/index',
   './run/index',
   './config/index',
-  'mdDataTable',
   'Toast'
 ], function (ng) {
   'use strict'
-  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config','md.data.table','toastr'])
+  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config','toastr'])
 })

@@ -31,7 +31,7 @@ define([
         $scope.$broadcast('wazuhFilter', { filter })
       }
 
-      vm.isClusterEnabled = $currentApiIndexService.getClusterInfo() && $currentApiIndexService.getClusterInfo().status === 'enabled'
+      vm.isClusterEnabled = ( $currentApiIndexService.getClusterInfo() && $currentApiIndexService.getClusterInfo().status === 'enabled' )
       vm.loading = true
 
       vm.status = 'all'
@@ -50,10 +50,10 @@ define([
       const load = async () => {
         try {
           const clusterInfo = $currentApiIndexService.getClusterInfo()
-          const firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
+          let firstUrlParam
+          if (clusterInfo)
+            firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
           const epoch = (new Date).getTime()
-
-          console.log('data ', data)
           // const unique = data[0].data.result
           const selectedIndex = $currentApiIndexService.getIndex()
           const filter = $currentApiIndexService.getFilter()

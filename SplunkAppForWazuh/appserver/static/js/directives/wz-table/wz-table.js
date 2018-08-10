@@ -36,14 +36,14 @@ define(['../module'], function (directives) {
         $scope.clickAction = item => {
           if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
             // Go to an agent details
-
+            $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })
           } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', { id: item.id })
-          } else if (instance.path === '/decoders') {
+          } else if (instance.path.includes('/decoders')) {
             $state.go('mg-decoders-id', { file: item.file })
           } else if (instance.path === '/cluster/nodes') {
             $scope.$emit('wazuhShowClusterNode', { node: item })

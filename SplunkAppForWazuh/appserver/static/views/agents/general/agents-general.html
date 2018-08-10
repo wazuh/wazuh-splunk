@@ -1,0 +1,113 @@
+<md-content flex layout="column" layout-align="end">
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ui-sref='agent-overview({id:agc.agent.id})' class="wz-text-link cursor-pointer">{{agc.agent.name}} ({{agc.agent.id}})</span>
+      <span> / </span>
+      <span>General</span>
+    </div>
+    <div ng-if="agc.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="agc.getAgentStatusClass(agc.agent.status)" aria-label="Agent status indicator">{{agc.formatAgentStatus(agc.agent.status)}}</span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
+
+  <!-- End breadcrumbs -->
+
+  <!-- Filter bar -->
+
+  <wazuh-bar></wazuh-bar>
+  <!-- first row  -->
+  <div layout="row">
+
+
+    <md-card flex class="wz-metric-color wz-md-card">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>Alerts:
+          <span class="wz-text-bold" ng-bind="agc.totalAlerts"></span>
+        </div>
+        <div class="wz-text-truncatable" flex>Level 12 or above alerts:
+          <span class="wz-text-bold">{{agc.levelTwelve}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Authentication failure:
+          <span class="wz-text-bold">{{agc.authFailure}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Authentication success:
+          <span class="wz-text-bold">{{agc.authSuccess}}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+
+
+  </div>
+
+  <!-- second row  -->
+
+  <!-- third row  -->
+  <div id="row3" layout='row'>
+    <!-- third row - first vis -->
+    <md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top 5 alerts</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='agentsElement7'></div>
+      </md-card-content>
+    </md-card>
+    <!-- third row - second vis -->
+    <md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top 5 groups</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='agentsElement8'></div>
+      </md-card-content>
+    </md-card>
+    <!-- third row - third vis -->
+    <md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top 5 PCI DSS Requirements</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='element9'></div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+
+  <div id="row2" layout="row">
+    <!-- second row - first vis -->
+    <md-card flex="40" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Alert level evolution</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='agentsElement5'></div>
+      </md-card-content>
+    </md-card>
+    <!-- second row - second vis -->
+    <md-card flex="60" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Alerts</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='agentsElement6'></div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+
+  <!-- fourth row  -->
+  <div id="row5" layout='row'>
+
+    <md-card flex="100" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Agents summary</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='agentsElement14'></div>
+      </md-card-content>
+    </md-card>
+
+  </div>
+
+  <!-- end document  -->
+</md-content>
