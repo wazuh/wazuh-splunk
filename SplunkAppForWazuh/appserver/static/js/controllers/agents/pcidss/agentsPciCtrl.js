@@ -73,16 +73,13 @@ define([
         }
       })
 
+      /**
+       * Fires all the queries
+       */
       const launchSearches = () => {
         filters = $filterService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
-      }
-      // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON())
-
-      const submitTokens = () => {
-        FormUtils.submitForm({ replaceState: pageLoading })
       }
 
       $scope.$on('deletedFilter', () => {
@@ -93,6 +90,13 @@ define([
         launchSearches()
       })
 
+      // Initialize tokens
+      defaultTokenModel.set(urlTokenModel.toJSON())
+
+      const submitTokens = () => {
+        FormUtils.submitForm({ replaceState: pageLoading })
+      }
+  
       let dropdownSearch = ''
       let pciReqSearch = ''
       let groupsSearch = ''
