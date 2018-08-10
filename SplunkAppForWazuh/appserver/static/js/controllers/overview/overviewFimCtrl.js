@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewFimCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('overviewFimCtrl', function ($scope, $currentApiIndexService, $state, $stateParams, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
@@ -43,9 +43,17 @@ define([
       const selectedIndex = $currentApiIndexService.getIndex()
 
       const filter = $currentApiIndexService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
+      $filterService.addFilter($currentApiIndexService.getIndex())
+      const api = $currentApiIndexService.getAPI()
+      let nameFilter = ' '
+      if (filter.length === 2) {
+        nameFilter = filter[0] + '=' + filter[1]
+        console.log('nameFilter ', nameFilter)
+        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+      }
+      let filters = $filterService.getSerializedFilters()
 
-      urlTokenModel.on('url:navigate', () => {
+      urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
           submitTokens()
@@ -54,6 +62,22 @@ define([
         }
       })
 
+      /**
+       * Fires all the queries
+       */
+      const launchSearches = () => {
+        filters = $filterService.getSerializedFilters()
+        $state.reload();
+        // searches.map(search => search.startSearch())
+      }
+
+      $scope.$on('deletedFilter', () => {
+        launchSearches()
+      })
+
+      $scope.$on('barFilter', () => {
+        launchSearches()
+      })
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
 
@@ -104,6 +128,16 @@ define([
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
+        eventsOverTimeSearch.cancel()
+        topUserOwnersSearch.cancel()
+        topGroupOwnersSearch.cancel()
+        topFileChangesSearch.cancel()
+        rootUserFileChangesSearch.cancel()
+        wordWritableFilesSearch.cancel()
+        eventsSummarySearch.cancel()
+        filesAddedSearch.cancel()
+        filesModifiedSearch.cancel()
+        filesDeletedSearch.cancel()
         eventsOverTimeSearch = null
         topUserOwnersSearch = null
         topGroupOwnersSearch = null
@@ -132,7 +166,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\" |stats count",
+        "search": `${filters} sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\" |stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -171,7 +205,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
+        "search": `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -210,7 +244,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count",
+        "search": `${filters} sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -248,7 +282,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description",
+        "search": `${filters} sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -298,7 +332,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"",
+        "search": `${filters} sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -348,7 +382,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"",
+        "search": `${filters} sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -397,7 +431,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path",
+        "search": `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -446,7 +480,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path",
+        "search": `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -496,7 +530,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1",
+        "search": `${filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -535,7 +569,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count",
+        "search": `${filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -570,7 +604,7 @@ define([
         if (newValue && input1)
           FormUtils.handleValueChange(input1)
       })
-      
+
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })
