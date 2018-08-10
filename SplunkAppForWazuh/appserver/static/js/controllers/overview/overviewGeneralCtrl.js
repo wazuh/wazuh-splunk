@@ -47,7 +47,6 @@ define([
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        console.log('nameFilter ', nameFilter)
         $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
       let filters = $filterService.getSerializedFilters()
@@ -283,7 +282,6 @@ define([
       submittedTokenModel.on("change:topAgentToken", (model, topAgentToken, options) => {
         const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
         if (typeof topAgentTokenJS !== 'undefined' && topAgentTokenJS !== 'undefined') {
-          console.log('a query result ', topAgentTokenJS)
           vm.totalAlerts = topAgentTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -322,7 +320,6 @@ define([
       submittedTokenModel.on("change:level12token", (model, level12token, options) => {
         const level12TokenJS = submittedTokenModel.get("level12token")
         if (typeof level12TokenJS !== 'undefined' && level12TokenJS !== 'undefined') {
-          console.log('level 12 token ', level12TokenJS)
           vm.levelTwelve = level12TokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -362,7 +359,6 @@ define([
       submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
         const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
         if (typeof authFailureTokenJS !== 'undefined' && authFailureTokenJS !== 'undefined') {
-          console.log('failure token ', authFailureTokenJS)
           vm.authFailure = authFailureTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }

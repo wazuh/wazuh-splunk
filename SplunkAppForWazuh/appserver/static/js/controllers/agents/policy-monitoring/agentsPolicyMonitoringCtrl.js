@@ -81,7 +81,6 @@ define([
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        console.log('nameFilter ', nameFilter)
         $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
       let filters = $filterService.getSerializedFilters()

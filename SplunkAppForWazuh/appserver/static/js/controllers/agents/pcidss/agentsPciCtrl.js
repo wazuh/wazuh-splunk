@@ -44,8 +44,6 @@ define([
       vm.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
       }
-      console.log('the agent  ', vm.agent)
-      console.log('the id in stateparams ', $stateParams)
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -59,7 +57,6 @@ define([
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        console.log('nameFilter ', nameFilter)
         $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
       let filters = $filterService.getSerializedFilters()

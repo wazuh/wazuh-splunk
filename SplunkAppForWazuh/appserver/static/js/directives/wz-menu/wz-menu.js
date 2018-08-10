@@ -32,7 +32,6 @@ define(['../module'], function (directives) {
           update()
         })
         $scope.$on('stateChanged', () => {
-          console.log('changing state')
           update()
         })
         update()
