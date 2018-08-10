@@ -310,6 +310,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPolicyMonitoringCtrl',
         controllerAs: 'apm',
+        params: { id: null }
       })
       // agents - FIM
       .state('ag-fim', {
@@ -317,6 +318,8 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsFimCtrl',
         controllerAs: 'afc',
+        params: { id: null }
+
       })
       // agents - audit
       .state('ag-audit', {
@@ -324,6 +327,8 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsAuditCtrl',
         controllerAs: 'aac',
+        params: { id: null }
+
       })
       // agents - OpenSCAP
       .state('ag-os', {
@@ -331,6 +336,8 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
+        params: { id: null }
+
       })
       // agents - PCI-DSS
       .state('ag-pci', {
@@ -338,6 +345,8 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
+        params: { id: null }
+
       })
       // agents - GDPR
       .state('ag-gdpr', {
@@ -345,6 +354,8 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGdprCtrl',
         controllerAs: 'agdpr',
+        params: { id: null }
+
       })
       // agents - Vulnerabilities
       .state('ag-vul', {
@@ -352,6 +363,8 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsVulnerabilitiesCtrl',
         controllerAs: 'avu',
+        params: { id: null }
+
       })
   }])
 })
