@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsPciCtrl', function ($scope, $currentApiIndexService, $rulesDescription) {
+    controllers.controller('agentsPciCtrl', function ($scope, $currentApiIndexService, $rulesDescription, $state, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -47,7 +47,15 @@ define([
       const selectedIndex = $currentApiIndexService.getIndex()
 
       const filter = $currentApiIndexService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
+      $filterService.addFilter($currentApiIndexService.getIndex())
+      const api = $currentApiIndexService.getAPI()
+      let nameFilter = ' '
+      if (filter.length === 2) {
+        nameFilter = filter[0] + '=' + filter[1]
+        console.log('nameFilter ', nameFilter)
+        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+      }
+      let filters = $filterService.getSerializedFilters()
 
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -58,12 +66,25 @@ define([
         }
       })
 
+      const launchSearches = () => {
+        filters = $filterService.getSerializedFilters()
+        $state.reload();
+        // searches.map(search => search.startSearch())
+      }
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
 
       const submitTokens = () => {
         FormUtils.submitForm({ replaceState: pageLoading })
       }
+
+      $scope.$on('deletedFilter', () => {
+        launchSearches()
+      })
+
+      $scope.$on('barFilter', () => {
+        launchSearches()
+      })
 
       let dropdownSearch = ''
       let pciReqSearch = ''
@@ -104,7 +125,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": null,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count",
+        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count`,
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -156,7 +177,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}",
+        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}`,
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -172,7 +193,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups",
+        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups`,
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -188,7 +209,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name",
+        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name`,
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -204,7 +225,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name",
+        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
@@ -220,7 +241,7 @@ define([
         "status_buckets": 0,
         "sample_ratio": 1,
         "latest_time": "$when.latest$",
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count",
+        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count`,
         "earliest_time": "$when.earliest$",
         "cancelOnUnload": true,
         "app": utils.getCurrentApp(),
