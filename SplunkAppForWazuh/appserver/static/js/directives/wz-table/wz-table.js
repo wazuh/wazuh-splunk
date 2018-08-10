@@ -43,7 +43,7 @@ define(['../module'], function (directives) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', { id: item.id })
-          } else if (instance.path === '/decoders') {
+          } else if (instance.path.includes('/decoders')) {
             $state.go('mg-decoders-id', { file: item.file })
           } else if (instance.path === '/cluster/nodes') {
             $scope.$emit('wazuhShowClusterNode', { node: item })
