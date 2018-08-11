@@ -2,7 +2,7 @@ define(['../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('managerCtrl', function ($scope, $currentDataService, $rulesDescription) {
+  controllers.controller('managerCtrl', function ($scope, $apiIndexStorageService, $rulesDescription) {
     const vm = this
 
 

@@ -4,7 +4,7 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope, $credentialService, apiList, toastr) {
+    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, toastr) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
@@ -38,7 +38,7 @@ define([
           const index = vm.apiList.indexOf(entry)
           if (index > -1) {
             vm.apiList.splice(index, 1)
-            await $credentialService.remove(entry._key)
+            await $currentDataService.remove(entry._key)
           }
           toastr.success('Manager removed', 'Success')
         } catch (err) {
@@ -52,7 +52,7 @@ define([
        */
       vm.checkManager = async (entry) => {
         try {
-          await $credentialService.checkApiConnection(entry._key)
+          await $currentDataService.checkApiConnection(entry._key)
           toastr.success('Connection success', 'Success')
 
         } catch (err) {
@@ -96,10 +96,10 @@ define([
           vm.entry.portapi = vm.port
           vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
-          await $credentialService.checkRawConnection(vm.entry)
+          await currentDataService.checkRawConnection(vm.entry)
           delete vm.entry['$$hashKey']
           delete vm.entry._user
-          const updatedEntry = await $credentialService.update(vm.currentEntryKey, vm.entry)
+          const updatedEntry = await $currentDataService.update(vm.currentEntryKey, vm.entry)
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
@@ -156,8 +156,8 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          await $credentialService.checkApiConnection(entry._key)
-          await $credentialService.chose(entry._key)
+          await $currentDataService.checkApiConnection(entry._key)
+          await $currentDataService.chose(entry._key)
           for (let item of vm.apiList) {
             if (item._key === entry._key) {
               vm.apiList.map(api => api.selected = false)
@@ -200,11 +200,11 @@ define([
               "managerName": false
             }
             // Use the request method to send and insert a new record
-            const result = await $credentialService.insert(record)
+            const result = await $currentDataService.insert(record)
             try {
-              const resultConnection = await $credentialService.checkApiConnection(result.data._key)
+              const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
               clearForm()
-              const apiList = await $credentialService.getApiList()
+              const apiList = await $currentDataService.getApiList()
               record._key = result.data._key
               vm.apiList.push(record)
               if (apiList && apiList.length === 1) {
@@ -216,7 +216,7 @@ define([
 
             } catch (err) {
               console.error('err!',err)
-              await $credentialService.remove(result.data._key)
+              await $currentDataService.remove(result.data._key)
               toastr.error('Error at adding new API', 'Error')
 
             }

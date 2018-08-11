@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewFimCtrl', function ($scope, $currentDataService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewFimCtrl', function ($scope, $state, $stateParams, $currentDataService) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
@@ -43,14 +43,14 @@ define([
       const selectedIndex = $currentDataService.getIndex()
 
       const filter = $currentDataService.getFilter()
-      $filterService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getAPI()
+      $currentDataService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getApi()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
-      let filters = $filterService.getSerializedFilters()
+      let filters = $currentDataService.getSerializedFilters()
 
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -65,7 +65,7 @@ define([
        * Fires all the queries
        */
       const launchSearches = () => {
-        filters = $filterService.getSerializedFilters()
+        filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }

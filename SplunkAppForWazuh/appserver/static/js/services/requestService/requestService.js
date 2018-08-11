@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$requestService', function ($http, $currentDataService, $q) {
+  module.service('$requestService', function ($http, $apiIndexStorageService, $q) {
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
@@ -12,11 +12,11 @@ define(['../module'], function (module) {
     }
 
     /**
-     * Generated and returns the browser base URL + Splunk Port
+     * Generates and returns the browser base URL + Splunk Port
      */
     const getWellFormedUri = (endpoint, includedApi) => {
       if (!includedApi) {
-        const jsonCurrentAPI = $currentDataService.getAPI()
+        const jsonCurrentAPI = $apiIndexStorageService.getApi()
         return getBaseUrl() + `/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
       } else {
         return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint

@@ -1,104 +1,103 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentDataService', function () {
+  module.service('$currentDataService', function ($apiMgrService, $filterService) {
 
-    /**
-     * Removes the selected index
-     */
-    const removeIndex = () => {
-      delete sessionStorage.selectedIndex
+
+    const getApi = () => {
+      return $apiMgrService.getApi()
     }
 
-    /**
-     * Select an Index by name
-     * @param {String} index 
-     */
-    const setIndex = (index) => {
-      sessionStorage.selectedIndex = `{"index":"${index}"}`
+    const getApiList = () => {
+      return $apiMgrService.getApiList()
     }
 
-    /**
-     * Returns currently selected index
-     * @param {String} index 
-     */
-    const getIndex = () => {
-      if (sessionStorage.selectedIndex)
-        return JSON.parse(sessionStorage.selectedIndex)
-      else
-        return { "index": "wazuh" }
+    const checkRawConnection = (api) => {
+      return $apiMgrService.checkRawConnection(api)
     }
 
-    /**
-    * Delete selected API
-    */
-    const removeAPI = () => {
-      delete sessionStorage.selectedAPI
+    const checkSelectedApiConnection = () => {
+      return $apiMgrService.checkSelectedApiConnection()
     }
 
-    /**
-     * Select an API
-     * @param {String} API 
-     */
-    const setAPI = (API) => {
-      delete sessionStorage.selectedAPI
-      if (typeof API === 'object')
-        sessionStorage.selectedAPI = JSON.stringify(API)
+    const checkApiConnection = (key) => {
+      return $apiMgrService.checkApiConnection(key)
     }
 
-    /**
-     * Returns currently selected API
-     * @param {String} API 
-     */
-    const getAPI = () => {
-      if (sessionStorage.selectedAPI)
-        return JSON.parse(sessionStorage.selectedAPI)
-      else
-        return null
+    const remove = (key) => {
+      return $apiMgrService.remove(key)
     }
 
-    /**
-     * Returns currently selected API
-     * @param {String} API 
-     */
+    const insert = (record) => {
+      return $apiMgrService.insert(record)
+    }
+
+    const chose = (key) => {
+      return $apiMgrService.chose(key)
+    }
+
+    const getFilters = () => {
+      return $filterService.getFilters()
+    }
+
+    const addFilter = (filter) => {
+      return $filterService.addFilter(filter)
+    }
+
+    const getSerializedFilters = () => {
+      return $filterService.getSerializedFilters()
+    }
+
+    const removeFilter = (filter) => {
+      return $filterService.removeFilter(filter)
+    }
+
+    const cleanFilters = () => {
+      return $filterService.cleanFilters()
+    }
+
+    const update = (key, register) => {
+      return $apiMgrService.update(key, register)
+    }
     const getClusterInfo = () => {
-      if (sessionStorage && sessionStorage.selectedAPI && typeof sessionStorage.selectedAPI === 'string' && JSON.parse(sessionStorage.selectedAPI) && JSON.parse(sessionStorage.selectedAPI).cluster) {
-        return getAPI().cluster
-      }
-      else
-        return null
+      return $apiMgrService.getClusterInfo()
+    }
+    const getFilter = () => {
+      return $apiMgrService.getFilter()
     }
 
-    /**
-     * Returns the API filter (manager.name / cluster.name)
-     */
-    const getFilter = () => {
-      if (getAPI() && getAPI().filter) {
-        return getAPI().filter
-      } else {
-        return null
-      }
+    const getIndex = () => {
+      return $apiMgrService.getIndex()
+    }
+
+    const setIndex = (index) => {
+      return $apiMgrService.setIndex(index)
+    }
+
+    const setApi = (api) => {
+      return $apiMgrService.setApi(api)
     }
 
     return {
-
-      removeIndex: removeIndex,
-
-      setIndex: setIndex,
-
+      getApiList: getApiList,
+      checkRawConnection: checkRawConnection,
+      checkApiConnection: checkApiConnection,
+      remove: remove,
+      insert: insert,
+      chose: chose,
+      checkSelectedApiConnection: checkSelectedApiConnection,
+      addFilter: addFilter,
+      getSerializedFilters: getSerializedFilters,
+      removeFilter: removeFilter,
+      cleanFilters: cleanFilters,
+      getFilters: getFilters,
+      update: update,
       getIndex: getIndex,
-
-      removeAPI: removeAPI,
-
-      setAPI: setAPI,
-
-      getAPI: getAPI,
-
+      setIndex: setIndex,
       getClusterInfo: getClusterInfo,
-
-      getFilter: getFilter
-
+      getFilter: getFilter,
+      getApi: getApi,
+      setApi:setApi
     }
-
   })
 })

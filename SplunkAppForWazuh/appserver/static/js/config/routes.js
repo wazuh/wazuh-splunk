@@ -246,8 +246,8 @@ define(['./module'], function (module) {
         controller: 'settingsApiCtrl',
         controllerAs: 'sac',
         resolve: {
-          apiList: ['$credentialService', ($credentialService) => {
-            return $credentialService.getApiList()
+          apiList: ['$currentDataService', ($currentDataService) => {
+            return $currentDataService.getApiList()
               .then(function (response) {
                 return response
               }, function (response) {

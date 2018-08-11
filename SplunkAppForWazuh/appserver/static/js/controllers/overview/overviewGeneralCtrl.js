@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -42,14 +42,14 @@ define([
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
       const filter = $currentDataService.getFilter()
-      $filterService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getAPI()
+      $currentDataService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getApi()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
-      let filters = $filterService.getSerializedFilters()
+      let filters = $currentDataService.getSerializedFilters()
 
       const baseUrl = $requestService.getBaseUrl()
       setToken('baseip', baseUrl)
@@ -60,7 +60,7 @@ define([
       setToken("loadedtokens", "true")
 
       const launchSearches = () => {
-        filters = $filterService.getSerializedFilters()
+        filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }

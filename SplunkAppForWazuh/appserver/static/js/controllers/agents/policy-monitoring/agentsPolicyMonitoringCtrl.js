@@ -34,7 +34,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsPolicyMonitoringCtrl', function ($scope, $currentDataService, $state, $stateParams, $filterService) {
+    controllers.controller('agentsPolicyMonitoringCtrl', function ($scope, $state, $stateParams, $currentDataService) {
       const vm = this
       vm.agent = $stateParams.agent
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
@@ -62,7 +62,7 @@ define([
       })
 
       const launchSearches = () => {
-        filters = $filterService.getSerializedFilters()
+        filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }
@@ -76,14 +76,14 @@ define([
       })
 
       const filter = $currentDataService.getFilter()
-      $filterService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getAPI()
+      $currentDataService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getApi()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
-        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
+        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
       }
-      let filters = $filterService.getSerializedFilters()
+      let filters = $currentDataService.getSerializedFilters()
 
       let pageLoading = true
       let elementOverTime = ''
