@@ -1,8 +1,7 @@
 define([
   './credentialService/credentialService',
   './navigation/navigationService',
-  './apiService/apiService',
-  './apiRequestService/apiRequestService',
+  './requestService/requestService',
   './filterService/filterService',
   './currentApiIndexService/currentApiIndexService',
   './dataService/dataService',

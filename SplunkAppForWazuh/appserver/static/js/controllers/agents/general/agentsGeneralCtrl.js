@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $apiService, agent, $state) {
+    controllers.controller('agentsGeneralCtrl', function ($scope, $filterService, $currentApiIndexService, $requestService, agent, $state) {
       const vm = this
       const epoch = (new Date).getTime()
       vm.agent = agent.data.data
@@ -49,7 +49,7 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const baseUrl = $apiService.getBaseUrl()
+      const baseUrl = $requestService.getBaseUrl()
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {

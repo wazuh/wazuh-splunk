@@ -14,8 +14,8 @@ define(['./module'], function (module) {
         controller: 'overviewWelcomeCtrl',
         controllerAs: 'owc',
         resolve: {
-          agentsInfo: ['$apiService', ($apiService) => {
-            return $apiService.request('/agents/summary', false, false)
+          agentsInfo: ['$requestService', ($requestService) => {
+            return $requestService.apiReq('/agents/summary')
               .then(function (response) {
                 return response
               }, function (response) {
@@ -110,8 +110,8 @@ define(['./module'], function (module) {
         controllerAs: 'mrid',
         params: { id: null, filters: null },
         resolve: {
-          ruleInfo: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
-            return $apiService.get('/manager/rulesid', { id: $stateParams.id }, false)
+          ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq('/rules/${$stateParams.id}')
               .then(function (response) {
                 return response
               }, function (response) {
@@ -137,8 +137,8 @@ define(['./module'], function (module) {
         controllerAs: 'mdid',
         params: { id: null, filters: null },
         resolve: {
-          currentDecoder: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
-            return $apiService.get('/manager/decoders', { file: $stateParams.file }, false)
+          currentDecoder: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq('/decoders', { file: $stateParams.file })
               .then(function (response) {
                 return response
               }, function (response) {
@@ -164,8 +164,8 @@ define(['./module'], function (module) {
         controller: 'configurationCtrl',
         controllerAs: 'mcc',
         resolve: {
-          managerConf: ['$apiService', ($apiService) => {
-            return $apiService.request('/manager/configuration', false, false)
+          managerConf: ['$requestService', ($requestService) => {
+            return $requestService.apiReq('/manager/configuration')
               .then(function (response) {
                 return response
               }, function (response) {
@@ -182,13 +182,13 @@ define(['./module'], function (module) {
         controller: 'statusCtrl',
         controllerAs: 'mst',
         resolve: {
-          overviewData: ['$apiService', ($apiService) => {
+          overviewData: ['$requestService', ($requestService) => {
             return Promise.all([
-              $apiService.request('/agents/summary', {}, false),
-              $apiService.request('/manager/status', {}, false),
-              $apiService.request('/manager/info', {}, false),
-              $apiService.request('/rules', { offset: 0, limit: 1 }, false),
-              $apiService.request('/decoders', { offset: 0, limit: 1 }, false)
+              $requestService.apiReq('/agents/summary'),
+              $requestService.apiReq('/manager/status'),
+              $requestService.apiReq('/manager/info'),
+              $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
+              $requestService.apiReq('/decoders', { offset: 0, limit: 1 })
             ])
               .then(function (response) {
                 return response
@@ -196,10 +196,10 @@ define(['./module'], function (module) {
                 return response
               })
           }],
-          agentInfo: ['$apiService', ($apiService) => {
-            return $apiService.request('/agents', { limit: 1, sort: `-dateAdd` }, false)
+          agentInfo: ['$requestService', ($requestService) => {
+            return $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' })
               .then(function (response) {
-                return $apiService.request(`/agents/${response.data.data.items[0].id}`, {}, false)
+                return $requestService.apiReq('/agents/${response.data.data.items[0].id}', {})
                   .then(function (response) {
                     return response
                   }, function (response) {
@@ -244,11 +244,11 @@ define(['./module'], function (module) {
         controller: 'agentsCtrl',
         controllerAs: 'ag',
         resolve: {
-          data: ['$apiService', ($apiService) => {
+          data: ['$requestService', ($requestService) => {
             return Promise.all([
-              $apiService.request('/agents/summary', false, false),
-              $apiService.request('/agents', { limit: 1, sort: '-dateAdd' }, false),
-              $apiService.get('/agents/agents_uniq', false, false)
+              $requestService.apiReq('/agents/summary'),
+              $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
+              $requestService.httpReq('GET','/agents/agents_uniq')
             ])
               .then(function (response) {
                 return response
@@ -267,13 +267,13 @@ define(['./module'], function (module) {
         controllerAs: 'aoc',
         params: { id: null },
         resolve: {
-          agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
             return Promise.all([
-              $apiService.request(`/agents/${$stateParams.id}`, null, null),
-              $apiService.request(`/syscheck/${$stateParams.id}/last_scan`, {}, false),
-              $apiService.request(`/rootcheck/${$stateParams.id}/last_scan`, {}, false),
-              $apiService.request(`/syscollector/${$stateParams.id}/hardware`, {}, false),
-              $apiService.request(`/syscollector/${$stateParams.id}/os`, {}, false)
+              $requestService.apiReq('/agents/${$stateParams.id}'),
+              $requestService.apiReq('/syscheck/${$stateParams.id}/last_scan'),
+              $requestService.apiReq('/rootcheck/${$stateParams.id}/last_scan'),
+              $requestService.apiReq('/syscollector/${$stateParams.id}/hardware'),
+              $requestService.apiReq('/syscollector/${$stateParams.id}/os')
             ])
               .then(function (response) {
                 return response
@@ -292,8 +292,8 @@ define(['./module'], function (module) {
         controllerAs: 'agc',
         params: {agent: null },
         resolve: {
-          agent: ['$apiService', '$stateParams', ($apiService, $stateParams) => {
-            return $apiService.request(`/agents/${$stateParams.id}`, null, null)
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq('/agents/${$stateParams.id}')
               .then(function (response) {
                 return response
               }, function (response) {

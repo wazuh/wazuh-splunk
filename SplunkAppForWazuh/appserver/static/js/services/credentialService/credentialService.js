@@ -1,6 +1,6 @@
 define(['../module', 'splunkjs/mvc'], function (module, mvc) {
   'use strict'
-  module.service('$credentialService', function ($apiService, $currentApiIndexService) {
+  module.service('$credentialService', function ($requestService, $currentApiIndexService) {
     const service = mvc.createService({ owner: "nobody" })
 
     /**
@@ -185,9 +185,13 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     * Check the current state of agents status history
     */
     const checkPollingState = async () => {
+      try{
       const getPollingState = '/manager/polling_state/'
-      const pollingStatus = await $apiService.get(getPollingState,true,false)
+      const pollingStatus = await $requestService.httpReq(`GET`,getPollingState,false)
       return (pollingStatus.disabled === "true") ? false : true
+      } catch(err) {
+        return Promise.reject(err)
+      }
     }
 
     /**
@@ -198,10 +202,9 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
       try {
         if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
           const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-          const result = await $apiService.get(checkConnectionEndpoint,true,false)
-          return
+          return await $requestService.httpReq('GET',checkConnectionEndpoint,true,false)
         } else {
-          throw new Error('Incomplete object passed.')
+          return Promise.reject(new Error('Incomplete object passed.'))
         }
       } catch (err) {
         return Promise.reject(err)
@@ -218,14 +221,14 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const clusterData = await $apiService.get(checkConnectionEndpoint,false,true)
+        const clusterData = await $requestService.httpReq(`GET`,checkConnectionEndpoint,true)
         if (clusterData.data.error) {
           console.error('eror en clusterdata ',clusterData.data.error)
           return Promise.reject(clusterData.data.error)
         }
         api.filter = []
         // Get manager name. Necessary for both cases
-        const managerName = await $apiService.get(getManagerNameEndpoint,false,true)
+        const managerName = await $requestService.httpReq(`GET`,getManagerNameEndpoint,true)
         if (managerName && managerName.data && managerName.data.data.length > 0 && managerName.data.data[0].name) {
           if (!api.managerName || api.managerName !== managerName.data.data[0].name) {
             api.managerName = managerName.data.data[0].name
@@ -236,7 +239,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.enabled === "yes") {
           api.filter.push('cluster.name')
-          const clusterName = await $apiService.get(getClusterNameEndpoint,false,true)
+          const clusterName = await $requestService.httpReq(`GET`,getClusterNameEndpoint,true)
           api.filter.push(clusterName.cluster)
           if (!api.cluster || api.cluster !== clusterName.cluster) {
             api.cluster = clusterName.cluster

@@ -73,7 +73,7 @@ define(['../module'], function (module) {
      * Returns the API filter (manager.name / cluster.name)
      */
     const getFilter = () => {
-      if (sessionStorage.selectedAPI && typeof sessionStorage.selectedAPI === 'string') {
+      if (getAPI() && getAPI().filter) {
         return getAPI().filter
       } else {
         return null

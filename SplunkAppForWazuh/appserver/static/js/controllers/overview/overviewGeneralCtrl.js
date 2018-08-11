@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $apiService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $requestService, $state, $stateParams, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -51,7 +51,7 @@ define([
       }
       let filters = $filterService.getSerializedFilters()
 
-      const baseUrl = $apiService.getBaseUrl()
+      const baseUrl = $requestService.getBaseUrl()
       setToken('baseip', baseUrl)
       setToken('url', api.url)
       setToken('portapi', api.portapi)
