@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsOpenScapCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('agentsOpenScapCtrl', function ($scope, $currentDataService) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
@@ -43,9 +43,9 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentApiIndexService.getIndex()
+      const selectedIndex = $currentDataService.getIndex()
 
-      const filter = $currentApiIndexService.getFilter()
+      const filter = $currentDataService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
 
       urlTokenModel.on('url:navigate', function () {

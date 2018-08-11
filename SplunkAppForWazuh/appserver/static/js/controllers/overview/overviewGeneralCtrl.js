@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $requestService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state, $stateParams, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -41,9 +41,9 @@ define([
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
+      const filter = $currentDataService.getFilter()
+      $filterService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]

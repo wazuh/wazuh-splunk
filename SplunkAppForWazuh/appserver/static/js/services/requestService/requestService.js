@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$requestService', function ($http, $currentApiIndexService, $q) {
+  module.service('$requestService', function ($http, $currentDataService, $q) {
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
@@ -16,7 +16,7 @@ define(['../module'], function (module) {
      */
     const getWellFormedUri = (endpoint, includedApi) => {
       if (!includedApi) {
-        const jsonCurrentAPI = $currentApiIndexService.getAPI()
+        const jsonCurrentAPI = $currentDataService.getAPI()
         return getBaseUrl() + `/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
       } else {
         return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint
@@ -47,7 +47,6 @@ define(['../module'], function (module) {
         if (data.error && data.error !== '0') {
           throw new Error('HTTP error from server: ', data.error);
         }
-        console.log('return data ', data)
         return $q.resolve(data);
       } catch (error) {
         return $q.reject(error);

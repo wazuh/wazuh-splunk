@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewGdprCtrl', function ($scope, $currentApiIndexService, $rulesDescription) {
+    controllers.controller('overviewGdprCtrl', function ($scope, $currentDataService, $rulesDescription) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -46,9 +46,9 @@ define([
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
+      const filter = $currentDataService.getFilter()
+      $filterService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]

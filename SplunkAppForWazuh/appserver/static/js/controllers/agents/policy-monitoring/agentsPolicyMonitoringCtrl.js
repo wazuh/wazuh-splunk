@@ -34,7 +34,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsPolicyMonitoringCtrl', function ($scope, $currentApiIndexService, $state, $stateParams, $filterService) {
+    controllers.controller('agentsPolicyMonitoringCtrl', function ($scope, $currentDataService, $state, $stateParams, $filterService) {
       const vm = this
       vm.agent = $stateParams.agent
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
@@ -43,7 +43,7 @@ define([
       }
 
       const epoch = (new Date).getTime()
-      const selectedIndex = $currentApiIndexService.getIndex()
+      const selectedIndex = $currentDataService.getIndex()
       const urlTokenModel = new UrlTokenModel()
       const submitTokens = () => {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
@@ -75,9 +75,9 @@ define([
         launchSearches()
       })
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
+      const filter = $currentDataService.getFilter()
+      $filterService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]

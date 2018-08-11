@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentApiIndexService', function () {
+  module.service('$currentDataService', function () {
 
     /**
      * Removes the selected index

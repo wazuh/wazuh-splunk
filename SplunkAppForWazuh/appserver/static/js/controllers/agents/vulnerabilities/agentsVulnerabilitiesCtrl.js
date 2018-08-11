@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentApiIndexService, $filterService, $stateParams) {
+    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $filterService, $stateParams) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
@@ -48,9 +48,9 @@ define([
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
       }
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
+      const filter = $currentDataService.getFilter()
+      $filterService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]

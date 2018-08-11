@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewAuditCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('overviewAuditCtrl', function ($scope, $currentDataService) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
@@ -41,9 +41,9 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentApiIndexService.getIndex()
+      const selectedIndex = $currentDataService.getIndex()
 
-      const filter = $currentApiIndexService.getFilter()
+      const filter = $currentDataService.getFilter()
       const nameFilter = filter[0] + '=' + filter[1]
 
       urlTokenModel.on('url:navigate', function () {

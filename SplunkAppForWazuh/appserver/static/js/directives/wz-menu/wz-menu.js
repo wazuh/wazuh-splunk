@@ -13,10 +13,10 @@ define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzMenu', function () {
     return {
-      controller: function ($scope, $currentApiIndexService, $navigationService) {
+      controller: function ($scope, $currentDataService, $navigationService) {
         const update = () => {
-          $scope.currentIndex = (!$currentApiIndexService.getIndex()) ? 'wazuh' : $currentApiIndexService.getIndex().index
-          $scope.currentAPI = (!$currentApiIndexService.getAPI()) ? '---' : $currentApiIndexService.getAPI().managerName
+          $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
+          $scope.currentAPI = (!$currentDataService.getAPI()) ? '---' : $currentDataService.getAPI().managerName
           $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
           // if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview'))
           //   $scope.menuNavItem = 'overview'

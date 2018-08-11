@@ -3,7 +3,7 @@ define([
   './navigation/navigationService',
   './requestService/requestService',
   './filterService/filterService',
-  './currentApiIndexService/currentApiIndexService',
+  './currentDataService/currentDataService',
   './dataService/dataService',
   './rules/rulesDescription',
   './tableFilterService/tableFilterService',

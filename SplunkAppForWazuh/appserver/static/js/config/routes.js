@@ -248,7 +248,7 @@ define(['./module'], function (module) {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
-              $requestService.httpReq('GET','/agents/agents_uniq')
+              $requestService.httpReq('GET','/agents/agents_uniq',false)
             ])
               .then(function (response) {
                 return response
@@ -269,11 +269,11 @@ define(['./module'], function (module) {
         resolve: {
           agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
             return Promise.all([
-              $requestService.apiReq('/agents/${$stateParams.id}'),
-              $requestService.apiReq('/syscheck/${$stateParams.id}/last_scan'),
-              $requestService.apiReq('/rootcheck/${$stateParams.id}/last_scan'),
-              $requestService.apiReq('/syscollector/${$stateParams.id}/hardware'),
-              $requestService.apiReq('/syscollector/${$stateParams.id}/os')
+              $requestService.apiReq(`/agents/${$stateParams.id}`),
+              $requestService.apiReq(`/syscheck/${$stateParams.id}/last_scan`),
+              $requestService.apiReq(`/rootcheck/${$stateParams.id}/last_scan`),
+              $requestService.apiReq(`/syscollector/${$stateParams.id}/hardware`),
+              $requestService.apiReq(`/syscollector/${$stateParams.id}/os`)
             ])
               .then(function (response) {
                 return response

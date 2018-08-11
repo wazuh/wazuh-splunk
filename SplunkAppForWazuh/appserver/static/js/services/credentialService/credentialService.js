@@ -1,6 +1,6 @@
 define(['../module', 'splunkjs/mvc'], function (module, mvc) {
   'use strict'
-  module.service('$credentialService', function ($requestService, $currentApiIndexService) {
+  module.service('$credentialService', function ($requestService, $currentDataService) {
     const service = mvc.createService({ owner: "nobody" })
 
     /**
@@ -69,7 +69,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      * Returns the already selected API
      */
     const getSelectedApi = () => {
-      return $currentApiIndexService.getAPI()
+      return $currentDataService.getAPI()
     }
 
     /**
@@ -79,8 +79,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const remove = async (key) => {
       try {
         const api = await select(key)
-        if ($currentApiIndexService.getAPI() && $currentApiIndexService.getAPI().url === api.url) {
-          $currentApiIndexService.removeAPI()
+        if ($currentDataService.getAPI() && $currentDataService.getAPI().url === api.url) {
+          $currentDataService.removeAPI()
         }
         await deletes("storage/collections/data/credentials/" + key)
         return
@@ -112,7 +112,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
         const apiList = await getApiList()
         for (let api of apiList) {
           if (api._key === key) {
-            $currentApiIndexService.setAPI(api)
+            $currentDataService.setAPI(api)
           }
         }
         return
@@ -127,7 +127,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const deselectAllApis = () => {
       try {
-        $currentApiIndexService.removeAPI()
+        $currentDataService.removeAPI()
         return
       } catch (err) {
         return Promise.reject(err)
@@ -153,7 +153,7 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     const getApiList = async () => {
       try {
         const apiList = await get("storage/collections/data/credentials/")
-        const selectedApi = $currentApiIndexService.getAPI()
+        const selectedApi = $currentDataService.getAPI()
         for (let i = 0; i < apiList.length; i++) {
           if (selectedApi && typeof selectedApi === 'string' && selectedApi !== 'undefined' && typeof JSON.parse(selectedApi) === 'object' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
             apiList[i].selected = true
@@ -171,10 +171,10 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
      */
     const checkSelectedApiConnection = async () => {
       try {
-        const currentApi = $currentApiIndexService.getAPI()
+        const currentApi = $currentDataService.getAPI()
         if (!currentApi) { console.error('no current api'); return Promise.reject(new Error('No selected API in sessionStorage')) }
         const api = await checkApiConnection(currentApi._key)
-        let selectedIndex = $currentApiIndexService.getIndex()
+        let selectedIndex = $currentDataService.getIndex()
         return { api, selectedIndex }
       } catch (err) {
         return Promise.reject(err)

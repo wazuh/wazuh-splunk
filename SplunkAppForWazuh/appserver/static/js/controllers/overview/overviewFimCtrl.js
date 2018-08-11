@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewFimCtrl', function ($scope, $currentApiIndexService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewFimCtrl', function ($scope, $currentDataService, $state, $stateParams, $filterService) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
@@ -40,11 +40,11 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentApiIndexService.getIndex()
+      const selectedIndex = $currentDataService.getIndex()
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
+      const filter = $currentDataService.getFilter()
+      $filterService.addFilter($currentDataService.getIndex())
+      const api = $currentDataService.getAPI()
       let nameFilter = ' '
       if (filter.length === 2) {
         nameFilter = filter[0] + '=' + filter[1]
