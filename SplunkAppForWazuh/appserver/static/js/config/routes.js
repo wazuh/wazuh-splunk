@@ -21,6 +21,9 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
           }]
         }
       })
@@ -117,6 +120,9 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
           }]
         }
       })
@@ -143,6 +149,9 @@ define(['./module'], function (module) {
                 return response
               }, function (response) {
                 return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
               })
           }]
         }
@@ -171,6 +180,9 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
           }]
         }
       })
@@ -195,6 +207,9 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
           }],
           agentInfo: ['$requestService', ($requestService) => {
             return $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' })
@@ -206,9 +221,15 @@ define(['./module'], function (module) {
                     console.error('error getting last agent')
                     return response
                   })
+                  .catch(err => {
+                    console.error('Error route: ', err)
+                  })
               }, function (response) {
                 console.error('error getting agents')
                 return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
               })
           }]
         }
@@ -232,6 +253,9 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
           }]
         }
       })
@@ -248,12 +272,15 @@ define(['./module'], function (module) {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
-              $requestService.httpReq('GET','/agents/agents_uniq',false)
+              $requestService.httpReq('GET', '/agents/agents_uniq', false)
             ])
               .then(function (response) {
                 return response
               }, function (response) {
                 return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
               })
           }]
         }
@@ -280,6 +307,9 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
           }]
         }
       })
@@ -290,7 +320,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGeneralCtrl',
         controllerAs: 'agc',
-        params: {agent: null },
+        params: { agent: null },
         resolve: {
           agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
             return $requestService.apiReq('/agents/${$stateParams.id}')
@@ -310,7 +340,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPolicyMonitoringCtrl',
         controllerAs: 'apm',
-        params: {agent: null }
+        params: { agent: null }
       })
       // agents - FIM
       .state('ag-fim', {
@@ -318,7 +348,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsFimCtrl',
         controllerAs: 'afc',
-        params: {agent: null }
+        params: { agent: null }
 
       })
       // agents - audit
@@ -327,7 +357,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsAuditCtrl',
         controllerAs: 'aac',
-        params: {agent: null }
+        params: { agent: null }
 
       })
       // agents - OpenSCAP
@@ -336,7 +366,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
-        params: {agent: null }
+        params: { agent: null }
 
       })
       // agents - PCI-DSS
@@ -345,7 +375,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
-        params: {agent: null }
+        params: { agent: null }
 
       })
       // agents - GDPR
@@ -354,7 +384,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGdprCtrl',
         controllerAs: 'agdpr',
-        params: {agent: null }
+        params: { agent: null }
 
       })
       // agents - Vulnerabilities
@@ -363,7 +393,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsVulnerabilitiesCtrl',
         controllerAs: 'avu',
-        params: {agent: null }
+        params: { agent: null }
 
       })
   }])

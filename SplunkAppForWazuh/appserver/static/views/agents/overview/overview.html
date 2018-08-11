@@ -120,9 +120,9 @@
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'"
             ui-sref='ag-pm({agent:aoc.agent})' current-tab="'pm'" description="TabDescription.pm.description"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+            <wz-welcome-card  class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
               title="'Audit'" ui-sref='ag-audit({agent:aoc.agent})' current-tab="'audit'" description="TabDescription.audit.description"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
               title="'Open SCAP'" ui-sref='ag-os({agent:aoc.agent})' current-tab="'oscap'" description="TabDescription.oscap.description"></wz-welcome-card>
             <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
               title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="TabDescription.ciscat.description"></wz-welcome-card>

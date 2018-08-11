@@ -23,7 +23,8 @@ define([
   modules.controller('agentsCtrl', function ($scope, $currentDataService, data) {
     const vm = this
     const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
+    submittedTokenModel.set("activeAgentToken", '-')
+    vm.loadingSearch = true
     vm.search = term => {
       $scope.$broadcast('wazuhSearch', { term })
     }
@@ -56,7 +57,8 @@ define([
     const selectedIndex = $currentDataService.getIndex().index
     const filter = $currentDataService.getFilter()
     const nameFilter = filter[0] + '=' + filter[1]
-    let searchTopAgent = new SearchManager({
+    let searchTopAgent
+    searchTopAgent = new SearchManager({
       "id": `searchTopAgent${epoch}`,
       "cancelOnUnload": true,
       "sample_ratio": 1,
@@ -87,13 +89,15 @@ define([
     })
 
     submittedTokenModel.on("change:activeAgentToken", function (model, activeAgentToken, options) {
-      const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken");
+      const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
       if (activeAgentTokenJS !== undefined) {
+        vm.loadingSearch = false
+        console.log(activeAgentTokenJS)
         vm.mostActiveAgent = `${activeAgentTokenJS}`
         if (!$scope.$$phase) $scope.$digest()
       }
     })
-    console.log('data ',data)
+
     const summary = data[0].data.data
     const lastAgent = data[1].data.data.items[0]
 
