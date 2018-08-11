@@ -51,8 +51,8 @@ define([
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
-      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      let defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
       const baseUrl = $requestService.getBaseUrl()
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -173,6 +173,8 @@ define([
         element14 = null
         element15 = null
         element16 = null
+        submittedTokenModel = null
+        defaultTokenModel = null
       })
 
       // Listen for a change to the token tokenTotalAlerts value
@@ -206,8 +208,15 @@ define([
           }
         ]
       })
-      filesAddedHandler.on('progress', () => {
+      filesAddedSearch.on('search:progress', () => {
         vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
+      filesAddedSearch.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
+
       })
       submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
         const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
@@ -250,8 +259,14 @@ define([
           }
         ]
       })
-      readFilesHandler.on('progress', () => {
+      readFilesSearch.on('search:progress', () => {
         vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+      })
+      readFilesSearch.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
+
       })
       submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
         const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
@@ -293,8 +308,15 @@ define([
           }
         ]
       })
-      modifiedFilesHandler.on('progress', () => {
+      modifiedFiles.on('search:progress', () => {
         vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
+      modifiedFiles.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
+
       })
       submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
         const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
@@ -324,7 +346,7 @@ define([
       submittedTokenModel.set("filesDeletedToken", '-')
 
       let filesDeletedHandler = new SearchEventHandler({
-        managerid: "filesDeletedSearch" + epoch,
+        managerid: "deletedFiles" + epoch,
         event: "done",
         conditions: [
           {
@@ -336,16 +358,24 @@ define([
           }
         ]
       })
-      filesDeletedHandler.on('progress', () => {
+      deletedFiles.on('search:progress', () => {
         vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+      })
+      deletedFiles.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
       })
       submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (filesDeletedTokenJS) {
+          console.log('filesdeleted ',filesDeletedTokenJS)
           vm.filesDeleted = filesDeletedTokenJS
           vm.loadingSearch = false
           if (!$scope.$$phase) $scope.$digest()
         } else {
+          console.log('filesdeleted to 0',filesDeletedTokenJS)
+
           vm.filesDeleted = 0
           if (!$scope.$$phase) $scope.$digest()
         }
