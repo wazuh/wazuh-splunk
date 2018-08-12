@@ -20,10 +20,11 @@ define([
 
   'use strict'
 
-  modules.controller('agentsCtrl', function ($scope, $currentApiIndexService, data) {
+  modules.controller('agentsCtrl', function ($scope, $currentDataService, data) {
     const vm = this
-    const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
+    let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+    submittedTokenModel.set("activeAgentToken", '-')
+    vm.loadingSearch = true
     vm.search = term => {
       $scope.$broadcast('wazuhSearch', { term })
     }
@@ -32,7 +33,7 @@ define([
       $scope.$broadcast('wazuhFilter', { filter })
     }
 
-    vm.isClusterEnabled = ($currentApiIndexService.getClusterInfo() && $currentApiIndexService.getClusterInfo().status === 'enabled')
+    vm.isClusterEnabled = ($currentDataService.getClusterInfo() && $currentDataService.getClusterInfo().status === 'enabled')
     vm.loading = true
 
     vm.status = 'all'
@@ -48,95 +49,84 @@ define([
       id: ''
     }
 
-    const load = async () => {
-      try {
-        const clusterInfo = $currentApiIndexService.getClusterInfo()
-        if (clusterInfo)
-          firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
-        const epoch = (new Date).getTime()
-        // const unique = data[0].data.result
-        const selectedIndex = $currentApiIndexService.getIndex().index
-        const filter = $currentApiIndexService.getFilter()
-        const nameFilter = filter[0] + '=' + filter[1]
-        const searchTopAgent = new SearchManager({
-          "id": `searchTopAgent${epoch}`,
-          "cancelOnUnload": true,
-          "sample_ratio": 1,
-          "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "index=" + selectedIndex + " " + nameFilter + "| top agent.name",
-          "latest_time": "$when.latest$",
-          "app": utils.getCurrentApp(),
-          "auto_cancel": 90,
-          "preview": true,
-          "tokenDependencies": {
-          },
-          "runWhenTimeIsUndefined": true
-        }, { tokens: true, tokenNamespace: "submitted" })
+    const clusterInfo = $currentDataService.getClusterInfo()
+    if (clusterInfo)
+      firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
+    const epoch = (new Date).getTime()
+    const filters = $currentDataService.getSerializedFilters()
+    let searchTopAgent = new SearchManager({
+      "id": `searchTopAgent${epoch}`,
+      "cancelOnUnload": true,
+      "sample_ratio": 1,
+      "earliest_time": "$when.earliest$",
+      "status_buckets": 0,
+      "search": `${filters} | top agent.name`,
+      "latest_time": "$when.latest$",
+      "app": utils.getCurrentApp(),
+      "auto_cancel": 90,
+      "preview": true,
+      "tokenDependencies": {
+      },
+      "runWhenTimeIsUndefined": true
+    }, { tokens: true, tokenNamespace: "submitted" })
 
-        const handlerTopAgent = new SearchEventHandler({
-          managerid: `searchTopAgent${epoch}`,
-          event: "done",
-          conditions: [
-            {
-              attr: "any",
-              value: "*",
-              actions: [
-                { "type": "set", "token": "activeAgentToken", "value": "$result.agent.name$" },
-              ]
-            }
+    let handlerTopAgent = new SearchEventHandler({
+      managerid: `searchTopAgent${epoch}`,
+      event: "done",
+      conditions: [
+        {
+          attr: "any",
+          value: "*",
+          actions: [
+            { "type": "set", "token": "activeAgentToken", "value": "$result.agent.name$" },
           ]
-        })
+        }
+      ]
+    })
 
-        submittedTokenModel.on("change:activeAgentToken", function (model, activeAgentToken, options) {
-          const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken");
-          if (activeAgentTokenJS !== undefined) {
-            vm.mostActiveAgent = `${activeAgentTokenJS}`
-            if (!$scope.$$phase) $scope.$digest()
-          }
-        })
+    submittedTokenModel.on("change:activeAgentToken", function (model, activeAgentToken, options) {
+      if (submittedTokenModel) {
+        const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
+        if (activeAgentTokenJS !== undefined) {
+          vm.loadingSearch = false
+          console.log("agent most active ", activeAgentTokenJS)
+          vm.mostActiveAgent = `${activeAgentTokenJS}`
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      } 
+    })
 
-        const summary = data[0].data.data
-        const lastAgent = data[1].data.data.items[0]
-        // vm.groups = unique.groups
-        // vm.nodes = unique.nodes
-        // vm.versions = unique.versions
-        // vm.osPlatforms = unique.osPlatforms
+    const summary = data[0].data.data
+    const lastAgent = data[1].data.data.items[0]
 
-        // Building operating system filter
-        const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
-        vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
+    // Building operating system filter
+    const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
+    vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
 
-        // Building version filter
-        const rawVersions = data[2].data.data.items.map(one => one.version);
-        vm.versions = [... new Set(rawVersions.filter(one => !!one))]
+    // Building version filter
+    const rawVersions = data[2].data.data.items.map(one => one.version);
+    vm.versions = [... new Set(rawVersions.filter(one => !!one))]
 
-        vm.lastAgent = lastAgent
-        vm.agentsCountActive = summary.Active
-        vm.agentsCountDisconnected = summary.Disconnected
-        vm.agentsCountNeverConnected = summary['Never connected']
-        vm.agentsCountTotal = summary.Total
-        vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
+    vm.lastAgent = lastAgent
+    vm.agentsCountActive = summary.Active
+    vm.agentsCountDisconnected = summary.Disconnected
+    vm.agentsCountNeverConnected = summary['Never connected']
+    vm.agentsCountTotal = summary.Total
+    vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
 
-        vm.loading = false
-        if (!$scope.$$phase) $scope.$digest()
-        return
-      } catch (error) {
-        console.error('Agents Preview', error)
-      }
-      return
-    }
+    vm.loading = false
+    if (!$scope.$$phase) $scope.$digest()
 
     /**
-* When controller is destroyed
-*/
+     * When controller is destroyed
+     */
     $scope.$on('$destroy', () => {
+      console.log('destroyed agents cntrl')
       searchTopAgent.cancel()
       searchTopAgent = null
       handlerTopAgent = null
+      submittedTokenModel = null
     })
 
-    //Load
-    load()
   })
 })

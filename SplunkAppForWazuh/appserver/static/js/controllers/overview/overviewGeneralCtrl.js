@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentApiIndexService, $apiService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -40,18 +40,12 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      vm.agent = agent.data.data
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
-      let filters = $filterService.getSerializedFilters()
+      let filters = $currentDataService.getSerializedFilters()
 
-      const baseUrl = $apiService.getBaseUrl()
+      const baseUrl = $requestService.getBaseUrl()
+      const api = $currentDataService.getApi()
       setToken('baseip', baseUrl)
       setToken('url', api.url)
       setToken('portapi', api.portapi)
@@ -60,7 +54,7 @@ define([
       setToken("loadedtokens", "true")
 
       const launchSearches = () => {
-        filters = $filterService.getSerializedFilters()
+        filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }
@@ -135,7 +129,7 @@ define([
           "status_buckets": 0,
           "sample_ratio": null,
           "cancelOnUnload": true,
-          "search": "index=\"wazuh-monitoring-3x\" " + filterAgent + " status=* | timechart span=1h count by status usenull=f",
+          "search": `${filters} status=* | timechart span=1h count by status usenull=f`,
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
@@ -642,7 +636,7 @@ define([
       overviewElement14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames(`/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })

@@ -53,17 +53,18 @@ define(['../module'], function (module) {
        */
       getSerializedFilters: () => {
         let filterStr = ' '
-        for (const filter of JSON.parse(window.localStorage.filters)) {
-          if (typeof filter === 'object') {
-            const key = Object.keys(filter)[0]
-            filterStr += key
-            filterStr += '='
-            filterStr += filter[key]
-            filterStr += ' '
-          } else {
-            filterStr += filter + ' '
+        if (window.localStorage.filters && typeof window.localStorage.filters === 'object')
+          for (const filter of JSON.parse(window.localStorage.filters)) {
+            if (typeof filter === 'object') {
+              const key = Object.keys(filter)[0]
+              filterStr += key
+              filterStr += '='
+              filterStr += filter[key]
+              filterStr += ' '
+            } else {
+              filterStr += filter + ' '
+            }
           }
-        }
         return filterStr
       },
 

@@ -4,7 +4,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('groupsCtrl', function ($scope, $apiService, $beautifierJson) {
+  controllers.controller('groupsCtrl', function ($scope, $requestService, $beautifierJson) {
     const vm = this
     $scope.$on('groupsIsReloaded', () => {
       vm.currentGroup = false
@@ -41,7 +41,7 @@ define(['../../module'], function (controllers) {
     vm.loadGroup = async (group, firstTime) => {
       try {
         if (!firstTime) vm.lookingGroup = true
-        const count = await $apiService.request(`/agents/groups/${group.name}/files`, { limit: 1 }, false)
+        const count = await $requestService.apiReq(`/agents/groups/${group.name}/files`, { limit: 1 }, false)
         vm.totalFiles = count.data.data.totalItems
         vm.fileViewer = false
         vm.currentGroup = group
@@ -88,7 +88,7 @@ define(['../../module'], function (controllers) {
         if (fileName === '../ar.conf') fileName = 'ar.conf'
         vm.fileViewer = true
         const tmpName = `/agents/groups/${groupName}/files/${fileName}`
-        const data = await $apiService.request(tmpName, {}, false)
+        const data = await $requestService.apiReq(tmpName, {}, false)
         vm.file = $beautifierJson.prettyPrint(data.data.data)
         vm.filename = fileName
 

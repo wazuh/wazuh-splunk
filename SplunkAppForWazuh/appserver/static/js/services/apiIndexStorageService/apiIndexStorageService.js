@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentApiIndexService', function () {
+  module.service('$apiIndexStorageService', function () {
 
     /**
      * Removes the selected index
@@ -40,7 +40,7 @@ define(['../module'], function (module) {
      * Select an API
      * @param {String} API 
      */
-    const setAPI = (API) => {
+    const setApi = (API) => {
       delete sessionStorage.selectedAPI
       if (typeof API === 'object')
         sessionStorage.selectedAPI = JSON.stringify(API)
@@ -50,35 +50,13 @@ define(['../module'], function (module) {
      * Returns currently selected API
      * @param {String} API 
      */
-    const getAPI = () => {
+    const getApi = () => {
       if (sessionStorage.selectedAPI)
         return JSON.parse(sessionStorage.selectedAPI)
       else
         return null
     }
 
-    /**
-     * Returns currently selected API
-     * @param {String} API 
-     */
-    const getClusterInfo = () => {
-      if (sessionStorage && sessionStorage.selectedAPI && typeof sessionStorage.selectedAPI === 'string' && JSON.parse(sessionStorage.selectedAPI) && JSON.parse(sessionStorage.selectedAPI).cluster) {
-        return getAPI().cluster
-      }
-      else
-        return null
-    }
-
-    /**
-     * Returns the API filter (manager.name / cluster.name)
-     */
-    const getFilter = () => {
-      if (sessionStorage.selectedAPI && typeof sessionStorage.selectedAPI === 'string') {
-        return getAPI().filter
-      } else {
-        return null
-      }
-    }
 
     return {
 
@@ -90,13 +68,9 @@ define(['../module'], function (module) {
 
       removeAPI: removeAPI,
 
-      setAPI: setAPI,
+      setApi: setApi,
 
-      getAPI: getAPI,
-
-      getClusterInfo: getClusterInfo,
-
-      getFilter: getFilter
+      getApi: getApi
 
     }
 

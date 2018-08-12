@@ -2,7 +2,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('managerLogsCtrl', function ($scope,$apiService) {
+  controllers.controller('managerLogsCtrl', function ($scope,$requestService) {
     const vm = this
     vm.type_log = 'all';
     vm.category = 'all';
@@ -28,7 +28,7 @@ define(['../../module'], function (controllers) {
     const initialize = async () => {
       try {
         // logs summary
-        const data = await $apiService.get('/manager/logs_summary',false,false)
+        const data = await $requestService.httpReq('GET','/manager/logs_summary',false,false)
         vm.summary = data.data.data;
         if (!$scope.$$phase) $scope.$digest();
         return;

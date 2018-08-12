@@ -34,7 +34,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewPolicyMonitoringCtrl', function ($scope, $currentApiIndexService, $state, $stateParams, $filterService) {
+    controllers.controller('overviewPolicyMonitoringCtrl', function ($scope, $currentDataService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
       const urlTokenModel = new UrlTokenModel()
@@ -44,7 +44,6 @@ define([
       }
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      let baseUrl = ""
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -54,21 +53,14 @@ define([
         }
       })
 
-      const filter = $currentApiIndexService.getFilter()
-      $filterService.addFilter($currentApiIndexService.getIndex())
-      const api = $currentApiIndexService.getAPI()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $filterService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
-      let filters = $filterService.getSerializedFilters()
+ 
+      let filters = $currentDataService.getSerializedFilters()
 
       /**
        * Fires all the queries
        */
       const launchSearches = () => {
-        filters = $filterService.getSerializedFilters()
+        filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }
@@ -360,7 +352,7 @@ define([
       alertsSummary.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control"
+          const url = `/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`
           utils.redirect(url, false, "_blank")
         }
       })

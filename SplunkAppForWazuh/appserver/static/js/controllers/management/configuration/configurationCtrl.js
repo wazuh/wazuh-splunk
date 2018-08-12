@@ -55,13 +55,13 @@ define(['../../module'], function (controllers) {
               const tmp = []
 
               for (const id of rulesArray) {
-                const rule = await $apiService.request(`/rules/${id}`,false,false)
+                const rule = await $requestService.apiReq(`/rules/${id}`,false,false)
                 tmp.push(rule.data.data.items[0])
               }
 
               ar.rules = tmp
             } else if (ar.rules_id) {
-              const rule = await $apiService.request(`/rules/${ar.rules_id}`, false,false)
+              const rule = await $requestService.apiReq(`/rules/${ar.rules_id}`, false,false)
               ar.rule = rule.data.data.items[0]
             }
           }

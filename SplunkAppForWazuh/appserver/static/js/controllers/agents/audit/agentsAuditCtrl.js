@@ -32,20 +32,21 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsAuditCtrl', function ($scope, $currentApiIndexService) {
+    controllers.controller('agentsAuditCtrl', function ($requestService, $scope, $currentDataService, $state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
+      vm.loadingSearch = true
+      vm.agent = agent.data.data
+      // Create token namespaces
+
+      let filters = $currentDataService.getSerializedFilters()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
-      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentApiIndexService.getIndex()
-
-      const filter = $currentApiIndexService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
-
+      let defaultTokenModel = mvc.Components.getInstance('default', { create: true })
+      let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
+      const baseUrl = $requestService.getBaseUrl()
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -58,9 +59,33 @@ define([
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
 
+      const launchSearches = () => {
+        filters = $currentDataService.getSerializedFilters()
+        $state.reload();
+      }
+
       const submitTokens = () => {
+        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
         FormUtils.submitForm({ replaceState: pageLoading })
       }
+
+      const setToken = (name, value) => {
+        defaultTokenModel.set(name, value)
+        submittedTokenModel.set(name, value)
+      }
+
+      const unsetToken = (name) => {
+        defaultTokenModel.unset(name)
+        submittedTokenModel.unset(name)
+      }
+
+      $scope.$on('deletedFilter', () => {
+        launchSearches()
+      })
+
+      $scope.$on('barFilter', () => {
+        launchSearches()
+      })
 
       let filesAddedSearch = ''
       let readFilesSearch = ''
@@ -94,6 +119,25 @@ define([
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
+        filesAddedSearch.cancel()
+        readFilesSearch.cancel()
+        modifiedFiles.cancel()
+        deletedFiles.cancel()
+        groups.cancel()
+        agents.cancel()
+        directories.cancel()
+        files.cancel()
+        alertsOverTime.cancel()
+        fileReadAccess.cancel()
+        fileWriteAccess.cancel()
+        commands.cancel()
+        createdFiles.cancel()
+        removedFiles.cancel()
+        alertsSummary.cancel()
+        filesAddedHandler = null
+        readFilesHandler = null
+        modifiedFilesHandler = null
+        filesDeletedHandler = null
         input1 = null
         filesAddedSearch = null
         readFilesSearch = null
@@ -130,7 +174,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -139,8 +183,9 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
+      submittedTokenModel.set("filesAddedToken", '-')
 
-      new SearchEventHandler({
+      let filesAddedHandler = new SearchEventHandler({
         managerid: "filesAddedSearch" + epoch,
         event: "done",
         conditions: [
@@ -153,11 +198,21 @@ define([
           }
         ]
       })
+      filesAddedSearch.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      filesAddedSearch.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
       submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
         const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (typeof filesAddedTokenJS !== 'undefined' && filesAddedTokenJS !== 'undefined') {
+        if (filesAddedTokenJS) {
           vm.newFiles = filesAddedTokenJS
+          vm.loadingSearch = false
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -169,7 +224,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -179,7 +234,9 @@ define([
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
 
-      new SearchEventHandler({
+      submittedTokenModel.set("readFilesToken", '-')
+
+      let readFilesHandler = new SearchEventHandler({
         managerid: "readFilesSearch" + epoch,
         event: "done",
         conditions: [
@@ -192,11 +249,20 @@ define([
           }
         ]
       })
+      readFilesSearch.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+      })
+      readFilesSearch.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
       submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
         const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
-        if (typeof readFilesTokenJS !== 'undefined' && readFilesTokenJS !== 'undefined') {
+        if (readFilesTokenJS) {
           vm.readFiles = readFilesTokenJS
+          vm.loadingSearch = false
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -208,7 +274,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -217,8 +283,9 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
+      submittedTokenModel.set("filesModifiedToken", '-')
 
-      new SearchEventHandler({
+      let modifiedFilesHandler = new SearchEventHandler({
         managerid: "modifiedFiles" + epoch,
         event: "done",
         conditions: [
@@ -231,11 +298,21 @@ define([
           }
         ]
       })
+      modifiedFiles.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      modifiedFiles.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
       submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
+        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
+        if (filesModifiedTokenJS) {
           vm.filesModifiedToken = filesModifiedTokenJS
+          vm.loadingSearch = false
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -247,7 +324,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -256,9 +333,10 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
+      submittedTokenModel.set("filesDeletedToken", '-')
 
-      new SearchEventHandler({
-        managerid: "filesDeletedSearch" + epoch,
+      let filesDeletedHandler = new SearchEventHandler({
+        managerid: "deletedFiles" + epoch,
         event: "done",
         conditions: [
           {
@@ -270,13 +348,24 @@ define([
           }
         ]
       })
-
+      deletedFiles.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+      })
+      deletedFiles.on('search:done', () => {
+        vm.loadingSearch = false
+        if (!$scope.$$phase) $scope.$digest()
+      })
       submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
+        if (filesDeletedTokenJS) {
+          console.log('filesdeleted ',filesDeletedTokenJS)
           vm.filesDeleted = filesDeletedTokenJS
+          vm.loadingSearch = false
           if (!$scope.$$phase) $scope.$digest()
         } else {
+          console.log('filesdeleted to 0',filesDeletedTokenJS)
+
           vm.filesDeleted = 0
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -288,7 +377,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | top rule.groups",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -304,7 +393,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -320,7 +409,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -336,7 +425,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -352,7 +441,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -368,7 +457,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -384,7 +473,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -400,7 +489,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | top audit.command",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | top audit.command`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -416,7 +505,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -432,7 +521,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -448,7 +537,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -814,7 +903,7 @@ define([
       element16.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\""
+          const url = baseUrl + `/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`
           utils.redirect(url, false, "_blank")
         }
       })

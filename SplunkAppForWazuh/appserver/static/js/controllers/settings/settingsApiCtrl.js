@@ -4,7 +4,7 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope, $credentialService, apiList, toastr) {
+    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, toaster) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
@@ -38,9 +38,9 @@ define([
           const index = vm.apiList.indexOf(entry)
           if (index > -1) {
             vm.apiList.splice(index, 1)
-            await $credentialService.remove(entry._key)
+            await $currentDataService.remove(entry._key)
           }
-          toastr.success('Manager removed', 'Success')
+          toaster.success({title:'Success',body:'Manager was removed.'})
         } catch (err) {
           console.error(err)
         }
@@ -52,11 +52,11 @@ define([
        */
       vm.checkManager = async (entry) => {
         try {
-          await $credentialService.checkApiConnection(entry._key)
-          toastr.success('Connection success', 'Success')
+          await $currentDataService.checkApiConnection(entry._key)
+          toaster.success({title:'Success',body:'Established connection.'})
 
         } catch (err) {
-          toastr.error('Cannot connect with API', 'Error')
+          toaster.error('Cannot connect with API', 'Error')
         }
       }
 
@@ -82,7 +82,7 @@ define([
           vm.user = entry.userapi
           vm.entry = entry
         } catch (err) {
-          toastr.error('Could not open API form', 'Error')
+          toaster.error('Could not open API form', 'Error')
         }
       }
 
@@ -96,16 +96,16 @@ define([
           vm.entry.portapi = vm.port
           vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
-          await $credentialService.checkRawConnection(vm.entry)
+          await currentDataService.checkRawConnection(vm.entry)
           delete vm.entry['$$hashKey']
           delete vm.entry._user
-          const updatedEntry = await $credentialService.update(vm.currentEntryKey, vm.entry)
+          const updatedEntry = await $currentDataService.update(vm.currentEntryKey, vm.entry)
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
-          toastr.success('Updated API', 'Success')
+          toaster.success({title:'Success',body:'Updated API.'})
         } catch (err) {
-          toastr.error('Could not update API', 'Error')
+          toaster.error({title:'Error',body:'Could not update API'})
         }
       }
       /**
@@ -156,8 +156,8 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          await $credentialService.checkApiConnection(entry._key)
-          await $credentialService.chose(entry._key)
+          await $currentDataService.checkApiConnection(entry._key)
+          await $currentDataService.chose(entry._key)
           for (let item of vm.apiList) {
             if (item._key === entry._key) {
               vm.apiList.map(api => api.selected = false)
@@ -165,13 +165,13 @@ define([
             }
           }
           entry.selected = true
-          toastr.success('Selected API', 'Success')
+          toaster.success('Selected API', 'Success')
           if (!$scope.$$phase) $scope.$digest()
           $scope.$emit('updatedAPI', () => { })
 
         } catch (err) {
-          console.error('[selectManager]: ', err)
-          toastr.error('Could not select manager', 'Error')
+          console.error('Error',`[selectManager]:${err}`)
+          toaster.error('Error','Could not select manager')
         }
       }
 
@@ -181,8 +181,7 @@ define([
       vm.submitApiForm = async () => {
         try {
           // When the Submit button is clicked, get all the form fields by accessing input values
-          toastr.info('Adding new API', 'Info')
-
+          toaster.pop('wait','Please wait','Adding new API.')
           const form_url = vm.url
           const form_apiport = vm.port
           const form_apiuser = vm.user
@@ -200,11 +199,11 @@ define([
               "managerName": false
             }
             // Use the request method to send and insert a new record
-            const result = await $credentialService.insert(record)
+            const result = await $currentDataService.insert(record)
             try {
-              const resultConnection = await $credentialService.checkApiConnection(result.data._key)
+              const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
               clearForm()
-              const apiList = await $credentialService.getApiList()
+              const apiList = await $currentDataService.getApiList()
               record._key = result.data._key
               vm.apiList.push(record)
               if (apiList && apiList.length === 1) {
@@ -212,19 +211,19 @@ define([
               }
               vm.showForm = false
               if (!$scope.$$phase) $scope.$digest()
-              toastr.success('Added new API', 'Success')
+              toaster.success('Added new API', 'Success')
 
             } catch (err) {
               console.error('err!',err)
-              await $credentialService.remove(result.data._key)
-              toastr.error('Error at adding new API', 'Error')
+              await $currentDataService.remove(result.data._key)
+              toaster.error('Error at adding new API', 'Error')
 
             }
           } else {
-            toastr.error('Invalid format', 'Error')
+            toaster.error('Invalid format', 'Error')
           }
         } catch (err) {
-          toastr.error('Error at adding new API', 'Error')
+          toaster.error('Error at adding new API', 'Error')
         }
       }
 

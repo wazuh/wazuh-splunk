@@ -15,7 +15,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
   /**
    * Class that handles dynamic table methods
    */
-  module.service('$dataService', function ($apiService) {
+  module.service('$dataService', function ($requestService) {
     return class DataFactory {
       /**
        * Class constructor
@@ -96,7 +96,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           this.serializeFilters(parameters)
 
           // Fetch next <limit> items
-          const firstPage = await $apiService.request(this.path, parameters, false)
+          const firstPage = await $requestService.apiReq(this.path, parameters, false)
           this.items = this.items.filter(item => !!item)
           this.items.push(...firstPage.data.data.items)
 

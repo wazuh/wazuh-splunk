@@ -1,14 +1,15 @@
 define([
-  './credentialService/credentialService',
   './navigation/navigationService',
-  './apiService/apiService',
-  './apiRequestService/apiRequestService',
+  './requestService/requestService',
+  './splunkStoreService/splunkStoreService',
   './filterService/filterService',
-  './currentApiIndexService/currentApiIndexService',
+  './apiIndexStorageService/apiIndexStorageService',
+  './api-manager/apiMgrService',
   './dataService/dataService',
   './rules/rulesDescription',
   './tableFilterService/tableFilterService',
   './key-equivalence/keyEquivalenceService',
+  './currentDataService/currentDataService',
   './beautifier/beautifier-json',
   './xml-beautifier/xml-beautifier'
 

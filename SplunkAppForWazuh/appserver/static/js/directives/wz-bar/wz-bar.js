@@ -11,17 +11,17 @@
  */
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wazuhBar', function ($filterService) {
+  directives.directive('wazuhBar', function ($currentDataService) {
     return {
       restrict: 'E',
-      controller: function ($scope, $filterService) {
+      controller: function ($scope, $currentDataService) {
 
         /**
          * Prettifies filters for md-chips
          */
         const getPrettyFilters = () => {
           const prettyFilters = []
-          const uglyFilters = $filterService.getFilters()
+          const uglyFilters = $currentDataService.getFilters()
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
@@ -40,7 +40,7 @@ define(['../module'], function (directives) {
         $scope.removeFilter = (filter) => {
           const index = $scope.filters.indexOf(filter)
           if (index > -1) {
-            $filterService.removeFilter($scope.filters[index])
+            $currentDataService.removeFilter($scope.filters[index])
             $scope.filters.splice(index, 1)
           }
           $scope.$emit('deletedFilter', {})
@@ -52,7 +52,7 @@ define(['../module'], function (directives) {
          * @param {Object | String} filter 
          */
         $scope.applyFilters = (customSearch) => {
-          $filterService.addFilter(customSearch)
+          $currentDataService.addFilter(customSearch)
           $scope.$emit('barFilter', {})
           $scope.filters = getPrettyFilters()
           if (!$scope.$$phase) $scope.$digest()
