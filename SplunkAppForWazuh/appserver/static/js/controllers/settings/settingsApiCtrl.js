@@ -4,7 +4,7 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, toastr) {
+    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, toaster) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
@@ -40,7 +40,7 @@ define([
             vm.apiList.splice(index, 1)
             await $currentDataService.remove(entry._key)
           }
-          toastr.success('Manager removed', 'Success')
+          toaster.success({title:'Success',body:'Manager was removed.'})
         } catch (err) {
           console.error(err)
         }
@@ -53,10 +53,10 @@ define([
       vm.checkManager = async (entry) => {
         try {
           await $currentDataService.checkApiConnection(entry._key)
-          toastr.success('Connection success', 'Success')
+          toaster.success({title:'Success',body:'Established connection.'})
 
         } catch (err) {
-          toastr.error('Cannot connect with API', 'Error')
+          toaster.error('Cannot connect with API', 'Error')
         }
       }
 
@@ -82,7 +82,7 @@ define([
           vm.user = entry.userapi
           vm.entry = entry
         } catch (err) {
-          toastr.error('Could not open API form', 'Error')
+          toaster.error('Could not open API form', 'Error')
         }
       }
 
@@ -103,9 +103,9 @@ define([
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
-          toastr.success('Updated API', 'Success')
+          toaster.success({title:'Success',body:'Updated API.'})
         } catch (err) {
-          toastr.error('Could not update API', 'Error')
+          toaster.error({title:'Error',body:'Could not update API'})
         }
       }
       /**
@@ -165,13 +165,13 @@ define([
             }
           }
           entry.selected = true
-          toastr.success('Selected API', 'Success')
+          toaster.success('Selected API', 'Success')
           if (!$scope.$$phase) $scope.$digest()
           $scope.$emit('updatedAPI', () => { })
 
         } catch (err) {
-          console.error('[selectManager]: ', err)
-          toastr.error('Could not select manager', 'Error')
+          console.error('Error',`[selectManager]:${err}`)
+          toaster.error('Error','Could not select manager')
         }
       }
 
@@ -181,8 +181,7 @@ define([
       vm.submitApiForm = async () => {
         try {
           // When the Submit button is clicked, get all the form fields by accessing input values
-          toastr.info('Adding new API', 'Info')
-
+          toaster.pop('wait','Please wait','Adding new API.')
           const form_url = vm.url
           const form_apiport = vm.port
           const form_apiuser = vm.user
@@ -212,19 +211,19 @@ define([
               }
               vm.showForm = false
               if (!$scope.$$phase) $scope.$digest()
-              toastr.success('Added new API', 'Success')
+              toaster.success('Added new API', 'Success')
 
             } catch (err) {
               console.error('err!',err)
               await $currentDataService.remove(result.data._key)
-              toastr.error('Error at adding new API', 'Error')
+              toaster.error('Error at adding new API', 'Error')
 
             }
           } else {
-            toastr.error('Invalid format', 'Error')
+            toaster.error('Invalid format', 'Error')
           }
         } catch (err) {
-          toastr.error('Error at adding new API', 'Error')
+          toaster.error('Error at adding new API', 'Error')
         }
       }
 

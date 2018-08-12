@@ -62,7 +62,6 @@ define([
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
-        searches.map(search => search.startSearch())
       }
 
       const submitTokens = () => {
@@ -166,8 +165,6 @@ define([
         element14 = null
         element15 = null
         element16 = null
-        submittedTokenModel = null
-        defaultTokenModel = null
       })
 
       // Listen for a change to the token tokenTotalAlerts value

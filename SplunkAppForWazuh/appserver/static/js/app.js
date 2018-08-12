@@ -8,8 +8,8 @@ define([
   './controllers/index',
   './run/index',
   './config/index',
-  'Toast'
+  'toaster'
 ], function (ng) {
   'use strict'
-  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config','toastr'])
+  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config','toaster'])
 })

@@ -9,7 +9,7 @@ require.config({
         'ngMessages': 'http://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-messages.min',
         'ngMaterial': 'http://ajax.googleapis.com/ajax/libs/angular_material/1.1.10/angular-material.min',
         'ngRoute': 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.18/angular-ui-router.min',
-        'Toast': 'https://unpkg.com/angular-toastr/dist/angular-toastr.tpls'
+        'toaster': 'https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/2.1.0/toaster'
     },
 
     // Add angular modules that does not support AMD out of the box, put it in a shim
@@ -33,13 +33,13 @@ require.config({
             exports: "ngRoute",
             deps: ["angular"]
         },
-        'Toast': {
-            exports: "Toast",
+        'toaster': {
+            exports: "toaster",
             deps: ["angular","ngAnimate"]
         }
         
     },
 
     // kick start application
-    deps: ['angular','ngMaterial',"ngAnimate", "ngAria",'js/bootstrap','Toast']
+    deps: ['angular','ngMaterial',"ngAnimate", "ngAria",'js/bootstrap','toaster']
 })
