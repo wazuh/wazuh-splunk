@@ -320,10 +320,10 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGeneralCtrl',
         controllerAs: 'agc',
-        params: { agent: null },
+        params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq('/agents/${$stateParams.id}')
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -333,22 +333,42 @@ define(['./module'], function (module) {
         }
       })
 
-
       // agents - policy monitoring
       .state('ag-pm', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/policy-monitoring/agents-pm.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPolicyMonitoringCtrl',
         controllerAs: 'apm',
-        params: { agent: null }
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
       })
+
       // agents - FIM
       .state('ag-fim', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/fim/agents-fim.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsFimCtrl',
         controllerAs: 'afc',
-        params: { agent: null }
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
 
       })
       // agents - audit
@@ -357,8 +377,17 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsAuditCtrl',
         controllerAs: 'aac',
-        params: { agent: null }
-
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
       })
       // agents - OpenSCAP
       .state('ag-os', {
@@ -366,7 +395,17 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
-        params: { agent: null }
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
 
       })
       // agents - PCI-DSS
@@ -375,7 +414,18 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
-        params: { agent: null }
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                console.log('agent pci ',response)
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
 
       })
       // agents - GDPR
@@ -384,8 +434,17 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsGdprCtrl',
         controllerAs: 'agdpr',
-        params: { agent: null }
-
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
       })
       // agents - Vulnerabilities
       .state('ag-vul', {
@@ -393,7 +452,17 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsVulnerabilitiesCtrl',
         controllerAs: 'avu',
-        params: { agent: null }
+        params: { id: null },
+        resolve: {
+          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
 
       })
   }])

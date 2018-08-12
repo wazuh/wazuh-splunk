@@ -41,10 +41,7 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentDataService.getIndex()
-
-      const filter = $currentDataService.getFilter()
-      const nameFilter = filter[0] + '=' + filter[1]
+      const filters = $currentDataService.getSerializedFilters()
 
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
@@ -130,7 +127,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -169,7 +166,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -208,7 +205,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -247,7 +244,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -288,7 +285,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | top rule.groups",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -304,7 +301,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -320,7 +317,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -336,7 +333,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -352,7 +349,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -368,7 +365,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -384,7 +381,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -400,7 +397,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | top audit.command",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | top audit.command`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -416,7 +413,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -432,7 +429,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -448,7 +445,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": "index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"",
+        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -814,7 +811,7 @@ define([
       element16.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\""
+          const url = baseUrl + "/app/SplunkAppForWazuh/search?q`${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\`"
           utils.redirect(url, false, "_blank")
         }
       })

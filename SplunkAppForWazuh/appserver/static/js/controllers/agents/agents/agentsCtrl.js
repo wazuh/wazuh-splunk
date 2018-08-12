@@ -53,17 +53,14 @@ define([
     if (clusterInfo)
       firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
     const epoch = (new Date).getTime()
-    // const unique = data[0].data.result
-    const selectedIndex = $currentDataService.getIndex().index
-    const filter = $currentDataService.getFilter()
-    const nameFilter = filter[0] + '=' + filter[1]
+    const filters = $currentDataService.getSerializedFilters()
     let searchTopAgent = new SearchManager({
       "id": `searchTopAgent${epoch}`,
       "cancelOnUnload": true,
       "sample_ratio": 1,
       "earliest_time": "$when.earliest$",
       "status_buckets": 0,
-      "search": "index=" + selectedIndex + " " + nameFilter + "| top agent.name",
+      "search": `${filters} | top agent.name`,
       "latest_time": "$when.latest$",
       "app": utils.getCurrentApp(),
       "auto_cancel": 90,

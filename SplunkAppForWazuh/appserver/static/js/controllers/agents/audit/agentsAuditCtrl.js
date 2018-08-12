@@ -32,21 +32,14 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsAuditCtrl', function ($stateParams, $requestService, $scope, $currentDataService, $state) {
+    controllers.controller('agentsAuditCtrl', function ($requestService, $scope, $currentDataService, $state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
       vm.loadingSearch = true
-      vm.agent = $stateParams.agent
+      vm.agent = agent.data.data
       // Create token namespaces
-      const filter = $currentDataService.getFilter()
-      $currentDataService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getApi()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
+
       let filters = $currentDataService.getSerializedFilters()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })

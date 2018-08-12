@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $stateParams) {
+    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $stateParams,agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
@@ -42,7 +42,7 @@ define([
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
-      vm.agent = $stateParams.agent
+      vm.agent = agent.data.data
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
       vm.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';

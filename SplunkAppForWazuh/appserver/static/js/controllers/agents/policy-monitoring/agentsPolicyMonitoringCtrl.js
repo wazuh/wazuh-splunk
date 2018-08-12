@@ -34,16 +34,14 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsPolicyMonitoringCtrl', function ($scope, $state, $stateParams, $currentDataService) {
+    controllers.controller('agentsPolicyMonitoringCtrl', function ($scope, $state, $currentDataService,agent) {
       const vm = this
-      vm.agent = $stateParams.agent
+      vm.agent = agent.data.data
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
       vm.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
       }
-
       const epoch = (new Date).getTime()
-      const selectedIndex = $currentDataService.getIndex()
       const urlTokenModel = new UrlTokenModel()
       const submitTokens = () => {
         // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
@@ -51,7 +49,7 @@ define([
       }
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      let baseUrl = ""
+      let filters = $currentDataService.getSerializedFilters()
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -74,16 +72,6 @@ define([
       $scope.$on('barFilter', () => {
         launchSearches()
       })
-
-      const filter = $currentDataService.getFilter()
-      $currentDataService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getApi()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
-      let filters = $currentDataService.getSerializedFilters()
 
       let pageLoading = true
       let elementOverTime = ''
@@ -363,7 +351,7 @@ define([
       alertsSummary.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + "/app/SplunkAppForWazuh/search?q=index=" + selectedIndex + " " + nameFilter + " sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control"
+          const url = `/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`
           utils.redirect(url, false, "_blank")
         }
       })

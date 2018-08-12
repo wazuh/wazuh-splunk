@@ -35,14 +35,7 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       vm.agent = agent.data.data
-      const filter = $currentDataService.getFilter()
-      $currentDataService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getApi()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
+
       let filters = $currentDataService.getSerializedFilters()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
@@ -102,7 +95,7 @@ define([
       let pageLoading = true
       let searches = []
       let vizz = []
-
+      const api = $currentDataService.getApi()
       setToken('baseip', baseUrl)
       setToken('url', api.url)
       setToken('portapi', api.portapi)
@@ -571,7 +564,7 @@ define([
       agentsElement14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames("/app/SplunkAppForWazuh/search?q=index=wazuh sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$", _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames(`/app/SplunkAppForWazuh/search?q=${filters} |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })

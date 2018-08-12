@@ -35,11 +35,11 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsGdprCtrl', function ($stateParams,$currentDataService, $scope, $rulesDescription) {
+    controllers.controller('agentsGdprCtrl', function ($currentDataService, $scope, $rulesDescription,agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
-      vm.agent = $stateParams.agent
+      vm.agent = agent.data.data
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
       vm.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
@@ -49,16 +49,7 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const selectedIndex = $currentDataService.getIndex()
 
-      const filter = $currentDataService.getFilter()
-      $currentDataService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getApi()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
       let filters = $currentDataService.getSerializedFilters()
 
       vm.gdprTabs = false

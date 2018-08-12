@@ -32,12 +32,12 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsFimCtrl', function ($stateParams, $state, $scope, $currentDataService) {
+    controllers.controller('agentsFimCtrl', function ($state, $scope, $currentDataService, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
 
-      vm.agent = $stateParams.agent
+      vm.agent = agent.data.data
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
       vm.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';

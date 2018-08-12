@@ -103,9 +103,9 @@
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'" title="'General'"
-              ui-sref='ag-general({agent:aoc.agent})' current-tab="'general'" description="'Explore your alerts.'"></wz-welcome-card>
+              ui-sref='ag-general({id:aoc.agent.id})' current-tab="'general'" description="'Explore your alerts.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'File integrity'"
-            ui-sref='ag-fim({agent:aoc.agent})' current-tab="'fim'" description="TabDescription.fim.description"></wz-welcome-card>
+            ui-sref='ag-fim({id:aoc.agent.id})' current-tab="'fim'" description="TabDescription.fim.description"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
               switch-tab="switchTab('configuration')" current-tab="'configuration'" description="TabDescription.configuration.description"></wz-welcome-card>
             <wz-welcome-card ng-if="syscollector && syscollector.os && syscollector.os.sysname" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
@@ -119,11 +119,11 @@
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'"
-            ui-sref='ag-pm({agent:aoc.agent})' current-tab="'pm'" description="TabDescription.pm.description"></wz-welcome-card>
+            ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="TabDescription.pm.description"></wz-welcome-card>
             <wz-welcome-card  class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-              title="'Audit'" ui-sref='ag-audit({agent:aoc.agent})' current-tab="'audit'" description="TabDescription.audit.description"></wz-welcome-card>
+              title="'Audit'" ui-sref='ag-audit({id:aoc.agent.id})' current-tab="'audit'" description="TabDescription.audit.description"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
-              title="'Open SCAP'" ui-sref='ag-os({agent:aoc.agent})' current-tab="'oscap'" description="TabDescription.oscap.description"></wz-welcome-card>
+              title="'Open SCAP'" ui-sref='ag-os({id:aoc.agent.id})' current-tab="'oscap'" description="TabDescription.oscap.description"></wz-welcome-card>
             <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
               title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="TabDescription.ciscat.description"></wz-welcome-card>
           </div>
@@ -141,7 +141,7 @@
             <div class="euiSpacer euiSpacer--m"></div>
             <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
               <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'" title="'Vulnerabilities'"
-              ui-sref='ag-vul({agent:aoc.agent})' current-tab="'vuls'" description="TabDescription.vuls.description"></wz-welcome-card>
+              ui-sref='ag-vul({id:aoc.agent.id})' current-tab="'vuls'" description="TabDescription.vuls.description"></wz-welcome-card>
               <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
                 title="'Virustotal'" switch-tab="switchTab('virustotal')" current-tab="'virustotal'" description="TabDescription.virustotal.description"></wz-welcome-card>
             </div>
@@ -155,9 +155,9 @@
             <div class="euiSpacer euiSpacer--m"></div>
             <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
               <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
-                title="'PCI DSS'" ui-sref='ag-pci({agent:aoc.agent})' current-tab="'pci'" description="TabDescription.pci.description"></wz-welcome-card>
+                title="'PCI DSS'" ui-sref='ag-pci({id:aoc.agent.id})' current-tab="'pci'" description="TabDescription.pci.description"></wz-welcome-card>
               <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
-                title="'GDPR'" ui-sref='ag-gdpr({agent:aoc.agent})' current-tab="'gdpr'" description="TabDescription.gdpr.description"></wz-welcome-card>
+                title="'GDPR'" ui-sref='ag-gdpr({id:aoc.agent.id})' current-tab="'gdpr'" description="TabDescription.gdpr.description"></wz-welcome-card>
             </div>
           </div>
         </div>
