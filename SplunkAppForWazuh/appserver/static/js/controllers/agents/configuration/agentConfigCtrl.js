@@ -22,12 +22,6 @@ define(['../../module'], function (modules) {
     vm.load = true
     vm.agent = config.response.data.data
     vm.groupName = vm.agent.group
-    if (!vm.groupName) {
-      vm.configurationError = true
-      vm.load = false
-      if (!vm.$$phase) vm.$digest()
-      return
-    }
 
     // const configurationData   = await apiReq.request('GET', `/agents/groups/${vm.groupName}/configuration`, {})
     vm.groupConfiguration = config.responseAll[0].data.data.items[0]
