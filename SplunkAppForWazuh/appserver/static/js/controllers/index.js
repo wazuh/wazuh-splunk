@@ -30,5 +30,6 @@ define([
   './agents/scap/agentsOpenScapCtrl',
   './agents/pcidss/agentsPciCtrl',
   './agents/gdpr/agentsGdprCtrl',
+  './agents/configuration/agentConfigCtrl',
   './main/mainCtrl'
 ], function () {})

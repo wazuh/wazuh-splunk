@@ -107,7 +107,7 @@
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'File integrity'"
             ui-sref='ag-fim({id:aoc.agent.id})' current-tab="'fim'" description="TabDescription.fim.description"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
-              switch-tab="switchTab('configuration')" current-tab="'configuration'" description="TabDescription.configuration.description"></wz-welcome-card>
+              ui-sref='ag-conf({id:aoc.agent.id})' current-tab="'configuration'" description="TabDescription.configuration.description"></wz-welcome-card>
             <wz-welcome-card ng-if="syscollector && syscollector.os && syscollector.os.sysname" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
               title="'Inventory'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="TabDescription.syscollector.description"></wz-welcome-card>
           </div>

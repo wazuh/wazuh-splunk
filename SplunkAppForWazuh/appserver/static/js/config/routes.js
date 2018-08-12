@@ -419,14 +419,45 @@ define(['./module'], function (module) {
           agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
             return $requestService.apiReq(`/agents/${$stateParams.id}`)
               .then(function (response) {
-                console.log('agent pci ',response)
+                console.log('agent pci ', response)
                 return response
               }, function (response) {
                 return response
               })
           }]
         }
-
+      })
+      // agents - configuration
+      .state('ag-conf', {
+        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/configuration/configuration.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        controller: 'agentConfigCtrl',
+        controllerAs: 'acc',
+        params: { id: null },
+        resolve: {
+          config: ['$requestService','$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+              .then(function (response) {
+                console.log('response ',response)
+                return $requestService.apiReq(`/agents/groups/${response.data.data.group}/configuration`, {})
+                  .then(function (response) {
+                    return response
+                  }, function (response) {
+                    console.error('error getting configuration')
+                    return response
+                  })
+                  .catch(err => {
+                    console.error('Error route: ', err)
+                  })
+              }, function (response) {
+                console.error('error getting agents')
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
       })
       // agents - GDPR
       .state('ag-gdpr', {
