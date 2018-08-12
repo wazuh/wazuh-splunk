@@ -435,16 +435,20 @@ define(['./module'], function (module) {
         controllerAs: 'acc',
         params: { id: null },
         resolve: {
-          config: ['$requestService','$stateParams', ($requestService, $stateParams) => {
+          config: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
             return $requestService.apiReq(`/agents/${$stateParams.id}`)
               .then(function (response) {
-                console.log('response ',response)
-                return $requestService.apiReq(`/agents/groups/${response.data.data.group}/configuration`, {})
-                  .then(function (response) {
-                    return response
-                  }, function (response) {
+                console.log('response ', response)
+                return Promise.all([
+                  $requestService.apiReq(`/agents/groups/${response.data.data.group}/configuration`, {}),
+                  $requestService.apiReq(`/agents/groups?search=${response.data.data.group}`, {}),
+                  $requestService.apiReq(`/agents/groups/${response.data.data.group}`, {})
+                ])
+                  .then(function (responseAll) {
+                    return { response: response, responseAll: responseAll }
+                  }, function (responseAll) {
                     console.error('error getting configuration')
-                    return response
+                    return responseAll
                   })
                   .catch(err => {
                     console.error('Error route: ', err)
