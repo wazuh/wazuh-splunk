@@ -448,10 +448,11 @@ define(['./module'], function (module) {
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 console.log('response ', response)
+                const group = response.data.data.group || 'default'
                 return Promise.all([
-                  $requestService.apiReq(`/agents/groups/${response.data.data.group}/configuration`, {}),
-                  $requestService.apiReq(`/agents/groups?search=${response.data.data.group}`, {}),
-                  $requestService.apiReq(`/agents/groups/${response.data.data.group}`, {})
+                  $requestService.apiReq(`/agents/groups/${group}/configuration`, {}),
+                  $requestService.apiReq(`/agents/groups?search=${group}`, {}),
+                  $requestService.apiReq(`/agents/groups/${group}`, {})
                 ])
                   .then(function (responseAll) {
                     return { response: response, responseAll: responseAll }
