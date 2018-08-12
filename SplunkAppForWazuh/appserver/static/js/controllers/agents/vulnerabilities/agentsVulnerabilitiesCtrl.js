@@ -48,14 +48,6 @@ define([
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
       }
 
-      const filter = $currentDataService.getFilter()
-      $currentDataService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getApi()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
       let filters = $currentDataService.getSerializedFilters()
 
       const launchSearches = () => {

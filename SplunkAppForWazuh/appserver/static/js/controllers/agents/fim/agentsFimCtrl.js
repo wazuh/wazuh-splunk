@@ -48,14 +48,6 @@ define([
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
-      const filter = $currentDataService.getFilter()
-      $currentDataService.addFilter($currentDataService.getIndex())
-      const api = $currentDataService.getApi()
-      let nameFilter = ' '
-      if (filter.length === 2) {
-        nameFilter = filter[0] + '=' + filter[1]
-        $currentDataService.addFilter(JSON.parse('{"' + filter[0] + '":"' + filter[1] + '"}'))
-      }
       let filters = $currentDataService.getSerializedFilters()
       urlTokenModel.on('url:navigate', () => {
         defaultTokenModel.set(urlTokenModel.toJSON())
