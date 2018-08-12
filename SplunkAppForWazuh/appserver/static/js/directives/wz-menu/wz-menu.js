@@ -1,3 +1,4 @@
+
 /*
  * Wazuh app - Top nav bar directive
  * Copyright (C) 2018 Wazuh, Inc.
@@ -13,7 +14,7 @@ define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzMenu', function () {
     return {
-      controller: function ($scope, $currentDataService, $navigationService) {
+      controller: function ($scope, $currentDataService) {
         const update = () => {
           $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
           $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName

@@ -114,7 +114,7 @@ define(['./module'], function (module) {
         params: { id: null, filters: null },
         resolve: {
           ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq('/rules/${$stateParams.id}')
+            return $requestService.apiReq('/rules/${id}')
               .then(function (response) {
                 return response
               }, function (response) {
@@ -289,18 +289,19 @@ define(['./module'], function (module) {
       // agents/:id
       .state('agent-overview', {
         templateUrl: '/static/app/SplunkAppForWazuh/views/agents/overview/overview.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('agent-overview') },
         controller: 'agentsOverviewCtrl',
         controllerAs: 'aoc',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
             return Promise.all([
-              $requestService.apiReq(`/agents/${$stateParams.id}`),
-              $requestService.apiReq(`/syscheck/${$stateParams.id}/last_scan`),
-              $requestService.apiReq(`/rootcheck/${$stateParams.id}/last_scan`),
-              $requestService.apiReq(`/syscollector/${$stateParams.id}/hardware`),
-              $requestService.apiReq(`/syscollector/${$stateParams.id}/os`)
+              $requestService.apiReq(`/agents/${id}`),
+              $requestService.apiReq(`/syscheck/${id}/last_scan`),
+              $requestService.apiReq(`/rootcheck/${id}/last_scan`),
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`)
             ])
               .then(function (response) {
                 return response
@@ -317,13 +318,14 @@ define(['./module'], function (module) {
       // agents - General
       .state('ag-general', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/general/agents-general.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-general') },
         controller: 'agentsGeneralCtrl',
         controllerAs: 'agc',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -336,13 +338,14 @@ define(['./module'], function (module) {
       // agents - policy monitoring
       .state('ag-pm', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/policy-monitoring/agents-pm.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pm') },
         controller: 'agentsPolicyMonitoringCtrl',
         controllerAs: 'apm',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -355,13 +358,14 @@ define(['./module'], function (module) {
       // agents - FIM
       .state('ag-fim', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/fim/agents-fim.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-fim') },
         controller: 'agentsFimCtrl',
         controllerAs: 'afc',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -369,18 +373,19 @@ define(['./module'], function (module) {
               })
           }]
         }
-
       })
+
       // agents - audit
       .state('ag-audit', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/audit/agents-audit.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-audit') },
         controller: 'agentsAuditCtrl',
         controllerAs: 'aac',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -389,16 +394,18 @@ define(['./module'], function (module) {
           }]
         }
       })
+
       // agents - OpenSCAP
       .state('ag-os', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/agents/agents-openscap.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-os') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -411,13 +418,14 @@ define(['./module'], function (module) {
       // agents - PCI-DSS
       .state('ag-pci', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/pcidss/agents-pci.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pci') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 console.log('agent pci ', response)
                 return response
@@ -430,13 +438,14 @@ define(['./module'], function (module) {
       // agents - configuration
       .state('ag-conf', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/configuration/configuration.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-conf') },
         controller: 'agentConfigCtrl',
         controllerAs: 'acc',
         params: { id: null },
         resolve: {
-          config: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          config: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 console.log('response ', response)
                 return Promise.all([
@@ -466,13 +475,14 @@ define(['./module'], function (module) {
       // agents - GDPR
       .state('ag-gdpr', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/gdpr/agents-gdpr.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-gdpr') },
         controller: 'agentsGdprCtrl',
         controllerAs: 'agdpr',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -484,13 +494,14 @@ define(['./module'], function (module) {
       // agents - Vulnerabilities
       .state('ag-vul', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/vulnerabilities/agents-vulnerabilities.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-vul') },
         controller: 'agentsVulnerabilitiesCtrl',
         controllerAs: 'avu',
         params: { id: null },
         resolve: {
-          agent: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq(`/agents/${$stateParams.id}`)
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
               }, function (response) {

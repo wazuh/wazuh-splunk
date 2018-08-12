@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentDataService', function ($apiMgrService, $filterService) {
+  module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService) {
 
 
     const getApi = () => {
@@ -78,6 +78,15 @@ define(['../module'], function (module) {
       return $apiMgrService.setApi(api)
     }
 
+    const getCurrentAgent = () => {
+      console.log('get current agent in current data')
+      return $navigationService.getCurrentAgent()
+    }
+
+    const setCurrentAgent = (id) => {
+      return $navigationService.setCurrentAgent(id)
+    }
+
     return {
       getApiList: getApiList,
       checkRawConnection: checkRawConnection,
@@ -97,7 +106,9 @@ define(['../module'], function (module) {
       getClusterInfo: getClusterInfo,
       getFilter: getFilter,
       getApi: getApi,
-      setApi:setApi
+      setApi: setApi,
+      getCurrentAgent: getCurrentAgent,
+      setCurrentAgent: setCurrentAgent
     }
   })
 })

@@ -29,13 +29,14 @@ define(['../module'], function (directives) {
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
       },
-      controller: function ($scope, $timeout, $location, $tableFilterService, $state, $keyEquivalenceService) {
+      controller: function ($scope, $timeout, $tableFilterService, $state, $keyEquivalenceService, $currentDataService) {
         $scope.totalItems = 0
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
 
         $scope.clickAction = item => {
           if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
-            // Go to an agent details
+            // Go to and store an agent details
+            $currentDataService.setCurrentAgent(item.id)
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })
