@@ -206,6 +206,7 @@ define([
               const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
               clearForm()
               const apiList = await $currentDataService.getApiList()
+              record.managerName = resultConnection.managerName
               record._key = result.data._key
               vm.apiList.push(record)
               if (apiList && apiList.length === 1) {
