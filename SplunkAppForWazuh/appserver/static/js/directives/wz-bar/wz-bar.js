@@ -22,6 +22,7 @@ define(['../module'], function (directives) {
         const getPrettyFilters = () => {
           const prettyFilters = []
           const uglyFilters = $currentDataService.getFilters()
+          console.log('ugly filters ',uglyFilters)
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
@@ -53,7 +54,8 @@ define(['../module'], function (directives) {
          * @param {Object | String} filter 
          */
         $scope.applyFilters = (customSearch) => {
-          $currentDataService.addFilter(customSearch)
+          console.log('customsearch ',customSearch)
+          $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
           $scope.filters = getPrettyFilters()
           $scope.$emit('barFilter', {})
           if (!$scope.$$phase) $scope.$digest()
