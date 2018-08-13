@@ -7,9 +7,8 @@ define([
   './directives/index',
   './controllers/index',
   './run/index',
-  './config/index',
-  'toaster'
+  './config/index'
 ], function (ng) {
   'use strict'
-  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config','toaster'])
+  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.run','app.config'])
 })
