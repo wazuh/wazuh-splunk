@@ -11,6 +11,7 @@ define([
   './key-equivalence/keyEquivalenceService',
   './currentDataService/currentDataService',
   './beautifier/beautifier-json',
+  './notificationService/notificationService',
   './xml-beautifier/xml-beautifier'
 
 ], function () {})

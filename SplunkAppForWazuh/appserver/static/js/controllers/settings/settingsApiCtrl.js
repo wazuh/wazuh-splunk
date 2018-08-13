@@ -4,7 +4,7 @@ define([
   controllers
 ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, toaster) {
+    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, $notificationService) {
       const vm = this
       vm.addManagerContainer = false
       vm.isEditing = false
@@ -40,7 +40,7 @@ define([
             vm.apiList.splice(index, 1)
             await $currentDataService.remove(entry._key)
           }
-          toaster.success({title:'Success',body:'Manager was removed.'})
+          $notificationService.showSimpleToast({title:'Success',body:'Manager was removed.'})
         } catch (err) {
           console.error(err)
         }
@@ -53,10 +53,10 @@ define([
       vm.checkManager = async (entry) => {
         try {
           await $currentDataService.checkApiConnection(entry._key)
-          toaster.success({title:'Success',body:'Established connection.'})
+          $notificationService.showSimpleToast({title:'Success',body:'Established connection.'})
 
         } catch (err) {
-          toaster.error('Cannot connect with API', 'Error')
+          $notificationService.showSimpleToast('Cannot connect with API', 'Error')
         }
       }
 
@@ -82,7 +82,7 @@ define([
           vm.user = entry.userapi
           vm.entry = entry
         } catch (err) {
-          toaster.error('Could not open API form', 'Error')
+          $notificationService.showSimpleToast('Could not open API form', 'Error')
         }
       }
 
@@ -103,9 +103,9 @@ define([
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
-          toaster.success({title:'Success',body:'Updated API.'})
+          $notificationService.showSimpleToast({title:'Success',body:'Updated API.'})
         } catch (err) {
-          toaster.error({title:'Error',body:'Could not update API'})
+          $notificationService.showSimpleToast({title:'Error',body:'Could not update API'})
         }
       }
       /**
@@ -165,13 +165,13 @@ define([
             }
           }
           entry.selected = true
-          toaster.success('Selected API', 'Success')
+          $notificationService.showSimpleToast('Selected API', 'Success')
           if (!$scope.$$phase) $scope.$digest()
           $scope.$emit('updatedAPI', () => { })
 
         } catch (err) {
           console.error('Error',`[selectManager]:${err}`)
-          toaster.error('Error','Could not select manager')
+          $notificationService.showSimpleToast('Error','Could not select manager')
         }
       }
 
@@ -211,19 +211,19 @@ define([
               }
               vm.showForm = false
               if (!$scope.$$phase) $scope.$digest()
-              toaster.success('Added new API', 'Success')
+              $notificationService.showSimpleToast('Added new API', 'Success')
 
             } catch (err) {
               console.error('err!',err)
               await $currentDataService.remove(result.data._key)
-              toaster.error('Error at adding new API', 'Error')
+              $notificationService.showSimpleToast('Error at adding new API', 'Error')
 
             }
           } else {
-            toaster.error('Invalid format', 'Error')
+            $notificationService.showSimpleToast('Invalid format', 'Error')
           }
         } catch (err) {
-          toaster.error('Error at adding new API', 'Error')
+          $notificationService.showSimpleToast('Error at adding new API', 'Error')
         }
       }
 
