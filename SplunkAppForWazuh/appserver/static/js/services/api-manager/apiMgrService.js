@@ -207,14 +207,15 @@ define(['../module'], function (module) {
             await $splunkStoreService.update(api._key, api)
           }
         }
-
         // If cluster is disabled, then filter by manager.name
-        if (clusterData.data.enabled === "yes") {
+        console.log('cluster data ', clusterData)
+        if (clusterData.data.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await $requestService.httpReq(`GET`, getClusterNameEndpoint, true)
-          api.filter.push(clusterName.cluster)
-          if (!api.cluster || api.cluster !== clusterName.cluster) {
-            api.cluster = clusterName.cluster
+          console.log('cluster name ', clusterName)
+          api.filter.push(clusterName.data.cluster)
+          if (!api.cluster || api.cluster !== clusterName.data.cluster) {
+            api.cluster = clusterName.data.cluster
             await $splunkStoreService.update(api._key, api)
           }
         } else {
@@ -225,6 +226,7 @@ define(['../module'], function (module) {
           api.filter.push('manager.name')
           api.filter.push(api.managerName)
         }
+        console.log('returning api ',api)
         return api
       } catch (err) {
         return Promise.reject(err)

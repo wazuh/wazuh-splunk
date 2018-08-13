@@ -47,7 +47,7 @@
 
         <!-- Add API button section -->
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
-          <md-button ng-click='sac.addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
+          <md-button ng-show='!sac.edit' ng-click='sac.addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
             <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new API
           </md-button>
         </div>
