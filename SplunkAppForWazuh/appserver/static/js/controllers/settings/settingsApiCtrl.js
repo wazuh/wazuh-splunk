@@ -25,6 +25,13 @@ define([
       vm.init = function () {
         vm.selected = []
         vm.apiList = apiList
+        vm.apiList.map(item => {
+          const currentApi = $currentDataService.getApi()
+          if (currentApi)
+            if (item.url === currentApi.url) {
+              item.selected = true
+            }
+        })
         vm.selectedApi = []
         vm.saveOrUpdate = 'Add'
       }
@@ -35,12 +42,17 @@ define([
        */
       vm.removeManager = async (entry) => {
         try {
-          const index = vm.apiList.indexOf(entry)
-          if (index > -1) {
-            vm.apiList.splice(index, 1)
-            await $currentDataService.remove(entry._key)
+          const currentApi = $currentDataService.getApi()
+          if (currentApi && currentApi.url === entry.url) {
+            $notificationService.showSimpleToast('Cannot delete selected API')
+          } else {
+            const index = vm.apiList.indexOf(entry)
+            if (index > -1) {
+              vm.apiList.splice(index, 1)
+              await $currentDataService.remove(entry._key)
+            }
+            $notificationService.showSimpleToast('Manager was removed')
           }
-          $notificationService.showSimpleToast('Manager was removed.')
         } catch (err) {
           console.error(err)
         }
@@ -103,9 +115,9 @@ define([
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
-          $notificationService.showSimpleToast({title:'Success',body:'Updated API'})
+          $notificationService.showSimpleToast({ title: 'Success', body: 'Updated API' })
         } catch (err) {
-          $notificationService.showSimpleToast({title:'Error',body:'Could not update API'})
+          $notificationService.showSimpleToast({ title: 'Error', body: 'Could not update API' })
         }
       }
 
@@ -171,7 +183,7 @@ define([
           $scope.$emit('updatedAPI', () => { })
 
         } catch (err) {
-          console.error('Error',`[selectManager]:${err}`)
+          console.error('Error', `[selectManager]:${err}`)
           $notificationService.showSimpleToast('Could not select manager')
         }
       }
@@ -217,8 +229,8 @@ define([
               $notificationService.showSimpleToast('API was added')
 
             } catch (err) {
-              console.error('err!',err)
-              $currentDataService.remove(result.data._key).then(()=>{}).catch((err) => {console.error('error deleting API after inserting it')})
+              console.error('err!', err)
+              $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { console.error('error deleting API after inserting it') })
               $notificationService.showSimpleToast('Unreachable API')
             }
           } else {
