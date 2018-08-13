@@ -50,8 +50,7 @@ define([
     }
 
     const clusterInfo = $currentDataService.getClusterInfo()
-    if (clusterInfo)
-      firstUrlParam = clusterInfo.status === 'enabled' ? 'cluster' : 'manager'
+
     const epoch = (new Date).getTime()
     const filters = $currentDataService.getSerializedFilters()
     let searchTopAgent = new SearchManager({

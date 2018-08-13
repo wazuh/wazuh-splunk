@@ -18,6 +18,7 @@ define(['../module'], function (module) {
        * @param {Object} filter 
        */
       addFilter: (filter) => {
+        console.log('lets add a filter')
         if (window.localStorage.filters) {
           const filters = JSON.parse(window.localStorage.getItem('filters'))
           let isInIt = false
@@ -25,8 +26,8 @@ define(['../module'], function (module) {
             if (typeof filter === 'string') {
               const key = filter.split(':')[0]
               const value = filter.split(':')[1]
-              const newObject = `{"${key}":"${value}"}`
-              filter = JSON.parse(newObject)
+              const filter = `{"${key}":"${value}"}`
+              // filter = JSON.parse(newObject)
             }
             for (let key in fil) {
               for (let keyDup in filter) {
@@ -53,7 +54,7 @@ define(['../module'], function (module) {
        */
       getSerializedFilters: () => {
         let filterStr = ' '
-        if (window.localStorage.filters && typeof window.localStorage.filters === 'object')
+        if (window.localStorage.filters)
           for (const filter of JSON.parse(window.localStorage.filters)) {
             if (typeof filter === 'object') {
               const key = Object.keys(filter)[0]

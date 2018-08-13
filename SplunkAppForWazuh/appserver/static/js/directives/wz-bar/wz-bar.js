@@ -28,6 +28,7 @@ define(['../module'], function (directives) {
               prettyFilters.push(`${key}:${filter[key]}`)
             }
           }
+          console.log('pretty filters ',prettyFilters)
           return prettyFilters
         }
 
@@ -53,8 +54,8 @@ define(['../module'], function (directives) {
          */
         $scope.applyFilters = (customSearch) => {
           $currentDataService.addFilter(customSearch)
-          $scope.$emit('barFilter', {})
           $scope.filters = getPrettyFilters()
+          $scope.$emit('barFilter', {})
           if (!$scope.$$phase) $scope.$digest()
         }
       },

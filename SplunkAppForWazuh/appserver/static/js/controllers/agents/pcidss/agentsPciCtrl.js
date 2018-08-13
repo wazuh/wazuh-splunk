@@ -53,7 +53,7 @@ define([
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
       let filters = $currentDataService.getSerializedFilters()
-
+      console.log('the filters ',filters)
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {

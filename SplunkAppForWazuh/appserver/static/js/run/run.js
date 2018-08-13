@@ -10,6 +10,8 @@ define([
         try {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
+          console.log('adding filter')
+          $currentDataService.addFilter(JSON.parse(`{"${api.filter[0]}":"${api.filter[1]}"}`))
           $rootScope.$broadcast('stateChanged', () => {})
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings',err)
