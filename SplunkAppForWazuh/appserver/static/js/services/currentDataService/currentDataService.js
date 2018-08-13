@@ -79,7 +79,6 @@ define(['../module'], function (module) {
     }
 
     const getCurrentAgent = () => {
-      console.log('get current agent in current data')
       return $navigationService.getCurrentAgent()
     }
 

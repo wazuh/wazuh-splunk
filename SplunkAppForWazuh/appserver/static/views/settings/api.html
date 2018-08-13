@@ -28,7 +28,7 @@
           <!-- API entry -->
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
             <p flex="15">
-              <i ng-show="(entry.selected)" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
+              <i ng-show="entry.selected" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
                 aria-hidden="true"></i> {{entry.cluster}}</p>
             <p flex="20">{{entry.managerName}}</p>
             <p flex="15">{{entry.url}}</p>
@@ -47,7 +47,7 @@
 
         <!-- Add API button section -->
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
-          <md-button ng-click='sac.addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
+          <md-button ng-show='!sac.edit' ng-click='sac.addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
             <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new API
           </md-button>
         </div>

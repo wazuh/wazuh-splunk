@@ -21,8 +21,6 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-# sys.path.append(os.path.join(os.path.dirname(__file__), "."))
-# import jwt
 
 _APPNAME = 'SplunkAppForWazuh'
 
@@ -65,11 +63,9 @@ class manager(controllers.BaseController):
       auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
       verify = False
       request_cluster = self.session.get(url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
-      # encoded = jwt.encode(request_cluster, 'splunkSecret', algorithm='HS256')
-      # request_cluster['token'] = encoded
       result = json.dumps(request_cluster)
     except Exception as e:
-      return json.dumps({"error":str(e)})
+      return json.dumps({"status":"400","error":str(e)})
     return result
 
   @expose_page(must_login=False, methods=['GET'])

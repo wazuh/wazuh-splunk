@@ -6,9 +6,9 @@ define([
   module,
   mvc,
   LayoutView
-  ) {
+) {
     'use strict'
-    module.controller('mainCtrl', function () {
+    module.controller('mainCtrl', function ($state) {
       new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": true, "hideChrome": false })
         .render()
         .getContainerElement()

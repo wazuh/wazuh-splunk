@@ -207,14 +207,13 @@ define(['../module'], function (module) {
             await $splunkStoreService.update(api._key, api)
           }
         }
-
         // If cluster is disabled, then filter by manager.name
-        if (clusterData.data.enabled === "yes") {
+        if (clusterData.data.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await $requestService.httpReq(`GET`, getClusterNameEndpoint, true)
-          api.filter.push(clusterName.cluster)
-          if (!api.cluster || api.cluster !== clusterName.cluster) {
-            api.cluster = clusterName.cluster
+          api.filter.push(clusterName.data.cluster)
+          if (!api.cluster || api.cluster !== clusterName.data.cluster) {
+            api.cluster = clusterName.data.cluster
             await $splunkStoreService.update(api._key, api)
           }
         } else {
