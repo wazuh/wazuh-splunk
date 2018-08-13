@@ -208,11 +208,9 @@ define(['../module'], function (module) {
           }
         }
         // If cluster is disabled, then filter by manager.name
-        console.log('cluster data ', clusterData)
         if (clusterData.data.data.enabled === "yes") {
           api.filter.push('cluster.name')
           const clusterName = await $requestService.httpReq(`GET`, getClusterNameEndpoint, true)
-          console.log('cluster name ', clusterName)
           api.filter.push(clusterName.data.cluster)
           if (!api.cluster || api.cluster !== clusterName.data.cluster) {
             api.cluster = clusterName.data.cluster
@@ -226,7 +224,6 @@ define(['../module'], function (module) {
           api.filter.push('manager.name')
           api.filter.push(api.managerName)
         }
-        console.log('returning api ',api)
         return api
       } catch (err) {
         return Promise.reject(err)

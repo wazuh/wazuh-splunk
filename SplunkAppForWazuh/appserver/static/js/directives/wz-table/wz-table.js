@@ -24,7 +24,7 @@ define(['../module'], function (directives) {
       scope: {
         path: '=path',
         keys: '=keys',
-        allowClick: '=allowClick',
+        allow: '=allow',
         implicitFilter: '=implicitFilter',
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
@@ -33,10 +33,11 @@ define(['../module'], function (directives) {
         $scope.totalItems = 0
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
 
-        $scope.clickAction = item => {
+        $scope.Action = item => {
           if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
             // Go to and store an agent details
             $currentDataService.setCurrentAgent(item.id)
+            // $currentDataService.addFilter(`{"agent.id":${item.id}}`)
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })

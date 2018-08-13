@@ -88,7 +88,6 @@ define([
         const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
         if (activeAgentTokenJS !== undefined) {
           vm.loadingSearch = false
-          console.log("agent most active ", activeAgentTokenJS)
           vm.mostActiveAgent = `${activeAgentTokenJS}`
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -120,7 +119,6 @@ define([
      * When controller is destroyed
      */
     $scope.$on('$destroy', () => {
-      console.log('destroyed agents cntrl')
       searchTopAgent.cancel()
       searchTopAgent = null
       handlerTopAgent = null

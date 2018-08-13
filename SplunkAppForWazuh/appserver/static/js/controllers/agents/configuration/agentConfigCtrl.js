@@ -16,7 +16,6 @@ define(['../../module'], function (modules) {
 
   modules.controller('agentConfigCtrl', function ($scope, config, $beautifierJson) {
     const vm = this
-    console.log('config ', config)
     vm.config = config
     vm.configurationError = false
     vm.load = true

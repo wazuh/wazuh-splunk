@@ -359,13 +359,10 @@ define([
       submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (filesDeletedTokenJS) {
-          console.log('filesdeleted ',filesDeletedTokenJS)
           vm.filesDeleted = filesDeletedTokenJS
           vm.loadingSearch = false
           if (!$scope.$$phase) $scope.$digest()
         } else {
-          console.log('filesdeleted to 0',filesDeletedTokenJS)
-
           vm.filesDeleted = 0
           if (!$scope.$$phase) $scope.$digest()
         }

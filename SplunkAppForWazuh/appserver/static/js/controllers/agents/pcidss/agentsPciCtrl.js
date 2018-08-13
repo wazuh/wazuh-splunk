@@ -39,8 +39,6 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
-      console.log('agent pci ',agent)
-
       vm.agent = agent.data.data
       vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
       vm.formatAgentStatus = agentStatus => {
@@ -53,7 +51,6 @@ define([
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
 
       let filters = $currentDataService.getSerializedFilters()
-      console.log('the filters ',filters)
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {

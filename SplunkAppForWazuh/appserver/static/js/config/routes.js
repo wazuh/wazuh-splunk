@@ -427,7 +427,6 @@ define(['./module'], function (module) {
             const id = $stateParams.id || $currentDataService.getCurrentAgent()
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
-                console.log('agent pci ', response)
                 return response
               }, function (response) {
                 return response
@@ -447,7 +446,6 @@ define(['./module'], function (module) {
             const id = $stateParams.id || $currentDataService.getCurrentAgent()
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
-                console.log('response ', response)
                 const group = response.data.data.group || 'default'
                 return Promise.all([
                   $requestService.apiReq(`/agents/groups/${group}/configuration`, {}),

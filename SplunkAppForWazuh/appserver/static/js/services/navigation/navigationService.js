@@ -22,7 +22,6 @@ define(['../module'], function (module) {
         sessionStorage.currentAgent = currentAgentId
       },
       getCurrentAgent: () => {
-        console.log('get current agent in nav')
         if (sessionStorage.currentAgent)
           return sessionStorage.currentAgent
       }

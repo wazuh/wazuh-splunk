@@ -13,42 +13,6 @@ define(['../module'], function (module) {
           return []
       },
 
-      // /**
-      //  * Adds a new filter
-      //  * @param {Object} filter 
-      //  */
-      // addFilter: (filter) => {
-      //   console.log('lets add a filter',filter)
-      //   if (window.localStorage.filters) {
-      //     const filters = JSON.parse(window.localStorage.getItem('filters'))
-      //     let isInIt = false
-      //     for (let fil of filters) {
-      //       if (typeof filter === 'string') {
-      //         console.log('filter ',filter)
-      //         const key = filter.split(':')[0]
-      //         const value = filter.split(':')[1]
-      //         const filter = `{"${key}":"${value}"}`
-      //         filter = JSON.parse(newObject)
-      //       }
-      //       for (let key in fil) {
-      //         for (let keyDup in filter) {
-      //           if (keyDup === key) {
-      //             filters[key] = filter[key]
-      //             isInIt = true
-      //             break;
-      //           }
-      //         }
-      //       }
-      //     }
-      //     if (!isInIt) {
-      //       filters.push(filter)
-      //     }
-      //     window.localStorage.setItem('filters', JSON.stringify(filters))
-      //   } else {
-      //     window.localStorage.setItem('filters', JSON.stringify([filter]))
-      //   }
-      // },
-
       /**
        * Adds a new filter
        * @param {String} filter 
@@ -57,13 +21,16 @@ define(['../module'], function (module) {
         const filterJson = JSON.parse(filter)
         if (window.localStorage.filters) {
           const filters = JSON.parse(window.localStorage.filters)
+          let isInIt = false
           filters.map(fil => {
             if (fil[Object.keys(filterJson)]) {
+              isInIt = true
               fil[Object.keys(filterJson)] = filterJson[Object.keys(filterJson)]
-            } else {
-              filters.push(filterJson)
             }
           })
+          if (!isInIt) {
+            filters.push(filterJson)
+          }
           window.localStorage.setItem('filters', JSON.stringify(filters))
         } else {
           window.localStorage.setItem('filters', `[${filter}]`)
@@ -104,7 +71,6 @@ define(['../module'], function (module) {
         }
         filters.map((item, index) => {
           if (Object.keys(item)[0] === Object.keys(filter)[0]) {
-            console.log('coincide ', item, index)
             filters.splice(index, 1)
           }
         })
@@ -115,7 +81,7 @@ define(['../module'], function (module) {
        * Sets the filters empty
        */
       cleanFilters: () => {
-        window.localStorage.filters = []
+        delete window.localStorage.filters
       }
     }
   })
