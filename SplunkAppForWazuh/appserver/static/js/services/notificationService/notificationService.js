@@ -3,8 +3,8 @@ define(['../module'], function (module) {
   module.service('$notificationService', function ($mdToast) {
 
     let last = {
-      bottom: false,
-      top: true,
+      bottom: true,
+      top: false,
       left: false,
       right: true
     }
