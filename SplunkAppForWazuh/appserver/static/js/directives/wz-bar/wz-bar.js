@@ -11,7 +11,7 @@
  */
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wazuhBar', function ($currentDataService) {
+  directives.directive('wazuhBar', function ($currentDataService, $notificationService) {
     return {
       restrict: 'E',
       controller: function ($scope, $currentDataService) {
@@ -22,14 +22,14 @@ define(['../module'], function (directives) {
         const getPrettyFilters = () => {
           const prettyFilters = []
           const uglyFilters = $currentDataService.getFilters()
-          console.log('ugly filters ',uglyFilters)
+          console.log('ugly filters ', uglyFilters)
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
               prettyFilters.push(`${key}:${filter[key]}`)
             }
           }
-          console.log('pretty filters ',prettyFilters)
+          console.log('pretty filters ', prettyFilters)
           return prettyFilters
         }
 
@@ -46,7 +46,6 @@ define(['../module'], function (directives) {
             $scope.filters.splice(index, 1)
           }
           $scope.$emit('deletedFilter', {})
-
         }
 
         /**
@@ -54,7 +53,11 @@ define(['../module'], function (directives) {
          * @param {Object | String} filter 
          */
         $scope.applyFilters = (customSearch) => {
-          console.log('customsearch ',customSearch)
+          if (!customSearch || customSearch.split(':').length !== 2) {
+            $notificationService.showSimpleToast('Incorrent format. Please use key:value syntax')
+            return
+          }
+          console.log('customsearch ', customSearch)
           $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
           $scope.filters = getPrettyFilters()
           $scope.$emit('barFilter', {})

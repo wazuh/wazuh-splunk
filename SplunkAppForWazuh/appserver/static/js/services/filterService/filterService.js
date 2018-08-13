@@ -96,7 +96,6 @@ define(['../module'], function (module) {
        * @param {Object}: The filter to be removed
        */
       removeFilter: (filter) => {
-        console.log('deleting filter...', filter)
         filter = JSON.parse(`{"${filter.split(':')[0]}":"${filter.split(':')[1]}"}`)
         const filters = JSON.parse(window.localStorage.filters)
         if (filters.length === 1) {
@@ -104,11 +103,6 @@ define(['../module'], function (module) {
           return
         }
         filters.map((item, index) => {
-          console.log('item ', item)
-          console.log('index', index)
-          console.log("objectkeys item", Object.keys(item))
-          console.log("objectkeys filter", Object.keys(filter))
-
           if (Object.keys(item)[0] === Object.keys(filter)[0]) {
             console.log('coincide ', item, index)
             filters.splice(index, 1)
