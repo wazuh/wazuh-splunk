@@ -11,6 +11,8 @@ define(['../module'], function (module) {
       goToLastState: () => {
         if (sessionStorage.params)
           $state.go(sessionStorage.params)
+        else
+          $state.go('settings.api')
       },
       getLastState: () => {
         if (sessionStorage.params)
