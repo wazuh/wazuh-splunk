@@ -18,21 +18,22 @@ define([
       const urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
       const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
       const portRegEx = new RegExp(/^[0-9]{2,5}$/)
-
       /**
        * Initializes the controller
        */
       vm.init = function () {
-        vm.selected = []
         vm.apiList = apiList
-        vm.apiList.map(item => {
-          const currentApi = $currentDataService.getApi()
-          if (currentApi)
+        console.log('apilist ', apiList)
+        const currentApi = $currentDataService.getApi()
+        vm.apiList.map(item => { delete item.selected })
+
+        if (currentApi)
+          vm.apiList.map(item => {
             if (item.url === currentApi.url) {
               item.selected = true
             }
-        })
-        vm.selectedApi = []
+          })
+        vm.Api = []
         vm.saveOrUpdate = 'Add'
       }
 
