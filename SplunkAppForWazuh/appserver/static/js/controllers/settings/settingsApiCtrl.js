@@ -40,7 +40,7 @@ define([
             vm.apiList.splice(index, 1)
             await $currentDataService.remove(entry._key)
           }
-          $notificationService.showSimpleToast({title:'Success',body:'Manager was removed.'})
+          $notificationService.showSimpleToast('Manager was removed.')
         } catch (err) {
           console.error(err)
         }
@@ -53,10 +53,10 @@ define([
       vm.checkManager = async (entry) => {
         try {
           await $currentDataService.checkApiConnection(entry._key)
-          $notificationService.showSimpleToast({title:'Success',body:'Established connection.'})
+          $notificationService.showSimpleToast('Established connection')
 
         } catch (err) {
-          $notificationService.showSimpleToast('Cannot connect with API', 'Error')
+          $notificationService.showSimpleToast('Unreachable API')
         }
       }
 
@@ -82,7 +82,7 @@ define([
           vm.user = entry.userapi
           vm.entry = entry
         } catch (err) {
-          $notificationService.showSimpleToast('Could not open API form', 'Error')
+          $notificationService.showSimpleToast('Could not open API form')
         }
       }
 
@@ -103,11 +103,12 @@ define([
           vm.currentEntryKey = updatedEntry.data._key
           vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
-          $notificationService.showSimpleToast({title:'Success',body:'Updated API.'})
+          $notificationService.showSimpleToast({title:'Success',body:'Updated API'})
         } catch (err) {
           $notificationService.showSimpleToast({title:'Error',body:'Could not update API'})
         }
       }
+
       /**
        * Check if an URL is valid or not
        * @param {String} url 
@@ -165,13 +166,13 @@ define([
             }
           }
           entry.selected = true
-          $notificationService.showSimpleToast('Selected API', 'Success')
+          $notificationService.showSimpleToast('API selected')
           if (!$scope.$$phase) $scope.$digest()
           $scope.$emit('updatedAPI', () => { })
 
         } catch (err) {
           console.error('Error',`[selectManager]:${err}`)
-          $notificationService.showSimpleToast('Error','Could not select manager')
+          $notificationService.showSimpleToast('Could not select manager')
         }
       }
 
@@ -180,8 +181,8 @@ define([
        */
       vm.submitApiForm = async () => {
         try {
+          console.log('submitting')
           // When the Submit button is clicked, get all the form fields by accessing input values
-          toaster.pop('wait','Please wait','Adding new API.')
           const form_url = vm.url
           const form_apiport = vm.port
           const form_apiuser = vm.user
@@ -189,6 +190,7 @@ define([
 
           // If values are valid, register them
           if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
+            console.log('format OK')
             // Create an object to store the field names and values
             const record = {
               "url": form_url,
@@ -211,23 +213,20 @@ define([
               }
               vm.showForm = false
               if (!$scope.$$phase) $scope.$digest()
-              $notificationService.showSimpleToast('Added new API', 'Success')
+              $notificationService.showSimpleToast('API was added')
 
             } catch (err) {
               console.error('err!',err)
-              await $currentDataService.remove(result.data._key)
-              $notificationService.showSimpleToast('Error at adding new API', 'Error')
-
+              $currentDataService.remove(result.data._key).then(()=>{}).catch((err) => {console.error('error deleting API after inserting it')})
+              $notificationService.showSimpleToast('Unreachable API')
             }
           } else {
-            $notificationService.showSimpleToast('Invalid format', 'Error')
+            $notificationService.showSimpleToast('Invalid format. Please check the fields again')
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Error at adding new API', 'Error')
+          $notificationService.showSimpleToast('Error at adding new API')
         }
       }
-
-
 
       vm.init()
     })
