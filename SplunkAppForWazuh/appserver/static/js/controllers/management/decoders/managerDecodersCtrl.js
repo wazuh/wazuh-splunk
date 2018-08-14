@@ -114,6 +114,10 @@ define(['../../module'], function (controllers) {
 
     vm.onlyParents = typeFilter => {
       vm.appliedFilters = []
+      if ($stateParams.filters)
+        $stateParams.filters.map((item, index) => {
+          $stateParams.filters.splice(index, 1)
+        })
       if (typeFilter === 'all') $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
       else $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders/parents' })
     }

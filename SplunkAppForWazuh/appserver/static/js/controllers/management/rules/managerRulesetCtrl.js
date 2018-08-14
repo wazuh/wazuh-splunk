@@ -69,6 +69,11 @@ define(['../../module'], function (controllers) {
     vm.removeFilter = filterName => {
       filters = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
+      $stateParams.filters.map((item, index) => {
+        if (item.name === filterName) {
+          $stateParams.filters.splice(index, 1)
+        }
+      })
       return $scope.$broadcast('wazuhRemoveFilter', { filterName })
     }
 

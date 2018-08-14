@@ -114,7 +114,7 @@ define(['./module'], function (module) {
         params: { id: null, filters: null },
         resolve: {
           ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq('/rules/${id}')
+            return $requestService.apiReq(`/rules/${$stateParams.id}`)
               .then(function (response) {
                 return response
               }, function (response) {

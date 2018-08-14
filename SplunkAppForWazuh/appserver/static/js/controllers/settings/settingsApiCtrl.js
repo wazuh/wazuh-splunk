@@ -124,7 +124,6 @@ define([
             $notificationService.showSimpleToast('Unreachable API. Cannot update')
             return
           }
-          console.log('result new api ',resultNewApi)
           delete vm.entry['$$hashKey']
           delete vm.entry._user
           const updatedEntry = await $currentDataService.update(vm.currentEntryKey, vm.entry)
