@@ -18,7 +18,7 @@
 
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wazuhTable', function ($dataService) {
+  directives.directive('wazuhTable', function ($dataService, $notificationService) {
     return {
       restrict: 'E',
       scope: {
@@ -133,7 +133,7 @@ define(['../module'], function (directives) {
               if (!$scope.$$phase) $scope.$digest()
             }
           } catch (error) {
-            console.error(`Error paginating table due to ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error paginating table due to ${error.message || error}`)
           }
           return
 
@@ -158,7 +158,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`)
           }
           return
         }
@@ -173,7 +173,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error searching. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error searching. ${error.message || error}`)
           }
           return
         }
@@ -195,7 +195,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return
         }
@@ -233,7 +233,7 @@ define(['../module'], function (directives) {
             }
           } catch (error) {
             realTime = false
-            console.error(`Real time feature aborted. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Real time feature aborted. ${error.message || error}`)
           }
           return
         }
@@ -264,7 +264,7 @@ define(['../module'], function (directives) {
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error while init table. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
           }
           return
         }
