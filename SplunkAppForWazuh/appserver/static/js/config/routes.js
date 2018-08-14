@@ -103,7 +103,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetCtrl',
         controllerAs: 'mrules',
-        params: { filters: null, }
+        params: { filters: null }
       })
       // Manager - Ruleset/:id
       .state('mg-rules-id', {

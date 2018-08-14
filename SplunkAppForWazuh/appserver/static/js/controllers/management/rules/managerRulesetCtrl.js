@@ -2,7 +2,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('managerRulesetCtrl', function ($scope, $sce, $stateParams, $injector) {
+  controllers.controller('managerRulesetCtrl', function ($scope, $sce) {
     const vm = this
     const colors = [
       '#004A65', '#00665F', '#BF4B45', '#BF9037', '#1D8C2E', 'BB3ABF',
@@ -13,8 +13,7 @@ define(['../../module'], function (controllers) {
     ]
 
     vm.appliedFilters = []
-    let filters = []
-
+    let filters = window.localStorage.ruleset || []
     vm.search = term => {
       if (term && term.startsWith('group:') && term.split('group:')[1].trim()) {
         vm.custom_search = ''
@@ -46,18 +45,24 @@ define(['../../module'], function (controllers) {
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'file')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
+      } else if (term && term.startsWith('path:') && term.split('path:')[1].trim()) {
+        $scope.custom_search = ''
+        const filter = { name: 'path', value: term.split('path:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'path')
+        vm.appliedFilters.push(filter)
+        $scope.$broadcast('wazuhFilter', { filter })
       } else {
         $scope.$broadcast('wazuhSearch', { term, removeFilters: 0 })
       }
     }
 
     $scope.$on('loadedTable', () => {
-      if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
-        vm.appliedFilters = $stateParams.filters
-        $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
+      if (window.localStorage.ruleset && JSON.parse(window.localStorage.ruleset).length > 0) {
+        const jsonFilters = JSON.parse(window.localStorage.ruleset)
+        vm.appliedFilters = jsonFilters
+        jsonFilters.forEach((filter) => {$scope.$broadcast('wazuhFilter', { filter }) })
       }
     })
-
 
     vm.includesFilter = filterName => vm.appliedFilters.map(item => item.name).includes(filterName)
 
@@ -69,11 +74,14 @@ define(['../../module'], function (controllers) {
     vm.removeFilter = filterName => {
       filters = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
-      $stateParams.filters.map((item, index) => {
-        if (item.name === filterName) {
-          $stateParams.filters.splice(index, 1)
-        }
-      })
+      if (window.localStorage.ruleset && JSON.parse(window.localStorage.ruleset))
+        JSON.parse(window.localStorage.ruleset).map((item, index) => {
+          if (item.name === filterName) {
+            const tempFilter = JSON.parse(window.localStorage.ruleset)
+            tempFilter.splice(index, 1)
+            window.localStorage.ruleset = JSON.stringify(tempFilter)
+          }
+        })
       return $scope.$broadcast('wazuhRemoveFilter', { filterName })
     }
 

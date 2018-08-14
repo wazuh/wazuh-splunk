@@ -260,6 +260,7 @@ define(['../module'], function (directives) {
           try {
             $scope.wazuh_table_loading = true
             await fetch()
+            console.log('current filters ',instance.filters)
             $tableFilterService.set(instance.filters)
             $scope.wazuh_table_loading = false
             $scope.$emit('loadedTable')
