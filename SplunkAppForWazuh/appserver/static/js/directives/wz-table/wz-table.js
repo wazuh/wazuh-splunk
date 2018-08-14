@@ -16,7 +16,7 @@
 
 // const app = uiModules.get('app/wazuh', []);
 
-define(['../module'], function (directives) {
+define(['../module', 'underscore'], function (directives, _) {
   'use strict'
   directives.directive('wazuhTable', function ($dataService, $notificationService) {
     return {
@@ -180,14 +180,25 @@ define(['../module'], function (directives) {
 
         const filter = async filter => {
           try {
+            console.log('filter ', filter, typeof filter)
             $scope.wazuh_table_loading = true
-            if (filter.name === 'platform' && instance.path === '/agents') {
+            if (_.isArray(filter)) {
+              filter.forEach(item => {
+                if (item.name === 'platform' && instance.path === '/agents') {
+                  const platform = item.value.split(' - ')[0]
+                  const version = item.value.split(' - ')[1]
+                  instance.addFilter('os.platform', platform)
+                  instance.addFilter('os.version', version)
+                } else {
+                  instance.addFilter(item.name, item.value)
+                }
+              })
+            } else if (filter.name === 'platform' && instance.path === '/agents') {
               const platform = filter.value.split(' - ')[0]
               const version = filter.value.split(' - ')[1]
               instance.addFilter('os.platform', platform)
               instance.addFilter('os.version', version)
             } else {
-
               instance.addFilter(filter.name, filter.value)
             }
             $tableFilterService.set(instance.filters)
@@ -195,7 +206,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error('err',error)
+            console.error('err', error)
             $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -208,6 +219,7 @@ define(['../module'], function (directives) {
         })
 
         $scope.$on('wazuhFilter', (event, parameters) => {
+          console.log('params ',parameters)
           return filter(parameters.filter)
         })
 
@@ -260,7 +272,6 @@ define(['../module'], function (directives) {
           try {
             $scope.wazuh_table_loading = true
             await fetch()
-            console.log('current filters ',instance.filters)
             $tableFilterService.set(instance.filters)
             $scope.wazuh_table_loading = false
             $scope.$emit('loadedTable')

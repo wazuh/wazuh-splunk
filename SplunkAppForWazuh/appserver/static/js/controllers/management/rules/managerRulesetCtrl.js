@@ -13,8 +13,9 @@ define(['../../module'], function (controllers) {
     ]
 
     vm.appliedFilters = []
-    let filters = window.localStorage.ruleset || []
+    let filter = window.localStorage.ruleset || []
     vm.search = term => {
+
       if (term && term.startsWith('group:') && term.split('group:')[1].trim()) {
         vm.custom_search = ''
         const filter = { name: 'group', value: term.split('group:')[1].trim() }
@@ -22,31 +23,31 @@ define(['../../module'], function (controllers) {
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('level:') && term.split('level:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'level', value: term.split('level:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'level')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'pci', value: term.split('pci:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'pci')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('gdpr:') && term.split('gdpr:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'gdpr')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('file:') && term.split('file:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'file', value: term.split('file:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'file')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
       } else if (term && term.startsWith('path:') && term.split('path:')[1].trim()) {
-        $scope.custom_search = ''
+        vm.custom_search = ''
         const filter = { name: 'path', value: term.split('path:')[1].trim() }
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'path')
         vm.appliedFilters.push(filter)
@@ -60,7 +61,9 @@ define(['../../module'], function (controllers) {
       if (window.localStorage.ruleset && JSON.parse(window.localStorage.ruleset).length > 0) {
         const jsonFilters = JSON.parse(window.localStorage.ruleset)
         vm.appliedFilters = jsonFilters
-        jsonFilters.forEach((filter) => {$scope.$broadcast('wazuhFilter', { filter }) })
+        if (filter.length > 0)
+          $scope.$broadcast('wazuhFilter', { filter: JSON.parse(filter) })
+
       }
     })
 
@@ -72,7 +75,7 @@ define(['../../module'], function (controllers) {
     }
 
     vm.removeFilter = filterName => {
-      filters = vm.appliedFilters.filter(item => item.name !== filterName)
+      filter = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
       if (window.localStorage.ruleset && JSON.parse(window.localStorage.ruleset))
         JSON.parse(window.localStorage.ruleset).map((item, index) => {
