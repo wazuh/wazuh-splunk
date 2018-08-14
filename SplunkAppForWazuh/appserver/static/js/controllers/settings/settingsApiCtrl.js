@@ -120,7 +120,12 @@ define([
           vm.entry.portapi = vm.port
           vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
-          await $currentDataService.checkRawConnection(vm.entry)
+          const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
+          if(resultNewApi.data.error) {
+            $notificationService.showSimpleToast('Unreachable API. Cannot update')
+            return
+          }
+          console.log('result new api ',resultNewApi)
           delete vm.entry['$$hashKey']
           delete vm.entry._user
           const updatedEntry = await $currentDataService.update(vm.currentEntryKey, vm.entry)
@@ -132,8 +137,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
           $notificationService.showSimpleToast('Updated API')
         } catch (err) {
-          console.error(err)
-          $notificationService.showSimpleToast('Could not update API')
+          $notificationService.showSimpleToast('Cannot update API')
         }
       }
 
@@ -205,7 +209,6 @@ define([
           if (!$scope.$$phase) $scope.$digest()
 
         } catch (err) {
-          console.error('Error', err)
           $notificationService.showSimpleToast('Could not select manager')
         }
       }
@@ -249,7 +252,7 @@ define([
               $notificationService.showSimpleToast('API was added')
 
             } catch (err) {
-              $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { console.error('error deleting API after inserting it') })
+              $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
               $notificationService.showSimpleToast('Unreachable API')
             }
           } else {

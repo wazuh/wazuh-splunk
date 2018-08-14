@@ -79,10 +79,10 @@
               <p class="color-f9">{{messageError}}</p>
             </div>
             <div layout="row" layout-align="center center">
-              <md-button ng-show='!sac.edit' ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+              <md-button ng-if='!sac.edit' ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Add API
               </md-button>
-              <md-button ng-show='sac.edit' ng-click='sac.updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+              <md-button ng-if='sac.edit' ng-click='sac.updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
                   <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update API
                 </md-button>
             </div>
