@@ -23,7 +23,6 @@ define([
        */
       vm.init = function () {
         vm.apiList = apiList
-        console.log('apilist ', apiList)
         const currentApi = $currentDataService.getApi()
         vm.apiList.map(item => { delete item.selected })
 

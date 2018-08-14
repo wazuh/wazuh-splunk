@@ -268,7 +268,7 @@ define(['./module'], function (module) {
         controller: 'agentsCtrl',
         controllerAs: 'ag',
         resolve: {
-          data: ['$requestService', ($requestService) => {
+          data: ['$requestService','$state', ($requestService, $state) => {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
@@ -278,9 +278,6 @@ define(['./module'], function (module) {
                 return response
               }, function (response) {
                 return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
               })
           }]
         }
@@ -295,7 +292,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return Promise.all([
               $requestService.apiReq(`/agents/${id}`),
               $requestService.apiReq(`/syscheck/${id}/last_scan`),
@@ -324,7 +321,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -344,7 +341,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -364,7 +361,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -384,7 +381,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -404,7 +401,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -424,7 +421,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -443,7 +440,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           config: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 const group = response.data.data.group || 'default'
@@ -480,7 +477,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -499,7 +496,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
