@@ -4,6 +4,8 @@ define(['../../module'], function (controllers) {
 
   controllers.controller('managerRulesetCtrl', function ($scope, $sce) {
     const vm = this
+    if (window.localStorage.decoders)
+      delete window.localStorage.decoders
     const colors = [
       '#004A65', '#00665F', '#BF4B45', '#BF9037', '#1D8C2E', 'BB3ABF',
       '#00B1F1', '#00F2E2', '#7F322E', '#7F6025', '#104C19', '7C267F',
@@ -15,7 +17,6 @@ define(['../../module'], function (controllers) {
     vm.appliedFilters = []
     let filter = window.localStorage.ruleset || []
     vm.search = term => {
-
       if (term && term.startsWith('group:') && term.split('group:')[1].trim()) {
         vm.custom_search = ''
         const filter = { name: 'group', value: term.split('group:')[1].trim() }
@@ -63,7 +64,6 @@ define(['../../module'], function (controllers) {
         vm.appliedFilters = jsonFilters
         if (filter.length > 0)
           $scope.$broadcast('wazuhFilter', { filter: JSON.parse(filter) })
-
       }
     })
 

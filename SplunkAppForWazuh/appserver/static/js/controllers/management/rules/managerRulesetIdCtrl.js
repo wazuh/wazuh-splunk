@@ -12,7 +12,6 @@ define(['../../module'], function (controllers) {
       '#0082B2', '#00B3A7', '#401917', '#403012', '#2DD947', '3E1340',
       '#00668B', '#008C83', '#E55A53', '#E5AD43', '#25B23B', 'E045E5'
     ]
-    console.log('the filters ', filters)
     vm.ruleInfo = ruleInfo.data.data.items[0]
     vm.colorRuleArg = ruleArg => {
       ruleArg = ruleArg.toString()

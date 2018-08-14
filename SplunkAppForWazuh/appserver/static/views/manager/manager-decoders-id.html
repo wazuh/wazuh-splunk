@@ -30,7 +30,7 @@
     <md-card flex class="wz-metric-color wz-md-card">
       <md-card-content layout="row" class="wz-padding-metric">
         <div flex="20" ng-if="mdid.currentDecoder.position || currentDecoder.position == 0" class="wz-text-truncatable">Position:
-          <span class="wz-text-bold">{{mdid.mdid.currentDecoder.position}}</span>
+          <span class="wz-text-bold">{{mdid.currentDecoder.position}}</span>
         </div>
         <div flex="40" ng-if="mdid.currentDecoder.file" class="wz-text-truncatable">File:
           <span class="wz-text-bold wz-text-link" ng-click="mdid.addDetailFilter('file', mdid.currentDecoder.file)" tooltip="Filter by this file"
@@ -72,13 +72,13 @@
             <span flex="20">No alert</span>
             <span class="wz-text-right color-grey">{{mdid.currentDecoder.details.noalert}}</span>
           </div>
-          <div ng-if="mdid.currentDecoder.details.regex && !isArray(mdid.currentDecoder.details.regex)" layout="row" layout-wrap class="wz-padding-top-10">
+          <div ng-if="mdid.currentDecoder.details.regex && !mdid.isArray(mdid.currentDecoder.details.regex)" layout="row" layout-wrap class="wz-padding-top-10">
             <span flex="20">Regex</span>
-            <span class="wz-text-right color-grey" ng-bind-html="mdid.colorRegex(currentDecoder.details.regex)"></span>
+            <span class="wz-text-right color-grey" ng-bind-html="mdid.colorRegex(mdid.currentDecoder.details.regex)"></span>
           </div>
           <div ng-if="mdid.currentDecoder.details.order" layout="row" layout-wrap class="wz-padding-top-10">
             <span flex="20">Order</span>
-            <span class="wz-text-right color-grey" ng-bind-html="mdid.colorOrder(currentDecoder.details.order)"></span>
+            <span class="wz-text-right color-grey" ng-bind-html="mdid.colorOrder(mdid.currentDecoder.details.order)"></span>
           </div>
           <div ng-if="mdid.currentDecoder.details.parent" layout="row" layout-wrap class="wz-padding-top-10">
             <span flex="20">Parent</span>

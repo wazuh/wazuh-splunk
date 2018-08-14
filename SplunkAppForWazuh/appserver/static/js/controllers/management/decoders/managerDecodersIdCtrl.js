@@ -4,7 +4,9 @@ define(['../../module'], function (controllers) {
 
   controllers.controller('managerDecodersIdCtrl', function (currentDecoder, $sce, $state, $stateParams) {
     const vm = this
-    const filters = []
+    console.log('currentdecoder', currentDecoder)
+    const filters = (window.localStorage.ruleset && JSON.parse(window.localStorage.ruleset)) ? JSON.parse(window.localStorage.ruleset) : []
+
     const colors = [
       '#004A65', '#00665F', '#BF4B45', '#BF9037', '#1D8C2E', 'BB3ABF',
       '#00B1F1', '#00F2E2', '#7F322E', '#7F6025', '#104C19', '7C267F',
@@ -47,7 +49,8 @@ define(['../../module'], function (controllers) {
     vm.addDetailFilter = (name, value) => {
       const filter = { name: name, value: value }
       filters.push(filter)
-      $state.go('mg-decoders', { filters: filters })
+      window.localStorage.setItem('decoders', JSON.stringify(filters))
+      $state.go('mg-decoders')
     }
 
     vm.colorOrder = order => {

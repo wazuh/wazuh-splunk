@@ -141,10 +141,10 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
         controller: 'managerDecodersIdCtrl',
         controllerAs: 'mdid',
-        params: { id: null, filters: null },
+        params: { id: null, name: null },
         resolve: {
           currentDecoder: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq('/decoders', { file: $stateParams.file })
+            return $requestService.apiReq(`/decoders/${$stateParams.name}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -268,7 +268,7 @@ define(['./module'], function (module) {
         controller: 'agentsCtrl',
         controllerAs: 'ag',
         resolve: {
-          data: ['$requestService','$state', ($requestService, $state) => {
+          data: ['$requestService', '$state', ($requestService, $state) => {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
