@@ -4,7 +4,6 @@ define(['../../module'], function (controllers) {
 
   controllers.controller('managerDecodersIdCtrl', function (currentDecoder, $sce, $state, $stateParams) {
     const vm = this
-    console.log('currentdecoder', currentDecoder)
     const filters = (window.localStorage.ruleset && JSON.parse(window.localStorage.ruleset)) ? JSON.parse(window.localStorage.ruleset) : []
 
     const colors = [
