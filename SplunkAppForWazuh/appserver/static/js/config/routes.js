@@ -394,7 +394,7 @@ define(['./module'], function (module) {
 
       // agents - OpenSCAP
       .state('ag-os', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/agents/agents-openscap.html',
+        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/scap/agents-openscap.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-os') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
