@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $stateParams,agent) {
+    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $state,agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false

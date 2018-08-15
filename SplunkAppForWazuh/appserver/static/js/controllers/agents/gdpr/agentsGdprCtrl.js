@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsGdprCtrl', function ($currentDataService, $scope, $rulesDescription,agent) {
+    controllers.controller('agentsGdprCtrl', function ($currentDataService, $scope, $rulesDescription,$state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true

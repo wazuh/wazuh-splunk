@@ -51,10 +51,11 @@ define(['../module'], function (directives) {
          * @param {Object | String} filter 
          */
         $scope.applyFilters = (customSearch) => {
-          if (!customSearch || customSearch.split(':').length !== 2) {
+          if (!customSearch || customSearch.split(':').length !== 2 || customSearch.split(':')[1].length === 0) {
             $notificationService.showSimpleToast('Incorrent format. Please use key:value syntax')
             return
           }
+          console.log('the second part ', customSearch.split(':')[1], customSearch.split(':')[1].length)
           $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
           $scope.filters = getPrettyFilters()
           $scope.$emit('barFilter', {})

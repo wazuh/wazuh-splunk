@@ -98,7 +98,7 @@
     <!-- Status selector -->
     <div layout="column">
       <select class="input input-dropdown" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="ag.status"
-        ng-change="filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
+        ng-change="ag.filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
         <option value="all">All states</option>
         <option value="active">Active</option>
         <option value="disconnected">Disconnected</option>
