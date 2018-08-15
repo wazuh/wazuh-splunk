@@ -21,9 +21,17 @@ define([
       /**
        * Initializes the controller
        */
-      vm.init = function () {
+      vm.init = async () => {
         vm.apiList = apiList
         const currentApi = $currentDataService.getApi()
+        let exit = false
+        let i = 0
+        if (!currentApi) {
+          do {
+            vm.selectManager(vm.apiList[i]).then(() => { exit=true }).catch()
+            ++i
+          } while (i < vm.apiList.length && !exit)
+        }
         vm.apiList.map(item => { delete item.selected })
 
         if (currentApi)
@@ -120,7 +128,7 @@ define([
           vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
           const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
-          if(resultNewApi.data.error) {
+          if (resultNewApi.data.error) {
             $notificationService.showSimpleToast('Unreachable API. Cannot update')
             return
           }
