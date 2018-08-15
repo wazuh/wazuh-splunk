@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state, agent) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -40,7 +40,6 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      vm.agent = agent.data.data
 
       let filters = $currentDataService.getSerializedFilters()
 

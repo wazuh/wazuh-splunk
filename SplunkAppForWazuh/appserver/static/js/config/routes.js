@@ -30,7 +30,7 @@ define(['./module'], function (module) {
       // Overview - General
       .state('ow-general', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('general') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-general') },
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
       })

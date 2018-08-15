@@ -35,8 +35,9 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsOpenScapCtrl', function ($scope, $currentDataService) {
+    controllers.controller('agentsOpenScapCtrl', function ($scope, $currentDataService, agent) {
       const vm = this
+      vm.agent = agent.data.data
       const epoch = (new Date).getTime()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })

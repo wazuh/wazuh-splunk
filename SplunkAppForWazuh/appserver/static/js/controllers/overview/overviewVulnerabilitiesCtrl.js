@@ -375,7 +375,7 @@ define([
 
 
       element2 = new ChartElement({
-        "id": "element2",
+        "id": `element2${epoch}`,
         "charting.chart.bubbleSizeBy": "area",
         "charting.chart.style": "shiny",
         "charting.axisTitleY.text": "Count of 1532686833.50",

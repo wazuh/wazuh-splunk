@@ -412,7 +412,7 @@ define([
       //
 
       input2 = new DropdownInput({
-        "id": "input2",
+        "id": `input2${epoch}`,
         "choices": [
           { "label": "ALL", "value": "*" }
         ],
