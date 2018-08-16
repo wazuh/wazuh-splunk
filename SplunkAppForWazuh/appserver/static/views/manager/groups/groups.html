@@ -53,7 +53,7 @@
               <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right" ng-click="mgr.goBackToAgents()">{{ mgr.currentGroup.count }}</span>
             </div>
             <div layout="row" class="wz-padding-top-10">
-              <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="mgr.goBackFiles()"
+              <span flex="20" class="wz-text-link" ng-class="mgr.groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="mgr.goBackFiles()"
                 tooltip="Click to open the list of files" tooltip-placement="left">Content</span>
               <span class="wz-text-link" tooltip="Click to open the list of files" tooltip-placement="right" ng-click="mgr.goBackFiles()">{{ mgr.totalFiles }}</span>
             </div>
