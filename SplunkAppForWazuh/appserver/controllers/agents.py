@@ -144,7 +144,7 @@ class agents(controllers.BaseController):
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request_number = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        request_number = requests.get(url + '/agents?limit=1', auth=auth, verify=verify)
         agents_qty = json.loads(request_number.text)["data"]["totalItems"]
         request = requests.get(url + '/agents?offset=0&select=version&limit=' + str(agents_qty), auth=auth, verify=verify).json()
         result = json.dumps(request)
@@ -163,7 +163,7 @@ class agents(controllers.BaseController):
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request_number = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        request_number = requests.get(url + '/agents?limit=1', auth=auth, verify=verify)
         agents_qty = json.loads(request_number.text)["data"]["totalItems"]
         request = requests.get(url + '/agents?offset=0&select=os.platform&limit=' + str(agents_qty), auth=auth, verify=verify).json()
         result = json.dumps(request)
@@ -243,7 +243,7 @@ class agents(controllers.BaseController):
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
-        request = requests.get(url + '/agents?limit=0', auth=auth, verify=verify)
+        request = requests.get(url + '/agents?limit=1', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
         request = requests.get(url + '/agents?select=version,os.platform&offset=0&limit=' + str(agents_qty), auth=auth, verify=verify).json()
       except Exception as e:
