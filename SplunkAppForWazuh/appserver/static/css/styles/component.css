@@ -93,11 +93,11 @@ md-chip {
 }
 
 .euiFlexGroup--gutterLarge {
-  margin: -12px;
+  margin: -8px;
 }
 
 .euiFlexGroup--gutterLarge > .euiFlexItem {
-  margin: 12px;
+  margin: 8px;
 }
 
 .euiPanel.euiPanel--paddingLarge {
