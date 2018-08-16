@@ -228,7 +228,7 @@ class agents(controllers.BaseController):
         verify = False
         request = requests.get(url + '/agents?limit=1', auth=auth, verify=verify)
         agents_qty = json.loads(request.text)["data"]["totalItems"]
-        request = requests.get(url + '/agents?select=version,os.platform&offset=0&limit=' + str(agents_qty), auth=auth, verify=verify).json()
+        request = requests.get(url + '/agents?select=version,os.name,os.platform,os.version&offset=0&limit=' + str(agents_qty), auth=auth, verify=verify).json()
       except Exception as e:
         return json.dumps({"error":str(e)})
       return json.dumps(request)
