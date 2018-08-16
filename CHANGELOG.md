@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.5.0 - Splunk Enterprise v7.1.2 - Splunk app v3.5.0-rev-11
+- Minor fixes ([#211](https://github.com/wazuh/wazuh-splunk/pull/211))
+
 ## Wazuh v3.5.0 - Splunk Enterprise v7.1.2 - Splunk app v3.5.0-rev-10
 - Support for Wazuh v3.5.0
 
