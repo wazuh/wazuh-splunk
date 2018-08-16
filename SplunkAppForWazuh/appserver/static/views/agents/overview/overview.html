@@ -30,7 +30,7 @@
         <div class="wz-text-truncatable" flex>
           Name:
           <span class="wz-text-bold">{{ aoc.agent.name }}</span>
-          <md-tooltip ng-if="agent.name.length > 25" md-direction="bottom" class="wz-tooltip">
+          <md-tooltip ng-if="agent.name.length" md-direction="bottom" class="wz-tooltip">
             Full name: {{ aoc.agent.name }}
           </md-tooltip>
         </div>
@@ -49,7 +49,7 @@
         <div class="wz-text-truncatable" flex>
           OS:
           <span class="wz-text-bold">{{ aoc.agentOS }}</span>
-          <md-tooltip ng-if="aoc.agentOS.length > 25" md-direction="bottom" class="wz-tooltip">
+          <md-tooltip ng-if="aoc.agentOS.length" md-direction="bottom" class="wz-tooltip">
             Full OS name: {{ aoc.agentOS }}
           </md-tooltip>
         </div>
