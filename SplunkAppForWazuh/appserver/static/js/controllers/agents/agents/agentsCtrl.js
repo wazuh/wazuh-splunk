@@ -83,15 +83,28 @@ define([
       ]
     })
 
+    searchTopAgent.on('search:progress', () => {
+      vm.loadingSearch = true
+    })
+    searchTopAgent.on('search:done', () => {
+      vm.loadingSearch = false
+      const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
+      if (activeAgentTokenJS) {
+        vm.loadingSearch = false
+        vm.mostActiveAgent = `${activeAgentTokenJS}`
+        if (!$scope.$$phase) $scope.$digest()
+      }
+    })
+
     submittedTokenModel.on("change:activeAgentToken", function (model, activeAgentToken, options) {
       if (submittedTokenModel) {
         const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
-        if (activeAgentTokenJS !== undefined) {
+        if (activeAgentTokenJS) {
           vm.loadingSearch = false
           vm.mostActiveAgent = `${activeAgentTokenJS}`
           if (!$scope.$$phase) $scope.$digest()
         }
-      } 
+      }
     })
 
     const summary = data[0].data.data
@@ -99,9 +112,9 @@ define([
 
     // Building operating system filter
     const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
-    console.log('agent.os',data[2].data.data.items)
+    console.log('agent.os', data[2].data.data.items)
     vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
-    console.log('osplatforms ',vm.osPlatforms)
+    console.log('osplatforms ', vm.osPlatforms)
     // Building version filter
     const rawVersions = data[2].data.data.items.map(one => one.version);
     vm.versions = [... new Set(rawVersions.filter(one => !!one))]

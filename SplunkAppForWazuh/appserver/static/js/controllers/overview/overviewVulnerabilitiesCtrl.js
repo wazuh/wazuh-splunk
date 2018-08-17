@@ -281,7 +281,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh index=" + selectedIndex + " " + nameFilter + " rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+        "search": `${filters} rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,

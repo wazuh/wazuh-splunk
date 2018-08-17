@@ -25,22 +25,15 @@
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>New files:
           <span ng-show='!aac.loadingSearch' class="wz-text-bold" ng-bind="aac.newFiles"></span>
-          <md-progress-circular md-mode="indeterminate" ng-show="aac.loadingSearch"></md-progress-circular>
-
         </div>
         <div class="wz-text-truncatable" flex>Read files:
           <span ng-show='!aac.loadingSearch' class="wz-text-bold" ng-bind="aac.readFiles"></span>
-          <md-progress-circular md-mode="indeterminate" ng-show="aac.loadingSearch"></md-progress-circular>
-
         </div>
         <div class="wz-text-truncatable" flex>Modified files:
           <span ng-show='!aac.loadingSearch' class="wz-text-bold" ng-bind="aac.filesModifiedToken"></span>
-          <md-progress-circular md-mode="indeterminate" ng-show="aac.loadingSearch"></md-progress-circular>
         </div>
         <div class="wz-text-truncatable" flex>Removed files:
           <span ng-show='!aac.loadingSearch' class="wz-text-bold" ng-bind="aac.filesDeleted"></span>
-          <md-progress-circular md-mode="indeterminate" ng-show="aac.loadingSearch"></md-progress-circular>
-
         </div>
       </md-card-content>
     </md-card>
@@ -107,7 +100,7 @@
         </md-card-content>
       </md-card>
     </div>
-
+    
     <div flex="60" layout-align="center stretch">
       <md-card flex class="wz-md-card">
         <md-card-content>

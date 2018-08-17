@@ -29,6 +29,14 @@ define(['../../module'], function (modules) {
     const groupMergedSum = config.responseAll[1].data.data.items.filter(item => item.name === vm.groupName)
     vm.groupMergedSum = (groupMergedSum.length) ? groupMergedSum[0].mergedSum : 'Unknown'
 
+    
+    if(!vm.groupName){
+      vm.configurationError = true
+      vm.load = false
+      if(!$scope.$$phase) $scope.$digest()
+      return
+  }
+
     const agentMergedSum = config.responseAll[2].data.data.items.filter(item => item.id === vm.agent.id)
     vm.agentMergedSum = (agentMergedSum.length) ? agentMergedSum[0].mergedSum : 'Unknown'
 
