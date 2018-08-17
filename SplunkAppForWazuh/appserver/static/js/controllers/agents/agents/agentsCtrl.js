@@ -136,7 +136,6 @@ define([
       searchTopAgent.cancel()
       searchTopAgent = null
       handlerTopAgent = null
-      submittedTokenModel = null
     })
 
   })

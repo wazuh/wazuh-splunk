@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $state,agent) {
+    controllers.controller('agentsVulnerabilitiesCtrl', function ($scope, $currentDataService, $state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
@@ -153,10 +153,22 @@ define([
           }
         ]
       })
+      criticalSeveritySearch.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
+      criticalSeveritySearch.on('search:done', () => {
+        const mediumSeverityTokenJS = submittedTokenModel.get("criticalSeverityToken")
+        if (mediumSeverityTokenJS) {
+          vm.criticalSeverity = mediumSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
 
       submittedTokenModel.on("change:criticalSeverityToken", (model, criticalSeverityToken, options) => {
         const criticalSeverityTokenJS = submittedTokenModel.get("criticalSeverityToken")
-        if (typeof criticalSeverityTokenJS !== 'undefined' && criticalSeverityTokenJS !== 'undefined') {
+        if (criticalSeverityTokenJS) {
           vm.criticalSeverity = criticalSeverityTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -192,10 +204,23 @@ define([
           }
         ]
       })
+      highSeveritySeach.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
+      highSeveritySeach.on('search:done', () => {
+        vm.loadingSearch = false
+        const highSeverityTokenJS = submittedTokenModel.get("highSeverityToken")
+        if (highSeverityTokenJS) {
+          vm.highSeverity = highSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
 
       submittedTokenModel.on("change:highSeverityToken", (model, highSeverityToken, options) => {
         const highSeverityTokenJS = submittedTokenModel.get("highSeverityToken")
-        if (typeof highSeverityTokenJS !== 'undefined' && highSeverityTokenJS !== 'undefined') {
+        if (highSeverityTokenJS) {
           vm.highSeverity = highSeverityTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -231,7 +256,18 @@ define([
           }
         ]
       })
+      mediumSeveritySearch.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      mediumSeveritySearch.on('search:done', () => {
+        const mediumSeverityTokenJS = submittedTokenModel.get("mediumSeverityToken")
+        if (mediumSeverityTokenJS) {
+          vm.mediumSeverity = mediumSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:mediumSeverityToken", (model, mediumSeverityToken, options) => {
         const mediumSeverityTokenJS = submittedTokenModel.get("mediumSeverityToken")
         if (typeof mediumSeverityTokenJS !== 'undefined' && mediumSeverityTokenJS !== 'undefined') {
@@ -270,7 +306,18 @@ define([
           }
         ]
       })
+      lowSeveritySearch.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      lowSeveritySearch.on('search:done', () => {
+        const lowSeverityTokenJS = submittedTokenModel.get("lowSeverityToken")
+        if (lowSeverityTokenJS) {
+          vm.lowSeverity = lowSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:lowSeverityToken", (model, lowSeverityToken, options) => {
         const lowSeverityTokenJS = submittedTokenModel.get("lowSeverityToken")
         if (typeof lowSeverityTokenJS !== 'undefined' && lowSeverityTokenJS !== 'undefined') {
