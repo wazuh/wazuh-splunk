@@ -272,11 +272,16 @@ define([
         ]
       })
       searchTopAgent.on('search:done', () => {
+        console.log('done')
+
         const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
-        if (topAgentTokenJS || topAgentTokenJS !== '$result.count$') {
+        if (topAgentTokenJS && topAgentTokenJS !== '$result.count$') {
+          console.log('done',topAgentTokenJS)
+
           vm.totalAlerts = topAgentTokenJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
+          console.log('no alerts in general')
           vm.totalAlerts = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -320,7 +325,7 @@ define([
       })
       searchLevel12.on('search:done', () => {
         const level12TokenJS = submittedTokenModel.get("level12token")
-        if (level12TokenJS || level12TokenJS !== '$result.count$') {
+        if (level12TokenJS && level12TokenJS !== '$result.count$') {
           vm.levelTwelve = level12TokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -365,7 +370,7 @@ define([
       })
       searchAuthFailure.on('search:done', () => {
         const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
-        if (authFailureTokenJS || authFailureTokenJS !== '$result.count$') {
+        if (authFailureTokenJS && authFailureTokenJS !== '$result.count$') {
           vm.authFailure = authFailureTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
@@ -409,7 +414,7 @@ define([
       })
       searchAuthSuccess.on('search:done', () => {
         const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
-        if (authSuccessTokenJS || authSuccessTokenJS !== '$result.count$') {
+        if (authSuccessTokenJS && authSuccessTokenJS !== '$result.count$') {
           vm.authSuccess = authSuccessTokenJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
