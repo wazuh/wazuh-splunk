@@ -272,16 +272,11 @@ define([
         ]
       })
       searchTopAgent.on('search:done', () => {
-        console.log('done')
-
         const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
         if (topAgentTokenJS && topAgentTokenJS !== '$result.count$') {
-          console.log('done',topAgentTokenJS)
-
           vm.totalAlerts = topAgentTokenJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
-          console.log('no alerts in general')
           vm.totalAlerts = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
