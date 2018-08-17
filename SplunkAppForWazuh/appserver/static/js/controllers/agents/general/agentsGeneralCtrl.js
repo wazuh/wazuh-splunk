@@ -84,14 +84,6 @@ define([
         launchSearches()
       })
 
-      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authSuccessToken")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.authSuccess = tokHTMLJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
       let pageLoading = true
       let searches = []
       let vizz = []
@@ -147,7 +139,18 @@ define([
           }
         ]
       })
+      searchTopAgent.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      searchTopAgent.on('search:done', () => {
+        const tokHTMLJS = submittedTokenModel.get("tokHTML")
+        if (tokHTMLJS) {
+          vm.totalAlerts = tokHTMLJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:tokHTML", (model, tokHTML, options) => {
         const tokHTMLJS = submittedTokenModel.get("tokHTML")
         if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
@@ -185,11 +188,22 @@ define([
           }
         ]
       })
+      searchLevel12.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      searchLevel12.on('search:done', () => {
+        const level12tokenJS = submittedTokenModel.get("level12token")
+        if (level12tokenJS) {
+          vm.levelTwelve = level12tokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:level12token", (model, level12token, options) => {
-        const tokHTMLJS = submittedTokenModel.get("level12token")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.levelTwelve = tokHTMLJS
+        const level12tokenJS = submittedTokenModel.get("level12token")
+        if (typeof level12tokenJS !== 'undefined' && level12tokenJS !== 'undefined') {
+          vm.levelTwelve = level12tokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -225,11 +239,22 @@ define([
           }
         ]
       })
+      searchAuthFailure.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
+      })
+      searchAuthFailure.on('search:done', () => {
+        const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
+        if (authFailureTokenJS) {
+          vm.authFailure = authFailureTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authFailureToken")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.authFailure = tokHTMLJS
+        const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
+        if (typeof authFailureTokenJS !== 'undefined' && authFailureTokenJS !== 'undefined') {
+          vm.authFailure = authFailureTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -263,6 +288,26 @@ define([
             ]
           }
         ]
+      })
+      searchAuthSuccess.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+
+      })
+      searchAuthSuccess.on('search:done', () => {
+        const searchAuthSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (searchAuthSuccessTokenJS) {
+          vm.authSuccess = searchAuthSuccessTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const searchAuthSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (typeof searchAuthSuccessTokenJS !== 'undefined' && searchAuthSuccessTokenJS !== 'undefined') {
+          vm.authSuccess = searchAuthSuccessTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
       })
 
       let agentsSearch5 = new SearchManager({
