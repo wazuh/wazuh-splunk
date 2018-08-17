@@ -21,7 +21,7 @@ define(['../../module'], function (modules) {
     vm.load = true
     vm.agent = config.response.data.data
     vm.groupName = vm.agent.group
-
+    console.log('config', config)
     // const configurationData   = await apiReq.request('GET', `/agents/groups/${vm.groupName}/configuration`, {})
     vm.groupConfiguration = config.responseAll[0].data.data.items[0]
     vm.rawJSON = $beautifierJson.prettyPrint(config.responseAll[0].data.data.items)
@@ -29,13 +29,13 @@ define(['../../module'], function (modules) {
     const groupMergedSum = config.responseAll[1].data.data.items.filter(item => item.name === vm.groupName)
     vm.groupMergedSum = (groupMergedSum.length) ? groupMergedSum[0].mergedSum : 'Unknown'
 
-    
-    if(!vm.groupName){
+
+    if (!vm.groupName) {
       vm.configurationError = true
       vm.load = false
-      if(!$scope.$$phase) $scope.$digest()
+      if (!$scope.$$phase) $scope.$digest()
       return
-  }
+    }
 
     const agentMergedSum = config.responseAll[2].data.data.items.filter(item => item.id === vm.agent.id)
     vm.agentMergedSum = (agentMergedSum.length) ? agentMergedSum[0].mergedSum : 'Unknown'
@@ -43,6 +43,17 @@ define(['../../module'], function (modules) {
     vm.isSynchronized = ((vm.agentMergedSum === vm.groupMergedSum) && !([vm.agentMergedSum, vm.groupMergedSum].includes('Unknown'))) ? true : false
 
     vm.load = false
+
+    /**
+     * Returns if the config exists
+     */
+    vm.hasConfig = () => {
+      try {
+        return vm.groupConfiguration && vm.groupConfiguration.config && typeof vm.groupConfiguration.config === 'object' && Object.keys(vm.groupConfiguration.config).length
+      } catch(error) {
+        return false
+      }
+    }
 
     /**
      * When controller is destroyed
