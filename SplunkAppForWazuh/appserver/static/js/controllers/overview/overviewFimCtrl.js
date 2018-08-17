@@ -85,13 +85,6 @@ define([
         submittedTokenModel.unset(name)
       }
 
-      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
-        const tokHTMLJS = submittedTokenModel.get("authSuccessToken")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.authSuccess = tokHTMLJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
 
       let pageLoading = true
 
@@ -174,16 +167,25 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "tokHTML", "value": "$result.count$" },
+              { "type": "set", "token": "authSuccessToken", "value": "$result.count$" },
             ]
           }
         ]
       })
-
-      submittedTokenModel.on("change:tokHTML", (model, tokHTML, options) => {
-        const tokHTMLJS = submittedTokenModel.get("tokHTML")
-        if (typeof tokHTMLJS !== 'undefined' && tokHTMLJS !== 'undefined') {
-          vm.filesAdded = tokHTMLJS
+      filesAddedSearch.on('search:done', () => {
+        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (authSuccessTokenJS || authSuccessTokenJS !== '$result.count$') {
+          vm.filesAdded = authSuccessTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.filesAdded = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (typeof authSuccessTokenJS !== 'undefined' && authSuccessTokenJS !== 'undefined') {
+          vm.filesAdded = authSuccessTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -218,7 +220,16 @@ define([
           }
         ]
       })
-
+      filesModifiedSearch.on('search:done', () => {
+        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
+        if (filesModifiedTokenJS || filesModifiedTokenJS !== '$result.count$') {
+          vm.filesModified = filesModifiedTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.filesModified = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
         const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
         if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
@@ -257,7 +268,16 @@ define([
           }
         ]
       })
-
+      filesDeletedSearch.on('search:done', () => {
+        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
+        if (filesDeletedTokenJS || filesDeletedTokenJS !== '$result.count$') {
+          vm.filesDeleted = filesDeletedTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.filesDeleted = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
