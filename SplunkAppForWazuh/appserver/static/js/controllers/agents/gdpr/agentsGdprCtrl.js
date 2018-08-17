@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsGdprCtrl', function ($currentDataService, $scope, $rulesDescription,agent) {
+    controllers.controller('agentsGdprCtrl', function ($currentDataService, $scope, $rulesDescription,$state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -118,6 +118,8 @@ define([
         element3 = null
         element4 = null
         element5 = null
+        input1.off()
+        input2.off()
         input1 = null
         input2 = null
       })
@@ -416,7 +418,7 @@ define([
       //
 
       input2 = new DropdownInput({
-        "id": "input2",
+        "id": `input2${epoch}`,
         "choices": [
           { "label": "ALL", "value": "*" }
         ],

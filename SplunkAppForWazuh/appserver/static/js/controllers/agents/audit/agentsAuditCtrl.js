@@ -206,7 +206,6 @@ define([
       filesAddedSearch.on('search:done', () => {
         vm.loadingSearch = false
         if (!$scope.$$phase) $scope.$digest()
-
       })
       submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
         const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
@@ -306,8 +305,8 @@ define([
       modifiedFiles.on('search:done', () => {
         vm.loadingSearch = false
         if (!$scope.$$phase) $scope.$digest()
-
       })
+      
       submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
         const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
         if (filesModifiedTokenJS) {

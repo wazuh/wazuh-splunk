@@ -1,4 +1,4 @@
-<md-content flex layout="column" ng-if="!acc.config.responseAll[0].data.data.items[0].config.length" ng-show="!load">
+<md-content flex layout="column" ng-if="acc.configurationError" ng-show="!load">
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding>
     <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
@@ -44,7 +44,57 @@
 
 </md-content>
 
-<md-content flex layout="column" layout-align="start" ng-if="acc.config.responseAll[0].data.data.items[0].config.length">
+<md-content flex layout="column" ng-if="!acc.groupConfiguration.config.syscheck
+&& !acc.groupConfiguration.config.rootcheck
+&& !acc.groupConfiguration.config.syscollector
+&& !acc.groupConfiguration.config['open-scap']
+&& !acc.groupConfiguration.config['cis-cat']
+&& !acc.groupConfiguration.config['localfile']
+&& !acc.groupConfiguration.config['command']">
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ui-sref='agent-overview({id:acc.agent.id})' class="wz-text-link cursor-pointer">{{acc.agent.name}} ({{acc.agent.id}})</span>
+      <span> / </span>
+      <span>Configuration</span>
+    </div>
+    <div ng-if="acc.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="acc.getAgentStatusClass(acc.agent.status)" aria-label="Agent status indicator">{{acc.formatAgentStatus(acc.agent.status)}}</span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
+  <!-- This container appears when there's some error getting the configuration -->
+  <div layout="column" layout-align="start stretch">
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">
+          <i class="fa fa-fw fa-warning"></i> Warning</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10 wz-line-height">
+          This agent belongs to a group where there's actually no configuration.
+        </div>
+        <div layout="row" class="wz-padding-top-10 wz-line-height">
+          Use the following link to learn about the centralized configuration process and how to set it up:
+        </div>
+        <div layout="row" class="wz-padding-top-10 wz-line-height">
+          <ul>
+            <li>
+              <a href="https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html">https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>
+            </li>
+          </ul>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+</md-content>
+
+
+<md-content flex layout="column" layout-align="start" ng-if="acc.hasConfig()">
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding>
     <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
@@ -72,39 +122,7 @@
             <span class="wz-text-bold wz-text-link" tooltip="Click to go to the group details" tooltip-placement="right">{{acc.groupName}}</span>
           </div>
           <div class="wz-text-truncatable" flex>Configuration status:
-            <span class="wz-text-bold" tooltip="The current synchronization status" tooltip-placement="right">{{isSynchronized ? 'SYNCHRONIZED' : 'NOT SYNCHRONIZED'}}</span>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-
-    <!-- Second row - There's no applied configuration at all -->
-    <div layout="row" ng-if="tab === 'configuration'
-              && !configurationError
-              && !acc.groupConfiguration.config.syscheck
-              && !acc.groupConfiguration.config.rootcheck
-              && !acc.groupConfiguration.config.syscollector
-              && !acc.groupConfiguration.config['open-scap']
-              && !acc.groupConfiguration.config['cis-cat']
-              && !acc.groupConfiguration.config['localfile']
-              && !acc.groupConfiguration.config['command']">
-      <md-card flex class="wz-md-card">
-        <md-card-content>
-          <span class="wz-headline-title">
-            <i class="fa fa-fw fa-warning"></i> Warning</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-padding-top-10 wz-line-height">
-            This agent belongs to a group where there's actually no configuration.
-          </div>
-          <div layout="row" class="wz-padding-top-10 wz-line-height">
-            Use the following link to learn about the centralized configuration process and how to set it up:
-          </div>
-          <div layout="row" class="wz-padding-top-10 wz-line-height">
-            <ul>
-              <li>
-                <a href="https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html">https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html</a>
-              </li>
-            </ul>
+            <span class="wz-text-bold" tooltip="The current synchronization status" tooltip-placement="right">{{acc.isSynchronized ? 'SYNCHRONIZED' : 'NOT SYNCHRONIZED'}}</span>
           </div>
         </md-card-content>
       </md-card>

@@ -20,7 +20,7 @@
     <div layout="column" flex="40" class="height-40 wz-margin-right-15">
       <div layout="row">
         <input placeholder="Filter logs..." ng-model="mlog.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-          aria-invalid="false" wz-enter="mlog.search(custom_search)">
+          aria-invalid="false" wz-enter="mlog.search(mlog.custom_search)">
         <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mlog.search(custom_search)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
@@ -48,6 +48,8 @@
         <option value="info">Info</option>
         <option value="error">Error</option>
         <option value="warning">Warning</option>
+        <option value="critical">Critical</option>
+        <option value="debug">Debug</option>
       </select>
 
     </div>

@@ -164,7 +164,7 @@
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
               <md-button class="md-primary wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom" ng-repeat="item in mrid.ruleInfo.pci"
-                ng-click="addDetailFilter('pci', item)">
+                ng-click="mrid.addDetailFilter('pci', item)">
                 {{item}}
               </md-button>
             </div>
@@ -180,7 +180,7 @@
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
               <md-button class="md-primary wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom" ng-repeat="item in mrid.ruleInfo.gdpr"
-                ng-click="addDetailFilter('gdpr', item)">
+                ng-click="mrid.addDetailFilter('gdpr', item)">
                 {{item}}
               </md-button>
             </div>

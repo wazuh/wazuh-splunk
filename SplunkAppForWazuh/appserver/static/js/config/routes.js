@@ -10,7 +10,7 @@ define(['./module'], function (module) {
     $stateProvider
       .state('overview', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
+        // onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
         controller: 'overviewWelcomeCtrl',
         controllerAs: 'owc',
         resolve: {
@@ -30,7 +30,7 @@ define(['./module'], function (module) {
       // Overview - General
       .state('ow-general', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('general') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-general') },
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
       })
@@ -86,7 +86,7 @@ define(['./module'], function (module) {
       // Manager
       .state('manager', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-welcome.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
+        // onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
         // controller: 'managerCtrl',
         // controllerAs: 'mc'
       })
@@ -103,7 +103,7 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetCtrl',
         controllerAs: 'mrules',
-        params: { filters: null, }
+        params: { filters: null }
       })
       // Manager - Ruleset/:id
       .state('mg-rules-id', {
@@ -114,7 +114,7 @@ define(['./module'], function (module) {
         params: { id: null, filters: null },
         resolve: {
           ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq('/rules/${id}')
+            return $requestService.apiReq(`/rules/${$stateParams.id}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -141,10 +141,10 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
         controller: 'managerDecodersIdCtrl',
         controllerAs: 'mdid',
-        params: { id: null, filters: null },
+        params: { id: null, name: null },
         resolve: {
           currentDecoder: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-            return $requestService.apiReq('/decoders', { file: $stateParams.file })
+            return $requestService.apiReq(`/decoders/${$stateParams.name}`)
               .then(function (response) {
                 return response
               }, function (response) {
@@ -264,11 +264,11 @@ define(['./module'], function (module) {
       // agents
       .state('agents', {
         templateUrl: '/static/app/SplunkAppForWazuh/views/agents/agents/agents.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        // onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsCtrl',
         controllerAs: 'ag',
         resolve: {
-          data: ['$requestService', ($requestService) => {
+          data: ['$requestService', '$state', ($requestService, $state) => {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
@@ -278,9 +278,6 @@ define(['./module'], function (module) {
                 return response
               }, function (response) {
                 return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
               })
           }]
         }
@@ -295,7 +292,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return Promise.all([
               $requestService.apiReq(`/agents/${id}`),
               $requestService.apiReq(`/syscheck/${id}/last_scan`),
@@ -324,7 +321,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -344,7 +341,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -364,7 +361,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -384,7 +381,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -397,14 +394,14 @@ define(['./module'], function (module) {
 
       // agents - OpenSCAP
       .state('ag-os', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/agents/agents-openscap.html',
+        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/scap/agents-openscap.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-os') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -424,7 +421,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -443,7 +440,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           config: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 const group = response.data.data.group || 'default'
@@ -480,7 +477,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response
@@ -499,7 +496,7 @@ define(['./module'], function (module) {
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent()
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return $requestService.apiReq(`/agents/${id}`)
               .then(function (response) {
                 return response

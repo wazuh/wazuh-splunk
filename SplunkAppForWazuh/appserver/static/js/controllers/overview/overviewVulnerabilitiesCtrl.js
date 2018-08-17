@@ -149,7 +149,16 @@ define([
           }
         ]
       })
-
+      criticalSeveritySearch.on('search:done', () => {
+        const criticalSeverityTokenJS = submittedTokenModel.get("criticalSeverityToken")
+        if (criticalSeverityTokenJS || criticalSeverityTokenJS !== '$result.count$') {
+          vm.criticalSeverity = criticalSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.criticalSeverity = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:criticalSeverityToken", (model, criticalSeverityToken, options) => {
         const criticalSeverityTokenJS = submittedTokenModel.get("criticalSeverityToken")
         if (typeof criticalSeverityTokenJS !== 'undefined' && criticalSeverityTokenJS !== 'undefined') {
@@ -188,7 +197,16 @@ define([
           }
         ]
       })
-
+      criticalSeveritySearch.on('search:done', () => {
+        const highSeverityTokenJS = submittedTokenModel.get("highSeverityToken")
+        if (highSeverityTokenJS || highSeverityTokenJS !== '$result.count$') {
+          vm.highSeverity = highSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.highSeverity = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:highSeverityToken", (model, highSeverityToken, options) => {
         const highSeverityTokenJS = submittedTokenModel.get("highSeverityToken")
         if (typeof highSeverityTokenJS !== 'undefined' && highSeverityTokenJS !== 'undefined') {
@@ -227,7 +245,16 @@ define([
           }
         ]
       })
-
+      mediumSeveritySearch.on('search:done', () => {
+        const mediumSeverityTokenJS = submittedTokenModel.get("mediumSeverityToken")
+        if (mediumSeverityTokenJS || mediumSeverityTokenJS !== '$result.count$') {
+          vm.mediumSeverity = mediumSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.mediumSeverity = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:mediumSeverityToken", (model, mediumSeverityToken, options) => {
         const mediumSeverityTokenJS = submittedTokenModel.get("mediumSeverityToken")
         if (typeof mediumSeverityTokenJS !== 'undefined' && mediumSeverityTokenJS !== 'undefined') {
@@ -266,7 +293,16 @@ define([
           }
         ]
       })
-
+      lowSeveritySearch.on('search:done', () => {
+        const lowSeverityTokenJS = submittedTokenModel.get("lowSeverityToken")
+        if (lowSeverityTokenJS || lowSeverityTokenJS !== '$result.count$') {
+          vm.lowSeverity = lowSeverityTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.lowSeverity = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:lowSeverityToken", (model, lowSeverityToken, options) => {
         const lowSeverityTokenJS = submittedTokenModel.get("lowSeverityToken")
         if (typeof lowSeverityTokenJS !== 'undefined' && lowSeverityTokenJS !== 'undefined') {
@@ -281,7 +317,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh index=" + selectedIndex + " " + nameFilter + " rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+        "search": `${filters} rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -375,7 +411,7 @@ define([
 
 
       element2 = new ChartElement({
-        "id": "element2",
+        "id": `element2${epoch}`,
         "charting.chart.bubbleSizeBy": "area",
         "charting.chart.style": "shiny",
         "charting.axisTitleY.text": "Count of 1532686833.50",

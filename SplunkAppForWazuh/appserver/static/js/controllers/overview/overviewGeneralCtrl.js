@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state, agent) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -40,7 +40,6 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      vm.agent = agent.data.data
 
       let filters = $currentDataService.getSerializedFilters()
 
@@ -272,8 +271,17 @@ define([
           }
         ]
       })
-
-      submittedTokenModel.on("change:topAgentToken", (model, topAgentToken, options) => {
+      searchTopAgent.on('search:done', () => {
+        const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
+        if (topAgentTokenJS && topAgentTokenJS !== '$result.count$') {
+          vm.totalAlerts = topAgentTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.totalAlerts = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      searchTopAgent.on("change:topAgentToken", (model, topAgentToken, options) => {
         const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
         if (typeof topAgentTokenJS !== 'undefined' && topAgentTokenJS !== 'undefined') {
           vm.totalAlerts = topAgentTokenJS
@@ -310,7 +318,13 @@ define([
           }
         ]
       })
-
+      searchLevel12.on('search:done', () => {
+        const level12TokenJS = submittedTokenModel.get("level12token")
+        if (level12TokenJS && level12TokenJS !== '$result.count$') {
+          vm.levelTwelve = level12TokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:level12token", (model, level12token, options) => {
         const level12TokenJS = submittedTokenModel.get("level12token")
         if (typeof level12TokenJS !== 'undefined' && level12TokenJS !== 'undefined') {
@@ -349,7 +363,13 @@ define([
           }
         ]
       })
-
+      searchAuthFailure.on('search:done', () => {
+        const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
+        if (authFailureTokenJS && authFailureTokenJS !== '$result.count$') {
+          vm.authFailure = authFailureTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:authFailureToken", (model, authFailureToken, options) => {
         const authFailureTokenJS = submittedTokenModel.get("authFailureToken")
         if (typeof authFailureTokenJS !== 'undefined' && authFailureTokenJS !== 'undefined') {
@@ -387,7 +407,16 @@ define([
           }
         ]
       })
-
+      searchAuthSuccess.on('search:done', () => {
+        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (authSuccessTokenJS && authSuccessTokenJS !== '$result.count$') {
+          vm.authSuccess = authSuccessTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.authSuccess = '-'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       overviewSearch5 = new SearchManager({
         "id": "search5" + epoch,
         "cancelOnUnload": true,

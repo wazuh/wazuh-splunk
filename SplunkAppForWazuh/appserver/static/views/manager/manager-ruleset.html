@@ -8,14 +8,14 @@
     <div style="margin-right:7px;" id='input1'></div>
   </div>
   <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
+  <div ng-show="!mrules.loading" layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Ruleset</span>
     <span>Review all your current rules and decoders</span>
   </div>
   <!-- End headline -->
 
-  <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
+  <div ng-show="!mrules.loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
         <input placeholder="Filter logs..." ng-model="mrules.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
@@ -42,7 +42,7 @@
       </span>
     </md-chip>
     <md-chip class="wz-chip" ng-show="mrules.includesFilter('path')">
-      <span>File: {{mrules.getFilter('path')}}
+      <span>Path: {{mrules.getFilter('path')}}
         <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mrules.removeFilter('path')"></i>
       </span>
     </md-chip>

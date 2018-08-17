@@ -16,9 +16,9 @@
 
 // const app = uiModules.get('app/wazuh', []);
 
-define(['../module'], function (directives) {
+define(['../module', 'underscore'], function (directives, _) {
   'use strict'
-  directives.directive('wazuhTable', function ($dataService) {
+  directives.directive('wazuhTable', function ($dataService, $notificationService) {
     return {
       restrict: 'E',
       scope: {
@@ -37,7 +37,7 @@ define(['../module'], function (directives) {
           if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
             // Go to and store an agent details
             $currentDataService.setCurrentAgent(item.id)
-            $currentDataService.addFilter(`{"agent.id":"${item.id}"}`)
+            $currentDataService.addFilter(`{"agent.id":"${item.id}", "implicit":true}`)
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })
@@ -46,7 +46,7 @@ define(['../module'], function (directives) {
           } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', { id: item.id })
           } else if (instance.path.includes('/decoders')) {
-            $state.go('mg-decoders-id', { file: item.file })
+            $state.go('mg-decoders-id', { file: item.file, name: item.name })
           } else if (instance.path === '/cluster/nodes') {
             $scope.$emit('wazuhShowClusterNode', { node: item })
           }
@@ -133,7 +133,7 @@ define(['../module'], function (directives) {
               if (!$scope.$$phase) $scope.$digest()
             }
           } catch (error) {
-            console.error(`Error paginating table due to ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error paginating table due to ${error.message || error}`)
           }
           return
 
@@ -158,7 +158,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`)
           }
           return
         }
@@ -173,7 +173,7 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error searching. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error searching. ${error.message || error}`)
           }
           return
         }
@@ -181,13 +181,23 @@ define(['../module'], function (directives) {
         const filter = async filter => {
           try {
             $scope.wazuh_table_loading = true
-            if (filter.name === 'platform' && instance.path === '/agents') {
+            if (_.isArray(filter)) {
+              filter.forEach(item => {
+                if (item.name === 'platform' && instance.path === '/agents') {
+                  const platform = item.value.split(' - ')[0]
+                  const version = item.value.split(' - ')[1]
+                  instance.addFilter('os.platform', platform)
+                  instance.addFilter('os.version', version)
+                } else {
+                  instance.addFilter(item.name, item.value)
+                }
+              })
+            } else if (filter.name === 'platform' && instance.path === '/agents') {
               const platform = filter.value.split(' - ')[0]
               const version = filter.value.split(' - ')[1]
               instance.addFilter('os.platform', platform)
               instance.addFilter('os.version', version)
             } else {
-
               instance.addFilter(filter.name, filter.value)
             }
             $tableFilterService.set(instance.filters)
@@ -195,7 +205,8 @@ define(['../module'], function (directives) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`, 'Data factory')
+            console.error('err', error)
+            $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return
         }
@@ -233,7 +244,7 @@ define(['../module'], function (directives) {
             }
           } catch (error) {
             realTime = false
-            console.error(`Real time feature aborted. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Real time feature aborted. ${error.message || error}`)
           }
           return
         }
@@ -264,7 +275,7 @@ define(['../module'], function (directives) {
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error(`Error while init table. ${error.message || error}`, 'Data factory')
+            $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
           }
           return
         }

@@ -4,7 +4,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('groupsCtrl', function ($scope, $requestService, $beautifierJson) {
+  controllers.controller('groupsCtrl', function ($scope, $requestService, $beautifierJson, $notificationService) {
     const vm = this
     $scope.$on('groupsIsReloaded', () => {
       vm.currentGroup = false
@@ -25,7 +25,7 @@ define(['../../module'], function (controllers) {
         vm.load = false
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        console.error(error, 'Groups')
+        $notificationService.showSimpleToast(error, 'Groups')
       }
       return
     }
@@ -48,7 +48,7 @@ define(['../../module'], function (controllers) {
         vm.fileViewer = false
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        console.error(error, 'Groups')
+        $notificationService.showSimpleToast(error, 'Groups')
       }
       return
     }
@@ -94,7 +94,7 @@ define(['../../module'], function (controllers) {
 
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        console.error('error at showing file ',error)
+        $notificationService.showSimpleToast('error at showing file ',error)
       }
       return
     }

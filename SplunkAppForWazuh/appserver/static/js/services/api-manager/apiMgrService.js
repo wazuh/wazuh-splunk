@@ -195,7 +195,6 @@ define(['../module'], function (module) {
         const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const clusterData = await $requestService.httpReq(`GET`, checkConnectionEndpoint, true)
         if (clusterData.data.error) {
-          console.error('eror en clusterdata ', clusterData.data.error)
           return Promise.reject(clusterData.data.error)
         }
         api.filter = []

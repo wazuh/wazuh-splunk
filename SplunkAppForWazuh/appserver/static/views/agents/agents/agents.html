@@ -23,7 +23,7 @@
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Agents coverage</p>
               <p ng-if="ag.agentsCoverity" class="wz-text-right color-grey">{{(ag.agentsCoverity | number:2)}}%</p>
-              <p ng-if="!ag.agentsCoverity" class="wz-text-right color-grey">---</p>
+              <p ng-if="!ag.agentsCoverity" class="wz-text-right color-grey">0</p>
             </div>
           </div>
         </div>
@@ -67,8 +67,8 @@
       <select class="input input-dropdown" flex id="eventBox1" ng-model="ag.osPlatform" ng-change="ag.filter({name:'platform',value:ag.osPlatform})"
         aria-label="Filter by operative system" style='width:400px; height: 33px; margin-top:3px;'>
         <option value="all">All OS platforms</option>
-        <option ng-repeat='platform in ag.osPlatforms' value="{{platform.platform}} - {{platform.version}}">
-          {{platform.platform}} {{platform.version}}
+        <option ng-repeat='platform in ag.osPlatforms' value="{{platform.platform}}">
+          {{platform.name}} {{platform.version}}
         </option>
       </select>
     </div>
@@ -98,7 +98,7 @@
     <!-- Status selector -->
     <div layout="column">
       <select class="input input-dropdown" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="ag.status"
-        ng-change="filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
+        ng-change="ag.filter({name:'status',value:ag.status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
         <option value="all">All states</option>
         <option value="active">Active</option>
         <option value="disconnected">Disconnected</option>

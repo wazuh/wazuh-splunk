@@ -2,7 +2,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('configurationCtrl', function ($scope, $XMLBeautifier, $beautifierJson, managerConf) {
+  controllers.controller('configurationCtrl', function ($scope, $requestService, $beautifierJson, managerConf) {
     const vm = this
     vm.load = true
     vm.isArray = Array.isArray

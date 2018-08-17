@@ -29,7 +29,7 @@
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
             <p flex="15">
               <i ng-show="entry.selected" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
-                aria-hidden="true"></i> {{entry.cluster}}</p>
+                aria-hidden="true"></i> {{ (entry.cluster) ? entry.cluster : "Disabled"}}</p>
             <p flex="20">{{entry.managerName}}</p>
             <p flex="15">{{entry.url}}</p>
             <p flex="15">{{entry.portapi}}</p>
@@ -79,12 +79,12 @@
               <p class="color-f9">{{messageError}}</p>
             </div>
             <div layout="row" layout-align="center center">
-              <md-button ng-show='!sac.edit' ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+              <md-button ng-if='!sac.edit' ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Add API
               </md-button>
-              <md-button ng-show='sac.edit' ng-click='sac.updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
-                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update API
-                </md-button>
+              <md-button ng-if='sac.edit' ng-click='sac.updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update API
+              </md-button>
             </div>
           </form>
           <!-- End add API form -->

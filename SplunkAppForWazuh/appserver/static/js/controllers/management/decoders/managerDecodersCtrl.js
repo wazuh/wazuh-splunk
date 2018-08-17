@@ -4,6 +4,8 @@ define(['../../module'], function (controllers) {
 
   controllers.controller('managerDecodersCtrl', function ($scope, $sce, $stateParams) {
     const vm = this
+    if (window.localStorage.ruleset)
+      delete window.localStorage.ruleset
     const colors = [
       '#004A65', '#00665F', '#BF4B45', '#BF9037', '#1D8C2E', 'BB3ABF',
       '#00B1F1', '#00F2E2', '#7F322E', '#7F6025', '#104C19', '7C267F',
@@ -18,6 +20,7 @@ define(['../../module'], function (controllers) {
     vm.viewingDetail = false
     vm.typeFilter = "all"
     vm.isArray = angular.isArray
+    let filter = window.localStorage.decoders || []
 
     vm.includesFilter = filterName => vm.appliedFilters.map(item => item.name).includes(filterName)
 
@@ -57,14 +60,28 @@ define(['../../module'], function (controllers) {
         vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'file')
         vm.appliedFilters.push(filter)
         $scope.$broadcast('wazuhFilter', { filter })
+      } else if (term && term.startsWith('path:') && term.split('path:')[1].trim()) {
+        vm.custom_search = ''
+        const filter = { name: 'path', value: term.split('path:')[1].trim() }
+        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'path')
+        vm.appliedFilters.push(filter)
+        $scope.$broadcast('wazuhFilter', { filter })
       } else {
         $scope.$broadcast('wazuhSearch', { term, removeFilters: 0 })
       }
     }
 
-
     vm.removeFilter = filterName => {
+      filter = vm.appliedFilters.filter(item => item.name !== filterName)
       vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== filterName)
+      if (window.localStorage.decoders && JSON.parse(window.localStorage.decoders))
+        JSON.parse(window.localStorage.decoders).map((item, index) => {
+          if (item.name === filterName) {
+            const tempFilter = JSON.parse(window.localStorage.decoders)
+            tempFilter.splice(index, 1)
+            window.localStorage.decoders = JSON.stringify(tempFilter)
+          }
+        })
       return $scope.$broadcast('wazuhRemoveFilter', { filterName })
     }
 
@@ -89,45 +106,17 @@ define(['../../module'], function (controllers) {
     }
 
     // Reloading event listener
-    $scope.$on('rulesetIsReloaded', () => {
+    $scope.$on('decodersIsReloaded', () => {
       vm.viewingDetail = false
       if (!$scope.$$phase) $scope.$digest()
     })
 
-    vm.search = term => {
-      if (term && term.startsWith('path:') && term.split('path:')[1].trim()) {
-        vm.custom_search = ''
-        const filter = { name: 'path', value: term.split('path:')[1].trim() }
-        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'path')
-        vm.appliedFilters.push(filter)
-        $scope.$broadcast('wazuhFilter', { filter })
-      } else if (term && term.startsWith('file:') && term.split('file:')[1].trim()) {
-        vm.custom_search = ''
-        const filter = { name: 'file', value: term.split('file:')[1].trim() }
-        vm.appliedFilters = vm.appliedFilters.filter(item => item.name !== 'file')
-        vm.appliedFilters.push(filter)
-        $scope.$broadcast('wazuhFilter', { filter })
-      } else {
-        $scope.$broadcast('wazuhSearch', { term, removeFilters: true })
-      }
-    }
-
     vm.onlyParents = typeFilter => {
       vm.appliedFilters = []
+      if (window.localStorage.decoders)
+        delete window.localStorage.decoders
       if (typeFilter === 'all') $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
       else $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders/parents' })
-    }
-
-
-    /**
-     * This function takes back to the list but adding a filter from the detail view
-     */
-    vm.addDetailFilter = (name, value) => {
-      vm.appliedFilters.push({ name, value })
-      // Clear the autocomplete component
-      vm.searchTerm = ''
-      // Go back to the list
-      vm.closeDetailView()
     }
 
     $scope.$on('wazuhShowDecoder', (event, parameters) => {
@@ -137,9 +126,11 @@ define(['../../module'], function (controllers) {
     })
 
     $scope.$on('loadedTable', () => {
-      if ($stateParams && $stateParams.filters && $stateParams.filters.length > 0) {
-        vm.appliedFilters = $stateParams.filters
-        $stateParams.filters.forEach(filter => vm.search(`${filter.name}:${filter.value}`))
+      if (window.localStorage.decoders && JSON.parse(window.localStorage.decoders).length > 0) {
+        const jsonFilters = JSON.parse(window.localStorage.decoders)
+        vm.appliedFilters = jsonFilters
+        if (filter.length > 0)
+          $scope.$broadcast('wazuhFilter', { filter: JSON.parse(filter) })
       }
     })
     /**

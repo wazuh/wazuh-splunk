@@ -50,8 +50,8 @@
           <span class="wz-text-bold">{{mst.agentsCountNeverConnected}}</span>
         </div>
         <div flex class="wz-text-truncatable">Agents coverage:
-          <span ng-if="agentsCoverity" class="wz-text-bold">{{(mst.agentsCoverity | mst.number:2)}}%</span>
-          <span ng-if="!agentsCoverity" class="wz-text-bold">---</span>
+          <span ng-if="mst.agentsCoverity" class="wz-text-bold">{{(mst.agentsCoverity | number:2)}}%</span>
+          <span ng-if="!mst.agentsCoverity" class="wz-text-bold">0%</span>
         </div>
       </md-card-content>
     </md-card>

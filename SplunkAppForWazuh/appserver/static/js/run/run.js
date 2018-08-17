@@ -6,14 +6,29 @@ define([
     'use strict'
     module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService) {
       $navigationService.goToLastState()
+      $transitions.onStart({ to: 'settings.api' }, async (trans) => {
+        try {
+          const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
+          $currentDataService.setApi(api)
+          $currentDataService.cleanFilters()
+          $navigationService.storeRoute('settings.api')
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
+          $rootScope.$broadcast('stateChanged', 'settings')
+        } catch (err) {
+          console.error('no more connectivity with API, redirecting to settings', err)
+          $state.go('settings.api')
+        }
+      })
       $transitions.onStart({ to: 'manager' }, async (trans) => {
         try {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}"}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}"}`)
-          $rootScope.$broadcast('stateChanged', () => { })
+          $navigationService.storeRoute('manager')
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
+          $rootScope.$broadcast('stateChanged', 'manager')
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
@@ -24,9 +39,10 @@ define([
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}"}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}"}`)
-          $rootScope.$broadcast('stateChanged', () => { })
+          $navigationService.storeRoute('overview')
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
+          $rootScope.$broadcast('stateChanged', 'overview')
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
@@ -37,9 +53,10 @@ define([
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}"}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}"}`)
-          $rootScope.$broadcast('stateChanged', () => { })
+          $navigationService.storeRoute('agents')
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
+          $rootScope.$broadcast('stateChanged', 'agents')
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
