@@ -159,7 +159,7 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesAddedToken", "value": "$result.latest(oscap.scan.score)$" },
+              { "type": "set", "token": "latestScapScore", "value": "$result.latest(oscap.scan.score)$" },
             ]
           }
         ]
@@ -170,21 +170,21 @@ define([
 
       })
       filesAddedSearch.on('search:done', (data, job) => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        console.log('done ', filesAddedTokenJS)
+        const latestScapScoreJS = submittedTokenModel.get("latestScapScore")
+        console.log('done ', latestScapScoreJS)
         console.log('data', data)
-        if (filesAddedTokenJS && filesAddedTokenJS !== '$result.latest(oscap.scan.score)$') {
-          vm.scapLastScore = filesAddedTokenJS
+        if (latestScapScoreJS && latestScapScoreJS !== '$result.latest(oscap.scan.score)$') {
+          vm.scapLastScore = latestScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapLastScore = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-      submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (filesAddedTokenJS && filesAddedTokenJS !== '$result.latest(oscap.scan.score)$') {
-          vm.scapLastScore = filesAddedTokenJS
+      submittedTokenModel.on("change:latestScapScore", (model, latestScapScore, options) => {
+        const latestScapScoreJS = submittedTokenModel.get("latestScapScore")
+        if (latestScapScoreJS && latestScapScoreJS !== '$result.latest(oscap.scan.score)$') {
+          vm.scapLastScore = latestScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapLastScore = 0
@@ -217,7 +217,7 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "readFilesToken", "value": "$result.max(oscap.scan.score)$" },
+              { "type": "set", "token": "maxScapScore", "value": "$result.max(oscap.scan.score)$" },
             ]
           }
         ]
@@ -227,19 +227,19 @@ define([
         if (!$scope.$$phase) $scope.$digest()
       })
       readFilesSearch.on('search:done', () => {
-        const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
-        if (readFilesTokenJS && readFilesTokenJS !== '$result.max(oscap.scan.score)$') {
-          vm.scapHighestScore = readFilesTokenJS
+        const maxScapScoreJS = submittedTokenModel.get("maxScapScore")
+        if (maxScapScoreJS && maxScapScoreJS !== '$result.max(oscap.scan.score)$') {
+          vm.scapHighestScore = maxScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapHighestScore = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-      submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
-        const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
-        if (readFilesTokenJS && readFilesTokenJS !== '$result.max(oscap.scan.score)$') {
-          vm.scapHighestScore = readFilesTokenJS
+      submittedTokenModel.on("change:maxScapScore", (model, maxScapScore, options) => {
+        const maxScapScoreJS = submittedTokenModel.get("maxScapScore")
+        if (maxScapScoreJS && maxScapScoreJS !== '$result.max(oscap.scan.score)$') {
+          vm.scapHighestScore = maxScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapHighestScore = 0
@@ -272,7 +272,7 @@ define([
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesModifiedToken", "value": "$result.min(oscap.scan.score)$" },
+              { "type": "set", "token": "minScapScore", "value": "$result.min(oscap.scan.score)$" },
             ]
           }
         ]
@@ -283,7 +283,7 @@ define([
 
       })
       modifiedFiles.on('search:done', () => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
+        const filesDeletedTokenJS = submittedTokenModel.get("minScapScore")
         if (filesDeletedTokenJS && filesDeletedTokenJS !== "$result.min(oscap.scan.score)$") {
           vm.scapLowestScore = filesDeletedTokenJS
           if (!$scope.$$phase) $scope.$digest()
@@ -292,8 +292,8 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-      submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
+      submittedTokenModel.on("change:minScapScore", (model, minScapScore, options) => {
+        const filesDeletedTokenJS = submittedTokenModel.get("minScapScore")
         if (filesDeletedTokenJS && filesDeletedTokenJS !== "$result.min(oscap.scan.score)$") {
           vm.scapLowestScore = filesDeletedTokenJS
           if (!$scope.$$phase) $scope.$digest()
