@@ -10,7 +10,7 @@ define(['./module'], function (module) {
     $stateProvider
       .state('overview', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
+        // onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
         controller: 'overviewWelcomeCtrl',
         controllerAs: 'owc',
         resolve: {
@@ -86,7 +86,7 @@ define(['./module'], function (module) {
       // Manager
       .state('manager', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-welcome.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
+        // onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
         // controller: 'managerCtrl',
         // controllerAs: 'mc'
       })
@@ -264,7 +264,7 @@ define(['./module'], function (module) {
       // agents
       .state('agents', {
         templateUrl: '/static/app/SplunkAppForWazuh/views/agents/agents/agents.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
+        // onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsCtrl',
         controllerAs: 'ag',
         resolve: {

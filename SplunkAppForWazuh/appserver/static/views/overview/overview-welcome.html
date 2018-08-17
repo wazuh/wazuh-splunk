@@ -18,19 +18,19 @@
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>
           Total agents:
-          <span class="wz-text-bold">{{owc.agentsCountTotal >= 0 ? owc.agentsCountTotal : '---'}}</span>
+          <span class="wz-text-bold">{{owc.agentsCountTotal >= 0 ? owc.agentsCountTotal : '0'}}</span>
         </div>
         <div class="wz-text-truncatable" flex>
           Active agents:
-          <span class="wz-text-bold">{{owc.agentsCountActive >= 0 ? owc.agentsCountActive : '---'}}</span>
+          <span class="wz-text-bold">{{owc.agentsCountActive >= 0 ? owc.agentsCountActive : '0'}}</span>
         </div>
         <div class="wz-text-truncatable" flex>
           Disconnected agents:
-          <span class="wz-text-bold">{{owc.agentsCountDisconnected >= 0 ? owc.agentsCountDisconnected : '---'}}</span>
+          <span class="wz-text-bold">{{owc.agentsCountDisconnected >= 0 ? owc.agentsCountDisconnected : '0'}}</span>
         </div>
         <div class="wz-text-truncatable" flex>
           Never connected agents:
-          <span class="wz-text-bold">{{owc.agentsCountNeverConnected >= 0 ? owc.agentsCountNeverConnected : '---'}}</span>
+          <span class="wz-text-bold">{{owc.agentsCountNeverConnected >= 0 ? owc.agentsCountNeverConnected : '0'}}</span>
         </div>
       </md-card-content>
     </md-card>
