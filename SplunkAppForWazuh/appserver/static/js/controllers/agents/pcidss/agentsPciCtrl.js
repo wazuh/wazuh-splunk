@@ -121,6 +121,8 @@ define([
         element3 = null
         element4 = null
         element5 = null
+        input1.off()
+        input2.off()
         input1 = null
         input2 = null
       })

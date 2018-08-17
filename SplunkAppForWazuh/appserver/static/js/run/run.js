@@ -11,8 +11,8 @@ define([
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}"}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}"}`)
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', () => { })
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings', err)
@@ -24,8 +24,8 @@ define([
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}"}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}"}`)
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', () => { })
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings', err)
@@ -37,8 +37,8 @@ define([
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}"}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}"}`)
+          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', () => { })
         } catch (err) {
           console.error('no more connectivity with API, redirecting to settings', err)

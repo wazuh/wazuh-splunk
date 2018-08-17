@@ -37,7 +37,7 @@ define(['../module', 'underscore'], function (directives, _) {
           if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
             // Go to and store an agent details
             $currentDataService.setCurrentAgent(item.id)
-            $currentDataService.addFilter(`{"agent.id":"${item.id}"}`)
+            $currentDataService.addFilter(`{"agent.id":"${item.id}", "implicit":true}`)
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })

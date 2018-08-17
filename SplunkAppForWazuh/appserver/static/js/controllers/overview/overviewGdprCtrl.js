@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewGdprCtrl', function ($scope,$currentDataService, $rulesDescription) {
+    controllers.controller('overviewGdprCtrl', function ($scope, $currentDataService, $rulesDescription) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -114,7 +114,9 @@ define([
         element3 = null
         element4 = null
         element5 = null
+        input1.off()
         input1 = null
+        input2.off()
         input2 = null
       })
 
@@ -398,14 +400,14 @@ define([
         "el": $('#element5')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      element5.on("click", function (e) {
+      const f = function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
           const url = TokenUtils.replaceTokenNames(`/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
-      })
-
+      };
+      element5.on("click", f)
 
       //
       // VIEWS: FORM INPUTS
@@ -429,7 +431,8 @@ define([
       }, { tokens: true }).render()
 
       input2.on("change", function (newValue) {
-        FormUtils.handleValueChange(input2)
+        if (input2)
+          FormUtils.handleValueChange(input2)
       })
 
       input1 = new TimeRangeInput({
@@ -461,7 +464,6 @@ define([
 
       DashboardController.ready()
       pageLoading = false
-
 
     })
   })

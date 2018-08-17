@@ -104,6 +104,8 @@ define([
         filesAddedSearch = null
         readFilesSearch = null
         modifiedFiles = null
+        input1.off()
+        input2.off()
         input1 = null
         input2 = null
         search4
