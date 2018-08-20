@@ -112,9 +112,7 @@ define([
 
     // Building operating system filter
     const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
-    console.log('agent.os', data[2].data.data.items)
     vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
-    console.log('osplatforms ', vm.osPlatforms)
     // Building version filter
     const rawVersions = data[2].data.data.items.map(one => one.version);
     vm.versions = [... new Set(rawVersions.filter(one => !!one))]

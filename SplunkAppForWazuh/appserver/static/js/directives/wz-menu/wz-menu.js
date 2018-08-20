@@ -31,7 +31,10 @@ define(['../module'], function (directives) {
             $scope.menuNavItem = 'agents'
             if (!$scope.$$phase) $scope.$digest()
           }
-          console.log('setting to current tab ', $scope.menuNavItem)
+          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('api.') || $navigationService.getLastState().includes('settings')) {
+            $scope.menuNavItem = 'settings'
+            if (!$scope.$$phase) $scope.$digest()
+          }
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {

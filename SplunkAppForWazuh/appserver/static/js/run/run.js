@@ -4,7 +4,7 @@ define([
   module
 ) {
     'use strict'
-    module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService) {
+    module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService, $notificationService) {
       $navigationService.goToLastState()
       $transitions.onStart({ to: 'settings.api' }, async (trans) => {
         try {
@@ -16,7 +16,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'settings')
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings', err)
+          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
@@ -30,7 +30,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'manager')
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings', err)
+          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
@@ -44,7 +44,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'overview')
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings', err)
+          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
@@ -58,7 +58,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'agents')
         } catch (err) {
-          console.error('no more connectivity with API, redirecting to settings', err)
+          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })

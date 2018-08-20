@@ -30,7 +30,12 @@
 
   <div class='empty-body-class wz-white-background' ng-controller='mainCtrl'>
     <wz-menu></wz-menu>
-    <div ui-view class='wz-white-background'></div>
+    <!-- Loading ring -->
+    <div class='uil-ring-css' ng-show="loading">
+      <div></div>
+    </div>
+    <!-- End loading ring -->
+    <div ui-view ng-show="!loading" class='wz-white-background'></div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
