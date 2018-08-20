@@ -191,7 +191,7 @@ define(['../module'], function (module) {
         const api = await select(key)
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+        const getManagerNameEndpoint = '/agents/agent?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const clusterData = await $requestService.httpReq(`GET`, checkConnectionEndpoint, true)
         if (clusterData.data.error) {
           return Promise.reject(clusterData.data.error)
