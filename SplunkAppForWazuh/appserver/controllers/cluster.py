@@ -21,7 +21,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-_APPNAME = 'wazuh'
+_APPNAME = 'SplunkAppForWazuh'
 def setup_logger(level):
     """
     Setup a logger for the REST handler.
