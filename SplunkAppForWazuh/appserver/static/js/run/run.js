@@ -4,7 +4,7 @@ define([
   module
 ) {
     'use strict'
-    module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService, $notificationService) {
+    module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService) {
       $navigationService.goToLastState()
 
       $transitions.onSuccess({}, async (trans) => {
@@ -25,7 +25,6 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'settings')
         } catch (err) {
-          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
@@ -40,7 +39,6 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'manager')
         } catch (err) {
-          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
@@ -54,7 +52,6 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'overview')
         } catch (err) {
-          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
@@ -68,7 +65,6 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'agents')
         } catch (err) {
-          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
           $state.go('settings.api')
         }
       })
