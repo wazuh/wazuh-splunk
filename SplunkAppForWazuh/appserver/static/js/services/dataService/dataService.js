@@ -115,7 +115,6 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           return { items: this.items, time: elapsed }
 
         } catch (error) {
-          console.error('data factory ',error)
           return Promise.reject(error)
         }
       }

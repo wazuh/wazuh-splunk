@@ -205,7 +205,6 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error('err', error)
             $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return

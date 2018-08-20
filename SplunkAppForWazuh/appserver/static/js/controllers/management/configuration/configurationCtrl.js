@@ -2,7 +2,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('configurationCtrl', function ($scope, $requestService, $beautifierJson, managerConf) {
+  controllers.controller('configurationCtrl', function ($scope, $requestService, $beautifierJson, managerConf, $notificationService) {
     const vm = this
     vm.load = true
     vm.isArray = Array.isArray
@@ -72,7 +72,7 @@ define(['../../module'], function (controllers) {
         if (!$scope.$$phase) $scope.$digest()
         return
       } catch (error) {
-        console.error('error ', error)
+        $notificationService.showSimpleToast('error ', error)
       }
       return
     }
