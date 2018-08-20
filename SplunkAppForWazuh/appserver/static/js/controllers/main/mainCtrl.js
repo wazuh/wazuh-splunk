@@ -10,25 +10,18 @@ define([
     'use strict'
     module.controller('mainCtrl', function ($scope, $transitions) {
 
-      $transitions.onStart({}, async (trans) => {
-        try {
+      $scope.$on('loading', (event,data) => {
+        if (data.status)
           $scope.loading = true
-          if (!$scope.$$phase) $scope.$digest()
-        } catch (err) {
-          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
-          $state.go('settings.api')
-        }
+        else
+          $scope.loading = false
+        if (!$scope.$$phase) $scope.$digest()
       })
 
-      $transitions.onSuccess({}, async (trans) => {
-        try {
-          $scope.loading = false
-          if (!$scope.$$phase) $scope.$digest()
-        } catch (err) {
-          $notificationService.showSimpleToast('no more connectivity with API, redirecting to settings', err)
-          $state.go('settings.api')
-        }
-      })
+      // $transitions.onSuccess({}, async (trans) => {
+      //   $scope.loading = false
+      //   if (!$scope.$$phase) $scope.$digest()
+      // })
 
       new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": true, "hideChrome": false })
         .render()

@@ -6,6 +6,15 @@ define([
     'use strict'
     module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService, $notificationService) {
       $navigationService.goToLastState()
+
+      $transitions.onSuccess({}, async (trans) => {
+        $rootScope.$broadcast('loading', { status: false })
+      })
+
+      $transitions.onStart({}, async (trans) => {
+        $rootScope.$broadcast('loading', { status: true })
+      })
+
       $transitions.onStart({ to: 'settings.api' }, async (trans) => {
         try {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
@@ -22,6 +31,7 @@ define([
       })
       $transitions.onStart({ to: 'manager' }, async (trans) => {
         try {
+
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
