@@ -1,12 +1,12 @@
 <div flex layout="column" ng-cloak ng-controller="settingsCtrl">
 
   <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="loading">
+  <!-- <div class='uil-ring-css' ng-show="loading">
     <div></div>
-  </div>
+  </div> -->
   <!-- End loading ring -->
   <!-- Navigation bar -->
-  <div ng-show="!loading">
+  <div>
     <md-nav-bar class="wz-nav-bar" md-selected-nav-item="tabName" nav-bar-aria-label="Settings navigation links">
 
       <md-nav-item class="wz-nav-item" ui-sref='settings.api' md-nav-click="switchTab('api')" name="api">API</md-nav-item>
