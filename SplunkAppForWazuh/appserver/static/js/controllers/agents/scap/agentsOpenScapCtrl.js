@@ -173,8 +173,6 @@ define([
       })
       filesAddedSearch.on('search:done', (data, job) => {
         const latestScapScoreJS = submittedTokenModel.get("latestScapScore")
-        console.log('done ', latestScapScoreJS)
-        console.log('data', data)
         if (latestScapScoreJS && latestScapScoreJS !== '$result.latest(oscap.scan.score)$') {
           vm.scapLastScore = latestScapScoreJS
           if (!$scope.$$phase) $scope.$digest()

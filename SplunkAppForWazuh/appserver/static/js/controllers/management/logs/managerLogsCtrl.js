@@ -2,7 +2,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('managerLogsCtrl', function ($scope,$requestService) {
+  controllers.controller('managerLogsCtrl', function ($scope,$requestService, $notificationService) {
     const vm = this
     vm.type_log = 'all';
     vm.category = 'all';
@@ -33,7 +33,7 @@ define(['../../module'], function (controllers) {
         if (!$scope.$$phase) $scope.$digest();
         return;
       } catch (err) {
-        console.error('error en logs ctrl', err)
+        $notificationService.showSimpleToast('error en logs ctrl', err)
       }
       return;
     }

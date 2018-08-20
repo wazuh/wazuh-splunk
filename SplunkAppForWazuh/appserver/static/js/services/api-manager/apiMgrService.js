@@ -15,7 +15,6 @@ define(['../module'], function (module) {
         await $splunkStoreService.delete(`storage/collections/data/credentials/${key}`)
         return
       } catch (err) {
-        console.error('[$splunkStoreService][remove] ', err)
         return Promise.reject(err)
       }
     }
@@ -129,7 +128,7 @@ define(['../module'], function (module) {
     const checkSelectedApiConnection = async () => {
       try {
         const currentApi = $apiIndexStorageService.getApi()
-        if (!currentApi) { console.error('no current api'); return Promise.reject(new Error('No selected API in sessionStorage')) }
+        if (!currentApi) { return Promise.reject(new Error('No selected API in sessionStorage')) }
         const api = await checkApiConnection(currentApi._key)
         let selectedIndex = $apiIndexStorageService.getIndex()
         return { api, selectedIndex }

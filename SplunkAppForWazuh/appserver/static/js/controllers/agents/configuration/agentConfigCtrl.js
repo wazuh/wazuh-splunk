@@ -21,7 +21,6 @@ define(['../../module'], function (modules) {
     vm.load = true
     vm.agent = config.response.data.data
     vm.groupName = vm.agent.group
-    console.log('config', config)
     // const configurationData   = await apiReq.request('GET', `/agents/groups/${vm.groupName}/configuration`, {})
     vm.groupConfiguration = config.responseAll[0].data.data.items[0]
     vm.rawJSON = $beautifierJson.prettyPrint(config.responseAll[0].data.data.items)

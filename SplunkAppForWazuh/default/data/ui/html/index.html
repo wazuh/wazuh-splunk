@@ -26,11 +26,20 @@
   </script>
 </head>
 
-<body style='background-color:white'>
+<body style='background-color:white' ng-cloak>
 
   <div class='empty-body-class wz-white-background' ng-controller='mainCtrl'>
     <wz-menu></wz-menu>
-    <div ui-view class='wz-white-background'></div>
+    <div ng-show='loading' class='uil-ring-css'>
+      <div></div>
+    </div>
+    <div ng-show='!loading' ui-view class='wz-white-background'>
+      <!-- Loading ring -->
+      <!-- <div class='uil-ring-css'>
+        <div></div>
+      </div> -->
+      <!-- End loading ring -->
+    </div>
   </div>
 
   <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
