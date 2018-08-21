@@ -9,6 +9,8 @@
 #
 # Find more information about this on the LICENSE file.
 #
+from __future__ import absolute_import
+from __future__ import print_function
 
 import logging
 import os
@@ -22,7 +24,7 @@ import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
-
+import jwt
 
 _APPNAME = 'SplunkAppForWazuh'
 def setup_logger(level):
