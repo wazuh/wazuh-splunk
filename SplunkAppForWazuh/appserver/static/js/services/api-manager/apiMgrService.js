@@ -196,6 +196,9 @@ define(['../module'], function (module) {
         if (clusterData.data.error) {
           return Promise.reject(clusterData.data.error)
         }
+        console.log('cluisterdata', clusterData)
+        if (clusterData.data.token)
+          api.token = clusterData.data.token
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await $requestService.httpReq(`GET`, getManagerNameEndpoint, true)

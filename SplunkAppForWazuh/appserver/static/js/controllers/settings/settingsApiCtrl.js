@@ -28,7 +28,7 @@ define([
         let i = 0
         if (!currentApi) {
           do {
-            vm.selectManager(vm.apiList[i]).then(() => { exit=true }).catch()
+            vm.selectManager(vm.apiList[i]).then(() => { exit = true }).catch()
             ++i
           } while (i < vm.apiList.length && !exit)
         }
@@ -36,12 +36,10 @@ define([
 
         if (currentApi)
           vm.apiList.map(item => {
-            if (item.url === currentApi.url) {
+            if (item._key === currentApi._key) {
               item.selected = true
             }
           })
-        vm.Api = []
-        vm.saveOrUpdate = 'Add'
       }
 
       /**
