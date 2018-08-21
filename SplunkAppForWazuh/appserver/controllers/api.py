@@ -54,10 +54,12 @@ class api(controllers.BaseController):
   @expose_page(must_login=False, methods=['GET'])
   def request(self, **kwargs):
     try:
-      opt_username = kwargs["user"]
-      opt_password = kwargs["pass"]
-      opt_base_url = kwargs["ip"]
-      opt_base_port = kwargs["port"]
+      token_data = jwt.decode('myToken', algorithm='HS256')
+      token_data = json.dumps(token_data)
+      opt_username = token_data["user"]
+      opt_password = token_data["pass"]
+      opt_base_url = token_data["ip"]
+      opt_base_port = token_data["port"]
       opt_endpoint = kwargs["endpoint"]
       kwargs = remove_keys(kwargs)
 

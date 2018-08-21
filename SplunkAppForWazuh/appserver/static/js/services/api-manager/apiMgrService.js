@@ -189,6 +189,7 @@ define(['../module'], function (module) {
     const checkApiConnection = async (key) => {
       try {
         const api = await select(key)
+        // delete api['passapi']
         const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
         const getManagerNameEndpoint = '/agents/agent?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
@@ -196,9 +197,9 @@ define(['../module'], function (module) {
         if (clusterData.data.error) {
           return Promise.reject(clusterData.data.error)
         }
-        console.log('cluisterdata', clusterData)
-        if (clusterData.data.token)
+        if (clusterData.data.token) {
           api.token = clusterData.data.token
+        }
         api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await $requestService.httpReq(`GET`, getManagerNameEndpoint, true)

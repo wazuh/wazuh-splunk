@@ -36,7 +36,7 @@ define(['../module'], function (module) {
           throw new Error('Missing parameters')
         }
         const tmpUrl = getWellFormedUri(endpoint, includedApi)
-        const data = {};
+        const data = {}
         if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }))
         if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload))
         if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
@@ -45,11 +45,11 @@ define(['../module'], function (module) {
           throw new Error(`Error doing a request to ${tmpUrl}, method: ${method}.`)
         }
         if (data.error && data.error !== '0') {
-          throw new Error('HTTP error from server: ', data.error);
+          throw new Error('HTTP error from server: ', data.error)
         }
-        return $q.resolve(data);
+        return $q.resolve(data)
       } catch (error) {
-        return $q.reject(error);
+        return $q.reject(error)
       }
     }
 
