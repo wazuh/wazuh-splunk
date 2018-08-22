@@ -11,18 +11,20 @@
 #
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from tinydb import TinyDB, Query
-db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
 
 class database():
   def __init__(self):
-   self.data = []
+   self.db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
 
-  def insert(object):
+  def insert(self,obj):
     try:
-      db.insert(object)
+      self.db.insert(obj)
     except Exception as e:
       return str(e)
 
-  def get(url):
+  def all(self):
+    return self.db.all()
+
+  def get(self,id):
     Api = Query()
-    return db.search(Api.url == url)
+    return self.db.search(Api.id == id)

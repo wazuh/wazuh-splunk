@@ -52,7 +52,7 @@ def remove_keys(arr):
 class manager(controllers.BaseController):
   def __init__(self):
     controllers.BaseController.__init__(self)
-    self.database = database()
+    self.db = database()
     self.session = requests.Session()
     self.session.trust_env = False
 
@@ -85,3 +85,25 @@ class manager(controllers.BaseController):
     except Exception as e:
       return json.dumps("{error:"+str(err)+"}")
     return data_temp
+
+  @expose_page(must_login=False, methods=['GET'])
+  def get_apis(self, **kwargs):
+    try:
+      file = open('/home/wazuh/getapis','w')
+      file.write(json.dumps(kwargs))
+      data_temp = self.db.all()
+    except Exception as e:
+      return json.dumps("{error:"+str(e)+"}")
+    return json.dumps(data_temp)
+
+
+  @expose_page(must_login=False, methods=['POST'])
+  def add_api(self, **kwargs):
+    try:
+      file = open('/home/wazuh/logdb','w')
+      file.write(json.dumps(kwargs))
+      self.db.insert()
+    except Exception as e:
+      return json.dumps("{error:"+str(err)+"}")
+    return data_temp
+
