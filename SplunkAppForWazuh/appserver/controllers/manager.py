@@ -23,6 +23,9 @@ from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 import jwt
+from tinydb import TinyDB, Query
+db = TinyDB('apis.json')
+
 
 _APPNAME = 'SplunkAppForWazuh'
 
