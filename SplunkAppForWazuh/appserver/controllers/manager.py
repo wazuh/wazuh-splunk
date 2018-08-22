@@ -15,6 +15,8 @@ import os
 import sys
 import json
 import requests
+import cherrypy
+import uuid
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -89,21 +91,33 @@ class manager(controllers.BaseController):
   @expose_page(must_login=False, methods=['GET'])
   def get_apis(self, **kwargs):
     try:
-      file = open('/home/wazuh/getapis','w')
-      file.write(json.dumps(kwargs))
       data_temp = self.db.all()
     except Exception as e:
+      logger.info("Error in get_apis endpoint: %s" % (e))
       return json.dumps("{error:"+str(e)+"}")
     return json.dumps(data_temp)
-
 
   @expose_page(must_login=False, methods=['POST'])
   def add_api(self, **kwargs):
     try:
-      file = open('/home/wazuh/logdb','w')
-      file.write(json.dumps(kwargs))
-      self.db.insert()
-    except Exception as e:
-      return json.dumps("{error:"+str(err)+"}")
-    return data_temp
+      payload = cherrypy.request.params
+      logger.info("The payload: %s" % (payload))
 
+      # record = json.dumps({'url':payload['url'],'portapi':payload['portapi'],'userapi':payload['userapi'],'passapi':payload['passapi']})
+      # logger.info("Inserting : %s" % (record))
+      # self.db.insert(record)
+    except Exception as e:
+      logger.info("Error in add_api endpoint: %s" % (e))
+      return json.dumps("{error:"+str(err)+"}")
+    return json.dumps({'data':'foobar'})
+
+  
+  @expose_page(must_login=False, methods=['DELETE'])
+  def remove_api(self, **kwargs):
+    try:
+      id = kwargs['id']
+      self.db.delete(id)
+    except Exception as e:
+      logger.info("Error in remove_api endpoint: %s" % (e))
+      return json.dumps("{error:"+str(err)+"}")
+    return json.dumps({'data':'foobar'})

@@ -9,12 +9,13 @@
 #
 # Find more information about this on the LICENSE file.
 #
-# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+
 from tinydb import TinyDB, Query
 
 class database():
   def __init__(self):
-   self.db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
+    self.db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
+    self.Api = Query()
 
   def insert(self,obj):
     try:
@@ -22,9 +23,14 @@ class database():
     except Exception as e:
       return str(e)
 
+  def remove(self,id):
+    try:
+      self.db.remove(self.Api.id == id)
+    except Exception as e:
+      return str(e)
+
   def all(self):
     return self.db.all()
 
   def get(self,id):
-    Api = Query()
-    return self.db.search(Api.id == id)
+    return self.db.search(self.Api.id == id)
