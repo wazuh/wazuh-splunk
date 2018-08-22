@@ -17,9 +17,9 @@ define(['../module'], function (module) {
     const getWellFormedUri = (endpoint, includedApi) => {
       if (!includedApi) {
         const jsonCurrentAPI = $apiIndexStorageService.getApi()
-        return getBaseUrl() + `/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
+        return getBaseUrl() + `/en-US/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
       } else {
-        return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint
+        return getBaseUrl() + '/en-US/custom/SplunkAppForWazuh/' + endpoint
       }
     }
 
@@ -35,12 +35,19 @@ define(['../module'], function (module) {
         if (!method || !endpoint) {
           throw new Error('Missing parameters')
         }
+        const requestHeaders = { headers: { "Content-Type": 'application/json' }, timeout: 20000 };
         const tmpUrl = getWellFormedUri(endpoint, includedApi)
         const data = {}
-        if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }))
-        if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload))
-        if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
-        if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
+        console.log('sending payload ', payload)
+        if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }, requestHeaders))
+        else if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload, requestHeaders))
+        else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, {
+          "url": 'http://test',
+          "portapi": 55000,
+          "userapi": 'foo',
+          "passapi": 'bar',
+        }, requestHeaders))
+        else if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
         if (!data) {
           throw new Error(`Error doing a request to ${tmpUrl}, method: ${method}.`)
         }
@@ -49,6 +56,7 @@ define(['../module'], function (module) {
         }
         return $q.resolve(data)
       } catch (error) {
+        console.error(error)
         return $q.reject(error)
       }
     }

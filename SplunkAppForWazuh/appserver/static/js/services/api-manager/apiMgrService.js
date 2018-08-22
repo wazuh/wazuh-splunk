@@ -6,13 +6,13 @@ define(['../module'], function (module) {
      * Delete a record by ID
      * @param {String} key 
      */
-    const remove = async (key) => {
+    const remove = async (id) => {
       try {
-        const api = await select(key)
+        const api = await select(id)
         if ($apiIndexStorageService.getApi() && $apiIndexStorageService.getApi().url === api.url) {
           $apiIndexStorageService.removeAPI()
         }
-        await $splunkStoreService.delete(`storage/collections/data/credentials/${key}`)
+        await $splunkStoreService.delete(`${id}`)
         return
       } catch (err) {
         return Promise.reject(err)
@@ -96,6 +96,7 @@ define(['../module'], function (module) {
      */
     const insert = async (record) => {
       try {
+        console.log('sending this record to splunkstoreservice ',record)
         const result = await $splunkStoreService.insert(record)
         return result
       } catch (err) {

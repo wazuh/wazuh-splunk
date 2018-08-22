@@ -236,8 +236,6 @@ define([
               "portapi": form_apiport,
               "userapi": form_apiuser,
               "passapi": form_apipass,
-              "cluster": false,
-              "managerName": false
             }
             // Use the request method to send and insert a new record
             const result = await $currentDataService.insert(record)

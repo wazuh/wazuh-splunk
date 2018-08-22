@@ -8,10 +8,9 @@ define(['../module'], function (module) {
      */
     const select = async (id) => {
       try {
-        const result = await $requestService.httpReq(`GET`, `/manager/get_apis`, true)
-        return result.data
+        const { data } = await $requestService.httpReq(`GET`, `/manager/get_apis`, true)
+        return data
       } catch (err) {
-        console.error('error in select ',err)
         return Promise.reject(err)
       }
     }
@@ -22,7 +21,9 @@ define(['../module'], function (module) {
      */
     const insert = async (record) => {
       try {
-        return await $requestService.httpReq(`POST`, `/manager/db`, false, record)
+        console.log('inserting this record ',record)
+        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, true, record)
+        return data
       } catch (err) {
         return Promise.reject(err)
       }
@@ -32,18 +33,13 @@ define(['../module'], function (module) {
      * DELETE method
      * @param {String} url 
      */
-    const deletes = (url) => {
-      if (!url || url === '') {
-        url = "storage/collections/data/credentials/"
+    const deletes = async (id) => {
+      try {
+        const { data } = await $requestService.httpReq(`DELETE`, `manager/remove_api`, true, {id:id})
+        return data
+      } catch (err) {
+        return Promise.reject(err)
       }
-      return new Promise((resolve, reject) => {
-        service.del(url, {}, (err, data) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(data)
-        })
-      })
     }
 
     /**
