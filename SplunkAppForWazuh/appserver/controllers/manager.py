@@ -22,10 +22,8 @@ import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
-import jwt
-from tinydb import TinyDB, Query
-db = TinyDB('apis.json')
-
+from db import database
+# import jwt
 
 _APPNAME = 'SplunkAppForWazuh'
 
@@ -54,6 +52,7 @@ def remove_keys(arr):
 class manager(controllers.BaseController):
   def __init__(self):
     controllers.BaseController.__init__(self)
+    self.database = database()
     self.session = requests.Session()
     self.session.trust_env = False
 
@@ -69,7 +68,7 @@ class manager(controllers.BaseController):
       verify = False
       request_cluster = self.session.get(url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
       del kwargs['pass']
-      request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
+      # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
       result = json.dumps(request_cluster)
     except Exception as e:
       return json.dumps({"status":"400","error":str(e)})
