@@ -66,7 +66,7 @@ define(['../module'], function (module) {
      */
     const select = async (key) => {
       try {
-        return await $splunkStoreService.get("storage/collections/data/credentials/" + key)
+        return await $splunkStoreService.select(key)
       } catch (err) {
         return Promise.reject(err)
       }
@@ -96,7 +96,7 @@ define(['../module'], function (module) {
      */
     const insert = async (record) => {
       try {
-        const result = await $splunkStoreService.post("storage/collections/data/credentials/", record)
+        const result = await $splunkStoreService.insert(record)
         return result
       } catch (err) {
         return Promise.reject(err)
@@ -108,7 +108,7 @@ define(['../module'], function (module) {
      */
     const getApiList = async () => {
       try {
-        const apiList = await $splunkStoreService.get("storage/collections/data/credentials/")
+        const apiList = await $splunkStoreService.select()
         const selectedApi = $apiIndexStorageService.getApi()
         for (let i = 0; i < apiList.length; i++) {
           if (selectedApi && typeof selectedApi === 'string' && selectedApi !== 'undefined' && typeof JSON.parse(selectedApi) === 'object' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
@@ -149,6 +149,7 @@ define(['../module'], function (module) {
         return Promise.reject(err)
       }
     }
+
     /**
      * Checks a connection passed directly
      * @param {Object} api 

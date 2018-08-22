@@ -1,35 +1,31 @@
-define(['../module', 'splunkjs/mvc'], function (module, mvc) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$splunkStoreService', function () {
-    const service = mvc.createService({ owner: "nobody" })
+  module.service('$splunkStoreService', function ($requestService) {
 
     /**
-     * GET method
-     * @param {String} url 
+     * Select an API by ID
+     * @param {Object} id 
      */
-    const get = (url) => {
-      return new Promise((resolve, reject) => {
-        service.request(url, "GET", null, null, null, { "Content-Type": "application/json" }, (err, data) => {
-          if (err)
-            return reject(err)
-          resolve(data.data)
-        })
-      })
+    const select = async (id) => {
+      try {
+        const result = await $requestService.httpReq(`GET`, `/manager/get_apis`, true)
+        return result.data
+      } catch (err) {
+        console.error('error in select ',err)
+        return Promise.reject(err)
+      }
     }
 
     /**
-     * POST method
-     * @param {String} url 
+     * 
      * @param {Object} record 
      */
-    const post = (url, record) => {
-      return new Promise((resolve, reject) => {
-        service.request(url, "POST", null, null, JSON.stringify(record), { "Content-Type": "application/json" }, (err, data) => {
-          if (err)
-            return reject(err)
-          return resolve(data)
-        })
-      })
+    const insert = async (record) => {
+      try {
+        return await $requestService.httpReq(`POST`, `/manager/db`, false, record)
+      } catch (err) {
+        return Promise.reject(err)
+      }
     }
 
     /**
@@ -65,8 +61,8 @@ define(['../module', 'splunkjs/mvc'], function (module, mvc) {
     }
 
     const methods = {
-      get: get,
-      post: post,
+      select: select,
+      insert: insert,
       delete: deletes,
       update: update
     }
