@@ -108,7 +108,7 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
-        try:        
+        try:
             if 'payload[url]' not in kwargs or 'payload[portapi]' not in kwargs or 'payload[userapi]' not in kwargs or 'payload[passapi]' not in kwargs:
                 return json.dumps({'error': 'Invalid number of arguments'})
             record = {}

@@ -32,14 +32,14 @@ class database():
             self.db.update(obj, self.Api.id == obj['id'])
         except Exception as e:
             raise e
-        return json.dumps({'data':'success'})
+        return json.dumps({'data': 'success'})
 
     def remove(self, id):
         try:
             self.db.remove(self.Api.id == id)
         except Exception as e:
             raise e
-        return json.dumps({'data':'success'})
+        return json.dumps({'data': 'success'})
 
     def all(self):
         try:
