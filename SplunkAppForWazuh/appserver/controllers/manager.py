@@ -123,10 +123,10 @@ class manager(controllers.BaseController):
             return json.dumps({'error': str(e)})
         return json.dumps({'result': 'success'})
 
-    @expose_page(must_login=False, methods=['PUT'])
+    @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
         try:
-            logger.info("Entering remove api")
+            logger.info("Entering remove api %s" % (kwargs))
 
             if 'id[id]' not in kwargs:
                 return json.dumps({'error': 'Missing ID'})
