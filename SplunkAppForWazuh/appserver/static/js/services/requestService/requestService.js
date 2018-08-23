@@ -46,14 +46,7 @@ define(['../module'], function (module) {
         // PUT METHOD
         else if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload))
         // POST METHOD
-        else if (method === "POST") Object.assign(data, await $http({
-          method: 'POST',
-          url: tmpUrl,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          data: $.param({
-            payload
-          })
-        }))
+        else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
         // DELETE METHOD
         else if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
         if (!data) {

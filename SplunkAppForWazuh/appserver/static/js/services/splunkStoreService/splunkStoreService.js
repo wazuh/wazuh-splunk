@@ -17,12 +17,14 @@ define(['../module'], function (module) {
 
     /**
      * 
-     * @param {Object} record 
+     * @param {Object} payload 
      */
-    const insert = async (record) => {
+    const insert = async (payload) => {
       try {
-        console.log('inserting this record ',record)
-        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, true, record)
+        console.log('inserting this payload ',payload)
+        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, true, $.param({
+            payload
+          }))
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -35,7 +37,12 @@ define(['../module'], function (module) {
      */
     const deletes = async (id) => {
       try {
-        const { data } = await $requestService.httpReq(`DELETE`, `manager/remove_api`, true, {id:id})
+        console.log('deleting an api ',id)
+        const { data } = await $requestService.httpReq(`PUT`, `manager/remove_api`, true, $.param({
+          id
+        }))
+        if (data.error || data.status === 400)
+          throw new Error(data.error)
         return data
       } catch (err) {
         return Promise.reject(err)

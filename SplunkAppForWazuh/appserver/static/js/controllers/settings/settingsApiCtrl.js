@@ -48,19 +48,21 @@ define([
        */
       vm.removeManager = async (entry) => {
         try {
+          console.log('deleting....', entry)
           const currentApi = $currentDataService.getApi()
-          if (currentApi && currentApi._key === entry._key) {
+          if (currentApi && currentApi.id === entry.id) {
             $notificationService.showSimpleToast('Cannot delete selected API')
           } else {
             const index = vm.apiList.indexOf(entry)
             if (index > -1) {
               vm.apiList.splice(index, 1)
-              await $currentDataService.remove(entry._key)
+              await $currentDataService.remove(entry)
             }
             $notificationService.showSimpleToast('Manager was removed')
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Cannot remove API')
+          console.error('error ', err)
+          $notificationService.showSimpleToast('Cannot remove API:', err.message || err)
         }
       }
 
@@ -238,7 +240,7 @@ define([
               "passapi": form_apipass,
             }
             // Use the request method to send and insert a new record
-            
+
             await $currentDataService.checkRawConnection(record)
 
             const result = await $currentDataService.insert(record)

@@ -4,15 +4,15 @@ define(['../module'], function (module) {
 
     /**
      * Delete a record by ID
-     * @param {String} key 
+     * @param {Object} api: An API entry to delete 
      */
-    const remove = async (id) => {
+    const remove = async (api) => {
       try {
-        const api = await select(id)
         if ($apiIndexStorageService.getApi() && $apiIndexStorageService.getApi().url === api.url) {
           $apiIndexStorageService.removeAPI()
         }
-        await $splunkStoreService.delete(`${id}`)
+        console.log('removing this id ',api.id)
+        await $splunkStoreService.delete(api.id)
         return
       } catch (err) {
         return Promise.reject(err)

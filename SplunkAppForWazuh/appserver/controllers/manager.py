@@ -128,10 +128,10 @@ class manager(controllers.BaseController):
         try:
             logger.info("Entering remove api")
 
-            if 'id' not in kwargs:
+            if 'id[id]' not in kwargs:
                 return json.dumps({'error': 'Missing ID'})
-            logger.info("Removing api : %s" % (str(kwargs['id'])))
-            self.db.remove(str(kwargs['id']))
+            logger.info("Removing api : %s" % (str(kwargs['id[id]'])))
+            self.db.remove(str(kwargs['id[id]']))
         except Exception as e:
             logger.info("Error in remove_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
