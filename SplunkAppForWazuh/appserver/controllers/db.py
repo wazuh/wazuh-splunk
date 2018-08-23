@@ -11,26 +11,46 @@
 #
 
 from tinydb import TinyDB, Query
+import json
+
 
 class database():
-  def __init__(self):
-    self.db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
-    self.Api = Query()
+    def __init__(self):
+        self.db = TinyDB(
+            "/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
+        self.Api = Query()
 
-  def insert(self,obj):
-    try:
-      self.db.insert(obj)
-    except Exception as e:
-      return str(e)
+    def insert(self, obj):
+        try:
+            result = self.db.insert(obj)
+        except Exception as e:
+            raise e
+        return json.dumps({'data': result})
 
-  def remove(self,id):
-    try:
-      self.db.remove(self.Api.id == id)
-    except Exception as e:
-      return str(e)
+    def update(self, obj):
+        try:
+            self.db.update(obj, self.Api.id == obj['id'])
+        except Exception as e:
+            raise e
+        return json.dumps({'data':'success'})
 
-  def all(self):
-    return self.db.all()
+    def remove(self, id):
+        try:
+            self.db.remove(self.Api.id == id)
+        except Exception as e:
+            raise e
+        return json.dumps({'data':'success'})
 
-  def get(self,id):
-    return self.db.search(self.Api.id == id)
+    def all(self):
+        try:
+            all = self.db.all()
+        except Exception as e:
+            raise e
+        return all
+
+    def get(self, id):
+        try:
+            data = self.db.search(self.Api.id == id)
+        except Exception as e:
+            raise e
+        return data
