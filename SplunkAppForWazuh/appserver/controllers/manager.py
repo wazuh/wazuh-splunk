@@ -108,17 +108,20 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
-        try:
-            if 'url' not in kwargs or 'portapi' not in kwargs or 'userapi' not in kwargs or 'passapi' not in kwargs:
+        try:        
+            if 'payload[url]' not in kwargs or 'payload[portapi]' not in kwargs or 'payload[userapi]' not in kwargs or 'payload[passapi]' not in kwargs:
                 return json.dumps({'error': 'Invalid number of arguments'})
-            kwargs['id'] = str(uuid.uuid4())
-            # record = json.dumps({'id': str(uuid.uuid4()), 'url': kwargs['url'], 'portapi': kwargs['portapi'], 'userapi': kwargs['userapi'], 'passapi': kwargs['passapi']})
-            # logger.info("Inserting : %s" % (record))
-            record = self.db.insert(kwargs)
+            record = {}
+            record['id'] = str(uuid.uuid4())
+            record['url'] = kwargs['payload[url]']
+            record['portapi'] = kwargs['payload[portapi]']
+            record['userapi'] = kwargs['payload[userapi]']
+            record['passapi'] = kwargs['payload[passapi]']
+            self.db.insert(record)
         except Exception as e:
             logger.info("Error in add_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
-        return json.dumps({'result': record})
+        return json.dumps({'result': 'success'})
 
     @expose_page(must_login=False, methods=['PUT'])
     def remove_api(self, **kwargs):
