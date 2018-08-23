@@ -238,7 +238,9 @@ define([
               "passapi": form_apipass,
             }
             // Use the request method to send and insert a new record
-            await checkRawConnection()
+            
+            await $currentDataService.checkRawConnection(record)
+
             const result = await $currentDataService.insert(record)
             // try {
             //   const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
@@ -262,7 +264,8 @@ define([
             throw new Error('Invalid format. Please check the fields again')
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Error at adding new API:',err)
+          console.error(err)
+          $notificationService.showSimpleToast(err.message)
         }
       }
 

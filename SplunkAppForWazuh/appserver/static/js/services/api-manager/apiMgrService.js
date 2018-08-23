@@ -97,7 +97,6 @@ define(['../module'], function (module) {
      */
     const insert = async (record) => {
       try {
-        console.log('sending this record to splunkstoreservice ',record)
         const result = await $splunkStoreService.insert(record)
         return result
       } catch (err) {
@@ -159,13 +158,16 @@ define(['../module'], function (module) {
     const checkRawConnection = async (api) => {
       try {
         if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
-          const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
+          const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
           const result = await $requestService.httpReq('GET', checkConnectionEndpoint, true, false)
+          if (result.data.status === 400 || result.data.error) {
+            throw new Error('Cannot connect to API.')
+          }
           return result
         }
+        // Otherwise throw a new error
+        throw new Error('Missing API fields.')
 
-        throw new Error('Incomplete object passed.')
-        
       } catch (err) {
         return Promise.reject(err)
       }

@@ -47,10 +47,10 @@ define(['../module'], function (module) {
      * @param {String} key 
      * @param {Object} newRegister 
      */
-    const update = async (key, newRegister) => {
+    const update = async (newRegister) => {
       try {
-        const result = await post("storage/collections/data/credentials/" + key, newRegister)
-        return result
+        const { data } = await $requestService.httpReq(`PUT`, `manager/update_api`, true, newRegister)
+        return data
       } catch (err) {
         return Promise.reject(err)
       }
