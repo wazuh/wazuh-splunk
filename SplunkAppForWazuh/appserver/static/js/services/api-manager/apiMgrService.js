@@ -66,7 +66,8 @@ define(['../module'], function (module) {
      */
     const select = async (key) => {
       try {
-        return await $splunkStoreService.select(key)
+        const entry = await $splunkStoreService.select(key)
+        return entry
       } catch (err) {
         return Promise.reject(err)
       }
@@ -159,10 +160,12 @@ define(['../module'], function (module) {
       try {
         if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
           const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-          return await $requestService.httpReq('GET', checkConnectionEndpoint, true, false)
-        } else {
-          return Promise.reject(new Error('Incomplete object passed.'))
+          const result = await $requestService.httpReq('GET', checkConnectionEndpoint, true, false)
+          return result
         }
+
+        throw new Error('Incomplete object passed.')
+        
       } catch (err) {
         return Promise.reject(err)
       }

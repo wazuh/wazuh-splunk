@@ -2,6 +2,7 @@ define(['../module'], function (module) {
   'use strict'
 
   module.service('$requestService', function ($http, $apiIndexStorageService, $q) {
+
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
@@ -35,18 +36,18 @@ define(['../module'], function (module) {
         if (!method || !endpoint) {
           throw new Error('Missing parameters')
         }
-        const requestHeaders = { headers: { "Content-Type": 'application/json' }, timeout: 20000 };
         const tmpUrl = getWellFormedUri(endpoint, includedApi)
         const data = {}
-        console.log('sending payload ', payload)
-        if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }, requestHeaders))
-        else if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload, requestHeaders))
-        else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, {
-          "url": 'http://test',
-          "portapi": 55000,
-          "userapi": 'foo',
-          "passapi": 'bar',
-        }, requestHeaders))
+
+        // Set content type to form urlencoded
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"
+        // GET METHOD
+        if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }))
+        // PUT METHOD
+        else if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload))
+        // POST METHOD
+        else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
+        // DELETE METHOD
         else if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
         if (!data) {
           throw new Error(`Error doing a request to ${tmpUrl}, method: ${method}.`)
@@ -73,7 +74,8 @@ define(['../module'], function (module) {
         if (opts && typeof opts === 'object') {
           Object.assign(payload, opts)
         }
-        return await httpReq('GET', '/api/request', false, payload)
+        const result = await httpReq('GET', '/api/request', false, payload)
+        return result
       } catch (err) {
         return Promise.reject(err)
       }
