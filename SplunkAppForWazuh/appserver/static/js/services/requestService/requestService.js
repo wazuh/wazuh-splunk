@@ -44,7 +44,7 @@ define(['../module'], function (module) {
         // GET METHOD
         if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }))
         // PUT METHOD
-        else if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload))
+        else if (method === "PUT") Object.assign(data, await $http.post(tmpUrl, payload))
         // POST METHOD
         else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
         // DELETE METHOD

@@ -12,7 +12,7 @@ define(['../module'], function (module) {
           $apiIndexStorageService.removeAPI()
         }
         console.log('removing this id ',api.id)
-        await $splunkStoreService.delete(api.id)
+        await $splunkStoreService.delete({'id':api.id})
         return
       } catch (err) {
         return Promise.reject(err)
