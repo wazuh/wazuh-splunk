@@ -94,7 +94,7 @@ class manager(controllers.BaseController):
             polling_dict['disabled'] = disabled
             data_temp = json.dumps(polling_dict)
         except Exception as e:
-            return json.dumps("{error:"+str(err)+"}")
+            return json.dumps("{error:"+str(e)+"}")
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
@@ -120,14 +120,18 @@ class manager(controllers.BaseController):
             return json.dumps({'error': str(e)})
         return json.dumps({'result': record})
 
-    @expose_page(must_login=False, methods=['DELETE'])
+    @expose_page(must_login=False, methods=['PUT'])
     def remove_api(self, **kwargs):
         try:
-            id = kwargs['id']
-            self.db.remove(id)
+            logger.info("Entering remove api")
+
+            if 'id' not in kwargs:
+                return json.dumps({'error': 'Missing ID'})
+            logger.info("Removing api : %s" % (str(kwargs['id'])))
+            self.db.remove(str(kwargs['id']))
         except Exception as e:
             logger.info("Error in remove_api endpoint: %s" % (e))
-            return json.dumps("{error:"+str(e)+"}")
+            return json.dumps({'error': str(e)})
         return json.dumps({'data': 'success'})
 
     @expose_page(must_login=False, methods=['PUT'])
