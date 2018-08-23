@@ -238,30 +238,31 @@ define([
               "passapi": form_apipass,
             }
             // Use the request method to send and insert a new record
+            await checkRawConnection()
             const result = await $currentDataService.insert(record)
-            try {
-              const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
-              clearForm()
-              const apiList = await $currentDataService.getApiList()
-              record.managerName = resultConnection.managerName
-              record._key = result.data._key
-              vm.apiList.push(record)
-              if (apiList && apiList.length === 1) {
-                await vm.selectManager(result.data)
-              }
-              vm.showForm = false
-              if (!$scope.$$phase) $scope.$digest()
-              $notificationService.showSimpleToast('API was added')
+            // try {
+            //   const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
+            //   clearForm()
+            //   const apiList = await $currentDataService.getApiList()
+            //   record.managerName = resultConnection.managerName
+            //   record._key = result.data._key
+            //   vm.apiList.push(record)
+            //   if (apiList && apiList.length === 1) {
+            //     await vm.selectManager(result.data)
+            //   }
+            //   vm.showForm = false
+            //   if (!$scope.$$phase) $scope.$digest()
+            //   $notificationService.showSimpleToast('API was added')
 
-            } catch (err) {
-              $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
-              $notificationService.showSimpleToast('Unreachable API')
-            }
+            // } catch (err) {
+            //   $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
+            //   $notificationService.showSimpleToast('Unreachable API')
+            // }
           } else {
-            $notificationService.showSimpleToast('Invalid format. Please check the fields again')
+            throw new Error('Invalid format. Please check the fields again')
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Error at adding new API')
+          $notificationService.showSimpleToast('Error at adding new API:',err)
         }
       }
 
