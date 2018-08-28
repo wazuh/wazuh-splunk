@@ -29,13 +29,13 @@
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
             <p flex="15">
               <i ng-show="entry.selected" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
-                aria-hidden="true"></i> {{ (entry.cluster) ? entry.cluster : "Disabled"}}</p>
+                aria-hidden="true"></i> {{entry.cluster}}</p>
             <p flex="20">{{entry.managerName}}</p>
             <p flex="15">{{entry.url}}</p>
             <p flex="15">{{entry.portapi}}</p>
             <p flex="15">{{entry.userapi}}</p>
             <p flex="20">
-              <i ng-click="sac.selectManager(entry)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>
+              <i ng-click="sac.selectManager(entry.id)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
               <i ng-click="sac.editEntry(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
