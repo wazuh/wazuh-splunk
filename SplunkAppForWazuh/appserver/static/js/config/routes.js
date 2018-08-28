@@ -272,7 +272,7 @@ define(['./module'], function (module) {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
-              $requestService.httpReq('GET', '/agents/agents_uniq', false)
+              $requestService.httpReq('GET', '/agents/agents_uniq')
             ])
               .then(function (response) {
                 return response

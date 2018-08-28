@@ -15,13 +15,8 @@ define(['../module'], function (module) {
     /**
      * Generates and returns the browser base URL + Splunk Port
      */
-    const getWellFormedUri = (endpoint, includedApi) => {
-      if (!includedApi) {
-        const jsonCurrentAPI = $apiIndexStorageService.getApi()
-        return getBaseUrl() + `/en-US/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
-      } else {
-        return getBaseUrl() + '/en-US/custom/SplunkAppForWazuh/' + endpoint
-      }
+    const getWellFormedUri = (endpoint) => {
+      return getBaseUrl() + '/en-US/custom/SplunkAppForWazuh/' + endpoint
     }
 
     /**
@@ -31,12 +26,12 @@ define(['../module'], function (module) {
      * @param {Boolean} includedApi 
      * @param {Object} payload 
      */
-    const httpReq = async (method, endpoint, includedApi, payload = {}) => {
+    const httpReq = async (method, endpoint, payload = {}) => {
       try {
         if (!method || !endpoint) {
           throw new Error('Missing parameters')
         }
-        const tmpUrl = getWellFormedUri(endpoint, includedApi)
+        const tmpUrl = getWellFormedUri(endpoint)
         const data = {}
 
         // Set content type to form urlencoded
@@ -71,10 +66,10 @@ define(['../module'], function (module) {
       try {
         const payload = {}
         Object.assign(payload, { endpoint: endpoint })
-        if (opts && typeof opts === 'object') {
+        if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
-        const result = await httpReq('GET', '/api/request', false, payload)
+        const result = await httpReq(`GET`, `/api/request`, payload)
         return result
       } catch (err) {
         return Promise.reject(err)

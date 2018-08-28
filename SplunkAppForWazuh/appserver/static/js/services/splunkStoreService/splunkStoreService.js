@@ -6,9 +6,9 @@ define(['../module'], function (module) {
      * Select an API by ID
      * @param {Object} id 
      */
-    const select = async (id) => {
+    const getAllApis = async (id) => {
       try {
-        const { data } = await $requestService.httpReq(`GET`, `/manager/get_apis`, true)
+        const { data } = await $requestService.httpReq(`GET`, `/manager/get_apis`)
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -16,15 +16,28 @@ define(['../module'], function (module) {
     }
 
     /**
-     * 
+     * Select an API by ID
+     * @param {Object} id 
+     */
+    const getApiById = async (id) => {
+      try {
+        const { data } = await $requestService.httpReq(`GET`, `/manager/get_api`, { id: id })
+        return data[0]
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Inserts an entry
      * @param {Object} payload 
      */
     const insert = async (payload) => {
       try {
-        console.log('inserting this payload ',payload)
-        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, true, $.param({
-            payload
-          }))
+        console.log('inserting this ', payload)
+        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, $.param({
+          payload
+        }))
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -37,8 +50,7 @@ define(['../module'], function (module) {
      */
     const deletes = async (id) => {
       try {
-        console.log('deleting an api ',id)
-        const { data } = await $requestService.httpReq(`PUT`, `manager/remove_api`, true, $.param({
+        const { data } = await $requestService.httpReq(`POST`, `manager/remove_api`, $.param({
           id
         }))
         if (data.error || data.status === 400)
@@ -52,11 +64,13 @@ define(['../module'], function (module) {
     /**
      * Update a record
      * @param {String} key 
-     * @param {Object} newRegister 
+     * @param {Object} newRegister: The API to update
      */
     const update = async (newRegister) => {
       try {
-        const { data } = await $requestService.httpReq(`PUT`, `manager/update_api`, true, newRegister)
+        const { data } = await $requestService.httpReq(`POST`, `manager/update_api`, $.param({
+          newRegister
+        }))
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -64,7 +78,8 @@ define(['../module'], function (module) {
     }
 
     const methods = {
-      select: select,
+      getAllApis: getAllApis,
+      getApiById: getApiById,
       insert: insert,
       delete: deletes,
       update: update

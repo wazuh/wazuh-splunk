@@ -22,24 +22,36 @@ define([
        * Initializes the controller
        */
       vm.init = async () => {
-        vm.apiList = apiList
-        const currentApi = $currentDataService.getApi()
-        let exit = false
-        let i = 0
-        if (!currentApi) {
-          do {
-            vm.selectManager(vm.apiList[i]).then(() => { exit = true }).catch()
-            ++i
-          } while (i < vm.apiList.length && !exit)
-        }
-        vm.apiList.map(item => { delete item.selected })
+        try {
+          vm.apiList = apiList
+          console.log('api list ', apiList)
+          // let currentApi = $currentDataService.getApi()
 
-        if (currentApi)
-          vm.apiList.map(item => {
-            if (item._key === currentApi._key) {
-              item.selected = true
-            }
-          })
+          // if (!currentApi && vm.apiList.length) {
+          //   for (const apiEntry of vm.apiList) {
+          //     try {
+          //       await vm.selectManager(apiEntry.id)
+          //       // setAPI
+          //       currentApi = $currentDataService.getApi()
+          //       break;
+          //     } catch (error) { }
+          //   }
+          // }
+
+          // vm.apiList.map(item => { delete item.selected })
+
+          // if (currentApi) {
+          //   vm.apiList.map(item => {
+          //     if (item.id === currentApi.id) {
+          //       item.selected = true
+          //     }
+          //   })
+          // } else {
+
+          // }
+        } catch (err) {
+          $notificationService.showSimpleToast('Error loading data')
+        }
       }
 
       /**
@@ -48,7 +60,6 @@ define([
        */
       vm.removeManager = async (entry) => {
         try {
-          console.log('deleting....', entry)
           const currentApi = $currentDataService.getApi()
           if (currentApi && currentApi.id === entry.id) {
             $notificationService.showSimpleToast('Cannot delete selected API')
@@ -72,13 +83,13 @@ define([
        */
       vm.checkManager = async (entry) => {
         try {
-          const connectionData = await $currentDataService.checkApiConnection(entry._key)
+          const connectionData = await $currentDataService.checkApiConnection(entry.id)
           for (let item of vm.apiList) {
-            if (item._key === entry._key) {
+            if (item.id === entry.id) {
               if (connectionData.cluster) {
                 item.cluster = connectionData.cluster
               } else {
-                item.cluster = 'false'
+                item.cluster = 'Disabled'
               }
               item.managerName = connectionData.managerName
             }
@@ -107,7 +118,7 @@ define([
         try {
           vm.edit = !vm.edit
           vm.showForm = false
-          vm.currentEntryKey = entry._key
+          vm.currentEntryKey = entry.id
           vm.url = entry.url
           vm.port = entry.portapi
           vm.user = entry.userapi
@@ -134,9 +145,9 @@ define([
           }
           delete vm.entry['$$hashKey']
           delete vm.entry._user
-          const updatedEntry = await $currentDataService.update(vm.currentEntryKey, vm.entry)
-          vm.currentEntryKey = updatedEntry.data._key
-          if ($currentDataService.getApi() && $currentDataService.getApi()._key === vm.currentEntryKey) {
+          const updatedEntry = await $currentDataService.update(vm.entry)
+          vm.currentEntryKey = updatedEntry.data.id
+          if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.currentEntryKey) {
             vm.selectManager(updatedEntry.data)
           }
           vm.edit = false
@@ -195,26 +206,26 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          const connectionData = await $currentDataService.checkApiConnection(entry._key)
-          await $currentDataService.chose(entry._key)
+          console.log('selecting manager....', entry)
+          const connectionData = await $currentDataService.checkApiConnection(entry)
+          await $currentDataService.chose(entry)
+          vm.apiList.map(api => api.selected = false)
           for (let item of vm.apiList) {
-            if (item._key === entry._key) {
+            if (item.id === entry) {
               if (connectionData.cluster) {
                 item.cluster = connectionData.cluster
               } else {
-                item.cluster = 'false'
+                item.cluster = 'Disabled'
               }
               item.managerName = connectionData.managerName
-              vm.apiList.map(api => api.selected = false)
               item.selected = true
             }
           }
-          entry.selected = true
           $notificationService.showSimpleToast('API selected')
           $scope.$emit('updatedAPI', () => { })
           if (!$scope.$$phase) $scope.$digest()
-
         } catch (err) {
+          console.error('err: ', err)
           $notificationService.showSimpleToast('Could not select manager')
         }
       }
@@ -224,49 +235,64 @@ define([
        */
       vm.submitApiForm = async () => {
         try {
-          // When the Submit button is clicked, get all the form fields by accessing input values
+          // When the Submit button is clicked, get all the form fields by accessing to the input values
           const form_url = vm.url
           const form_apiport = vm.port
           const form_apiuser = vm.user
           const form_apipass = vm.pass
 
-          // If values are valid, register them
-          if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
-            // Create an object to store the field names and values
-            const record = {
-              "url": form_url,
-              "portapi": form_apiport,
-              "userapi": form_apiuser,
-              "passapi": form_apipass,
-            }
-            // Use the request method to send and insert a new record
-
-            await $currentDataService.checkRawConnection(record)
-
-            const result = await $currentDataService.insert(record)
-            // try {
-            //   const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
-            //   clearForm()
-            //   const apiList = await $currentDataService.getApiList()
-            //   record.managerName = resultConnection.managerName
-            //   record._key = result.data._key
-            //   vm.apiList.push(record)
-            //   if (apiList && apiList.length === 1) {
-            //     await vm.selectManager(result.data)
-            //   }
-            //   vm.showForm = false
-            //   if (!$scope.$$phase) $scope.$digest()
-            //   $notificationService.showSimpleToast('API was added')
-
-            // } catch (err) {
-            //   $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
-            //   $notificationService.showSimpleToast('Unreachable API')
-            // }
-          } else {
+          // If values are not valid then throw an error
+          if (!validPassword(form_apipass) || !validPort(form_apiport) || !validUrl(form_url) || !validUsername(form_apiuser))
             throw new Error('Invalid format. Please check the fields again')
+
+          // Create an object to store the field names and values
+          const record = {
+            "url": form_url,
+            "portapi": form_apiport,
+            "userapi": form_apiuser,
+            "passapi": form_apipass,
           }
+
+          // If connected to the API then continue
+          await $currentDataService.checkRawConnection(record)
+<
+          // Get the new API database ID
+          console.log('inserting record in DB ',record)
+          const { result } = await $currentDataService.insert(record)
+          const id = result
+          console.log('ID after insert ',id)
+          try {
+            // Get the full API info
+            console.log('Getting full updated API info')
+            const api = await $currentDataService.checkApiConnection(id)
+            // Empties the form fields
+            clearForm()
+            console.log('api with full information after being updated ',api)
+            // Add information to entry and updating database
+            // record.cluster = (api.cluster) ? api.cluster : 'Disabled'
+            // record.managerName = api.managerName
+            // record.id = id
+            // console.log('updating the rest of fields to database ', record)
+            // await $currentDataService.update(record)
+
+            // If the only one API in the list, then try to select it
+            // const apiList = await $currentDataService.getApiList()
+            vm.apiList.push(api)
+            // if (apiList && apiList.length === 1) {
+            //   await vm.selectManager(id)
+            // }
+            vm.showForm = false
+            if (!$scope.$$phase) $scope.$digest()
+            $notificationService.showSimpleToast('API was added')
+
+          } catch (err) {
+            console.error('err 2 ', err)
+            $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
+            $notificationService.showSimpleToast('Unreachable API')
+          }
+
         } catch (err) {
-          console.error(err)
+          console.error('main err', err)
           $notificationService.showSimpleToast(err.message)
         }
       }
