@@ -57,13 +57,15 @@ class api(controllers.BaseController):
             return json.dumps({'error':'Missing ID or endpoint.'})
         the_id = kwargs['id']
         api = self.db.get(the_id)
-        logger.info("Result making API request: %s" % (api))
 
         opt_username = api[0]["userapi"]
         opt_password = api[0]["passapi"]
         opt_base_url = api[0]["url"]
         opt_base_port = api[0]["portapi"]
         opt_endpoint = kwargs["endpoint"]
+        del kwargs['id']
+        del kwargs['endpoint']
+        logger.info("Making API request with these params: %s" % (kwargs))
 
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)

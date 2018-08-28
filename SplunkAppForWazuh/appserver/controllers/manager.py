@@ -76,6 +76,31 @@ class manager(controllers.BaseController):
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             request_cluster = self.session.get(
+                url + '/version', auth=auth, timeout=8, verify=verify).json()
+            del kwargs['pass']
+            # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
+            result = json.dumps(request_cluster)
+        except Exception as e:
+            return json.dumps({"status": "400", "error": str(e)})
+        return result
+
+    @expose_page(must_login=False, methods=['GET'])
+    def get_cluster_info(self, **kwargs):
+        try:
+            if 'id' not in kwargs:
+                return json.dumps({'error': 'Missing ID.'})
+            id = kwargs['id']
+            api = self.db.get(id)
+
+            opt_base_url = api['url']
+            opt_base_port = api['portapi']
+            opt_username = api['userapi']
+            opt_password = api['passapi']
+
+            url = opt_base_url + ":" + opt_base_port
+            auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+            request_cluster = self.session.get(
                 url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
             del kwargs['pass']
             # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
@@ -98,6 +123,18 @@ class manager(controllers.BaseController):
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
+    def get_api(self, **kwargs):
+        try:
+            if 'id' not in kwargs:
+                return json.dumps({'error': 'Missing ID.'})
+            id = kwargs['id']
+            data_temp = self.db.get(id)
+        except Exception as e:
+            logger.info("Error in get_apis endpoint: %s" % (e))
+            return json.dumps({'error': str(e)})
+        return json.dumps(data_temp)
+
+    @expose_page(must_login=False, methods=['GET'])
     def get_apis(self, **kwargs):
         try:
             data_temp = self.db.all()
@@ -117,11 +154,11 @@ class manager(controllers.BaseController):
             record['portapi'] = kwargs['payload[portapi]']
             record['userapi'] = kwargs['payload[userapi]']
             record['passapi'] = kwargs['payload[passapi]']
-            self.db.insert(record)
+            result = self.db.insert(record)
         except Exception as e:
             logger.info("Error in add_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
-        return json.dumps({'result': 'success'})
+        return json.dumps({'result': record['id']})
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
@@ -137,13 +174,24 @@ class manager(controllers.BaseController):
             return json.dumps({'error': str(e)})
         return json.dumps({'data': 'success'})
 
-    @expose_page(must_login=False, methods=['PUT'])
+    @expose_page(must_login=False, methods=['POST'])
     def update_api(self, **kwargs):
         try:
-            if 'id' not in kwargs or 'url' not in kwargs or 'portapi' not in kwargs or 'userapi' not in kwargs or 'passapi' not in kwargs:
+            if 'newRegister[id]' not in kwargs or 'newRegister[url]' not in kwargs or 'newRegister[portapi]' not in kwargs or 'newRegister[userapi]' not in kwargs or 'newRegister[passapi]' not in kwargs:
+                raise Exception("Invalid arguments : %s" % (kwargs))
                 return json.dumps({'error': 'Invalid number of arguments'})
-            self.db.update(kwargs)
+            # building a new object
+            logger.info("Updating this : %s" % (kwargs))
+
+            entry = {}
+            entry['id'] = kwargs['newRegister[id]']
+            entry['url'] = kwargs['newRegister[url]']
+            entry['portapi'] = kwargs['newRegister[portapi]']
+            entry['userapi'] = kwargs['newRegister[userapi]']
+            entry['passapi'] = kwargs['newRegister[passapi]']
+            entry['managerName'] = kwargs['newRegister[managerName]']
+            self.db.update(entry)
         except Exception as e:
-            logger.info("Error in update_api endpoint: %s" % (e))
+            logger.error("Error in update_api endpoint: %s" % (e))
             return json.dumps("{error:"+str(e)+"}")
         return json.dumps({'data': 'success'})

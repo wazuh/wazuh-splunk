@@ -9,26 +9,43 @@
 #
 # Find more information about this on the LICENSE file.
 #
-
-from tinydb import TinyDB, Query
+import logging
 import json
+# from splunk import AuthorizationFailed as AuthorizationFailed
+from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
+from tinydb import TinyDB, Query
 
+_APPNAME = 'SplunkAppForWazuh'
+def setup_logger(level):
+    """
+    Setup a logger for the REST handler.
+    """
+    logger = logging.getLogger('splunk.appserver.%s.controllers.db' % _APPNAME)
+    logger.propagate = False  # Prevent the log messages from being duplicated in the python.log file
+    logger.setLevel(level)
+    file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(['var', 'log', 'splunk', 'db.log']), maxBytes=25000000, backupCount=5)
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    return logger
+logger = setup_logger(logging.DEBUG)
 
 class database():
     def __init__(self):
-        self.db = TinyDB(
-            "/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
+        self.db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
         self.Api = Query()
 
     def insert(self, obj):
         try:
             result = self.db.insert(obj)
         except Exception as e:
+            logger.info("Error in insert DB: %s" % (e))
             raise e
         return json.dumps({'data': result})
 
     def update(self, obj):
         try:
+            logger.info("Updating this: %s" % (obj))
             self.db.update(obj, self.Api.id == obj['id'])
         except Exception as e:
             raise e
@@ -45,6 +62,7 @@ class database():
         try:
             all = self.db.all()
         except Exception as e:
+            logger.info("Error at get all documents DB: %s" % (e))
             raise e
         return all
 
@@ -52,5 +70,6 @@ class database():
         try:
             data = self.db.search(self.Api.id == id)
         except Exception as e:
+            logger.info("Error at get document DB: %s" % (e))
             raise e
         return data
