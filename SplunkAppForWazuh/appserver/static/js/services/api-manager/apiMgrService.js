@@ -222,8 +222,8 @@ define(['../module'], function (module) {
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.data.enabled === "yes") {
           api.filterType = 'cluster.name'
-          const clusterName = await $requestService.apiReq(`/cluster/node`)
-          api.filterName = clusterName.data.cluster
+          const clusterName = await $requestService.apiReq(`/cluster/node`, {id:id})
+          api.filterName = clusterName.data.data.cluster
           // if (!api.cluster || api.cluster !== clusterName.data.cluster) {
           //   api.cluster = clusterName.data.cluster
           // }

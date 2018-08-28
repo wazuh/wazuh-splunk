@@ -277,6 +277,7 @@ define([
 
             // If the only one API in the list, then try to select it
             // const apiList = await $currentDataService.getApiList()
+            console.log('pushing this to api list ',api)
             vm.apiList.push(api)
             // if (apiList && apiList.length === 1) {
             //   await vm.selectManager(id)
