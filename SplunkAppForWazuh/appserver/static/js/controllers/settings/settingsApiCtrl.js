@@ -160,9 +160,9 @@ define([
           }
           if (!$scope.$$phase) $scope.$digest()
 
-          // if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.currentEntryKey) {
-          //   vm.selectManager(updatedEntry.data)
-          // }
+          if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.entry.id) {
+            vm.selectManager(updatedEntry.data)
+          }
 
           vm.edit = false
           $notificationService.showSimpleToast('Updated API')
@@ -269,7 +269,6 @@ define([
           
           // Get the new API database ID
           const { result } = await $currentDataService.insert(record)
-          console.log('result ',result)
           const id = result
           try {
             // Get the full API info
