@@ -74,37 +74,3 @@ class agents(controllers.BaseController):
         logger.error("Error in agents_uniq endpoint: %s" % (e))
         return json.dumps({"error":str(e)})
       return json.dumps(request)
- 
-     # /custom/SplunkAppForWazuh/agents/agent/:id
-    @expose_page(must_login=False, methods=['GET'])
-    def agent(self, **kwargs):
-      try:
-        if 'id' not in kwargs:
-          return json.dumps({'error': 'Missing ID.'})
-        id = kwargs['id']
-        api = self.db.get(id)
-
-        opt_base_url = api['url']
-        opt_base_port = api['portapi']
-        opt_username = api['userapi']
-        opt_password = api['passapi']
-
-        url = opt_base_url + ":" + opt_base_port
-        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-        verify = False
-        final_url = url + '/agents/' + opt_agent_id
-        request = requests.get(final_url, auth=auth, verify=verify)
-        agent = json.loads(request.text)["data"]
-        results = []
-        data = {}
-        for attribute, value in agent.iteritems():
-          if attribute == 'name' or attribute == 'id':
-            data[attribute] = value 
-        results.append(data)
-
-        response = {}
-        response['data'] = {}
-        response['data'] = results
-      except Exception as e:
-        return json.dumps("{error:"+str(e)+"}")
-      return json.dumps(response)
