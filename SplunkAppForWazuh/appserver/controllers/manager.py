@@ -190,6 +190,8 @@ class manager(controllers.BaseController):
             entry['userapi'] = kwargs['newRegister[userapi]']
             entry['passapi'] = kwargs['newRegister[passapi]']
             entry['managerName'] = kwargs['newRegister[managerName]']
+            entry['filterName'] = kwargs['newRegister[filterName]']
+            entry['filterType'] = kwargs['newRegister[filterType]']
             self.db.update(entry)
         except Exception as e:
             logger.error("Error in update_api endpoint: %s" % (e))

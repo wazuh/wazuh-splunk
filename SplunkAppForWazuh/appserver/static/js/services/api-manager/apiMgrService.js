@@ -203,15 +203,12 @@ define(['../module'], function (module) {
      */
     const checkApiConnection = async (id) => {
       try {
-        console.log('CHECK API CONNECTION')
+        console.log('check api connection')
         const api = await select(id)
-        console.log('stored api data in DB ', api)
         const clusterData = await $requestService.apiReq(`/cluster/status`, { 'id': id })
-        console.log('clusterData ', clusterData)
         if (clusterData.data.error) {
           throw new Error(clusterData.data.error)
         }
-        api.filter = []
         // Get manager name. Necessary for both cases
         const managerName = await $requestService.apiReq(`/agents/000`, { 'id': id, 'select': 'name' })
         if (managerName && managerName.data && managerName.data.data && managerName.data.data.name) {
@@ -221,21 +218,15 @@ define(['../module'], function (module) {
         }
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.data.enabled === "yes") {
+          console.log('cluster enabled, saving to database ')
           api.filterType = 'cluster.name'
           const clusterName = await $requestService.apiReq(`/cluster/node`, {id:id})
           api.filterName = clusterName.data.data.cluster
-          // if (!api.cluster || api.cluster !== clusterName.data.cluster) {
-          //   api.cluster = clusterName.data.cluster
-          // }
         } else {
-          // if (api.cluster) {
-          //   api.cluster = false
-          // }
           api.filterType = 'manager.name'
           api.filterName = api.managerName
         }
-        console.log('updating api after all changes ', api)
-
+        console.log('saving...',api)
         await $splunkStoreService.update(api)
         delete api['passapi']
         return api

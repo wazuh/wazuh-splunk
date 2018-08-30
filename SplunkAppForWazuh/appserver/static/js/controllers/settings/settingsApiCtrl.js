@@ -23,8 +23,8 @@ define([
        */
       vm.init = async () => {
         try {
+          console.log('the api list ',apiList)
           vm.apiList = apiList
-          console.log('api list ', apiList)
           // let currentApi = $currentDataService.getApi()
 
           // if (!currentApi && vm.apiList.length) {
@@ -206,7 +206,7 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          console.log('selecting manager....', entry)
+          console.log('select manager')
           const connectionData = await $currentDataService.checkApiConnection(entry)
           await $currentDataService.chose(entry)
           vm.apiList.map(api => api.selected = false)
@@ -235,6 +235,8 @@ define([
        */
       vm.submitApiForm = async () => {
         try {
+          console.log('adding new manager')
+
           // When the Submit button is clicked, get all the form fields by accessing to the input values
           const form_url = vm.url
           const form_apiport = vm.port
@@ -255,29 +257,17 @@ define([
 
           // If connected to the API then continue
           await $currentDataService.checkRawConnection(record)
-<
+
           // Get the new API database ID
-          console.log('inserting record in DB ',record)
           const { result } = await $currentDataService.insert(record)
           const id = result
-          console.log('ID after insert ',id)
           try {
             // Get the full API info
-            console.log('Getting full updated API info')
             const api = await $currentDataService.checkApiConnection(id)
             // Empties the form fields
             clearForm()
-            console.log('api with full information after being updated ',api)
-            // Add information to entry and updating database
-            // record.cluster = (api.cluster) ? api.cluster : 'Disabled'
-            // record.managerName = api.managerName
-            // record.id = id
-            // console.log('updating the rest of fields to database ', record)
-            // await $currentDataService.update(record)
 
             // If the only one API in the list, then try to select it
-            // const apiList = await $currentDataService.getApiList()
-            console.log('pushing this to api list ',api)
             vm.apiList.push(api)
             // if (apiList && apiList.length === 1) {
             //   await vm.selectManager(id)
@@ -288,12 +278,12 @@ define([
 
           } catch (err) {
             console.error('err 2 ', err)
-            $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
+            $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error') })
             $notificationService.showSimpleToast('Unreachable API')
           }
 
         } catch (err) {
-          console.error('main err', err)
+          console.error('Settings Api insert error: ', err)
           $notificationService.showSimpleToast(err.message)
         }
       }
