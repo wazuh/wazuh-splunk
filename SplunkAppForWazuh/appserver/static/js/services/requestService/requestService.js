@@ -52,7 +52,6 @@ define(['../module'], function (module) {
         }
         return $q.resolve(data)
       } catch (error) {
-        console.error(error)
         return $q.reject(error)
       }
     }
@@ -65,7 +64,7 @@ define(['../module'], function (module) {
     const apiReq = async (endpoint, opts) => {
       try {
         const payload = {}
-        Object.assign(payload, { endpoint: endpoint })
+        Object.assign(payload, { id: $apiIndexStorageService.getApi().id, endpoint: endpoint })
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }

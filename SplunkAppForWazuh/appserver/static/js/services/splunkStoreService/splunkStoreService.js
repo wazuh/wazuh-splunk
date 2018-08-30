@@ -34,7 +34,6 @@ define(['../module'], function (module) {
      */
     const insert = async (payload) => {
       try {
-        console.log('inserting this ', payload)
         const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, $.param({
           payload
         }))

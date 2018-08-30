@@ -50,7 +50,7 @@ define(['../module'], function (module) {
      * Updates an API
      * @param {Object} api 
      */
-    const update = (key, register) => {
+    const update = (register) => {
       return $splunkStoreService.update(register)
     }
 
@@ -136,7 +136,7 @@ define(['../module'], function (module) {
     const chose = async (id) => {
       try {
         const apiList = await getApiList()
-        for (let api of apiList) {
+        for (const api of apiList) {
           if (api.id === id) {
             $apiIndexStorageService.setApi(api)
           }
@@ -203,7 +203,6 @@ define(['../module'], function (module) {
      */
     const checkApiConnection = async (id) => {
       try {
-        console.log('check api connection')
         const api = await select(id)
         const clusterData = await $requestService.apiReq(`/cluster/status`, { 'id': id })
         if (clusterData.data.error) {
@@ -212,26 +211,21 @@ define(['../module'], function (module) {
         // Get manager name. Necessary for both cases
         const managerName = await $requestService.apiReq(`/agents/000`, { 'id': id, 'select': 'name' })
         if (managerName && managerName.data && managerName.data.data && managerName.data.data.name) {
-          if (!api.managerName || api.managerName !== managerName.data.data.name) {
-            api.managerName = managerName.data.data.name
-          }
+          api.managerName = managerName.data.data.name
         }
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.data.enabled === "yes") {
-          console.log('cluster enabled, saving to database ')
           api.filterType = 'cluster.name'
-          const clusterName = await $requestService.apiReq(`/cluster/node`, {id:id})
+          const clusterName = await $requestService.apiReq(`/cluster/node`, { id: id })
           api.filterName = clusterName.data.data.cluster
         } else {
           api.filterType = 'manager.name'
           api.filterName = api.managerName
         }
-        console.log('saving...',api)
         await $splunkStoreService.update(api)
         delete api['passapi']
         return api
       } catch (err) {
-        console.error('err!: ', err)
         return Promise.reject(err)
       }
     }

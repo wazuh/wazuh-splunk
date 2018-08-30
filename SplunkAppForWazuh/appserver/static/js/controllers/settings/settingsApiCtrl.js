@@ -23,32 +23,29 @@ define([
        */
       vm.init = async () => {
         try {
-          console.log('the api list ', apiList)
           vm.apiList = apiList
-          // let currentApi = $currentDataService.getApi()
+          let currentApi = $currentDataService.getApi()
 
-          // if (!currentApi && vm.apiList.length) {
-          //   for (const apiEntry of vm.apiList) {
-          //     try {
-          //       await vm.selectManager(apiEntry.id)
-          //       // setAPI
-          //       currentApi = $currentDataService.getApi()
-          //       break;
-          //     } catch (error) { }
-          //   }
-          // }
+          if (!currentApi && Array.isArray(vm.apiList)) {
+            for (const apiEntry of vm.apiList) {
+              try {
+                await vm.selectManager(apiEntry.id)
+                // setAPI
+                currentApi = $currentDataService.getApi()
+                break
+              } catch (error) { }
+            }
+          }
 
-          // vm.apiList.map(item => { delete item.selected })
+          vm.apiList.map(item => { delete item.selected })
 
-          // if (currentApi) {
-          //   vm.apiList.map(item => {
-          //     if (item.id === currentApi.id) {
-          //       item.selected = true
-          //     }
-          //   })
-          // } else {
-
-          // }
+          if (currentApi) {
+            vm.apiList.map(item => {
+              if (item.id === currentApi.id) {
+                item.selected = true
+              }
+            })
+          } 
         } catch (err) {
           $notificationService.showSimpleToast('Error loading data')
         }
@@ -72,7 +69,6 @@ define([
             $notificationService.showSimpleToast('Manager was removed')
           }
         } catch (err) {
-          console.error('error ', err)
           $notificationService.showSimpleToast('Cannot remove API:', err.message || err)
         }
       }
@@ -116,9 +112,13 @@ define([
           vm.showForm = false
           vm.currentEntryKey = entry.id
           vm.url = entry.url
+          vm.pass = entry.pass
           vm.port = entry.portapi
           vm.user = entry.userapi
-          vm.entry = entry
+          vm.managerName = entry.managerName
+          vm.filterType = entry.filterType
+          vm.filterName = entry.filterName
+          vm.entry.url = entry
         } catch (err) {
           $notificationService.showSimpleToast('Could not open API form')
         }
@@ -130,24 +130,41 @@ define([
        */
       vm.updateEntry = async () => {
         try {
+          vm.edit = !vm.edit
+          vm.showForm = false
           vm.entry.url = vm.url
           vm.entry.portapi = vm.port
-          vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
-          const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
-          if (resultNewApi.data.error) {
-            $notificationService.showSimpleToast('Unreachable API. Cannot update')
-            return
-          }
+          vm.entry.passapi = vm.pass
+          vm.entry.filterType = vm.filterType
+          vm.entry.filterName = vm.filterName
+          vm.entry.managerName = vm.managerName
+          vm.entry.id = vm.currentEntryKey
+
+          // const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
+          // if (resultNewApi.data.error) {
+          //   $notificationService.showSimpleToast('Unreachable API. Cannot update')
+          //   return
+          // }
           delete vm.entry['$$hashKey']
-          delete vm.entry._user
-          const updatedEntry = await $currentDataService.update(vm.entry)
-          vm.currentEntryKey = updatedEntry.data.id
-          if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.currentEntryKey) {
-            vm.selectManager(updatedEntry.data)
+          await $currentDataService.checkRawConnection(vm.entry)
+          await $currentDataService.update(vm.entry)
+          const updatedApi = await $currentDataService.checkApiConnection(vm.entry.id)
+
+          // const updatedEntry = await $currentDataService.checkApiConnection(vm.currentEntryKey)
+
+          for (let i = 0; i < vm.apiList.length; i++) {
+            if (vm.apiList[i].id === updatedApi.id) {
+              vm.apiList[i] = updatedApi
+            }
           }
-          vm.edit = false
           if (!$scope.$$phase) $scope.$digest()
+
+          // if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.currentEntryKey) {
+          //   vm.selectManager(updatedEntry.data)
+          // }
+
+          vm.edit = false
           $notificationService.showSimpleToast('Updated API')
         } catch (err) {
           $notificationService.showSimpleToast('Cannot update API')
@@ -202,7 +219,6 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          console.log('select manager')
           const connectionData = await $currentDataService.checkApiConnection(entry)
           await $currentDataService.chose(entry)
           vm.apiList.map(api => api.selected = false)
@@ -221,7 +237,6 @@ define([
           $scope.$emit('updatedAPI', () => { })
           if (!$scope.$$phase) $scope.$digest()
         } catch (err) {
-          console.error('err: ', err)
           $notificationService.showSimpleToast('Could not select manager')
         }
       }
@@ -231,8 +246,6 @@ define([
        */
       vm.submitApiForm = async () => {
         try {
-          console.log('adding new manager')
-
           // When the Submit button is clicked, get all the form fields by accessing to the input values
           const form_url = vm.url
           const form_apiport = vm.port
@@ -273,13 +286,11 @@ define([
             $notificationService.showSimpleToast('API was added')
 
           } catch (err) {
-            console.error('err 2 ', err)
             $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error') })
             $notificationService.showSimpleToast('Unreachable API')
           }
 
         } catch (err) {
-          console.error('Settings Api insert error: ', err)
           $notificationService.showSimpleToast(err.message)
         }
       }

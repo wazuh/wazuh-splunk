@@ -56,8 +56,8 @@ define(['../module'], function (module) {
       return $filterService.cleanFilters()
     }
 
-    const update = (key, register) => {
-      return $apiMgrService.update(key, register)
+    const update = (register) => {
+      return $apiMgrService.update(register)
     }
     const getClusterInfo = () => {
       return $apiMgrService.getClusterInfo()

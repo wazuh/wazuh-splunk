@@ -21,7 +21,7 @@ define([
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
           $navigationService.storeRoute('settings.api')
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'settings')
         } catch (err) {
@@ -30,12 +30,11 @@ define([
       })
       $transitions.onStart({ to: 'manager' }, async (trans) => {
         try {
-
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
           $navigationService.storeRoute('manager')
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'manager')
         } catch (err) {
@@ -48,7 +47,7 @@ define([
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
           $navigationService.storeRoute('overview')
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'overview')
         } catch (err) {
@@ -61,7 +60,7 @@ define([
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
           $navigationService.storeRoute('agents')
-          $currentDataService.addFilter(`{"${api.filter[0]}":"${api.filter[1]}", "implicit":true}`)
+          $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'agents')
         } catch (err) {
