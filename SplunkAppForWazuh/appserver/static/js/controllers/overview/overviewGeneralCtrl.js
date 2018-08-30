@@ -47,11 +47,7 @@ define([
       const api = $currentDataService.getApi()
       setToken('baseip', baseUrl)
       setToken('url', api.url)
-      setToken('portapi', api.portapi)
-      setToken('userapi', api.userapi)
-      setToken('passwordapi', api.passapi)
-      setToken("loadedtokens", "true")
-
+      setToken('id', api.id)
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
@@ -76,7 +72,7 @@ define([
           "sample_ratio": 1,
           "earliest_time": "$when.earliest$",
           "status_buckets": 0,
-          "search": "| getagentsummary $baseip$ $url$ $portapi$ $userapi$ $passwordapi$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
+          "search": "| getagentsummary $baseip$ $url$ $id$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
           "latest_time": "$when.latest$",
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,

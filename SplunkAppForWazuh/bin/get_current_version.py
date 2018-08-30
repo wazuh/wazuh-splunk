@@ -32,7 +32,6 @@ try:
     data = json.loads(data_temp)
 except Exception as err:
         import traceback
-        print err
         stack = traceback.format_exc()
         data = si.generateErrorResults("Error : Traceback: " + str(stack))
 

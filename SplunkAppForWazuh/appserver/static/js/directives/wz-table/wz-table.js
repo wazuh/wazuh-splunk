@@ -29,7 +29,7 @@ define(['../module', 'underscore'], function (directives, _) {
         rowsPerPage: '=rowsPerPage',
         extraLimit: '=extraLimit'
       },
-      controller: function ($scope, $timeout, $tableFilterService, $state, $keyEquivalenceService, $currentDataService) {
+      controller: function ($scope, $timeout, $tableFilterService, $state, $keyEquivalenceService, $currentDataService, $navigationService) {
         $scope.totalItems = 0
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.allowClick = true
@@ -38,6 +38,7 @@ define(['../module', 'underscore'], function (directives, _) {
             // Go to and store an agent details
             $currentDataService.setCurrentAgent(item.id)
             $currentDataService.addFilter(`{"agent.id":"${item.id}", "implicit":true}`)
+            $navigationService.storeRoute('agents')
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })

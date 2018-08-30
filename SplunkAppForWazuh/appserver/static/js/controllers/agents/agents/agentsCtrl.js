@@ -118,10 +118,10 @@ define([
     vm.versions = [... new Set(rawVersions.filter(one => !!one))]
 
     vm.lastAgent = lastAgent
-    vm.agentsCountActive = summary.Active
-    vm.agentsCountDisconnected = summary.Disconnected
-    vm.agentsCountNeverConnected = summary['Never connected']
-    vm.agentsCountTotal = summary.Total
+    vm.agentsCountActive = summary.Active - 1
+    vm.agentsCountDisconnected = summary.Disconnected 
+    vm.agentsCountNeverConnected = summary['Never connected'] 
+    vm.agentsCountTotal = summary.Total - 1
     vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
 
     vm.loading = false

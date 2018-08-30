@@ -105,7 +105,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           const remaining = this.items.length === totalItems ? 0 : totalItems - this.items.length
 
           // Ignore manager as an agent, once the team solves this issue, review this line
-          if (this.path === '/agents/agents') this.items = this.items.filter(item => item.id !== '000')
+          if (this.path === '/agents') this.items = this.items.filter(item => item.id !== '000')
 
           if (remaining > 0) this.items.push(...Array(remaining).fill(null))
 
