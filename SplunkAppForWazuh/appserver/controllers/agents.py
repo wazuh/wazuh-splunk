@@ -21,6 +21,8 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
+from db import database
+
 _APPNAME = 'SplunkAppForWazuh'
 def setup_logger(level):
     """
@@ -44,15 +46,24 @@ def remove_keys(arr):
   return arr
   
 class agents(controllers.BaseController):
+    def __init__(self):
+        controllers.BaseController.__init__(self)
+        self.db = database()
+        self.session = requests.Session()
+        self.session.trust_env = False
 
     # /custom/SplunkAppForWazuh/agents/uniq
     @expose_page(must_login=False, methods=['GET'])
     def agents_uniq(self, **kwargs):
       try:
-        opt_username = kwargs["user"]
-        opt_password = kwargs["pass"]
-        opt_base_url = kwargs["ip"]
-        opt_base_port = kwargs["port"]
+        if 'id' not in kwargs:
+          raise Exception({'error': 'Missing ID.'})
+        id = kwargs['id']
+        api = self.db.get(id)[0]
+        opt_base_url = api['url']
+        opt_base_port = api['portapi']
+        opt_username = api['userapi']
+        opt_password = api['passapi']
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False
@@ -60,6 +71,7 @@ class agents(controllers.BaseController):
         agents_qty = json.loads(request.text)["data"]["totalItems"]
         request = requests.get(url + '/agents?select=version,os.name,os.platform,os.version&offset=0&limit=' + str(agents_qty), auth=auth, verify=verify).json()
       except Exception as e:
+        logger.error("Error in agents_uniq endpoint: %s" % (e))
         return json.dumps({"error":str(e)})
       return json.dumps(request)
  
@@ -67,11 +79,15 @@ class agents(controllers.BaseController):
     @expose_page(must_login=False, methods=['GET'])
     def agent(self, **kwargs):
       try:
-        opt_username = kwargs["user"]
-        opt_password = kwargs["pass"]
-        opt_base_url = kwargs["ip"]
-        opt_base_port = kwargs["port"]
-        opt_agent_id = kwargs["id"]
+        if 'id' not in kwargs:
+          return json.dumps({'error': 'Missing ID.'})
+        id = kwargs['id']
+        api = self.db.get(id)
+
+        opt_base_url = api['url']
+        opt_base_port = api['portapi']
+        opt_username = api['userapi']
+        opt_password = api['passapi']
 
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)

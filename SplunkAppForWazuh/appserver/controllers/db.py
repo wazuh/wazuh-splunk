@@ -32,7 +32,8 @@ logger = setup_logger(logging.DEBUG)
 
 class database():
     def __init__(self):
-        self.db = TinyDB("/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json")
+        self.origin = TinyDB('/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json')
+        self.db = self.origin.table('apis',cache_size=0)
         self.Api = Query()
 
     def insert(self, obj):

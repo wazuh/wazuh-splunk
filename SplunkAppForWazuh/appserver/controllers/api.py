@@ -65,8 +65,6 @@ class api(controllers.BaseController):
         opt_endpoint = kwargs["endpoint"]
         del kwargs['id']
         del kwargs['endpoint']
-        logger.info("Making API request with these params: %s" % (kwargs))
-
         url = opt_base_url + ":" + opt_base_port
         auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
         verify = False

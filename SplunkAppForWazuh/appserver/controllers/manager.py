@@ -57,7 +57,6 @@ def remove_keys(arr):
     del arr['pass']
     return arr
 
-
 class manager(controllers.BaseController):
     def __init__(self):
         controllers.BaseController.__init__(self)
@@ -77,31 +76,6 @@ class manager(controllers.BaseController):
             verify = False
             request_cluster = self.session.get(
                 url + '/version', auth=auth, timeout=8, verify=verify).json()
-            del kwargs['pass']
-            # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
-            result = json.dumps(request_cluster)
-        except Exception as e:
-            return json.dumps({"status": "400", "error": str(e)})
-        return result
-
-    @expose_page(must_login=False, methods=['GET'])
-    def get_cluster_info(self, **kwargs):
-        try:
-            if 'id' not in kwargs:
-                return json.dumps({'error': 'Missing ID.'})
-            id = kwargs['id']
-            api = self.db.get(id)
-
-            opt_base_url = api['url']
-            opt_base_port = api['portapi']
-            opt_username = api['userapi']
-            opt_password = api['passapi']
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
             del kwargs['pass']
             # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
             result = json.dumps(request_cluster)
@@ -130,7 +104,7 @@ class manager(controllers.BaseController):
             id = kwargs['id']
             data_temp = self.db.get(id)
         except Exception as e:
-            logger.info("Error in get_apis endpoint: %s" % (e))
+            logger.error("Error in get_apis endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
         return json.dumps(data_temp)
 
@@ -139,7 +113,7 @@ class manager(controllers.BaseController):
         try:
             data_temp = self.db.all()
         except Exception as e:
-            logger.info("Error in get_apis endpoint: %s" % (e))
+            logger.error("Error in get_apis endpoint: %s" % (e))
             return json.dumps("{error:"+str(e)+"}")
         return json.dumps(data_temp)
 
@@ -156,21 +130,18 @@ class manager(controllers.BaseController):
             record['passapi'] = kwargs['payload[passapi]']
             result = self.db.insert(record)
         except Exception as e:
-            logger.info("Error in add_api endpoint: %s" % (e))
+            logger.error("Error in add_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
         return json.dumps({'result': record['id']})
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
         try:
-            logger.info("Entering remove api %s" % (kwargs))
-
             if 'id[id]' not in kwargs:
                 return json.dumps({'error': 'Missing ID'})
-            logger.info("Removing api : %s" % (str(kwargs['id[id]'])))
             self.db.remove(str(kwargs['id[id]']))
         except Exception as e:
-            logger.info("Error in remove_api endpoint: %s" % (e))
+            logger.error("Error in remove_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
         return json.dumps({'data': 'success'})
 
@@ -179,10 +150,7 @@ class manager(controllers.BaseController):
         try:
             if 'newRegister[id]' not in kwargs or 'newRegister[url]' not in kwargs or 'newRegister[portapi]' not in kwargs or 'newRegister[userapi]' not in kwargs or 'newRegister[passapi]' not in kwargs:
                 raise Exception("Invalid arguments : %s" % (kwargs))
-                return json.dumps({'error': 'Invalid number of arguments'})
             # building a new object
-            logger.info("Updating this : %s" % (kwargs))
-
             entry = {}
             entry['id'] = kwargs['newRegister[id]']
             entry['url'] = kwargs['newRegister[url]']
