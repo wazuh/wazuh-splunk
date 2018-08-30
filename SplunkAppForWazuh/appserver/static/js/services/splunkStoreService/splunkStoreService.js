@@ -1,72 +1,85 @@
-define(['../module', 'splunkjs/mvc'], function (module, mvc) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$splunkStoreService', function () {
-    const service = mvc.createService({ owner: "nobody" })
+  module.service('$splunkStoreService', function ($requestService) {
 
     /**
-     * GET method
-     * @param {String} url 
+     * Select an API by ID
+     * @param {Object} id 
      */
-    const get = (url) => {
-      return new Promise((resolve, reject) => {
-        service.request(url, "GET", null, null, null, { "Content-Type": "application/json" }, (err, data) => {
-          if (err)
-            return reject(err)
-          resolve(data.data)
-        })
-      })
+    const getAllApis = async (id) => {
+      try {
+        const { data } = await $requestService.httpReq(`GET`, `/manager/get_apis`)
+        return data
+      } catch (err) {
+        return Promise.reject(err)
+      }
     }
 
     /**
-     * POST method
-     * @param {String} url 
-     * @param {Object} record 
+     * Select an API by ID
+     * @param {Object} id 
      */
-    const post = (url, record) => {
-      return new Promise((resolve, reject) => {
-        service.request(url, "POST", null, null, JSON.stringify(record), { "Content-Type": "application/json" }, (err, data) => {
-          if (err)
-            return reject(err)
-          return resolve(data)
-        })
-      })
+    const getApiById = async (id) => {
+      try {
+        const { data } = await $requestService.httpReq(`GET`, `/manager/get_api`, { id: id })
+        return data[0]
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Inserts an entry
+     * @param {Object} payload 
+     */
+    const insert = async (payload) => {
+      try {
+        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, $.param({
+          payload
+        }))
+        return data
+      } catch (err) {
+        return Promise.reject(err)
+      }
     }
 
     /**
      * DELETE method
      * @param {String} url 
      */
-    const deletes = (url) => {
-      if (!url || url === '') {
-        url = "storage/collections/data/credentials/"
+    const deletes = async (id) => {
+      try {
+        const { data } = await $requestService.httpReq(`POST`, `manager/remove_api`, $.param({
+          id
+        }))
+        if (data.error || data.status === 400)
+          throw new Error(data.error)
+        return data
+      } catch (err) {
+        return Promise.reject(err)
       }
-      return new Promise((resolve, reject) => {
-        service.del(url, {}, (err, data) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(data)
-        })
-      })
     }
 
     /**
      * Update a record
      * @param {String} key 
-     * @param {Object} newRegister 
+     * @param {Object} newRegister: The API to update
      */
-    const update = async (key, newRegister) => {
+    const update = async (newRegister) => {
       try {
-        const result = await post("storage/collections/data/credentials/" + key, newRegister)
-        return result
+        const { data } = await $requestService.httpReq(`POST`, `manager/update_api`, $.param({
+          newRegister
+        }))
+        return data
       } catch (err) {
         return Promise.reject(err)
       }
     }
 
     const methods = {
-      get: get,
-      post: post,
+      getAllApis: getAllApis,
+      getApiById: getApiById,
+      insert: insert,
       delete: deletes,
       update: update
     }

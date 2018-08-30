@@ -268,11 +268,11 @@ define(['./module'], function (module) {
         controller: 'agentsCtrl',
         controllerAs: 'ag',
         resolve: {
-          data: ['$requestService', '$state', ($requestService, $state) => {
+          data: ['$requestService', '$currentDataService', ($requestService, $currentDataService) => {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
-              $requestService.httpReq('GET', '/agents/agents_uniq', false)
+              $requestService.httpReq('GET', `/agents/agents_uniq?id=${$currentDataService.getApi().id}`)
             ])
               .then(function (response) {
                 return response

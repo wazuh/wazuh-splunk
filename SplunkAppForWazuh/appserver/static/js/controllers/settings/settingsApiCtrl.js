@@ -22,26 +22,33 @@ define([
        * Initializes the controller
        */
       vm.init = async () => {
-        vm.apiList = apiList
-        const currentApi = $currentDataService.getApi()
-        let exit = false
-        let i = 0
-        if (!currentApi) {
-          do {
-            vm.selectManager(vm.apiList[i]).then(() => { exit=true }).catch()
-            ++i
-          } while (i < vm.apiList.length && !exit)
-        }
-        vm.apiList.map(item => { delete item.selected })
+        try {
+          vm.apiList = apiList
+          let currentApi = $currentDataService.getApi()
 
-        if (currentApi)
-          vm.apiList.map(item => {
-            if (item.url === currentApi.url) {
-              item.selected = true
+          if (!currentApi && Array.isArray(vm.apiList)) {
+            for (const apiEntry of vm.apiList) {
+              try {
+                await vm.selectManager(apiEntry.id)
+                // setAPI
+                currentApi = $currentDataService.getApi()
+                break
+              } catch (error) { }
             }
-          })
-        vm.Api = []
-        vm.saveOrUpdate = 'Add'
+          }
+
+          vm.apiList.map(item => { delete item.selected })
+
+          if (currentApi) {
+            vm.apiList.map(item => {
+              if (item.id === currentApi.id) {
+                item.selected = true
+              }
+            })
+          } 
+        } catch (err) {
+          $notificationService.showSimpleToast('Error loading data')
+        }
       }
 
       /**
@@ -51,18 +58,18 @@ define([
       vm.removeManager = async (entry) => {
         try {
           const currentApi = $currentDataService.getApi()
-          if (currentApi && currentApi._key === entry._key) {
+          if (currentApi && currentApi.id === entry.id) {
             $notificationService.showSimpleToast('Cannot delete selected API')
           } else {
             const index = vm.apiList.indexOf(entry)
             if (index > -1) {
               vm.apiList.splice(index, 1)
-              await $currentDataService.remove(entry._key)
+              await $currentDataService.remove(entry)
             }
             $notificationService.showSimpleToast('Manager was removed')
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Cannot remove API')
+          $notificationService.showSimpleToast('Cannot remove API:', err.message || err)
         }
       }
 
@@ -72,15 +79,11 @@ define([
        */
       vm.checkManager = async (entry) => {
         try {
-          const connectionData = await $currentDataService.checkApiConnection(entry._key)
-          for (let item of vm.apiList) {
-            if (item._key === entry._key) {
-              if (connectionData.cluster) {
-                item.cluster = connectionData.cluster
-              } else {
-                item.cluster = 'false'
-              }
-              item.managerName = connectionData.managerName
+          const connectionData = await $currentDataService.checkApiConnection(entry.id)
+          for (let i = 0; i < vm.apiList.length; i++) {
+            if (vm.apiList[i].id === entry.id) {
+              vm.apiList[i] = connectionData
+              break
             }
           }
           $notificationService.showSimpleToast('Established connection')
@@ -107,11 +110,15 @@ define([
         try {
           vm.edit = !vm.edit
           vm.showForm = false
-          vm.currentEntryKey = entry._key
+          vm.currentEntryKey = entry.id
           vm.url = entry.url
+          vm.pass = entry.pass
           vm.port = entry.portapi
           vm.user = entry.userapi
-          vm.entry = entry
+          vm.managerName = entry.managerName
+          vm.filterType = entry.filterType
+          vm.filterName = entry.filterName
+          vm.entry.url = entry
         } catch (err) {
           $notificationService.showSimpleToast('Could not open API form')
         }
@@ -123,24 +130,41 @@ define([
        */
       vm.updateEntry = async () => {
         try {
+          vm.edit = !vm.edit
+          vm.showForm = false
           vm.entry.url = vm.url
           vm.entry.portapi = vm.port
-          vm.entry.passapi = vm.pass
           vm.entry.userapi = vm.user
-          const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
-          if (resultNewApi.data.error) {
-            $notificationService.showSimpleToast('Unreachable API. Cannot update')
-            return
-          }
+          vm.entry.passapi = vm.pass
+          vm.entry.filterType = vm.filterType
+          vm.entry.filterName = vm.filterName
+          vm.entry.managerName = vm.managerName
+          vm.entry.id = vm.currentEntryKey
+
+          // const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
+          // if (resultNewApi.data.error) {
+          //   $notificationService.showSimpleToast('Unreachable API. Cannot update')
+          //   return
+          // }
           delete vm.entry['$$hashKey']
-          delete vm.entry._user
-          const updatedEntry = await $currentDataService.update(vm.currentEntryKey, vm.entry)
-          vm.currentEntryKey = updatedEntry.data._key
-          if ($currentDataService.getApi() && $currentDataService.getApi()._key === vm.currentEntryKey) {
+          await $currentDataService.checkRawConnection(vm.entry)
+          await $currentDataService.update(vm.entry)
+          const updatedApi = await $currentDataService.checkApiConnection(vm.entry.id)
+
+          // const updatedEntry = await $currentDataService.checkApiConnection(vm.currentEntryKey)
+
+          for (let i = 0; i < vm.apiList.length; i++) {
+            if (vm.apiList[i].id === updatedApi.id) {
+              vm.apiList[i] = updatedApi
+            }
+          }
+          if (!$scope.$$phase) $scope.$digest()
+
+          if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.entry.id) {
             vm.selectManager(updatedEntry.data)
           }
+
           vm.edit = false
-          if (!$scope.$$phase) $scope.$digest()
           $notificationService.showSimpleToast('Updated API')
         } catch (err) {
           $notificationService.showSimpleToast('Cannot update API')
@@ -195,25 +219,23 @@ define([
        */
       vm.selectManager = async (entry) => {
         try {
-          const connectionData = await $currentDataService.checkApiConnection(entry._key)
-          await $currentDataService.chose(entry._key)
+          const connectionData = await $currentDataService.checkApiConnection(entry)
+          await $currentDataService.chose(entry)
+          vm.apiList.map(api => api.selected = false)
           for (let item of vm.apiList) {
-            if (item._key === entry._key) {
+            if (item.id === entry) {
               if (connectionData.cluster) {
                 item.cluster = connectionData.cluster
               } else {
-                item.cluster = 'false'
+                item.cluster = 'Disabled'
               }
               item.managerName = connectionData.managerName
-              vm.apiList.map(api => api.selected = false)
               item.selected = true
             }
           }
-          entry.selected = true
           $notificationService.showSimpleToast('API selected')
           $scope.$emit('updatedAPI', () => { })
           if (!$scope.$$phase) $scope.$digest()
-
         } catch (err) {
           $notificationService.showSimpleToast('Could not select manager')
         }
@@ -224,48 +246,55 @@ define([
        */
       vm.submitApiForm = async () => {
         try {
-          // When the Submit button is clicked, get all the form fields by accessing input values
+          // When the Submit button is clicked, get all the form fields by accessing to the input values
           const form_url = vm.url
           const form_apiport = vm.port
           const form_apiuser = vm.user
           const form_apipass = vm.pass
 
-          // If values are valid, register them
-          if (validPassword(form_apipass) && validPort(form_apiport) && validUrl(form_url) && validUsername(form_apiuser)) {
-            // Create an object to store the field names and values
-            const record = {
-              "url": form_url,
-              "portapi": form_apiport,
-              "userapi": form_apiuser,
-              "passapi": form_apipass,
-              "cluster": false,
-              "managerName": false
-            }
-            // Use the request method to send and insert a new record
-            const result = await $currentDataService.insert(record)
-            try {
-              const resultConnection = await $currentDataService.checkApiConnection(result.data._key)
-              clearForm()
-              const apiList = await $currentDataService.getApiList()
-              record.managerName = resultConnection.managerName
-              record._key = result.data._key
-              vm.apiList.push(record)
-              if (apiList && apiList.length === 1) {
-                await vm.selectManager(result.data)
-              }
-              vm.showForm = false
-              if (!$scope.$$phase) $scope.$digest()
-              $notificationService.showSimpleToast('API was added')
+          // If values are not valid then throw an error
+          if (!validPassword(form_apipass) || !validPort(form_apiport) || !validUrl(form_url) || !validUsername(form_apiuser))
+            throw new Error('Invalid format. Please check the fields again')
 
-            } catch (err) {
-              $currentDataService.remove(result.data._key).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error.') })
-              $notificationService.showSimpleToast('Unreachable API')
-            }
-          } else {
-            $notificationService.showSimpleToast('Invalid format. Please check the fields again')
+          // Create an object to store the field names and values
+          const record = {
+            "url": form_url,
+            "portapi": form_apiport,
+            "userapi": form_apiuser,
+            "passapi": form_apipass,
           }
+
+          // If connected to the API then continue
+          await $currentDataService.checkRawConnection(record)
+          
+          // Get the new API database ID
+          const { result } = await $currentDataService.insert(record)
+          const id = result
+          try {
+            // Get the full API info
+            const api = await $currentDataService.checkApiConnection(id)
+            // Empties the form fields
+            clearForm()
+
+            // If the only one API in the list, then try to select it
+            vm.apiList.push(api)
+            // if (apiList && apiList.length === 1) {
+            //   await vm.selectManager(id)
+            // }
+            vm.showForm = false
+            if (!$scope.$$phase) $scope.$digest()
+            $notificationService.showSimpleToast('API was added')
+
+          } catch (err) {
+            console.error('err ',err)
+            $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error') })
+            $notificationService.showSimpleToast('Unreachable API')
+          }
+
         } catch (err) {
-          $notificationService.showSimpleToast('Error at adding new API')
+          console.error('err ',err)
+
+          $notificationService.showSimpleToast(err.message)
         }
       }
 

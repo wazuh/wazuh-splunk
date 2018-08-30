@@ -2,6 +2,7 @@ define(['../module'], function (module) {
   'use strict'
 
   module.service('$requestService', function ($http, $apiIndexStorageService, $q) {
+
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
@@ -14,13 +15,8 @@ define(['../module'], function (module) {
     /**
      * Generates and returns the browser base URL + Splunk Port
      */
-    const getWellFormedUri = (endpoint, includedApi) => {
-      if (!includedApi) {
-        const jsonCurrentAPI = $apiIndexStorageService.getApi()
-        return getBaseUrl() + `/custom/SplunkAppForWazuh/${endpoint}?ip=${jsonCurrentAPI.url}&port=${jsonCurrentAPI.portapi}&user=${jsonCurrentAPI.userapi}&pass=${jsonCurrentAPI.passapi}`
-      } else {
-        return getBaseUrl() + '/custom/SplunkAppForWazuh/' + endpoint
-      }
+    const getWellFormedUri = (endpoint) => {
+      return getBaseUrl() + '/en-US/custom/SplunkAppForWazuh/' + endpoint
     }
 
     /**
@@ -30,26 +26,33 @@ define(['../module'], function (module) {
      * @param {Boolean} includedApi 
      * @param {Object} payload 
      */
-    const httpReq = async (method, endpoint, includedApi, payload = {}) => {
+    const httpReq = async (method, endpoint, payload = {}) => {
       try {
         if (!method || !endpoint) {
           throw new Error('Missing parameters')
         }
-        const tmpUrl = getWellFormedUri(endpoint, includedApi)
-        const data = {};
+        const tmpUrl = getWellFormedUri(endpoint)
+        const data = {}
+
+        // Set content type to form urlencoded
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"
+        // GET METHOD
         if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }))
-        if (method === "PUT") Object.assign(data, await $http.put(tmpUrl, payload))
-        if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
-        if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
+        // PUT METHOD
+        else if (method === "PUT") Object.assign(data, await $http.post(tmpUrl, payload))
+        // POST METHOD
+        else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
+        // DELETE METHOD
+        else if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
         if (!data) {
           throw new Error(`Error doing a request to ${tmpUrl}, method: ${method}.`)
         }
         if (data.error && data.error !== '0') {
-          throw new Error('HTTP error from server: ', data.error);
+          throw new Error('HTTP error from server: ', data.error)
         }
-        return $q.resolve(data);
+        return $q.resolve(data)
       } catch (error) {
-        return $q.reject(error);
+        return $q.reject(error)
       }
     }
 
@@ -60,12 +63,14 @@ define(['../module'], function (module) {
      */
     const apiReq = async (endpoint, opts) => {
       try {
-        const payload = {}
-        Object.assign(payload, { endpoint: endpoint })
-        if (opts && typeof opts === 'object') {
+        const currentApi = $apiIndexStorageService.getApi()
+        const id = currentApi && currentApi.id ? currentApi.id : opts.id
+        const payload = { id, endpoint }
+        if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
-        return await httpReq('GET', '/api/request', false, payload)
+        const result = await httpReq(`GET`, `/api/request`, payload)
+        return result
       } catch (err) {
         return Promise.reject(err)
       }

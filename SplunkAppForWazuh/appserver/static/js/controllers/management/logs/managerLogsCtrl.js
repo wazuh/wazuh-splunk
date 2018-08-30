@@ -28,7 +28,7 @@ define(['../../module'], function (controllers) {
     const initialize = async () => {
       try {
         // logs summary
-        const data = await $requestService.httpReq('GET','/manager/logs_summary',false,false)
+        const data = await $requestService.apiReq(`/manager/logs/summary`)
         vm.summary = data.data.data;
         if (!$scope.$$phase) $scope.$digest();
         return;

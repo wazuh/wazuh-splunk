@@ -2,26 +2,94 @@ define(['../module'], function (module) {
   'use strict'
   module.service('$apiMgrService', function ($requestService, $apiIndexStorageService, $splunkStoreService) {
 
+    // =========== CRUD METHODS =========== //
+
     /**
-     * Delete a record by ID
+     * Gets an API by ID
      * @param {String} key 
      */
-    const remove = async (key) => {
+    const select = async (id) => {
       try {
-        const api = await select(key)
+        const entry = await $splunkStoreService.getApiById(id)
+        return entry
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Deletes a record by ID
+     * @param {Object} api: An API entry to delete 
+     */
+    const remove = async (api) => {
+      try {
         if ($apiIndexStorageService.getApi() && $apiIndexStorageService.getApi().url === api.url) {
           $apiIndexStorageService.removeAPI()
         }
-        await $splunkStoreService.delete(`storage/collections/data/credentials/${key}`)
+        await $splunkStoreService.delete({ 'id': api.id })
         return
       } catch (err) {
         return Promise.reject(err)
       }
     }
 
+    /**
+     * Inserts a new record in the DB engine
+     * @param {Object} record 
+     */
+    const insert = async (record) => {
+      try {
+        const result = await $splunkStoreService.insert(record)
+        return result
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Updates an API
+     * @param {Object} api 
+     */
+    const update = (register) => {
+      return $splunkStoreService.update(register)
+    }
+
+    // =========== API METHODS =========== //
+
+    /**
+     * Gets the current selected API
+     */
     const getApi = () => {
       return $apiIndexStorageService.getApi()
     }
+
+    /**
+     * Returns the API list
+     * @returns {Array}
+     */
+    const getApiList = async () => {
+      try {
+        const apiList = await $splunkStoreService.getAllApis()
+        const selectedApi = $apiIndexStorageService.getApi()
+        for (let i = 0; i < apiList.length; i++) {
+          if (selectedApi && typeof selectedApi === 'string' && selectedApi !== 'undefined' && typeof JSON.parse(selectedApi) === 'object' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
+            apiList[i].selected = true
+          }
+        }
+        return apiList
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
+     * Sets an API
+     * @param {Object} api 
+     */
+    const setApi = (api) => {
+      return $apiIndexStorageService.setApi(api)
+    }
+
 
     /**
      * Returns currently selected API
@@ -30,9 +98,9 @@ define(['../module'], function (module) {
     const getClusterInfo = () => {
       if ($apiIndexStorageService.getApi() && $apiIndexStorageService.getApi().cluster) {
         return getApi().cluster
-      }
-      else
+      } else {
         return null
+      }
     }
 
     /**
@@ -60,62 +128,20 @@ define(['../module'], function (module) {
       return $apiIndexStorageService.getIndex()
     }
 
-    /**
-     * Select an API by ID
-     * @param {String} key 
-     */
-    const select = async (key) => {
-      try {
-        return await $splunkStoreService.get("storage/collections/data/credentials/" + key)
-      } catch (err) {
-        return Promise.reject(err)
-      }
-    }
 
     /**
      * Select an API as the default one, 'selected' field to true by ID
-     * @param {String} key 
+     * @param {String} id 
      */
-    const chose = async (key) => {
+    const chose = async (id) => {
       try {
         const apiList = await getApiList()
-        for (let api of apiList) {
-          if (api._key === key) {
+        for (const api of apiList) {
+          if (api.id === id) {
             $apiIndexStorageService.setApi(api)
           }
         }
         return
-      } catch (err) {
-        return Promise.reject(err)
-      }
-    }
-
-    /**
-     * Insert a new record in the KVstore DB
-     * @param {Object} record 
-     */
-    const insert = async (record) => {
-      try {
-        const result = await $splunkStoreService.post("storage/collections/data/credentials/", record)
-        return result
-      } catch (err) {
-        return Promise.reject(err)
-      }
-    }
-
-    /**
-     * Returns the API list
-     */
-    const getApiList = async () => {
-      try {
-        const apiList = await $splunkStoreService.get("storage/collections/data/credentials/")
-        const selectedApi = $apiIndexStorageService.getApi()
-        for (let i = 0; i < apiList.length; i++) {
-          if (selectedApi && typeof selectedApi === 'string' && selectedApi !== 'undefined' && typeof JSON.parse(selectedApi) === 'object' && JSON.parse(selectedApi).url && apiList[i].url === JSON.parse(selectedApi).url) {
-            apiList[i].selected = true
-          }
-        }
-        return apiList
       } catch (err) {
         return Promise.reject(err)
       }
@@ -129,7 +155,7 @@ define(['../module'], function (module) {
       try {
         const currentApi = $apiIndexStorageService.getApi()
         if (!currentApi) { return Promise.reject(new Error('No selected API in sessionStorage')) }
-        const api = await checkApiConnection(currentApi._key)
+        const api = await checkApiConnection(currentApi.id)
         let selectedIndex = $apiIndexStorageService.getIndex()
         return { api, selectedIndex }
       } catch (err) {
@@ -143,12 +169,13 @@ define(['../module'], function (module) {
     const checkPollingState = async () => {
       try {
         const getPollingState = '/manager/polling_state/'
-        const pollingStatus = await $requestService.httpReq(`GET`, getPollingState, false)
+        const pollingStatus = await $requestService.httpReq(`GET`, getPollingState)
         return (pollingStatus.disabled === "true") ? false : true
       } catch (err) {
         return Promise.reject(err)
       }
     }
+
     /**
      * Checks a connection passed directly
      * @param {Object} api 
@@ -156,72 +183,47 @@ define(['../module'], function (module) {
     const checkRawConnection = async (api) => {
       try {
         if (api && typeof api === 'object' && api.url && api.portapi && api.userapi && api.passapi) {
-          const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-          return await $requestService.httpReq('GET', checkConnectionEndpoint, true, false)
-        } else {
-          return Promise.reject(new Error('Incomplete object passed.'))
+          const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
+          const result = await $requestService.httpReq('GET', checkConnectionEndpoint)
+          if (result.data.status === 400 || result.data.error) {
+            throw new Error('Cannot connect to API.')
+          }
+          return result
         }
+        // Otherwise throw a new error
+        throw new Error('Missing API fields.')
       } catch (err) {
         return Promise.reject(err)
       }
     }
 
     /**
-     * Updates an API
-     * @param {Object} api 
+     * Check if connection with API was successful, also returns the full needed information about it
+     * @param {String} id 
      */
-    const update = (key, register) => {
-      return $splunkStoreService.update(key, register)
-    }
-
-    /**
-     * Sets an API
-     * @param {Object} api 
-     */
-    const setApi = (api) => {
-      return $apiIndexStorageService.setApi(api)
-    }
-
-    /**
-     * Check if connection with API was successful, also returns the whole needed information about it
-     * @param {String} key 
-     */
-    const checkApiConnection = async (key) => {
+    const checkApiConnection = async (id) => {
       try {
-        const api = await select(key)
-        const checkConnectionEndpoint = '/manager/check_connection?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const getClusterNameEndpoint = '/cluster/node?ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const getManagerNameEndpoint = '/agents/agent/?id=000&ip=' + api.url + '&port=' + api.portapi + '&user=' + api.userapi + '&pass=' + api.passapi
-        const clusterData = await $requestService.httpReq(`GET`, checkConnectionEndpoint, true)
+        const api = await select(id)
+        const clusterData = await $requestService.apiReq(`/cluster/status`, { id: id })
         if (clusterData.data.error) {
-          return Promise.reject(clusterData.data.error)
+          throw new Error(clusterData.data.error)
         }
-        api.filter = []
         // Get manager name. Necessary for both cases
-        const managerName = await $requestService.httpReq(`GET`, getManagerNameEndpoint, true)
-        if (managerName && managerName.data && managerName.data.data.length > 0 && managerName.data.data[0].name) {
-          if (!api.managerName || api.managerName !== managerName.data.data[0].name) {
-            api.managerName = managerName.data.data[0].name
-            await $splunkStoreService.update(api._key, api)
-          }
+        const managerName = await $requestService.apiReq(`/agents/000`, { id: id, select: 'name' })
+        if (managerName && managerName.data && managerName.data.data && managerName.data.data.name) {
+          api.managerName = managerName.data.data.name
         }
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.data.enabled === "yes") {
-          api.filter.push('cluster.name')
-          const clusterName = await $requestService.httpReq(`GET`, getClusterNameEndpoint, true)
-          api.filter.push(clusterName.data.cluster)
-          if (!api.cluster || api.cluster !== clusterName.data.cluster) {
-            api.cluster = clusterName.data.cluster
-            await $splunkStoreService.update(api._key, api)
-          }
+          api.filterType = 'cluster.name'
+          const clusterName = await $requestService.apiReq(`/cluster/node`, { id: id })
+          api.filterName = clusterName.data.data.cluster
         } else {
-          if (api.cluster) {
-            api.cluster = false
-            await $splunkStoreService.update(api._key, api)
-          }
-          api.filter.push('manager.name')
-          api.filter.push(api.managerName)
+          api.filterType = 'manager.name'
+          api.filterName = api.managerName
         }
+        await $splunkStoreService.update(api)
+        delete api['passapi']
         return api
       } catch (err) {
         return Promise.reject(err)

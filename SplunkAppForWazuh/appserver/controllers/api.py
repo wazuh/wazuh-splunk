@@ -21,8 +21,8 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-# sys.path.append('./')
-# import jwt
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+from db import database
 
 _APPNAME = 'SplunkAppForWazuh'
 def setup_logger(level):
@@ -39,31 +39,39 @@ def setup_logger(level):
     return logger
 logger = setup_logger(logging.DEBUG)
 
-def remove_keys(arr):
-  del arr['user']
-  del arr['port']
-  del arr['ip']
-  del arr['pass']
-  del arr['endpoint']
-  return arr
-
 class api(controllers.BaseController):
-  # /custom/SplunkAppForWazuh/api/request
-  @expose_page(must_login=False, methods=['GET'])
-  def request(self, **kwargs):
-    try:
-      opt_username = kwargs["user"]
-      opt_password = kwargs["pass"]
-      opt_base_url = kwargs["ip"]
-      opt_base_port = kwargs["port"]
-      opt_endpoint = kwargs["endpoint"]
-      kwargs = remove_keys(kwargs)
 
-      url = opt_base_url + ":" + opt_base_port
-      auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-      verify = False
-      request = requests.get(url + opt_endpoint, params=kwargs , auth=auth, verify=verify).json()
-      result = json.dumps(request)
+    def __init__(self):
+      controllers.BaseController.__init__(self)
+      self.db = database()
+      self.session = requests.Session()
+      self.session.trust_env = False
+
+    # /custom/SplunkAppForWazuh/api/node
+    @expose_page(must_login=False, methods=['GET'])
+    def request(self, **kwargs):
+      try:
+        # token_data = jwt.decode(kwargs['token'],'myToken', algorithm='HS256')
+        # token_data = json.dumps(token_data)
+        if 'id' not in kwargs or 'endpoint' not in kwargs:
+            return json.dumps({'error':'Missing ID or endpoint.'})
+        the_id = kwargs['id']
+        api = self.db.get(the_id)
+
+        opt_username = api[0]["userapi"]
+        opt_password = api[0]["passapi"]
+        opt_base_url = api[0]["url"]
+        opt_base_port = api[0]["portapi"]
+        opt_endpoint = kwargs["endpoint"]
+        del kwargs['id']
+        del kwargs['endpoint']
+        url = opt_base_url + ":" + opt_base_port
+        auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+        verify = False
+        request = self.session.get(url + opt_endpoint, params=kwargs , auth=auth, verify=verify).json()
+        result = json.dumps(request)
+
+      except Exception as e:
+        logger.error("Error making API request: %s" % (e))
+        return json.dumps({'error':str(e)})
       return result
-    except Exception as e:
-      return json.dumps({'error':str(e)})
