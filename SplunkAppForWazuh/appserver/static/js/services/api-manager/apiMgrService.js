@@ -204,12 +204,12 @@ define(['../module'], function (module) {
     const checkApiConnection = async (id) => {
       try {
         const api = await select(id)
-        const clusterData = await $requestService.apiReq(`/cluster/status`, { 'id': id })
+        const clusterData = await $requestService.apiReq(`/cluster/status`, { id: id })
         if (clusterData.data.error) {
           throw new Error(clusterData.data.error)
         }
         // Get manager name. Necessary for both cases
-        const managerName = await $requestService.apiReq(`/agents/000`, { 'id': id, 'select': 'name' })
+        const managerName = await $requestService.apiReq(`/agents/000`, { id: id, select: 'name' })
         if (managerName && managerName.data && managerName.data.data && managerName.data.data.name) {
           api.managerName = managerName.data.data.name
         }

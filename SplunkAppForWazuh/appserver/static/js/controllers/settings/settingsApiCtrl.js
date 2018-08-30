@@ -266,9 +266,10 @@ define([
 
           // If connected to the API then continue
           await $currentDataService.checkRawConnection(record)
-
+          
           // Get the new API database ID
           const { result } = await $currentDataService.insert(record)
+          console.log('result ',result)
           const id = result
           try {
             // Get the full API info
@@ -286,11 +287,14 @@ define([
             $notificationService.showSimpleToast('API was added')
 
           } catch (err) {
+            console.error('err ',err)
             $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error') })
             $notificationService.showSimpleToast('Unreachable API')
           }
 
         } catch (err) {
+          console.error('err ',err)
+
           $notificationService.showSimpleToast(err.message)
         }
       }

@@ -63,8 +63,9 @@ define(['../module'], function (module) {
      */
     const apiReq = async (endpoint, opts) => {
       try {
-        const payload = {}
-        Object.assign(payload, { id: $apiIndexStorageService.getApi().id, endpoint: endpoint })
+        const currentApi = $apiIndexStorageService.getApi()
+        const id = currentApi && currentApi.id ? currentApi.id : opts.id
+        const payload = { id, endpoint }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
