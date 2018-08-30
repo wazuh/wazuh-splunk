@@ -23,7 +23,7 @@ define([
        */
       vm.init = async () => {
         try {
-          console.log('the api list ',apiList)
+          console.log('the api list ', apiList)
           vm.apiList = apiList
           // let currentApi = $currentDataService.getApi()
 
@@ -84,14 +84,10 @@ define([
       vm.checkManager = async (entry) => {
         try {
           const connectionData = await $currentDataService.checkApiConnection(entry.id)
-          for (let item of vm.apiList) {
-            if (item.id === entry.id) {
-              if (connectionData.cluster) {
-                item.cluster = connectionData.cluster
-              } else {
-                item.cluster = 'Disabled'
-              }
-              item.managerName = connectionData.managerName
+          for (let i = 0; i < vm.apiList.length; i++) {
+            if (vm.apiList[i].id === entry.id) {
+              vm.apiList[i] = connectionData
+              break
             }
           }
           $notificationService.showSimpleToast('Established connection')
