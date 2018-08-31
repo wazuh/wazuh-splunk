@@ -44,7 +44,7 @@ define(['./module'], function (module) {
       // Overview - FIM
       .state('ow-fim', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-fim.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('fim') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-fim') },
         controller: 'overviewFimCtrl',
         controllerAs: 'ofc',
       })
