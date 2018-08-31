@@ -39,9 +39,9 @@ define([
         const agentInfo = await $requestService.apiReq(`/agents`, { name: agent })
         if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error)
           throw Error('Error')
-        $state.go(`agent-overview`, { id: agentInfo.data.data.id })
+        if (agentInfo.data.data.id !== '000')
+          $state.go(`agent-overview`, { id: agentInfo.data.data.id })
       } catch (err) {
-        console.error('err', err)
         $notificationService.showSimpleToast('Error fetching agent data')
       }
     }
@@ -104,7 +104,10 @@ define([
       const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
       if (activeAgentTokenJS) {
         vm.loadingSearch = false
-        vm.mostActiveAgent = `${activeAgentTokenJS}`
+        vm.mostActiveAgent = activeAgentTokenJS === '$result.agent.name$' ?
+          $currentDataService.getApi().managerName :
+          `${activeAgentTokenJS}`
+
         if (!$scope.$$phase) $scope.$digest()
       }
     })
@@ -114,7 +117,9 @@ define([
         const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
         if (activeAgentTokenJS) {
           vm.loadingSearch = false
-          vm.mostActiveAgent = `${activeAgentTokenJS}`
+          vm.mostActiveAgent = activeAgentTokenJS === '$result.agent.name$' ?
+            $currentDataService.getApi().managerName :
+            `${activeAgentTokenJS}`
           if (!$scope.$$phase) $scope.$digest()
         }
       }
