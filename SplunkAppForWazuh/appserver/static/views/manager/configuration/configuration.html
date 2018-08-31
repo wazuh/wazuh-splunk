@@ -432,7 +432,7 @@
           </div>
 
           <!-- Section title -->
-          <div layout="row" class="wz-padding-top-10">
+          <div layout="row" class="wz-padding-top-10" ng-if="!mcc.XMLContent && !mcc.JSONContent">
             <span class="wz-headline-title">
               <i class="fa fa-fw fa-folder-o"></i> Monitoring directories</span>
           </div>
@@ -651,14 +651,14 @@
           <div layout="row" class="wz-padding-top-10" ng-if="!mcc.XMLContent && !mcc.JSONContent && mcc.managerConfiguration.ruleset.rule_exclude">
             <span class="wz-headline-title">Rule excludes</span>
           </div>
-          <div ng-if="!mcc.XMLContent && !mcc.JSONContent && isArray(mcc.managerConfiguration.ruleset.rule_exclude)" ng-repeat="item in mcc.managerConfiguration.ruleset['rule_exclude'] track by $index">
+          <div ng-if="!mcc.XMLContent && !mcc.JSONContent && mcc.isArray(mcc.managerConfiguration.ruleset.rule_exclude)" ng-repeat="item in mcc.managerConfiguration.ruleset['rule_exclude'] track by $index">
             <div layout="row" class="wz-padding-top-10">
               <span flex="25">Path</span>
               <span class="wz-text-right color-grey">{{item}}</span>
             </div>
             <md-divider class="wz-margin-top-10" ng-if="!$last"></md-divider>
           </div>
-          <div layout="row" class="wz-padding-top-10" ng-if="!isArray(mcc.managerConfiguration.ruleset.rule_exclude)">
+          <div layout="row" class="wz-padding-top-10" ng-if="!mcc.isArray(mcc.managerConfiguration.ruleset.rule_exclude)">
             <span flex="25">Path</span>
             <span class="wz-text-right color-grey">{{mcc.managerConfiguration.ruleset.rule_exclude}}</span>
           </div>
