@@ -165,7 +165,6 @@ define(['./module'], function (module) {
         controllerAs: 'mgr'
       })
 
-
       // Manager - Groups
       .state('mg-conf', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',

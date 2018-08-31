@@ -21,6 +21,19 @@ define(['../../module'], function (controllers) {
     vm.syscheck = agent[1].data.data
     vm.id = $stateParams.id
     vm.rootcheck = agent[2].data.data
+
+    
+    vm.goGroups = async (group) => {
+      try {
+        const groupInfo = await $requestService.apiReq(`/groups`, { name: group })
+        if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error)
+          throw Error('Error')
+        $state.go(`group-overview`, { id: `${groupInfo.data.data.id}` })
+      } catch (err) {
+        $notificationService.showSimpleToast('Error fetching group data')
+      }
+    }
+
     vm.formatAgentStatus = agentStatus => {
       return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
     }

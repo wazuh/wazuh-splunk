@@ -20,17 +20,30 @@ define([
 
   'use strict'
 
-  modules.controller('agentsCtrl', function ($scope, $currentDataService, data) {
+  modules.controller('agentsCtrl', function ($scope, $currentDataService, $state, $notificationService, $requestService, data) {
     const vm = this
     let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     submittedTokenModel.set("activeAgentToken", '-')
     vm.loadingSearch = true
+
     vm.search = term => {
       $scope.$broadcast('wazuhSearch', { term })
     }
 
     vm.filter = filter => {
       $scope.$broadcast('wazuhFilter', { filter })
+    }
+
+    vm.showAgent = async (agent) => {
+      try {
+        const agentInfo = await $requestService.apiReq(`/agents`, { name: agent })
+        if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error)
+          throw Error('Error')
+        $state.go(`agent-overview`, { id: agentInfo.data.data.id })
+      } catch (err) {
+        console.error('err', err)
+        $notificationService.showSimpleToast('Error fetching agent data')
+      }
     }
 
     vm.isClusterEnabled = ($currentDataService.getClusterInfo() && $currentDataService.getClusterInfo().status === 'enabled')
@@ -119,8 +132,8 @@ define([
 
     vm.lastAgent = lastAgent
     vm.agentsCountActive = summary.Active - 1
-    vm.agentsCountDisconnected = summary.Disconnected 
-    vm.agentsCountNeverConnected = summary['Never connected'] 
+    vm.agentsCountDisconnected = summary.Disconnected
+    vm.agentsCountNeverConnected = summary['Never connected']
     vm.agentsCountTotal = summary.Total - 1
     vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
 

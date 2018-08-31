@@ -47,7 +47,7 @@
         <div layout="row" class="wz-padding-top-10">
           <p flex="35" class="manager-status-subtitle">Higher activity</p>
           <p ng-show='!ag.loadingSearch' class="wz-text-right wz-text-link" tooltip="Click to open this agent" tooltip-placement="right"
-            ng-click="ag.showAgent(mostActiveAgent)">{{ag.mostActiveAgent}}</p>
+            ng-click="ag.showAgent(ag.mostActiveAgent)">{{ag.mostActiveAgent}}</p>
           <md-progress-circular class="wz-text-right wz-text-link" md-mode="indeterminate" ng-show="ag.loadingSearch"></md-progress-circular>
         </div>
       </md-card-content>

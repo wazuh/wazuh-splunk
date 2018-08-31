@@ -23,7 +23,6 @@ define([
        */
       vm.init = async () => {
         try {
-          console.log('api settings controller')
           // If no API, then remove cookie
           if (Array.isArray(apiList) && apiList.length === 0) {
             $currentDataService.removeCurrentApi()
