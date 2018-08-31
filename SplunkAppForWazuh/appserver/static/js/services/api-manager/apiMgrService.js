@@ -154,7 +154,7 @@ define(['../module'], function (module) {
     const checkSelectedApiConnection = async () => {
       try {
         const currentApi = $apiIndexStorageService.getApi()
-        if (!currentApi) { return Promise.reject(new Error('No selected API in sessionStorage')) }
+        if (!currentApi) { throw new Error('No selected API in sessionStorage.') }
         const api = await checkApiConnection(currentApi.id)
         let selectedIndex = $apiIndexStorageService.getIndex()
         return { api, selectedIndex }

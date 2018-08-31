@@ -25,7 +25,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'settings')
         } catch (err) {
-          $state.go('settings.api')
+          $rootScope.$broadcast('loading', { status: false })
         }
       })
       $transitions.onStart({ to: 'manager' }, async (trans) => {
@@ -38,6 +38,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'manager')
         } catch (err) {
+          $rootScope.$broadcast('loading', { status: false })
           $state.go('settings.api')
         }
       })
@@ -51,6 +52,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'overview')
         } catch (err) {
+          $rootScope.$broadcast('loading', { status: false })
           $state.go('settings.api')
         }
       })
@@ -64,6 +66,7 @@ define([
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
           $rootScope.$broadcast('stateChanged', 'agents')
         } catch (err) {
+          $rootScope.$broadcast('loading', { status: false })
           $state.go('settings.api')
         }
       })

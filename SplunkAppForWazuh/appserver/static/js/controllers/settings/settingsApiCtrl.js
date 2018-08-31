@@ -23,15 +23,15 @@ define([
        */
       vm.init = async () => {
         try {
-
+          console.log('api settings controller')
           // If no API, then remove cookie
-          if(Array.isArray(apiList) && apiList.length === 0) {
+          if (Array.isArray(apiList) && apiList.length === 0) {
             $currentDataService.removeCurrentApi()
             $scope.$emit('updatedAPI', () => { })
           }
-          
+
           vm.apiList = apiList
-          
+
           let currentApi = $currentDataService.getApi()
 
           if (!currentApi && Array.isArray(vm.apiList)) {
@@ -53,7 +53,7 @@ define([
                 item.selected = true
               }
             })
-          } 
+          }
         } catch (err) {
           $notificationService.showSimpleToast('Error loading data')
         }
@@ -274,7 +274,7 @@ define([
 
           // If connected to the API then continue
           await $currentDataService.checkRawConnection(record)
-          
+
           // Get the new API database ID
           const { result } = await $currentDataService.insert(record)
           const id = result
