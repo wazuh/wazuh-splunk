@@ -45,7 +45,7 @@ define([
 
       const baseUrl = $requestService.getBaseUrl()
       const api = $currentDataService.getApi()
-      console.log('api.id ',api.id)
+
       setToken('baseip', baseUrl)
       setToken('dbId', api.id)
 
