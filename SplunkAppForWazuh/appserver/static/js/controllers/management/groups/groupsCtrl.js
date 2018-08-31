@@ -4,7 +4,7 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('groupsCtrl', function ($scope, $requestService, $beautifierJson, $notificationService) {
+  controllers.controller('groupsCtrl', function ($scope, $state, $requestService, $beautifierJson, $notificationService) {
     const vm = this
     $scope.$on('groupsIsReloaded', () => {
       vm.currentGroup = false
@@ -68,6 +68,9 @@ define(['../../module'], function (controllers) {
       if (!$scope.$$phase) $scope.$digest()
     }
 
+    vm.reload = () => {
+      $state.reload()
+    }
     vm.goBackFiles = () => {
       vm.groupsSelectedTab = 'files'
       vm.file = false
