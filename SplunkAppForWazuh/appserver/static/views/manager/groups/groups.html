@@ -16,6 +16,11 @@
     <!-- Headline -->
     <div ng-show="!load" layout="column" layout-padding>
       <span class="font-size-18">
+        <!-- Back button -->
+        <md-button ng-show="mgr.lookingGroup" class="md-icon-button" aria-label="Back to groups" tooltip="Back" tooltip-placement="bottom"
+          ng-click='mgr.reload()'>
+          <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+        </md-button>
         <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
       <span>List and check your groups, its agents and files</span>
     </div>
@@ -50,12 +55,14 @@
             <div layout="row" class="wz-padding-top-10">
               <span flex="20" class="wz-text-link" ng-class="mgr.groupsSelectedTab==='agents' ? 'wz-text-active' : ''" ng-click="mgr.goBackToAgents()"
                 tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
-              <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right" ng-click="mgr.goBackToAgents()">{{ mgr.currentGroup.count }}</span>
+              <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right" ng-click="mgr.goBackToAgents()">{{
+                mgr.currentGroup.count }}</span>
             </div>
             <div layout="row" class="wz-padding-top-10">
               <span flex="20" class="wz-text-link" ng-class="mgr.groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="mgr.goBackFiles()"
                 tooltip="Click to open the list of files" tooltip-placement="left">Content</span>
-              <span class="wz-text-link" tooltip="Click to open the list of files" tooltip-placement="right" ng-click="mgr.goBackFiles()">{{ mgr.totalFiles }}</span>
+              <span class="wz-text-link" tooltip="Click to open the list of files" tooltip-placement="right" ng-click="mgr.goBackFiles()">{{
+                mgr.totalFiles }}</span>
             </div>
           </md-card-content>
         </md-card>

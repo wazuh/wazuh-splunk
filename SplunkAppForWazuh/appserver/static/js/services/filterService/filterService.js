@@ -1,16 +1,20 @@
 define(['../module'], function (module) {
   'use strict'
-  module.service('$filterService', function () {
+  module.service('$filterService', function ($notificationService) {
     return {
 
       /**
        * Returns the stored filters
        */
       getFilters: () => {
-        if (window.localStorage.filters)
-          return JSON.parse(window.localStorage.filters)
-        else
+        try {
+          if (window.localStorage.filters)
+            return JSON.parse(window.localStorage.filters)
+          else
+            return []
+        } catch (err) {
           return []
+        }
       },
 
       /**
@@ -18,22 +22,26 @@ define(['../module'], function (module) {
        * @param {String} filter 
        */
       addFilter: (filter) => {
-        const filterJson = JSON.parse(filter)
-        if (window.localStorage.filters) {
-          const filters = JSON.parse(window.localStorage.filters)
-          let isInIt = false
-          filters.map(fil => {
-            if (fil[Object.keys(filterJson)]) {
-              isInIt = true
-              fil[Object.keys(filterJson)] = filterJson[Object.keys(filterJson)]
+        try {
+          const filterJson = JSON.parse(filter)
+          if (window.localStorage.filters) {
+            const filters = JSON.parse(window.localStorage.filters)
+            let isInIt = false
+            filters.map(fil => {
+              if (fil[Object.keys(filterJson)]) {
+                isInIt = true
+                fil[Object.keys(filterJson)] = filterJson[Object.keys(filterJson)]
+              }
+            })
+            if (!isInIt) {
+              filters.push(filterJson)
             }
-          })
-          if (!isInIt) {
-            filters.push(filterJson)
+            window.localStorage.setItem('filters', JSON.stringify(filters))
+          } else {
+            window.localStorage.setItem('filters', `[${filter}]`)
           }
-          window.localStorage.setItem('filters', JSON.stringify(filters))
-        } else {
-          window.localStorage.setItem('filters', `[${filter}]`)
+        } catch (err) {
+          $notificationService.showSimpleToast('Incorrent format. Please use key:value syntax')
         }
       },
 

@@ -64,14 +64,18 @@ define(['../module'], function (directives) {
          * @param {Object | String} filter 
          */
         $scope.applyFilters = (customSearch) => {
-          if (!customSearch || customSearch.split(':').length !== 2 || customSearch.split(':')[1].length === 0) {
-            $notificationService.showSimpleToast('Incorrent format. Please use key:value syntax')
-            return
+          try {
+            if (!customSearch || customSearch.split(':').length !== 2 || customSearch.split(':')[1].length === 0) {
+              throw new Error('Incorrent format. Please use key:value syntax')
+
+            }
+            $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
+            $scope.filters = getPrettyFilters()
+            $scope.$emit('barFilter', {})
+            if (!$scope.$$phase) $scope.$digest()
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
           }
-          $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
-          $scope.filters = getPrettyFilters()
-          $scope.$emit('barFilter', {})
-          if (!$scope.$$phase) $scope.$digest()
         }
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'

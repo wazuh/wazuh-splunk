@@ -574,7 +574,7 @@ define([
         "trellis.enabled": "0",
         "showTrendIndicator": "1",
         "trellis.scales.shared": "1",
-        "height": "50",
+        "resizable": true,
         "rangeValues": "[0]",
         "showSparkline": "1",
         "useThousandSeparators": "0",

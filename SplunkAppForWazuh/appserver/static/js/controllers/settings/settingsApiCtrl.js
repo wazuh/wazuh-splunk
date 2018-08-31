@@ -23,7 +23,6 @@ define([
        */
       vm.init = async () => {
         try {
-          console.log('api settings controller')
           // If no API, then remove cookie
           if (Array.isArray(apiList) && apiList.length === 0) {
             $currentDataService.removeCurrentApi()
@@ -286,9 +285,9 @@ define([
 
             // If the only one API in the list, then try to select it
             vm.apiList.push(api)
-            // if (apiList && apiList.length === 1) {
-            //   await vm.selectManager(id)
-            // }
+            if (apiList && apiList.length === 1) {
+              await vm.selectManager(id)
+            }
             vm.showForm = false
             if (!$scope.$$phase) $scope.$digest()
             $notificationService.showSimpleToast('API was added')

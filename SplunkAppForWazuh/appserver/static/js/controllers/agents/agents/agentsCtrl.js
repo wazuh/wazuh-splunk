@@ -20,17 +20,30 @@ define([
 
   'use strict'
 
-  modules.controller('agentsCtrl', function ($scope, $currentDataService, data) {
+  modules.controller('agentsCtrl', function ($scope, $currentDataService, $state, $notificationService, $requestService, data) {
     const vm = this
     let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
     submittedTokenModel.set("activeAgentToken", '-')
     vm.loadingSearch = true
+
     vm.search = term => {
       $scope.$broadcast('wazuhSearch', { term })
     }
 
     vm.filter = filter => {
       $scope.$broadcast('wazuhFilter', { filter })
+    }
+
+    vm.showAgent = async (agent) => {
+      try {
+        const agentInfo = await $requestService.apiReq(`/agents`, { name: agent })
+        if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error)
+          throw Error('Error')
+        if (agentInfo.data.data.id !== '000')
+          $state.go(`agent-overview`, { id: agentInfo.data.data.id })
+      } catch (err) {
+        $notificationService.showSimpleToast('Error fetching agent data')
+      }
     }
 
     vm.isClusterEnabled = ($currentDataService.getClusterInfo() && $currentDataService.getClusterInfo().status === 'enabled')
@@ -91,7 +104,10 @@ define([
       const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
       if (activeAgentTokenJS) {
         vm.loadingSearch = false
-        vm.mostActiveAgent = `${activeAgentTokenJS}`
+        vm.mostActiveAgent = activeAgentTokenJS === '$result.agent.name$' ?
+          $currentDataService.getApi().managerName :
+          `${activeAgentTokenJS}`
+
         if (!$scope.$$phase) $scope.$digest()
       }
     })
@@ -101,7 +117,9 @@ define([
         const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
         if (activeAgentTokenJS) {
           vm.loadingSearch = false
-          vm.mostActiveAgent = `${activeAgentTokenJS}`
+          vm.mostActiveAgent = activeAgentTokenJS === '$result.agent.name$' ?
+            $currentDataService.getApi().managerName :
+            `${activeAgentTokenJS}`
           if (!$scope.$$phase) $scope.$digest()
         }
       }
@@ -119,8 +137,8 @@ define([
 
     vm.lastAgent = lastAgent
     vm.agentsCountActive = summary.Active - 1
-    vm.agentsCountDisconnected = summary.Disconnected 
-    vm.agentsCountNeverConnected = summary['Never connected'] 
+    vm.agentsCountDisconnected = summary.Disconnected
+    vm.agentsCountNeverConnected = summary['Never connected']
     vm.agentsCountTotal = summary.Total - 1
     vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
 
