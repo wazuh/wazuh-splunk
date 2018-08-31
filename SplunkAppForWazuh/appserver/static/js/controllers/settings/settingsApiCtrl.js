@@ -23,7 +23,15 @@ define([
        */
       vm.init = async () => {
         try {
+
+          // If no API, then remove cookie
+          if(Array.isArray(apiList) && apiList.length === 0) {
+            $currentDataService.removeCurrentApi()
+            $scope.$emit('updatedAPI', () => { })
+          }
+          
           vm.apiList = apiList
+          
           let currentApi = $currentDataService.getApi()
 
           if (!currentApi && Array.isArray(vm.apiList)) {
@@ -286,14 +294,11 @@ define([
             $notificationService.showSimpleToast('API was added')
 
           } catch (err) {
-            console.error('err ',err)
             $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error') })
             $notificationService.showSimpleToast('Unreachable API')
           }
 
         } catch (err) {
-          console.error('err ',err)
-
           $notificationService.showSimpleToast(err.message)
         }
       }

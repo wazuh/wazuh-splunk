@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService) {
+  module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService, $apiIndexStorageService) {
 
 
     const getApi = () => {
@@ -78,6 +78,10 @@ define(['../module'], function (module) {
       return $apiMgrService.setApi(api)
     }
 
+    const removeCurrentApi = () => {
+      return $apiIndexStorageService.removeAPI()
+    }
+
     const getCurrentAgent = () => {
       return $navigationService.getCurrentAgent()
     }
@@ -105,6 +109,7 @@ define(['../module'], function (module) {
       getClusterInfo: getClusterInfo,
       getFilter: getFilter,
       getApi: getApi,
+      removeCurrentApi: removeCurrentApi,
       setApi: setApi,
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent
