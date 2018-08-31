@@ -102,9 +102,10 @@
           <h3 class="euiTitle">Security Information Management</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'" title="'General'"
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'" title="'Security events'"
               ui-sref='ag-general({id:aoc.agent.id})' current-tab="'general'" description="'Browse through your security alerts, identifying issues and threats in your environment.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'File integrity'"
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_lo
+            gging.svg'" title="'Integrity monitoring'"
             ui-sref='ag-fim({id:aoc.agent.id})' current-tab="'fim'" description="'Alerts related to file changes, including permissions, content, ownership and attributes.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
               ui-sref='ag-conf({id:aoc.agent.id})' current-tab="'configuration'" description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
@@ -121,10 +122,10 @@
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'"
             ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
             <wz-welcome-card  class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-              title="'Audit'" ui-sref='ag-audit({id:aoc.agent.id})' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
+              title="'System auditing'" ui-sref='ag-audit({id:aoc.agent.id})' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
               title="'Open SCAP'" ui-sref='ag-os({id:aoc.agent.id})' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
+            <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
               title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
           </div>
         </div>
@@ -142,7 +143,7 @@
             <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
               <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'" title="'Vulnerabilities'"
               ui-sref='ag-vul({id:aoc.agent.id})' current-tab="'vuls'" description="'Discover what applications in your environment are affected by well-known vulnerabilities.'"></wz-welcome-card>
-              <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
+              <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
                 title="'Virustotal'" switch-tab="switchTab('virustotal')" current-tab="'virustotal'" description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"></wz-welcome-card>
             </div>
           </div>
