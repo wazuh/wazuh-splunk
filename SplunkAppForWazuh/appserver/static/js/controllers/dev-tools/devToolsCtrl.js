@@ -2,9 +2,9 @@
  * Wazuh app - Dev tools controller
  * Copyright (C) 2018 Wazuh, Inc.
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation either version 2 of the License, or
  * (at your option) any later version.
  *
  * Find more information about this on the LICENSE file.
@@ -15,7 +15,7 @@
 // import queryString from 'querystring-browser'
 // import $ from 'jquery'
 
-// const app = uiModules.get('app/wazuh', []);
+// const app = uiModules.get('app/wazuh', [])
 
 define([
   '../module',
@@ -35,115 +35,115 @@ define([
     'use strict'
     class DevToolsCtrl {
       constructor($scope, $window, $document, $navigationService, $notificationService, $requestService) {
-        this.$scope = $scope;
-        this.request = $requestService;
-        this.$window = $window;
-        this.appState = $navigationService;
-        this.errorHandler = $notificationService;
-        this.$document = $document;
-        this.groups = [];
-        this.linesWithClass = [];
-        this.widgets = [];
+        this.$scope = $scope
+        this.request = $requestService
+        this.$window = $window
+        this.appState = $navigationService
+        this.errorHandler = $notificationService
+        this.$document = $document
+        this.groups = []
+        this.linesWithClass = []
+        this.widgets = []
       }
 
       parse(qs, sep, eq, options) {
-        sep = sep || '&';
-        eq = eq || '=';
+        sep = sep || '&'
+        eq = eq || '='
 
-        let obj = {};
+        let obj = {}
 
         if (typeof qs !== 'string' || qs.length === 0) {
-          return obj;
+          return obj
         }
 
         if (typeof sep !== 'string')
-          sep += '';
+          sep += ''
 
-        let eqLen = eq.length;
-        let sepLen = sep.length;
+        let eqLen = eq.length
+        let sepLen = sep.length
 
-        let maxKeys = 1000;
+        let maxKeys = 1000
         if (options && typeof options.maxKeys === 'number') {
-          maxKeys = options.maxKeys;
+          maxKeys = options.maxKeys
         }
 
-        let pairs = Infinity;
+        let pairs = Infinity
         if (maxKeys > 0)
-          pairs = maxKeys;
+          pairs = maxKeys
 
-        let decode = QueryString.unescape;
+        let decode = QueryString.unescape
         if (options && typeof options.decodeURIComponent === 'function') {
-          decode = options.decodeURIComponent;
+          decode = options.decodeURIComponent
         }
-        let customDecode = (decode !== qsUnescape);
+        let customDecode = (decode !== qsUnescape)
 
-        let keys = [];
-        let lastPos = 0;
-        let sepIdx = 0;
-        let eqIdx = 0;
-        let key = '';
-        let value = '';
-        let keyEncoded = customDecode;
-        let valEncoded = customDecode;
-        let encodeCheck = 0;
+        let keys = []
+        let lastPos = 0
+        let sepIdx = 0
+        let eqIdx = 0
+        let key = ''
+        let value = ''
+        let keyEncoded = customDecode
+        let valEncoded = customDecode
+        let encodeCheck = 0
         for (let i = 0; i < qs.length; ++i) {
-          let code = qs.charCodeAt(i);
+          let code = qs.charCodeAt(i)
 
           // Try matching key/value pair separator (e.g. '&')
           if (code === sep.charCodeAt(sepIdx)) {
             if (++sepIdx === sepLen) {
               // Key/value pair separator match!
-              let end = i - sepIdx + 1;
+              let end = i - sepIdx + 1
               if (eqIdx < eqLen) {
                 // If we didn't find the key/value separator, treat the substring as
                 // part of the key instead of the value
                 if (lastPos < end)
-                  key += qs.slice(lastPos, end);
+                  key += qs.slice(lastPos, end)
               } else if (lastPos < end)
-                value += qs.slice(lastPos, end);
+                value += qs.slice(lastPos, end)
               if (keyEncoded)
-                key = decodeStr(key, decode);
+                key = decodeStr(key, decode)
               if (valEncoded)
-                value = decodeStr(value, decode);
+                value = decodeStr(value, decode)
               // Use a key array lookup instead of using hasOwnProperty(), which is
               // slower
               if (keys.indexOf(key) === -1) {
-                obj[key] = value;
-                keys[keys.length] = key;
+                obj[key] = value
+                keys[keys.length] = key
               } else {
-                let curValue = obj[key];
+                let curValue = obj[key]
                 // `instanceof Array` is used instead of Array.isArray() because it
                 // is ~15-20% faster with v8 4.7 and is safe to use because we are
                 // using it with values being created within this function
                 if (curValue instanceof Array)
-                  curValue[curValue.length] = value;
+                  curValue[curValue.length] = value
                 else
-                  obj[key] = [curValue, value];
+                  obj[key] = [curValue, value]
               }
               if (--pairs === 0)
-                break;
-              keyEncoded = valEncoded = customDecode;
-              encodeCheck = 0;
-              key = value = '';
-              lastPos = i + 1;
-              sepIdx = eqIdx = 0;
+                break
+              keyEncoded = valEncoded = customDecode
+              encodeCheck = 0
+              key = value = ''
+              lastPos = i + 1
+              sepIdx = eqIdx = 0
             }
-            continue;
+            continue
           } else {
-            sepIdx = 0;
+            sepIdx = 0
             if (!valEncoded) {
               // Try to match an (valid) encoded byte (once) to minimize unnecessary
               // calls to string decoding functions
               if (code === 37/*%*/) {
-                encodeCheck = 1;
+                encodeCheck = 1
               } else if (encodeCheck > 0 &&
                 ((code >= 48/*0*/ && code <= 57/*9*/) ||
                   (code >= 65/*A*/ && code <= 70/*Z*/) ||
                   (code >= 97/*a*/ && code <= 102/*z*/))) {
                 if (++encodeCheck === 3)
-                  valEncoded = true;
+                  valEncoded = true
               } else {
-                encodeCheck = 0;
+                encodeCheck = 0
               }
             }
           }
@@ -153,28 +153,28 @@ define([
             if (code === eq.charCodeAt(eqIdx)) {
               if (++eqIdx === eqLen) {
                 // Key/value separator match!
-                let end = i - eqIdx + 1;
+                let end = i - eqIdx + 1
                 if (lastPos < end)
-                  key += qs.slice(lastPos, end);
-                encodeCheck = 0;
-                lastPos = i + 1;
+                  key += qs.slice(lastPos, end)
+                encodeCheck = 0
+                lastPos = i + 1
               }
-              continue;
+              continue
             } else {
-              eqIdx = 0;
+              eqIdx = 0
               if (!keyEncoded) {
                 // Try to match an (valid) encoded byte once to minimize unnecessary
                 // calls to string decoding functions
                 if (code === 37/*%*/) {
-                  encodeCheck = 1;
+                  encodeCheck = 1
                 } else if (encodeCheck > 0 &&
                   ((code >= 48/*0*/ && code <= 57/*9*/) ||
                     (code >= 65/*A*/ && code <= 70/*Z*/) ||
                     (code >= 97/*a*/ && code <= 102/*z*/))) {
                   if (++encodeCheck === 3)
-                    keyEncoded = true;
+                    keyEncoded = true
                 } else {
-                  encodeCheck = 0;
+                  encodeCheck = 0
                 }
               }
             }
@@ -183,16 +183,16 @@ define([
           if (code === 43/*+*/) {
             if (eqIdx < eqLen) {
               if (i - lastPos > 0)
-                key += qs.slice(lastPos, i);
-              key += '%20';
-              keyEncoded = true;
+                key += qs.slice(lastPos, i)
+              key += '%20'
+              keyEncoded = true
             } else {
               if (i - lastPos > 0)
-                value += qs.slice(lastPos, i);
-              value += '%20';
-              valEncoded = true;
+                value += qs.slice(lastPos, i)
+              value += '%20'
+              valEncoded = true
             }
-            lastPos = i + 1;
+            lastPos = i + 1
           }
         }
 
@@ -200,32 +200,32 @@ define([
         if (pairs > 0 && (lastPos < qs.length || eqIdx > 0)) {
           if (lastPos < qs.length) {
             if (eqIdx < eqLen)
-              key += qs.slice(lastPos);
+              key += qs.slice(lastPos)
             else if (sepIdx < sepLen)
-              value += qs.slice(lastPos);
+              value += qs.slice(lastPos)
           }
           if (keyEncoded)
-            key = decodeStr(key, decode);
+            key = decodeStr(key, decode)
           if (valEncoded)
-            value = decodeStr(value, decode);
+            value = decodeStr(value, decode)
           // Use a key array lookup instead of using hasOwnProperty(), which is
           // slower
           if (keys.indexOf(key) === -1) {
-            obj[key] = value;
-            keys[keys.length] = key;
+            obj[key] = value
+            keys[keys.length] = key
           } else {
-            let curValue = obj[key];
+            let curValue = obj[key]
             // `instanceof Array` is used instead of Array.isArray() because it
             // is ~15-20% faster with v8 4.7 and is safe to use because we are
             // using it with values being created within this function
             if (curValue instanceof Array)
-              curValue[curValue.length] = value;
+              curValue[curValue.length] = value
             else
-              obj[key] = [curValue, value];
+              obj[key] = [curValue, value]
           }
         }
 
-        return obj;
+        return obj
       }
       $onInit() {
         this.apiInputBox = CodeMirror.fromTextArea(this.$document[0].getElementById('api_input'), {
@@ -236,13 +236,13 @@ define([
           foldGutter: true,
           styleSelectedText: true,
           gutters: ["CodeMirror-foldgutter"]
-        });
+        })
 
         this.apiInputBox.on('change', () => {
-          this.groups = this.analyzeGroups();
-          const currentState = this.apiInputBox.getValue().toString();
+          this.groups = this.analyzeGroups()
+          const currentState = this.apiInputBox.getValue().toString()
           this.appState.setCurrentDevTools(currentState)
-          const currentGroup = this.calculateWhichGroup();
+          const currentGroup = this.calculateWhichGroup()
           if (currentGroup) {
             const hasWidget = this.widgets.filter(item => item.start === currentGroup.start)
             if (hasWidget.length) this.apiInputBox.removeLineWidget(hasWidget[0].widget)
@@ -251,8 +251,8 @@ define([
         })
 
         this.apiInputBox.on('cursorActivity', () => {
-          const currentGroup = this.calculateWhichGroup();
-          this.highlightGroup(currentGroup);
+          const currentGroup = this.calculateWhichGroup()
+          this.highlightGroup(currentGroup)
         })
 
         this.apiOutputBox = CodeMirror.fromTextArea(this.$document[0].getElementById('api_output'), {
@@ -265,54 +265,54 @@ define([
           theme: 'ttcn',
           foldGutter: true,
           gutters: ["CodeMirror-foldgutter"]
-        });
+        })
 
-        this.$scope.send = firstTime => this.send(firstTime);
+        this.$scope.send = firstTime => this.send(firstTime)
 
         this.$scope.help = () => {
-          this.$window.open('https://documentation.wazuh.com/current/user-manual/api/reference.html');
+          this.$window.open('https://documentation.wazuh.com/current/user-manual/api/reference.html')
         }
 
-        this.init();
-        this.$scope.send(true);
+        this.init()
+        this.$scope.send(true)
       }
 
       analyzeGroups() {
         try {
-          const currentState = this.apiInputBox.getValue().toString();
+          const currentState = this.apiInputBox.getValue().toString()
           this.appState.setCurrentDevTools(currentState)
 
-          const tmpgroups = [];
+          const tmpgroups = []
           const splitted = currentState.split(/[\r\n]+(?=(?:GET|PUT|POST|DELETE)\b)/gm)
-          let start = 0;
-          let end = 0;
+          let start = 0
+          let end = 0
 
-          const slen = splitted.length;
+          const slen = splitted.length
           for (let i = 0; i < slen; i++) {
-            let tmp = splitted[i].split('\n');
+            let tmp = splitted[i].split('\n')
             if (Array.isArray(tmp)) tmp = tmp.filter(item => !item.includes('#'))
             const cursor = this.apiInputBox.getSearchCursor(splitted[i], null, { multiline: true })
 
             if (cursor.findNext()) start = cursor.from().line
-            else return [];
+            else return []
 
-            end = start + tmp.length;
+            end = start + tmp.length
 
-            const tmpRequestText = tmp[0];
-            let tmpRequestTextJson = '';
+            const tmpRequestText = tmp[0]
+            let tmpRequestTextJson = ''
 
-            const tmplen = tmp.length;
+            const tmplen = tmp.length
             for (let j = 1; j < tmplen; ++j) {
               if (!!tmp[j] && !tmp[j].includes('#')) {
-                tmpRequestTextJson += tmp[j];
+                tmpRequestTextJson += tmp[j]
               }
             }
 
             if (tmpRequestTextJson && typeof tmpRequestTextJson === 'string') {
-              let rtjlen = tmp.length;
+              let rtjlen = tmp.length
               while (rtjlen--) {
-                if (tmp[rtjlen].trim() === '}') break;
-                else end -= 1;
+                if (tmp[rtjlen].trim() === '}') break
+                else end -= 1
               }
             }
 
@@ -325,7 +325,7 @@ define([
               if (tmp.length > 1) end -= (tmp.length - 1)
             }
 
-            end--;
+            end--
 
             tmpgroups.push({
               requestText: tmpRequestText,
@@ -335,9 +335,9 @@ define([
             })
           }
 
-          return tmpgroups;
+          return tmpgroups
         } catch (error) {
-          return [];
+          return []
         }
       }
 
@@ -345,11 +345,11 @@ define([
         for (const line of this.linesWithClass) {
           this.apiInputBox.removeLineClass(line, 'background', "CodeMirror-styled-background")
         }
-        this.linesWithClass = [];
+        this.linesWithClass = []
         if (group) {
           if (!group.requestTextJson) {
             this.linesWithClass.push(this.apiInputBox.addLineClass(group.start, 'background', "CodeMirror-styled-background"))
-            return;
+            return
           }
           for (let i = group.start; i <= group.end; i++) {
             this.linesWithClass.push(this.apiInputBox.addLineClass(i, 'background', "CodeMirror-styled-background"))
@@ -358,26 +358,26 @@ define([
       }
 
       checkJsonParseError() {
-        const affectedGroups = [];
+        const affectedGroups = []
         for (const widget of this.widgets) {
           this.apiInputBox.removeLineWidget(widget.widget)
         }
-        this.widgets = [];
+        this.widgets = []
         for (const item of this.groups) {
           if (item.requestTextJson) {
             try {
               // jsonLint.parse(item.requestTextJson)
             } catch (error) {
-              affectedGroups.push(item.requestText);
-              const msg = this.$document[0].createElement("div");
-              msg.id = new Date().getTime() / 1000;
-              const icon = msg.appendChild(this.$document[0].createElement("div"));
+              affectedGroups.push(item.requestText)
+              const msg = this.$document[0].createElement("div")
+              msg.id = new Date().getTime() / 1000
+              const icon = msg.appendChild(this.$document[0].createElement("div"))
 
-              icon.className = "lint-error-icon";
-              icon.id = new Date().getTime() / 1000;
+              icon.className = "lint-error-icon"
+              icon.id = new Date().getTime() / 1000
               icon.onmouseover = () => {
-                const advice = msg.appendChild(this.$document[0].createElement("span"));
-                advice.id = new Date().getTime() / 1000;
+                const advice = msg.appendChild(this.$document[0].createElement("span"))
+                advice.id = new Date().getTime() / 1000
                 advice.innerText = error.message || 'Error parsing query'
                 advice.className = 'lint-block-wz'
               }
@@ -386,27 +386,27 @@ define([
                 msg.removeChild(msg.lastChild)
               }
 
-              this.widgets.push({ start: item.start, widget: this.apiInputBox.addLineWidget(item.start, msg, { coverGutter: false, noHScroll: true }) });
+              this.widgets.push({ start: item.start, widget: this.apiInputBox.addLineWidget(item.start, msg, { coverGutter: false, noHScroll: true }) })
             }
           }
         }
-        return affectedGroups;
+        return affectedGroups
       }
 
       init() {
         this.apiInputBox.setSize('auto', '100%')
         this.apiOutputBox.setSize('auto', '100%')
-        const currentState = this.appState.getCurrentDevTools();
+        const currentState = this.appState.getCurrentDevTools()
         if (!currentState) {
-          const demoStr = 'GET /\n\n# Comment here\nGET /agents\n' + JSON.stringify({ limit: 1 }, null, 2);
-          this.appState.setCurrentDevTools(demoStr);
-          this.apiInputBox.getDoc().setValue(demoStr);
+          const demoStr = 'GET /\n\n# Comment here\nGET /agents\n' + JSON.stringify({ limit: 1 }, null, 2)
+          this.appState.setCurrentDevTools(demoStr)
+          this.apiInputBox.getDoc().setValue(demoStr)
         } else {
           this.apiInputBox.getDoc().setValue(currentState)
         }
-        this.groups = this.analyzeGroups();
-        const currentGroup = this.calculateWhichGroup();
-        this.highlightGroup(currentGroup);
+        this.groups = this.analyzeGroups()
+        const currentGroup = this.calculateWhichGroup()
+        this.highlightGroup(currentGroup)
       }
 
       calculateWhichGroup(firstTime) {
@@ -415,38 +415,35 @@ define([
 
           const desiredGroup = firstTime ?
             this.groups.filter(item => item.requestText) :
-            this.groups.filter(item => item.requestText && (item.end >= selection.line && item.start <= selection.line));
+            this.groups.filter(item => item.requestText && (item.end >= selection.line && item.start <= selection.line))
 
           // Place play button at first line from the selected group
-          const cords = this.apiInputBox.cursorCoords({ line: desiredGroup[0].start, ch: 0 });
+          const cords = this.apiInputBox.cursorCoords({ line: desiredGroup[0].start, ch: 0 })
           if (!$('#play_button').is(":visible")) $('#play_button').show()
-          const currentPlayButton = $('#play_button').offset();
+          const currentPlayButton = $('#play_button').offset()
           $('#play_button').offset({ top: cords.top, left: currentPlayButton.left })
           if (firstTime) this.highlightGroup(desiredGroup[0])
-          return desiredGroup[0];
+          return desiredGroup[0]
         } catch (error) {
           $('#play_button').hide()
-          return null;
+          return null
         }
       }
 
       async send(firstTime) {
         try {
-          console.log('sending....')
-          this.groups = this.analyzeGroups();
-
-          const desiredGroup = this.calculateWhichGroup(firstTime);
-          console.log('desired group ', desiredGroup)
+          this.groups = this.analyzeGroups()
+          const desiredGroup = this.calculateWhichGroup(firstTime)
           if (desiredGroup) {
             if (firstTime) {
-              const cords = this.apiInputBox.cursorCoords({ line: desiredGroup.start, ch: 0 });
-              const currentPlayButton = $('#play_button').offset();
+              const cords = this.apiInputBox.cursorCoords({ line: desiredGroup.start, ch: 0 })
+              const currentPlayButton = $('#play_button').offset()
               $('#play_button').offset({ top: cords.top + 10, left: currentPlayButton.left })
             }
 
-            const affectedGroups = this.checkJsonParseError();
-            const filteredAffectedGroups = affectedGroups.filter(item => item === desiredGroup.requestText);
-            if (filteredAffectedGroups.length) { this.apiOutputBox.setValue('Error parsing JSON query'); return; }
+            const affectedGroups = this.checkJsonParseError()
+            const filteredAffectedGroups = affectedGroups.filter(item => item === desiredGroup.requestText)
+            if (filteredAffectedGroups.length) { this.apiOutputBox.setValue('Error parsing JSON query'); return }
 
             const method = desiredGroup.requestText.startsWith('GET') ?
               'GET' :
@@ -456,41 +453,41 @@ define([
                   'PUT' :
                   desiredGroup.requestText.startsWith('DELETE') ?
                     'DELETE' :
-                    'GET';
+                    'GET'
 
             const requestCopy = desiredGroup.requestText.includes(method) ?
               desiredGroup.requestText.split(method)[1].trim() :
-              desiredGroup.requestText;
+              desiredGroup.requestText
 
             // Checks for inline parameters
-            const inlineSplit = requestCopy.split('?');
+            const inlineSplit = requestCopy.split('?')
 
             const extra = inlineSplit && inlineSplit[1] ?
               this.parse(inlineSplit[1]) :
-              {};
+              {}
 
             const req = requestCopy ?
               requestCopy.startsWith('/') ?
                 requestCopy :
                 `/${requestCopy}` :
-              '/';
+              '/'
 
-            let JSONraw = {};
+            let JSONraw = {}
             try {
-              JSONraw = JSON.parse(desiredGroup.requestTextJson);
+              JSONraw = JSON.parse(desiredGroup.requestTextJson)
             } catch (error) {
               JSONraw = {}
             }
 
-            if (typeof extra.pretty !== 'undefined') delete extra.pretty;
-            if (typeof JSONraw.pretty !== 'undefined') delete JSONraw.pretty;
+            if (typeof extra.pretty !== 'undefined') delete extra.pretty
+            if (typeof JSONraw.pretty !== 'undefined') delete JSONraw.pretty
 
             // Assign inline parameters
-            for (const key in extra) JSONraw[key] = extra[key];
+            for (const key in extra) JSONraw[key] = extra[key]
 
-            const path = req.includes('?') ? req.split('?')[0] : req;
+            const path = req.includes('?') ? req.split('?')[0] : req
 
-            // if (typeof JSONraw === 'object') JSONraw.devTools = true;
+            // if (typeof JSONraw === 'object') JSONraw.devTools = true
             const output = await this.request.apiReq(path, JSONraw)
             console.log('output ', output)
             const result = (output.data && output.data.data && !output.data.error) ? JSON.stringify(output.data.data, null, 2) : output.data.message || 'Unkown error'
@@ -505,9 +502,9 @@ define([
 
         } catch (error) {
           console.error('err: ', error)
-          const parsedError = this.errorHandler.showSimpleToast(error);
+          const parsedError = this.errorHandler.showSimpleToast(error)
           if (typeof parsedError === 'string') {
-            return this.apiOutputBox.setValue(parsedError);
+            return this.apiOutputBox.setValue(parsedError)
           } else if (error && error.data && typeof error.data === 'object') {
             return this.apiOutputBox.setValue(JSON.stringify(error.data))
           } else {
