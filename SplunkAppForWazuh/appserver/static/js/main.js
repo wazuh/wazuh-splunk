@@ -14,11 +14,12 @@ require.config({
     'foldcode': 'js/utils/codemirror/foldcode',
     'foldgutter': 'js/utils/codemirror/foldgutter',
     'javascript': 'js/utils/codemirror/javascript',
-    'json-lint': 'js/utils/codemirror/json-lint',
     'mark-selection': 'js/utils/codemirror/mark-selection',
     'search-cursor': 'js/utils/codemirror/search-cursor',
     'codemirror': 'js/utils/codemirror/lib/codemirror',
-    'querystring': 'js/utils/codemirror/querystring'
+    'querystring': 'js/utils/codemirror/querystring',
+    'json-lint': 'js/utils/codemirror/json-lint',
+
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
@@ -41,10 +42,11 @@ require.config({
     'ngRoute': {
       exports: "ngRoute",
       deps: ["angular"]
-    }
+    },
 
   },
 
   // kick start application
-  deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap', 'brace-fold', 'foldcode', 'foldgutter', 'javascript', 'json-lint', 'mark-selection', 'search-cursor','querystring', 'codemirror']
+  // deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap', 'querystring', 'json-lint', 'javascript', 'brace-fold', 'foldcode', 'foldgutter', 'search-cursor', 'mark-selection', 'codemirror']
+  deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap', 'querystring', 'json-lint', 'codemirror']
 })

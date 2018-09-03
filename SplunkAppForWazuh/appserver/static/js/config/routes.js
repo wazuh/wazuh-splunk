@@ -510,8 +510,8 @@ define(['./module'], function (module) {
       .state('dev-tools', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/dev-tools/dev-tools.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('dev-tools') },
-        controller: 'devToolsCtrl',
-        controllerAs: 'dt'
+        // controller: 'devToolsCtrl',
+        // controllerAs: 'dt'
       })
 
   }])

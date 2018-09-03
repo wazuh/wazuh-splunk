@@ -21,6 +21,7 @@ define([
   '../module',
   'jquery',
   'codemirror',
+  'javascript', 'brace-fold', 'foldcode', 'foldgutter', 'search-cursor', 'mark-selection',
   'json-lint',
   'querystring'
 
@@ -28,14 +29,17 @@ define([
   module,
   $,
   CodeMirror,
+  javascript,braceFold,foldcode,foldgutter,searchCursor,markSeletion,
   jsonLint,
   queryString
+
 ) {
     'use strict'
 
     class DevToolsCtrl {
-      constructor($scope, $navigationService, $notificationService, $requestService) {
-        this.vm = $scope;
+
+      constructor($scope, $window, $document, $navigationService, $notificationService, $requestService) {
+        this.$scope = $scope;
         this.request = $requestService;
         this.$window = $window;
         this.appState = $navigationService;
@@ -58,6 +62,7 @@ define([
         });
 
         this.apiInputBox.on('change', () => {
+          console.log('text change')
           this.groups = this.analyzeGroups();
           const currentState = this.apiInputBox.getValue().toString();
           this.appState.setCurrentDevTools(currentState)
@@ -70,6 +75,7 @@ define([
         })
 
         this.apiInputBox.on('cursorActivity', () => {
+          console.log('cursorActivity')
           const currentGroup = this.calculateWhichGroup();
           this.highlightGroup(currentGroup);
         })
@@ -86,18 +92,20 @@ define([
           gutters: ["CodeMirror-foldgutter"]
         });
 
-        this.vm.send = firstTime => this.send(firstTime);
+        this.$scope.send = firstTime => this.send(firstTime);
 
-        this.vm.help = () => {
+        this.$scope.help = () => {
           this.$window.open('https://documentation.wazuh.com/current/user-manual/api/reference.html');
         }
 
         this.init();
-        this.vm.send(true);
+        this.$scope.send(true);
       }
 
       analyzeGroups() {
         try {
+          console.log('analyze groups')
+
           const currentState = this.apiInputBox.getValue().toString();
           this.appState.setCurrentDevTools(currentState)
 
@@ -213,6 +221,7 @@ define([
       }
 
       init() {
+        console.log('INIT')
         this.apiInputBox.setSize('auto', '100%')
         this.apiOutputBox.setSize('auto', '100%')
         const currentState = this.appState.getCurrentDevTools();
@@ -230,6 +239,7 @@ define([
 
       calculateWhichGroup(firstTime) {
         try {
+          console.log('calculate group')
           const selection = this.apiInputBox.getCursor()
 
           const desiredGroup = firstTime ?

@@ -4,8 +4,9 @@ define(['../module'], function (module) {
 
   class navigationService {
 
-    constructor($state) { 
+    constructor($state, $window) {
       this.$state = $state
+      this.$window = $window
     }
 
     storeRoute(params) {
