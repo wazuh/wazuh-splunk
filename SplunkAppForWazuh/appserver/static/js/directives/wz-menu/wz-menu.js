@@ -35,6 +35,10 @@ define(['../module'], function (directives) {
             $scope.menuNavItem = 'settings'
             if (!$scope.$$phase) $scope.$digest()
           }
+          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('wazuh-dev')) {
+            $scope.menuNavItem = 'wazuh-dev'
+            if (!$scope.$$phase) $scope.$digest()
+          }
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
