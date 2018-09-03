@@ -35,8 +35,8 @@ define(['../module'], function (directives) {
             $scope.menuNavItem = 'settings'
             if (!$scope.$$phase) $scope.$digest()
           }
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('wazuh-dev')) {
-            $scope.menuNavItem = 'wazuh-dev'
+          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('dev-tools')) {
+            $scope.menuNavItem = 'dev-tools'
             if (!$scope.$$phase) $scope.$digest()
           }
         }

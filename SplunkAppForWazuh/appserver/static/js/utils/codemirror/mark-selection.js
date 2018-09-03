@@ -11,9 +11,6 @@
 
 define(["codemirror"], function (CodeMirror) {
   "use strict";
-  console.log('loaded module')
-  console.log('typeof ', typeof CodeMirror)
-
   CodeMirror.defineOption("styleSelectedText", false, function (cm, val, old) {
     var prev = old && old != CodeMirror.Init;
     if (val && !prev) {

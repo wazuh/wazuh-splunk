@@ -21,23 +21,19 @@ define([
   '../module',
   'jquery',
   'codemirror',
+  'jsonLint',
   'javascript', 'brace-fold', 'foldcode', 'foldgutter', 'search-cursor', 'mark-selection',
-  'json-lint',
-  'querystring'
 
 ], function (
   module,
   $,
   CodeMirror,
-  javascript,braceFold,foldcode,foldgutter,searchCursor,markSeletion,
   jsonLint,
-  queryString
+  javascript, braceFold, foldcode, foldgutter, searchCursor, markSeletion
 
 ) {
     'use strict'
-
     class DevToolsCtrl {
-
       constructor($scope, $window, $document, $navigationService, $notificationService, $requestService) {
         this.$scope = $scope;
         this.request = $requestService;
@@ -50,6 +46,187 @@ define([
         this.widgets = [];
       }
 
+      parse(qs, sep, eq, options) {
+        sep = sep || '&';
+        eq = eq || '=';
+
+        let obj = {};
+
+        if (typeof qs !== 'string' || qs.length === 0) {
+          return obj;
+        }
+
+        if (typeof sep !== 'string')
+          sep += '';
+
+        let eqLen = eq.length;
+        let sepLen = sep.length;
+
+        let maxKeys = 1000;
+        if (options && typeof options.maxKeys === 'number') {
+          maxKeys = options.maxKeys;
+        }
+
+        let pairs = Infinity;
+        if (maxKeys > 0)
+          pairs = maxKeys;
+
+        let decode = QueryString.unescape;
+        if (options && typeof options.decodeURIComponent === 'function') {
+          decode = options.decodeURIComponent;
+        }
+        let customDecode = (decode !== qsUnescape);
+
+        let keys = [];
+        let lastPos = 0;
+        let sepIdx = 0;
+        let eqIdx = 0;
+        let key = '';
+        let value = '';
+        let keyEncoded = customDecode;
+        let valEncoded = customDecode;
+        let encodeCheck = 0;
+        for (let i = 0; i < qs.length; ++i) {
+          let code = qs.charCodeAt(i);
+
+          // Try matching key/value pair separator (e.g. '&')
+          if (code === sep.charCodeAt(sepIdx)) {
+            if (++sepIdx === sepLen) {
+              // Key/value pair separator match!
+              let end = i - sepIdx + 1;
+              if (eqIdx < eqLen) {
+                // If we didn't find the key/value separator, treat the substring as
+                // part of the key instead of the value
+                if (lastPos < end)
+                  key += qs.slice(lastPos, end);
+              } else if (lastPos < end)
+                value += qs.slice(lastPos, end);
+              if (keyEncoded)
+                key = decodeStr(key, decode);
+              if (valEncoded)
+                value = decodeStr(value, decode);
+              // Use a key array lookup instead of using hasOwnProperty(), which is
+              // slower
+              if (keys.indexOf(key) === -1) {
+                obj[key] = value;
+                keys[keys.length] = key;
+              } else {
+                let curValue = obj[key];
+                // `instanceof Array` is used instead of Array.isArray() because it
+                // is ~15-20% faster with v8 4.7 and is safe to use because we are
+                // using it with values being created within this function
+                if (curValue instanceof Array)
+                  curValue[curValue.length] = value;
+                else
+                  obj[key] = [curValue, value];
+              }
+              if (--pairs === 0)
+                break;
+              keyEncoded = valEncoded = customDecode;
+              encodeCheck = 0;
+              key = value = '';
+              lastPos = i + 1;
+              sepIdx = eqIdx = 0;
+            }
+            continue;
+          } else {
+            sepIdx = 0;
+            if (!valEncoded) {
+              // Try to match an (valid) encoded byte (once) to minimize unnecessary
+              // calls to string decoding functions
+              if (code === 37/*%*/) {
+                encodeCheck = 1;
+              } else if (encodeCheck > 0 &&
+                ((code >= 48/*0*/ && code <= 57/*9*/) ||
+                  (code >= 65/*A*/ && code <= 70/*Z*/) ||
+                  (code >= 97/*a*/ && code <= 102/*z*/))) {
+                if (++encodeCheck === 3)
+                  valEncoded = true;
+              } else {
+                encodeCheck = 0;
+              }
+            }
+          }
+
+          // Try matching key/value separator (e.g. '=') if we haven't already
+          if (eqIdx < eqLen) {
+            if (code === eq.charCodeAt(eqIdx)) {
+              if (++eqIdx === eqLen) {
+                // Key/value separator match!
+                let end = i - eqIdx + 1;
+                if (lastPos < end)
+                  key += qs.slice(lastPos, end);
+                encodeCheck = 0;
+                lastPos = i + 1;
+              }
+              continue;
+            } else {
+              eqIdx = 0;
+              if (!keyEncoded) {
+                // Try to match an (valid) encoded byte once to minimize unnecessary
+                // calls to string decoding functions
+                if (code === 37/*%*/) {
+                  encodeCheck = 1;
+                } else if (encodeCheck > 0 &&
+                  ((code >= 48/*0*/ && code <= 57/*9*/) ||
+                    (code >= 65/*A*/ && code <= 70/*Z*/) ||
+                    (code >= 97/*a*/ && code <= 102/*z*/))) {
+                  if (++encodeCheck === 3)
+                    keyEncoded = true;
+                } else {
+                  encodeCheck = 0;
+                }
+              }
+            }
+          }
+
+          if (code === 43/*+*/) {
+            if (eqIdx < eqLen) {
+              if (i - lastPos > 0)
+                key += qs.slice(lastPos, i);
+              key += '%20';
+              keyEncoded = true;
+            } else {
+              if (i - lastPos > 0)
+                value += qs.slice(lastPos, i);
+              value += '%20';
+              valEncoded = true;
+            }
+            lastPos = i + 1;
+          }
+        }
+
+        // Check if we have leftover key or value data
+        if (pairs > 0 && (lastPos < qs.length || eqIdx > 0)) {
+          if (lastPos < qs.length) {
+            if (eqIdx < eqLen)
+              key += qs.slice(lastPos);
+            else if (sepIdx < sepLen)
+              value += qs.slice(lastPos);
+          }
+          if (keyEncoded)
+            key = decodeStr(key, decode);
+          if (valEncoded)
+            value = decodeStr(value, decode);
+          // Use a key array lookup instead of using hasOwnProperty(), which is
+          // slower
+          if (keys.indexOf(key) === -1) {
+            obj[key] = value;
+            keys[keys.length] = key;
+          } else {
+            let curValue = obj[key];
+            // `instanceof Array` is used instead of Array.isArray() because it
+            // is ~15-20% faster with v8 4.7 and is safe to use because we are
+            // using it with values being created within this function
+            if (curValue instanceof Array)
+              curValue[curValue.length] = value;
+            else
+              obj[key] = [curValue, value];
+          }
+        }
+
+        return obj;
+      }
       $onInit() {
         this.apiInputBox = CodeMirror.fromTextArea(this.$document[0].getElementById('api_input'), {
           lineNumbers: true,
@@ -62,7 +239,6 @@ define([
         });
 
         this.apiInputBox.on('change', () => {
-          console.log('text change')
           this.groups = this.analyzeGroups();
           const currentState = this.apiInputBox.getValue().toString();
           this.appState.setCurrentDevTools(currentState)
@@ -75,7 +251,6 @@ define([
         })
 
         this.apiInputBox.on('cursorActivity', () => {
-          console.log('cursorActivity')
           const currentGroup = this.calculateWhichGroup();
           this.highlightGroup(currentGroup);
         })
@@ -104,8 +279,6 @@ define([
 
       analyzeGroups() {
         try {
-          console.log('analyze groups')
-
           const currentState = this.apiInputBox.getValue().toString();
           this.appState.setCurrentDevTools(currentState)
 
@@ -193,11 +366,11 @@ define([
         for (const item of this.groups) {
           if (item.requestTextJson) {
             try {
-              jsonLint.parse(item.requestTextJson)
+              // jsonLint.parse(item.requestTextJson)
             } catch (error) {
               affectedGroups.push(item.requestText);
               const msg = this.$document[0].createElement("div");
-              msg.id = new Date().getTimDevToolsControllere() / 1000;
+              msg.id = new Date().getTime() / 1000;
               const icon = msg.appendChild(this.$document[0].createElement("div"));
 
               icon.className = "lint-error-icon";
@@ -221,7 +394,6 @@ define([
       }
 
       init() {
-        console.log('INIT')
         this.apiInputBox.setSize('auto', '100%')
         this.apiOutputBox.setSize('auto', '100%')
         const currentState = this.appState.getCurrentDevTools();
@@ -239,7 +411,6 @@ define([
 
       calculateWhichGroup(firstTime) {
         try {
-          console.log('calculate group')
           const selection = this.apiInputBox.getCursor()
 
           const desiredGroup = firstTime ?
@@ -257,15 +428,15 @@ define([
           $('#play_button').hide()
           return null;
         }
-
       }
 
       async send(firstTime) {
         try {
+          console.log('sending....')
           this.groups = this.analyzeGroups();
 
           const desiredGroup = this.calculateWhichGroup(firstTime);
-
+          console.log('desired group ', desiredGroup)
           if (desiredGroup) {
             if (firstTime) {
               const cords = this.apiInputBox.cursorCoords({ line: desiredGroup.start, ch: 0 });
@@ -295,7 +466,7 @@ define([
             const inlineSplit = requestCopy.split('?');
 
             const extra = inlineSplit && inlineSplit[1] ?
-              queryString.parse(inlineSplit[1]) :
+              this.parse(inlineSplit[1]) :
               {};
 
             const req = requestCopy ?
@@ -321,16 +492,19 @@ define([
 
             if (typeof JSONraw === 'object') JSONraw.devTools = true;
             const output = await this.request.apiReq(path, JSONraw)
-
+            console.log('output ', output)
+            const result = (output.data && output.data.data && !output.data.error) ? JSON.stringify(output.data.data, null, 2) : output.data.message || 'Unkown error'
             this.apiOutputBox.setValue(
-              JSON.stringify(output.data.data, null, 2)
+              result
             )
+
           } else {
             this.apiOutputBox.setValue('Welcome!')
           }
 
 
         } catch (error) {
+          console.error('err: ', error)
           const parsedError = this.errorHandler.showSimpleToast(error);
           if (typeof parsedError === 'string') {
             return this.apiOutputBox.setValue(parsedError);

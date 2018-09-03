@@ -15,6 +15,21 @@ define([
         $rootScope.$broadcast('loading', { status: true })
       })
 
+      $transitions.onStart({ to: 'dev-tools' }, async (trans) => {
+        try {
+          const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
+          $currentDataService.setApi(api)
+          $currentDataService.cleanFilters()
+          $navigationService.storeRoute('dev-tools')
+          $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
+          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
+          $rootScope.$broadcast('stateChanged', 'dev-tools')
+        } catch (err) {
+          $rootScope.$broadcast('loading', { status: false })
+          $state.go('settings.api')
+        }
+      })
+
       $transitions.onStart({ to: 'settings.api' }, async (trans) => {
         try {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()

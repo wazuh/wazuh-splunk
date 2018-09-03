@@ -18,7 +18,7 @@ require.config({
     'search-cursor': 'js/utils/codemirror/search-cursor',
     'codemirror': 'js/utils/codemirror/lib/codemirror',
     'querystring': 'js/utils/codemirror/querystring',
-    'json-lint': 'js/utils/codemirror/json-lint',
+    'jsonLint': 'js/utils/codemirror/json-lint',
 
   },
 
@@ -47,6 +47,5 @@ require.config({
   },
 
   // kick start application
-  // deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap', 'querystring', 'json-lint', 'javascript', 'brace-fold', 'foldcode', 'foldgutter', 'search-cursor', 'mark-selection', 'codemirror']
-  deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap', 'querystring', 'json-lint', 'codemirror']
+  deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap']
 })
