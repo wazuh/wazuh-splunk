@@ -73,9 +73,9 @@ define([
         submittedTokenModel.unset(name)
       }
 
-      let filesAddedSearch = ''
-      let readFilesSearch = ''
-      let modifiedFiles = ''
+      let lastScapScore = ''
+      let maxScapScore = ''
+      let scapLowest = ''
       let input1 = ''
       let input2 = ''
       let search4 = ''
@@ -126,13 +126,13 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      filesAddedSearch = new SearchManager({
-        "id": "filesAddedSearch" + epoch,
+      lastScapScore = new SearchManager({
+        "id": "lastScapScore" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score) as Latest`,
+        "search": `${filters} sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score)`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -143,23 +143,37 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new SearchEventHandler({
-        managerid: "filesAddedSearch" + epoch,
+        managerid: "lastScapScore" + epoch,
         event: "done",
         conditions: [
           {
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesAddedToken", "value": "$result.count$" },
+              { "type": "set", "token": "latestScapScore", "value": "$result.latest(oscap.scan.score)$" },
             ]
           }
         ]
       })
+      lastScapScore.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
-      submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (typeof filesAddedTokenJS !== 'undefined' && filesAddedTokenJS !== 'undefined' && filesAddedTokenJS !== '$result.count$') {
-          vm.scapLastScore = filesAddedTokenJS
+      })
+      lastScapScore.on('search:done', (data, job) => {
+        const latestScapScoreJS = submittedTokenModel.get("latestScapScore")
+        if (latestScapScoreJS && latestScapScoreJS !== '$result.latest(oscap.scan.score)$') {
+          vm.scapLastScore = latestScapScoreJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.scapLastScore = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      submittedTokenModel.on("change:latestScapScore", (model, latestScapScore, options) => {
+        const latestScapScoreJS = submittedTokenModel.get("latestScapScore")
+        if (latestScapScoreJS && latestScapScoreJS !== '$result.latest(oscap.scan.score)$') {
+          vm.scapLastScore = latestScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapLastScore = 0
@@ -168,8 +182,8 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      readFilesSearch = new SearchManager({
-        "id": "readFilesSearch" + epoch,
+      maxScapScore = new SearchManager({
+        "id": "maxScapScore" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -185,23 +199,36 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new SearchEventHandler({
-        managerid: "readFilesSearch" + epoch,
+        managerid: "maxScapScore" + epoch,
         event: "done",
         conditions: [
           {
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "readFilesToken", "value": "$result.count$" },
+              { "type": "set", "token": "maxScapScore", "value": "$result.max(oscap.scan.score)$" },
             ]
           }
         ]
       })
-
-      submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
-        const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
-        if (typeof readFilesTokenJS !== 'undefined' && readFilesTokenJS !== 'undefined' && readFilesTokenJS !== '$result.count$') {
-          vm.scapHighestScore = readFilesTokenJS
+      maxScapScore.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
+      })
+      maxScapScore.on('search:done', () => {
+        const maxScapScoreJS = submittedTokenModel.get("maxScapScore")
+        if (maxScapScoreJS && maxScapScoreJS !== '$result.max(oscap.scan.score)$') {
+          vm.scapHighestScore = maxScapScoreJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.scapHighestScore = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      submittedTokenModel.on("change:maxScapScore", (model, maxScapScore, options) => {
+        const maxScapScoreJS = submittedTokenModel.get("maxScapScore")
+        if (maxScapScoreJS && maxScapScoreJS !== '$result.max(oscap.scan.score)$') {
+          vm.scapHighestScore = maxScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.scapHighestScore = 0
@@ -210,8 +237,8 @@ define([
       })
 
       // Listen for a change to the token tokenTotalAlerts value
-      modifiedFiles = new SearchManager({
-        "id": "modifiedFiles" + epoch,
+      scapLowest = new SearchManager({
+        "id": "scapLowest" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -227,26 +254,40 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new SearchEventHandler({
-        managerid: "modifiedFiles" + epoch,
+        managerid: "scapLowest" + epoch,
         event: "done",
         conditions: [
           {
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "filesModifiedToken", "value": "$result.count$" },
+              { "type": "set", "token": "minScapScore", "value": "$result.min(oscap.scan.score)$" },
             ]
           }
         ]
       })
+      scapLowest.on('search:progress', () => {
+        vm.loadingSearch = true
+        if (!$scope.$$phase) $scope.$digest()
 
-      submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== '$result.count$') {
-          vm.scapLowestScore = filesModifiedToken
+      })
+      scapLowest.on('search:done', () => {
+        const minScapScoreJS = submittedTokenModel.get("minScapScore")
+        if (minScapScoreJS && minScapScoreJS !== "$result.min(oscap.scan.score)$") {
+          vm.scapLowestScore = minScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
-          vm.scapLowestScore = 0
+          vm.scapLowestScore = '0'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      submittedTokenModel.on("change:minScapScore", (model, minScapScore, options) => {
+        const minScapScoreJS = submittedTokenModel.get("minScapScore")
+        if (minScapScoreJS && minScapScoreJS !== "$result.min(oscap.scan.score)$") {
+          vm.scapLowestScore = minScapScoreJS
+          if (!$scope.$$phase) $scope.$digest()
+        } else {
+          vm.scapLowestScore = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
       })
