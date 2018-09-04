@@ -99,9 +99,9 @@ define([
        * When controller is destroyed
        */
       $scope.$on('$destroy', () => {
-        filesAddedSearch = null
-        readFilesSearch = null
-        modifiedFiles = null
+        lastScapScore = null
+        maxScapScore = null
+        scapLowest = null
         input1.off()
         input2.off()
         input1 = null
@@ -176,7 +176,7 @@ define([
           vm.scapLastScore = latestScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
-          vm.scapLastScore = 0
+          vm.scapLastScore = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -231,7 +231,7 @@ define([
           vm.scapHighestScore = maxScapScoreJS
           if (!$scope.$$phase) $scope.$digest()
         } else {
-          vm.scapHighestScore = 0
+          vm.scapHighestScore = '0'
           if (!$scope.$$phase) $scope.$digest()
         }
       })

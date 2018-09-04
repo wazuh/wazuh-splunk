@@ -271,7 +271,7 @@ define([
       totalAlerts.on('search:done', () => {
         const totalAlertsTokenJS = submittedTokenModel.get("totalAlertsToken")
         if (totalAlertsTokenJS && totalAlertsTokenJS !== '$result.count$') {
-          vm.levelTwelve = totalAlertsTokenJS
+          vm.totalAlerts = totalAlertsTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
@@ -409,6 +409,13 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.authSuccess = '-'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (typeof authSuccessTokenJS !== 'undefined' && authSuccessTokenJS !== 'undefined') {
+          vm.authSuccess = authSuccessTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
