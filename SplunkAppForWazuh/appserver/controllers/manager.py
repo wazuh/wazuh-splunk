@@ -9,14 +9,11 @@
 #
 # Find more information about this on the LICENSE file.
 #
-
-import logging
 import os
 import sys
 import json
 import requests
 import uuid
-import cherrypy
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -25,44 +22,20 @@ from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from db import database
-# import jwt
+from log import log
 
-_APPNAME = 'SplunkAppForWazuh'
-
-
-def setup_logger(level):
-    """
-    Setup a logger for the REST handler.
-    """
-    logger = logging.getLogger(
-        'splunk.appserver.%s.controllers.manager' % _APPNAME)
-    # Prevent the log messages from being duplicated in the python.log file
-    logger.propagate = False
-    logger.setLevel(level)
-    file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(
-        ['var', 'log', 'splunk', 'manager.log']), maxBytes=25000000, backupCount=5)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    return logger
-
-
-logger = setup_logger(logging.DEBUG)
-
-
-def remove_keys(arr):
-    del arr['user']
-    del arr['port']
-    del arr['ip']
-    del arr['pass']
-    return arr
 
 class manager(controllers.BaseController):
     def __init__(self):
-        controllers.BaseController.__init__(self)
-        self.db = database()
-        self.session = requests.Session()
-        self.session.trust_env = False
+        self.logger = log()
+        try:
+            controllers.BaseController.__init__(self)
+            self.db = database()
+            self.session = requests.Session()
+            self.session.trust_env = False
+            self.logger.info("Loaded manager backend module")
+        except Exception as e:
+            self.logger.error("Error in manager module constructor: %s" % (e))
 
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
@@ -103,19 +76,21 @@ class manager(controllers.BaseController):
                 return json.dumps({'error': 'Missing ID.'})
             id = kwargs['id']
             data_temp = self.db.get(id)
+            parsed_data = json.dumps(data_temp)
         except Exception as e:
-            logger.error("Error in get_apis endpoint: %s" % (e))
+            self.logger.error("Error in get_apis endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
-        return json.dumps(data_temp)
+        return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
     def get_apis(self, **kwargs):
         try:
             data_temp = self.db.all()
+            result = json.dumps(data_temp)
         except Exception as e:
-            logger.error("Error in get_apis endpoint: %s" % (e))
-            return json.dumps("{error:"+str(e)+"}")
-        return json.dumps(data_temp)
+            self.logger.error("Error in get_apis endpoint: %s" % (e))
+            return json.dumps({"error": str(e)})
+        return result
 
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
@@ -129,10 +104,11 @@ class manager(controllers.BaseController):
             record['userapi'] = kwargs['payload[userapi]']
             record['passapi'] = kwargs['payload[passapi]']
             result = self.db.insert(record)
+            parsed_data = json.dumps({'result': record['id']})
         except Exception as e:
-            logger.error("Error in add_api endpoint: %s" % (e))
+            self.logger.error("Error in add_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
-        return json.dumps({'result': record['id']})
+        return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
@@ -140,10 +116,11 @@ class manager(controllers.BaseController):
             if 'id[id]' not in kwargs:
                 return json.dumps({'error': 'Missing ID'})
             self.db.remove(str(kwargs['id[id]']))
+            parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
-            logger.error("Error in remove_api endpoint: %s" % (e))
+            self.logger.error("Error in remove_api endpoint: %s" % (e))
             return json.dumps({'error': str(e)})
-        return json.dumps({'data': 'success'})
+        return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def update_api(self, **kwargs):
@@ -161,7 +138,8 @@ class manager(controllers.BaseController):
             entry['filterName'] = kwargs['newRegister[filterName]']
             entry['filterType'] = kwargs['newRegister[filterType]']
             self.db.update(entry)
+            parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
-            logger.error("Error in update_api endpoint: %s" % (e))
+            self.logger.error("Error in update_api endpoint: %s" % (e))
             return json.dumps("{error:"+str(e)+"}")
-        return json.dumps({'data': 'success'})
+        return parsed_data
