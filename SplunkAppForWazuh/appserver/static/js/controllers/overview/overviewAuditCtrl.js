@@ -150,7 +150,13 @@ define([
           }
         ]
       })
-
+      filesAddedSearch.on('search:done', () => {
+        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
+        if (filesAddedTokenJS && filesAddedTokenJS !== '$result.count$') {
+          vm.newFiles = filesAddedTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
         const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
         if (typeof filesAddedTokenJS !== 'undefined' && filesAddedTokenJS !== 'undefined') {
@@ -159,6 +165,7 @@ define([
         }
       })
 
+      // ---- READ FILES METRIC ---- //
       // Listen for a change to the token tokenTotalAlerts value
       readFilesSearch = new SearchManager({
         "id": "readFilesSearch" + epoch,
@@ -189,7 +196,13 @@ define([
           }
         ]
       })
-
+      readFilesSearch.on('search:done', () => {
+        const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
+        if (readFilesTokenJS && readFilesTokenJS !== '$result.count$') {
+          vm.newFiles = readFilesTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
         const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
         if (typeof readFilesTokenJS !== 'undefined' && readFilesTokenJS !== 'undefined') {
@@ -228,9 +241,15 @@ define([
           }
         ]
       })
-
+      modifiedFiles.on('search:done', () => {
+        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
+        if (filesModifiedTokenJS && filesModifiedTokenJS !== '$result.count$') {
+          vm.filesModifiedToken = filesModifiedTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesModifiedToken")
+        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
         if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
           vm.filesModifiedToken = filesModifiedTokenJS
           if (!$scope.$$phase) $scope.$digest()
@@ -255,7 +274,7 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new SearchEventHandler({
-        managerid: "filesDeletedSearch" + epoch,
+        managerid: "deletedFiles" + epoch,
         event: "done",
         conditions: [
           {
@@ -267,7 +286,13 @@ define([
           }
         ]
       })
-
+      deletedFiles.on('search:done', () => {
+        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
+        if (filesDeletedTokenJS && filesDeletedTokenJS !== '$result.count$') {
+          vm.filesDeleted = filesDeletedTokenJS
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
       submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
         const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
         if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
