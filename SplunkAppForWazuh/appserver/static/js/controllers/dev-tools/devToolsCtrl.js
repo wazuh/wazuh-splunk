@@ -34,6 +34,7 @@ define([
 ) {
     'use strict'
     class DevToolsCtrl {
+      
       constructor($scope, $window, $document, $navigationService, $notificationService, $requestService) {
         this.$scope = $scope
         this.request = $requestService
@@ -317,6 +318,7 @@ define([
 
         return obj
       }
+
       $onInit() {
         this.apiInputBox = CodeMirror.fromTextArea(this.$document[0].getElementById('api_input'), {
           lineNumbers: true,
