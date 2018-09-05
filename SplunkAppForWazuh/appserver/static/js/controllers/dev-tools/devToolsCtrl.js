@@ -46,6 +46,96 @@ define([
         this.widgets = []
       }
 
+      unescapeBuffer(s, decodeSpaces) {
+        var out = new Buffer(s.length);
+        var state = 0;
+        var n, m, hexchar;
+
+        for (var inIndex = 0, outIndex = 0; inIndex <= s.length; inIndex++) {
+          var c = inIndex < s.length ? s.charCodeAt(inIndex) : NaN;
+          switch (state) {
+            case 0: // Any character
+              switch (c) {
+                case 37: // '%'
+                  n = 0;
+                  m = 0;
+                  state = 1;
+                  break;
+                case 43: // '+'
+                  if (decodeSpaces)
+                    c = 32; // ' '
+                // falls through
+                default:
+                  out[outIndex++] = c;
+                  break;
+              }
+              break;
+
+            case 1: // First hex digit
+              hexchar = c;
+              if (c >= 48/*0*/ && c <= 57/*9*/) {
+                n = c - 48/*0*/;
+              } else if (c >= 65/*A*/ && c <= 70/*F*/) {
+                n = c - 65/*A*/ + 10;
+              } else if (c >= 97/*a*/ && c <= 102/*f*/) {
+                n = c - 97/*a*/ + 10;
+              } else {
+                out[outIndex++] = 37/*%*/;
+                out[outIndex++] = c;
+                state = 0;
+                break;
+              }
+              state = 2;
+              break;
+
+            case 2: // Second hex digit
+              state = 0;
+              if (c >= 48/*0*/ && c <= 57/*9*/) {
+                m = c - 48/*0*/;
+              } else if (c >= 65/*A*/ && c <= 70/*F*/) {
+                m = c - 65/*A*/ + 10;
+              } else if (c >= 97/*a*/ && c <= 102/*f*/) {
+                m = c - 97/*a*/ + 10;
+              } else {
+                out[outIndex++] = 37/*%*/;
+                out[outIndex++] = hexchar;
+                out[outIndex++] = c;
+                break;
+              }
+              out[outIndex++] = 16 * n + m;
+              break;
+          }
+        }
+
+        // TODO support returning arbitrary buffers.
+
+        return out.slice(0, outIndex - 1);
+      }
+
+      decodeStr(s, decoder) {
+        try {
+          return decoder(s);
+        } catch (e) {
+          return QueryString.unescape(s, true);
+        }
+      }
+
+      unescape(s, decodeSpaces) {
+        try {
+          return decodeURIComponent(s);
+        } catch (e) {
+          return this.unescapeBuffer(s, decodeSpaces).toString();
+        }
+      }
+
+      qsUnescape(s, decodeSpaces) {
+        try {
+          return decodeURIComponent(s);
+        } catch (e) {
+          return this.unescapeBuffer(s, decodeSpaces).toString();
+        }
+      }
+      
       parse(qs, sep, eq, options) {
         sep = sep || '&'
         eq = eq || '='
@@ -71,11 +161,11 @@ define([
         if (maxKeys > 0)
           pairs = maxKeys
 
-        let decode = QueryString.unescape
+        let decode = this.unescape
         if (options && typeof options.decodeURIComponent === 'function') {
           decode = options.decodeURIComponent
         }
-        let customDecode = (decode !== qsUnescape)
+        let customDecode = (decode !== this.qsUnescape)
 
         let keys = []
         let lastPos = 0
@@ -102,9 +192,9 @@ define([
               } else if (lastPos < end)
                 value += qs.slice(lastPos, end)
               if (keyEncoded)
-                key = decodeStr(key, decode)
+                key = this.decodeStr(key, decode)
               if (valEncoded)
-                value = decodeStr(value, decode)
+                value = this.decodeStr(value, decode)
               // Use a key array lookup instead of using hasOwnProperty(), which is
               // slower
               if (keys.indexOf(key) === -1) {
@@ -205,9 +295,9 @@ define([
               value += qs.slice(lastPos)
           }
           if (keyEncoded)
-            key = decodeStr(key, decode)
+            key = this.decodeStr(key, decode)
           if (valEncoded)
-            value = decodeStr(value, decode)
+            value = this.decodeStr(value, decode)
           // Use a key array lookup instead of using hasOwnProperty(), which is
           // slower
           if (keys.indexOf(key) === -1) {
