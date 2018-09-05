@@ -34,7 +34,7 @@ define([
 ) {
     'use strict'
     class DevToolsCtrl {
-      
+
       constructor($scope, $window, $document, $navigationService, $notificationService, $requestService) {
         this.$scope = $scope
         this.request = $requestService
@@ -136,7 +136,7 @@ define([
           return this.unescapeBuffer(s, decodeSpaces).toString();
         }
       }
-      
+
       parse(qs, sep, eq, options) {
         sep = sep || '&'
         eq = eq || '='
@@ -372,6 +372,7 @@ define([
       analyzeGroups() {
         try {
           const currentState = this.apiInputBox.getValue().toString()
+          console.log('analyze groups ', currentState)
           this.appState.setCurrentDevTools(currentState)
 
           const tmpgroups = []
@@ -504,10 +505,10 @@ define([
       calculateWhichGroup(firstTime) {
         try {
           const selection = this.apiInputBox.getCursor()
-
           const desiredGroup = firstTime ?
             this.groups.filter(item => item.requestText) :
             this.groups.filter(item => item.requestText && (item.end >= selection.line && item.start <= selection.line))
+          console.log('desired group ', desiredGroup)
 
           // Place play button at first line from the selected group
           const cords = this.apiInputBox.cursorCoords({ line: desiredGroup[0].start, ch: 0 })
