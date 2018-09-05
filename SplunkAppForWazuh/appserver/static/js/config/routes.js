@@ -51,7 +51,7 @@ define(['./module'], function (module) {
       // Overview - audit
       .state('ow-audit', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
-        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-aud') },
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-audit') },
         controller: 'overviewAuditCtrl',
         controllerAs: 'oac',
       })
