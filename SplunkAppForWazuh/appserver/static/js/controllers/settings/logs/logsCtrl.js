@@ -17,77 +17,25 @@
 
 // const app = uiModules.get('app/wazuh', [])
 
-define(['../module'], function (module) {
+define(['../../module'], function (module) {
   'use strict'
   class Logs {
-    constructor($scope, $requestService, $notificationService) {
-      this.$scope = $scope
-      this.apiReq = $requestService.apiReq
-      this.errorHandler = $notificationService.showSimpleToast
-      this.$scope.type_log = 'all'
-      this.$scope.category = 'all'
+    constructor(logs) {
+      this.vm = this
+      this.logs = logs
     }
 
     /**
      * Initialize
      */
     $onInit() {
-      this.initialize()
-      this.$scope.search = term => this.search(term)
-      this.$scope.filter = filter => this.filter(filter)
-      this.$scope.playRealtime = () => this.playRealtime()
-      this.$scope.stopRealtime = () => this.stopRealtime()
-    }
-
-    /**
-     * Event handler for the search bar.
-     * @param {string} term Term(s) to be searched
-     */
-    search(term) {
-      this.$scope.$broadcast('wazuhSearch', { term })
-    }
-
-    /**
-     * Event handler for the selectors
-     * @param {*} filter Filter to be applied
-     */
-    filter(filter) {
-      this.$scope.$broadcast('wazuhFilter', { filter })
-    }
-
-    /**
-     * Starts real time mode
-     */
-    playRealtime() {
-      this.$scope.realtime = true
-      this.$scope.$broadcast('wazuhPlayRealTime')
-    }
-
-    /**
-     * Stops real time mode
-     */
-    stopRealtime() {
-      this.$scope.realtime = false
-      this.$scope.$broadcast('wazuhStopRealTime')
-    }
-
-    /**
-     * Fetchs required data
-     */
-    async initialize() {
       try {
-        const data = await this.apiReq('/manager/get_log_lines')
-        const daemons = data.data.data
-        this.$scope.daemons = Object.keys(daemons).map(item => { return { title: item } })
-        if (!this.$scope.$$phase) this.$scope.$digest()
-        return
+        this.vm.logs = this.logs.data.logs.map(item => JSON.parse(item))
       } catch (error) {
-        this.errorHandler('Logs error: ', error.message || error)
+        this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
       }
-      return
     }
   }
-
   // Logs controller
-  module.controller('logssCtrl', Logs)
+  module.controller('logsCtrl', Logs)
 })
