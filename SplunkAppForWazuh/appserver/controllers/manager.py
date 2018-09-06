@@ -143,3 +143,13 @@ class manager(controllers.BaseController):
             self.logger.error("Error in update_api endpoint: %s" % (e))
             return json.dumps("{error:"+str(e)+"}")
         return parsed_data
+
+    @expose_page(must_login=False, methods=['GET'])
+    def get_log_lines(self, **kwargs):
+        try:
+            data_temp = self.db.all()
+            result = json.dumps(data_temp)
+        except Exception as e:
+            self.logger.error("Error in get_log_lines endpoint: %s" % (e))
+            return json.dumps({"error": str(e)})
+        return result

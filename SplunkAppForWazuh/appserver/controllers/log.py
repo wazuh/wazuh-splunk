@@ -10,8 +10,10 @@
 # Find more information about this on the LICENSE file.
 #
 import logging
-# from splunk import AuthorizationFailed as AuthorizationFailed
+from pygtail import Pygtail
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+from tail import tail
 
 _APPNAME = 'SplunkAppForWazuh'
 
@@ -38,3 +40,7 @@ class log():
 
     def info(self, msg):
         self.logger.info(msg)
+
+    def get_last_log_lines(self, lines, file_name):
+        current_tail = tail(lines, file_name)
+        return current_tail.make_tail()
