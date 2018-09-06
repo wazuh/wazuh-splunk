@@ -20,6 +20,7 @@ define([
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',
+  './settings/logs/logsCtrl',
   './agents/agents/agentsCtrl',
   './agents/overview/agentsOverviewCtrl',
   './agents/general/agentsGeneralCtrl',
