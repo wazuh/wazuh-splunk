@@ -33,7 +33,6 @@ class manager(controllers.BaseController):
             self.db = database()
             self.session = requests.Session()
             self.session.trust_env = False
-            self.logger.info("Loaded manager backend module")
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
 
@@ -50,7 +49,6 @@ class manager(controllers.BaseController):
             request_cluster = self.session.get(
                 url + '/version', auth=auth, timeout=8, verify=verify).json()
             del kwargs['pass']
-            # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
             result = json.dumps(request_cluster)
         except Exception as e:
             return json.dumps({"status": "400", "error": str(e)})
@@ -88,7 +86,7 @@ class manager(controllers.BaseController):
             data_temp = self.db.all()
             result = json.dumps(data_temp)
         except Exception as e:
-            self.logger.error("Error in get_apis endpoint: %s" % (e))
+            self.logger.error(json.dumps({"error": str(e)}))
             return json.dumps({"error": str(e)})
         return result
 
@@ -106,7 +104,7 @@ class manager(controllers.BaseController):
             result = self.db.insert(record)
             parsed_data = json.dumps({'result': record['id']})
         except Exception as e:
-            self.logger.error("Error in add_api endpoint: %s" % (e))
+            self.logger.error({'error': str(e)})
             return json.dumps({'error': str(e)})
         return parsed_data
 
@@ -147,9 +145,9 @@ class manager(controllers.BaseController):
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
         try:
-            data_temp = self.db.all()
-            result = json.dumps(data_temp)
+            lines = self.logger.get_last_log_lines(20)
+            parsed_data = json.dumps({'logs':lines})
         except Exception as e:
-            self.logger.error("Error in get_log_lines endpoint: %s" % (e))
+            self.logger.error("Get_log_lines endpoint: %s" % (e))
             return json.dumps({"error": str(e)})
-        return result
+        return parsed_data

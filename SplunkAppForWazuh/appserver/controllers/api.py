@@ -34,7 +34,6 @@ class api(controllers.BaseController):
             self.db = database()
             self.session = requests.Session()
             self.session.trust_env = False
-            self.logger.info("Loaded API backend module")
         except Exception as e:
             self.logger.error("Error in API module constructor: %s" % (e))
 
