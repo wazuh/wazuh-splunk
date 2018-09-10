@@ -195,7 +195,7 @@ define([
       let overviewSearch7 = ''
       let overviewSearch8 = ''
       let overviewSearch14 = ''
-      let searchTopAgent = ''
+      let totalAlerts = ''
       let searchLevel12 = ''
       let searchAuthFailure = ''
       let searchAuthSuccess = ''
@@ -214,7 +214,7 @@ define([
         overviewSearch7.cancel()
         overviewSearch8.cancel()
         overviewSearch14.cancel()
-        searchTopAgent.cancel()
+        totalAlerts.cancel()
         searchLevel12.cancel()
         searchAuthFailure.cancel()
         searchAuthSuccess.cancel()
@@ -231,7 +231,7 @@ define([
         overviewElement8 = null
         overviewElement14 = null
         input1 = null
-        searchTopAgent = null
+        totalAlerts = null
         searchLevel12 = null
         searchAuthFailure = null
         searchAuthSuccess = null
@@ -239,8 +239,8 @@ define([
 
 
       // Listen for a change to the token tokenTotalAlerts value
-      searchTopAgent = new SearchManager({
-        "id": "searchTopAgent" + epoch,
+      totalAlerts = new SearchManager({
+        "id": "totalAlerts" + epoch,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -256,36 +256,34 @@ define([
       }, { tokens: true, tokenNamespace: "submitted" })
 
       new SearchEventHandler({
-        managerid: "searchTopAgent" + epoch,
+        managerid: "totalAlerts" + epoch,
         event: "done",
         conditions: [
           {
             attr: "any",
             value: "*",
             actions: [
-              { "type": "set", "token": "topAgentToken", "value": "$result.count$" },
+              { "type": "set", "token": "totalAlertsToken", "value": "$result.count$" },
             ]
           }
         ]
       })
-      searchTopAgent.on('search:done', () => {
-        const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
-        if (topAgentTokenJS && topAgentTokenJS !== '$result.count$') {
-          vm.totalAlerts = topAgentTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        } else {
-          vm.totalAlerts = '0'
+      totalAlerts.on('search:done', () => {
+        const totalAlertsTokenJS = submittedTokenModel.get("totalAlertsToken")
+        if (totalAlertsTokenJS && totalAlertsTokenJS !== '$result.count$') {
+          vm.totalAlerts = totalAlertsTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-      searchTopAgent.on("change:topAgentToken", (model, topAgentToken, options) => {
-        const topAgentTokenJS = submittedTokenModel.get("topAgentToken")
-        if (typeof topAgentTokenJS !== 'undefined' && topAgentTokenJS !== 'undefined') {
-          vm.totalAlerts = topAgentTokenJS
+      submittedTokenModel.on("change:totalAlertsToken", (model, totalAlertsToken, options) => {
+        const totalAlertsTokenJS = submittedTokenModel.get("totalAlertsToken")
+        if (typeof totalAlertsTokenJS !== 'undefined' && totalAlertsTokenJS !== 'undefined') {
+          vm.totalAlerts = totalAlertsTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
 
+      // ------------ LEVEL 12 ------------ //
       searchLevel12 = new SearchManager({
         "id": "searchLevel12" + epoch,
         "cancelOnUnload": true,
@@ -315,6 +313,7 @@ define([
           }
         ]
       })
+
       searchLevel12.on('search:done', () => {
         const level12TokenJS = submittedTokenModel.get("level12token")
         if (level12TokenJS && level12TokenJS !== '$result.count$') {
@@ -329,7 +328,6 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
 
       searchAuthFailure = new SearchManager({
         "id": "searchAuthFailure" + epoch,
@@ -411,6 +409,13 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         } else {
           vm.authSuccess = '-'
+          if (!$scope.$$phase) $scope.$digest()
+        }
+      })
+      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
+        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
+        if (typeof authSuccessTokenJS !== 'undefined' && authSuccessTokenJS !== 'undefined') {
+          vm.authSuccess = authSuccessTokenJS
           if (!$scope.$$phase) $scope.$digest()
         }
       })
