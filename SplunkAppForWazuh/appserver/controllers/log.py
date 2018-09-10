@@ -40,7 +40,7 @@ class log():
                 self.logger.propagate = False
                 self.logger.setLevel(logging.DEBUG)
                 self.file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(
-                    ['var', 'log', 'splunk', 'SplunkAppForWazuh.log']), maxBytes=100000000, backupCount=0)
+                    ['var', 'log', 'splunk', 'SplunkAppForWazuh.log']), maxBytes=100000000, backupCount=50)
                 self.formatter = logging.Formatter(
                     '{ "date": "%(asctime)s" , "level": "%(levelname)s" , "message": "%(message)s" }')
                 self.file_handler.setFormatter(self.formatter)
