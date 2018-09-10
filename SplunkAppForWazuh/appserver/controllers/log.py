@@ -18,27 +18,38 @@ import tailer
 
 _APPNAME = 'SplunkAppForWazuh'
 
+loggers = {}
+
 
 class log():
     def __init__(self):
         """
         Setup a logger for the REST handler.
         """
-        self.logger = logging.getLogger(
-            'splunk.appserver.%s.controllers.logs' % _APPNAME)
-        try:
-            # Prevent the log messages from being duplicated in the python.log file
-            self.logger.propagate = False
-            self.logger.setLevel(logging.DEBUG)
-            self.file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(
-                ['var', 'log', 'splunk', 'SplunkAppForWazuh.log']), maxBytes=100000000, backupCount=0)
-            self.formatter = logging.Formatter(
-                '{ "date": "%(asctime)s" , "level": "%(levelname)s" , "message": "%(message)s" }')
-            self.file_handler.setFormatter(self.formatter)
-            self.logger.addHandler(self.file_handler)
-        except Exception as e:
-            self.error('[log.py][constructor] %s' % (e))
-            raise e
+
+        global loggers
+
+        if loggers.get('splunk.appserver.%s.controllers.logs' % _APPNAME):
+            self.logger = loggers.get(
+                'splunk.appserver.%s.controllers.logs' % _APPNAME)
+        else:
+            self.logger = logging.getLogger(
+                'splunk.appserver.%s.controllers.logs' % _APPNAME)
+            try:
+                # Prevent the log messages from being duplicated in the python.log file
+                self.logger.propagate = False
+                self.logger.setLevel(logging.DEBUG)
+                self.file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(
+                    ['var', 'log', 'splunk', 'SplunkAppForWazuh.log']), maxBytes=100000000, backupCount=0)
+                self.formatter = logging.Formatter(
+                    '{ "date": "%(asctime)s" , "level": "%(levelname)s" , "message": "%(message)s" }')
+                self.file_handler.setFormatter(self.formatter)
+                self.logger.addHandler(self.file_handler)
+                loggers['splunk.appserver.%s.controllers.logs' %
+                        _APPNAME] = self.logger
+            except Exception as e:
+                self.error('[log.py][constructor] %s' % (e))
+                raise e
 
     def error(self, msg):
         self.logger.error(msg)
