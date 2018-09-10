@@ -36,7 +36,6 @@ define(['./module'], function (module) {
         $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
         $rootScope.$broadcast('stateChanged', 'settings')
       } catch (err) {
-        console.error('error in run ',err)
         $rootScope.$broadcast('loading', { status: false })
       }
     })
