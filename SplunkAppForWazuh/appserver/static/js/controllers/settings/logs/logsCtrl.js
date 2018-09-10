@@ -34,6 +34,7 @@ define(['../../module'], function (module) {
         this.vm.logs = result.data.logs.map(item => JSON.parse(item))
         this.root.$broadcast('loading', { status: false })
       } catch (error) {
+        this.root.$broadcast('loading', { status: false })
         this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
       }
     }

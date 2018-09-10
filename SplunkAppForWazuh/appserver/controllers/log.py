@@ -27,7 +27,6 @@ class log():
         self.logger = logging.getLogger(
             'splunk.appserver.%s.controllers.logs' % _APPNAME)
         try:
-            print('loaded')
             # Prevent the log messages from being duplicated in the python.log file
             self.logger.propagate = False
             self.logger.setLevel(logging.DEBUG)
