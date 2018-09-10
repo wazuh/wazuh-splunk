@@ -4,6 +4,11 @@
     <span class="font-size-18"><i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Last 20 Wazuh app logs</span>
     <span class="md-subheader">Logs located at /opt/splunk/var/log/splunk/SplunkAppForWazuh.log</span>
   </div>
+
+  <div layout="row" ng-show="!loadingLogs">
+    <md-button class="wz-report-refresh-btn" ng-click="slc.refreshLogs()"><i class="fa fa-fw fa-refresh"></i> Refresh</md-button>
+  </div>
+
   <!-- End headline -->
   <div layout="row" class="md-padding">
     <table class="table table-striped table-condensed" style="table-layout: fixed !important" id="wz_table">

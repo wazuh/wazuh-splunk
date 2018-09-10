@@ -50,8 +50,8 @@ class log():
     def get_last_log_lines(self, lines):
         try:
             current_tail = tailer.tail(open(
-                 "/opt/splunk/var/log/splunk/SplunkAppForWazuh.log"),lines)
-            result = current_tail
+                "/opt/splunk/var/log/splunk/SplunkAppForWazuh.log"), lines)
+            result = list(reversed(current_tail))
         except Exception as e:
             self.error('[log.py][get_last_log_lines] %s' % (e))
             raise e

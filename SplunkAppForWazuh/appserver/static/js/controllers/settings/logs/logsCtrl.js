@@ -20,9 +20,22 @@
 define(['../../module'], function (module) {
   'use strict'
   class Logs {
-    constructor(logs) {
+    constructor($requestService, logs, $rootScope) {
       this.vm = this
       this.logs = logs
+      this.httpReq = $requestService.httpReq
+      this.root = $rootScope
+    }
+
+    async refreshLogs() {
+      try {
+        this.root.$broadcast('loading', { status: true })
+        const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
+        this.vm.logs = result.data.logs.map(item => JSON.parse(item))
+        this.root.$broadcast('loading', { status: false })
+      } catch (error) {
+        this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
+      }
     }
 
     /**
@@ -30,17 +43,8 @@ define(['../../module'], function (module) {
      */
     $onInit() {
       try {
-        console.log('this.logs ', this.logs)
-        this.vm.logs = this.logs.data.logs.map(item => {
-          console.log(item)
-          try {
-            return JSON.parse(item)
-          } catch (error) {
-            return { date: "2018-09-10 02:24:00,528" , level: "DEBUG" , message: "DEBUGDEBUGDEBUGDEBUGDEBUGDEBUG" }
-          }
-        })
+        this.vm.logs = this.logs.data.logs.map(item => JSON.parse(item))
       } catch (error) {
-        console.error('error logs ', error.message || error)
         this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
       }
     }
