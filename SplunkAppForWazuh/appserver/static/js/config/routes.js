@@ -263,19 +263,19 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('settings.logs') },
         controller: 'logsCtrl',
         controllerAs: 'slc',
-        resolve: {
-          logs: ['$requestService', ($requestService) => {
-            return $requestService.httpReq(`GET`,`/manager/get_log_lines`)
-              .then(function (response) {
-                return response
-              }, function (response) {
-                return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
-              })
-          }]
-        }
+        // resolve: {
+        //   logs: ['$requestService', ($requestService) => {
+        //     return $requestService.httpReq(`GET`,`/manager/get_log_lines`)
+        //       .then(function (response) {
+        //         return response
+        //       }, function (response) {
+        //         return response
+        //       })
+        //       .catch(err => {
+        //         console.error('Error route: ', err)
+        //       })
+        //   }]
+        // }
       })
       .state('settings.index', { templateUrl: '/static/app/SplunkAppForWazuh/views/settings/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
 

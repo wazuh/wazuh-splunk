@@ -20,9 +20,9 @@
 define(['../../module'], function (module) {
   'use strict'
   class Logs {
-    constructor(logs) {
+    constructor() {
       this.vm = this
-      this.logs = logs
+      // this.logs = logs
     }
 
     /**
@@ -30,7 +30,11 @@ define(['../../module'], function (module) {
      */
     $onInit() {
       try {
-        this.vm.logs = this.logs.data.logs.map(item => JSON.parse(item))
+        // console.log('this.logs ',this.logs)
+        // const strToArray = this.logs.data.logs[0].split('↵')
+        // console.log('str to array ',strToArray)
+        // this.vm.logs = strToArray.map(item => JSON.parse(item))
+        console.log('loaded logs module controller')
       } catch (error) {
         this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
       }
