@@ -23,18 +23,11 @@ define(['../../module'], function (module) {
     }
 
     /**
-     * Searches terms for tables
-     */
-    search(term, specificPath) {
-      this.$scope.$broadcast('wazuhSearch', { term, specificPath })
-    }
-
-    /**
      * Initialize
      */
     $onInit() {
       try {
-        this.vm.search = (term, specificPath) => this.search(term, specificPath)
+        this.vm.search = (term, specificPath) => this.$scope.$broadcast('wazuhSearch', { term, specificPath })
         this.vm.agentId = this.data[5]
         if (
           !this.data[0] ||
