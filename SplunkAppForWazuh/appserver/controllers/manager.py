@@ -145,8 +145,8 @@ class manager(controllers.BaseController):
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
         try:
-            lines = self.logger.get_last_log_lines(20)
-            parsed_data = json.dumps({'logs':lines})
+            # lines = self.logger.get_last_log_lines(20)
+            parsed_data = json.dumps({'logs': ['a line']})
         except Exception as e:
             self.logger.error("Get_log_lines endpoint: %s" % (e))
             return json.dumps({"error": str(e)})
