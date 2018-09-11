@@ -59,9 +59,7 @@ define(['../module'], function (module) {
           'remote.ip': 'Remote'
         }
       },
-
     }
-
     return service
   })
 })

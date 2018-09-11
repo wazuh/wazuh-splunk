@@ -1,4 +1,17 @@
 <md-content layout="column">
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ui-sref='agent-overview({id:aic.agent.id})' class="wz-text-link cursor-pointer">{{aic.agent.name}} ({{aic.agent.id}})</span>
+      <span> / </span>
+      <span>Inventory data</span>
+    </div>
+    <div ng-if="aic.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="aic.getAgentStatusClass(aic.agent.status)" aria-label="Agent status indicator">{{aic.formatAgentStatus(aic.agent.status)}}</span>
+    </div>
+  </div>
 
   <div layout="row" layout-align="layout-padding" ng-if="!aic.syscollector">
     <md-card flex class="wz-md-card" flex>
@@ -73,7 +86,7 @@
         <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
         <span class="color-grey pull-right">Last scan: {{aic.syscollector.ports.items[0].scan.time}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <wazuh-table flex path="'/syscollector/' + aic.agentId + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
+        <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
         </wazuh-table>
       </md-card-content>
     </md-card>
@@ -93,8 +106,8 @@
           </button>
         </div>
 
-        <div layout="row" ng-if="aic.agentId && aic.syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-          <wazuh-table flex path="'/syscollector/' + aic.agentId + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
+        <div layout="row" ng-if="aic.agent.id && aic.syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+          <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
           </wazuh-table>
         </div>
       </md-card-content>

@@ -13,7 +13,7 @@
 define(['../../module'], function (module) {
   'use strict'
   class Inventory {
-    constructor($requestService, syscollector, $rootScope, $notificationService, $stateParams, $scope) {
+    constructor($requestService, syscollector, $rootScope, $notificationService, $scope) {
       this.vm = this
       this.$scope = $scope
       this.data = syscollector
@@ -28,7 +28,11 @@ define(['../../module'], function (module) {
     $onInit() {
       try {
         this.vm.search = (term, specificPath) => this.$scope.$broadcast('wazuhSearch', { term, specificPath })
-        this.vm.agentId = this.data[5]
+        this.vm.agent = this.data[5].data.data
+        this.vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+        this.vm.formatAgentStatus = agentStatus => {
+          return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+        }
         if (
           !this.data[0] ||
           !this.data[0].data ||
