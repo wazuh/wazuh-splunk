@@ -99,7 +99,7 @@
         <span class="color-grey pull-right">Last scan: {{aic.syscollector.packagesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter packages..." ng-model="aic.packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+          <input flex placeholder="Filter packages..." ng-model="aic.packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
             aria-invalid="false" wz-enter="aic.search(aic.packageSearch,'packages')">
           <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="aic.search(aic.packageSearch,'packages')">
             <span class="fa fa-search" aria-hidden="true"></span>

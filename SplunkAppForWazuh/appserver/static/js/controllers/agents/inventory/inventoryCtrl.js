@@ -23,11 +23,18 @@ define(['../../module'], function (module) {
     }
 
     /**
+     * Filters by a term in table
+     * @param {String} term 
+     * @param {String} specificPath 
+     */
+    search(term, specificPath) { this.$scope.$broadcast('wazuhSearch', { term, specificPath }) }
+
+    /**
      * Initialize
      */
     $onInit() {
       try {
-        this.vm.search = (term, specificPath) => this.$scope.$broadcast('wazuhSearch', { term, specificPath })
+        this.vm.search = this.search
         this.vm.agent = this.data[5].data.data
         this.vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
         this.vm.formatAgentStatus = agentStatus => {
