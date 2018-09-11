@@ -327,7 +327,7 @@ define(['./module'], function (module) {
               $requestService.apiReq(`/syscollector/${id}/netiface`),
               $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
               $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
-              Promise.resolve(id)
+              $requestService.apiReq(`/agents/${id}`)
             ])
               .then(function (response) {
                 return response
