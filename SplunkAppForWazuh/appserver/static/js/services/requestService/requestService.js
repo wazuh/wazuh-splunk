@@ -6,19 +6,16 @@ define(['../module'], function (module) {
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
-    // const getBaseUrl = () => {
-    //   const url = window.location.href
-    //   const arr = url.split("/")
-    //   return arr[0] + "//" + arr[2]
-    // }
+    const getBaseUrl = () => {
+      return `${window.location.href.split('en-US')[0]}`
+    }
 
     /**
      * Generates and returns the browser base URL + Splunk Port
      */
     const getWellFormedUri = (endpoint) => {
       try {
-        // return '/en-US/custom/SplunkAppForWazuh/' + endpoint
-        return `${window.location.href.split('en-US')[0]}en-US/custom/SplunkAppForWazuh/${endpoint}`
+        return `${getBaseUrl()}en-US/custom/SplunkAppForWazuh/${endpoint}`
       } catch (err) {
         return Promise.reject(err)
       }
@@ -82,7 +79,7 @@ define(['../module'], function (module) {
     }
 
     const service = {
-      // getBaseUrl: getBaseUrl,
+      getBaseUrl: getBaseUrl,
       getWellFormedUri: getWellFormedUri,
       apiReq: apiReq,
       httpReq: httpReq

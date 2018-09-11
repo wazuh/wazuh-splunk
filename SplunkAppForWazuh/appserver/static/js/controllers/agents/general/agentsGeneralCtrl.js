@@ -86,13 +86,6 @@ define([
       let pageLoading = true
       let searches = []
       let vizz = []
-      const api = $currentDataService.getApi()
-      setToken('baseip', baseUrl)
-      setToken('url', api.url)
-      setToken('portapi', api.portapi)
-      setToken('userapi', api.userapi)
-      setToken('passwordapi', api.passapi)
-      setToken("loadedtokens", "true")
 
       // Implement checking polling state!!!
 
