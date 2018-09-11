@@ -43,7 +43,6 @@ define([
 
       let filters = $currentDataService.getSerializedFilters()
 
-      const baseUrl = $requestService.getBaseUrl()
       const api = $currentDataService.getApi()
 
       setToken('baseip', baseUrl)
