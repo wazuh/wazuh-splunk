@@ -1,5 +1,5 @@
 require.config({
-  baseUrl: "/static/app/SplunkAppForWazuh/",
+  baseUrl: window.location.href.split('en-US')[0] + "/static/app/SplunkAppForWazuh/",
 
   // alias libraries paths.  Must set 'angular'
   paths: {

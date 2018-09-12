@@ -12,9 +12,10 @@
  */
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzMenu', function () {
+  directives.directive('wzMenu', function (BASE_URL) {
     return {
       controller: function ($scope, $currentDataService, $navigationService) {
+        $scope.logoUrl = BASE_URL + '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
         const update = () => {
           $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
           $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName
@@ -49,7 +50,7 @@ define(['../module'], function (directives) {
         })
         update()
       },
-      templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html'
+      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html'
     }
   })
 })

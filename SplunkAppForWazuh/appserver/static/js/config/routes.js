@@ -1,6 +1,10 @@
 define(['./module'], function (module) {
   'use strict'
-  module.config(['$mdIconProvider', '$locationProvider', '$stateProvider', '$mdThemingProvider', function ($mdIconProvider, $locationProvider, $stateProvider, $mdThemingProvider, $navigationService) {
+  module.paths = {
+    root: window.location.href.split('en-US')[0],
+  }
+  module.constant('BASE_URL', module.paths.root)
+  module.config(['$mdIconProvider', '$locationProvider', '$stateProvider', '$mdThemingProvider', 'BASE_URL', function ($mdIconProvider, $locationProvider, $stateProvider, $mdThemingProvider, BASE_URL) {
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('blue')
     $locationProvider.html5Mode({
       'enabled': true,
@@ -9,7 +13,7 @@ define(['./module'], function (module) {
     })
     $stateProvider
       .state('overview', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html',
         // onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
         controller: 'overviewWelcomeCtrl',
         controllerAs: 'owc',
@@ -29,77 +33,77 @@ define(['./module'], function (module) {
       })
       // Overview - General
       .state('ow-general', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-general') },
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
       })
       // Overview - policy monitoring
       .state('ow-pm', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pm.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-pm.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pm') },
         controller: 'overviewPolicyMonitoringCtrl',
         controllerAs: 'opm',
       })
       // Overview - FIM
       .state('ow-fim', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-fim.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-fim.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-fim') },
         controller: 'overviewFimCtrl',
         controllerAs: 'ofc',
       })
       // Overview - audit
       .state('ow-audit', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-audit') },
         controller: 'overviewAuditCtrl',
         controllerAs: 'oac',
       })
       // Overview - OpenSCAP
       .state('ow-os', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-openscap.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-openscap.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-os') },
         controller: 'overviewOpenScapCtrl',
         controllerAs: 'oos',
       })
       // Overview - PCI-DSS
       .state('ow-pci', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-pci.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-pci.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pci') },
         controller: 'overviewPciCtrl',
         controllerAs: 'opd',
       })
       // Overview - GDPR
       .state('ow-gdpr', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-gdpr') },
         controller: 'overviewGdprCtrl',
         controllerAs: 'ogdpr',
       })
       // Overview - Vulnerabilities
       .state('ow-vul', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/overview/overview-vulnerabilities.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-vulnerabilities.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-vul') },
         controller: 'overviewVulnerabilitiesCtrl',
         controllerAs: 'ovu',
       })
       // Manager
       .state('manager', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-welcome.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-welcome.html',
         // onEnter: ($navigationService) => { $navigationService.storeRoute('manager') }
         // controller: 'managerCtrl',
         // controllerAs: 'mc'
       })
       // Manager - rules
       .state('mg-logs', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-logs.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-logs.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-logs') },
         controller: 'managerLogsCtrl',
         controllerAs: 'mlog',
       })
       // Manager - Ruleset
       .state('mg-rules', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetCtrl',
         controllerAs: 'mrules',
@@ -107,7 +111,7 @@ define(['./module'], function (module) {
       })
       // Manager - Ruleset/:id
       .state('mg-rules-id', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset-id.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset-id.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
         controller: 'managerRulesetIdCtrl',
         controllerAs: 'mrid',
@@ -128,7 +132,7 @@ define(['./module'], function (module) {
       })
       // Manager - Decoders
       .state('mg-decoders', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-decoders.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-decoders.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
         controller: 'managerDecodersCtrl',
         controllerAs: 'mdec',
@@ -137,7 +141,7 @@ define(['./module'], function (module) {
 
       // Manager - Decoders/:id
       .state('mg-decoders-id', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/manager-decoders-id.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-decoders-id.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
         controller: 'managerDecodersIdCtrl',
         controllerAs: 'mdid',
@@ -159,7 +163,7 @@ define(['./module'], function (module) {
 
       // Manager - Groups
       .state('mg-groups', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/groups/groups.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/groups/groups.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-groups') },
         controller: 'groupsCtrl',
         controllerAs: 'mgr'
@@ -167,7 +171,7 @@ define(['./module'], function (module) {
 
       // Manager - Groups
       .state('mg-conf', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-conf') },
         controller: 'configurationCtrl',
         controllerAs: 'mcc',
@@ -188,7 +192,7 @@ define(['./module'], function (module) {
 
       // Manager - Status
       .state('mg-status', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/manager/status/status.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/status/status.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-status') },
         controller: 'statusCtrl',
         controllerAs: 'mst',
@@ -235,12 +239,12 @@ define(['./module'], function (module) {
       })
 
       // settings
-      .state('settings', { abstract: true, templateUrl: 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
+      .state('settings', { abstract: true, templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/settings/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
       // settings -> about
-      .state('settings.about', { templateUrl: '/static/app/SplunkAppForWazuh/views/settings/about.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.about') } })
+      .state('settings.about', { templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/settings/about.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.about') } })
       // settings -> api
       .state('settings.api', {
-        templateUrl: '/static/app/SplunkAppForWazuh/views/settings/api.html',
+        templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/settings/api.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') },
         controller: 'settingsApiCtrl',
         controllerAs: 'sac',
@@ -258,11 +262,11 @@ define(['./module'], function (module) {
           }]
         }
       })
-      .state('settings.index', { templateUrl: '/static/app/SplunkAppForWazuh/views/settings/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
+      .state('settings.index', { templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/settings/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
 
       // agents
       .state('agents', {
-        templateUrl: '/static/app/SplunkAppForWazuh/views/agents/agents/agents.html',
+        templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/agents/agents/agents.html',
         // onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
         controller: 'agentsCtrl',
         controllerAs: 'ag',
@@ -284,7 +288,7 @@ define(['./module'], function (module) {
 
       // agents/:id
       .state('agent-overview', {
-        templateUrl: '/static/app/SplunkAppForWazuh/views/agents/overview/overview.html',
+        templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/agents/overview/overview.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('agent-overview') },
         controller: 'agentsOverviewCtrl',
         controllerAs: 'aoc',
@@ -313,7 +317,7 @@ define(['./module'], function (module) {
 
       // agents - General
       .state('ag-general', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/general/agents-general.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/general/agents-general.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-general') },
         controller: 'agentsGeneralCtrl',
         controllerAs: 'agc',
@@ -333,7 +337,7 @@ define(['./module'], function (module) {
 
       // agents - policy monitoring
       .state('ag-pm', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/policy-monitoring/agents-pm.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/policy-monitoring/agents-pm.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pm') },
         controller: 'agentsPolicyMonitoringCtrl',
         controllerAs: 'apm',
@@ -353,7 +357,7 @@ define(['./module'], function (module) {
 
       // agents - FIM
       .state('ag-fim', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/fim/agents-fim.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/fim/agents-fim.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-fim') },
         controller: 'agentsFimCtrl',
         controllerAs: 'afc',
@@ -373,7 +377,7 @@ define(['./module'], function (module) {
 
       // agents - audit
       .state('ag-audit', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/audit/agents-audit.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/audit/agents-audit.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-audit') },
         controller: 'agentsAuditCtrl',
         controllerAs: 'aac',
@@ -393,7 +397,7 @@ define(['./module'], function (module) {
 
       // agents - OpenSCAP
       .state('ag-os', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/scap/agents-openscap.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/scap/agents-openscap.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-os') },
         controller: 'agentsOpenScapCtrl',
         controllerAs: 'aos',
@@ -413,7 +417,7 @@ define(['./module'], function (module) {
       })
       // agents - PCI-DSS
       .state('ag-pci', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/pcidss/agents-pci.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/pcidss/agents-pci.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pci') },
         controller: 'agentsPciCtrl',
         controllerAs: 'apd',
@@ -432,7 +436,7 @@ define(['./module'], function (module) {
       })
       // agents - configuration
       .state('ag-conf', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/configuration/configuration.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/configuration/configuration.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-conf') },
         controller: 'agentConfigCtrl',
         controllerAs: 'acc',
@@ -469,7 +473,7 @@ define(['./module'], function (module) {
       })
       // agents - GDPR
       .state('ag-gdpr', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/gdpr/agents-gdpr.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/gdpr/agents-gdpr.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-gdpr') },
         controller: 'agentsGdprCtrl',
         controllerAs: 'agdpr',
@@ -488,7 +492,7 @@ define(['./module'], function (module) {
       })
       // agents - Vulnerabilities
       .state('ag-vul', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/agents/vulnerabilities/agents-vulnerabilities.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/vulnerabilities/agents-vulnerabilities.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-vul') },
         controller: 'agentsVulnerabilitiesCtrl',
         controllerAs: 'avu',
@@ -508,7 +512,7 @@ define(['./module'], function (module) {
 
       // =========== Dev Tools =========== //
       .state('dev-tools', {
-        templateUrl: 'static/app/SplunkAppForWazuh/views/dev-tools/dev-tools.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/dev-tools/dev-tools.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('dev-tools') },
         // controller: 'devToolsCtrl',
         // controllerAs: 'dt'
