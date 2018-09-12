@@ -1,7 +1,7 @@
 define(['./module'], function (module) {
   'use strict'
   module.paths = {
-    root: window.location.href.split('en-US')[0],
+    root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`,
   }
   module.constant('BASE_URL', module.paths.root)
   module.config(['$mdIconProvider', '$locationProvider', '$stateProvider', '$mdThemingProvider', 'BASE_URL', function ($mdIconProvider, $locationProvider, $stateProvider, $mdThemingProvider, BASE_URL) {

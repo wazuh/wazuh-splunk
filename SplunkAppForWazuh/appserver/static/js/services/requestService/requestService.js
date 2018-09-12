@@ -7,7 +7,7 @@ define(['../module'], function (module) {
      * Generated and returns the browser base URL + Splunk Port
      */
     const getBaseUrl = () => {
-      return `${window.location.href.split('en-US')[0]}`
+      return `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
     }
 
     /**
