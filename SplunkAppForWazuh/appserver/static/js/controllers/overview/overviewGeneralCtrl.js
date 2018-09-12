@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -43,7 +43,7 @@ define([
 
       let filters = $currentDataService.getSerializedFilters()
 
-      const baseUrl = $requestService.getBaseUrl()
+      const baseUrl = $currentDataService.getBaseUrl()
       const api = $currentDataService.getApi()
 
       setToken('baseip', baseUrl)
