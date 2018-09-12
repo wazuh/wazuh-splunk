@@ -36,6 +36,7 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
+      const baseUrl = $currentDataService.getBaseUrl()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -836,7 +837,7 @@ define([
       element16.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url =  "/app/SplunkAppForWazuh/search?q`${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\`"
+          const url =  `${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\`
           utils.redirect(url, false, "_blank")
         }
       })
