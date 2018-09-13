@@ -37,6 +37,19 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-general') },
         controller: 'overviewGeneralCtrl',
         controllerAs: 'ogc',
+        resolve: {
+          pollingState: ['$requestService', ($requestService) => {
+            return $requestService.httpReq(`GET`, `/manager/polling_state`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
       })
       // Overview - policy monitoring
       .state('ow-pm', {
