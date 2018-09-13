@@ -77,7 +77,6 @@ class manager(controllers.BaseController):
             request_cluster = self.session.get(
                 url + '/version', auth=auth, timeout=8, verify=verify).json()
             del kwargs['pass']
-            # request_cluster['token'] = jwt.encode({'api': str(kwargs)}, 'myToken', algorithm='HS256')
             result = json.dumps(request_cluster)
         except Exception as e:
             return json.dumps({"status": "400", "error": str(e)})
@@ -87,13 +86,13 @@ class manager(controllers.BaseController):
     def polling_state(self, **kwargs):
         try:
             app = cli.getConfStanza(
-                'inputs', 'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
+                'inputs', 'script:///./get_agents_status.py')
             disabled = app.get('disabled')
             polling_dict = {}
             polling_dict['disabled'] = disabled
             data_temp = json.dumps(polling_dict)
         except Exception as e:
-            return json.dumps("{error:"+str(e)+"}")
+            return json.dumps({'error':str(e)})
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
@@ -114,7 +113,7 @@ class manager(controllers.BaseController):
             data_temp = self.db.all()
         except Exception as e:
             logger.error("Error in get_apis endpoint: %s" % (e))
-            return json.dumps("{error:"+str(e)+"}")
+            return json.dumps({'error':str(e)})
         return json.dumps(data_temp)
 
     @expose_page(must_login=False, methods=['POST'])
@@ -163,5 +162,5 @@ class manager(controllers.BaseController):
             self.db.update(entry)
         except Exception as e:
             logger.error("Error in update_api endpoint: %s" % (e))
-            return json.dumps("{error:"+str(e)+"}")
+            return json.dumps({'error':str(e)})
         return json.dumps({'data': 'success'})
