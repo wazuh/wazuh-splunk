@@ -3,6 +3,9 @@ define(['../module'], function (module) {
 
   module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService, $apiIndexStorageService, $requestService) {
 
+    const getPollintState = () => {
+      return $apiMgrService.getPollintState
+    }
 
     const getBaseUrl = () => {
       return $requestService.getBaseUrl()
@@ -95,6 +98,7 @@ define(['../module'], function (module) {
     }
 
     return {
+      getPollintState: getPollintState,
       getBaseUrl: getBaseUrl,
       getApiList: getApiList,
       checkRawConnection: checkRawConnection,

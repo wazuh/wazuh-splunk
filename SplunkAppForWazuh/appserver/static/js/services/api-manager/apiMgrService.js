@@ -168,8 +168,8 @@ define(['../module'], function (module) {
     */
     const checkPollingState = async () => {
       try {
-        const getPollingState = '/manager/polling_state/'
-        const pollingStatus = await $requestService.httpReq(`GET`, getPollingState)
+        const getPollingStateRoute = '/manager/polling_state/'
+        const pollingStatus = await $requestService.httpReq(`GET`, getPollingStateRoute)
         return (pollingStatus.disabled === "true") ? false : true
       } catch (err) {
         return Promise.reject(err)
