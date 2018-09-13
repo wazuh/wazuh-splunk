@@ -280,6 +280,118 @@ define([
         "el": $('#modifiedFiles')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      // SECOND ROW VIZZ
+      
+      eventsSummarySearch = new SearchManager({
+        "id": `eventsSummarySearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} sourcetype=wazuh syscheck | timechart count`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      eventsSummary = new ChartElement({
+        "id": `eventsSummary${epoch}`,
+        "trellis.size": "medium",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "minmax",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "line",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "collapsed",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "bottom",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": `eventsSummarySearch${epoch}`,
+        "el": $('#eventsSummary')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      // Third row
+
+      topRulesSearch = new SearchManager({
+        "id": `topRulesSearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} sourcetype=wazuh syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      topRules = new TableElement({
+        "id": `topRules${epoch}`,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "false",
+        "totalsRow": "false",
+        "wrap": "true",
+        "managerid": `topRulesSearch${epoch}`,
+        "el": $('#topRules')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      // topUsersSearch = new SearchManager({
+      //   "id": `topUsersSearch${epoch}`,
+      //   "cancelOnUnload": true,
+      //   "sample_ratio": 1,
+      //   "earliest_time": "$when.earliest$",
+      //   "status_buckets": 0,
+      //   "search": `${filters} sourcetype=wazuh syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+      //   "latest_time": "$when.latest$",
+      //   "app": utils.getCurrentApp(),
+      //   "auto_cancel": 90,
+      //   "preview": true,
+      //   "tokenDependencies": {
+      //   },
+      //   "runWhenTimeIsUndefined": false
+      // }, { tokens: true, tokenNamespace: "submitted" })
+
+      // topUsers = new TableElement({
+      //   "id": `topUsers${epoch}`,
+      //   "dataOverlayMode": "none",
+      //   "drilldown": "cell",
+      //   "percentagesRow": "false",
+      //   "rowNumbers": "false",
+      //   "totalsRow": "false",
+      //   "wrap": "true",
+      //   "managerid": `topUsersSearch${epoch}`,
+      //   "el": $('#topUsers')
+      // }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+
+      
+
       input1 = new TimeRangeInput({
         "id": `input1${epoch}`,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
