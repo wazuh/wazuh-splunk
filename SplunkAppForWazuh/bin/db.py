@@ -11,6 +11,7 @@
 #
 import logging
 import json
+import os
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from tinydb import TinyDB, Query
@@ -32,7 +33,7 @@ logger = setup_logger(logging.DEBUG)
 
 class database():
     def __init__(self):
-        self.origin = TinyDB('/opt/splunk/etc/apps/SplunkAppForWazuh/bin/apilist.json')
+        self.origin = TinyDB(os.path.dirname(os.path.abspath(__file__))+'/apilist.json')
         self.db = self.origin.table('apis',cache_size=0)
         self.Api = Query()
 

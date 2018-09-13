@@ -23,9 +23,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from db import database
-# import jwt
 
 _APPNAME = 'SplunkAppForWazuh'
 

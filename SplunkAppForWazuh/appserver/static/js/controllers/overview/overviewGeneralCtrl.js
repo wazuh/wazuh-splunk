@@ -31,10 +31,15 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $state, $notificationService, $requestService) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $state, $notificationService, $requestService, pollingState) {
       const vm = this
       const epoch = (new Date).getTime()
-
+      let pollingEnabled = true
+      console.log('polling enabled ', pollingEnabled)
+      if (pollingState && pollingState.data && (pollingState.data.error || pollingState.data.disabled === 'true')) {
+        pollingEnabled = false
+        $notificationService.showSimpleToast(pollingState.data.error)
+      }
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -59,7 +64,7 @@ define([
       // Implement checking polling state!!!
       let search9 = ''
       let element9 = ''
-      if (true) {
+      if (!pollingEnabled) {
         vm.wzMonitoringEnabled = false
         $requestService.apiReq(`/agents/summary`).then((data) => {
           vm.agentsCountTotal = data.data.data.Total - 1
@@ -75,8 +80,6 @@ define([
 
       } else {
         vm.wzMonitoringEnabled = true
-        let filterAgent = (filter[0] === 'manager.name') ? 'manager_host' : 'cluster.name'
-        filter += '=' + filter[1]
         search9 = new SearchManager({
           "id": "search9" + epoch,
           "earliest_time": "$when.earliest$",
@@ -667,8 +670,6 @@ define([
 
       DashboardController.ready()
       pageLoading = false
-
-
     })
   })
 
