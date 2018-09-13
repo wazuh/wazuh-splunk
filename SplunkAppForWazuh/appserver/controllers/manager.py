@@ -84,7 +84,7 @@ class manager(controllers.BaseController):
     def polling_state(self, **kwargs):
         try:
             app = cli.getConfStanza(
-                'inputs', 'script:///./get_agents_status.py')
+                'inputs', 'script://$SPLUNK_HOME/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
             disabled = app.get('disabled')
             polling_dict = {}
             polling_dict['disabled'] = disabled
