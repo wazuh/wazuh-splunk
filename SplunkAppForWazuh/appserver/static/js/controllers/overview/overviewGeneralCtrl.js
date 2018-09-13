@@ -35,7 +35,6 @@ define([
       const vm = this
       const epoch = (new Date).getTime()
       let pollingEnabled = true
-      console.log('polling enabled ', pollingEnabled)
       if (pollingState && pollingState.data && (pollingState.data.error || pollingState.data.disabled === 'true')) {
         pollingEnabled = false
         $notificationService.showSimpleToast(pollingState.data.error)
@@ -50,7 +49,6 @@ define([
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
-        // searches.map(search => search.startSearch())
       }
 
       $scope.$on('deletedFilter', () => {
@@ -61,7 +59,6 @@ define([
         launchSearches()
       })
 
-      // Implement checking polling state!!!
       let search9 = ''
       let element9 = ''
       if (!pollingEnabled) {
@@ -87,7 +84,7 @@ define([
           "status_buckets": 0,
           "sample_ratio": null,
           "cancelOnUnload": true,
-          "search": `${filters} status=* | timechart span=1h count by status usenull=f`,
+          "search": `index=wazuh-monitoring-3x status=* | timechart span=1h count by status usenull=f`,
           "app": utils.getCurrentApp(),
           "auto_cancel": 90,
           "preview": true,
