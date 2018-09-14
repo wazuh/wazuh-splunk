@@ -108,8 +108,8 @@
             ui-sref='ag-fim({id:aoc.agent.id})' current-tab="'fim'" description="'Alerts related to file changes, including permissions, content, ownership and attributes.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
               ui-sref='ag-conf({id:aoc.agent.id})' current-tab="'configuration'" description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="syscollector && syscollector.os && syscollector.os.sysname" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
-              title="'Inventory'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="'Applications, network configuration, open ports and processes running on your monitored systems.'"></wz-welcome-card>
+            <wz-welcome-card ui-sref='ag-inventory({id:aoc.agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
+              title="'Inventory data'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="'Applications, network configuration, open ports and processes running on your monitored systems.'"></wz-welcome-card>
           </div>
         </div>
       </div>

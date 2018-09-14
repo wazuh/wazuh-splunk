@@ -18,6 +18,9 @@ define([
         case 'settings.about':
           $scope.tabName = 'about'
           break
+        case 'settings.logs':
+          $scope.tabName = 'logs'
+          break
       }
 
       $scope.switchTab = (name) => {
