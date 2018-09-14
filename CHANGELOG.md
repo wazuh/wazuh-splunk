@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
-## Wazuh v3.6.1 - Splunk Enterprise v7.1.2 - Splunk app v3.6.0-rev-14
+## Wazuh v3.6.1 - Splunk Enterprise v7.1.3 - Splunk app v3.6.1-rev-15
+### Added
+- App log section ([#237](https://github.com/wazuh/wazuh-splunk/pull/237)).
+- Support for reverse proxy configuration ([#239](https://github.com/wazuh/wazuh-splunk/pull/239)).
+- Dev tools ([#233](https://github.com/wazuh/wazuh-splunk/pull/233)).
+- Agent inventory section ([#238](https://github.com/wazuh/wazuh-splunk/pull/238)).
+### Fixes
+- Minor fixes ([#241](https://github.com/wazuh/wazuh-splunk/pull/241)).
+
+## Wazuh v3.6.1 - Splunk Enterprise v7.1.2 - Splunk app v3.6.1-rev-14
 - Support for Wazuh 3.6.1
 - Minor fixes.
 

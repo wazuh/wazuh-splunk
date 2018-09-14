@@ -1,6 +1,6 @@
 {
   "name": "wazuh-splunk",
-  "version": "1.0.0",
+  "version": "6.3.1",
   "description": "[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://goo.gl/forms/M2AoZC4b2R9A9Zy12)\r [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)\r [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)\r [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)",
   "main": "index.js",
   "dependencies": {
