@@ -20,7 +20,6 @@ import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from db import database
 from log import log
 
@@ -65,7 +64,7 @@ class manager(controllers.BaseController):
             polling_dict['disabled'] = disabled
             data_temp = json.dumps(polling_dict)
         except Exception as e:
-            return json.dumps("{error:"+str(e)+"}")
+            return json.dumps({'error':str(e)})
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])

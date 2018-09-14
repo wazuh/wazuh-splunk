@@ -10,7 +10,6 @@
 # Find more information about this on the LICENSE file.
 #
 import json
-import sys
 import os
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
@@ -21,14 +20,9 @@ from log import log
 
 class database():
     def __init__(self):
-        self.logger = log()
-        try:
-            self.origin = TinyDB(
-                os.path.join(os.path.dirname(__file__), "apilist.json"))
-            self.db = self.origin.table('apis', cache_size=0)
-            self.Api = Query()
-        except Exception as e:
-            self.logger.error("Error in DB module constructor: %s" % (e))
+        self.origin = TinyDB(os.path.dirname(os.path.abspath(__file__))+'/apilist.json')
+        self.db = self.origin.table('apis',cache_size=0)
+        self.Api = Query()
 
     def insert(self, obj):
         try:

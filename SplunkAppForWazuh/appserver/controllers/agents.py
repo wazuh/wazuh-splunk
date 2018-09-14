@@ -34,35 +34,6 @@ class agents(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in agent module constructor: %s" % (e))
 
-    # /custom/SplunkAppForWazuh/agents/summary
-
-    @expose_page(must_login=False, methods=['GET'])
-    def summary(self, **kwargs):
-        try:
-            if 'id' not in kwargs:
-                raise Exception({'error': 'Missing ID.'})
-            id = kwargs['id']
-            api = self.db.get(id)[0]
-            opt_base_url = api['url']
-            opt_base_port = api['portapi']
-            opt_username = api['userapi']
-            opt_password = api['passapi']
-            url = opt_base_url + ":" + opt_base_port
-            auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            request = requests.get(
-                url + '/agents/summary', auth=auth, verify=verify)
-            agent_summary = json.loads(request.text)['data']
-            data = {}
-            for key in agent_summary:
-                data['agent_summary_' + key.lower().replace(' ', '')
-                     ] = agent_summary[key]
-            data = [data]
-            result = json.dumps(data)
-        except Exception as e:
-            self.logger.error("Error in agents_uniq endpoint: %s" % (e))
-        return result
-
     # /custom/SplunkAppForWazuh/agents/uniq
     @expose_page(must_login=False, methods=['GET'])
     def agents_uniq(self, **kwargs):
