@@ -13,7 +13,7 @@ import logging
 import sys
 import os
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 import tailer
 
 _APPNAME = 'SplunkAppForWazuh'

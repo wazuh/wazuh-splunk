@@ -14,7 +14,7 @@ import os
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from tinydb import TinyDB, Query
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from log import log
 
 
