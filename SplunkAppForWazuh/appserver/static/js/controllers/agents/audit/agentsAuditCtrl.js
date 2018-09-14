@@ -32,13 +32,14 @@ define([
 
     'use strict'
 
-    controllers.controller('agentsAuditCtrl', function ($requestService, $scope, $currentDataService, $state, agent) {
+    controllers.controller('agentsAuditCtrl', function ($scope, $currentDataService, $state, agent) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = false
       vm.loadingSearch = true
       vm.agent = agent.data.data
       // Create token namespaces
+      const baseUrl = $currentDataService.getBaseUrl()
 
       let filters = $currentDataService.getSerializedFilters()
       // Create token namespaces
@@ -46,7 +47,6 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       let defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      const baseUrl = $requestService.getBaseUrl()
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -899,7 +899,7 @@ define([
       element16.on("click", (e) => {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = baseUrl + `/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`
+          const url =  `${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`
           utils.redirect(url, false, "_blank")
         }
       })

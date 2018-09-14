@@ -372,7 +372,6 @@ define([
       analyzeGroups() {
         try {
           const currentState = this.apiInputBox.getValue().toString()
-          console.log('analyze groups ', currentState)
           this.appState.setCurrentDevTools(currentState)
 
           const tmpgroups = []
@@ -508,7 +507,6 @@ define([
           const desiredGroup = firstTime ?
             this.groups.filter(item => item.requestText) :
             this.groups.filter(item => item.requestText && (item.end >= selection.line && item.start <= selection.line))
-          console.log('desired group ', desiredGroup)
 
           // Place play button at first line from the selected group
           const cords = this.apiInputBox.cursorCoords({ line: desiredGroup[0].start, ch: 0 })
@@ -582,7 +580,6 @@ define([
 
             // if (typeof JSONraw === 'object') JSONraw.devTools = true
             const output = await this.request.apiReq(path, JSONraw)
-            console.log('output ', output)
             const result = (output.data && output.data.data && !output.data.error) ? JSON.stringify(output.data.data, null, 2) : output.data.message || 'Unkown error'
             this.apiOutputBox.setValue(
               result

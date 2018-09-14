@@ -18,7 +18,7 @@
 
 define(['../module', 'underscore'], function (directives, _) {
   'use strict'
-  directives.directive('wazuhTable', function ($dataService, $notificationService) {
+  directives.directive('wazuhTable', function ($dataService, $notificationService, BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -336,7 +336,7 @@ define(['../module', 'underscore'], function (directives, _) {
         }
 
       },
-      templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
+      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
     }
   })
 })

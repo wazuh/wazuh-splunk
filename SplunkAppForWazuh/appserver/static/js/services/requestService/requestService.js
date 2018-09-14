@@ -7,16 +7,18 @@ define(['../module'], function (module) {
      * Generated and returns the browser base URL + Splunk Port
      */
     const getBaseUrl = () => {
-      const url = window.location.href
-      const arr = url.split("/")
-      return arr[0] + "//" + arr[2]
+      return `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
     }
 
     /**
      * Generates and returns the browser base URL + Splunk Port
      */
     const getWellFormedUri = (endpoint) => {
-      return getBaseUrl() + '/en-US/custom/SplunkAppForWazuh/' + endpoint
+      try {
+        return `${getBaseUrl()}en-US/custom/SplunkAppForWazuh/${endpoint}`
+      } catch (err) {
+        return Promise.reject(err)
+      }
     }
 
     /**

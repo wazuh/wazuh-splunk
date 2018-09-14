@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $requestService, $state) {
+    controllers.controller('overviewGeneralCtrl', function ($scope, $currentDataService, $state, $notificationService, $requestService) {
       const vm = this
       const epoch = (new Date).getTime()
 
@@ -40,15 +40,8 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
       let filters = $currentDataService.getSerializedFilters()
-
-      const baseUrl = $requestService.getBaseUrl()
-      const api = $currentDataService.getApi()
-
-      setToken('baseip', baseUrl)
-      setToken('dbId', api.id)
-
+      const baseUrl = $currentDataService.getBaseUrl()
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
@@ -67,55 +60,21 @@ define([
       let search9 = ''
       let element9 = ''
       if (true) {
-        search9 = new SearchManager({
-          "id": "search9" + epoch,
-          "cancelOnUnload": true,
-          "sample_ratio": 1,
-          "earliest_time": "$when.earliest$",
-          "status_buckets": 0,
-          "search": "| getagentsummary $baseip$ $dbId$ | table agent_summary_active , agent_summary_disconnected | transpose | rename \"column\" as Status, \"row 1\" as \"count\"",
-          "latest_time": "$when.latest$",
-          "app": utils.getCurrentApp(),
-          "auto_cancel": 90,
-          "preview": true,
-          "tokenDependencies": {
-          },
-          "runWhenTimeIsUndefined": false
-        }, { tokens: true, tokenNamespace: "submitted" })
+        vm.wzMonitoringEnabled = false
+        $requestService.apiReq(`/agents/summary`).then((data) => {
+          vm.agentsCountTotal = data.data.data.Total - 1
+          vm.agentsCountActive = data.data.data.Active - 1
+          vm.agentsCountDisconnected = data.data.data.Disconnected
+          vm.agentsCountNeverConnected = data.data.data['Never connected']
+          vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0;
+          if (!$scope.$$phase) $scope.$digest()
 
-        element9 = new ChartElement({
-          "id": "element9" + epoch,
-          "charting.axisY2.scale": "inherit",
-          "trellis.size": "medium",
-          "charting.chart.stackMode": "default",
-          "resizable": true,
-          "charting.layout.splitSeries.allowIndependentYRanges": "0",
-          "charting.drilldown": "none",
-          "charting.chart.nullValueMode": "gaps",
-          "charting.axisTitleY2.visibility": "visible",
-          "charting.chart": "pie",
-          "trellis.scales.shared": "1",
-          "charting.layout.splitSeries": "0",
-          "charting.chart.style": "shiny",
-          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-          "charting.axisTitleX.visibility": "collapsed",
-          "charting.axisTitleY.visibility": "collapsed",
-          "charting.axisX.scale": "linear",
-          "charting.chart.bubbleMinimumSize": "10",
-          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-          "charting.axisY2.enabled": "0",
-          "trellis.enabled": "0",
-          "charting.legend.placement": "none",
-          "charting.chart.bubbleSizeBy": "area",
-          "charting.chart.bubbleMaximumSize": "50",
-          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-          "charting.axisY.scale": "linear",
-          "charting.chart.showDataLabels": "all",
-          "charting.chart.sliceCollapsingThreshold": "0.01",
-          "managerid": "search9" + epoch,
-          "el": $('#element9')
-        }, { tokens: true, tokenNamespace: "submitted" }).render()
+        }).catch((error) => {
+          $notificationService.showSimpleToast('Cannot fetch agent status data')
+        })
+
       } else {
+        vm.wzMonitoringEnabled = true
         let filterAgent = (filter[0] === 'manager.name') ? 'manager_host' : 'cluster.name'
         filter += '=' + filter[1]
         search9 = new SearchManager({
@@ -667,7 +626,7 @@ define([
       overviewElement14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })

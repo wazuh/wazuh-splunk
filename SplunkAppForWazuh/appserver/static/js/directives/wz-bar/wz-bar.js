@@ -11,7 +11,7 @@
  */
 define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wazuhBar', function ($notificationService) {
+  directives.directive('wazuhBar', function ($notificationService, BASE_URL) {
     return {
       restrict: 'E',
       controller: function ($scope, $currentDataService) {
@@ -78,7 +78,7 @@ define(['../module'], function (directives) {
           }
         }
       },
-      templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
+      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
     }
   })
 })

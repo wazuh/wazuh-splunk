@@ -6,9 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Wazuh App for Splunk</title>
 
-  <link rel="stylesheet" type="text/css" href="/static/build/css/bootstrap-enterprise.css" />
-  <link rel="stylesheet" type="text/css" href="/static/css/build/pages/dashboard-simple-bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="/static/app/SplunkAppForWazuh/css/styles/loader.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/css/styles/loader.css">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Passion+One" />
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oxygen" />
   <link rel="stylesheet" type="text/css" href='http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css'>
@@ -42,11 +42,11 @@
     </div>
   </div>
 
-  <script src="/config?autoload=1" crossorigin="use-credentials"></script>
-  <script src="/static/js/i18n.js"></script>
-  <script src="/i18ncatalog?autoload=1"></script>
-  <script src="/static/build/simplexml/index.js"></script>
-  <script src="/static/app/SplunkAppForWazuh/js/main.js" type="text/javascript"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/main.js" type="text/javascript"></script>
 
 
 </body>
