@@ -275,6 +275,7 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            console.error('error ',error)
             $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
           }
           return
@@ -305,20 +306,34 @@ define(['../module', 'underscore'], function (directives, _) {
         })
 
         $scope.nonDecoderValue = (key, item) => {
-          return key === 'os.name' ?
-            (item.os && item.os.name ? item.os.name : false) || '---' :
-            key === 'os.version' ?
-              (item.os && item.os.version ? item.os.version : false) || '---' :
-              checkIfArray(item[key.value || key]) || '---'
+          return key.value === 'local.ip'
+            ? (item.local && item.local.ip
+              ? `${item.local.ip}:${item.local.port}`
+              : false) || '---'
+            : key === 'remote.ip'
+              ? (item.remote && item.remote.ip
+                ? `${item.remote.ip}:${item.remote.port}`
+                : false) || '---'
+              : key === 'os.name'
+                ? (item.os && item.os.name ? item.os.name : false) || '---'
+                : key === 'os.version'
+                  ? (item.os && item.os.version ? item.os.version : false) ||
+                  '---'
+                  : checkIfArray(item[key.value || key]) || '---'
         }
 
         $scope.decoderValue = (key, item) => {
-          return key === 'details.program_name' || key.value === 'details.program_name' ?
-            (item.details && item.details.program_name ? item.details.program_name : false) || '---' :
-            key === 'details.order' || key.value === 'details.order' ?
-              (item.details && item.details.order ? item.details.order : false) || '---' :
-              checkIfArray(item[key.value || key]) || '---'
-        };
+          return key === 'details.program_name' ||
+            key.value === 'details.program_name'
+            ? (item.details && item.details.program_name
+              ? item.details.program_name
+              : false) || '---'
+            : key === 'details.order' || key.value === 'details.order'
+              ? (item.details && item.details.order
+                ? item.details.order
+                : false) || '---'
+              : checkIfArray(item[key.value || key]) || '---'
+        }
 
       },
       templateUrl: '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'

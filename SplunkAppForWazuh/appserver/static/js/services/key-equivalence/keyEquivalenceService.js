@@ -17,9 +17,9 @@ define(['../module'], function (module) {
           description: 'Description',
           tag: 'Tag',
           level: 'Level',
-          mergedSum: 'MD5 agent.conf',
-          hash: 'MD5 agent.conf',
-          configSum: 'Group MD5',
+          conf_sum: 'Group MD5 sum',
+          merged_sum: '"agent.conf" MD5 sum',
+          hash: 'MD5 sum',
           filename: 'File',
           file: 'File',
           gdpr: 'GDPR',
@@ -40,17 +40,26 @@ define(['../module'], function (module) {
           path: 'Path',
           details: 'Details',
           position: 'Position',
-          configSum: 'Group MD5',
-          mergedSum: 'MD5 agent.conf',
+          configSum: 'Group MD5 sum',
+          mergedSum: '"agent.conf" MD5 sum',
           key: 'Key',
           scan_id: 'Scan ID',
           format: 'Format',
-          scan_time: 'Scan date'
+          scan_time: 'Scan date',
+          state: 'State',
+          mac: 'MAC',
+          gateway: 'Gateway',
+          dhcp: 'DHCP',
+          iface: 'Interface',
+          broadcast: 'Broadcast',
+          proto: 'Protocol',
+          address: 'Address',
+          protocol: 'Protocol',
+          'local.ip': 'Local',
+          'remote.ip': 'Remote'
         }
       },
-
     }
-
     return service
   })
 })

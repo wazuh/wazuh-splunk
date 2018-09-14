@@ -14,15 +14,18 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('agentsOverviewCtrl', function ($stateParams, agent) {
+  controllers.controller('agentsOverviewCtrl', function ($stateParams, $state, agent) {
     const vm = this
-    vm.agent = agent[0].data.data
-    vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
-    vm.syscheck = agent[1].data.data
-    vm.id = $stateParams.id
-    vm.rootcheck = agent[2].data.data
+    try {
+      vm.agent = agent[0].data.data
+      vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
+      vm.syscheck = agent[1].data.data
+      vm.id = $stateParams.id
+      vm.rootcheck = agent[2].data.data
+    } catch (err) {
+      $state.go('agents')
+    }
 
-    
     vm.goGroups = async (group) => {
       try {
         const groupInfo = await $requestService.apiReq(`/groups`, { name: group })

@@ -32,6 +32,7 @@ define([
   './agents/pcidss/agentsPciCtrl',
   './agents/gdpr/agentsGdprCtrl',
   './agents/configuration/agentConfigCtrl',
+  './agents/inventory/inventoryCtrl',
   './dev-tools/devToolsCtrl',
   './main/mainCtrl'
 ], function () {})

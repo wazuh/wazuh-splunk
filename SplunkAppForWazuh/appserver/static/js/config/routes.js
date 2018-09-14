@@ -330,6 +330,36 @@ define(['./module'], function (module) {
         }
       })
 
+      // agents/:id
+      .state('ag-inventory', {
+        templateUrl: '/static/app/SplunkAppForWazuh/views/agents/inventory/inventory.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-inventory') },
+        controller: 'inventoryCtrl',
+        controllerAs: 'aic',
+        params: { id: null },
+        resolve: {
+          syscollector: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+            return Promise.all([
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`),
+              $requestService.apiReq(`/syscollector/${id}/netiface`),
+              $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
+              $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
+              $requestService.apiReq(`/agents/${id}`)
+            ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
+      })
+
       // agents - General
       .state('ag-general', {
         templateUrl: 'static/app/SplunkAppForWazuh/views/agents/general/agents-general.html',

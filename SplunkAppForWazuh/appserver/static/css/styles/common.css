@@ -435,6 +435,14 @@ kbn-vis .vis-container {
   height: 16px;
 }
 
+.euiIcon--warning {
+  fill: #E5830E !important;
+}
+
+.euiIcon--success {
+  fill: #017F75 !important;
+}
+
 .euiIcon {
   display: inline-block;
   vertical-align: middle;
