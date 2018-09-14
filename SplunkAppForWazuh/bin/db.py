@@ -9,27 +9,14 @@
 #
 # Find more information about this on the LICENSE file.
 #
-import logging
 import json
 import os
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from tinydb import TinyDB, Query
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+from log import log
 
-_APPNAME = 'SplunkAppForWazuh'
-def setup_logger(level):
-    """
-    Setup a logger for the REST handler.
-    """
-    logger = logging.getLogger('splunk.appserver.%s.controllers.db' % _APPNAME)
-    logger.propagate = False  # Prevent the log messages from being duplicated in the python.log file
-    logger.setLevel(level)
-    file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(['var', 'log', 'splunk', 'db.log']), maxBytes=25000000, backupCount=5)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    return logger
-logger = setup_logger(logging.DEBUG)
 
 class database():
     def __init__(self):
@@ -40,31 +27,35 @@ class database():
     def insert(self, obj):
         try:
             result = self.db.insert(obj)
+            parsed_result = json.dumps({'data': result})
         except Exception as e:
-            logger.info("Error in insert DB: %s" % (e))
+            self.logger.error("Error inserting in DB module: %s" % (e))
             raise e
-        return json.dumps({'data': result})
+        return parsed_result
 
     def update(self, obj):
         try:
-            logger.info("Updating this: %s" % (obj))
             self.db.update(obj, self.Api.id == obj['id'])
+            parsed_result = json.dumps({'data': 'success'})
         except Exception as e:
+            self.logger.error("Error updating in DB module: %s" % (e))
             raise e
-        return json.dumps({'data': 'success'})
+        return parsed_result
 
     def remove(self, id):
         try:
             self.db.remove(self.Api.id == id)
+            parsed_result = json.dumps({'data': 'success'})
         except Exception as e:
+            self.logger.error("Error removing in DB module: %s" % (e))
             raise e
-        return json.dumps({'data': 'success'})
+        return parsed_result
 
     def all(self):
         try:
             all = self.db.all()
         except Exception as e:
-            logger.info("Error at get all documents DB: %s" % (e))
+            self.logger.error("Error at get all documents DB module: %s" % (e))
             raise e
         return all
 
@@ -72,6 +63,6 @@ class database():
         try:
             data = self.db.search(self.Api.id == id)
         except Exception as e:
-            logger.info("Error at get document DB: %s" % (e))
+            self.logger.error("Error at get document DB: %s" % (e))
             raise e
         return data

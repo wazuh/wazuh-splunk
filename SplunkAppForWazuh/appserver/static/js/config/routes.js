@@ -275,7 +275,28 @@ define(['./module'], function (module) {
           }]
         }
       })
+
       .state('settings.index', { templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/settings/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
+      .state('settings.logs', {
+        templateUrl: '/static/app/SplunkAppForWazuh/views/settings/logs/logs.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('settings.logs') },
+        controller: 'logsCtrl',
+        controllerAs: 'slc',
+        resolve: {
+          logs: ['$requestService', ($requestService) => {
+            return $requestService.httpReq(`GET`,`/manager/get_log_lines`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
+      })
+
 
       // agents
       .state('agents', {
@@ -315,6 +336,36 @@ define(['./module'], function (module) {
               $requestService.apiReq(`/rootcheck/${id}/last_scan`),
               $requestService.apiReq(`/syscollector/${id}/hardware`),
               $requestService.apiReq(`/syscollector/${id}/os`)
+            ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
+      })
+
+      // agents/:id
+      .state('ag-inventory', {
+        templateUrl: '/static/app/SplunkAppForWazuh/views/agents/inventory/inventory.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ag-inventory') },
+        controller: 'inventoryCtrl',
+        controllerAs: 'aic',
+        params: { id: null },
+        resolve: {
+          syscollector: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+            return Promise.all([
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`),
+              $requestService.apiReq(`/syscollector/${id}/netiface`),
+              $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
+              $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
+              $requestService.apiReq(`/agents/${id}`)
             ])
               .then(function (response) {
                 return response
