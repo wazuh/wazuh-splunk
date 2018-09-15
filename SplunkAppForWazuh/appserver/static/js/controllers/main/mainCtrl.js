@@ -8,9 +8,10 @@ define([
   LayoutView
 ) {
     'use strict'
-    module.controller('mainCtrl', function ($scope, $transitions) {
+    module.controller('mainCtrl', function ($scope, $transitions, $requestService) {
 
-      $scope.$on('loading', (event,data) => {
+      $scope.baseUrl = $requestService.getBaseUrl()
+      $scope.$on('loading', (event, data) => {
         if (data.status)
           $scope.loading = true
         else

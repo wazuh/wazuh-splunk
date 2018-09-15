@@ -44,6 +44,8 @@ define([
       vm.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
       }
+      const baseUrl = $currentDataService.getBaseUrl()
+
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -411,7 +413,7 @@ define([
       element5.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })

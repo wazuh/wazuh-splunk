@@ -1,8 +1,15 @@
 define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService, $apiIndexStorageService) {
+  module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService, $apiIndexStorageService, $requestService) {
 
+    const getPollintState = () => {
+      return $apiMgrService.getPollintState
+    }
+
+    const getBaseUrl = () => {
+      return $requestService.getBaseUrl()
+    }
 
     const getApi = () => {
       return $apiMgrService.getApi()
@@ -91,6 +98,8 @@ define(['../module'], function (module) {
     }
 
     return {
+      getPollintState: getPollintState,
+      getBaseUrl: getBaseUrl,
       getApiList: getApiList,
       checkRawConnection: checkRawConnection,
       checkApiConnection: checkApiConnection,

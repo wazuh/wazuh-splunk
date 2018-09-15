@@ -20,6 +20,7 @@ define([
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',
+  './settings/logs/logsCtrl',
   './agents/agents/agentsCtrl',
   './agents/overview/agentsOverviewCtrl',
   './agents/general/agentsGeneralCtrl',
@@ -31,5 +32,7 @@ define([
   './agents/pcidss/agentsPciCtrl',
   './agents/gdpr/agentsGdprCtrl',
   './agents/configuration/agentConfigCtrl',
+  './agents/inventory/inventoryCtrl',
+  './dev-tools/devToolsCtrl',
   './main/mainCtrl'
 ], function () {})

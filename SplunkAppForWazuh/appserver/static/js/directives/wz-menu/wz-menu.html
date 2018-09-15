@@ -5,7 +5,7 @@
 
     <!-- Wazuh app logo -->
     <a class="cursor-pointer wz-logo-container wz-margin-right-15" ui-sref="overview">
-      <img class="wz-responsive-img" aria-hidden="true" src='/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'></img>
+      <img class="wz-responsive-img" aria-hidden="true" src='{{logoUrl}}'></img>
     </a>
 
     <!-- Main Wazuh app navigation buttons -->
@@ -19,6 +19,10 @@
 
     <md-button class="wz-menu-button" ui-sref="agents" ng-class="{'wz-menu-active': menuNavItem === 'agents' }" aria-label="Agents tab">
       <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agents
+    </md-button>
+    <!-- Dev tools buttom -->
+    <md-button class="wz-menu-button" ui-sref="dev-tools" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
+      <i class="fa fa-fw fa-code" aria-hidden="true"></i> Dev tools
     </md-button>
 
     <!-- Fill up the space between left and right area -->
