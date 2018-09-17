@@ -32,7 +32,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewFimCtrl', function ($scope, $state, $stateParams, $currentDataService) {
+    controllers.controller('overviewFimCtrl', function ($scope, $state, $currentDataService) {
       const epoch = (new Date).getTime()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: `tokenModel${epoch}` })
