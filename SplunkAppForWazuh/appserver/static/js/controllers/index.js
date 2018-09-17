@@ -17,6 +17,7 @@ define([
   './management/groups/groupsCtrl',
   './management/configuration/configurationCtrl',
   './management/status/statusCtrl',
+  './management/monitoring/monitoringCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',

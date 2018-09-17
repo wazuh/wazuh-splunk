@@ -143,6 +143,34 @@ define(['./module'], function (module) {
           }]
         }
       })
+      // Manager - Monitoring
+      .state('mg-monitoring', {
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/monitoring/monitoring.tml',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('mg-monitoring') },
+        controller: 'monitoringCtrl',
+        controllerAs: 'mmt',
+        params: { id: null, filters: null },
+        resolve: {
+          monitoringInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return Promise.all([
+              $requestService.apiReq('/cluster/status'),
+              $requestService.apiReq('/cluster/nodes'),
+              $requestService.apiReq('/cluster/config'),
+              $requestService.apiReq('/version'),
+              $requestService.apiReq('/agents', { limit: 1 }),
+              $requestService.apiReq('/cluster/healthcheck')
+            ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
+      })
       // Manager - Decoders
       .state('mg-decoders', {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-decoders.html',
