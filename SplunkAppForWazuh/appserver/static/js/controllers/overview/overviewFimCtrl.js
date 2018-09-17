@@ -136,7 +136,7 @@ define([
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,
+        "search": `${filters} sourcetype=wazuh syscheck.event=deleted | top agent.name limit=5`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
