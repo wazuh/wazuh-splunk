@@ -1,0 +1,44 @@
+<!-- Cards for main monitoring section -->
+<div layout="row" layout-align="start stretch" class="wz-timelions">
+  
+  <!-- Overview card -->
+  <md-card flex class="wz-md-card">
+    <md-card-content>
+      <i class="fa fa-fw fa-pie-chart" aria-hidden="true"></i> <span class="wz-headline-title wz-text-link cursor-pointer">Overview</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="25">IP</span>
+        <span class="color-grey">{{mmt.configuration.nodes[0] || 'Unknown'}}</span>
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="25">Running</span>
+        <span class="color-grey">{{ mmt.status || 'no' }}</span>
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="25">Version</span>
+        <span class="color-grey">{{mmt.version}}</span>
+      </div>
+    </md-card-content>
+  </md-card>
+  <!-- End overview card -->
+  
+  <!-- Info card -->
+  <md-card flex class="wz-md-card">
+    <md-card-content>
+      <i class="fa fa-fw fa-info" aria-hidden="true"></i> <span class="wz-headline-title">Information</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <!-- Nodes -->
+      <div layout="row" class="wz-padding-top-10 cursor-pointer" ng-click="goNodes()">
+        <span flex="25" class="wz-text-link" tooltip="Click to open the list of nodes" tooltip-placement="left">Nodes</span>
+        <span class="wz-text-link" tooltip="Click to open the list of nodes" tooltip-placement="right">{{mmt.nodesCount}}</span>
+      </div>
+      <!-- Agents -->
+      <div layout="row" class="wz-padding-top-10 cursor-pointer" ng-click="goAgents()">
+        <span flex="25" class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
+        <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right">{{mmt.agentsCount}}</span>
+      </div>
+    </md-card-content>
+  </md-card>
+  <!-- End info card -->
+</div>
+<!-- End cards for main monitoring section -->
