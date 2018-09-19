@@ -67,7 +67,8 @@ define([
       let alertsNode
       let alertsNodeSearch
       let input1
-      
+      let epochSearch = epoch
+
       vm.search = term => {
         $scope.$broadcast('wazuhSearch', { term })
       }
@@ -311,9 +312,10 @@ define([
       nodes.master_node = vm.configuration.node_name
       
       const launchSearches = () => {
+        $('#overviewNode').empty()
         alertsNodeSearch = null
         alertsNode = null
-        let epochSearch = epoch++
+        epochSearch++
         let nodeSearch = ''
         if (vm.currentNode && vm.currentNode.name && vm.currentNode.type !== 'worker') {
           console.log('is not worker , filtering by ',vm.currentNode.name)
@@ -452,9 +454,9 @@ define([
                                     
                                     //assignFilters($scope.currentNode.name)
                                     
-                                    
                                     if (!$scope.$$phase) $scope.$digest()
                                   } catch (error) {
+                                    console.error('error ',error)
                                     $notificationService.showSimpleToast(error.message || error)
                                   }
                                 })
