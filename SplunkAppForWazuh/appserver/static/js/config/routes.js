@@ -152,7 +152,6 @@ define(['./module'], function (module) {
       params: { id: null, filters: null },
       resolve: {
         monitoringInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
-          console.log('entring status')
           return Promise.all([
             $requestService.apiReq('/cluster/status'),
             $requestService.apiReq('/cluster/nodes'),
@@ -434,7 +433,7 @@ define(['./module'], function (module) {
       onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pm') },
       controller: 'agentsPolicyMonitoringCtrl',
       controllerAs: 'apm',
-      params: { id: null },
+      params: { id: null, isClusterEnabled:null, isClusterRunning:null,showConfig: null, showNodes:null, currentNode: null },
       resolve: {
         agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
           const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'

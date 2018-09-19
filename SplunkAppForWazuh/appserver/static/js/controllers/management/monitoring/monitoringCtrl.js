@@ -33,17 +33,28 @@ define([
     
     'use strict'
     
-    controllers.controller('monitoringCtrl', function ($scope, monitoringInfo, $currentDataService) {
+    controllers.controller('monitoringCtrl', function ($state, $stateParams, $scope, monitoringInfo, $currentDataService, $requestService, $notificationService) {
       const vm = this
       const epoch = (new Date).getTime()
-      vm.isClusterEnabled = true
-      vm.isClusterRunning = true
+      console.log('reloaded')
+      vm.isClusterEnabled = $stateParams.isClusterEnabled || true
+      vm.isClusterRunning = $stateParams.isClusterRunning || true
+      vm.showConfig = $stateParams.isClusterRunning || false
+      vm.showNodes = $stateParams.showNodes || false
+      vm.currentNode = $stateParams.currentNode || null
+      console.log('current node ',vm.currentNode)
+      
+      let filters = $currentDataService.getSerializedFilters()
+      
+      let nodeSearch = (vm.currentNode && vm.currentNode.node && vm.currentNode.type !== 'worker') ?
+      `${filters} cluster.node=${vm.currentNode.node} sourcetype=wazuh | timechart span=2h count` :
+      `${filters} sourcetype=wazuh | timechart span=2h count` 
+      
       vm.status = 'yes'
       const currentApi = $currentDataService.getApi()
       vm.currentApi = currentApi.clusterName || currentApi.managerName 
       const running = monitoringInfo[0].data.data.running
       const enabled = monitoringInfo[0].data.data.enabled
-      let filters = $currentDataService.getSerializedFilters()
       
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
@@ -57,12 +68,14 @@ define([
       let alertNodeSummarySearch
       let topNodes
       let topNodesSearch
+      let alertsNode
+      let alertsNodeSearch
       let input1
-
+      
       vm.search = term => {
         $scope.$broadcast('wazuhSearch', { term })
       }
-
+      
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -217,7 +230,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       topNodes = new ChartElement({
         "id": `topNodes${epoch}`,
         "trellis.size": "large",
@@ -250,7 +263,57 @@ define([
         "managerid": "topNodesSearch" + epoch,
         "el": $('#topNodes')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
+      // Alerts per node vis
+      alertsNodeSearch = new SearchManager({
+        "id": `alertsNodeSearch${epoch}`,
+        "cancelOnUnload": true,
+        "earliest_time": "$when.earliest$",
+        "sample_ratio": 1,
+        "status_buckets": 0,
+        "latest_time": "$when.latest$",
+        "search": nodeSearch,
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+      
+      alertsNode = new ChartElement({
+        "id": `alertsNode${epoch}`,
+        "trellis.size": "medium",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "all",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "column",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "collapsed",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "none",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": `alertsNodeSearch${epoch}`,
+        "el": $('#overviewNode')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
       if (enabled === 'no') {
         vm.isClusterEnabled = false
         
@@ -264,8 +327,8 @@ define([
         vm.showNodes = false
         if (!$scope.$$phase) $scope.$digest()
       }
-
-
+      
+      
       const setBooleans = component => {
         vm.showConfig = component === 'showConfig'
         vm.showNodes = component === 'showNodes'
@@ -300,24 +363,119 @@ define([
       
       nodes.name = vm.configuration.name
       nodes.master_node = vm.configuration.node_name
-      pageLoading = false
-
-      submitTokens()
       
-      DashboardController.ready()
-
+      const launchSearches = () => {
+        // $state.reload()
+        console.log('launch searches')
+        $state.go($state.current, {isClusterEnabled:vm.isClusterEnabled, isClusterRunning:vm.isClusterRunning,showConfig: vm.showConfig, showNodes:vm.showNodes, currentNode: vm.currentNode}, {});
+        if (input1) {
+          console.log('formutils handlevaluechange')
+          FormUtils.handleValueChange(input1)
+        }
+        submitTokens()
+      }
       
-      /**
-      * When controller is destroyed
-      */
-      $scope.$on('$destroy', () => {
-        alertSummary = null
-        alertSummarySearch.cancel()
-        alertNodeSummary = null
-        alertNodeSummarySearch.cancel()
-        input1 = null
-        alertSummarySearch = null
-        alertNodeSummarySearch = null
-      })
-    })
-  })
+      $scope.$on('wazuhShowClusterNode', async (event, parameters) => {
+        try {
+          launchSearches()
+          vm.currentNode = parameters.node
+          const data = await $requestService.apiReq(`/cluster/healthcheck`, {
+            node: vm.currentNode.name
+          })
+          
+          vm.currentNode.healthCheck =
+          data.data.data.nodes[vm.currentNode.name]
+          
+          if (
+            vm.currentNode.healthCheck &&
+            vm.currentNode.healthCheck.status
+            ) {
+              vm.currentNode.healthCheck.status.last_sync_integrity.duration =
+              'n/a'
+              vm.currentNode.healthCheck.status.last_sync_agentinfo.duration =
+              'n/a'
+              vm.currentNode.healthCheck.status.last_sync_agentgroups.duration =
+              'n/a'
+              
+              if (
+                vm.currentNode.healthCheck.status.last_sync_integrity
+                .date_start_master !== 'n/a' &&
+                vm.currentNode.healthCheck.status.last_sync_integrity
+                .date_end_master !== 'n/a'
+                ) {
+                  const end = new Date(
+                    vm.currentNode.healthCheck.status.last_sync_integrity.date_end_master
+                    )
+                    const start = new Date(
+                      vm.currentNode.healthCheck.status.last_sync_integrity.date_start_master
+                      )
+                      vm.currentNode.healthCheck.status.last_sync_integrity.duration = `${(end -
+                        start) /
+                        1000}s`
+                      }
+                      
+                      if (
+                        vm.currentNode.healthCheck.status.last_sync_agentinfo
+                        .date_start_master !== 'n/a' &&
+                        vm.currentNode.healthCheck.status.last_sync_agentinfo
+                        .date_end_master !== 'n/a'
+                        ) {
+                          const end = new Date(
+                            vm.currentNode.healthCheck.status.last_sync_agentinfo.date_end_master
+                            )
+                            const start = new Date(
+                              vm.currentNode.healthCheck.status.last_sync_agentinfo.date_start_master
+                              )
+                              vm.currentNode.healthCheck.status.last_sync_agentinfo.duration = `${(end -
+                                start) /
+                                1000}s`
+                              }
+                              
+                              if (
+                                vm.currentNode.healthCheck.status.last_sync_agentgroups
+                                .date_start_master !== 'n/a' &&
+                                vm.currentNode.healthCheck.status.last_sync_agentgroups
+                                .date_end_master !== 'n/a'
+                                ) {
+                                  const end = new Date(
+                                    vm.currentNode.healthCheck.status.last_sync_agentgroups.date_end_master
+                                    )
+                                    const start = new Date(
+                                      vm.currentNode.healthCheck.status.last_sync_agentgroups.date_start_master
+                                      )
+                                      vm.currentNode.healthCheck.status.last_sync_agentgroups.duration = `${(end -
+                                        start) /
+                                        1000}s`
+                                      }
+                                    }
+                                    
+                                    //assignFilters($scope.currentNode.name)
+                                    
+                                    
+                                    if (!$scope.$$phase) $scope.$digest()
+                                  } catch (error) {
+                                    $notificationService.showSimpleToast(error.message || error)
+                                  }
+                                })
+                                
+                                pageLoading = false
+                                
+                                submitTokens()
+                                
+                                DashboardController.ready()
+                                
+                                
+                                /**
+                                * When controller is destroyed
+                                */
+                                $scope.$on('$destroy', () => {
+                                  alertSummary = null
+                                  alertSummarySearch.cancel()
+                                  alertNodeSummary = null
+                                  alertNodeSummarySearch.cancel()
+                                  input1 = null
+                                  alertSummarySearch = null
+                                  alertNodeSummarySearch = null
+                                })
+                              })
+                            })
