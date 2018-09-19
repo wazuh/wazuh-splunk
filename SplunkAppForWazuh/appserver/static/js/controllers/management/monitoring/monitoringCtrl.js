@@ -46,10 +46,6 @@ define([
       
       let filters = $currentDataService.getSerializedFilters()
       
-      let nodeSearch = (vm.currentNode && vm.currentNode.node && vm.currentNode.type !== 'worker') ?
-      `${filters} cluster.node=${vm.currentNode.node} sourcetype=wazuh | timechart span=2h count` :
-      `${filters} sourcetype=wazuh | timechart span=2h count` 
-      
       vm.status = 'yes'
       const currentApi = $currentDataService.getApi()
       vm.currentApi = currentApi.clusterName || currentApi.managerName 
@@ -264,56 +260,6 @@ define([
         "el": $('#topNodes')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
-      // Alerts per node vis
-      alertsNodeSearch = new SearchManager({
-        "id": `alertsNodeSearch${epoch}`,
-        "cancelOnUnload": true,
-        "earliest_time": "$when.earliest$",
-        "sample_ratio": 1,
-        "status_buckets": 0,
-        "latest_time": "$when.latest$",
-        "search": nodeSearch,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-      
-      alertsNode = new ChartElement({
-        "id": `alertsNode${epoch}`,
-        "trellis.size": "medium",
-        "charting.axisY2.scale": "inherit",
-        "charting.chart.showDataLabels": "all",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.drilldown": "none",
-        "charting.chart": "column",
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.chart.nullValueMode": "gaps",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.chart.style": "shiny",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisX.scale": "linear",
-        "trellis.enabled": "0",
-        "charting.axisY2.enabled": "0",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "charting.axisY.scale": "linear",
-        "managerid": `alertsNodeSearch${epoch}`,
-        "el": $('#overviewNode')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-      
       if (enabled === 'no') {
         vm.isClusterEnabled = false
         
@@ -365,20 +311,75 @@ define([
       nodes.master_node = vm.configuration.node_name
       
       const launchSearches = () => {
-        // $state.reload()
-        console.log('launch searches')
-        $state.go($state.current, {isClusterEnabled:vm.isClusterEnabled, isClusterRunning:vm.isClusterRunning,showConfig: vm.showConfig, showNodes:vm.showNodes, currentNode: vm.currentNode}, {});
-        if (input1) {
-          console.log('formutils handlevaluechange')
-          FormUtils.handleValueChange(input1)
+        alertsNodeSearch = null
+        alertsNode = null
+        let epochSearch = epoch++
+        let nodeSearch = ''
+        if (vm.currentNode && vm.currentNode.name && vm.currentNode.type !== 'worker') {
+          console.log('is not worker , filtering by ',vm.currentNode.name)
+          nodeSearch = `${filters} cluster.node=node01 sourcetype=wazuh | timechart span=2h count`
+        } else {
+          nodeSearch = `${filters} sourcetype=wazuh | timechart span=2h count`
         }
-        submitTokens()
+        
+        // Alerts per node vis
+        alertsNodeSearch = new SearchManager({
+          "id": `alertsNodeSearch${epochSearch}`,
+          "cancelOnUnload": true,
+          "earliest_time": "$when.earliest$",
+          "sample_ratio": 1,
+          "status_buckets": 0,
+          "latest_time": "$when.latest$",
+          "search": nodeSearch,
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" })
+        alertsNodeSearch.cancel()
+
+        alertsNode = new ChartElement({
+          "id": `alertsNode${epochSearch}`,
+          "trellis.size": "medium",
+          "charting.axisY2.scale": "inherit",
+          "charting.chart.showDataLabels": "all",
+          "charting.chart.stackMode": "default",
+          "resizable": true,
+          "charting.axisTitleY2.visibility": "visible",
+          "charting.drilldown": "none",
+          "charting.chart": "column",
+          "charting.layout.splitSeries.allowIndependentYRanges": "0",
+          "charting.chart.nullValueMode": "gaps",
+          "trellis.scales.shared": "1",
+          "charting.layout.splitSeries": "0",
+          "charting.axisTitleX.visibility": "collapsed",
+          "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+          "charting.chart.style": "shiny",
+          "charting.axisTitleY.visibility": "visible",
+          "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+          "charting.chart.bubbleMinimumSize": "10",
+          "charting.axisX.scale": "linear",
+          "trellis.enabled": "0",
+          "charting.axisY2.enabled": "0",
+          "charting.legend.placement": "none",
+          "charting.chart.bubbleSizeBy": "area",
+          "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+          "charting.chart.bubbleMaximumSize": "50",
+          "charting.chart.sliceCollapsingThreshold": "0.01",
+          "charting.axisY.scale": "linear",
+          "managerid": `alertsNodeSearch${epochSearch}`,
+          "el": $('#overviewNode')
+        }, { tokens: true, tokenNamespace: "submitted" }).render()
+        
+        alertsNodeSearch.startSearch()
       }
       
       $scope.$on('wazuhShowClusterNode', async (event, parameters) => {
         try {
-          launchSearches()
           vm.currentNode = parameters.node
+          launchSearches()
           const data = await $requestService.apiReq(`/cluster/healthcheck`, {
             node: vm.currentNode.name
           })
