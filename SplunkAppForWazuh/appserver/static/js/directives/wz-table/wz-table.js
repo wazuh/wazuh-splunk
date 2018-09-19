@@ -121,6 +121,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         $scope.nextPage = async currentPage => {
           try {
+            $scope.error = false
             if (!currentPage && ($scope.currentPage < $scope.pagedItems.length - 1)) {
               $scope.currentPage++
             }
@@ -134,6 +135,8 @@ define(['../module', 'underscore'], function (directives, _) {
               if (!$scope.$$phase) $scope.$digest()
             }
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error paginating table due to ${error.message || error}. Please refresh your browser.`
             $notificationService.showSimpleToast(`Error paginating table due to ${error.message || error}`)
           }
           return
@@ -151,6 +154,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         $scope.sort = async field => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             instance.addSorting(field.value || field)
             $scope.sortValue = instance.sortValue
@@ -159,6 +163,10 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error sorting table by ${
+              field ? field.value : 'undefined'
+            }. ${error.message || error}. Please refresh your browser.`
             $notificationService.showSimpleToast(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -166,6 +174,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const search = async (term, removeFilters) => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             if (removeFilters) instance.removeFilters()
             instance.addFilter('search', term)
@@ -174,6 +183,8 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error searching. ${error.message || error}. Please refresh your browser.`;
             $notificationService.showSimpleToast(`Error searching. ${error.message || error}`)
           }
           return
@@ -181,6 +192,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const filter = async filter => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             if (_.isArray(filter)) {
               filter.forEach(item => {
@@ -206,6 +218,10 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error filtering by ${
+              filter ? filter.value : 'undefined'
+            }. ${error.message || error}. Please refresh your browser.`
             $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -236,7 +252,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const realTimeFunction = async () => {
           try {
-
+            $scope.error = false;
             while (realTime) {
               await fetch({ realTime: true, limit: 10 })
               if (!$scope.$$phase) $scope.$digest()
@@ -244,6 +260,7 @@ define(['../module', 'underscore'], function (directives, _) {
             }
           } catch (error) {
             realTime = false
+            $scope.error = `Real time feature aborted. ${error.message || error}. Please refresh your browser.`
             $notificationService.showSimpleToast(`Real time feature aborted. ${error.message || error}`)
           }
           return
@@ -268,6 +285,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const init = async () => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             await fetch()
             $tableFilterService.set(instance.filters)
@@ -275,7 +293,8 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error('error ',error)
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error while init table. ${error.message || error}. Please refresh your browser.`
             $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
           }
           return
