@@ -36,13 +36,11 @@ define([
     controllers.controller('monitoringCtrl', function ($state, $stateParams, $scope, monitoringInfo, $currentDataService, $requestService, $notificationService) {
       const vm = this
       const epoch = (new Date).getTime()
-      console.log('reloaded')
       vm.isClusterEnabled = $stateParams.isClusterEnabled || true
       vm.isClusterRunning = $stateParams.isClusterRunning || true
       vm.showConfig = $stateParams.isClusterRunning || false
       vm.showNodes = $stateParams.showNodes || false
       vm.currentNode = $stateParams.currentNode || null
-      console.log('current node ',vm.currentNode)
       
       let filters = $currentDataService.getSerializedFilters()
       
@@ -318,7 +316,6 @@ define([
         epochSearch++
         let nodeSearch = ''
         if (vm.currentNode && vm.currentNode.name && vm.currentNode.type !== 'worker') {
-          console.log('is not worker , filtering by ',vm.currentNode.name)
           nodeSearch = `${filters} cluster.node=node01 sourcetype=wazuh | timechart span=2h count`
         } else {
           nodeSearch = `${filters} sourcetype=wazuh | timechart span=2h count`
