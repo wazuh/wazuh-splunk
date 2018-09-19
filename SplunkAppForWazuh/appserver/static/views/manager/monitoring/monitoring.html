@@ -14,18 +14,18 @@
     <div ng-if="mmt.showConfig">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Monitoring</span>
+      <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>Monitoring</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref='mg-monitoring'>{{ mmt.currentApi }}</span>
+      <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>{{ mmt.currentApi }}</span>
       <span> / Overview</span>
     </div>
     <!-- The nodes list -->
     <div ng-if="mmt.showNodes && !mmt.currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Monitoring</span>
+      <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>Monitoring</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref='mg-monitoring'>{{ mmt.currentApi }}</span>
+      <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>{{ mmt.currentApi }}</span>
       <span> / </span>
       <span>Nodes</span>
     </div>
@@ -33,16 +33,16 @@
     <div ng-if="mmt.currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Monitoring</span>
+      <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>Monitoring</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref='mg-monitoring'>{{ mmt.currentApi }}</span>
+      <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>{{ mmt.currentApi }}</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click="mmt.goNodes()">Nodes</span>
       <span> / </span>
       <span class="wz-text-bold">{{ mmt.currentNode.name }}</span>
     </div>
-    <div style="margin-right:7px;" id='input1'></div>
-    
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>    
   </div>
   <!-- End breadcrumbs -->
   <!-- Headline -->
@@ -51,7 +51,7 @@
     <span class="md-subheader">Visualize your Wazuh cluster nodes and its agents</span>
   </div>
   <!-- End headline -->
-  <div ng-show='!vm.showConfig && !vm.showNodes'>
+  <div ng-show='!mmt.showConfig && !mmt.showNodes'>
     <div layout='row'>
       <!-- Overview card -->
       <md-card layout='column' flex class="wz-md-card">
@@ -119,7 +119,6 @@
         <span class="wz-headline-title">Top 5 nodes</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="topNodes"></div>
-        <span class="wz-padding-top-10 wz-text-center" ng-show="!rendered">There are no results for selected time range. Try another one.</span>
       </md-card-content>
     </md-card>
     
@@ -292,10 +291,10 @@
   </div>
   
   <div layout="column" ng-if="mmt.showNodes && !mmt.currentNode">
-    <div layout="row" class="md-padding">
-      <input placeholder="Filter nodes..." ng-model="mmt.custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-      aria-invalid="false" wz-enter="mmt.search(mmt.custom_search)">
-      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" ng-click="mmt.search(mmt.custom_search)">
+    <div layout="row" class='wz-padding-5'>
+      <input placeholder="Filter nodes..." ng-model="mmt.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        aria-invalid="false" wz-enter="mmt.search(mmt.custom_search)">
+      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mmt.search(mmt.custom_search)">
         <span class="fa fa-search" aria-hidden="true"></span>
       </button>
     </div>

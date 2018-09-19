@@ -51,11 +51,34 @@ define([
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
       let alertSummary
+      let pageLoading = true
       let alertSummarySearch
       let alertNodeSummary
       let alertNodeSummarySearch
+      let topNodes
+      let topNodesSearch
       let input1
+
+      vm.search = term => {
+        $scope.$broadcast('wazuhSearch', { term })
+      }
+
+      urlTokenModel.on('url:navigate', function () {
+        defaultTokenModel.set(urlTokenModel.toJSON())
+        if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+          submitTokens()
+        } else {
+          submittedTokenModel.clear()
+        }
+      })
       
+      // Initialize tokens
+      defaultTokenModel.set(urlTokenModel.toJSON())
+      
+      function submitTokens() {
+        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+        FormUtils.submitForm({ replaceState: pageLoading })
+      }
       input1 = new TimeRangeInput({
         "id": `input1${epoch}`,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -70,6 +93,16 @@ define([
         FormUtils.handleValueChange(input1)
       })
       
+      DashboardController.onReady(function () {
+        if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
+          submittedTokenModel.set({ earliest: '0', latest: '' })
+        }
+      })
+      
+      // Initialize time tokens to default
+      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+        defaultTokenModel.set({ earliest: '0', latest: '' })
+      }
       
       alertSummarySearch = new SearchManager({
         "id": `alertSummarySearch${epoch}`,
@@ -169,6 +202,55 @@ define([
         "el": $('#alertNodeSummary')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
+      topNodesSearch = new SearchManager({
+        "id": `topNodesSearch${epoch}`,
+        "cancelOnUnload": true,
+        "earliest_time": "$when.earliest$",
+        "sample_ratio": 1,
+        "status_buckets": 0,
+        "latest_time": "$when.latest$",
+        "search": `${filters} sourcetype=wazuh | top cluster.node`,
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      topNodes = new ChartElement({
+        "id": `topNodes${epoch}`,
+        "trellis.size": "large",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "pie",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": "topNodesSearch" + epoch,
+        "el": $('#topNodes')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
       if (enabled === 'no') {
         vm.isClusterEnabled = false
         
@@ -177,10 +259,18 @@ define([
         vm.status = 'no'
       }
       
+      vm.reset = () => {
+        vm.showConfig = false
+        vm.showNodes = false
+        if (!$scope.$$phase) $scope.$digest()
+      }
+
+
       const setBooleans = component => {
         vm.showConfig = component === 'showConfig'
         vm.showNodes = component === 'showNodes'
         vm.currentNode = null
+        if (!$scope.$$phase) $scope.$digest()
       }
       
       vm.goConfiguration = () => {
@@ -210,6 +300,12 @@ define([
       
       nodes.name = vm.configuration.name
       nodes.master_node = vm.configuration.node_name
+      pageLoading = false
+
+      submitTokens()
+      
+      DashboardController.ready()
+
       
       /**
       * When controller is destroyed
