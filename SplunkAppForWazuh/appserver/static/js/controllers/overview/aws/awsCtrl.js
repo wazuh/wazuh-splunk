@@ -145,7 +145,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top data.aws.source_ip_address limit=5`,
+        "search": `${filters} sourcetype=wazuh amazon | top data.aws.source_ip_address`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -161,7 +161,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | timechart span=2h count`,
+        "search": `${filters} sourcetype=wazuh amazon | timechart count`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -178,6 +178,22 @@ define([
         "status_buckets": 0,
         "latest_time": "$when.latest$",
         "search": `${filters} sourcetype=wazuh amazon | top data.aws.id`,
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      mostCommonEventsSearch = new SearchManager({
+        "id": `mostCommonEventsSearch${epoch}`,
+        "cancelOnUnload": true,
+        "earliest_time": "$when.earliest$",
+        "sample_ratio": 1,
+        "status_buckets": 0,
+        "latest_time": "$when.latest$",
+        "search": `${filters} sourcetype=wazuh amazon | top data.aws.eventName`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -209,6 +225,22 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
+        "search": `${filters} sourcetype=wazuh amazon | top "data.aws.source" limit=5`,
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      topSourcesSearch = new SearchManager({
+        "id": `topSourcesSearch${epoch}`,
+        "cancelOnUnload": true,
+        "earliest_time": "$when.earliest$",
+        "sample_ratio": 1,
+        "status_buckets": 0,
+        "latest_time": "$when.latest$",
         "search": `${filters} sourcetype=wazuh amazon | top "data.aws.log_info.s3bucket"`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -225,7 +257,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top rule.id, rule.description`,
+        "search": `${filters} sourcetype=wazuh amazon | top rule.id, rule.description limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -459,7 +491,7 @@ define([
         "charting.chart.bubbleMaximumSize": "50",
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
-        "managerid": `topSourcesSearch${epoch}`,
+        "managerid": `mostCommonEventsSearch${epoch}`,
         "el": $('#mostCommonEvents')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
