@@ -34,10 +34,11 @@ define([
   UrlTokenModel) {
     'use strict'
     
-    controllers.controller('awsCtrl', function ($scope, $currentDataService, $state, $notificationService) {
+    controllers.controller('awsCtrl', function ($scope, $currentDataService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
-  
+      $currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
+
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
@@ -145,7 +146,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top data.aws.source_ip_address`,
+        "search": `${filters} sourcetype=wazuh | top data.aws.source_ip_address`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -161,7 +162,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | timechart count`,
+        "search": `${filters} sourcetype=wazuh  | timechart count`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -177,7 +178,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top data.aws.id`,
+        "search": `${filters} sourcetype=wazuh  | top data.aws.id`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -193,7 +194,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top data.aws.eventName`,
+        "search": `${filters} sourcetype=wazuh  | top data.aws.eventName limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -225,7 +226,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top "data.aws.source" limit=5`,
+        "search": `${filters} sourcetype=wazuh  | top "data.aws.source" limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -241,7 +242,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top "data.aws.log_info.s3bucket"`,
+        "search": `${filters} sourcetype=wazuh  | top "data.aws.log_info.s3bucket"`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -257,7 +258,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh amazon | top rule.id, rule.description limit=5`,
+        "search": `${filters} sourcetype=wazuh  | top rule.id, rule.description limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
