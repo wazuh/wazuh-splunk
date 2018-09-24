@@ -9,6 +9,7 @@ define([
   './overview/overviewGdprCtrl',
   './overview/overviewWelcomeCtrl',
   './overview/aws/awsCtrl',
+  './overview/osquery/osqueryCtrl',
   './management/managerCtrl',
   './management/logs/managerLogsCtrl',
   './management/rules/managerRulesetCtrl',
