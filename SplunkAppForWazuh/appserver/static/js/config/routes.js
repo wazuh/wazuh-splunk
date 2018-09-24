@@ -67,10 +67,23 @@ define(['./module'], function (module) {
       })
       // Overview - FIM
       .state('ow-osquery', {
-        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/osquery/osquery-fim.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/osquery/osquery.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ow-osquery') },
         controller: 'osqueryCtrl',
         controllerAs: 'oqc',
+        resolve: {
+          osquery: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
       })
       // Overview - audit
       .state('ow-audit', {

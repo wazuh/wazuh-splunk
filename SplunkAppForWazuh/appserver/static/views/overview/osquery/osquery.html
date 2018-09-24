@@ -7,12 +7,44 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
-
+  
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
-
+  
   <!-- first row  -->
   <div id="row2" layout="row">
+    <md-card flex="40" class="wz-md-card">
+      <md-card-content class="wazuh-column" ng-show="oqc.osqueryWodle">
+        <span class="wz-headline-title">Wodle configuration</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row">
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10"></div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Add labels</p>
+              <p class="wz-text-right color-grey">{{oqc.osqueryWodle.add_labels}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10"></div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Configuration path</p>
+              <p class="wz-text-right color-grey">{{oqc.osqueryWodle.config_path}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Disabled</p>
+              <p class="wz-text-right color-grey">{{oqc.osqueryWodle.disabled}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Log path</p>
+              <p class="wz-text-right color-grey">{{oqc.osqueryWodle.log_path}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Run daemon</p>
+              <p class="wz-text-right color-grey">{{(oqc.osqueryWodle.run_daemon)}}</p>
+            </div>
+          </div>
+        </div>
+      </md-card-content>
+    </md-card>
     <!-- first row - first vis -->
     <md-card flex="60" class="wz-md-card">
       <md-card-content class="wazuh-column">
@@ -21,60 +53,36 @@
         <div id='alertsOverTime'></div>
       </md-card-content>
     </md-card>
+    
+  </div>
+  
+  <!-- second row  -->
+  <div id="row2" layout="row">
     <!-- first row - second vis -->
     <md-card flex="40" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Most common events</span>
+        <span class="wz-headline-title">Most common packs</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='mostCommonEvents'></div>
       </md-card-content>
     </md-card>
-  </div>
-
-  <!-- second row  -->
-  <div id="row2" layout="row">
-    <!-- second row - first vis -->
-    <md-card flex="33" class="wz-md-card">
+    <!-- first row - first vis -->
+    <md-card flex="60" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 instances</span>
+        <span class="wz-headline-title">Alerts evolution - Top 5 agents</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topInstances'></div>
+        <div id='alertsEvolution'></div>
       </md-card-content>
     </md-card>
-    <!-- second row - second vis -->
-    <md-card flex="33" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 source IP addresses</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topAddrs'></div>
-      </md-card-content>
-    </md-card>
-    <!-- second row - third vis -->
-    <md-card flex="33" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 sources</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topSources'></div>
-      </md-card-content>
-    </md-card>
+    
   </div>
   <div id="row3" layout="row">
     <!-- second row - third vis -->
     <md-card flex="100" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Geolocation</span>
+        <span class="wz-headline-title">Top 5 packs</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='map'></div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <div id="row3" layout="row">
-    <!-- second row - third vis -->
-    <md-card flex="100" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 buckets</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topBuckets'></div>
+        <div id='topPacks'></div>
       </md-card-content>
     </md-card>
     <!-- second row - third vis -->
