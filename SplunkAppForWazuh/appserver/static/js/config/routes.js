@@ -65,6 +65,13 @@ define(['./module'], function (module) {
         controller: 'overviewFimCtrl',
         controllerAs: 'ofc',
       })
+      // Overview - FIM
+      .state('ow-osquery', {
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/osquery/osquery-fim.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-osquery') },
+        controller: 'osqueryCtrl',
+        controllerAs: 'oqc',
+      })
       // Overview - audit
       .state('ow-audit', {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
