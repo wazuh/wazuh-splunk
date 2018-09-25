@@ -103,11 +103,11 @@ define([
         deletedFilesSearch.cancel()
         newFilesSearch.cancel()
         modifiedFilesSearch.cancel()
-        // alertsVolumeSearch.cancel()
-        // eventsSummarySearch.cancel()
-        // topRulesSearch.cancel()
-        // whodataUsageSearch.cancel()
-        // topUsersSearch.cancel()
+        alertsVolumeSearch.cancel()
+        eventsSummarySearch.cancel()
+        topRulesSearch.cancel()
+        whodataUsageSearch.cancel()
+        topUsersSearch.cancel()
 
         // Free memory
         deletedFiles = null
@@ -146,6 +146,58 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
+      whodataUsageSearch = new SearchManager({
+        "id": `whodataUsageSearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} sourcetype=wazuh syscheck
+                  | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
+                  | stats count BY WHODATA
+                  | addcoltotals count labelfield=WHODATA label=Total
+                  | where NOT WHODATA="NOWHO"`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      whodataUsage = new ChartElement({
+        "id": `whodataUsage${epoch}`,
+        "trellis.size": "medium",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "all",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "column",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "collapsed",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "none",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": `whodataUsageSearch${epoch}`,
+        "el": $('#whodataUsage')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       deletedFiles = new ChartElement({
         "id": `deletedFiles${epoch}`,
@@ -178,6 +230,58 @@ define([
         "charting.axisY.scale": "linear",
         "managerid": `deletedFilesSearch${epoch}`,
         "el": $('#deletedFiles')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      alertsVolumeSearch = new SearchManager({
+        "id": `alertsVolumeSearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} sourcetype=wazuh | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
+              | stats count BY SYSCHECK
+              | addcoltotals count labelfield=SYSCHECK label=Total
+              | where NOT SYSCHECK="NO"`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      alertsVolume = new ChartElement({
+        "id": `alertsVolume${epoch}`,
+        "trellis.size": "large",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "pie",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": `alertsVolumeSearch${epoch}`,
+        "el": $('#alertsVolume')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       newFilesSearch = new SearchManager({
@@ -361,36 +465,34 @@ define([
         "el": $('#topRules')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      // topUsersSearch = new SearchManager({
-      //   "id": `topUsersSearch${epoch}`,
-      //   "cancelOnUnload": true,
-      //   "sample_ratio": 1,
-      //   "earliest_time": "$when.earliest$",
-      //   "status_buckets": 0,
-      //   "search": `${filters} sourcetype=wazuh syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-      //   "latest_time": "$when.latest$",
-      //   "app": utils.getCurrentApp(),
-      //   "auto_cancel": 90,
-      //   "preview": true,
-      //   "tokenDependencies": {
-      //   },
-      //   "runWhenTimeIsUndefined": false
-      // }, { tokens: true, tokenNamespace: "submitted" })
+      topUsersSearch = new SearchManager({
+        "id": `topUsersSearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
 
-      // topUsers = new TableElement({
-      //   "id": `topUsers${epoch}`,
-      //   "dataOverlayMode": "none",
-      //   "drilldown": "cell",
-      //   "percentagesRow": "false",
-      //   "rowNumbers": "false",
-      //   "totalsRow": "false",
-      //   "wrap": "true",
-      //   "managerid": `topUsersSearch${epoch}`,
-      //   "el": $('#topUsers')
-      // }, { tokens: true, tokenNamespace: "submitted" }).render()
+      topUsers = new TableElement({
+        "id": `topUsers${epoch}`,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "false",
+        "totalsRow": "false",
+        "wrap": "true",
+        "managerid": `topUsersSearch${epoch}`,
+        "el": $('#topUsers')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-
-      
 
       input1 = new TimeRangeInput({
         "id": `input1${epoch}`,
