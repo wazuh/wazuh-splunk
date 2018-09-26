@@ -29,10 +29,10 @@ define([
   TimeRangeInput,
   SearchManager,
   UrlTokenModel) {
-
+    
     'use strict'
-
-    controllers.controller('overviewFimCtrl', function ($scope, $state, $stateParams, $currentDataService) {
+    
+    controllers.controller('overviewFimCtrl', function ($scope, $state, $getIdService, $currentDataService) {
       const vm = this
       const epoch = (new Date).getTime()
       // Create token namespaces
@@ -40,9 +40,9 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
+      
       let filters = $currentDataService.getSerializedFilters()
-
+      
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -51,43 +51,43 @@ define([
           submittedTokenModel.clear()
         }
       })
-
+      
       /**
-       * Fires all the queries
-       */
+      * Fires all the queries
+      */
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }
-
+      
       $scope.$on('deletedFilter', () => {
         launchSearches()
       })
-
+      
       $scope.$on('barFilter', () => {
         launchSearches()
       })
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
-
+      
       const submitTokens = () => {
         FormUtils.submitForm({ replaceState: pageLoading })
       }
-
+      
       const setToken = (name, value) => {
         defaultTokenModel.set(name, value)
         submittedTokenModel.set(name, value)
       }
-
+      
       const unsetToken = (name) => {
         defaultTokenModel.unset(name)
         submittedTokenModel.unset(name)
       }
-
-
+      
+      
       let pageLoading = true
-
+      
       let eventsOverTimeSearch = ''
       let topUserOwnersSearch = ''
       let topGroupOwnersSearch = ''
@@ -106,10 +106,10 @@ define([
       let rootUserFileChangesElement = ''
       let wordWritableFilesElement = ''
       let eventsSummaryElement = ''
-
+      
       /**
-       * When controller is destroyed
-       */
+      * When controller is destroyed
+      */
       $scope.$on('$destroy', () => {
         eventsOverTimeSearch.cancel()
         topUserOwnersSearch.cancel()
@@ -140,8 +140,8 @@ define([
         wordWritableFilesElement = null
         eventsSummaryElement = null
       })
-
-
+      
+      
       // Listen for a change to the token tokenTotalAlerts value
       filesAddedSearch = new SearchManager({
         "id": "filesAddedSearch" + epoch,
@@ -158,7 +158,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new SearchEventHandler({
         managerid: "filesAddedSearch" + epoch,
         event: "done",
@@ -189,7 +189,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       // Listen for a change to the token tokenTotalAlerts value
       filesModifiedSearch = new SearchManager({
         "id": "filesModifiedSearch" + epoch,
@@ -206,7 +206,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new SearchEventHandler({
         managerid: "filesModifiedSearch" + epoch,
         event: "done",
@@ -237,7 +237,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       // Listen for a change to the token tokenTotalAlerts value
       filesDeletedSearch = new SearchManager({
         "id": "filesDeletedSearch" + epoch,
@@ -254,7 +254,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new SearchEventHandler({
         managerid: "filesDeletedSearch" + epoch,
         event: "done",
@@ -285,7 +285,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       eventsOverTimeSearch = new SearchManager({
         "id": "eventsOverTimeSearch" + epoch,
         "cancelOnUnload": true,
@@ -301,8 +301,8 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-
+      
+      
       eventsOverTimeElement = new ChartElement({
         "id": "eventsOverTimeElement" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -335,7 +335,7 @@ define([
         "managerid": "eventsOverTimeSearch" + epoch,
         "el": $('#eventsOverTimeElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
       topUserOwnersSearch = new SearchManager({
         "id": "topUserOwnersSearch" + epoch,
         "cancelOnUnload": true,
@@ -351,7 +351,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       topUserOwnersElement = new ChartElement({
         "id": "topUserOwnersElement" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -384,8 +384,8 @@ define([
         "managerid": "topUserOwnersSearch" + epoch,
         "el": $('#topUserOwnersElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       topGroupOwnersSearch = new SearchManager({
         "id": "topGroupOwnersSearch" + epoch,
         "cancelOnUnload": true,
@@ -401,7 +401,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       topGroupOwnersElement = new ChartElement({
         "id": "topGroupOwnersElement" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -434,7 +434,7 @@ define([
         "managerid": "topGroupOwnersSearch" + epoch,
         "el": $('#topGroupOwnersElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
       topFileChangesSearch = new SearchManager({
         "id": "topFileChangesSearch" + epoch,
         "cancelOnUnload": true,
@@ -450,7 +450,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       topFileChangesElement = new ChartElement({
         "id": "topFileChangesElement" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -483,7 +483,7 @@ define([
         "managerid": "topFileChangesSearch" + epoch,
         "el": $('#topFileChangesElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
       rootUserFileChangesSearch = new SearchManager({
         "id": "rootUserFileChangesSearch" + epoch,
         "cancelOnUnload": true,
@@ -499,7 +499,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       rootUserFileChangesElement = new ChartElement({
         "id": "rootUserFileChangesElement" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -532,8 +532,8 @@ define([
         "managerid": "topFileChangesSearch" + epoch,
         "el": $('#rootUserFileChangesElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       wordWritableFilesSearch = new SearchManager({
         "id": "wordWritableFilesSearch" + epoch,
         "cancelOnUnload": true,
@@ -549,7 +549,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       wordWritableFilesElement = new ChartElement({
         "id": "wordWritableFilesElement" + epoch,
         "numberPrecision": "0",
@@ -572,7 +572,7 @@ define([
         "managerid": "wordWritableFilesSearch" + epoch,
         "el": $('#wordWritableFilesElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
       eventsSummarySearch = new SearchManager({
         "id": "eventsSummarySearch" + epoch,
         "cancelOnUnload": true,
@@ -588,7 +588,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       eventsSummaryElement = new TableElement({
         "id": "eventsSummaryElement" + epoch,
         "dataOverlayMode": "heatmap",
@@ -600,7 +600,21 @@ define([
         "managerid": "eventsSummarySearch" + epoch,
         "el": $('#eventsSummaryElement')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
+      eventsSummaryElement.on("click", async (e) => {
+        try{
+          if (e.field !== undefined) {
+            e.preventDefault()
+            if (e.data['click.value']=== e.data['click.value2']) {
+              const id = await $getIdService.agent(e.data['click.value'])
+              $state.go('agent-overview', { id:`${id}` })
+            }
+          }
+        } catch(err) {
+          $notificationService.showSimpleToast(err)
+        }
+      })
+      
       input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -609,26 +623,27 @@ define([
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
       }, { tokens: true }).render()
-
+      
       input1.on("change", function (newValue) {
         if (newValue && input1)
-          FormUtils.handleValueChange(input1)
+        FormUtils.handleValueChange(input1)
       })
-
+      
       DashboardController.onReady(function () {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })
         }
       })
-
+      
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
         defaultTokenModel.set({ earliest: '0', latest: '' })
       }
-
+      
       submitTokens()
-
+      
       DashboardController.ready()
-
+      
     })
   })
+  
