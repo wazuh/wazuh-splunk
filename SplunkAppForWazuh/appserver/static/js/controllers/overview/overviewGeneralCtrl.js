@@ -442,7 +442,6 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
-
       overviewSearch14 = new SearchManager({
         "id": "search14" + epoch,
         "cancelOnUnload": true,
