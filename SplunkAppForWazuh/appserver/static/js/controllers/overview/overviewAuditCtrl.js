@@ -839,9 +839,7 @@ define([
           if (e.field !== undefined) {
             e.preventDefault()
             if (e.data['click.value']=== e.data['click.value2']) {
-              console.log('the name ',e.data['click.value'])
               const id = await $getIdService.agent(e.data['click.value'])
-              console.log('the id ',id)
               $state.go('agent-overview', { id:`${id}` })
             }
           }

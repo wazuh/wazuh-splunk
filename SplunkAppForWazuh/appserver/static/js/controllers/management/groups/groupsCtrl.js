@@ -10,7 +10,6 @@ define(['../../module'], function (controllers) {
     vm.loadGroup = async (group, firstTime) => {
       try {
         if (!firstTime) vm.lookingGroup = true
-        console.log('group ',group)
         const count = await $requestService.apiReq(`/agents/groups/${group.name}/files`, { limit: 1 })
         vm.totalFiles = count.data.data.totalItems
         vm.fileViewer = false
