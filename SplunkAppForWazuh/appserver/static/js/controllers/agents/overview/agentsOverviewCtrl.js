@@ -28,12 +28,12 @@ define(['../../module'], function (controllers) {
     
     vm.goGroups = async (group) => {
       try {
-        const groupInfo = await $requestService.apiReq(`/agents/groups/${group}/files}`)
-        console.log('groupinfo ',groupInfo)
+        const groupInfo = await $requestService.apiReq(`/agents/groups/`)
+        const groupData = groupInfo.data.data.items.filter( item => item.name === group)
         if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
           throw Error('Missing fields')
         }
-        $state.go(`mg-groups`, { group: {...groupInfo} } )
+        $state.go(`mg-groups`, { group: groupData[0] } )
       } catch (err) {
         console.error('err ',err)
         $notificationService.showSimpleToast('Error fetching group data')
