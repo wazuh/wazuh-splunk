@@ -15,7 +15,6 @@ define(['../../module'], function (controllers) {
         vm.totalFiles = count.data.data.totalItems
         vm.fileViewer = false
         vm.currentGroup = group
-        vm.fileViewer = false
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
         $notificationService.showSimpleToast(error, 'Groups')
@@ -104,11 +103,6 @@ define(['../../module'], function (controllers) {
       }
       return
     }
-
-    // Resetting the factory configuration
-    $scope.$on("$destroy", () => {
-
-    })
 
     $scope.$watch('lookingGroup', value => {
       if (!value) {

@@ -24,25 +24,6 @@ define(['../module'], function (module) {
         return Promise.reject(err.message || err)
       }
     }
-    /**
-    * Returns the id of an group
-    * @param {String} : the group name
-    * @returns {Number} : the id of the group
-    */
-    async group(group){
-      try {
-        if (group && typeof group === 'string') {
-          const data = await this.req(`/agents?name=${agent}`)
-          console.log('data ',data)
-          console.log('id ',data.data.data.items[0].id)
-          return data.data.data.items[0].id
-        } else {
-          throw Error('Invalid agent format')
-        }
-      } catch (err) {
-        return Promise.reject(err.message || err)
-      }
-    }
   }
 
   module.service('$getIdService', GetIdService)
