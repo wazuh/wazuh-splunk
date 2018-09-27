@@ -186,21 +186,6 @@ define(['./module'], function (module) {
       .state('mg-conf', {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-conf') },
-        controller: 'configurationCtrl',
-        controllerAs: 'mcc',
-        resolve: {
-          managerConf: ['$requestService', ($requestService) => {
-            return $requestService.apiReq('/manager/configuration')
-              .then(function (response) {
-                return response
-              }, function (response) {
-                return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
-              })
-          }]
-        }
       })
 
       // Manager - Status

@@ -1,83 +1,35 @@
-define(['../../module'], function (controllers) {
+define(['../../module','../../../utils/config-handler'], function (controllers, ConfigHandler) {
 
   'use strict'
 
-  controllers.controller('configurationCtrl', function ($scope, $requestService, $beautifierJson, managerConf, $notificationService) {
-    const vm = this
-    vm.load = true
-    vm.isArray = Array.isArray
-
-    vm.switchItem = item => {
-      vm.XMLContent = false
-      vm.JSONContent = false
-      vm.selectedItem = item
-      if (!$scope.$$phase) $scope.$digest()
+  class ConfigurationController {
+    constructor($scope,$requestService, $notificationService) {
+      this.$scope = $scope
+      this.errorHandler = $notificationService
+      this.apiReq = $requestService
+      this.$scope.load = false
+      this.$scope.isArray = Array.isArray
+      this.configurationHandler = new ConfigHandler(this.apiReq, this.errorHandler)
+      this.$scope.currentConfig = null
+      this.$scope.configurationTab = ''
+      this.$scope.configurationSubTab = ''
+      this.$scope.integrations = {}
+      this.$scope.selectedItem = 0
     }
-
-    // vm.getXML = name => {
-    //   vm.JSONContent = false
-    //   if (vm.XMLContent) {
-    //     vm.XMLContent = false
-    //   } else {
-    //     try {
-    //       vm.XMLContent = $XMLBeautifier(js2xmlparser.parse(name, configRaw[name]))
-    //     } catch (error) { vm.XMLContent = false }
-    //   }
-    //   if (!$scope.$$phase) $scope.$digest()
-    // }
-
-    vm.getJSON = name => {
-      vm.XMLContent = false
-      if (vm.JSONContent) {
-        vm.JSONContent = false
-      } else {
-        try {
-          vm.JSONContent = $beautifierJson.prettyPrint(configRaw[name])
-        } catch (error) { vm.JSONContent = false }
-      }
-      if (!$scope.$$phase) $scope.$digest()
+  
+    $onInit() {
+      // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
+      this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
+      this.$scope.isString = item => typeof item === 'string'
+      this.$scope.hasSize = obj => obj && typeof obj === 'object' && Object.keys(obj).length
+      this.$scope.switchConfigTab = (configurationTab, sections) => this.configurationHandler.switchConfigTab(configurationTab, sections, this.$scope)
+      this.$scope.switchWodle = wodleName => this.configurationHandler.switchWodle(wodleName, this.$scope)
+      this.$scope.switchConfigurationTab = configurationTab => this.configurationHandler.switchConfigurationTab(configurationTab, this.$scope)
+      this.$scope.switchConfigurationSubTab = configurationSubTab => this.configurationHandler.switchConfigurationSubTab(configurationSubTab, this.$scope)
+      this.$scope.updateSelectedItem = i => this.$scope.selectedItem = i
+      this.$scope.getIntegration = list => this.configurationHandler.getIntegration(list, this.$scope)
     }
-    const configRaw = {}
-    //Functions
-    const load = async () => {
-      try {
-        const data = managerConf.data.data
-        Object.assign(configRaw, angular.copy(data))
-        vm.managerConfiguration = data
+  }
 
-        if (vm.managerConfiguration && vm.managerConfiguration['active-response']) {
-
-          for (const ar of vm.managerConfiguration['active-response']) {
-            const rulesArray = ar.rules_id ?
-              ar.rules_id.split(',') :
-              []
-            if (ar.rules_id && rulesArray.length > 1) {
-              const tmp = []
-
-              for (const id of rulesArray) {
-                const rule = await $requestService.apiReq(`/rules/${id}`)
-                tmp.push(rule.data.data.items[0])
-              }
-
-              ar.rules = tmp
-            } else if (ar.rules_id) {
-              const rule = await $requestService.apiReq(`/rules/${ar.rules_id}`)
-              ar.rule = rule.data.data.items[0]
-            }
-          }
-        }
-
-        // vm.raw = $beautifierJson.prettyPrint(data.data.data)
-        vm.load = false
-        if (!$scope.$$phase) $scope.$digest()
-        return
-      } catch (error) {
-        $notificationService.showSimpleToast('error ', error)
-      }
-      return
-    }
-    load()
-    $scope.$on("$destroy", () => {
-    })
-  })
+  controllers.controller('configurationCtrl', ConfigurationController)
 })
