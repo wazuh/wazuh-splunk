@@ -33,9 +33,7 @@ define([
             }
             try {
               const partialResult = await apiReq.apiReq(
-                'GET',
-                `/agents/${agentId}/config/${component}/${configuration}`,
-                {}
+                `/agents/${agentId}/config/${component}/${configuration}`
                 )
                 result[`${component}-${configuration}`] = partialResult.data.data
               } catch (error) {

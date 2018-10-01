@@ -6,17 +6,17 @@
     <div layout="row" layout-padding>
       <!-- Welcome section -->
       <div ng-if="configurationTab === 'welcome'">
-        <span class="wz-text-link cursor-pointer" ng-click="switchTab('welcome')">Management</span>
+        <span class="wz-text-link cursor-pointer" ui-sref='manager' >Management</span>
         <span> / </span>
-        <span>{{ tabNames[tab] }}</span>
+        <span>Configuration</span>
       </div>
       <!-- First-level section -->
       <div ng-if="configurationTab !== 'welcome'">
-        <span class="wz-text-link cursor-pointer" ng-click="switchTab('welcome')">Management</span>
+        <span class="wz-text-link cursor-pointer" ui-sref='manager' >Management</span>
         <span> / </span>
-        <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">{{ tabNames[tab] }}</span>
+        <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
         <span> / </span>
-        <span>{{ tabNames[configurationTab] }}</span>
+        <span>{{ configurationTab }}</span>
       </div>
     </div>
     <!-- End breadcrumbs -->
@@ -347,7 +347,7 @@
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -520,8 +520,8 @@ value="currentConfig['analysis-global'].global.zeromq_uri">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -546,8 +546,8 @@ value="currentConfig['analysis-global'].global.zeromq_uri">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -606,8 +606,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -667,8 +667,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -693,8 +693,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -768,7 +768,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -828,8 +828,8 @@ value="currentConfig['com-cluster'].hidden">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -854,8 +854,8 @@ value="currentConfig['com-cluster'].hidden">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -930,7 +930,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -1024,8 +1024,8 @@ value="currentConfig['auth-auth'].auth.ciphers">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1050,8 +1050,8 @@ value="currentConfig['auth-auth'].auth.ciphers">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1142,8 +1142,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1217,8 +1217,8 @@ value="currentConfig['mail-alerts'].email_alerts[selectedItem].do_not_group">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1243,8 +1243,8 @@ value="currentConfig['mail-alerts'].email_alerts[selectedItem].do_not_group">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1304,8 +1304,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1343,8 +1343,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1369,8 +1369,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1429,8 +1429,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1468,8 +1468,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1494,8 +1494,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1554,8 +1554,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1640,8 +1640,8 @@ value="currentConfig['monitor-reports'].reports[selectedItem].user">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1666,8 +1666,8 @@ value="currentConfig['monitor-reports'].reports[selectedItem].user">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -1727,8 +1727,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1778,8 +1778,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1804,8 +1804,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -1880,7 +1880,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -2000,8 +2000,8 @@ value="integrations['pagerduty'].alert_format">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2026,8 +2026,8 @@ value="integrations['pagerduty'].alert_format">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2139,8 +2139,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2177,8 +2177,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2289,8 +2289,8 @@ value="currentConfig['syscheck-rootcheck'].rootcheck.windows_malware">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2315,8 +2315,8 @@ value="currentConfig['syscheck-rootcheck'].rootcheck.windows_malware">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2416,8 +2416,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2463,8 +2463,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2505,8 +2505,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2531,8 +2531,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2630,8 +2630,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2673,8 +2673,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2752,8 +2752,8 @@ value="currentConfig['cis-cat'].time">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2778,8 +2778,8 @@ value="currentConfig['cis-cat'].time">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2877,8 +2877,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2925,8 +2925,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -2969,8 +2969,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -2995,8 +2995,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3079,7 +3079,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -3157,8 +3157,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3183,8 +3183,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3265,7 +3265,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -3348,8 +3348,8 @@ value="currentConfig.syscollector.ports_all">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3374,8 +3374,8 @@ value="currentConfig.syscollector.ports_all">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3464,8 +3464,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -3528,8 +3528,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3554,8 +3554,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3634,7 +3634,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -3722,8 +3722,8 @@ value="currentConfig.commands[selectedItem].skip_verification">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3748,8 +3748,8 @@ value="currentConfig.commands[selectedItem].skip_verification">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3838,8 +3838,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -3924,8 +3924,8 @@ value="currentConfig['logcollector-localfile'].localfile[selectedItem].target">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -3950,8 +3950,8 @@ value="currentConfig['logcollector-localfile'].localfile[selectedItem].target">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4013,8 +4013,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -4073,8 +4073,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4099,8 +4099,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4208,8 +4208,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -4292,8 +4292,8 @@ ng-if="configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4338,8 +4338,8 @@ ng-if="configurationSubTab === 'fim-monitored' && currentConfig && currentConfig
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4462,8 +4462,8 @@ ng-if="configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['s
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4507,8 +4507,8 @@ ng-if="configurationSubTab === 'fim-windows' && currentConfig && currentConfig['
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4575,8 +4575,8 @@ ng-if="configurationSubTab === 'fim-windows' && currentConfig && currentConfig['
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4601,8 +4601,8 @@ ng-if="configurationSubTab === 'fim-windows' && currentConfig && currentConfig['
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4677,7 +4677,7 @@ md-is-locked-open="true">
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
             <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -4742,8 +4742,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4768,8 +4768,8 @@ md-is-locked-open="true">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4867,8 +4867,8 @@ md-is-locked-open="true">
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-          <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+          <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
         
@@ -4947,8 +4947,8 @@ value="currentConfig['aws-s3'].buckets[selectedItem].regions">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -4995,8 +4995,8 @@ value="currentConfig['aws-s3'].skip_on_error">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     
@@ -5021,8 +5021,8 @@ value="currentConfig['aws-s3'].skip_on_error">
       </div>
       <span flex></span>
       <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-      <span class="small">&nbsp;&centerdot;&nbsp;</span>
-      <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+      <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
+      <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
     </div>
     <md-divider class="wz-margin-top-10"></md-divider>
     

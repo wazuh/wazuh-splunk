@@ -3,13 +3,13 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
   'use strict'
 
   class ConfigurationController {
-    constructor($scope,$requestService, $notificationService) {
+    constructor($scope,$requestService, $beautifierJson, $notificationService) {
       this.$scope = $scope
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.$scope.load = false
       this.$scope.isArray = Array.isArray
-      this.configurationHandler = new ConfigHandler(this.apiReq, this.errorHandler)
+      this.configurationHandler = new ConfigHandler(this.apiReq,$beautifierJson, this.errorHandler)
       this.$scope.currentConfig = null
       this.$scope.configurationTab = ''
       this.$scope.configurationSubTab = ''

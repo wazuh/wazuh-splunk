@@ -11,20 +11,20 @@
 */
 /* import js2xmlparser from 'js2xmlparser'
 import XMLBeautifier from './xml-beautifier'
-import beautifier from './json-beautifier'
-import { queryConfig } from '../services/query-config'
-import { objectWithoutProperties } from './remove-hash-key.js'
 */
 
 define([
-  './query-config'
-], function(queryConfig) {
+  './query-config',
+  './remove-hash-key',
+  '../services/xml-beautifier/xml-beautifier'
+], function(queryConfig, objectWithoutProperties, XMLBeautifier) {
   'use strict'
   
   return class ConfigurationHandler {
-    constructor($requestService, errorHandler) {
+    constructor($requestService, beautifier, errorHandler) {
       this.apiReq = $requestService
       this.errorHandler = errorHandler
+      this.beautifier = beautifier
     }
     
     buildIntegrations(list, $scope) {
@@ -146,7 +146,7 @@ define([
               * Assigns XML raw content for specific configuration
               * @param {object} config Raw content to show in XML
               */
-              /*   getXML($scope) {
+                getXML($scope) {
                 const config = {}
                 Object.assign(config, $scope.currentConfig)
                 $scope.JSONContent = false
@@ -164,7 +164,7 @@ define([
                   }
                   if (!$scope.$$phase) $scope.$digest()
                 }
-                */
+               
                 /**
                 * Assigns JSON raw content for specific configuration
                 * @param {object} config Raw content to show in JSON
@@ -178,7 +178,7 @@ define([
                   } else {
                     try {
                       const cleaned = objectWithoutProperties(config)
-                      $scope.JSONContent = beautifier.prettyPrint(cleaned)
+                      $scope.JSONContent = this.beautifier.prettyPrint(cleaned)
                     } catch (error) {
                       $scope.JSONContent = false
                     }
