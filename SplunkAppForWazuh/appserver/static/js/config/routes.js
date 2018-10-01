@@ -484,41 +484,13 @@ define(['./module'], function (module) {
         }
       })
       // agents - configuration
+      // Manager - Groups
       .state('ag-conf', {
-        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/configuration/configuration.html',
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-conf') },
-        controller: 'agentConfigCtrl',
-        controllerAs: 'acc',
+        controller: 'configurationAgentCtrl',
         params: { id: null },
-        resolve: {
-          config: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-            return $requestService.apiReq(`/agents/${id}`)
-              .then(function (response) {
-                const group = response.data.data.group || 'default'
-                return Promise.all([
-                  $requestService.apiReq(`/agents/groups/${group}/configuration`, {}),
-                  $requestService.apiReq(`/agents/groups?search=${group}`, {}),
-                  $requestService.apiReq(`/agents/groups/${group}`, {})
-                ])
-                  .then(function (responseAll) {
-                    return { response: response, responseAll: responseAll }
-                  }, function (responseAll) {
-                    console.error('error getting configuration')
-                    return responseAll
-                  })
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
-              }, function (response) {
-                console.error('error getting agents')
-                return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
-              })
-          }]
-        }
+
       })
       // agents - GDPR
       .state('ag-gdpr', {
