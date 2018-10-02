@@ -11,7 +11,8 @@
     "eslint-plugin-async-await": "^0.0.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-requirejs": "^3.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "needle": "^2.2.4"
   },
   "scripts": {
     "lint": "eslint . --ext .js -c .eslintrc.json",
