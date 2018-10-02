@@ -35,6 +35,7 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
 
+    # /custom/SplunkAppForWazuh/manager/node
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
         try:
