@@ -91,7 +91,25 @@ describe('manager-api', () => {
     }
   })
 
-  //TODO check /get_api without id param
+  it('GET /get_api without id param', async () => {
+    try {
+      const res = await needle(`get`, `${s_url}/get_api`)
+      const resBodyJson = JSON.parse(res.body)
+      //Check status
+      res.statusCode.should.be.a('number')
+      res.statusCode.should.equal(200)
+      //Force the error using lengthOf(1) because don´t recieve any api
+      chai.expect(resBodyJson).to.have.lengthOf(1); 
+    } catch (error) { 
+      error = error.actual
+      error.error.should.be.a('string')
+      error.error.should.equal('Missing ID.')
+    }
+  })
   
 })
 
+
+
+
+//- Test unitarios de splunk con mocha y chai
