@@ -3,12 +3,12 @@ require.config({
 
   // alias libraries paths.  Must set 'angular'
   paths: {
-    'angular': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.2/angular',
-    'ngAnimate': 'http://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-animate.min',
-    'ngAria': 'http://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-aria.min',
-    'ngMessages': 'http://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-messages.min',
-    'ngMaterial': 'http://ajax.googleapis.com/ajax/libs/angular_material/1.1.10/angular-material.min',
-    'ngRoute': 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.18/angular-ui-router.min',
+    'angular': 'js/libs/angular',
+    'ngAnimate': 'js/libs/animate',
+    'ngAria': 'js/libs/aria',
+    'ngMessages': 'js/libs/messages',
+    'ngMaterial': 'js/libs/material',
+    'ngRoute': 'js/libs/router',
     // Dev tools dependencies
     'brace-fold': 'js/utils/codemirror/brace-fold',
     'foldcode': 'js/utils/codemirror/foldcode',

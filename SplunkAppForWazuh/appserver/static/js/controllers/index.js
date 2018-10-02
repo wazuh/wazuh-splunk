@@ -8,6 +8,7 @@ define([
   './overview/overviewPciCtrl',
   './overview/overviewGdprCtrl',
   './overview/overviewWelcomeCtrl',
+  './overview/aws/awsCtrl',
   './management/managerCtrl',
   './management/logs/managerLogsCtrl',
   './management/rules/managerRulesetCtrl',

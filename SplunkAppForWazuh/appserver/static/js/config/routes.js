@@ -610,5 +610,12 @@ define(['./module'], function (module) {
       // controllerAs: 'dt'
     })
     
+    // =========== AWS =========== //
+    .state('aws', {
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/aws/aws.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('aws') },
+        controller: 'awsCtrl',
+        controllerAs: 'aws'
+    })  
   }])
 })
