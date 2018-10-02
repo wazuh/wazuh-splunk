@@ -65,6 +65,26 @@ define(['./module'], function (module) {
         controller: 'overviewFimCtrl',
         controllerAs: 'ofc',
       })
+      // Overview - FIM
+      .state('ow-osquery', {
+        templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/osquery/osquery.html',
+        onEnter: ($navigationService) => { $navigationService.storeRoute('ow-osquery') },
+        controller: 'osqueryCtrl',
+        controllerAs: 'oqc',
+        resolve: {
+          osquery: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+            return $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+          }]
+        }
+      })
       // Overview - audit
       .state('ow-audit', {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-audit.html',
@@ -179,7 +199,8 @@ define(['./module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/groups/groups.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('mg-groups') },
         controller: 'groupsCtrl',
-        controllerAs: 'mgr'
+        controllerAs: 'mgr',
+        params: { group: null }
       })
 
       // Manager - Groups
@@ -345,12 +366,9 @@ define(['./module'], function (module) {
           syscollector: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
             const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
             return Promise.all([
-              $requestService.apiReq(`/syscollector/${id}/hardware`),
-              $requestService.apiReq(`/syscollector/${id}/os`),
-              $requestService.apiReq(`/syscollector/${id}/netiface`),
-              $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
-              $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
-              $requestService.apiReq(`/agents/${id}`)
+              $requestService.apiReq(`/agents/groups/${group}/configuration`, {}),
+              $requestService.apiReq(`/agents/groups?search=${group}`, {}),
+              $requestService.apiReq(`/agents/groups/${group}`, {})
             ])
               .then(function (response) {
                 return response
@@ -374,7 +392,13 @@ define(['./module'], function (module) {
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
             const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-            return $requestService.apiReq(`/agents/${id}`)
+            return Promise.all([
+              $requestService.apiReq(`/agents/${id}`),
+              $requestService.apiReq(`/syscheck/${id}/last_scan`),
+              $requestService.apiReq(`/rootcheck/${id}/last_scan`),
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`)
+            ])
               .then(function (response) {
                 return response
               }, function (response) {
@@ -544,7 +568,6 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('aws') },
         controller: 'awsCtrl',
         controllerAs: 'aws'
-      })
-
+    })  
   }])
 })

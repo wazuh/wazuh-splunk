@@ -4,8 +4,27 @@ define(['../../module'], function (controllers) {
 
   'use strict'
 
-  controllers.controller('groupsCtrl', function ($scope, $state, $requestService, $beautifierJson, $notificationService) {
+  controllers.controller('groupsCtrl', function ($scope, $state, $stateParams, $requestService, $beautifierJson, $notificationService) {
     const vm = this
+
+    vm.loadGroup = async (group, firstTime) => {
+      try {
+        if (!firstTime) vm.lookingGroup = true
+        const count = await $requestService.apiReq(`/agents/groups/${group.name}/files`, { limit: 1 })
+        vm.totalFiles = count.data.data.totalItems
+        vm.fileViewer = false
+        vm.currentGroup = group
+        if (!$scope.$$phase) $scope.$digest()
+      } catch (error) {
+        $notificationService.showSimpleToast(error, 'Groups')
+      }
+      return
+    }
+
+    if ($stateParams.group) {
+      vm.loadGroup($stateParams.group)
+    }
+
     $scope.$on('groupsIsReloaded', () => {
       vm.currentGroup = false
       vm.lookingGroup = false
@@ -34,24 +53,6 @@ define(['../../module'], function (controllers) {
 
     vm.toggle = () => vm.lookingGroup = true
 
-    vm.showAgent = agent => {
-
-    }
-
-    vm.loadGroup = async (group, firstTime) => {
-      try {
-        if (!firstTime) vm.lookingGroup = true
-        const count = await $requestService.apiReq(`/agents/groups/${group.name}/files`, { limit: 1 })
-        vm.totalFiles = count.data.data.totalItems
-        vm.fileViewer = false
-        vm.currentGroup = group
-        vm.fileViewer = false
-        if (!$scope.$$phase) $scope.$digest()
-      } catch (error) {
-        $notificationService.showSimpleToast(error, 'Groups')
-      }
-      return
-    }
 
     $scope.$on('wazuhShowGroup', (event, parameters) => {
       return vm.loadGroup(parameters.group)
@@ -101,11 +102,6 @@ define(['../../module'], function (controllers) {
       }
       return
     }
-
-    // Resetting the factory configuration
-    $scope.$on("$destroy", () => {
-
-    })
 
     $scope.$watch('lookingGroup', value => {
       if (!value) {

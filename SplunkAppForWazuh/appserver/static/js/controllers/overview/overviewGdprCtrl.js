@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewGdprCtrl', function ($scope, $currentDataService, $rulesDescription) {
+    controllers.controller('overviewGdprCtrl', function ($scope, $currentDataService, $state, $getIdService, $notificationService, $rulesDescription) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -402,13 +402,20 @@ define([
         "el": $('#element5')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      const f = function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
-          utils.redirect(url, false, "_blank")
+      const f = async (e) => {
+        try{
+          if (e.field !== undefined) {
+            e.preventDefault()
+            if (e.data['click.value']=== e.data['click.value2']) {
+              const id = await $getIdService.agent(e.data['click.value'])
+              $state.go('agent-overview', { id:`${id}` })
+            }
+          }
+        } catch(err) {
+          $notificationService.showSimpleToast(err)
         }
-      };
+      }
+
       element5.on("click", f)
 
       //
