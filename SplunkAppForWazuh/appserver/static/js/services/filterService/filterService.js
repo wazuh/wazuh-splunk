@@ -1,76 +1,89 @@
 define(['../module'], function (module) {
   'use strict'
-  module.service('$filterService', function ($notificationService) {
-    return {
-
-      /**
-       * Returns the stored filters
-       */
-      getFilters: () => {
-        try {
-          if (window.localStorage.filters)
-            return JSON.parse(window.localStorage.filters)
-          else
-            return []
-        } catch (err) {
-          return []
-        }
-      },
-
-      /**
-       * Adds a new filter
-       * @param {String} filter 
-       */
-      addFilter: (filter) => {
-        try {
-          const filterJson = JSON.parse(filter)
-          if (window.localStorage.filters) {
-            const filters = JSON.parse(window.localStorage.filters)
-            let isInIt = false
-            filters.map(fil => {
-              if (fil[Object.keys(filterJson)]) {
-                isInIt = true
-                fil[Object.keys(filterJson)] = filterJson[Object.keys(filterJson)]
-              }
-            })
-            if (!isInIt) {
-              filters.push(filterJson)
+  
+  class FilterService {
+    constructor($notificationService){
+      this.$notificationService = $notificationService
+    }
+    
+    /**
+    * Returns the filters
+    * @returns {Array} the Array of filters
+    */
+    getFilters(){
+      try {
+        if (window.localStorage.filters)
+        return JSON.parse(window.localStorage.filters)
+        else
+        return []
+      } catch (err) {
+        return []
+      }
+    }
+    
+    /**
+    * Adds a new filter
+    * @param {String} filter
+    */
+    addFilter(filter){
+      try {
+        const filterJson = JSON.parse(filter)
+        if (window.localStorage.filters) {
+          const filters = JSON.parse(window.localStorage.filters)
+          let isInIt = false
+          filters.map(fil => {
+            let key = Object.keys(filterJson)
+            if (key.length > 1) {
+              key = key[0]
             }
-            window.localStorage.setItem('filters', JSON.stringify(filters))
-          } else {
-            window.localStorage.setItem('filters', `[${filter}]`)
+            if (fil[key]) {
+              isInIt = true
+              fil[key] = filterJson[key]
+            }
+          })
+          if (!isInIt) {
+            filters.push(filterJson)
           }
-        } catch (err) {
-          $notificationService.showSimpleToast('Incorrent format. Please use key:value syntax')
+          window.localStorage.setItem('filters', JSON.stringify(filters))
+        } else {
+          window.localStorage.setItem('filters', `[${filter}]`)
         }
-      },
-
-      /**
-       * Returns the filters in a way that visualizations can handle
-       * @returns {String} The serialized filters
-       */
-      getSerializedFilters: () => {
+      } catch (err) {
+        this.$notificationService.showSimpleToast('Incorrent format. Please use key:value syntax')
+      }
+    }
+    
+    /**
+    * Returns the filters in a way that visualizations can handle
+    * @returns {String} The serialized filters
+    */
+    getSerializedFilters(){
+      try{
         let filterStr = ' '
         if (window.localStorage.filters)
-          for (const filter of JSON.parse(window.localStorage.filters)) {
-            if (typeof filter === 'object') {
-              const key = Object.keys(filter)[0]
-              filterStr += key
-              filterStr += '='
-              filterStr += filter[key]
-              filterStr += ' '
-            } else {
-              filterStr += filter + ' '
-            }
+        for (const filter of JSON.parse(window.localStorage.filters)) {
+          if (typeof filter === 'object') {
+            const key = Object.keys(filter)[0]
+            filterStr += key
+            filterStr += '='
+            filterStr += filter[key]
+            filterStr += ' '
+          } else {
+            filterStr += filter + ' '
           }
+        }
         return filterStr
-      },
-
-      /**
-       * Removes a filter
-       * @param {Object}: The filter to be removed
-       */
-      removeFilter: (filter) => {
+      } catch(err) {
+        this.$notificationService.showSimpleToast('Error when getting filters.')
+      }
+    }
+    
+    /**
+    * Removes a filter
+    * @param {Object}: The filter to be removed
+    */
+    removeFilter(filter){
+      try{
         filter = JSON.parse(`{"${filter.split(':')[0]}":"${filter.split(':')[1]}"}`)
         const filters = JSON.parse(window.localStorage.filters)
         if (filters.length === 1) {
@@ -83,14 +96,18 @@ define(['../module'], function (module) {
           }
         })
         window.localStorage.setItem('filters', JSON.stringify(filters))
-      },
-
-      /**
-       * Sets the filters empty
-       */
-      cleanFilters: () => {
-        delete window.localStorage.filters
+      } catch(err) {
+        this.$notificationService.showSimpleToast('Error removing filter.')
       }
     }
-  })
+    
+    /**
+    * Sets the filters empty
+    */
+    cleanFilters(){
+      delete window.localStorage.filters
+    }
+    
+  }
+  module.service('$filterService', FilterService )
 })

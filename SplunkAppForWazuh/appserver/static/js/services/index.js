@@ -12,6 +12,7 @@ define([
   './currentDataService/currentDataService',
   './beautifier/beautifier-json',
   './notificationService/notificationService',
-  './xml-beautifier/xml-beautifier'
+  './xml-beautifier/xml-beautifier',
+  './get-ids/getIdService'
 
 ], function () {})
