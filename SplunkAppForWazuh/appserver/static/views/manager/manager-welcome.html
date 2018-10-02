@@ -28,7 +28,7 @@
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/groups.png'" title="'Groups'" ui-sref='mg-groups'
               current-tab="'groups'" description="'Check your agent groups.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
-              ui-sref='mg-conf' current-tab="'configuration'" description="'Check your Wazuh cluster configuration.'"></wz-welcome-card>
+              ui-sref='mg-monitoring' current-tab="'configuration'" description="'Check your Wazuh cluster configuration.'"></wz-welcome-card>
           </div>
         </div>
       </div>
@@ -41,6 +41,7 @@
               ui-sref='mg-status' current-tab="'status'" description="'Check your Wazuh cluster status.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'Logs'" ui-sref='mg-logs'
               current-tab="'logs'" description="'Logs from your Wazuh cluster.'"></wz-welcome-card>
+              <wz-welcome-card ui-sref='mg-monitoring' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'" title="'Monitoring'" current-tab="'monitoring'" description="'Visualize your Wazuh cluster.'"></wz-welcome-card>
             <!-- <wz-welcome-card class="euiFlexItem" logo="'app_index_pattern.svg'" title="'Monitoring'" switch-tab="switchTab('monitoring')"
               current-tab="'monitoring'" description="'Visualize your Wazuh cluster.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" wz-logo="'reporting.png'" title="'Reporting'" switch-tab="switchTab('reporting')" current-tab="'reporting'"

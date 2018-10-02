@@ -31,10 +31,14 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $currentDataService, agent, $state) {
+    controllers.controller('agentsGeneralCtrl', function ($scope, $stateParams,$currentDataService, agent, $state) {
       const vm = this
       const epoch = (new Date).getTime()
-      vm.agent = agent.data.data
+      vm.agent = agent[0].data.data
+      vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
+      vm.syscheck = agent[1].data.data
+      vm.id = $stateParams.id
+      vm.rootcheck = agent[2].data.data
       const baseUrl = $currentDataService.getBaseUrl()
       let filters = $currentDataService.getSerializedFilters()
       // Create token namespaces
