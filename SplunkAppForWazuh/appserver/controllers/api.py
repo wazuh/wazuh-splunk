@@ -1,5 +1,5 @@
 #
-# Wazuh app - api backend
+# Wazuh app - API backend
 # Copyright (C) 2018 Wazuh, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,13 +9,11 @@
 #
 # Find more information about this on the LICENSE file.
 #
-
 import os
 import sys
 import json
 import requests
 import re
-# from splunk import AuthorizationFailed as AuthorizationFailed
 import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
@@ -37,6 +35,8 @@ class api(controllers.BaseController):
             self.logger.error("Error in API module constructor: %s" % (e))
 
     # /custom/SplunkAppForWazuh/api/node
+    # This will perform an HTTP request to Wazuh API
+    # It will return the full API response with including its error codes
     @expose_page(must_login=False, methods=['GET'])
     def request(self, **kwargs):
         try:
@@ -57,7 +57,6 @@ class api(controllers.BaseController):
             request = self.session.get(
                 url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
             result = json.dumps(request)
-
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})
