@@ -14,7 +14,7 @@ define([
   "splunkjs/mvc/simpleform/input/timerange",
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/simplexml/urltokenmodel"
-
+  
 ], function (controllers,
   mvc,
   utils,
@@ -30,11 +30,11 @@ define([
   TimeRangeInput,
   SearchManager,
   UrlTokenModel
-) {
-
+  ) {
+    
     'use strict'
-
-    controllers.controller('overviewPolicyMonitoringCtrl', function ($scope, $currentDataService, $state) {
+    
+    controllers.controller('overviewPolicyMonitoringCtrl', function ($scope, $currentDataService, $state, $notificationService, $getIdService) {
       const vm = this
       const epoch = (new Date).getTime()
       const urlTokenModel = new UrlTokenModel()
@@ -52,28 +52,28 @@ define([
           submittedTokenModel.clear()
         }
       })
-
- 
+      
+      
       let filters = $currentDataService.getSerializedFilters()
-
+      
       /**
-       * Fires all the queries
-       */
+      * Fires all the queries
+      */
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }
-
+      
       $scope.$on('deletedFilter', () => {
         launchSearches()
       })
-
+      
       $scope.$on('barFilter', () => {
         launchSearches()
       })
-
-
+      
+      
       let pageLoading = true
       let elementOverTime = ''
       let topPciDss = ''
@@ -86,10 +86,10 @@ define([
       let eventsPerAgentSearch = ''
       let alertsSummarySearch = ''
       let cisRequirementsSearch = ''
-
+      
       /**
-       * When controller is destroyed
-       */
+      * When controller is destroyed
+      */
       $scope.$on('$destroy', () => {
         elementOverTimeSearch.cancel()
         topPciDssSearch.cancel()
@@ -108,7 +108,7 @@ define([
         cisRequirementsSearch = null
         input1 = null
       })
-
+      
       elementOverTimeSearch = new SearchManager({
         "id": "elementOverTimeSearch" + epoch,
         "cancelOnUnload": true,
@@ -124,7 +124,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       cisRequirementsSearch = new SearchManager({
         "id": "cisRequirementsSearch" + epoch,
         "cancelOnUnload": true,
@@ -140,7 +140,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       topPciDssSearch = new SearchManager({
         "id": "topPciDssSearch" + epoch,
         "cancelOnUnload": true,
@@ -156,7 +156,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       eventsPerAgentSearch = new SearchManager({
         "id": "eventsPerAgentSearch" + epoch,
         "cancelOnUnload": true,
@@ -172,7 +172,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       alertsSummarySearch = new SearchManager({
         "id": "alertsSummarySearch" + epoch,
         "cancelOnUnload": true,
@@ -188,19 +188,19 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new Dashboard({
         id: 'dashboard' + epoch,
         el: $('.dashboard-body'),
         showTitle: true,
         editable: false
       }, { tokens: true }).render()
-
-
+      
+      
       //
       // VIEWS: VISUALIZATION ELEMENTS
       //
-
+      
       elementOverTime = new ChartElement({
         "id": "elementOverTime" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -233,8 +233,8 @@ define([
         "managerid": "elementOverTimeSearch" + epoch,
         "el": $('#elementOverTime')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       cisRequirements = new ChartElement({
         "id": "cisRequirements" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -267,8 +267,8 @@ define([
         "managerid": "cisRequirementsSearch" + epoch,
         "el": $('#cisRequirements')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       topPciDss = new ChartElement({
         "id": `topPciDss${epoch}`,
         "charting.axisY2.scale": "inherit",
@@ -301,8 +301,8 @@ define([
         "managerid": "topPciDssSearch" + epoch,
         "el": $('#topPciDss')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       eventsPerAgent = new ChartElement({
         "id": "eventsPerAgent" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -335,8 +335,8 @@ define([
         "managerid": "eventsPerAgentSearch" + epoch,
         "el": $('#eventsPerAgent')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       alertsSummary = new TableElement({
         "id": "alertsSummary" + epoch,
         "dataOverlayMode": "heatmap",
@@ -348,15 +348,21 @@ define([
         "managerid": "alertsSummarySearch" + epoch,
         "el": $('#alertsSummary')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      alertsSummary.on("click", (e) => {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url = `/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`
-          utils.redirect(url, false, "_blank")
+      
+      alertsSummary.on("click", async (e) => {
+        try{
+          if (e.field !== undefined) {
+            e.preventDefault()
+            if (e.data['click.value']=== e.data['click.value2']) {
+              const id = await $getIdService.agent(e.data['click.value'])
+              $state.go('agent-overview', { id:`${id}` })
+            }
+          }
+        } catch(err) {
+          $notificationService.showSimpleToast(err)
         }
       })
-
+      
       input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "searchWhenChanged": true,
@@ -365,25 +371,26 @@ define([
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
       }, { tokens: true }).render()
-
+      
       input1.on("change", (newValue) => {
         if (newValue && input1)
-          FormUtils.handleValueChange(input1)
+        FormUtils.handleValueChange(input1)
       })
-
+      
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })
         }
       })
-
+      
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
         defaultTokenModel.set({ earliest: '0', latest: '' })
       }
       submitTokens()
-
+      
       DashboardController.ready()
-
+      
     })
   })
+  
