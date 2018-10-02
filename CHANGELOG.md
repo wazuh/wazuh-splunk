@@ -1,5 +1,11 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+## Wazuh v3.6.1 - Splunk Enterprise v7.1.3 - Splunk app v3.6.1-rev-16
+### Added
+- AWS integration ([#247](https://github.com/wazuh/wazuh-splunk/pull/247)).
+### Fixes
+- Support for SSL with reverse proxy configuration ([#248](https://github.com/wazuh/wazuh-splunk/pull/248)).
+- Minor fixes.
 ## Wazuh v3.6.1 - Splunk Enterprise v7.1.3 - Splunk app v3.6.1-rev-15
 ### Added
 - App log section ([#237](https://github.com/wazuh/wazuh-splunk/pull/237)).
