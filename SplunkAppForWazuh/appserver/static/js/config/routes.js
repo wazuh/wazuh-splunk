@@ -390,7 +390,13 @@ define(['./module'], function (module) {
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
             const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-            return $requestService.apiReq(`/agents/${id}`)
+            return Promise.all([
+              $requestService.apiReq(`/agents/${id}`),
+              $requestService.apiReq(`/syscheck/${id}/last_scan`),
+              $requestService.apiReq(`/rootcheck/${id}/last_scan`),
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`)
+            ])
               .then(function (response) {
                 return response
               }, function (response) {
