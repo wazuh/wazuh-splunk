@@ -31,9 +31,8 @@ define([
   UrlTokenModel) {
     
     'use strict'
-   
-    controllers.controller('overviewFimCtrl', function ($scope, $state, $getIdService, $currentDataService) {
-      const vm = this
+    
+    controllers.controller('overviewFimCtrl', function ($scope, $state, $currentDataService) {
       const epoch = (new Date).getTime()
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: `tokenModel${epoch}` })
@@ -74,39 +73,28 @@ define([
         FormUtils.submitForm({ replaceState: pageLoading })
       }
       
-      const setToken = (name, value) => {
-        defaultTokenModel.set(name, value)
-        submittedTokenModel.set(name, value)
-      }
-      
-      const unsetToken = (name) => {
-        defaultTokenModel.unset(name)
-        submittedTokenModel.unset(name)
-      }
-      
-      
       let pageLoading = true
       
-      let eventsOverTimeSearch = ''
-      let topUserOwnersSearch = ''
-      let topGroupOwnersSearch = ''
-      let topFileChangesSearch = ''
-      let rootUserFileChangesSearch = ''
-      let wordWritableFilesSearch = ''
-      let eventsSummarySearch = ''
-      let filesAddedSearch = ''
-      let filesModifiedSearch = ''
-      let filesDeletedSearch = ''
-      let input1 = ''
-      let eventsOverTimeElement = ''
-      let topUserOwnersElement = ''
-      let topGroupOwnersElement = ''
-      let topFileChangesElement = ''
-      let rootUserFileChangesElement = ''
-      let wordWritableFilesElement = ''
-      let eventsSummaryElement = ''
+      let deletedFiles = ''
+      let newFiles = ''
+      let modifiedFiles = ''
+      let alertsVolume = ''
+      let eventsSummary = ''
+      let topRules = ''
+      let whodataUsage = ''
+      let topUsers = ''
       
-
+      
+      let input1 = ''
+      let deletedFilesSearch = ''
+      let newFilesSearch = ''
+      let modifiedFilesSearch = ''
+      let alertsVolumeSearch = ''
+      let eventsSummarySearch = ''
+      let topRulesSearch = ''
+      let whodataUsageSearch = ''
+      let topUsersSearch = ''
+      
       /**
       * When controller is destroyed
       */
@@ -120,7 +108,7 @@ define([
         topRulesSearch.cancel()
         whodataUsageSearch.cancel()
         topUsersSearch.cancel()
-
+        
         // Free memory
         deletedFiles = null
         newFiles = null
@@ -139,61 +127,11 @@ define([
         topRulesSearch = null
         whodataUsageSearch = null
         topUsersSearch = null
-      })    
-      
-      // Listen for a change to the token tokenTotalAlerts value
-      filesAddedSearch = new SearchManager({
-        "id": "filesAddedSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\" |stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-      
-      new SearchEventHandler({
-        managerid: "filesAddedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "authSuccessToken", "value": "$result.count$" },
-            ]
-          }
-        ]
       })
       
-      filesAddedSearch.on('search:done', () => {
-        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
-        if (authSuccessTokenJS || authSuccessTokenJS !== '$result.count$') {
-          vm.filesAdded = authSuccessTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        } else {
-          vm.filesAdded = '0'
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
       
-      submittedTokenModel.on("change:authSuccessToken", (model, authSuccessToken, options) => {
-        const authSuccessTokenJS = submittedTokenModel.get("authSuccessToken")
-        if (typeof authSuccessTokenJS !== 'undefined' && authSuccessTokenJS !== 'undefined') {
-          vm.filesAdded = authSuccessTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      
-      // Listen for a change to the token tokenTotalAlerts value
-      filesModifiedSearch = new SearchManager({
-        "id": "filesModifiedSearch" + epoch,
+      deletedFilesSearch = new SearchManager({
+        "id": `deletedFilesSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -208,96 +146,17 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
       
-      new SearchEventHandler({
-        managerid: "filesModifiedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesModifiedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      
-      filesModifiedSearch.on('search:done', () => {
-        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (filesModifiedTokenJS || filesModifiedTokenJS !== '$result.count$') {
-          vm.filesModified = filesModifiedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        } else {
-          vm.filesModified = '0'
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      
-      submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
-          vm.filesModified = filesModifiedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      
-      // Listen for a change to the token tokenTotalAlerts value
-      filesDeletedSearch = new SearchManager({
-        "id": "filesDeletedSearch" + epoch,
+      whodataUsageSearch = new SearchManager({
+        "id": `whodataUsageSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-      
-      new SearchEventHandler({
-        managerid: "filesDeletedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesDeletedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      
-      filesDeletedSearch.on('search:done', () => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (filesDeletedTokenJS || filesDeletedTokenJS !== '$result.count$') {
-          vm.filesDeleted = filesDeletedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        } else {
-          vm.filesDeleted = '0'
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      
-      submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
-          vm.filesDeleted = filesDeletedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      
-      eventsOverTimeSearch = new SearchManager({
-        "id": "eventsOverTimeSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
+        "search": `${filters} sourcetype=wazuh syscheck
+        | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
+        | stats count BY WHODATA
+        | addcoltotals count labelfield=WHODATA label=Total
+        | where NOT WHODATA="NOWHO"`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -306,10 +165,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      eventsOverTimeElement = new ChartElement({
-        "id": "eventsOverTimeElement" + epoch,
-        "charting.axisY2.scale": "inherit",
+      
+      whodataUsage = new ChartElement({
+        "id": `whodataUsage${epoch}`,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "all",
@@ -340,7 +198,7 @@ define([
         "managerid": `whodataUsageSearch${epoch}`,
         "el": $('#whodataUsage')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
       deletedFiles = new ChartElement({
         "id": `deletedFiles${epoch}`,
         "trellis.size": "large",
@@ -373,17 +231,17 @@ define([
         "managerid": `deletedFilesSearch${epoch}`,
         "el": $('#deletedFiles')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      topUserOwnersSearch = new SearchManager({
-        "id": "topUserOwnersSearch" + epoch,
+      
+      alertsVolumeSearch = new SearchManager({
+        "id": `alertsVolumeSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
         "search": `${filters} sourcetype=wazuh | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
-              | stats count BY SYSCHECK
-              | addcoltotals count labelfield=SYSCHECK label=Total
-              | where NOT SYSCHECK="NO"`,
+        | stats count BY SYSCHECK
+        | addcoltotals count labelfield=SYSCHECK label=Total
+        | where NOT SYSCHECK="NO"`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -392,9 +250,10 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      topUserOwnersElement = new ChartElement({
-        "id": "topUserOwnersElement" + epoch,
+      
+      alertsVolume = new ChartElement({
+        "id": `alertsVolume${epoch}`,
+        "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "none",
         "charting.chart.stackMode": "default",
@@ -424,9 +283,9 @@ define([
         "managerid": `alertsVolumeSearch${epoch}`,
         "el": $('#alertsVolume')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      topGroupOwnersSearch = new SearchManager({
-        "id": "topGroupOwnersSearch" + epoch,
+      
+      newFilesSearch = new SearchManager({
+        "id": `newFilesSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -440,9 +299,11 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      topGroupOwnersElement = new ChartElement({
-        "id": "topGroupOwnersElement" + epoch,
+      
+      
+      newFiles = new ChartElement({
+        "id": `newFiles${epoch}`,
+        "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "none",
         "charting.chart.stackMode": "default",
@@ -472,9 +333,9 @@ define([
         "managerid": `newFilesSearch${epoch}`,
         "el": $('#newFiles')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      topFileChangesSearch = new SearchManager({
-        "id": "topFileChangesSearch" + epoch,
+      
+      modifiedFilesSearch = new SearchManager({
+        "id": `modifiedFilesSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -488,9 +349,11 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      topFileChangesElement = new ChartElement({
-        "id": "topFileChangesElement" + epoch,
+      
+      
+      modifiedFiles = new ChartElement({
+        "id": `modifiedFiles${epoch}`,
+        "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "none",
         "charting.chart.stackMode": "default",
@@ -520,9 +383,11 @@ define([
         "managerid": `modifiedFilesSearch${epoch}`,
         "el": $('#modifiedFiles')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      rootUserFileChangesSearch = new SearchManager({
-        "id": "rootUserFileChangesSearch" + epoch,
+      
+      // SECOND ROW VIZZ
+      
+      eventsSummarySearch = new SearchManager({
+        "id": `eventsSummarySearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -536,10 +401,9 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      rootUserFileChangesElement = new ChartElement({
-        "id": "rootUserFileChangesElement" + epoch,
-        "charting.axisY2.scale": "inherit",
+      
+      eventsSummary = new ChartElement({
+        "id": `eventsSummary${epoch}`,
         "trellis.size": "medium",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "minmax",
@@ -571,8 +435,10 @@ define([
         "el": $('#eventsSummary')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
-      wordWritableFilesSearch = new SearchManager({
-        "id": "wordWritableFilesSearch" + epoch,
+      // Third row
+      
+      topRulesSearch = new SearchManager({
+        "id": `topRulesSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -586,32 +452,21 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      wordWritableFilesElement = new ChartElement({
-        "id": "wordWritableFilesElement" + epoch,
-        "numberPrecision": "0",
-        "trellis.size": "medium",
-        "unitPosition": "after",
-        "useColors": "1",
-        "colorMode": "block",
-        "trendDisplayMode": "absolute",
-        "colorBy": "value",
-        "trendColorInterpretation": "standard",
-        "drilldown": "all",
-        "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
-        "trellis.enabled": "0",
-        "showTrendIndicator": "1",
-        "trellis.scales.shared": "1",
-        "resizable": true,
-        "rangeValues": "[0]",
-        "showSparkline": "1",
-        "useThousandSeparators": "0",
-        "managerid": "wordWritableFilesSearch" + epoch,
-        "el": $('#wordWritableFilesElement')
+      
+      topRules = new TableElement({
+        "id": `topRules${epoch}`,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "false",
+        "totalsRow": "false",
+        "wrap": "true",
+        "managerid": `topRulesSearch${epoch}`,
+        "el": $('#topRules')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
-      eventsSummarySearch = new SearchManager({
-        "id": "eventsSummarySearch" + epoch,
+      topUsersSearch = new SearchManager({
+        "id": `topUsersSearch${epoch}`,
         "cancelOnUnload": true,
         "sample_ratio": 1,
         "earliest_time": "$when.earliest$",
@@ -625,10 +480,10 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-      eventsSummaryElement = new TableElement({
-        "id": "eventsSummaryElement" + epoch,
-        "dataOverlayMode": "heatmap",
+      
+      topUsers = new TableElement({
+        "id": `topUsers${epoch}`,
+        "dataOverlayMode": "none",
         "drilldown": "cell",
         "percentagesRow": "false",
         "rowNumbers": "false",
@@ -638,20 +493,7 @@ define([
         "el": $('#topUsers')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
-      eventsSummaryElement.on("click", async (e) => {
-        try{
-          if (e.field !== undefined) {
-            e.preventDefault()
-            if (e.data['click.value']=== e.data['click.value2']) {
-              const id = await $getIdService.agent(e.data['click.value'])
-              $state.go('agent-overview', { id:`${id}` })
-            }
-          }
-        } catch(err) {
-          $notificationService.showSimpleToast(err)
-        }
-      })
-
+      
       input1 = new TimeRangeInput({
         "id": `input1${epoch}`,
         "default": { "latest_time": "now", "earliest_time": "-24h@h" },
