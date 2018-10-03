@@ -72,7 +72,7 @@ define(['./module'], function (module) {
       controller: 'osqueryCtrl',
       controllerAs: 'oqc',
       resolve: {
-        osquery: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
+        osquery: ['$requestService', ($requestService) => {
           return $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
           .then(function (response) {
             return response
@@ -413,6 +413,29 @@ define(['./module'], function (module) {
       }
     })
     
+    // Agents - Osquery
+    .state('ag-osquery', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/osquery/osquery.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ag-osquery') },
+      controller: 'osqueryAgentCtrl',
+      controllerAs: 'aoq',
+      params: { id: null },
+      resolve: {
+        osquery: ['$requestService','$currentDataService', '$stateParams', ($requestService,$currentDataService, $stateParams) => {
+          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+          return $requestService.apiReq(`/agents/${id}/config/wmodules/wmodules`)
+          .then(function (response) {
+            return response
+          }, function (response) {
+            return response
+          })
+          .catch(err => {
+            console.error('Error route: ', err)
+          })
+        }]
+      }
+    })
+
     // agents - General
     .state('ag-general', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/general/agents-general.html',

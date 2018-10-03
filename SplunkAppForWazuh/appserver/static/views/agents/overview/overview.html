@@ -119,6 +119,8 @@
           ui-sref='ag-conf({id:aoc.agent.id})' current-tab="'configuration'" description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
           <wz-welcome-card ui-sref='ag-inventory({id:aoc.agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
           title="'Inventory data'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="'Applications, network configuration, open ports and processes running on your monitored systems.'"></wz-welcome-card>
+          <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
+          description="'Alerts related to osquery.'"></wz-welcome-card>
         </div>
       </div>
     </div>

@@ -36,6 +36,7 @@ define([
   './agents/gdpr/agentsGdprCtrl',
   './agents/configuration/agentConfigCtrl',
   './agents/inventory/inventoryCtrl',
+  './agents/osquery/osqueryCtrl',
   './dev-tools/devToolsCtrl',
   './main/mainCtrl'
 ], function () {})
