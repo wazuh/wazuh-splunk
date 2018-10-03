@@ -301,7 +301,7 @@ define([
         "el": $('#topRules')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
-      topRule.on("click", function (e) {
+      topRules.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
           if (e.data['click.value']=== e.data['click.value2']) {
