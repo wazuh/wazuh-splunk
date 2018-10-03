@@ -23,6 +23,22 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 
+def diff_keys_dic_update_api(kwargs_dic):
+    try:
+        diff_dic = []
+        dic = {
+            'newRegister[id]': True,
+            'newRegister[url]': True,
+            'newRegister[portapi]': True,
+            'newRegister[userapi]': True,
+            'newRegister[passapi]': True
+        }
+        for key in dic:
+            if key not in kwargs_dic:
+                diff_dic.append(key)
+        return str(', '.join(diff_dic))
+    except Exception as e:
+        return "Error comparing diccionaries"
 
 class manager(controllers.BaseController):
     def __init__(self):
@@ -125,7 +141,8 @@ class manager(controllers.BaseController):
     def update_api(self, **kwargs):
         try:
             if 'newRegister[id]' not in kwargs or 'newRegister[url]' not in kwargs or 'newRegister[portapi]' not in kwargs or 'newRegister[userapi]' not in kwargs or 'newRegister[passapi]' not in kwargs:
-                raise Exception("Invalid arguments : %s" % (kwargs))
+                missing_params = diff_keys_dic_update_api(kwargs)
+                raise Exception("Invalid arguments, missing params : %s" % str(missing_params))
             # building a new object
             entry = {}
             entry['id'] = kwargs['newRegister[id]']
@@ -140,7 +157,8 @@ class manager(controllers.BaseController):
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error in update_api endpoint: %s" % (e))
-            return json.dumps("{error:"+str(e)+"}")
+            return json.dumps({"error":str(e)})
+            #return '{"error":' + missing_params + '}'
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])

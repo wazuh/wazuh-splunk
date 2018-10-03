@@ -20,24 +20,8 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.a('string')
   })
   
-  /*
-  it('GET /check_connection error', async () => {
-    try {
-      const res = await needle(`get`, `${s_url}/check_connection?user=foot&pass=bart&ip=http://localhost&port=44111`)
-      const resBodyJson = JSON.parse(res.body)
-      //Check status
-      res.statusCode.should.be.a('number') 
-      res.statusCode.should.equal(200)
-      //Check body
-      resBodyJson.should.be.a('object')    
-      resBodyJson.error.should.be.a('number')
-      resBodyJson.error.should.equal(0)
-      resBodyJson.data.should.be.a('string')
-    }catch(error){
-      return Promise.reject(error)
-    }//TODO get error 400 in check connection and process it
-  })
-  */
+  //TODO check error /check_connection "ERROR"
+  
   it('GET /get_apis => "SUCCESFULLY"', async () => {
     const res = await needle(`get`, `${s_url}/get_apis`)
     const resBodyJson = JSON.parse(res.body)
@@ -57,7 +41,7 @@ describe('manager-api', () => {
   })
   
   it('GET /get_api => "CORRECT ID"', async () => {
-    const res = await needle(`get`, `${s_url}/get_api?id=94af3c9c-9c72-4a10-a5c7-574dab714874`)
+    const res = await needle(`get`, `${s_url}/get_api?id=2cc42206-bbe9-416c-a95f-7a4e46c445a5`)
     const resBodyJson = JSON.parse(res.body) 
     //Check status
     res.statusCode.should.be.a('number')
@@ -94,7 +78,7 @@ describe('manager-api', () => {
     resBodyJson.error.should.be.a('string')
     resBodyJson.error.should.equal('Missing ID.')
   })
-
+  /*
   it ('POST /add_api => "SUCCESFULLY"', async () => {
     const payload = {
       'payload[url]': 'http://127.0.0.1',
@@ -112,7 +96,7 @@ describe('manager-api', () => {
     resBodyJson.result.should.be.a('string')
     chai.expect(resBodyJson.result).to.match(/^\w+\-\w+\-\w+\-\w+\-\w+$/)
   })
-  
+  */
   it ('POST /add_api => "INVALID NUMBER OF ARGUMENTS"', async () => {
     const payload = {
       'payload[url]': 'http://127.0.0.1',
@@ -128,22 +112,59 @@ describe('manager-api', () => {
     resBodyJson.error.should.be.a('string')
     resBodyJson.error.should.equal('Invalid number of arguments')
   })
-
-  /*it ('POST /add_api => "ERROR"', async () => {
-    const payload = {
-      'payload[url]': 'http://error.com',
-      'payload[portapi]': '55010',
-      'payload[userapi]': 'testing',
-      'payload[passapi]': 'a_error'
-    }
-    const res = await needle(`post`, `${s_url}/add_api`, payload, {})
+  
+  it ('POST /remove_api => "SUCCESFULLY"', async () => {
+    const payload = { 'id[id]':'9cef9c0a-3aa1-4b70-84de-f92f63a3f317' }
+    const res = await needle(`post`, `${s_url}/remove_api`, payload, {})
     resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
     //Check body
     resBodyJson.should.be.a('object')
-    resBodyJson.error.should.be.a('string')
-  })*/
+    resBodyJson.data.should.be.a('string')
+    resBodyJson.data.should.be.equal('success')
+  })
+  
+  it ('POST /update_api => "SUCCESFULLY"', async () => {
+    const payload = {
+      'newRegister[id]':'723e583e-3d1f-46c8-bea6-606479769947',
+      'newRegister[url]':'http://test',
+      'newRegister[portapi]':'2529',
+      'newRegister[userapi]':'user',
+      'newRegister[passapi]':'pass',
+      'newRegister[filterName]':'test.filter.name',
+      'newRegister[filterType]':'test.filter.type',
+      'newRegister[managerName]':'test.manager.name'
+    }
+    const res = await needle(`post`, `${s_url}/update_api`, payload, {})
+    resBodyJson = JSON.parse(res.body)
+    res.statusCode.should.be.a('number')
+    res.statusCode.should.equal(200)
+    //Check body
+    resBodyJson.should.be.a('object')
+    resBodyJson.data.should.be.a('string')
+    resBodyJson.data.should.be.equal('success')
+  })
 
+  it ('POST /update_api => "MISSING ANY ARGUMENT"', async () => {
+    const payload = {
+      'newRegister[id]':'723e583e-3d1f-46c8-bea6-606479769947',
+      'newRegister[url]':'http://test',
+      'newRegister[portapi]':'2529',
+      'newRegister[filterName]':'test.filter.name',
+      'newRegister[filterType]':'test.filter.type',
+      'newRegister[managerName]':'test.manager.name'
+    }
+    const res = await needle(`post`, `${s_url}/update_api`, payload, {})
+    resBodyJson = JSON.parse(res.body)
+    //Check status
+    res.statusCode.should.be.a('number')
+    res.statusCode.should.equal(200)
+    //Check body
+    resBodyJson.should.be.a('object')  
+    resBodyJson.error.should.be.a('string')
+    chai.expect(resBodyJson.error).to.match(/^Invalid arguments, missing params :/)
+  })  
+  
 })
