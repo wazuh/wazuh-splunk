@@ -46,9 +46,7 @@ define([
       try {
         $currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
         const wodles = osquery.data.data.wmodules
-        console.log('wodles ',wodles)
         vm.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
-        console.log('the osquery wodle ',vm.osqueryWodle)
       } catch (err) {
         $notificationService.showSimpleToast('Cannot load wodle configuration. Osquery not configured.')
       }
