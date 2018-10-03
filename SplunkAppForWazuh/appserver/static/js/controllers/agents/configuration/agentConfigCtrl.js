@@ -3,8 +3,9 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
   'use strict'
   
   class ConfigurationController {
-    constructor($scope,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService) {
+    constructor($scope,agent,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService) {
       this.$scope = $scope
+      this.$scope.currentAgent = agent.data.data
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.$scope.load = false
@@ -19,6 +20,10 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
     }
     
     $onInit() {
+      this.$scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+      this.$scope.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+      }
       // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
       this.$scope.isString = item => typeof item === 'string'

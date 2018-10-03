@@ -394,9 +394,12 @@ define(['./module'], function (module) {
         syscollector: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
           const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
           return Promise.all([
-            $requestService.apiReq(`/agents/groups/${group}/configuration`, {}),
-            $requestService.apiReq(`/agents/groups?search=${group}`, {}),
-            $requestService.apiReq(`/agents/groups/${group}`, {})
+            $requestService.apiReq(`/syscollector/${id}/hardware`),
+            $requestService.apiReq(`/syscollector/${id}/os`),
+            $requestService.apiReq(`/syscollector/${id}/netiface`),
+            $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
+            $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
+            $requestService.apiReq(`/agents/${id}`)
           ])
           .then(function (response) {
             return response
@@ -542,7 +545,17 @@ define(['./module'], function (module) {
       onEnter: ($navigationService) => { $navigationService.storeRoute('ag-conf') },
       controller: 'configurationAgentCtrl',
       params: { id: null },
-      
+      resolve: {
+        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+          return $requestService.apiReq(`/agents/${id}`)
+          .then(function (response) {
+            return response
+          }, function (response) {
+            return response
+          })
+        }]
+      }
     })
     // agents - GDPR
     .state('ag-gdpr', {
