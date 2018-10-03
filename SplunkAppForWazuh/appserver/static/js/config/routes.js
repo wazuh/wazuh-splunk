@@ -423,6 +423,7 @@ define(['./module'], function (module) {
       resolve: {
         osquery: ['$requestService','$currentDataService', '$stateParams', ($requestService,$currentDataService, $stateParams) => {
           const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+          console.log('osquery with this id ',id)
           return $requestService.apiReq(`/agents/${id}/config/wmodules/wmodules`)
           .then(function (response) {
             return response
