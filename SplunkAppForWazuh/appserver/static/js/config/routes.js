@@ -524,10 +524,19 @@ define(['./module'], function (module) {
               }, function (response) {
                 return response
               })
+          }],
+          agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+            return $requestService.apiReq(`/agents/${id}`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
           }]
         }
       })
-      
+
       // agents - GDPR
       .state('ag-gdpr', {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/gdpr/agents-gdpr.html',
