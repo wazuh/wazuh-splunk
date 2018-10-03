@@ -341,7 +341,8 @@ define(['./module'], function (module) {
               $requestService.apiReq(`/syscheck/${id}/last_scan`),
               $requestService.apiReq(`/rootcheck/${id}/last_scan`),
               $requestService.apiReq(`/syscollector/${id}/hardware`),
-              $requestService.apiReq(`/syscollector/${id}/os`)
+              $requestService.apiReq(`/syscollector/${id}/os`),
+              $requestService.apiReq(`/agents/${id}/group/is_sync`)
             ])
               .then(function (response) {
                 return response
@@ -514,8 +515,19 @@ define(['./module'], function (module) {
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-conf') },
         controller: 'configurationAgentCtrl',
         params: { id: null },
-
+        resolve: {
+          data: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+            return $requestService.apiReq(`/agents/${id}/group/is_sync`)
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+          }]
+        }
       })
+      
       // agents - GDPR
       .state('ag-gdpr', {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/agents/gdpr/agents-gdpr.html',
