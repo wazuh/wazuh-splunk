@@ -39,14 +39,11 @@ define([
       const epoch = (new Date).getTime()
       vm.osqueryWodle = null
       try {
-      console.log('osquery ',osquery)
-      // $currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
+      $currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
       const wodles = osquery.data.data.wmodules
       vm.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
-      console.log('osqueryWodle',vm.osqueryWodle)
-
       } catch (err) {
-        $notificationService.showSimpleToast('Cannot load wodle configuration')
+        $notificationService.showSimpleToast('Cannot load wodle configuration. Osquery not configured.')
       }
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
@@ -125,7 +122,6 @@ define([
       * When controller is destroyed
       */
       $scope.$on('$destroy', () => {
-        $currentDataService.removeFilter(`{"rule.groups":"osquery", "implicit":true}`)
         input1 = null
         alertsOverTime = null
         alertsOverTimeSearch = null
@@ -137,7 +133,6 @@ define([
         topRulesSearch = null
         mostCommonEvents = null
         mostCommonEventsSearch = null
-        
       })
       
       
