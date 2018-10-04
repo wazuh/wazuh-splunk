@@ -33,9 +33,7 @@ define([
             }
             const partialResult = await apiReq.apiReq(`/agents/${agentId}/config/${component}/${configuration}`)
             result[`${component}-${configuration}`] = partialResult.data.data
-            console.log('partialResult ',partialResult)
             if (partialResult.data.error){
-              console.log('error !!')
               result[`${component}-${configuration}`] = partialResult.data.message
             }
           }

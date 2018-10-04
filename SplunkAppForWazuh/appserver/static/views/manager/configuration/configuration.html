@@ -38,8 +38,6 @@
         <span> / </span>        
         <!-- Welcome section -->
         <div ng-if="configurationTab === 'welcome'">
-          <span class="wz-text-link cursor-pointer" ui-sref='manager' >Management</span>
-          <span> / </span>
           <span>Configuration</span>
         </div>
         <!-- First-level section -->
@@ -929,8 +927,6 @@ md-is-locked-open="true">
       <span ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
     <span class="md-subheader">Automatic agent registration using the <span class="wz-text-monospace">ossec-authd</span> binary</span>
-    Value 1: {{currentConfig['auth-auth']}}
-    Value 2: {{isString(currentConfig['auth-auth'])}}
   </div>
   <!-- End headline -->
   
@@ -941,7 +937,6 @@ md-is-locked-open="true">
   
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-   Something
     <!-- No configuration section -->
     <wz-no-config flex error="currentConfig['auth-auth']" ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth']) && !currentConfig['auth-auth'].auth"></wz-no-config>
     <!-- End no configuration section -->
