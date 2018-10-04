@@ -14,7 +14,7 @@
     "babel-eslint": "^9.0.0",
     "chai": "^4.2.0",
     "chai-match": "^1.1.1",
-    "eslint": "^5.5.0",
+    "eslint": "^5.6.1",
     "eslint-plugin-async-await": "^0.0.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-requirejs": "^3.2.0",
@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js -c .eslintrc.json",
-    "test": "mocha tests/index.js"
+    "test": "mocha tests/manager.js"
   },
   "repository": {
     "type": "git",
