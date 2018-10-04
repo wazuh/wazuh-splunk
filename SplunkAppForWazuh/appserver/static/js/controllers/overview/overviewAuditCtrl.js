@@ -844,7 +844,6 @@ define([
             }
           }
         } catch(err) {
-          console.error('err ',err)
           $notificationService.showSimpleToast(err)
         }
       })

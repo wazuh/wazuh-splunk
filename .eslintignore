@@ -1,2 +1,3 @@
 node_modules/
 SplunkAppForWazuh/appserver/static/js/utils/codemirror
+SplunkAppForWazuh/appserver/static/js/libs/*
