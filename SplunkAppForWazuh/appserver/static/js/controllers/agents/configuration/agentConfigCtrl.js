@@ -3,11 +3,8 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
   'use strict'
   
   class ConfigurationController {
-<<<<<<< HEAD
+
     constructor($scope,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService, data, agent) {
-=======
-    constructor($scope,agent,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService) {
->>>>>>> 3.7
       this.$scope = $scope
       this.$scope.currentAgent = agent.data.data
       this.errorHandler = $notificationService
