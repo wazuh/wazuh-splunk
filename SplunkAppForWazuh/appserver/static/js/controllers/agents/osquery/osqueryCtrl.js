@@ -34,14 +34,19 @@ define([
   UrlTokenModel) {
     'use strict'
     
-    controllers.controller('osqueryCtrl', function ($scope, $notificationService, $currentDataService, $state, osquery) {
+    controllers.controller('osqueryAgentCtrl', function ($scope,agent, $notificationService, $currentDataService, $state, osquery) {
       const vm = this
       const epoch = (new Date).getTime()
+      vm.agent = agent.data.data
+      vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+      vm.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+      }
       vm.osqueryWodle = null
       try {
-      $currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
-      const wodles = osquery.data.data.wmodules
-      vm.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
+        $currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
+        const wodles = osquery.data.data.wmodules
+        vm.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
       } catch (err) {
         $notificationService.showSimpleToast('Cannot load wodle configuration. Osquery not configured.')
       }
@@ -110,12 +115,14 @@ define([
       let alertsOverTimeSearch
       let alertsEvolution
       let alertsEvolutionSearch
-      let topPacks
-      let topPacksSearch
+      let alertsPacksOverTime
+      let alertsPacksOverTimeSearch
+      let topAction
+      let topActionSearch
       let topRules
       let topRulesSearch
-      let mostCommonEvents
-      let mostCommonEventsSearch
+      let mostCommonPacks
+      let mostCommonPacksSearch
       
       
       /**
@@ -125,16 +132,21 @@ define([
         input1 = null
         alertsOverTime = null
         alertsOverTimeSearch = null
+        alertsOverTime = null
+        alertsOverTimeSearch = null
+        alertsPacksOverTime = null
+        alertsPacksOverTimeSearch = null
         alertsEvolution = null
         alertsEvolutionSearch = null
-        topPacks = null
-        topPacksSearch = null
+
+
+        topAction = null
+        topActionSearch = null
         topRules = null
         topRulesSearch = null
-        mostCommonEvents = null
-        mostCommonEventsSearch = null
+        mostCommonPacks = null
+        mostCommonPacksSearch = null
       })
-      
       
       alertsOverTimeSearch = new SearchManager({
         "id": `alertsOverTimeSearch${epoch}`,
@@ -144,6 +156,22 @@ define([
         "status_buckets": 0,
         "latest_time": "$when.latest$",
         "search": `${filters} sourcetype=wazuh | timechart span=1h count`,
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+      
+      alertsPacksOverTimeSearch = new SearchManager({
+        "id": `alertsPacksOverTimeSearch${epoch}`,
+        "cancelOnUnload": true,
+        "earliest_time": "$when.earliest$",
+        "sample_ratio": 1,
+        "status_buckets": 0,
+        "latest_time": "$when.latest$",
+        "search": `${filters} sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -168,14 +196,14 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
       
-      mostCommonEventsSearch = new SearchManager({
-        "id": `mostCommonEventsSearch${epoch}`,
+      mostCommonPacksSearch = new SearchManager({
+        "id": `mostCommonPacksSearch${epoch}`,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh  | top data.osquery.name limit=5`,
+        "search": `${filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -184,14 +212,14 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
       
-      topPacksSearch = new SearchManager({
-        "id": `topPacksSearch${epoch}`,
+      topActionSearch = new SearchManager({
+        "id": `topActionSearch${epoch}`,
         "cancelOnUnload": true,
         "earliest_time": "$when.earliest$",
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,
+        "search": `${filters} sourcetype=wazuh  | top "data.osquery.action" limit=5`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -228,78 +256,8 @@ define([
       }, { tokens: true }).render()
       
       
-      topPacks = new TableElement({
-        "id": `topPacks${epoch}`,
-        "dataOverlayMode": "none",
-        "drilldown": "cell",
-        "percentagesRow": "false",
-        "rowNumbers": "false",
-        "totalsRow": "false",
-        "wrap": "true",
-        "managerid": `topPacksSearch${epoch}`,
-        "el": $('#topPacks')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-      
-      topRules = new TableElement({
-        "id": `topRules${epoch}`,
-        "dataOverlayMode": "none",
-        "drilldown": "cell",
-        "percentagesRow": "false",
-        "rowNumbers": "false",
-        "totalsRow": "false",
-        "wrap": "true",
-        "managerid": `topRulesSearch${epoch}`,
-        "el": $('#topRules')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-      
-      /* topRule.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
-          utils.redirect(url, false, "_blank")
-        }
-      }) */
-      
-      //
-      // VIEWS: FORM INPUTS
-      //
-      
-      alertsOverTime = new ChartElement({
-        "id": `alertsOverTime${epoch}`,
-        "charting.legend.placement": "right",
-        "charting.drilldown": "none",
-        "refresh.display": "progressbar",
-        "charting.chart": "area",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
-        "trellis.enabled": "0",
-        "resizable": true,
-        "trellis.scales.shared": "1",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisTitleY2.visibility": "visible",
-        "managerid": `alertsOverTimeSearch${epoch}`,
-        "el": $('#alertsOverTime')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-      
-      alertsEvolution = new ChartElement({
-        "id": `alertsEvolution${epoch}`,
-        "charting.legend.placement": "right",
-        "charting.drilldown": "none",
-        "refresh.display": "progressbar",
-        "charting.chart": "area",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
-        "trellis.enabled": "0",
-        "resizable": true,
-        "trellis.scales.shared": "1",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisTitleY2.visibility": "visible",
-        "managerid": `alertsEvolutionSearch${epoch}`,
-        "el": $('#alertsEvolution')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-      
-      mostCommonEvents = new ChartElement({
-        "id": `mostCommonEvents${epoch}`,
+      topAction = new ChartElement({
+        "id": `topAction${epoch}`,
         "trellis.size": "large",
         "charting.axisY2.scale": "inherit",
         "charting.chart.showDataLabels": "none",
@@ -327,8 +285,119 @@ define([
         "charting.chart.bubbleMaximumSize": "50",
         "charting.chart.sliceCollapsingThreshold": "0.01",
         "charting.axisY.scale": "linear",
-        "managerid": `mostCommonEventsSearch${epoch}`,
-        "el": $('#mostCommonEvents')
+        "managerid": `topActionSearch${epoch}`,
+        "el": $('#mostCommonActions')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
+      topRules = new TableElement({
+        "id": `topRules${epoch}`,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "false",
+        "totalsRow": "false",
+        "wrap": "true",
+        "managerid": `topRulesSearch${epoch}`,
+        "el": $('#topRules')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
+      topRules.on("click", function (e) {
+        if (e.field !== undefined) {
+          e.preventDefault()
+          if (e.data['click.value']=== e.data['click.value2']) {
+            $state.go('mg-rules-id', { id:`${e.data['click.value']}` })
+          }
+          //const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          //utils.redirect(url, false, "_blank")
+        }
+      })
+      
+      //
+      // VIEWS: FORM INPUTS
+      //
+      
+      alertsOverTime = new ChartElement({
+        "id": `alertsOverTime${epoch}`,
+        "charting.legend.placement": "right",
+        "charting.drilldown": "none",
+        "refresh.display": "progressbar",
+        "charting.chart": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
+        "trellis.enabled": "0",
+        "resizable": true,
+        "trellis.scales.shared": "1",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisTitleY2.visibility": "visible",
+        "managerid": `alertsOverTimeSearch${epoch}`,
+        "el": $('#alertsOverTime')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
+      alertsPacksOverTime = new ChartElement({
+        "id": `alertsPacksOverTime${epoch}`,
+        "charting.legend.placement": "right",
+        "charting.drilldown": "none",
+        "refresh.display": "progressbar",
+        "charting.chart": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
+        "trellis.enabled": "0",
+        "resizable": true,
+        "trellis.scales.shared": "1",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisTitleY2.visibility": "visible",
+        "managerid": `alertsPacksOverTimeSearch${epoch}`,
+        "el": $('#alertsPacksOverTime')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
+      alertsEvolution = new ChartElement({
+        "id": `alertsEvolution${epoch}`,
+        "charting.legend.placement": "right",
+        "charting.drilldown": "none",
+        "refresh.display": "progressbar",
+        "charting.chart": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "-90",
+        "trellis.enabled": "0",
+        "resizable": true,
+        "trellis.scales.shared": "1",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisTitleY2.visibility": "visible",
+        "managerid": `alertsEvolutionSearch${epoch}`,
+        "el": $('#alertsEvolution')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
+      mostCommonPacks = new ChartElement({
+        "id": `mostCommonPacks${epoch}`,
+        "trellis.size": "large",
+        "charting.axisY2.scale": "inherit",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.drilldown": "none",
+        "charting.chart": "pie",
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.chart.nullValueMode": "gaps",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.chart.style": "shiny",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisX.scale": "linear",
+        "trellis.enabled": "0",
+        "charting.axisY2.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "charting.axisY.scale": "linear",
+        "managerid": `mostCommonPacksSearch${epoch}`,
+        "el": $('#mostCommonPacks')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
       
       input1 = new TimeRangeInput({

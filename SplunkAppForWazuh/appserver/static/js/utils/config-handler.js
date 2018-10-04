@@ -40,7 +40,6 @@ define([
     */
     async switchConfigTab(configurationTab, sections, $scope, agentId = false) {
       try {
-        console.log('switching')
         $scope.load = true
         $scope.currentConfig = null
         $scope.XMLContent = false
