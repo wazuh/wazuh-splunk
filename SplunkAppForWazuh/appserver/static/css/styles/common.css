@@ -516,3 +516,6 @@ kbn-vis .vis-container {
   }
 }
 
+.wz-word-break {
+  word-break: break-all;
+}
