@@ -3,7 +3,8 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
   'use strict'
   
   class ConfigurationController {
-    constructor($scope,agent,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService) {
+
+    constructor($scope,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService, data, agent) {
       this.$scope = $scope
       this.$scope.currentAgent = agent.data.data
       this.errorHandler = $notificationService
@@ -17,6 +18,8 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
       this.$scope.configurationSubTab = ''
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
+      this.$scope.isSynchronized = data && data.data && data.data.data && data.data.data.synced
+      this.$scope.agent = agent.data.data
     }
     
     $onInit() {
