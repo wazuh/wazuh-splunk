@@ -58,7 +58,7 @@
     <!-- End separator -->
     
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-href="#/settings/about" aria-label="Link to open app about section">
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ui-sref="settings.about" aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
@@ -380,7 +380,7 @@
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
             <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
           
@@ -929,6 +929,8 @@ md-is-locked-open="true">
       <span ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
     <span class="md-subheader">Automatic agent registration using the <span class="wz-text-monospace">ossec-authd</span> binary</span>
+    Value 1: {{currentConfig['auth-auth']}}
+    Value 2: {{isString(currentConfig['auth-auth'])}}
   </div>
   <!-- End headline -->
   
@@ -939,12 +941,9 @@ md-is-locked-open="true">
   
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-    
+   Something
     <!-- No configuration section -->
-    <wz-no-config
-    flex
-    error="currentConfig['auth-auth']"
-    ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth']) && !currentConfig['auth-auth'].auth"></wz-no-config>
+    <wz-no-config flex error="currentConfig['auth-auth']" ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth']) && !currentConfig['auth-auth'].auth"></wz-no-config>
     <!-- End no configuration section -->
     
     <!-- This section is the main content -->
@@ -963,7 +962,7 @@ md-is-locked-open="true">
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
             <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
           
@@ -971,35 +970,35 @@ md-is-locked-open="true">
           <div class="wz-padding-top-10">
             
             <wz-config-item
-            label="Service status"
-            value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
-          </wz-config-item>
-          <wz-config-item
-          label="Listen to connections at port"
-          value="currentConfig['auth-auth'].auth.port">
-        </wz-config-item>
-        <wz-config-item
-        label="Use client's source IP address"
-        value="currentConfig['auth-auth'].auth.use_source_ip">
-      </wz-config-item>
-      <wz-config-item
-      label="Use a password to register agents"
-      value="currentConfig['auth-auth'].auth.use_password">
-    </wz-config-item>
-    <wz-config-item
-    label="Purge agents list when removing agents"
-    value="currentConfig['auth-auth'].auth.purge">
-  </wz-config-item>
-  <wz-config-item
-  label="Limit registration to maximum number of agents"
-  value="currentConfig['auth-auth'].auth.limit_maxagents">
-</wz-config-item>
-<wz-config-item
-label="Force registration when using an existing IP address"
-value="currentConfig['auth-auth'].auth.force_insert">
-</wz-config-item>
+              label="Service status"
+              value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
+            </wz-config-item>
+            <wz-config-item
+              label="Listen to connections at port"
+              value="currentConfig['auth-auth'].auth.port">
+            </wz-config-item>
+              <wz-config-item
+              label="Use client's source IP address"
+              value="currentConfig['auth-auth'].auth.use_source_ip">
+            </wz-config-item>
+            <wz-config-item
+            label="Use a password to register agents"
+              value="currentConfig['auth-auth'].auth.use_password">
+            </wz-config-item>
+            <wz-config-item
+            label="Purge agents list when removing agents"
+              value="currentConfig['auth-auth'].auth.purge">
+            </wz-config-item>
+              <wz-config-item
+              label="Limit registration to maximum number of agents"
+              value="currentConfig['auth-auth'].auth.limit_maxagents">
+            </wz-config-item>
+            <wz-config-item
+              label="Force registration when using an existing IP address"
+              value="currentConfig['auth-auth'].auth.force_insert">
+            </wz-config-item>
 
-</div>
+      </div>
 <!-- End configuration block -->
 
 <div class="wz-margin-top-10">

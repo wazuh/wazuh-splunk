@@ -119,8 +119,6 @@
           ui-sref='ag-conf({id:aoc.agent.id})' current-tab="'configuration'" description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
           <wz-welcome-card ui-sref='ag-inventory({id:aoc.agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
           title="'Inventory data'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="'Applications, network configuration, open ports and processes running on your monitored systems.'"></wz-welcome-card>
-          <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.png'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
-          description="'Osquery allows to expose an operating system as a high-performance relational database.'"></wz-welcome-card>
         </div>
       </div>
     </div>
@@ -155,6 +153,8 @@
             ui-sref='ag-vul({id:aoc.agent.id})' current-tab="'vuls'" description="'Discover what applications in your environment are affected by well-known vulnerabilities.'"></wz-welcome-card>
             <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
             title="'Virustotal'" switch-tab="switchTab('virustotal')" current-tab="'virustotal'" description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.png'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
+            description="'Osquery allows to expose an operating system as a high-performance relational database.'"></wz-welcome-card>
           </div>
         </div>
       </div>

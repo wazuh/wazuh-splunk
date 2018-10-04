@@ -31,21 +31,18 @@ define([
             ) {
               throw new Error('Invalid section')
             }
-            try {
-              const partialResult = await apiReq.apiReq(
-                `/agents/${agentId}/config/${component}/${configuration}`
-                )
-                result[`${component}-${configuration}`] = partialResult.data.data
-              } catch (error) {
-                result[`${component}-${configuration}`] = 'Fetch configuration'
-              }
+            const partialResult = await apiReq.apiReq(`/agents/${agentId}/config/${component}/${configuration}`)
+            result[`${component}-${configuration}`] = partialResult.data.data
+            console.log('partialResult ',partialResult)
+            if (partialResult.data.error){
+              console.log('error !!')
+              result[`${component}-${configuration}`] = partialResult.data.message
             }
-            return result
-          } catch (error) {
-            return Promise.reject(error)
           }
+          return result
+        } catch (error) {
+          return Promise.reject(error)
         }
-        
-        
-      })
-      
+      }
+    })
+    
