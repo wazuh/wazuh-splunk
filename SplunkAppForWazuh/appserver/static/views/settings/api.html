@@ -4,7 +4,7 @@
   <div layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> API configuration</span>
-    <span>Administer your Wazuh API credentials</span>
+    <span>Use Wazuh API settings to connect the Kibana plugin to your Wazuh manager or cluster</span>
   </div>
   <!-- End headline -->
 
@@ -48,7 +48,7 @@
         <!-- Add API button section -->
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
           <md-button ng-show='!sac.edit' ng-click='sac.addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
-            <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new API
+            <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new Wazuh API entry
           </md-button>
         </div>
         <!-- End add API button section -->
@@ -80,10 +80,10 @@
             </div>
             <div layout="row" layout-align="center center">
               <md-button ng-if='!sac.edit' ng-click='sac.submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Add API
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save Wazuh API entry
               </md-button>
               <md-button ng-if='sac.edit' ng-click='sac.updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update API
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update Wazuh API entry
               </md-button>
             </div>
           </form>
