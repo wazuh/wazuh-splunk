@@ -1,5 +1,15 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+## Wazuh v3.7.0 - Splunk Enterprise v7.2.0 - Splunk app v3.7.0-rev-17
+### Added
+- Osquery integration ([#252](https://github.com/wazuh/wazuh-splunk/pull/252)).
+- Cluster monitoring ([#246](https://github.com/wazuh/wazuh-splunk/pull/246)).
+### Changed
+- Configuration section ([#261](https://github.com/wazuh/wazuh-splunk/pull/261))
+- FIM section ([#255](https://github.com/wazuh/wazuh-splunk/pull/255)).
+- Settings section ([#265](https://github.com/wazuh/wazuh-splunk/pull/265)).
+### Fixes
+- Minor fixes.
 ## Wazuh v3.6.1 - Splunk Enterprise v7.1.3 - Splunk app v3.6.1-rev-16
 ### Added
 - AWS integration ([#247](https://github.com/wazuh/wazuh-splunk/pull/247)).
