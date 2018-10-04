@@ -20,7 +20,17 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.a('string')
   })
   
-  //TODO check error /check_connection "ERROR"
+  it('GET /check_connection => "ERROR"', async () => {
+    const res = await needle(`get`, `${s_url}/check_connection?user=foo&pass=bar&ip=http://localhost&port=45000`)
+    const resBodyJson = JSON.parse(res.body)
+    //Check status
+    res.statusCode.should.be.a('number') 
+    res.statusCode.should.equal(200)
+    //Check body
+    resBodyJson.status.should.be.a('string')
+    resBodyJson.status.should.equal('400')
+    resBodyJson.error.should.be.a('string')
+  })
   
   it('GET /get_apis => "SUCCESFULLY"', async () => {
     const res = await needle(`get`, `${s_url}/get_apis`)
@@ -78,7 +88,7 @@ describe('manager-api', () => {
     resBodyJson.error.should.be.a('string')
     resBodyJson.error.should.equal('Missing ID.')
   })
-  /*
+  
   it ('POST /add_api => "SUCCESFULLY"', async () => {
     const payload = {
       'payload[url]': 'http://127.0.0.1',
@@ -96,7 +106,7 @@ describe('manager-api', () => {
     resBodyJson.result.should.be.a('string')
     chai.expect(resBodyJson.result).to.match(/^\w+\-\w+\-\w+\-\w+\-\w+$/)
   })
-  */
+  
   it ('POST /add_api => "INVALID NUMBER OF ARGUMENTS"', async () => {
     const payload = {
       'payload[url]': 'http://127.0.0.1',
@@ -146,7 +156,7 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.a('string')
     resBodyJson.data.should.be.equal('success')
   })
-
+  
   it ('POST /update_api => "MISSING ANY ARGUMENT"', async () => {
     const payload = {
       'newRegister[id]':'723e583e-3d1f-46c8-bea6-606479769947',
@@ -167,4 +177,21 @@ describe('manager-api', () => {
     chai.expect(resBodyJson.error).to.match(/^Invalid arguments, missing params :/)
   })  
   
+  it ('GET /get_log_lines => "SUCCESFULLY"', async () => {
+    const res = await needle(`get`, `${s_url}/get_log_lines`)
+    resBodyJson = JSON.parse(res.body)
+    //Check status
+    res.statusCode.should.be.a('number')
+    res.statusCode.should.equal(200)
+    //Check body
+    resBodyJson.should.be.a('object') 
+    resBodyJson.logs.should.be.a('array') 
+    resBodyJson.logs.forEach(log => {
+      log = JSON.parse(log)
+      log.should.be.a('object')
+      log.date.should.be.a('string')
+      log.level.should.be.a('string')
+      log.message.should.be.a('string')     
+    })
+  }) 
 })
