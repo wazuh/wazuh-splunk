@@ -37,7 +37,7 @@ define([
     controllers.controller('awsCtrl', function ($scope, $currentDataService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
-      // $currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
+      $currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
 
       // Create token namespaces
       const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })

@@ -24,7 +24,7 @@
     <!-- End headline -->
     
     <!-- Agent information section -->
-    <div layout="row" layout-padding class="wz-padding-top-0 wz-padding-bottom-0">
+    <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
       <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
         <md-card-content layout="row" class="wz-padding-metric">
           <div class="wz-text-truncatable" flex>
@@ -119,8 +119,8 @@
           ui-sref='ag-conf({id:aoc.agent.id})' current-tab="'configuration'" description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
           <wz-welcome-card ui-sref='ag-inventory({id:aoc.agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
           title="'Inventory data'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="'Applications, network configuration, open ports and processes running on your monitored systems.'"></wz-welcome-card>
-          <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" title="'Configuration'"
-          ui-sref='ag-conf' current-tab="'configuration'" description="'Check your Wazuh cluster configuration.'"></wz-welcome-card>
+          <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
+          description="'Osquery allows to expose an operating system as a high-performance relational database.'"></wz-welcome-card>
         </div>
       </div>
     </div>

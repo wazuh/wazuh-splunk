@@ -12,7 +12,7 @@
       <span class="wz-agent-status-indicator small" ng-class="aic.getAgentStatusClass(aic.agent.status)" aria-label="Agent status indicator">{{aic.formatAgentStatus(aic.agent.status)}}</span>
     </div>
   </div>
-
+  
   <div layout="row" layout-align="layout-padding" ng-if="!aic.syscollector">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">
@@ -20,97 +20,104 @@
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="column" class="wz-padding-top-10">
           <p>Inventory (syscollector) is disabled for this agent. Visit the documentation on <a target="_blank" href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html">this
-              link
-            </a> to learn about how to enable it.
-          </p>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
+            link
+          </a> to learn about how to enable it.
+        </p>
+      </div>
+    </md-card-content>
+  </md-card>
+</div>
 
-  <div layout="row" class="inventory-metrics" ng-if="aic.syscollector">
-    <md-card flex class="wz-metric-color wz-md-card">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div flex="10">Cores: <span class="wz-text-bold">{{ aic.syscollector.hardware.cpu.cores }}</span></div>
-        <div flex="15">Memory: <span class="wz-text-bold">{{ (aic.syscollector.hardware.ram.total / 1024) | number: 2 }}
-            MB
-          </span></div>
-        <div flex="10">Arch: <span class="wz-text-bold">{{ aic.syscollector.os.architecture }}</span></div>
-        <div flex>OS: <span class="wz-text-bold">{{ aic.syscollector.os.os.name }} {{ aic.syscollector.os.os.version }}</span></div>
-        <div flex>CPU: <span class="wz-text-bold">{{ aic.syscollector.hardware.cpu.name }}</span></div>
-      </md-card-content>
-    </md-card>
-  </div>
+<div layout="row" class="inventory-metrics" ng-if="aic.syscollector">
+  <md-card flex class="wz-metric-color wz-md-card">
+    <md-card-content layout="row" class="wz-padding-metric">
+      <div flex="10">Cores: <span class="wz-text-bold">{{ aic.syscollector.hardware.cpu.cores }}</span></div>
+      <div flex="15">Memory: <span class="wz-text-bold">{{ (aic.syscollector.hardware.ram.total / 1024) | number: 2 }}
+        MB
+      </span></div>
+      <div flex="10">Arch: <span class="wz-text-bold">{{ aic.syscollector.os.architecture }}</span></div>
+      <div flex>OS: <span class="wz-text-bold">{{ aic.syscollector.os.os.name }} {{ aic.syscollector.os.os.version }}</span></div>
+      <div flex>CPU: <span class="wz-text-bold">{{ aic.syscollector.hardware.cpu.name }}</span></div>
+    </md-card-content>
+  </md-card>
+</div>
 
-  <div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="aic.syscollector">
-    <md-card flex class="wz-md-card">
-      <md-card-content>
-        <span class="wz-headline-title"><i class="fa fa-fw fa-sitemap"></i> Network interfaces</span>
-        <span class="color-grey pull-right">Last scan: {{aic.syscollector.netiface.items[0].scan.time}}</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
+<div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="aic.syscollector">
+  <md-card flex class="wz-md-card">
+    <md-card-content>
+      <span class="wz-headline-title"><i class="fa fa-fw fa-sitemap"></i> Network interfaces</span>
+      <span class="color-grey pull-right">Last scan: {{aic.syscollector.netiface.items[0].scan.time}}</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      
+      <table class="table table-striped table-condensed table-layout-fixed">
+        <thead class="wz-text-bold">
+          <th class="wz-text-left">Name</th>
+          <th class="wz-text-left">Mac</th>
+          <th class="wz-text-left">State</th>
+          <th class="wz-text-left">MTU</th>
+          <th class="wz-text-left">Type</th>
+        </thead>
+        <tbody>
+          <tr class="wz-word-wrap" ng-repeat="interface in aic.syscollector.netiface.items">
+            <td>{{interface.name}}</td>
+            <td>{{interface.mac}}</td>
+            <td>
+              <svg ng-if="interface.state !== 'up'" class="euiIcon euiIcon--medium euiIcon--warning" focusable="false" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16"><defs>
+                <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+              </defs>
+              <use xlink:href="#dot-a"></use></svg>
+              <svg ng-if="interface.state === 'up'" class="euiIcon euiIcon--medium euiIcon--success" focusable="false" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16"><defs>
+                <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+              </defs>
+              <use xlink:href="#dot-a"></use></svg>
+              {{interface.state}}
+            </td>
+            <td>{{interface.mtu}}</td>
+            <td>{{interface.type}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </md-card-content>
+  </md-card>
+  <md-card flex class="wz-md-card">
+    <md-card-content class="wz-text-center wz-margin-bottom-40-inv" ng-if="aic.syscollector.ports && !aic.syscollector.ports.items.length">
+      <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No ports scan available</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <div layout="column" class="wz-padding-top-10">
+        <p>The ports scan is disabled or not ready yet. Wait a little bit and try refreshing the page.</p>
+      </div>
+    </md-card-content>
+    <md-card-content class="wz-margin-bottom-40-inv">
+      <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
+      <span class="color-grey pull-right">Last scan: {{aic.syscollector.ports.items[0].scan.time}}</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
+      </wazuh-table>
+    </md-card-content>
+  </md-card>
+</div>
 
-        <table class="table table-striped table-condensed table-layout-fixed">
-          <thead class="wz-text-bold">
-            <th class="wz-text-left">Name</th>
-            <th class="wz-text-left">Mac</th>
-            <th class="wz-text-left">State</th>
-            <th class="wz-text-left">MTU</th>
-            <th class="wz-text-left">Type</th>
-          </thead>
-          <tbody>
-            <tr class="wz-word-wrap" ng-repeat="interface in aic.syscollector.netiface.items">
-              <td>{{interface.name}}</td>
-              <td>{{interface.mac}}</td>
-              <td>
-                <svg ng-if="interface.state !== 'up'" class="euiIcon euiIcon--medium euiIcon--warning" focusable="false" xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16"><defs>
-                    <circle id="dot-a" cx="8" cy="8" r="4"></circle>
-                  </defs>
-                  <use xlink:href="#dot-a"></use></svg>
-                <svg ng-if="interface.state === 'up'" class="euiIcon euiIcon--medium euiIcon--success" focusable="false" xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16"><defs>
-                    <circle id="dot-a" cx="8" cy="8" r="4"></circle>
-                  </defs>
-                  <use xlink:href="#dot-a"></use></svg>
-                {{interface.state}}
-              </td>
-              <td>{{interface.mtu}}</td>
-              <td>{{interface.type}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </md-card-content>
-    </md-card>
-    <md-card flex class="wz-md-card">
-      <md-card-content class="wz-margin-bottom-40-inv">
-        <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
-        <span class="color-grey pull-right">Last scan: {{aic.syscollector.ports.items[0].scan.time}}</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
+<div layout="row" class="layout-padding wz-padding-top-0" ng-if="aic.syscollector">
+  <md-card flex class="wz-md-card">
+    <md-card-content>
+      <span class="wz-headline-title"><i class="fa fa-fw fa-cubes"></i> Packages</span>
+      <span class="color-grey pull-right">Last scan: {{aic.syscollector.packagesDate}}</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <div layout="row" class="wz-margin-top-10">
+        <input flex placeholder="Filter packages..." ng-model="aic.packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+        aria-invalid="false" wz-enter="aic.search(aic.packageSearch,'packages')">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="aic.search(aic.packageSearch,'packages')">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
+      
+      <div layout="row" ng-if="aic.agent.id && aic.syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+        <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
         </wazuh-table>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <div layout="row" class="layout-padding wz-padding-top-0" ng-if="aic.syscollector">
-    <md-card flex class="wz-md-card">
-      <md-card-content>
-        <span class="wz-headline-title"><i class="fa fa-fw fa-cubes"></i> Packages</span>
-        <span class="color-grey pull-right">Last scan: {{aic.syscollector.packagesDate}}</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-margin-top-10">
-          <input flex placeholder="Filter packages..." ng-model="aic.packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-            aria-invalid="false" wz-enter="aic.search(aic.packageSearch,'packages')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="aic.search(aic.packageSearch,'packages')">
-            <span class="fa fa-search" aria-hidden="true"></span>
-          </button>
-        </div>
-
-        <div layout="row" ng-if="aic.agent.id && aic.syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-          <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
-          </wazuh-table>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
+      </div>
+    </md-card-content>
+  </md-card>
+</div>
 </md-content>

@@ -3,19 +3,21 @@
   "version": "6.3.1",
   "description": "[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://goo.gl/forms/M2AoZC4b2R9A9Zy12)\r [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)\r [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)\r [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)",
   "main": "index.js",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^9.0.0",
+    "chai": "^4.2.0",
+    "chai-match": "^1.1.1",
     "eslint": "^5.5.0",
     "eslint-plugin-async-await": "^0.0.0",
     "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-requirejs": "^3.2.0"
+    "eslint-plugin-requirejs": "^3.2.0",
+    "mocha": "^5.2.0",
+    "needle": "^2.2.4"
   },
   "scripts": {
     "lint": "eslint . --ext .js -c .eslintrc.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/index.js"
   },
   "repository": {
     "type": "git",
