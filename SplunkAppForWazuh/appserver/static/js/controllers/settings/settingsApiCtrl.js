@@ -174,7 +174,6 @@ define([
           vm.edit = false
           $notificationService.showSimpleToast('Updated API')
         } catch (err) {
-          console.error('error ',err)
           $notificationService.showSimpleToast('Cannot update API')
         }
       }
