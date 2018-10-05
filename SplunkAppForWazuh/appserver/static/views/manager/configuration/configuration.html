@@ -3295,7 +3295,7 @@ md-is-locked-open="true">
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
             <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
           
@@ -3455,7 +3455,7 @@ md-is-locked-open="true">
   md-selected-nav-item="configurationSubTab"
   nav-bar-aria-label="Active response navigation links">
   <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('active-response')" name="active-response">Active response</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('commands')" name="commands">Commands</md-nav-item>
+  <md-nav-item class="wz-nav-item" ng-show="!agent || agent.id === '000'"  md-nav-click="switchConfigurationSubTab('commands')" name="commands">Commands</md-nav-item>
 </md-nav-bar>
 <!-- End Commands & Active response navigation bar -->
 
