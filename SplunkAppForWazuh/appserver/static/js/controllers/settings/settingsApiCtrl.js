@@ -168,12 +168,13 @@ define([
           if (!$scope.$$phase) $scope.$digest()
 
           if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.entry.id) {
-            vm.selectManager(updatedEntry.data)
+            vm.selectManager(updatedApi.id)
           }
 
           vm.edit = false
           $notificationService.showSimpleToast('Updated API')
         } catch (err) {
+          console.error('error ',err)
           $notificationService.showSimpleToast('Cannot update API')
         }
       }
