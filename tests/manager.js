@@ -8,7 +8,13 @@ const s_url = 'http://localhost:8000/en-US/custom/SplunkAppForWazuh/manager'
 
 describe('manager-api', () => {
   it('GET /check_connection => "SUCCESFULLY"', async () => {
-    const res = await needle(`get`, `${s_url}/check_connection?user=foo&pass=bar&ip=http://localhost&port=55000`)
+    const params = {
+      user: 'foo',
+      pass: 'bar',
+      ip: 'http://localhost',
+      port: 55000
+    }
+    const res = await needle(`get`, `${s_url}/check_connection`, params, {})
     const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number') 
@@ -19,9 +25,15 @@ describe('manager-api', () => {
     resBodyJson.error.should.equal(0)
     resBodyJson.data.should.be.a('string')
   })
-  
+
   it('GET /check_connection => "ERROR"', async () => {
-    const res = await needle(`get`, `${s_url}/check_connection?user=foo&pass=bar&ip=http://localhost&port=45000`)
+    const params = {
+      user: 'bad_user',
+      pass: 'bad_pass',
+      ip: 'http://bad_url',
+      port: 12345
+    }
+    const res = await needle(`get`, `${s_url}/check_connection`, params, {})
     const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number') 
@@ -51,7 +63,8 @@ describe('manager-api', () => {
   })
   
   it('GET /get_api => "CORRECT ID"', async () => {
-    const res = await needle(`get`, `${s_url}/get_api?id=2cc42206-bbe9-416c-a95f-7a4e46c445a5`)
+    const params = { id: '2cc42206-bbe9-416c-a95f-7a4e46c445a5' }
+    const res = await needle(`get`, `${s_url}/get_api`, params, {})
     const resBodyJson = JSON.parse(res.body) 
     //Check status
     res.statusCode.should.be.a('number')
@@ -68,7 +81,8 @@ describe('manager-api', () => {
   })
   
   it('GET /get_api => "WRONG ID"', async () => {
-    const res = await needle(`get`, `${s_url}/get_api?id=id_not_valid`)
+    const params = { id: '2cc42206-bbe9-bad-id-api' }
+    const res = await needle(`get`, `${s_url}/get_api`, params, {})
     const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
