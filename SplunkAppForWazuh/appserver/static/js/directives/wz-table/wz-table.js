@@ -325,6 +325,7 @@ define(['../module', 'underscore'], function (directives, _) {
         })
 
         $scope.nonDecoderValue = (key, item) => {
+          if((key === 'description' || key.value && key.value === 'description') && !item.description) return '---'
           return key.value === 'local.ip'
             ? (item.local && item.local.ip
               ? `${item.local.ip}:${item.local.port}`

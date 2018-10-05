@@ -3,7 +3,7 @@
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding>
     <!-- Main monitoring section -->
-    <div ng-if="!mmt.showConfig && !mmt.showNodes">
+    <div ng-if="!mmt.showConfig && !mmt.showNodes && !mmt.currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
       <span>Monitoring</span>
@@ -11,7 +11,7 @@
       <span>{{ mmt.currentApi }}</span>
     </div>
     <!-- Overview section -->
-    <div ng-if="mmt.showConfig">
+    <div ng-if="mmt.showConfig && !mmt.currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='mmt.reset()'>Monitoring</span>
