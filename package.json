@@ -23,7 +23,7 @@
     "prettier": "^1.14.3"
   },
   "scripts": {
-    "pretty": "prettier --single-quote --write SplunkAppForWazuh/**/*.js !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
+    "pretty": "prettier --write --use-tabs '/{!(appserver/static/js/libs/)/**/*}.js'",
     "lint": "eslint . --ext .js -c .eslintrc.json",
     "test": "mocha tests/manager.js"
   },
