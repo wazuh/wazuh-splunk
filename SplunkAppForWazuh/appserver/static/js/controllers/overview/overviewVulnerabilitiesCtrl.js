@@ -29,9 +29,9 @@ define([
   TimeRangeInput,
   SearchManager,
   UrlTokenModel) {
-
+    
     'use strict'
-
+    
     controllers.controller('overviewVulnerabilitiesCtrl', function ($scope, $currentDataService, $state) {
       const vm = this
       const epoch = (new Date).getTime()
@@ -41,9 +41,9 @@ define([
       mvc.Components.registerInstance('url' + epoch, urlTokenModel)
       const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
       const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
+      
       let filters = $currentDataService.getSerializedFilters()
-
+      
       urlTokenModel.on('url:navigate', function () {
         defaultTokenModel.set(urlTokenModel.toJSON())
         if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
@@ -52,31 +52,31 @@ define([
           submittedTokenModel.clear()
         }
       })
-
+      
       /**
-       * Fires all the queries
-       */
+      * Fires all the queries
+      */
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();
         // searches.map(search => search.startSearch())
       }
-
+      
       $scope.$on('deletedFilter', () => {
         launchSearches()
       })
-
+      
       $scope.$on('barFilter', () => {
         launchSearches()
       })
-
+      
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
-
+      
       const submitTokens = () => {
         FormUtils.submitForm({ replaceState: pageLoading })
       }
-
+      
       let criticalSeveritySearch = ''
       let highSeveritySeach = ''
       let mediumSeveritySearch = ''
@@ -90,10 +90,14 @@ define([
       let element3 = ''
       let element4 = ''
       let input1 = ''
-
+      let affectedAgents
+      let affectedAgentsSearch
+      let commonCves
+      let commonCvesSearch
+      
       /**
-       * When controller is destroyed
-       */
+      * When controller is destroyed
+      */
       $scope.$on('$destroy', () => {
         criticalSeveritySearch.cancel()
         highSeveritySeach.cancel()
@@ -103,6 +107,11 @@ define([
         topAgentsSeverity.cancel()
         affectedPackages.cancel()
         alertsSummary.cancel()
+        affectedAgentsSearch.cancel()
+        commonCvesSearch.cancel()
+
+        affectedAgents = null
+        commonCves = null
         criticalSeveritySearch = null
         highSeveritySeach = null
         mediumSeveritySearch = null
@@ -117,7 +126,7 @@ define([
         element4 = null
         input1 = null
       })
-
+      
       // Listen for a change to the token tokenTotalAlerts value
       criticalSeveritySearch = new SearchManager({
         "id": "criticalSeveritySearch" + epoch,
@@ -134,8 +143,8 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
-
+      
+      
       new SearchEventHandler({
         managerid: "criticalSeveritySearch" + epoch,
         event: "done",
@@ -166,7 +175,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       // Listen for a change to the token tokenTotalAlerts value
       highSeveritySeach = new SearchManager({
         "id": "highSeveritySeach" + epoch,
@@ -183,7 +192,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new SearchEventHandler({
         managerid: "highSeveritySeach" + epoch,
         event: "done",
@@ -214,7 +223,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       // Listen for a change to the token tokenTotalAlerts value
       mediumSeveritySearch = new SearchManager({
         "id": "mediumSeveritySearch" + epoch,
@@ -231,7 +240,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new SearchEventHandler({
         managerid: "mediumSeveritySearch" + epoch,
         event: "done",
@@ -262,7 +271,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       // Listen for a change to the token tokenTotalAlerts value
       lowSeveritySearch = new SearchManager({
         "id": "lowSeveritySearch" + epoch,
@@ -279,7 +288,7 @@ define([
         },
         "runWhenTimeIsUndefined": true
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       new SearchEventHandler({
         managerid: "lowSeveritySearch" + epoch,
         event: "done",
@@ -310,7 +319,7 @@ define([
           if (!$scope.$$phase) $scope.$digest()
         }
       })
-
+      
       alertsSeverityOverTime = new SearchManager({
         "id": "alertsSeverityOverTime" + epoch,
         "cancelOnUnload": true,
@@ -327,6 +336,38 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
+      affectedAgentsSearch = new SearchManager({
+        "id": `affectedAgentsSearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} rule.groups=vulnerability-detector | top agent.name limit=5`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      commonCvesSearch = new SearchManager({
+        "id": `commonCvesSearch${epoch}`,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} rule.groups=vulnerability-detector | top data.vulnerability.cve limit=5`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+      
       topAgentsSeverity = new SearchManager({
         "id": "topAgentsSeverity" + epoch,
         "sample_ratio": 1,
@@ -342,7 +383,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       affectedPackages = new SearchManager({
         "id": "affectedPackages" + epoch,
         "cancelOnUnload": true,
@@ -358,7 +399,7 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
+      
       alertsSummary = new SearchManager({
         "id": "alertsSummary" + epoch,
         "cancelOnUnload": true,
@@ -374,8 +415,8 @@ define([
         },
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
-
-
+      
+      
       element1 = new ChartElement({
         "id": "element1" + epoch,
         "trellis.size": "medium",
@@ -408,8 +449,8 @@ define([
         "managerid": "alertsSeverityOverTime" + epoch,
         "el": $('#element1')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       element2 = new ChartElement({
         "id": `element2${epoch}`,
         "charting.chart.bubbleSizeBy": "area",
@@ -448,8 +489,8 @@ define([
         "managerid": "topAgentsSeverity" + epoch,
         "el": $('#element2')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
+      
+      
       element3 = new ChartElement({
         "id": "element3" + epoch,
         "charting.axisY2.scale": "inherit",
@@ -483,7 +524,49 @@ define([
         "el": $('#element3')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      affectedAgents = new ChartElement({
+        "id": "affectedAgents" + epoch,
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "pie",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "affectedAgentsSearch" + epoch,
+        "el": $('#affectedAgents')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      commonCves = new ChartElement({
+        "id": `commonCves${epoch}`,
+        "charting.drilldown": "none",
+        "charting.chart": "bar",
+        "resizable": true,
+        "managerid": `commonCvesSearch${epoch}`,
+        "el": $('#commonCves')
+    }, {tokens: true, tokenNamespace: "submitted"}).render();
+      
+      
       element4 = new TableElement({
         "id": "element4" + epoch,
         "dataOverlayMode": "none",
@@ -495,11 +578,11 @@ define([
         "managerid": "alertsSummary" + epoch,
         "el": $('#element4')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
-
+      
       //
       // VIEWS: FORM INPUTS
       //
-
+      
       input1 = new TimeRangeInput({
         "id": "input1" + epoch,
         "searchWhenChanged": true,
@@ -508,26 +591,27 @@ define([
         "latest_time": "$form.when.latest$",
         "el": $('#input1')
       }, { tokens: true }).render()
-
+      
       input1.on("change", (newValue) => {
         if (newValue && input1)
-          FormUtils.handleValueChange(input1)
+        FormUtils.handleValueChange(input1)
       })
-
+      
       DashboardController.onReady(() => {
         if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
           submittedTokenModel.set({ earliest: '0', latest: '' })
         }
       })
-
+      
       // Initialize time tokens to default
       if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
         defaultTokenModel.set({ earliest: '0', latest: '' })
       }
-
+      
       submitTokens()
-
+      
       DashboardController.ready()
-
+      
     })
   })
+  

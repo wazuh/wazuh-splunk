@@ -270,6 +270,7 @@ define([
       vm.reset = () => {
         vm.showConfig = false
         vm.showNodes = false
+        vm.currentNode = false
         if (!$scope.$$phase) $scope.$digest()
       }
       
