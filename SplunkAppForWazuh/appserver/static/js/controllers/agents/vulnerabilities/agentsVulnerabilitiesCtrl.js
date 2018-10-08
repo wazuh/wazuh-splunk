@@ -94,6 +94,12 @@ define([
       let element3 = ''
       let element4 = ''
       let input1 = ''
+      let commonRules
+      let commonRulesSearch
+      let commonCves
+      let commonCvesSearch
+      let severityDistribution
+      let severityDistributionSearch
 
       /**
        * When controller is destroyed
@@ -107,6 +113,12 @@ define([
         topAgentsSeverity.cancel()
         affectedPackages.cancel()
         alertsSummary.cancel()
+        commonRulesSearch.cancel()
+        commonCvesSearch.cancel()
+        severityDistributionSearch.cancel()
+        severityDistribution = null
+        commonCves = null
+        commonRules = null
         criticalSeveritySearch = null
         highSeveritySeach = null
         mediumSeveritySearch = null
@@ -130,6 +142,39 @@ define([
         "earliest_time": "$when.earliest$",
         "status_buckets": 0,
         "search": `${filters} data.vulnerability.severity=critical | stats count`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": true
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      severityDistributionSearch = new SearchManager({
+        "id": "severityDistributionSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} rule.groups="vulnerability-detector" | top data.vulnerability.severity limit=5`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": true
+      }, { tokens: true, tokenNamespace: "submitted" })
+
+      // Listen for a change to the token tokenTotalAlerts value
+      commonRulesSearch = new SearchManager({
+        "id": "commonRulesSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
         "latest_time": "$when.latest$",
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
@@ -374,6 +419,22 @@ define([
         "runWhenTimeIsUndefined": false
       }, { tokens: true, tokenNamespace: "submitted" })
 
+      commonCvesSearch = new SearchManager({
+        "id": "commonCvesSearch" + epoch,
+        "cancelOnUnload": true,
+        "sample_ratio": 1,
+        "earliest_time": "$when.earliest$",
+        "status_buckets": 0,
+        "search": `${filters} rule.groups="vulnerability-detector" | top data.vulnerability.cve limit=5`,
+        "latest_time": "$when.latest$",
+        "app": utils.getCurrentApp(),
+        "auto_cancel": 90,
+        "preview": true,
+        "tokenDependencies": {
+        },
+        "runWhenTimeIsUndefined": false
+      }, { tokens: true, tokenNamespace: "submitted" })
+
       alertsSummary = new SearchManager({
         "id": "alertsSummary" + epoch,
         "cancelOnUnload": true,
@@ -498,6 +559,71 @@ define([
         "el": $('#element3')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      commonCves = new ChartElement({
+        "id": "commonCves" + epoch,
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "pie",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "commonCvesSearch" + epoch,
+        "el": $('#commonCves')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
+
+      severityDistribution = new ChartElement({
+        "id": "severityDistribution" + epoch,
+        "charting.axisY2.scale": "inherit",
+        "trellis.size": "medium",
+        "charting.chart.stackMode": "default",
+        "resizable": true,
+        "charting.layout.splitSeries.allowIndependentYRanges": "0",
+        "charting.drilldown": "none",
+        "charting.chart.nullValueMode": "gaps",
+        "charting.axisTitleY2.visibility": "visible",
+        "charting.chart": "pie",
+        "trellis.scales.shared": "1",
+        "charting.layout.splitSeries": "0",
+        "charting.chart.style": "shiny",
+        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+        "charting.axisTitleX.visibility": "visible",
+        "charting.axisTitleY.visibility": "visible",
+        "charting.axisX.scale": "linear",
+        "charting.chart.bubbleMinimumSize": "10",
+        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+        "charting.axisY2.enabled": "0",
+        "trellis.enabled": "0",
+        "charting.legend.placement": "right",
+        "charting.chart.bubbleSizeBy": "area",
+        "charting.chart.bubbleMaximumSize": "50",
+        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+        "charting.axisY.scale": "linear",
+        "charting.chart.showDataLabels": "none",
+        "charting.chart.sliceCollapsingThreshold": "0.01",
+        "managerid": "severityDistributionSearch" + epoch,
+        "el": $('#severityDistribution')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
       element4 = new TableElement({
         "id": "element4" + epoch,
@@ -510,7 +636,29 @@ define([
         "managerid": "alertsSummary" + epoch,
         "el": $('#element4')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
+      
+      commonRules = new TableElement({
+        "id": "commonRules" + epoch,
+        "dataOverlayMode": "none",
+        "drilldown": "cell",
+        "percentagesRow": "false",
+        "rowNumbers": "false",
+        "totalsRow": "false",
+        "wrap": "false",
+        "managerid": "commonRulesSearch" + epoch,
+        "el": $('#commonRules')
+      }, { tokens: true, tokenNamespace: "submitted" }).render()
 
+      commonRules.on("click", function (e) {
+        if (e.field !== undefined) {
+          e.preventDefault()
+          if (e.data['click.value']=== e.data['click.value2']) {
+            $state.go('mg-rules-id', { id:`${e.data['click.value']}` })
+          }
+          //const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          //utils.redirect(url, false, "_blank")
+        }
+      })
       //
       // VIEWS: FORM INPUTS
       //
