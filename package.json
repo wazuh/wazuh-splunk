@@ -19,9 +19,11 @@
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-requirejs": "^3.2.0",
     "mocha": "^5.2.0",
-    "needle": "^2.2.4"
+    "needle": "^2.2.4",
+    "prettier": "^1.14.3"
   },
   "scripts": {
+    "pretty": "prettier --write --use-tabs '/{!(appserver/static/js/libs/)/**/*}.js'",
     "lint": "eslint . --ext .js -c .eslintrc.json",
     "test": "mocha tests/manager.js"
   },
