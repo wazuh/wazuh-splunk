@@ -41,7 +41,7 @@ def check_status():
                     agents_url_total_items, auth=auth, timeout=1, verify=verify).json()
                 total_items = request_agents["data"]["totalItems"]
                 agents_url = url + \
-                    '/agents?select=id,ip,manager_host,status&offset=0&limit=' + \
+                    '/agents?select=id,ip,manager,status&offset=0&limit=' + \
                     str(total_items)
                 request_agents = requests.get(
                     agents_url, auth=auth, timeout=1, verify=verify).json()
