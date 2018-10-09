@@ -12,7 +12,6 @@ define(['./module'], function (module) {
       if (transition.to().name.includes('ag-')) {
         $rootScope.$broadcast('stateChanged', 'agents')
       } else if(transition.to().name.includes('mg-')) {
-        console.log('to mg state')
         $rootScope.$broadcast('stateChanged', 'manager')
       } else if(transition.to().name.includes('ow-')) {
         $rootScope.$broadcast('stateChanged', 'overview')
@@ -69,7 +68,6 @@ define(['./module'], function (module) {
 
     $transitions.onStart({ to: 'overview' }, async (trans) => {
       try {
-        console.log('transition to overview')
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
         $currentDataService.setApi(api)
         $currentDataService.cleanFilters()

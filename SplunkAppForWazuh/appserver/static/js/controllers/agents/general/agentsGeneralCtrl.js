@@ -64,7 +64,6 @@ define([
           }
           $state.go(`mg-groups`, { group: groupData[0] } )
         } catch (err) {
-          console.error('err ',err)
           $notificationService.showSimpleToast('Error fetching group data')
         }
       }

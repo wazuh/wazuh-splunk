@@ -454,7 +454,6 @@ define([
                                     
                                     if (!$scope.$$phase) $scope.$digest()
                                   } catch (error) {
-                                    console.error('error ',error)
                                     $notificationService.showSimpleToast(error.message || error)
                                   }
                                 })
