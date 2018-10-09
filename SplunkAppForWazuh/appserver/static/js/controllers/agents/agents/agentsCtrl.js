@@ -132,7 +132,7 @@ define([
     const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
     vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
     // Building version filter
-    const rawVersions = data[2].data.data.items.map(one => one.version);
+    const rawVersions = data[2].data.data.items.map(one => one.version)
     vm.versions = [... new Set(rawVersions.filter(one => !!one))]
 
     vm.lastAgent = lastAgent

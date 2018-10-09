@@ -18,7 +18,7 @@ define(['../../module'], function (controllers) {
     const vm = this
     try {
       vm.agent = agent[0].data.data
-      vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
+      vm.agentOS = `${vm.agent.os.name || '-'} ${vm.agent.os.codename || '-'} ${vm.agent.os.version || '-'}`
       vm.syscheck = agent[1].data.data
       vm.id = $stateParams.id
       vm.rootcheck = agent[2].data.data
