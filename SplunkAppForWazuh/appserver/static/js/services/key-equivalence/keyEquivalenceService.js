@@ -35,6 +35,7 @@ define(['../module'], function (module) {
           node_name: 'Node',
           dateAdd: 'Registration date',
           manager_host: 'Manager',
+          manager: 'Manager',
           lastKeepAlive: 'Last keep alive',
           os: 'OS',
           path: 'Path',
