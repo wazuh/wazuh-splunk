@@ -7,6 +7,18 @@ define(['./module'], function (module) {
       $rootScope.$broadcast('loading', { status: false })
     })
 
+
+    $transitions.onStart({}, function(transition) {
+      if (transition.to().name.includes('ag-')) {
+        $rootScope.$broadcast('stateChanged', 'agents')
+      } else if(transition.to().name.includes('mg-')) {
+        console.log('to mg state')
+        $rootScope.$broadcast('stateChanged', 'manager')
+      } else if(transition.to().name.includes('ow-')) {
+        $rootScope.$broadcast('stateChanged', 'overview')
+      }
+    })
+
     $transitions.onStart({}, async (trans) => {
       $rootScope.$broadcast('loading', { status: true })
     })
@@ -57,6 +69,7 @@ define(['./module'], function (module) {
 
     $transitions.onStart({ to: 'overview' }, async (trans) => {
       try {
+        console.log('transition to overview')
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
         $currentDataService.setApi(api)
         $currentDataService.cleanFilters()
@@ -84,6 +97,7 @@ define(['./module'], function (module) {
         $state.go('settings.api')
       }
     })
+
   }])
 })
 

@@ -18,7 +18,9 @@ define(['../module'], function (directives) {
         $scope.logoUrl = BASE_URL + '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
         
         $scope.select = (item) => {
+          console.log('selecting this item ',item)
           $scope.menuNavItem = item
+          if (!$scope.$$phase) $scope.$digest()
         }
         
         const update = () => {
@@ -26,11 +28,14 @@ define(['../module'], function (directives) {
           $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName
           $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
           if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview')) {
+            console.log('the last state' ,$navigationService.getLastState())
             $scope.menuNavItem = 'overview'
+            console.log('update overview')
             if (!$scope.$$phase) $scope.$digest()
           }
           else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('mg-') || $navigationService.getLastState().includes('manager')) {
             $scope.menuNavItem = 'manager'
+            console.log('selected management')
             if (!$scope.$$phase) $scope.$digest()
           }
           else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ag-') || $navigationService.getLastState().includes('agents')) {
@@ -50,8 +55,9 @@ define(['../module'], function (directives) {
         $scope.$on('updatedAPI', () => {
           update()
         })
-        $scope.$on('stateChanged', () => {
-          update()
+        $scope.$on('stateChanged', (params,data) => {
+          $scope.select(data)
+          //update()
         })
         update()
       },
