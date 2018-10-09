@@ -16,6 +16,11 @@ define(['../module'], function (directives) {
     return {
       controller: function ($scope, $currentDataService, $navigationService) {
         $scope.logoUrl = BASE_URL + '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
+        
+        $scope.select = (item) => {
+          $scope.menuNavItem = item
+        }
+        
         const update = () => {
           $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
           $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName
