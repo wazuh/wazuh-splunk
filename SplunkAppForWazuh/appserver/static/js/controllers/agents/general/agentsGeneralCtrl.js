@@ -31,7 +31,7 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $stateParams,$currentDataService, agent, $state) {
+    controllers.controller('agentsGeneralCtrl', function ($scope,$requestService,$notificationService, $stateParams,$currentDataService, agent, $state) {
       const vm = this
       const epoch = (new Date).getTime()
       vm.agent = agent[0].data.data
@@ -54,6 +54,19 @@ define([
           submittedTokenModel.clear()
         }
       })
+
+      vm.goGroups = async (group) => {
+        try {
+          const groupInfo = await $requestService.apiReq(`/agents/groups/`)
+          const groupData = groupInfo.data.data.items.filter( item => item.name === group)
+          if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
+            throw Error('Missing fields')
+          }
+          $state.go(`mg-groups`, { group: groupData[0] } )
+        } catch (err) {
+          $notificationService.showSimpleToast('Error fetching group data')
+        }
+      }
 
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())

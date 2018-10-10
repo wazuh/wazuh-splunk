@@ -16,6 +16,12 @@ define(['../module'], function (directives) {
     return {
       controller: function ($scope, $currentDataService, $navigationService) {
         $scope.logoUrl = BASE_URL + '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
+        
+        $scope.select = (item) => {
+          $scope.menuNavItem = item
+          if (!$scope.$$phase) $scope.$digest()
+        }
+        
         const update = () => {
           $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
           $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName
@@ -45,8 +51,9 @@ define(['../module'], function (directives) {
         $scope.$on('updatedAPI', () => {
           update()
         })
-        $scope.$on('stateChanged', () => {
-          update()
+        $scope.$on('stateChanged', (params,data) => {
+          $scope.select(data)
+          //update()
         })
         update()
       },
