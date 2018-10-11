@@ -178,7 +178,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh  | top data.aws.id`,
+        "search": `${filters} sourcetype=wazuh  | top data.aws.requestParameters.instanceId`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
