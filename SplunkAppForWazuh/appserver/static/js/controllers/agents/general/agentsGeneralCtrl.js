@@ -411,7 +411,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
+        "search": `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -607,7 +607,7 @@ define([
         "dataOverlayMode": "none",
         "drilldown": "cell",
         "percentagesRow": "false",
-        "rowNumbers": "false",
+        "rowNumbers": "10",
         "totalsRow": "false",
         "wrap": "true",
         "managerid": "search14" + epoch,
@@ -618,7 +618,7 @@ define([
       agentsElement14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })
