@@ -92,7 +92,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">Global configuration</h3>
-                    <p>Global and remote settings that applies to the whole cluster</p>
+                    <p>Global and remote settings that apply to the whole Wazuh cluster</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
@@ -118,19 +118,19 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('global-configuration', [{component:'com',configuration:'logging'}])">Global configuration</h3>
-                    <p>Logging settings that applies to the agent</p>
+                    <p>Logging settings that apply to the agent</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('client', [{component:'agent',configuration:'client'}])">Client configuration</h3>
-                    <p>Configure the connection to the manager</p>
+                    <p>Configure the connection with the manager</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
                   <div class="md-list-item-text">
-                    <h3 class="wz-text-link" ng-click="switchConfigTab('client-buffer', [{component:'agent',configuration:'buffer'}])">Client buffer configuration</h3>
-                    <p>Agent bucket parameters in order to avoid events flooding</p>
+                    <h3 class="wz-text-link" ng-click="switchConfigTab('client-buffer', [{component:'agent',configuration:'buffer'}])">Anti-flooding settings</h3>
+                    <p>Agent bucket parameters to avoid event flooding</p>
                   </div>
                 </md-list-item>
                 <!-- End agent sections -->
@@ -199,7 +199,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchWodle('cis-cat')">CIS-CAT</h3>
-                    <p>Configuration assessment using Center of Internet Security scanner and SCAP checks</p>
+                    <p>Configuration assessment using CIS scanner and SCAP checks</p>
                   </div>
                 </md-list-item>
               </md-list>
@@ -211,7 +211,7 @@
           <!-- System, threats and incident response card -->
           <md-card class="wz-md-card">
             <md-card-content>
-              <span class="font-size-16">System, threats and incident response</span>
+              <span class="font-size-16">System threats and incident response</span>
               <md-divider class="wz-margin-top-10"></md-divider>
               
               <md-list layout="row" layout-wrap>
@@ -224,7 +224,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchWodle('osquery')">Osquery</h3>
-                    <p>Osquery allows to expose an operating system as a high-performance relational database</p>
+                    <p>Expose an operating system as a high-performance relational database</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
@@ -236,13 +236,13 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])">Active response</h3>
-                    <p>Active threath addressing by inmmediate response</p>
+                    <p>Active threat addressing by inmmediate response</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
                   <div class="md-list-item-text">
                       <h3 class="wz-text-link" ng-click="switchConfigTab('active-response',[{component:'com',configuration:'active-response'}])">Active response</h3>
-                      <p>Active threath addressing by inmmediate response</p>
+                      <p>Active threat addressing by inmmediate response</p>
                   </div>
               </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
@@ -273,7 +273,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('integrity-monitoring',[{component:'syscheck',configuration:'syscheck'}])">Integrity monitoring</h3>
-                    <p>Identification of changes in content, permissions, ownership, and attributes of files</p>
+                    <p>Identify changes in content, permissions, ownership, and attributes of files</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
@@ -334,7 +334,7 @@
       <div>
         <span class="font-size-18">Global configuration</span>
       </div>
-      <span class="md-subheader">Global and remote settings that applies to the whole cluster</span>
+      <span class="md-subheader">Global and remote settings that apply to the whole Wazuh cluster</span>
     </div>
     <!-- End headline -->
     
@@ -437,7 +437,7 @@ value="currentConfig['analysis-global'].global.rotate_interval">
 <div ng-if="!agent || agent.id === '000'" class="wz-margin-top-10">
   <span class="font-size-16">Email settings</span>
   <div class="wz-margin-top-10">
-    <span class="md-subheader small">Basic base email settings (needed for granular email settings)</span>
+    <span class="md-subheader small">Basic email settings (needed for granular email settings)</span>
   </div>
 </div>
 <md-divider ng-if="!agent || agent.id === '000'" class="wz-margin-top-10"></md-divider>
@@ -480,7 +480,7 @@ value="currentConfig['analysis-global'].global.email_idsname">
 <div ng-if="!agent || agent.id === '000'" class="wz-margin-top-10">
   <span class="font-size-16">Other settings</span>
   <div class="wz-margin-top-10">
-    <span class="md-subheader small">Settings not applied to any particular section or component</span>
+    <span class="md-subheader small">Settings not directly related to any specific component</span>
   </div>
 </div>
 <md-divider ng-if="!agent || agent.id === '000'" class="wz-margin-top-10"></md-divider>
@@ -1172,7 +1172,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">Main settings</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Granular email alerts options</span>
+              <span class="md-subheader small">Granular email alert options</span>
             </div>
           </div>
           <span flex></span>
@@ -1334,7 +1334,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">Main settings</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">General alerts settings</span>
+              <span class="md-subheader small">General alert settings</span>
             </div>
           </div>
           <span flex></span>
@@ -2169,7 +2169,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">UNIX audit files</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Specified paths to an audit definition file for Unix-like systems</span>
+              <span class="md-subheader small">Specified paths to audit definition files for Unix-like systems</span>
             </div>
           </div>
           <span flex></span>
@@ -2610,7 +2610,7 @@ md-is-locked-open="true">
       <span ng-if="currentConfig && currentConfig['cis-cat'] && currentConfig['cis-cat'].disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="(currentConfig && currentConfig['cis-cat'] && currentConfig['cis-cat'].disabled === 'yes') || (currentConfig && !currentConfig['cis-cat'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Configuration assessment using Center of Internet Security scanner and SCAP checks</span>
+    <span class="md-subheader">Configuration assessment using CIS scanner and SCAP checks</span>
   </div>
   <!-- End headline -->
   
@@ -2660,7 +2660,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">Benchmarks</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">List of CIS-CAT benchmarks to run and perform scans</span>
+              <span class="md-subheader small">List of CIS-CAT benchmarks templates perform scans</span>
             </div>
           </div>
           <span flex></span>
@@ -2703,7 +2703,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">Main settings</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">General settings applied to all the benchmarks</span>
+              <span class="md-subheader small">General settings applied to all benchmarks</span>
             </div>
           </div>
           <span flex></span>
@@ -2739,7 +2739,7 @@ md-is-locked-open="true">
 <div class="wz-margin-top-10">
   <span class="font-size-16">Scheduling settings</span>
   <div class="wz-margin-top-10">
-    <span class="md-subheader small">Customize the schedule for CIS-CAT benchmarks</span>
+    <span class="md-subheader small">Customize the CIS-CAT scans scheduling</span>
   </div>
 </div>
 <md-divider class="wz-margin-top-10"></md-divider>
@@ -3076,7 +3076,7 @@ md-is-locked-open="true">
       <span ng-if="currentConfig && currentConfig.osquery && currentConfig.osquery.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="(currentConfig && currentConfig.osquery && currentConfig.osquery.disabled === 'yes') || (currentConfig && !currentConfig.osquery)" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Osquery allows to expose an operating system as a high-performance relational database</span>
+    <span class="md-subheader">Expose an operating system as a high-performance relational database</span>
   </div>
   <!-- End headline -->
   
@@ -3153,7 +3153,7 @@ md-is-locked-open="true">
 <div ng-if="currentConfig.osquery.packs && isArray(currentConfig.osquery.packs) && currentConfig.osquery.packs.length" class="wz-margin-top-10">
   <span class="font-size-16">Osquery packs</span>
   <div class="wz-margin-top-10">
-    <span class="md-subheader small">A pack contains multiple, related queries to quickly get information</span>
+    <span class="md-subheader small">A pack contains multiple queries to quickly retrieve system information</span>
   </div>
 </div>
 <md-divider ng-if="currentConfig.osquery.packs && isArray(currentConfig.osquery.packs) && currentConfig.osquery.packs.length" class="wz-margin-top-10"></md-divider>
@@ -3451,7 +3451,7 @@ md-is-locked-open="true">
     <div>
       <span class="font-size-18">Active response</span>
     </div>
-    <span class="md-subheader">Active threath addressing by inmmediate response</span>
+    <span class="md-subheader">Active threat addressing by inmmediate response</span>
   </div>
   <!-- End headline -->
   
@@ -3655,7 +3655,7 @@ md-is-locked-open="true">
       <md-card-content flex layout="column">
         <div layout="row" layout-align="start center">
           <div>
-            <span class="font-size-16">Commands definitions</span>
+            <span class="font-size-16">Command definitions</span>
             <div class="wz-margin-top-10">
               <span class="md-subheader small">Find here all the currently defined commands used for Active response</span>
             </div>
@@ -3929,7 +3929,7 @@ md-is-locked-open="true">
       <md-card-content flex layout="column">
         <div layout="row" layout-align="start center">
           <div>
-            <span class="font-size-16">Commands definitions</span>
+            <span class="font-size-16">Command definitions</span>
             <div class="wz-margin-top-10">
               <span class="md-subheader small">Find here all the currently defined commands used for Active response</span>
             </div>
@@ -4305,7 +4305,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">Collected log files</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">List of file whose logs will be analyzed</span>
+              <span class="md-subheader small">List of log files that will be analyzed</span>
             </div>
           </div>
           <span flex></span>
@@ -4627,7 +4627,7 @@ md-is-locked-open="true">
       (currentConfig['syscheck-syscheck']
       && isString(currentConfig['syscheck-syscheck']))" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Identification of changes in content, permissions, ownership, and attributes of files</span>
+    <span class="md-subheader">Identify changes in content, permissions, ownership and attributes of files</span>
   </div>
   <!-- End headline -->
   
@@ -5144,7 +5144,7 @@ md-is-locked-open="true">
             <div>
               <span class="font-size-16">Devices list</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">List of monitored devices that doesn't use the Wazuh agent component</span>
+                <span class="md-subheader small">List of monitored devices that don't use the Wazuh agent component</span>
               </div>
             </div>
             <span flex></span>
@@ -5535,7 +5535,7 @@ md-is-locked-open="true">
     <div>
       <span class="font-size-18">Client configuration</span>
     </div>
-    <span class="md-subheader">Configure the connection to the manager</span>
+    <span class="md-subheader">Configure the connection with the manager</span>
   </div>
   <!-- End headline -->
   
@@ -5713,11 +5713,11 @@ md-is-locked-open="true">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
-      <span class="font-size-18">Client buffer configuration</span>
+      <span class="font-size-18">Anti-flooding settings</span>
       <span ng-if="(currentConfig['agent-buffer'] && currentConfig['agent-buffer'].buffer && currentConfig['agent-buffer'].buffer.disabled === 'no') || (currentConfig['agent-buffer'] && currentConfig['agent-buffer'].buffer && !currentConfig['agent-buffer'].buffer.disabled)" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="currentConfig['agent-buffer'] && currentConfig['agent-buffer'].buffer && currentConfig['agent-buffer'].buffer.disabled === 'yes'" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Agent bucket parameters in order to avoid events flooding</span>
+    <span class="md-subheader">Agent bucket parameters to avoid event flooding</span>
   </div>
   <!-- End headline -->
   
@@ -5750,7 +5750,7 @@ md-is-locked-open="true">
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">These settings determine the events processing capacity for your agent</span>
+                <span class="md-subheader small">These settings determine the event processing rate for your agent</span>
               </div>
             </div>
             <span flex></span>
