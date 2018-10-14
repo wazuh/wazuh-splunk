@@ -1,5 +1,6 @@
 require.config({
   baseUrl: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/static/app/SplunkAppForWazuh/`,
+  out: 'main-built.js',
 
   // alias libraries paths.  Must set 'angular'
   paths: {
@@ -19,7 +20,17 @@ require.config({
     'codemirror': 'js/utils/codemirror/lib/codemirror',
     'querystring': 'js/utils/codemirror/querystring',
     'jsonLint': 'js/utils/codemirror/json-lint',
+    'es6': 'js/libs/es6',
+    'babel': 'js/libs/babel',
 
+  },
+
+  config: {
+    es6: {
+      'resolveModuleSource': function (source) {
+        return 'es6!' + source;
+      }
+    }
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
@@ -28,24 +39,24 @@ require.config({
       exports: 'angular'
     },
     'ngAnimate': {
-      exports: "ngAnimate",
-      deps: ["angular"]
+      exports: 'ngAnimate',
+      deps: ['angular']
     },
     'ngAria': {
-      exports: "ngAria",
-      deps: ["angular"]
+      exports: 'ngAria',
+      deps: ['angular']
     },
     'ngMaterial': {
-      exports: "ngMaterial",
-      deps: ["angular"]
+      exports: 'ngMaterial',
+      deps: ['angular']
     },
     'ngRoute': {
-      exports: "ngRoute",
-      deps: ["angular"]
+      exports: 'ngRoute',
+      deps: ['angular']
     },
 
   },
 
   // kick start application
-  deps: ['angular', 'ngMaterial', "ngAnimate", "ngAria", 'js/bootstrap']
+  deps: ['angular', 'ngMaterial', 'ngAnimate', 'ngAria', 'js/bootstrap']
 })
