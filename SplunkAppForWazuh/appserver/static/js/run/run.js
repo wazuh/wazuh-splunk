@@ -9,7 +9,7 @@ define(['./module'], function (module) {
 
 
     $transitions.onStart({}, function(transition) {
-      if (transition.to().name.includes('ag-')) {
+      if (transition.to().name.includes('ag-') || transition.to().name.includes('agent')) {
         $rootScope.$broadcast('stateChanged', 'agents')
       } else if(transition.to().name.includes('mg-')) {
         $rootScope.$broadcast('stateChanged', 'manager')
