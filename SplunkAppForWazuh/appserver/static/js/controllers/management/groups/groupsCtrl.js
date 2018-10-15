@@ -63,8 +63,6 @@ define(['../../module'], function (controllers) {
     })
     
     $scope.$on('wazuhShowGroupFile', (event, parameters) => {
-      console.log('group name ',parameters.groupName)
-      console.log('file name ',parameters.fileName)
       return vm.showFile(parameters.groupName, parameters.fileName)
     })
     
