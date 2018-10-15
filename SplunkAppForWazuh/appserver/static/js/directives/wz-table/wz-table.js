@@ -122,7 +122,7 @@ define(['../module', 'underscore'], function (directives, _) {
         $scope.nextPage = async currentPage => {
           try {
             $scope.error = false
-            if (!currentPage && ($scope.currentPage < $scope.pagedItems.length - 1)) {
+            if (!currentPage && currentPage !== 0 && ($scope.currentPage < $scope.pagedItems.length - 1)) {
               $scope.currentPage++
             }
             if ($scope.pagedItems[currentPage || $scope.currentPage].includes(null)) {
