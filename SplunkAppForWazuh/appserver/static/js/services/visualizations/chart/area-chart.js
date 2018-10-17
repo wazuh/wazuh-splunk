@@ -4,17 +4,17 @@ define([
 ], function (
   ChartElement,
   Viz
-) {
+  ) {
     'use strict'
-
-    return class LinearChar extends Viz {
-
+    
+    return class AreaChart extends Viz {
+      
       /**
-       * Generates a new Linear Chart Splunk visualization
-       * @param {String} id 
-       * @param {String} search 
-       * @param {String} attachedElement 
-       */
+      * Generates a new Linear Chart Splunk visualization
+      * @param {String} id 
+      * @param {String} search 
+      * @param {String} attachedElement 
+      */
       constructor(id, search, attachedElement) {
         super(new ChartElement({
           "id": `${id}`,
@@ -25,7 +25,7 @@ define([
           "resizable": true,
           "charting.axisTitleY2.visibility": "visible",
           "charting.drilldown": "none",
-          "charting.chart": "line",
+          "charting.chart": "area",
           "charting.layout.splitSeries.allowIndependentYRanges": "0",
           "charting.chart.nullValueMode": "gaps",
           "trellis.scales.shared": "1",
@@ -51,3 +51,4 @@ define([
       }
     }
   })
+  

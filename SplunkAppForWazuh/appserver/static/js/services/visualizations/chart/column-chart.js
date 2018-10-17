@@ -7,10 +7,10 @@ define([
 ) {
     'use strict'
 
-    return class LinearChar extends Viz {
+    return class ColumnChart extends Viz {
 
       /**
-       * Generates a new Linear Chart Splunk visualization
+       * Generates a new Column Chart Splunk visualization
        * @param {String} id 
        * @param {String} search 
        * @param {String} attachedElement 
@@ -25,7 +25,7 @@ define([
           "resizable": true,
           "charting.axisTitleY2.visibility": "visible",
           "charting.drilldown": "none",
-          "charting.chart": "line",
+          "charting.chart": "column",
           "charting.layout.splitSeries.allowIndependentYRanges": "0",
           "charting.chart.nullValueMode": "gaps",
           "trellis.scales.shared": "1",

@@ -7,7 +7,7 @@ define([
 ) {
     'use strict'
 
-    return class LinearChar extends Viz {
+    return class PieChart extends Viz {
 
       /**
        * Generates a new Linear Chart Splunk visualization
@@ -21,11 +21,11 @@ define([
           "trellis.size": "medium",
           "charting.axisY2.scale": "inherit",
           "charting.chart.showDataLabels": "none",
-          "charting.chart.stackMode": "stacked100",
+          "charting.chart.stackMode": "default",
           "resizable": true,
           "charting.axisTitleY2.visibility": "visible",
           "charting.drilldown": "none",
-          "charting.chart": "line",
+          "charting.chart": "pie",
           "charting.layout.splitSeries.allowIndependentYRanges": "0",
           "charting.chart.nullValueMode": "gaps",
           "trellis.scales.shared": "1",
