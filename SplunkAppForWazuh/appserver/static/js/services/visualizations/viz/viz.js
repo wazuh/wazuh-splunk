@@ -1,9 +1,11 @@
 define([
+  "splunkjs/mvc",
   "splunkjs/mvc/utils",
   "splunkjs/mvc/searchmanager",
 
 
 ], function (
+  mvc,
   utils,
   SearchManager
 ) {
@@ -14,8 +16,9 @@ define([
 
       constructor(element,id,search) {
         this.element = element
+        this.id = id
         this.search = new SearchManager({
-          "id": `${id}Search`,
+          "id": `${this.id}Search`,
           "earliest_time": "$when.earliest$",
           "latest_time": "$when.latest$",
           "status_buckets": 0,
@@ -36,7 +39,10 @@ define([
       }
 
       destroy(){
-        this.cancel()
+        this.search.cancel()
+        console.log('destroying instance ',this.id)
+        mvc.Components.revokeInstance(this.id)
+        mvc.Components.revokeInstance(`${this.id}Search`)
         this.element = null
         this.search = null
       }
