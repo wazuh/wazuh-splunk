@@ -245,25 +245,51 @@ define(['./module'], function (module) {
       controllerAs: 'mst',
       resolve: {
         overviewData: ['$requestService', async ($requestService) => {
-          const response = await $requestService.apiReq('/cluster/nodes')
-          if (!response.data.error && response.data.data.items && typeof response.data.data.items === 'object' && response.data.data.items.length > 0){
-            return Promise.all([
-              $requestService.apiReq('/agents/summary'),
-              $requestService.apiReq(`/cluster/${response.data.data.items[0].name}/status`),
-              $requestService.apiReq(`/cluster/${response.data.data.items[0].name}/info`),
-              $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
-              $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
-              Promise.resolve(true),
-              Promise.resolve(response.data.data.items)
-            ])
-            .then(function (response) {
-              return response
-            }, function (response) {
-              return response
-            })
-            .catch(err => {
-              console.error('Error route: ', err)
-            })
+          const responseStatus = await $requestService.apiReq('/cluster/status')
+          if (!responseStatus.data.error){
+            if (responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'yes') {
+              const firstNode = await $requestService.apiReq('/cluster/nodes')
+              const firstNodeName = firstNode.data.data.items.filter(item => item.type === 'master')[0]
+              return Promise.all([
+                $requestService.apiReq('/agents/summary'),
+                $requestService.apiReq(`/cluster/${firstNodeName.name}/status`),
+                $requestService.apiReq(`/cluster/${firstNodeName.name}/info`),
+                $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
+                $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
+                Promise.resolve(firstNodeName),
+                //Promise.resolve(response.data.data.items),
+                $requestService.apiReq('/cluster/nodes'),
+                Promise.resolve(responseStatus.data)
+              ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+            } else if(responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'no'){
+              return Promise.all([
+                $requestService.apiReq('/agents/summary'),
+                Promise.resolve(false),
+                Promise.resolve(false),
+                $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
+                $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
+                Promise.resolve(false),
+                //Promise.resolve(response.data.data.items),
+                $requestService.apiReq('/cluster/nodes'),
+                Promise.resolve(responseStatus.data)
+              ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+            }
           } else {
             return Promise.all([
               $requestService.apiReq('/agents/summary'),
@@ -285,7 +311,7 @@ define(['./module'], function (module) {
         agentInfo: ['$requestService', ($requestService) => {
           return $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' })
           .then(function (response) {
-            return $requestService.apiReq('/agents/${response.data.data.items[0].id}', {})
+            return $requestService.apiReq(`/agents/${response.data.data.items[0].id}`, {})
             .then(function (response) {
               return response
             }, function (response) {

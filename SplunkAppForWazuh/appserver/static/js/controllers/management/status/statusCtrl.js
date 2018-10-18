@@ -7,12 +7,18 @@ define(['../../module'], function (controllers) {
     const vm = this
     vm.load = true
     vm.clusterEnabled = overviewData[5]
-    if(overviewData[5]) {
-      const masterNode = overviewData[6].filter(node => node.type === 'master')[0]
-      vm.nodeId = masterNode.name
-      vm.nodes = overviewData[6].filter(node => node.name)
+    if(overviewData[5] && overviewData[5].name) {
+      const masterNode = overviewData[5].name
+      vm.nodeId = masterNode
+      vm.nodes = overviewData[6].data.data.items.filter(node => node.name)
     }
-
+    console.log(overviewData[7])
+    if (overviewData[7].data.enabled === 'yes' && overviewData[7].data.running === 'no' ) {
+      console.log('not running')
+      vm.clusterError = `This cluster is enabled but not running. Please check your cluster health.`
+      throw Error('Cannot load cluster node data.')
+    }
+    
     vm.changeNode = async (node) => {
       try {
         vm.clusterError = false
@@ -26,14 +32,17 @@ define(['../../module'], function (controllers) {
           vm.clusterError = `Node ${node} is down.`
           throw Error('Cannot load cluster node data.')
         }
-
+        if (daemonResult[0].data.data.enabled === 'yes' && daemonResult[0].data.data.running === 'no' ) {
+          vm.clusterError = `This cluster is enabled but not running. Please check your cluster health.`
+          throw Error('Cluster enabled but not running.')
+        }
+        
         vm.daemons = daemonResult[0].data.data
         vm.managerInfo = daemonResult[1].data.data
         vm.load = false
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
         vm.load = false
-        console.error(error)
         $notificationService.showSimpleToast('Cannot load status information.')
       }
     }
@@ -41,7 +50,7 @@ define(['../../module'], function (controllers) {
     const bindStatus = async () => {
       try{
         vm.load = true
-
+        
         vm.getDaemonStatusClass = daemonStatus => (daemonStatus === 'running') ? 'status teal' : 'status red'
         // Once Wazuh core fixes agent 000 issues, this should be adjusted
         const active = overviewData[0].data.data.Active - 1
@@ -51,12 +60,12 @@ define(['../../module'], function (controllers) {
         vm.agentsCountNeverConnected = overviewData[0].data.data['Never connected']
         vm.agentsCountTotal = total
         vm.agentsCoverity = (active / total) * 100
-
+        
         vm.totalRules = overviewData[3].data.data.totalItems
         vm.totalDecoders = overviewData[4].data.data.totalItems
         vm.agentInfo = agentInfo.data.data
         vm.load = false
-
+        
         if (!$scope.$$phase) $scope.$digest()
       } catch (err) {
         return Promise.reject(err)
