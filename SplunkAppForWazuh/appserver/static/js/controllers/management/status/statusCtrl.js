@@ -8,18 +8,23 @@ define(['../../module'], function (controllers) {
     vm.load = true
     vm.clusterEnabled = overviewData[5]
     if(overviewData[5]) {
+      const masterNode = overviewData[6].filter(node => node.type === 'master')[0]
+      vm.nodeId = masterNode.name
       vm.nodes = overviewData[6].filter(node => node.name)
     }
 
     vm.changeNode = async (node) => {
       try {
+        vm.clusterError = false
         vm.load = true
+        vm.nodeId = node
         console.log('changing node')
         const daemonResult = await Promise.all([
           $requestService.apiReq(`/cluster/${node}/status`),
           $requestService.apiReq(`/cluster/${node}/info`) 
         ])
         if (daemonResult[0].data.error || daemonResult[1].data.error) {
+          vm.clusterError = `Node ${node} is down.`
           throw Error('Cannot load cluster node data.')
         }
 
