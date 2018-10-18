@@ -34,7 +34,7 @@ define(['../module', 'underscore'], function (directives, _) {
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.allowClick = true
         $scope.clickAction = item => {
-          if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
+          if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path)) {
             // Go to and store an agent details
             $currentDataService.setCurrentAgent(item.id)
             $currentDataService.addFilter(`{"agent.id":"${item.id}", "implicit":true}`)
@@ -42,7 +42,7 @@ define(['../module', 'underscore'], function (directives, _) {
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })
-          } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
+          } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', { id: item.id })
@@ -122,7 +122,7 @@ define(['../module', 'underscore'], function (directives, _) {
         $scope.nextPage = async currentPage => {
           try {
             $scope.error = false
-            if (!currentPage && ($scope.currentPage < $scope.pagedItems.length - 1)) {
+            if (!currentPage && currentPage !== 0 && ($scope.currentPage < $scope.pagedItems.length - 1)) {
               $scope.currentPage++
             }
             if ($scope.pagedItems[currentPage || $scope.currentPage].includes(null)) {
