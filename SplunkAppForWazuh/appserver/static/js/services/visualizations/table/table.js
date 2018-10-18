@@ -26,7 +26,7 @@ define([
           "totalsRow": "false",
           "wrap": "true",
           "managerid": `${id}Search`,
-          "el": $(`${attachedElement}`)
+          "el": $(`#${attachedElement}`)
         }, { tokens: true, tokenNamespace: "submitted" }).render(), id, search)
       }
     }
