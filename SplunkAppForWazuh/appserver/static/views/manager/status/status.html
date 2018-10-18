@@ -5,21 +5,26 @@
       <span>/ Status </span>
     </div>
     <div flex></div>
-    <div style="margin-right:7px;" id='input1'></div>
-  </div>
-  <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="load">
-    <div></div>
-  </div>
+    <select ng-show="mst.clusterEnabled" class="input input-dropdown" flex ng-model="mst.nodeId" ng-change="mst.changeNode(mst.nodeId)"
+    aria-label="Select cluster node">
+    <option ng-repeat='node in mst.nodes' value="{{node.name}}">
+      {{node.name}}
+    </option>
+  </select>
+</div>
 
-  <!-- Headline -->
-  <div ng-show="!load" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Status</span>
+
+<!-- Headline -->
+<div ng-show="!load" layout="column" layout-padding>
+  <span class="font-size-18">
+    <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Status</span>
     <span class="md-subheader">Check the status of all Wazuh manager daemons</span>
   </div>
   <!-- End headline -->
-
+  <!-- Loading ring -->
+  <div class='uil-ring-css' ng-show="mst.load">
+    <div></div>
+  </div>
   <!-- Daemons status section -->
   <div layout="row" layout-align="start stretch" ng-if="!mst.load">
     <md-card flex class="wz-md-card" ng-repeat="(k,v) in mst.daemons">
@@ -32,7 +37,7 @@
     </md-card>
   </div>
   <!-- End daemons status section -->
-
+  
   <!-- Agents status section -->
   <div layout="row" layout-align="start center" ng-if="!mst.load">
     <md-card flex class="wz-metric-color wz-md-card">
@@ -57,7 +62,7 @@
     </md-card>
   </div>
   <!-- End agents status section -->
-
+  
   <div layout="row" layout-align="start stretch" layout-wrap ng-if="!mst.load">
     <!-- Manager information section -->
     <md-card flex class="wz-md-card">
@@ -100,7 +105,7 @@
       </md-card-content>
     </md-card>
     <!-- End manager information section -->
-
+    
     <!-- Last registered agent section -->
     <md-card flex class="wz-md-card" ng-show="mst.agentInfo && mst.agentInfo.id !== '000'">
       <md-card-content>

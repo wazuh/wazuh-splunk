@@ -244,22 +244,43 @@ define(['./module'], function (module) {
       controller: 'statusCtrl',
       controllerAs: 'mst',
       resolve: {
-        overviewData: ['$requestService', ($requestService) => {
-          return Promise.all([
-            $requestService.apiReq('/agents/summary'),
-            $requestService.apiReq('/manager/status'),
-            $requestService.apiReq('/manager/info'),
-            $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
-            $requestService.apiReq('/decoders', { offset: 0, limit: 1 })
-          ])
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
-          .catch(err => {
-            console.error('Error route: ', err)
-          })
+        overviewData: ['$requestService', async ($requestService) => {
+          const response = await $requestService.apiReq('/cluster/nodes')
+          if (!response.data.error && response.data.data.items && typeof response.data.data.items === 'object' && response.data.data.items.length > 0){
+            return Promise.all([
+              $requestService.apiReq('/agents/summary'),
+              $requestService.apiReq(`/cluster/${response.data.data.items[0].name}/status`),
+              $requestService.apiReq(`/cluster/${response.data.data.items[0].name}/info`),
+              $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
+              $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
+              Promise.resolve(true),
+              Promise.resolve(response.data.data.items)
+            ])
+            .then(function (response) {
+              return response
+            }, function (response) {
+              return response
+            })
+            .catch(err => {
+              console.error('Error route: ', err)
+            })
+          } else {
+            return Promise.all([
+              $requestService.apiReq('/agents/summary'),
+              $requestService.apiReq(`/manager/status`),
+              $requestService.apiReq(`/manager/info`),
+              $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
+              $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
+            ])
+            .then(function (response) {
+              return response
+            }, function (response) {
+              return response
+            })
+            .catch(err => {
+              console.error('Error route: ', err)
+            })
+          }
         }],
         agentInfo: ['$requestService', ($requestService) => {
           return $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' })
