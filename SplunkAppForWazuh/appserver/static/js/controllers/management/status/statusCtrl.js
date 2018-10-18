@@ -18,7 +18,6 @@ define(['../../module'], function (controllers) {
         vm.clusterError = false
         vm.load = true
         vm.nodeId = node
-        console.log('changing node')
         const daemonResult = await Promise.all([
           $requestService.apiReq(`/cluster/${node}/status`),
           $requestService.apiReq(`/cluster/${node}/info`) 
@@ -30,7 +29,6 @@ define(['../../module'], function (controllers) {
 
         vm.daemons = daemonResult[0].data.data
         vm.managerInfo = daemonResult[1].data.data
-        console.log('new info ',vm.managerInfo)
         vm.load = false
         if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
