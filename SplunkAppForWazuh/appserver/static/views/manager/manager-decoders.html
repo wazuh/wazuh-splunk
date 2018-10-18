@@ -45,7 +45,7 @@
           <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mdec.removeFilter('file')"></i>
         </span>
       </md-chip>
-      <md-chip class="wz-chip" ng-show="includesFilter('path')">
+      <md-chip class="wz-chip" ng-show="mdec.includesFilter('path')">
         <span>Path: {{ mdec.getFilter('path') }}
           <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="mdec.removeFilter('path')"></i>
         </span>
@@ -55,7 +55,7 @@
     <div layout="row">
       <wazuh-table implicit-filter="appliedFilters" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
-      </wazuh-table>
+      </wazuh-table>    
     </div>
 
   </div>
