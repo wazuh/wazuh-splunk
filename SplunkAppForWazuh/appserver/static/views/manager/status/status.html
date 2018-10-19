@@ -5,7 +5,7 @@
       <span>/ Status </span>
     </div>
     <div flex></div>
-    <select ng-show="mst.clusterEnabled" class="kuiSelect wz-border-none cursor-pointer max-height-35" id="categoryBox" ng-model="mst.nodeId" ng-change="mst.changeNode(mst.nodeId)" aria-label="Select node">
+    <select ng-show="mst.clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="mst.nodeId" ng-change="mst.changeNode(mst.nodeId)" aria-label="Select node">
       <option ng-repeat="node in mst.nodes" value="{{node.name}}">{{node.name}}</option>
     </select>
 </div>
