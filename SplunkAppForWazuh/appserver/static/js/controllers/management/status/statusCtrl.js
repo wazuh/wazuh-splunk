@@ -6,19 +6,22 @@ define(['../../module'], function (controllers) {
     //Initialization
     const vm = this
     vm.load = true
-    vm.clusterEnabled = overviewData[5]
+    vm.clusterEnabled = overviewData[5] || false
     if(overviewData[5] && overviewData[5].name) {
       const masterNode = overviewData[5].name
       vm.nodeId = masterNode
       vm.nodes = overviewData[6].data.data.items.filter(node => node.name)
     }
-    console.log(overviewData[7])
-    if (overviewData[7].data.enabled === 'yes' && overviewData[7].data.running === 'no' ) {
-      console.log('not running')
-      vm.clusterError = `This cluster is enabled but not running. Please check your cluster health.`
-      throw Error('Cannot load cluster node data.')
+    if (overviewData[7] && overviewData[7].data.enabled === 'yes' && overviewData[7].data.running === 'no' ) {
+      vm.clusterError = 'This cluster is enabled but not running. Please check your cluster health.'
+      vm.load = false
+      if (!$scope.$$phase) $scope.$digest()
     }
     
+    /**
+     * Change of cluster node, reloads information
+     * @param {String} : node name
+     */
     vm.changeNode = async (node) => {
       try {
         vm.clusterError = false
@@ -28,25 +31,26 @@ define(['../../module'], function (controllers) {
           $requestService.apiReq(`/cluster/${node}/status`),
           $requestService.apiReq(`/cluster/${node}/info`) 
         ])
-        if (daemonResult[0].data.error || daemonResult[1].data.error) {
-          vm.clusterError = `Node ${node} is down.`
-          throw Error('Cannot load cluster node data.')
+        if (daemonResult[0] && daemonResult[0].data.error || daemonResult[1] && daemonResult[1].data.error) {
+          throw Error(`Node ${node} is down.`)
         }
-        if (daemonResult[0].data.data.enabled === 'yes' && daemonResult[0].data.data.running === 'no' ) {
-          vm.clusterError = `This cluster is enabled but not running. Please check your cluster health.`
-          throw Error('Cluster enabled but not running.')
+        if (daemonResult[0] && daemonResult[0].data.data.enabled === 'yes' && daemonResult[0].data.data.running === 'no' ) {
+          throw Error('This cluster is enabled but not running. Please check your cluster health.')
         }
-        
         vm.daemons = daemonResult[0].data.data
         vm.managerInfo = daemonResult[1].data.data
         vm.load = false
         if (!$scope.$$phase) $scope.$digest()
-      } catch (error) {
+      } catch (err) {
         vm.load = false
-        $notificationService.showSimpleToast('Cannot load status information.')
+        vm.clusterError = err.message || err
+        if (!$scope.$$phase) $scope.$digest()
       }
     }
     
+    /**
+     * Gets the daemon and status information of the manager or cluster node
+     */
     const bindStatus = async () => {
       try{
         vm.load = true
@@ -68,12 +72,15 @@ define(['../../module'], function (controllers) {
         
         if (!$scope.$$phase) $scope.$digest()
       } catch (err) {
-        return Promise.reject(err)
+        vm.load = false
+        $notificationService.showSimpleToast(err.message || err)
       }
     }
     
     bindStatus()
-    vm.daemons = overviewData[1].data.data
-    vm.managerInfo = overviewData[2].data.data
+    if(overviewData[1])
+      vm.daemons = overviewData[1].data.data
+    if(overviewData[2])
+      vm.managerInfo = overviewData[2].data.data
   })
 })

@@ -257,7 +257,6 @@ define(['./module'], function (module) {
                 $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
                 $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
                 Promise.resolve(firstNodeName),
-                //Promise.resolve(response.data.data.items),
                 $requestService.apiReq('/cluster/nodes'),
                 Promise.resolve(responseStatus.data)
               ])
@@ -277,9 +276,26 @@ define(['./module'], function (module) {
                 $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
                 $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
                 Promise.resolve(false),
-                //Promise.resolve(response.data.data.items),
                 $requestService.apiReq('/cluster/nodes'),
                 Promise.resolve(responseStatus.data)
+              ])
+              .then(function (response) {
+                return response
+              }, function (response) {
+                return response
+              })
+              .catch(err => {
+                console.error('Error route: ', err)
+              })
+            } else {
+              return Promise.all([
+                $requestService.apiReq('/agents/summary'),
+                $requestService.apiReq(`/manager/status`),
+                $requestService.apiReq(`/manager/info`),
+                $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
+                $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
+                Promise.resolve(false)
+                
               ])
               .then(function (response) {
                 return response
@@ -297,6 +313,7 @@ define(['./module'], function (module) {
               $requestService.apiReq(`/manager/info`),
               $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
               $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
+              Promise.resolve(false)
             ])
             .then(function (response) {
               return response
