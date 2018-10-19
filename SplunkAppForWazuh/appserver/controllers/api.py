@@ -22,7 +22,7 @@ from db import database
 from log import log
 
 
-# This function change the keys for "********" for don't show the password in the app 
+# Useful function for removing sensible keys
 def cleanKeys(response): 
     res = response["data"]
     hide = "********"
@@ -46,18 +46,16 @@ def cleanKeys(response):
             if "aws-s3" in wmod:
                 if "buckets" in wmod["aws-s3"]:
                     for bucket in wmod["aws-s3"]["buckets"]:
-                        for bKey, bVal in bucket.items():
-                            bVal["access_key"] = hide
-                            bVal["secret_key"] = hide
+                        bucket["access_key"] = hide
+                        bucket["secret_key"] = hide
 
     # Remove integrations keys
     if "integration" in res:
         for integ in res["integration"]:
-            for iKey, iVal in integ.items():
-                iVal["api_key"] = hide
+            integ["api_key"] = hide
 
     response["data"] = res
-    return str(response)
+    return response
 
 class api(controllers.BaseController):
 
