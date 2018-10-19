@@ -4,6 +4,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 - Osquery integration ([#252](https://github.com/wazuh/wazuh-splunk/pull/252)).
 - Cluster monitoring ([#246](https://github.com/wazuh/wazuh-splunk/pull/246)).
+- Added a node selector for _Management > Status_ section when Wazuh cluster is enabled ([#291](https://github.com/wazuh/wazuh-splunk/pull/291)).
 ### Changed
 - Configuration section ([#261](https://github.com/wazuh/wazuh-splunk/pull/261))
 - FIM section ([#255](https://github.com/wazuh/wazuh-splunk/pull/255)).
