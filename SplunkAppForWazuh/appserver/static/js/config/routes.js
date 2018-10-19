@@ -244,20 +244,20 @@ define(['./module'], function (module) {
       controller: 'statusCtrl',
       controllerAs: 'mst',
       resolve: {
-        overviewData: ['$requestService', async ($requestService) => {
+        statusData: ['$requestService', async ($requestService) => {
           const responseStatus = await $requestService.apiReq('/cluster/status')
-          if (!responseStatus.data.error){
-            if (responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'yes') {
-              const firstNode = await $requestService.apiReq('/cluster/nodes')
-              const firstNodeName = firstNode.data.data.items.filter(item => item.type === 'master')[0]
+          if (!responseStatus || !responseStatus.data || !responseStatus.data.error){
+            const nodes = await $requestService.apiReq('/cluster/nodes')
+            if (responseStatus.data.data && responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'yes') {
+              const masterNode = nodes.data.data.items.filter(item => item.type === 'master')[0]
               return Promise.all([
                 $requestService.apiReq('/agents/summary'),
-                $requestService.apiReq(`/cluster/${firstNodeName.name}/status`),
-                $requestService.apiReq(`/cluster/${firstNodeName.name}/info`),
+                $requestService.apiReq(`/cluster/${masterNode.name}/status`),
+                $requestService.apiReq(`/cluster/${masterNode.name}/info`),
                 $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
                 $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
-                Promise.resolve(firstNodeName),
-                $requestService.apiReq('/cluster/nodes'),
+                Promise.resolve(masterNode),
+                Promise.resolve(nodes),
                 Promise.resolve(responseStatus.data)
               ])
               .then(function (response) {
@@ -276,7 +276,7 @@ define(['./module'], function (module) {
                 $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
                 $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
                 Promise.resolve(false),
-                $requestService.apiReq('/cluster/nodes'),
+                Promise.resolve(nodes),
                 Promise.resolve(responseStatus.data)
               ])
               .then(function (response) {
