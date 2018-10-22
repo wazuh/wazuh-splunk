@@ -89,7 +89,7 @@ define([
       * On controller destroy
       */
       $scope.$on('$destroy', () => {
-        
+        timePicker.destroy()
         totalAlerts.destroy()
         totalAlertsColumn.destroy()
         topAgentName.destroy()
