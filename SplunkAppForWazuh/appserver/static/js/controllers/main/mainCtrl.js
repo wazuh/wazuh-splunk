@@ -24,8 +24,6 @@ define([
           $scope.loading = false
         if (!$scope.$$phase) $scope.$digest()
       })
-
-      console.log('input 1')
       let input1 = new TimeRangeInput({
         "id": "input1",
         "searchWhenChanged": true,
@@ -50,12 +48,8 @@ define([
       if (!$urlTokenModel.has('earliest') && !$urlTokenModel.has('latest')) {
         $urlTokenModel.set({ earliest: '0', latest: '' })
       }
-            //
-      // DASHBOARD READY
-      //
       
       DashboardController.ready()
-
 
       new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": true, "hideChrome": false })
         .render()

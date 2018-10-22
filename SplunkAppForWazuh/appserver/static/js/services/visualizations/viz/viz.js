@@ -6,19 +6,19 @@ define([
   mvc,
   utils,
   SearchManager
-) {
+  ) {
+    
     'use strict'
-
+    
     return class Viz {
-
+      
       /**
-       * Generates a new visualization
-       * @param {Object} element 
-       * @param {String} id 
-       * @param {SearchManager} search 
-       */
+      * Generates a new visualization
+      * @param {Object} element 
+      * @param {String} id 
+      * @param {SearchManager} search 
+      */
       constructor(element,id,search) {
-        this.element = element
         this.id = id
         this.search = new SearchManager({
           "id": `${this.id}Search`,
@@ -34,27 +34,43 @@ define([
           "tokenDependencies": {
           },
           "runWhenTimeIsUndefined": false
-        }, { tokens: true, tokenNamespace: "submitted" }) 
+        }, { tokens: true, tokenNamespace: "submitted" })
+        this.element = element
       }
-
+      
       /**
-       * Cancels the search of this viz
-       */
+      * Obtains the search of this viz
+      */
+      getSearch() {
+        return this.search
+      }
+      
+      /**
+      * Obtains the element
+      */
+      getElement() {
+        return this.element
+      }
+      /**
+      * Cancels the search of this viz
+      */
       cancel(){
         this.search.cancel()
       }
-
+      
       /**
-       * Deletes any instance of a visualization: vis and search
-       * Also removes from Backbone modules
-       */
+      * Deletes any instance of a visualization: vis and search
+      * Also removes from Backbone modules
+      */
       destroy(){
-        this.cancel()
-        console.log('destroying instance ',this.id)
-        mvc.Components.revokeInstance(this.id)
-        mvc.Components.revokeInstance(`${this.id}Search`)
-        this.element = null
-        this.search = null
+        try{
+          this.cancel()
+          mvc.Components.revokeInstance(this.id)
+          mvc.Components.revokeInstance(`${this.id}Search`)
+          this.element = null
+          this.search = null
+        } catch(err){}
       }
     }
   })
+  

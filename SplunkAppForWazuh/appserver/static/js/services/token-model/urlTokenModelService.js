@@ -1,23 +1,11 @@
 define([
   '../module',
   "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
-  "underscore",
-  "jquery",
-  "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/simplexml/dashboardview",
   "splunkjs/mvc/simpleform/formutils",
   "splunkjs/mvc/simplexml/urltokenmodel"
 ], function (
   module,
   mvc,
-  utils,
-  TokenUtils,
-  _,
-  $,
-  DashboardController,
-  Dashboard,
   FormUtils,
   UrlTokenModel
 ) {
@@ -26,8 +14,10 @@ define([
 
     class urlTokenModel {
 
+      /**
+       * Encapsulates the Splunk token management
+       */
       constructor() {
-        console.log('creating urltokenmodel service')
         this.urlTokenModel = new UrlTokenModel({ id: 'tokenModel' })
         this.defaultTokenModel = mvc.Components.getInstance('default', { create: true })
         this.submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
@@ -44,37 +34,72 @@ define([
         })
       }
 
+      /**
+       * Returns if the default token model has a certain token
+       * @param {String} token 
+       */
       has(token){
         return this.defaultTokenModel.has(token)
       }
 
+      /**
+       * Handle value change
+       * @param {String} value 
+       */
       handleValueChange(value) {
         FormUtils.handleValueChange(value)
       }
       
+      /**
+       * Set page loading token
+       * @param {Boolean} pageLoading 
+       */
       submitTokens(pageLoading) {
         FormUtils.submitForm({ replaceState: pageLoading })
       }
 
+      /**
+       * Returns a submittedTokenModel token
+       * @param {String} name 
+       */
       get(name) {
         return this.submittedTokenModel.get(name)
       }
 
+      /**
+       * Sets a defaultTokenModel token
+       * @param {String} token 
+       */
       set(token) {
         this.defaultTokenModel.set(token)
       }
 
+      /**
+       * Returns the submittedTokenModel of the app
+       */
+      getSubmittedTokenModel(){
+        return this.submittedTokenModel
+      }
+
+      /**
+       * Returns if the defaultTokenModel has a certain token
+       * @param {String} token 
+       */
       defaultTokenModelHas(token) {
         return this.defaultTokenModel.has(token)
       }
 
+      /**
+       * Handles the onChange event
+       * @param {Event} event 
+       * @param {Function} cb 
+       */
       onChange(event, cb) {
         this.submittedTokenModel.on('change:' + event, (model, authSuccessToken, opts) => {
           console.log('changed in class')
           return cb(model, authSuccessToken, opts, this.submittedTokenModel.get(event))
         })
       }
-
 
     }
 
