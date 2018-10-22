@@ -131,7 +131,7 @@ class manager(controllers.BaseController):
             return json.dumps({'error': str(e)})
         return parsed_data
 
-    @expose_page(must_login=False, methods=['POST'])
+    @expose_page(must_login=False, methods=['PUT'])
     def update_api(self, **kwargs):
         try:
             entry = kwargs

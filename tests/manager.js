@@ -137,9 +137,9 @@ describe('manager-api', () => {
     resBodyJson.error.should.equal('Invalid number of arguments')
   })
   
-  it ('POST /remove_api => "SUCCESFULLY"', async () => {
-    const payload = { "id":"9cef9c0a-3aa1-4b70-84de-f92f63a3f317" }
-    const res = await needle(`post`, `${s_url}/remove_api`, payload, {})
+  it ('DELETE /remove_api => "SUCCESFULLY"', async () => {
+    const payload = { "id":"2d291b20-e31b-499d-bd28-d92ce8a9a775" }
+    const res = await needle(`post`, `${s_url}/remove_api/`, payload, {})
     resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
@@ -150,7 +150,7 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.equal('success')
   })
   
-  it ('POST /update_api => "SUCCESFULLY"', async () => {
+  it ('PUT /update_api => "SUCCESFULLY"', async () => {
     const payload = {
       "id":"a7e328f0-7883-4845-8b5a-2cedf8c9e016",
       "url": "http://127.0.0.1",
@@ -161,7 +161,7 @@ describe('manager-api', () => {
       "filterType":"test.filter.type",
       "managerName":"test.manager.name"
     }
-    const res = await needle(`post`, `${s_url}/update_api`, payload, {})
+    const res = await needle(`put`, `${s_url}/update_api`, payload, {})
     resBodyJson = JSON.parse(res.body)
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -171,7 +171,7 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.equal('success')
   })
   
-  it ('POST /update_api => "MISSING ANY ARGUMENT"', async () => {
+  it ('PUT /update_api => "MISSING ANY ARGUMENT"', async () => {
     const payload = {
       "id":"35950e41-ab59-4b5f-bc8d-3432286eff5b",
       "url":"http://test",
@@ -180,7 +180,7 @@ describe('manager-api', () => {
       "filterType":"test.filter.type",
       "managerName":"test.manager.name"
     }
-    const res = await needle(`post`, `${s_url}/update_api`, payload, {})
+    const res = await needle(`put`, `${s_url}/update_api`, payload, {})
     resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
