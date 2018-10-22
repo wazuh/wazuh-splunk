@@ -55,6 +55,13 @@ define([
         .render()
         .getContainerElement()
         .appendChild($('.empty-body-class')[0])
+
+              /**
+      * On controller destroy
+      */
+      $scope.$on('$destroy', () => {
+        input1.destroy()
+      })
     })
   })
 
