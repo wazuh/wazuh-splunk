@@ -13,12 +13,11 @@ define(['./module'], function (module) {
     })
     $stateProvider
     .state('overview', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-welcome.html',
-      // onEnter: ($navigationService) => { $navigationService.storeRoute('overview') },
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
       controller: 'overviewWelcomeCtrl',
       controllerAs: 'owc',
       resolve: {
-        agentsInfo: ['$requestService', ($requestService) => {
+        agentsInfo: ['$requestService', '$state',($requestService,$state) => {
           return $requestService.apiReq('/agents/summary')
           .then(function (response) {
             return response
@@ -26,27 +25,28 @@ define(['./module'], function (module) {
             return response
           })
           .catch(err => {
-            console.error('Error route: ', err)
+            $state.go('settings.api')
           })
         }]
       }
     })
+    
     // Overview - General
     .state('ow-general', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-general.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/general/overview-general.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-general') },
       controller: 'overviewGeneralCtrl',
       controllerAs: 'ogc',
       resolve: {
-        pollingState: ['$requestService', ($requestService) => {
+        pollingState: ['$requestService', '$state',($requestService,$state) => {
           return $requestService.httpReq(`GET`, `/manager/polling_state`)
-          .then(function (response) {
+          .then( (response) => {
             return response
-          }, function (response) {
+          }, (response) => {
             return response
           })
           .catch(err => {
-            console.error('Error route: ', err)
+            $state.go('settings.api')
           })
         }]
       }

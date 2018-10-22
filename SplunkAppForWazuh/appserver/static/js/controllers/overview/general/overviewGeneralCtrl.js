@@ -1,14 +1,14 @@
 define([
-  '../module',
-  '../../services/visualizations/chart/linear-chart',
-  '../../services/visualizations/chart/column-chart',
-  '../../services/visualizations/chart/pie-chart',
-  '../../services/visualizations/chart/area-chart',
-  '../../services/visualizations/table/table',
-  '../../services/visualizations/time-picker/time-picker',
-  '../../services/visualizations/search/search-handler',
+  '../../module',
+  '../../../services/visualizations/chart/linear-chart',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/time-picker/time-picker',
+  '../../../services/visualizations/search/search-handler',
 ], function (
-  controllers,
+  app,
   LinearChart,
   ColumnChart,
   PieChart,
@@ -20,12 +20,16 @@ define([
     
     'use strict'
     
-    controllers.controller('overviewGeneralCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, pollingState) {
+    app.controller('overviewGeneralCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, pollingState) {
       const vm = this
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#input1')
       const timePickerInstance = timePicker.get()
       const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+      let pollingEnabled = true
+      if (pollingState && pollingState.data && (pollingState.data.error || pollingState.data.disabled === 'true')) {
+        pollingEnabled = false
+      }
       timePickerInstance.on("change", function (newValue) {
         if (newValue && timePickerInstance)
         $urlTokenModel.handleValueChange(timePickerInstance)
@@ -43,6 +47,26 @@ define([
       $scope.$on('barFilter', () => {
         launchSearches()
       })
+      let agentHistory
+      // If polling state is enabled then draw the agent history status
+      if (!pollingEnabled) {
+        vm.wzMonitoringEnabled = false
+        $requestService.apiReq(`/agents/summary`).then((data) => {
+          vm.agentsCountTotal = data.data.data.Total - 1
+          vm.agentsCountActive = data.data.data.Active - 1
+          vm.agentsCountDisconnected = data.data.data.Disconnected
+          vm.agentsCountNeverConnected = data.data.data['Never connected']
+          vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0;
+          if (!$scope.$$phase) $scope.$digest()
+          
+        }).catch((error) => {
+          $notificationService.showSimpleToast('Cannot fetch agent status data')
+        })
+        
+      } else {
+        vm.wzMonitoringEnabled = true
+        agentHistory = new AreaChart(`agentStatusHistory`,`index=wazuh-monitoring-3x status=* | timechart span=1h count by status usenull=f`,`agentStatus`)
+      }
       
       /**
       * Metrics
@@ -76,8 +100,9 @@ define([
         level12Search.destroy()
         authFailure.destroy()
         authSuccess.destroy()
+        if (agentHistory) {
+          agentHistory.destroy()
+        }
       })
     })
   })
-  
-  
