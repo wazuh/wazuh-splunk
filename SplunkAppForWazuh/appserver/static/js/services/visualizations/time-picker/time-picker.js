@@ -1,11 +1,9 @@
 define([
   "splunkjs/mvc",
   "splunkjs/mvc/simpleform/input/timerange"
-  
 ], function (
   mvc,
   TimeRangeInput
-  
   ) {
     'use strict'
     
