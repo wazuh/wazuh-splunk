@@ -57,7 +57,7 @@ define([
       | addcoltotals count labelfield=SYSCHECK label=Total
       | where NOT SYSCHECK="NO"`,'alertsVolume')
       const newFiles = new PieChart('newFiles',`${filters} sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,'newFiles')
-      const modifiedFiles = new AreaChart('modifiedFiles',`${filters} sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,'modifiedFiles')
+      const modifiedFiles = new PieChart('modifiedFiles',`${filters} sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,'modifiedFiles')
       const eventsSummary = new LinearChart('eventsSummary',`${filters} sourcetype=wazuh syscheck | timechart count`,'eventsSummary')
       const topRules = new Table('topRules',`${filters} sourcetype=wazuh syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'topRules')
       const topUsers = new Table('topUsers',`${filters} sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,'topUsers')
