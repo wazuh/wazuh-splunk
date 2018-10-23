@@ -39,17 +39,20 @@ define([
           const result = submittedTokenModel.get(token)
           if (result && result !== token) {
             $scope[bindedValue] = result
-            if (!$scope.$$phase) $scope.$digest()
+          } else {
+            $scope[bindedValue] = '-'
           }
+          if (!$scope.$$phase) $scope.$digest()
         })
         submittedTokenModel.on(`change:${token}`, (model, loadedToken, options) => {
           const loadedTokenJS = submittedTokenModel.get(token)
           if (typeof loadedTokenJS !== 'undefined' && loadedTokenJS !== 'undefined') {
             $scope[bindedValue] = loadedTokenJS
-            if (!$scope.$$phase) $scope.$digest()
+          } else {
+            $scope[bindedValue] = '-'
           }
+          if (!$scope.$$phase) $scope.$digest()
         })
       }
-      
     }
   })

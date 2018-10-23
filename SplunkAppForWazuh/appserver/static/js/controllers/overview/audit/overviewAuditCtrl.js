@@ -1,6 +1,5 @@
 define([
   '../../module',
-  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
@@ -9,7 +8,6 @@ define([
   '../../../services/visualizations/search/search-handler',
 ], function (
   app,
-  LinearChart,
   ColumnChart,
   PieChart,
   AreaChart,
@@ -50,7 +48,7 @@ define([
       const filesAddedSearch = new SearchHandler(`filesAddedSearch`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',submittedTokenModel,$scope)
       const readFilesSearch = new SearchHandler(`readFilesSearch`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',submittedTokenModel,$scope)
       const modifiedFiles = new SearchHandler(`modifiedFiles`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',submittedTokenModel,$scope)
-      const deletedFiles = new SearchHandler(`deletedFiles`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,'$result.count$','filesDeletedToken',submittedTokenModel,$scope)
+      const deletedFiles = new SearchHandler(`deletedFiles`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',submittedTokenModel,$scope)
       
       /**
       * Visualizations
@@ -71,6 +69,7 @@ define([
       * On controller destroy
       */
       $scope.$on('$destroy', () => {
+        timePicker.destroy()
         groups.destroy()
         agents.destroy()
         directories.destroy()
