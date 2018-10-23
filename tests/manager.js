@@ -63,7 +63,7 @@ describe('manager-api', () => {
   })
   
   it('GET /get_api => "CORRECT ID"', async () => {
-    const params = { "id": "a7e328f0-7883-4845-8b5a-2cedf8c9e016" }
+    const params = { "id": "353b4bc3-61de-4118-9d5f-d1708a46486f" }
     const res = await needle(`get`, `${s_url}/get_api`, params, {})
     const resBodyJson = JSON.parse(res.body) 
     //Check status
@@ -111,7 +111,7 @@ describe('manager-api', () => {
       "passapi": "bar"
     }
     const res = await needle(`post`, `${s_url}/add_api`, payload, {})
-    resBodyJson = JSON.parse(res.body)
+    const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -127,7 +127,7 @@ describe('manager-api', () => {
       "portapi": "55000"
     }
     const res = await needle(`post`, `${s_url}/add_api`, payload, {})
-    resBodyJson = JSON.parse(res.body)
+    const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -138,10 +138,10 @@ describe('manager-api', () => {
   })
   
   it ('DELETE /remove_api => "SUCCESFULLY"', async () => {
-    const apid_id = "2d291b20-e31b-499d-bd28-d92ce8a9a775"
-    const url = `${s_url}/remove_api?id=${apid_id}`
+    const api_id = "8b89c00b-e7ff-40a0-92f9-292ea22a4ea8"
+    const url = `${s_url}/remove_api?id=${api_id}`
     const res = await needle(`delete`, url, null)
-    resBodyJson = JSON.parse(res.body)
+    const resBodyJson = JSON.parse(res.body) 
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -150,7 +150,7 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.a('string')
     resBodyJson.data.should.be.equal('success')
   })
-  
+
   it ('PUT /update_api => "SUCCESFULLY"', async () => {
     const payload = {
       "id":"a7e328f0-7883-4845-8b5a-2cedf8c9e016",
@@ -163,7 +163,7 @@ describe('manager-api', () => {
       "managerName":"test.manager.name"
     }
     const res = await needle(`put`, `${s_url}/update_api`, payload, {})
-    resBodyJson = JSON.parse(res.body)
+    const resBodyJson = JSON.parse(res.body)
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
     //Check body
@@ -182,7 +182,7 @@ describe('manager-api', () => {
       "managerName":"test.manager.name"
     }
     const res = await needle(`put`, `${s_url}/update_api`, payload, {})
-    resBodyJson = JSON.parse(res.body)
+    const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -194,7 +194,7 @@ describe('manager-api', () => {
   
   it ('GET /get_log_lines => "SUCCESFULLY"', async () => {
     const res = await needle(`get`, `${s_url}/get_log_lines`)
-    resBodyJson = JSON.parse(res.body)
+    const resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
