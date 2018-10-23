@@ -49,9 +49,7 @@ define(['../module'], function (module) {
      */
     const deletes = async (id) => {
       try {
-        const { data } = await $requestService.httpReq(`POST`, `manager/remove_api`, $.param(
-          id
-        ))
+        const { data } = await $requestService.httpReq(`DELETE`, `manager/remove_api?id=${ id.id }`)
         if (data.error || data.status === 400)
           throw new Error(data.error)
         return data

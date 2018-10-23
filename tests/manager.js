@@ -138,8 +138,9 @@ describe('manager-api', () => {
   })
   
   it ('DELETE /remove_api => "SUCCESFULLY"', async () => {
-    const payload = { "id":"2d291b20-e31b-499d-bd28-d92ce8a9a775" }
-    const res = await needle(`post`, `${s_url}/remove_api/`, payload, {})
+    const apid_id = "2d291b20-e31b-499d-bd28-d92ce8a9a775"
+    const url = `${s_url}/remove_api?id=${apid_id}`
+    const res = await needle(`delete`, url, null)
     resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')

@@ -118,7 +118,7 @@ class manager(controllers.BaseController):
             return json.dumps({'error': str(e)})
         return parsed_data
 
-    @expose_page(must_login=False, methods=['POST'])
+    @expose_page(must_login=False, methods=['DELETE'])
     def remove_api(self, **kwargs):
         try:
             api_id = kwargs
@@ -145,7 +145,6 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in update_api endpoint: %s" % (e))
             return json.dumps({"error":str(e)})
-            #return '{"error":' + missing_params + '}'
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
