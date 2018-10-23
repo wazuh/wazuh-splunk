@@ -45,10 +45,10 @@ define([
       /**
       * Metrics
       */
-      const filesAddedSearch = new SearchHandler(`filesAddedSearch`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',submittedTokenModel,$scope)
-      const readFilesSearch = new SearchHandler(`readFilesSearch`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',submittedTokenModel,$scope)
-      const modifiedFiles = new SearchHandler(`modifiedFiles`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',submittedTokenModel,$scope)
-      const deletedFiles = new SearchHandler(`deletedFiles`,`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',submittedTokenModel,$scope)
+      const filesAddedSearch = new SearchHandler(`filesAddedSearch`,`${filters} sourcetype=wazuh rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',submittedTokenModel,$scope)
+      const readFilesSearch = new SearchHandler(`readFilesSearch`,`${filters} sourcetype=wazuh rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',submittedTokenModel,$scope)
+      const modifiedFiles = new SearchHandler(`modifiedFiles`,`${filters} sourcetype=wazuh rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',submittedTokenModel,$scope)
+      const deletedFiles = new SearchHandler(`deletedFiles`,`${filters} sourcetype=wazuh rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',submittedTokenModel,$scope)
       
       /**
       * Visualizations

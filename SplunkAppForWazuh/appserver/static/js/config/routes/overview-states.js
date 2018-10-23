@@ -116,7 +116,7 @@ define(['../module'], function (module) {
       controllerAs: 'ovu',
     })
     // =========== AWS =========== //
-    .state('aws', {
+    .state('ow-aws', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('aws') },
       controller: 'awsCtrl'

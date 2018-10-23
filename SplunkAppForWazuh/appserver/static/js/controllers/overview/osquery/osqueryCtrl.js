@@ -14,11 +14,17 @@ define([
     
     'use strict'
     
-    app.controller('osqueryCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
+    app.controller('osqueryCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, osquery) {
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
-      
+      $scope.osqueryWodle = false
+      try {
+        const wodles = osquery.data.data.wmodules
+        $scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
+      } catch (err) {
+        $notificationService.showSimpleToast('Cannot load wodle configuration. Osquery is not configured.')
+      }
       timePickerInstance.on("change", function (newValue) {
         if (newValue && timePickerInstance)
         $urlTokenModel.handleValueChange(timePickerInstance)

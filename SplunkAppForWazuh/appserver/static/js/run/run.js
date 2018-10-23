@@ -2,12 +2,12 @@ define(['./module'], function (module) {
   'use strict'
   module.run(['$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService', function ($rootScope, $state, $transitions, $navigationService, $currentDataService) {
     $navigationService.goToLastState()
-
+    
     $transitions.onSuccess({}, async (trans) => {
       $rootScope.$broadcast('loading', { status: false })
     })
-
-
+    
+    
     $transitions.onStart({}, function(transition) {
       if (transition.to().name.includes('ag-') || transition.to().name.includes('agent')) {
         $rootScope.$broadcast('stateChanged', 'agents')
@@ -15,13 +15,29 @@ define(['./module'], function (module) {
         $rootScope.$broadcast('stateChanged', 'manager')
       } else if(transition.to().name.includes('ow-')) {
         $rootScope.$broadcast('stateChanged', 'overview')
+        switch (transition.to().name) {
+          case 'ow-osquery':
+            $currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
+            break
+          case 'ow-aws':
+            $currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
+            break
+          case 'ow-fim':
+            $currentDataService.addFilter(`{"rule.groups":"syscheck", "implicit":true}`)
+            break
+          case 'ow-audit':
+            $currentDataService.addFilter(`{"rule.groups":"audit", "implicit":true}`)
+            break
+        }
       }
     })
-
+    
     $transitions.onStart({}, async (trans) => {
       $rootScope.$broadcast('loading', { status: true })
     })
-
+    
+    
+    
     $transitions.onStart({ to: 'dev-tools' }, async (trans) => {
       try {
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
@@ -36,7 +52,7 @@ define(['./module'], function (module) {
         $state.go('settings.api')
       }
     })
-
+    
     $transitions.onStart({ to: 'settings.api' }, async (trans) => {
       try {
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
@@ -50,7 +66,7 @@ define(['./module'], function (module) {
         $rootScope.$broadcast('loading', { status: false })
       }
     })
-
+    
     $transitions.onStart({ to: 'manager' }, async (trans) => {
       try {
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
@@ -65,10 +81,11 @@ define(['./module'], function (module) {
         $state.go('settings.api')
       }
     })
-
+    
     $transitions.onStart({ to: 'overview' }, async (trans) => {
       try {
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
+        console.log('trans to ',trans.to())
         $currentDataService.setApi(api)
         $currentDataService.cleanFilters()
         $navigationService.storeRoute('overview')
@@ -80,7 +97,7 @@ define(['./module'], function (module) {
         $state.go('settings.api')
       }
     })
-
+    
     $transitions.onStart({ to: 'agents' }, async (trans) => {
       try {
         const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
@@ -95,7 +112,7 @@ define(['./module'], function (module) {
         $state.go('settings.api')
       }
     })
-
+    
   }])
 })
 

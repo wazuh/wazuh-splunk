@@ -22,6 +22,7 @@ define([
     
     app.controller('overviewFimCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
+      console.log('filters ',filters)
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
       
@@ -47,7 +48,7 @@ define([
       * Visualizations
       */
       const deletedFiles = new PieChart('deletedFiles',`${filters} sourcetype=wazuh syscheck.event=deleted | top agent.name limit=5`,'deletedFiles')
-      const whodataUsage = new ColumnChart('whodataUsage',`${filters} sourcetype=wazuh syscheck
+      const whodataUsage = new ColumnChart('whodataUsage',`${filters} sourcetype=wazuh
       | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
       | stats count BY WHODATA
       | addcoltotals count labelfield=WHODATA label=Total
@@ -58,8 +59,8 @@ define([
       | where NOT SYSCHECK="NO"`,'alertsVolume')
       const newFiles = new PieChart('newFiles',`${filters} sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,'newFiles')
       const modifiedFiles = new PieChart('modifiedFiles',`${filters} sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,'modifiedFiles')
-      const eventsSummary = new LinearChart('eventsSummary',`${filters} sourcetype=wazuh syscheck | timechart count`,'eventsSummary')
-      const topRules = new Table('topRules',`${filters} sourcetype=wazuh syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'topRules')
+      const eventsSummary = new LinearChart('eventsSummary',`${filters} sourcetype=wazuh | timechart count`,'eventsSummary')
+      const topRules = new Table('topRules',`${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'topRules')
       const topUsers = new Table('topUsers',`${filters} sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,'topUsers')
       
       /**
