@@ -116,5 +116,11 @@ define(['../module'], function (module) {
       controller: 'overviewVulnerabilitiesCtrl',
       controllerAs: 'ovu',
     })
+    // =========== AWS =========== //
+    .state('aws', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('aws') },
+      controller: 'awsCtrl'
+    })  
   }])
 })
