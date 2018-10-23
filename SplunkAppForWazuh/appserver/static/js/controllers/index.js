@@ -5,6 +5,7 @@ define([
   './overview/fim/overviewFimCtrl',
   './overview/aws/awsCtrl',
   './overview/osquery/osqueryCtrl',
+  './overview/scap/overviewOpenScapCtrl',
   './overview/policy-monitoring/overviewPolicyMonitoringCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
