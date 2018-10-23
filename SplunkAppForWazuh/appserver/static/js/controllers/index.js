@@ -3,6 +3,7 @@ define([
   './overview/welcome/overviewWelcomeCtrl',
   './overview/audit/overviewAuditCtrl',
   './overview/fim/overviewFimCtrl',
+  './overview/aws/awsCtrl',
   './overview/policy-monitoring/overviewPolicyMonitoringCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
