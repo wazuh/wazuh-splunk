@@ -51,10 +51,9 @@ define(['../module'], function (module) {
     })
     // Overview - policy monitoring
     .state('ow-pm', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-pm.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/policy-monitoring/overview-pm.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pm') },
       controller: 'overviewPolicyMonitoringCtrl',
-      controllerAs: 'opm',
     })
     // Overview - FIM
     .state('ow-fim', {
