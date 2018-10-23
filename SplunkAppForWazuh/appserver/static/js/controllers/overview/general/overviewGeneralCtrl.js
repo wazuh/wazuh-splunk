@@ -21,9 +21,8 @@ define([
     'use strict'
     
     app.controller('overviewGeneralCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, pollingState) {
-      const vm = this
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#input1')
+      const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
       const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       let pollingEnabled = true
@@ -50,13 +49,13 @@ define([
       let agentHistory
       // If polling state is enabled then draw the agent history status
       if (!pollingEnabled) {
-        vm.wzMonitoringEnabled = false
+        $scope.wzMonitoringEnabled = false
         $requestService.apiReq(`/agents/summary`).then((data) => {
-          vm.agentsCountTotal = data.data.data.Total - 1
-          vm.agentsCountActive = data.data.data.Active - 1
-          vm.agentsCountDisconnected = data.data.data.Disconnected
-          vm.agentsCountNeverConnected = data.data.data['Never connected']
-          vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0;
+          $scope.agentsCountTotal = data.data.data.Total - 1
+          $scope.agentsCountActive = data.data.data.Active - 1
+          $scope.agentsCountDisconnected = data.data.data.Disconnected
+          $scope.agentsCountNeverConnected = data.data.data['Never connected']
+          $scope.agentsCoverity = $scope.agentsCountTotal ? ($scope.agentsCountActive / $scope.agentsCountTotal) * 100 : 0;
           if (!$scope.$$phase) $scope.$digest()
           
         }).catch((error) => {
@@ -64,7 +63,7 @@ define([
         })
         
       } else {
-        vm.wzMonitoringEnabled = true
+        $scope.wzMonitoringEnabled = true
         agentHistory = new AreaChart(`agentStatusHistory`,`index=wazuh-monitoring-3x status=* | timechart span=1h count by status usenull=f`,`agentStatus`)
       }
       

@@ -1,4 +1,4 @@
-define(['./module'], function (module) {
+define(['../module'], function (module) {
   'use strict'
   
   module.config([ '$stateProvider','BASE_URL', function ($stateProvider,BASE_URL) {

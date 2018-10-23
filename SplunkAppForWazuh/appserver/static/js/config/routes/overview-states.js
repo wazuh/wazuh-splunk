@@ -1,4 +1,4 @@
-define(['./module'], function (module) {
+define(['../module'], function (module) {
   'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`,
@@ -15,7 +15,6 @@ define(['./module'], function (module) {
     .state('overview', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
       controller: 'overviewWelcomeCtrl',
-      controllerAs: 'owc',
       resolve: {
         agentsInfo: ['$requestService', '$state',($requestService,$state) => {
           return $requestService.apiReq('/agents/summary')
@@ -36,7 +35,6 @@ define(['./module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/general/overview-general.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-general') },
       controller: 'overviewGeneralCtrl',
-      controllerAs: 'ogc',
       resolve: {
         pollingState: ['$requestService', '$state',($requestService,$state) => {
           return $requestService.httpReq(`GET`, `/manager/polling_state`)

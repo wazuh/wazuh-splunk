@@ -1,5 +1,5 @@
 define([
-  './overview-states',
-  './settings-states',
-  './management-states'
+  './routes/overview-states',
+  './routes/settings-states',
+  './routes/management-states'
 ], function () {})

@@ -5,7 +5,7 @@
       <span>/ General </span>
     </div>
     <div flex></div>
-    <div style="margin-right:7px;" id='input1'></div>
+    <div style="margin-right:7px;" id='timePicker'></div>
   </div>
 
   <!-- Filter bar -->
@@ -72,12 +72,12 @@
     </md-card>
     <!-- third row - third vis -->
     <md-card flex="33" class="wz-md-card">
-      <md-card-content class="wazuh-column" ng-show="ogc.wzMonitoringEnabled">
+      <md-card-content class="wazuh-column" ng-show="wzMonitoringEnabled">
         <span class="wz-headline-title">Agents status</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='agentStatus'></div>
       </md-card-content>
-      <md-card-content class="wazuh-column" ng-show="!ogc.wzMonitoringEnabled">
+      <md-card-content class="wazuh-column" ng-show="!wzMonitoringEnabled">
         <span class="wz-headline-title">Agents status</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row">
@@ -85,24 +85,24 @@
             <div layout="row" class="wz-padding-top-10"></div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50" class="wz-text-bold">Total</p>
-              <p class="wz-text-right color-grey wz-text-bold">{{ogc.agentsCountTotal}}</p>
+              <p class="wz-text-right color-grey wz-text-bold">{{agentsCountTotal}}</p>
             </div>
             <div layout="row" class="wz-padding-top-10"></div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Active</p>
-              <p class="wz-text-right color-grey">{{ogc.agentsCountActive}}</p>
+              <p class="wz-text-right color-grey">{{agentsCountActive}}</p>
             </div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Disconnected</p>
-              <p class="wz-text-right color-grey">{{ogc.agentsCountDisconnected}}</p>
+              <p class="wz-text-right color-grey">{{agentsCountDisconnected}}</p>
             </div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Never connected</p>
-              <p class="wz-text-right color-grey">{{ogc.agentsCountNeverConnected}}</p>
+              <p class="wz-text-right color-grey">{{agentsCountNeverConnected}}</p>
             </div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Agents coverage</p>
-              <p class="wz-text-right color-grey">{{(ogc.agentsCoverity | number:2)}}%</p>
+              <p class="wz-text-right color-grey">{{(agentsCoverity | number:2)}}%</p>
             </div>
           </div>
         </div>
