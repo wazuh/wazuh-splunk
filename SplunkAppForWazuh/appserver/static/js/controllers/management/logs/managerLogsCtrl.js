@@ -19,12 +19,63 @@ define(['../../module'], function (app) {
       try {
         this.scope.search = term => this.search(term)
         this.scope.filter = term => this.filter(term)
+        this.scope.changeNode = node => this.changeNode(node)
         this.scope.stopRealtime = () => this.stopRealtime()
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
+        this.initialize()
         return
       } catch (err) {
         this.toast('Cannot fetch logs data from server')
+      }
+    }
+
+    async initialize(){
+      try {
+        // logs summary
+        
+        const clusterStatus = await this.apiReq('/cluster/status')
+        const clusterEnabled = clusterStatus && clusterStatus.data && clusterStatus.data.data && clusterStatus.data.data.running === 'yes' && clusterStatus.data.data.enabled === 'yes'
+        
+        if(clusterEnabled) {
+          const nodeList = await this.apiReq('/cluster/nodes')
+          if(nodeList && nodeList.data && nodeList.data.data && Array.isArray(nodeList.data.data.items)){
+            this.scope.nodeList = nodeList.data.data.items.map(item => item.name).reverse()
+            this.scope.selectedNode = nodeList.data.data.items.filter(item => item.type === 'master')[0].name
+          }
+        } 
+        
+        this.scope.logsPath = clusterEnabled ? `/cluster/${this.scope.selectedNode}/logs` : '/manager/logs'
+        
+        const data = clusterEnabled ?
+        await $requestService.apiReq(`/cluster/${this.scope.selectedNode}/logs/summary`):
+        await $requestService.apiReq('/manager/logs/summary')
+        const daemons = data.data.data
+        this.scope.daemons = Object.keys(daemons).map(item => ({ title: item }))
+        if (!this.scope.$$phase) this.scope.$digest()
+        return          
+      } catch (err) {
+        this.toast('error en logs ctrl', err)
+      }
+      return
+    }
+
+    /**
+     * Changes the cluster node
+     * @param {String} node 
+     */
+    async changeNode(node){
+      try {
+        this.scope.type_log = 'all'
+        this.scope.category = 'all'
+        this.scope.selectedNode = node
+        this.scope.$broadcast('wazuhUpdateInstancePath', { path: `/cluster/${node}/logs` })
+        const summary = await this.apiReq(`/cluster/${node}/logs/summary`,{})
+        const daemons = summary.data.data
+        this.scope.daemons = Object.keys(daemons).map(item => ({ title: item }))
+        if (!this.scope.$$phase) this.scope.$digest()
+      } catch(error) {
+        this.toast('Error at fetching logs')
       }
     }
     
