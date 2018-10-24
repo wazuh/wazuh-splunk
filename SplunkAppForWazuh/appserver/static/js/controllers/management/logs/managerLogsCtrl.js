@@ -30,8 +30,8 @@ define(['../../module'], function (controllers) {
       try {
         vm.type_log = 'all'
         vm.category = 'all'
-        vm.custom_search = ''
         vm.selectedNode = node
+        vm.custom_search = null
         $scope.$broadcast('wazuhUpdateInstancePath', { path: `/cluster/${node}/logs` })
         const summary = await $requestService.apiReq(`/cluster/${node}/logs/summary`,{})
         const daemons = summary.data.data
