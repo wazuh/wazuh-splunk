@@ -89,7 +89,7 @@
     </div>
     <!-- Nodes selector -->
     <div ng-show="ag.isClusterEnabled" layout="column" class='wz-padding-left-16'>
-      <select class="input input-dropdown" flex id="eventBox2" ng-disabled="ag.realtime" ng-model="ag.node_name" ng-change="ag.filter({name:'node',value:ag.node_name})"
+      <select class="input input-dropdown" flex id="eventBox2" ng-disabled="ag.realtime" ng-model="ag.node_name" ng-change="ag.filter({name:'node_name',value:ag.node_name})"
         aria-label="Filter by node" style='width:400px; height: 33px; margin-top:3px;  margin-left:10px;'>
         <option value="all">All nodes</option>
         <option ng-repeat='node in ag.nodes' value="{{node}}">
