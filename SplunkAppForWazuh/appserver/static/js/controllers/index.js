@@ -7,6 +7,7 @@ define([
   './overview/osquery/osqueryCtrl',
   './overview/scap/overviewOpenScapCtrl',
   './overview/policy-monitoring/overviewPolicyMonitoringCtrl',
+  './overview/vulnerabilities/overviewVulnerabilitiesCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',
