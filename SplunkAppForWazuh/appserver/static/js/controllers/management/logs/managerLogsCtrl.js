@@ -72,6 +72,7 @@ define(['../../module'], function (app) {
         this.scope.type_log = 'all'
         this.scope.category = 'all'
         this.scope.selectedNode = node
+        this.scope.custom_search = null
         this.scope.$broadcast('wazuhUpdateInstancePath', { path: `/cluster/${node}/logs` })
         const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
         const daemons = summary.data.data
