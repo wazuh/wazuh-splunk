@@ -30,6 +30,7 @@ define(['../../module'], function (controllers) {
       try {
         vm.type_log = 'all'
         vm.category = 'all'
+        vm.custom_search = ''
         vm.selectedNode = node
         $scope.$broadcast('wazuhUpdateInstancePath', { path: `/cluster/${node}/logs` })
         const summary = await $requestService.apiReq(`/cluster/${node}/logs/summary`,{})
@@ -38,7 +39,6 @@ define(['../../module'], function (controllers) {
         if (!$scope.$$phase) $scope.$digest()
       } catch(error) {
         $notificationService.showSimpleToast('Error fetching logs')
-        
       }
     }
     
