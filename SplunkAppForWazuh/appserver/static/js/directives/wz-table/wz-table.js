@@ -115,6 +115,9 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.searchTable()
             return
           } catch (error) {
+            if(error && !error.data && error.status === -1 && error.xhrStatus === 'abort') {
+              return Promise.reject('Request took too long, aborted')
+            }
             return Promise.reject(error)
           }
         }
@@ -136,7 +139,7 @@ define(['../module', 'underscore'], function (directives, _) {
             }
           } catch (error) {
             $scope.wazuh_table_loading = false;
-            $scope.error = `Error paginating table due to ${error.message || error}. Please refresh your browser.`
+            $scope.error = `Error paginating table due to ${error.message || error}.`
             $notificationService.showSimpleToast(`Error paginating table due to ${error.message || error}`)
           }
           return
@@ -147,6 +150,7 @@ define(['../module', 'underscore'], function (directives, _) {
           $scope.currentPage = this.n
           $scope.nextPage(this.n)
         }
+
         ////////////////////////////////////
 
         const instance = new $dataService($scope.path, $scope.implicitFilter)
@@ -166,7 +170,7 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false;
             $scope.error = `Error sorting table by ${
               field ? field.value : 'undefined'
-            }. ${error.message || error}. Please refresh your browser.`
+            }. ${error.message || error}.`
             $notificationService.showSimpleToast(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -184,7 +188,7 @@ define(['../module', 'underscore'], function (directives, _) {
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
             $scope.wazuh_table_loading = false;
-            $scope.error = `Error searching. ${error.message || error}. Please refresh your browser.`;
+            $scope.error = `Error searching. ${error.message || error}.`;
             $notificationService.showSimpleToast(`Error searching. ${error.message || error}`)
           }
           return
@@ -221,7 +225,7 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false;
             $scope.error = `Error filtering by ${
               filter ? filter.value : 'undefined'
-            }. ${error.message || error}. Please refresh your browser.`
+            }. ${error.message || error}.`
             $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -260,7 +264,7 @@ define(['../module', 'underscore'], function (directives, _) {
             }
           } catch (error) {
             realTime = false
-            $scope.error = `Real time feature aborted. ${error.message || error}. Please refresh your browser.`
+            $scope.error = `Real time feature aborted. ${error.message || error}.`
             $notificationService.showSimpleToast(`Real time feature aborted. ${error.message || error}`)
           }
           return
@@ -294,7 +298,7 @@ define(['../module', 'underscore'], function (directives, _) {
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
             $scope.wazuh_table_loading = false;
-            $scope.error = `Error while init table. ${error.message || error}. Please refresh your browser.`
+            $scope.error = `Error while init table. ${error.message || error}.`
             $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
           }
           return
