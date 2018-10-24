@@ -37,8 +37,7 @@ define(['../../module'], function (controllers) {
         vm.daemons = Object.keys(daemons).map(item => ({ title: item }))
         if (!$scope.$$phase) $scope.$digest()
       } catch(error) {
-        console.error('err ',error)
-        $notificationService.showSimpleToast('Error at fetching logs')
+        $notificationService.showSimpleToast('Error fetching logs')
         
       }
     }
@@ -54,9 +53,7 @@ define(['../../module'], function (controllers) {
           const nodeList = await $requestService.apiReq('/cluster/nodes')
           if(nodeList && nodeList.data && nodeList.data.data && Array.isArray(nodeList.data.data.items)){
             vm.nodeList = nodeList.data.data.items.map(item => item.name).reverse()
-            console.log('nodelist ',vm.nodeList)
             vm.selectedNode = nodeList.data.data.items.filter(item => item.type === 'master')[0].name
-            console.log('selected node ',vm.selectedNode)
           }
         } 
         
@@ -70,8 +67,7 @@ define(['../../module'], function (controllers) {
         if (!$scope.$$phase) $scope.$digest()
         return          
       } catch (err) {
-        console.error('err ',err)
-        $notificationService.showSimpleToast('error en logs ctrl', err)
+        $notificationService.showSimpleToast('Error fetching data')
       }
       return
     }
