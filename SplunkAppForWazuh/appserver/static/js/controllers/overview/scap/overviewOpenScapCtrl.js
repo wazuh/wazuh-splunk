@@ -6,10 +6,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/visualizations/search/search-handler',
-  "splunkjs/mvc/simpleform/input/dropdown",
-  "splunkjs/mvc/simpleform/formutils",
-
 ], function (
   app,
   LinearChart,
@@ -18,10 +16,8 @@ define([
   AreaChart,
   Table,
   TimePicker,
+  Dropdown,
   SearchHandler,
-  DropdownInput,
-  FormUtils
-  
   ) {
     
     'use strict'
@@ -30,12 +26,23 @@ define([
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
-      const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-
       timePickerInstance.on("change", function (newValue) {
         if (newValue && timePickerInstance)
         $urlTokenModel.handleValueChange(timePickerInstance)
       })
+
+      const dropdown = new Dropdown(
+        'dropDownInput',
+        `${filters} sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
+        'oscap.scan.profile.title',
+        'dropDownInput'
+      )
+      const dropdownInstance = dropdown.getElement()
+      const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+      dropdownInstance.on("change", function(newValue){
+        if (newValue && dropdownInstance)
+        $urlTokenModel.handleValueChange(dropdownInstance)
+      })  
       
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
@@ -105,34 +112,12 @@ define([
       'element14')
       ]
 
-      const epoch = (new Date).getTime()
-      let input2 = ''
-      input2 = new DropdownInput({
-        "id": "input2" + epoch,
-        "choices": [
-          { "label": "ALL", "value": "*" }
-        ],
-        "labelField": "oscap.scan.profile.title",
-        "searchWhenChanged": true,
-        "default": "*",
-        "valueField": "oscap.scan.profile.title",
-        "initialValue": "*",
-        "selectFirstChoice": false,
-        "showClearButton": true,
-        "value": "$form.profile$",
-        "managerid": "search15" + epoch,
-        "el": $('#input2')
-      }, { tokens: true }).render()
-
-      input2.on("change", function (newValue) {
-        FormUtils.handleValueChange(input2)
-      })
-
       /**
       * On controller destroy
       */
       $scope.$on('$destroy', () => {
         timePicker.destroy()
+        dropdown.destroy()
         vizz.map( (vizz) => vizz.destroy())
       })
     })

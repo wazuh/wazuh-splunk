@@ -37,19 +37,19 @@ define([
         }), id, search)
         this.getSearch().on('search:done', () => {
           const result = submittedTokenModel.get(token)
-          if (result && result !== token) {
+          if (result && result !== value && typeof result !== 'undefined' && result !== 'undefined') {
             $scope[bindedValue] = result
           } else {
-            $scope[bindedValue] = '-'
+            $scope[bindedValue] = '0'
           }
           if (!$scope.$$phase) $scope.$digest()
         })
         submittedTokenModel.on(`change:${token}`, (model, loadedToken, options) => {
           const loadedTokenJS = submittedTokenModel.get(token)
-          if (typeof loadedTokenJS !== 'undefined' && loadedTokenJS !== 'undefined') {
+          if (loadedTokenJS && loadedTokenJS !== value && typeof loadedTokenJS !== 'undefined' && loadedTokenJS !== 'undefined') {
             $scope[bindedValue] = loadedTokenJS
           } else {
-            $scope[bindedValue] = '-'
+            $scope[bindedValue] = '0'
           }
           if (!$scope.$$phase) $scope.$digest()
         })

@@ -96,7 +96,6 @@ define([
        */
       onChange(event, cb) {
         this.submittedTokenModel.on('change:' + event, (model, authSuccessToken, opts) => {
-          console.log('changed in class')
           return cb(model, authSuccessToken, opts, this.submittedTokenModel.get(event))
         })
       }

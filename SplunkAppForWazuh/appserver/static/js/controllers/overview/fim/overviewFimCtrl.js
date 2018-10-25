@@ -22,7 +22,6 @@ define([
     
     app.controller('overviewFimCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
-      console.log('filters ',filters)
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
       
