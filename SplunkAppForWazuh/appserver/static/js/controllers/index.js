@@ -6,6 +6,7 @@ define([
   './overview/aws/awsCtrl',
   './overview/osquery/osqueryCtrl',
   './overview/scap/overviewOpenScapCtrl',
+  './overview/gdpr/overviewGdprCtrl',
   './overview/policy-monitoring/overviewPolicyMonitoringCtrl',
   './overview/vulnerabilities/overviewVulnerabilitiesCtrl',
   './settings/settingsCtrl',
