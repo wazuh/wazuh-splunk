@@ -10,9 +10,9 @@ define([
   './overview/pci/overviewPciCtrl',
   './overview/policy-monitoring/overviewPolicyMonitoringCtrl',
   './overview/vulnerabilities/overviewVulnerabilitiesCtrl',
-  './settings/settingsCtrl',
-  './settings/settingsIndexCtrl',
-  './settings/settingsApiCtrl',
+  './settings/main/settingsCtrl',
+  './settings/index/settingsIndexCtrl',
+  './settings/api/settingsApiCtrl',
   './settings/logs/logsCtrl',
   './main/mainCtrl'
 ], function () {})
