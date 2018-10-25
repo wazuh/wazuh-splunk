@@ -3,7 +3,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/time-picker/time-picker',
+  '../../../services/visualizations/inputs/time-picker',
 ], function (
   app,
   PieChart,
@@ -43,25 +43,22 @@ define([
         launchSearches()
       })
       
+      const vizz = [
       /**
       * Visualizations
       */
-      const alertsOverTime = new AreaChart('alertsOverTime',`${filters} sourcetype=wazuh | timechart span=1h count`,'alertsOverTime')
-      const alertsEvolution = new AreaChart('alertsEvolution',`${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,'alertsEvolution')
-      const mostCommonEvents = new PieChart('mostCommonEvents',`${filters} sourcetype=wazuh  | top data.osquery.name limit=5`,'mostCommonEvents')
-      const topPacks = new Table('topPacks',`${filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,'topPacks')
-      const topRules = new Table('topRules',`${filters} sourcetype=wazuh  | top rule.id, rule.description limit=5`,'topRules')
-      
+      new AreaChart('alertsOverTime',`${filters} sourcetype=wazuh | timechart span=1h count`,'alertsOverTime'),
+      new AreaChart('alertsEvolution',`${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,'alertsEvolution'),
+      new PieChart('mostCommonEvents',`${filters} sourcetype=wazuh  | top data.osquery.name limit=5`,'mostCommonEvents'),
+      new Table('topPacks',`${filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,'topPacks'),
+      new Table('topRules',`${filters} sourcetype=wazuh  | top rule.id, rule.description limit=5`,'topRules')
+      ]
       /**
       * On controller destroy
       */
       $scope.$on('$destroy', () => {
         timePicker.destroy()
-        alertsOverTime.destroy()
-        alertsEvolution.destroy()
-        mostCommonEvents.destroy()
-        topPacks.destroy()
-        topRules.destroy()
+        vizz.map( (vizz) => vizz.destroy())
       })
     })
   })

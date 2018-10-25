@@ -89,7 +89,7 @@ define(['../module'], function (module) {
     })
     // Overview - OpenSCAP
     .state('ow-os', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/overview-openscap.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/scap/overview-openscap.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-os') },
       controller: 'overviewOpenScapCtrl',
     })
@@ -109,10 +109,9 @@ define(['../module'], function (module) {
     })
     // Overview - Vulnerabilities
     .state('ow-vul', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-vulnerabilities.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/vulnerabilities/overview-vulnerabilities.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-vul') },
       controller: 'overviewVulnerabilitiesCtrl',
-      controllerAs: 'ovu',
     })
     // =========== AWS =========== //
     .state('ow-aws', {
