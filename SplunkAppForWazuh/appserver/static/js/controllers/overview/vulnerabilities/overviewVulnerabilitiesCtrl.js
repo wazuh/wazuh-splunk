@@ -105,7 +105,6 @@ define([
         timePicker.destroy()
         vizz.map( (vizz) => vizz.destroy())
       })
-      
     })
   })
   
