@@ -7,7 +7,7 @@ define([
 ) {
     'use strict'
 
-    return class LinearChar extends Viz {
+    return class LinearChart extends Viz {
 
       /**
        * Generates a new Linear Chart Splunk visualization
