@@ -4,7 +4,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/time-picker/time-picker',
+  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
 ], function (
   app,
@@ -41,50 +41,37 @@ define([
       $scope.$on('barFilter', () => {
         launchSearches()
       })
-      
+
+      const vizz = [
       /**
       * Metrics
       */
-      const filesAddedSearch = new SearchHandler(`filesAddedSearch`,`${filters} sourcetype=wazuh rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',submittedTokenModel,$scope)
-      const readFilesSearch = new SearchHandler(`readFilesSearch`,`${filters} sourcetype=wazuh rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',submittedTokenModel,$scope)
-      const modifiedFiles = new SearchHandler(`modifiedFiles`,`${filters} sourcetype=wazuh rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',submittedTokenModel,$scope)
-      const deletedFiles = new SearchHandler(`deletedFiles`,`${filters} sourcetype=wazuh rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',submittedTokenModel,$scope)
-      
+      new SearchHandler(`filesAddedSearch`,`${filters} sourcetype=wazuh rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',submittedTokenModel,$scope),
+      new SearchHandler(`readFilesSearch`,`${filters} sourcetype=wazuh rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',submittedTokenModel,$scope),
+      new SearchHandler(`modifiedFiles`,`${filters} sourcetype=wazuh rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',submittedTokenModel,$scope),
+      new SearchHandler(`deletedFiles`,`${filters} sourcetype=wazuh rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',submittedTokenModel,$scope),
       /**
       * Visualizations
       */
-      const groups = new PieChart('groupsElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,'groupsElement')
-      const agents = new ColumnChart('agentsElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,'agentsElement')
-      const directories = new PieChart('directoriesElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" data.audit.directory.name=* | top data.audit.directory.name`,'directoriesElement')
-      const files = new PieChart('filesElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" data.audit.file.name=* | top data.audit.file.name`,'filesElement')
-      const alertsOverTime = new AreaChart('alertsOverTime',`${filters} sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description`,'alertsOverTimeElement')
-      const fileReadAccess = new PieChart('fileReadAccess',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top data.audit.file.name`,'fileReadAccessElement')
-      const fileWriteAccess = new PieChart('fileWriteAccess',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top data.audit.file.name`,'fileWriteAccessElement')
-      const commands = new ColumnChart('commands',`${filters} sourcetype=wazuh rule.groups=\"audit\" | top data.audit.command`,'commandsElement')
-      const createdFiles = new ColumnChart('createdFiles',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top data.audit.file.name`,'createdFilesElement')
-      const removedFiles = new PieChart('removedFiles',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top data.audit.file.name`,'removedFilesElement')
-      const alertsSummary = new Table('alertsSummary',`${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as \"Effective user id\"`,'alertsSummaryElement')
+      new PieChart('groupsElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,'groupsElement'),
+      new ColumnChart('agentsElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,'agentsElement'),
+      new PieChart('directoriesElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" data.audit.directory.name=* | top data.audit.directory.name`,'directoriesElement'),
+      new PieChart('filesElement',`${filters} sourcetype=wazuh rule.groups=\"audit\" data.audit.file.name=* | top data.audit.file.name`,'filesElement'),
+      new AreaChart('alertsOverTime',`${filters} sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description`,'alertsOverTimeElement'),
+      new PieChart('fileReadAccess',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top data.audit.file.name`,'fileReadAccessElement'),
+      new PieChart('fileWriteAccess',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top data.audit.file.name`,'fileWriteAccessElement'),
+      new ColumnChart('commands',`${filters} sourcetype=wazuh rule.groups=\"audit\" | top data.audit.command`,'commandsElement'),
+      new ColumnChart('createdFiles',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top data.audit.file.name`,'createdFilesElement'),
+      new PieChart('removedFiles',`${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top data.audit.file.name`,'removedFilesElement'),
+      new Table('alertsSummary',`${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as \"Effective user id\"`,'alertsSummaryElement')
+      ]
       
       /**
       * On controller destroy
       */
       $scope.$on('$destroy', () => {
         timePicker.destroy()
-        groups.destroy()
-        agents.destroy()
-        directories.destroy()
-        files.destroy()
-        alertsOverTime.destroy()
-        fileReadAccess.destroy()
-        fileWriteAccess.destroy()
-        commands.destroy()
-        createdFiles.destroy()
-        removedFiles.destroy()
-        alertsSummary.destroy()
-        filesAddedSearch.destroy()
-        readFilesSearch.destroy()
-        modifiedFiles.destroy()
-        deletedFiles.destroy()
+        vizz.map( (vizz) => vizz.destroy())
       })
     })
   })
