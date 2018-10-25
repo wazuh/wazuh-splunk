@@ -1,5 +1,5 @@
 define([
-  '../module',
+  '../../module',
 ], function (
   controllers
 ) {
