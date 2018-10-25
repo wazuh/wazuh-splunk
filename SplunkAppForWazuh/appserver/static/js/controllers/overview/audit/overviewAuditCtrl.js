@@ -4,7 +4,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/time-picker/time-picker',
+  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
 ], function (
   app,
