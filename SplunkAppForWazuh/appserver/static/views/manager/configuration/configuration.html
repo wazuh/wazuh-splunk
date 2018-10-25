@@ -327,6 +327,7 @@
     <!-- End configuration section cards and right sidenav -->
     
   </div>
+
   <div flex="auto" layout="column" ng-if="configurationTab === 'global-configuration'" ng-init="switchConfigurationSubTab('global')">
     
     <!-- Headline -->
@@ -926,6 +927,7 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 
 </div>
+
 <div flex="auto" layout="column" ng-if="configurationTab === 'registration-service'">
   
   <!-- Headline -->
@@ -1873,7 +1875,6 @@ md-is-locked-open="true">
 
 </div>
 
-
 <div flex="auto" layout="column" ng-if="configurationTab === 'integrations'">
   
   <!-- Headline -->
@@ -2095,7 +2096,6 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 
 </div>
-
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring'" ng-init="switchConfigurationSubTab('pm-general')">
   
@@ -2384,8 +2384,6 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 </div>
 
-
-
 <div flex="auto" layout="column" ng-if="configurationTab === 'open-scap'" ng-init="switchConfigurationSubTab('openscap-general')">
   
   <!-- Headline -->
@@ -2598,8 +2596,6 @@ md-is-locked-open="true">
 </div>
 <!-- End main content and right sidenav section -->
 </div>
-
-
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'cis-cat'" ng-init="switchConfigurationSubTab('ciscat-general')">
   
@@ -3065,8 +3061,6 @@ md-is-locked-open="true">
 
 </div>
 
-
-
 <div flex="auto" layout="column" ng-if="configurationTab === 'osquery'">
   
   <!-- Headline -->
@@ -3251,7 +3245,6 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 
 </div>
-
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'syscollector'">
   
@@ -3442,7 +3435,6 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 
 </div>
-
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'active-response' && (!agent || agent.id==='000')" ng-init="switchConfigurationSubTab('active-response')">
   
@@ -3786,6 +3778,7 @@ md-is-locked-open="true">
 
 
 </div>
+
 <div flex="auto" layout="column" ng-if="configurationTab === 'active-response' && (agent && agent.id!=='000')" ng-init="switchConfigurationSubTab('active-response')">
   <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'active-response'">
     <!-- No configuration section -->
@@ -3905,9 +3898,7 @@ md-is-locked-open="true">
 
 
 </div>
-<!-- End main content and right sidenav section -->
 
-<!-- This section contains the main content and the right sidenav -->
 <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'commands'">
   
   <!-- No configuration section -->
@@ -4058,8 +4049,7 @@ md-is-locked-open="true">
 </div>
 <!-- End main content and right sidenav section -->
 
-
-</div>
+<!-- </div> -->
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'command'">
   
@@ -4273,13 +4263,8 @@ md-is-locked-open="true">
   <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('localfile')" name="localfile">Localfiles</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('socket')" name="socket">Sockets</md-nav-item>
 </md-nav-bar>
-<!-- End Log collection navigation bar -->
-
-<!-- Loading ring -->
-<div class='uil-ring-css' ng-show="load">
-  <div></div>
 </div>
-
+<!-- End Log collection navigation bar -->
 
 <!-- This section contains the main content and the right sidenav -->
 <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'localfile'">
@@ -4454,8 +4439,6 @@ md-is-locked-open="true">
 </div>
 <!-- End main content and right sidenav section -->
 
-
-
 <!-- This section contains the main content and the right sidenav -->
 <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'socket'">
   
@@ -4585,7 +4568,7 @@ md-is-locked-open="true">
 </md-card>
 <!-- End XML card -->
 
-</div>
+<!-- </div> -->
 <!-- End main content section -->
 
 <!-- This section is the right sidenav content -->
@@ -4602,7 +4585,6 @@ md-is-locked-open="true">
 
 </div>
 <!-- End main content and right sidenav section -->
-
 
 </div>
 
@@ -5109,7 +5091,7 @@ md-is-locked-open="true">
 </div>
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'agentless'">
-  
+  <p>ENTRING</p>
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
@@ -5273,7 +5255,6 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 
 </div>
-
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'aws-s3'" ng-init="switchConfigurationSubTab('amazon-general')">
   
@@ -5708,6 +5689,7 @@ md-is-locked-open="true">
 <!-- End main content and right sidenav section -->
 
 </div>
+
 <div flex="auto" layout="column" ng-if="configurationTab === 'client-buffer'">
   
   <!-- Headline -->
