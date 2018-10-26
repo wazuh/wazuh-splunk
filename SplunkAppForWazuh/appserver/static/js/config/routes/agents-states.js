@@ -124,7 +124,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/general/agents-general.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-general') },
         controller: 'agentsGeneralCtrl',
-        controllerAs: 'agc',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
@@ -239,7 +238,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/gdpr/agents-gdpr.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-gdpr') },
         controller: 'agentsGdprCtrl',
-        controllerAs: 'agdpr',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {

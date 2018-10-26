@@ -1,4 +1,3 @@
-
 define([
   "splunkjs/mvc/simplexml/element/table",
   "../viz/viz"
