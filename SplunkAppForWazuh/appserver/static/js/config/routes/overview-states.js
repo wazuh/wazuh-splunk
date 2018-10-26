@@ -95,17 +95,15 @@ define(['../module'], function (module) {
     })
     // Overview - PCI-DSS
     .state('ow-pci', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-pci.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/pci/overview-pci.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-pci') },
       controller: 'overviewPciCtrl',
-      controllerAs: 'opd',
     })
     // Overview - GDPR
     .state('ow-gdpr', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/overview/overview-gdpr.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/gdpr/overview-gdpr.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-gdpr') },
       controller: 'overviewGdprCtrl',
-      controllerAs: 'ogdpr',
     })
     // Overview - Vulnerabilities
     .state('ow-vul', {

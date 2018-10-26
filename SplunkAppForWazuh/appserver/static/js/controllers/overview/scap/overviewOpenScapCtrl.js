@@ -35,6 +35,7 @@ define([
         'dropDownInput',
         `${filters} sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
+        '$form.profile$',
         'dropDownInput'
       )
       const dropdownInstance = dropdown.getElement()
@@ -86,30 +87,30 @@ define([
       /**
       * Visualizations
       */
-      new PieChart('element4',
+      new PieChart('agentsVizz',
       `${filters} sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name`,
-      'element4'),
-      new LinearChart('element5',
+      'agentsVizz'),
+      new LinearChart('profilesVizz',
       `${filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-      'element5'),
-      new ColumnChart('element',
+      'profilesVizz'),
+      new ColumnChart('contentVizz',
       `${filters} sourcetype=wazuh | timechart span=2h count`,
-      'element6'),
-      new PieChart('element7',
+      'contentVizz'),
+      new PieChart('severityVizz',
       `${filters} sourcetype=wazuh | top agent.name`,
-      'element7'),
-      new AreaChart('element8',
+      'severityVizz'),
+      new AreaChart('top5AgentsVizz',
       `${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-      'element8'),
-      new PieChart('element9',
+      'top5AgentsVizz'),
+      new PieChart('top10AlertsVizz',
       `${filters} sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
-      'element9'),
-      new PieChart('element10',
+      'top10AlertsVizz'),
+      new PieChart('top10HRisk',
       `${filters} sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
-      'element10'),
-      new Table('element14',
+      'top10HRisk'),
+      new Table('alertsSummaryVizz',
       `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-      'element14')
+      'alertsSummaryVizz')
       ]
 
       /**
