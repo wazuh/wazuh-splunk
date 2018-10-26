@@ -14,7 +14,7 @@ define([
     
     'use strict'
     
-    app.controller('overviewGdprCtrl', function ($scope, $currentDataService, $state, $urlTokenModel) {
+    app.controller('overviewGdprCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
@@ -26,23 +26,19 @@ define([
       const dropdown = new Dropdown(
         'dropDownInput',
         `${filters} sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
-        '"rule.gdpr{}"',
+        'rule.gdpr{}',
+        '$form.gdpr$',
         'dropDownInput'
         )
         const dropdownInstance = dropdown.getElement()
-        const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         dropdownInstance.on("change", function(newValue){
           if (newValue && dropdownInstance)
           $urlTokenModel.handleValueChange(dropdownInstance)
         })  
         
-        /**
-        * Fires all the queries
-        */
         const launchSearches = () => {
           filters = $currentDataService.getSerializedFilters()
           $state.reload();
-          // searches.map(search => search.startSearch())
         }
         
         $scope.$on('deletedFilter', () => {
@@ -54,6 +50,9 @@ define([
         })
         
         const vizz = [
+          /**
+          * Visualizations
+          */
           new ColumnChart('gdprRequirements',
           `${filters} sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}`,
           'gdprRequirements'),
