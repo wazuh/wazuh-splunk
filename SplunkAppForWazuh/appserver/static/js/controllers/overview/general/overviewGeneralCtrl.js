@@ -78,11 +78,11 @@ define([
       /**
       * Visualizations
       */
-      new LinearChart('overviewElement5',`${filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,'overviewElement5'),
-      new ColumnChart('overviewElement',`${filters} sourcetype=wazuh | timechart span=2h count`,'overviewElement6'),
-      new PieChart('overviewElement7',`${filters} sourcetype=wazuh | top agent.name`,'overviewElement7'),
-      new AreaChart('overviewElement8',`${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,'overviewElement8'),
-      new Table('overviewElement14',`${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'overviewElement14')
+      new LinearChart('alertLevEvoVizz',`${filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,'alertLevEvoVizz'),
+      new ColumnChart('alertsVizz',`${filters} sourcetype=wazuh | timechart span=2h count`,'alertsVizz'),
+      new PieChart('top5AgentsVizz',`${filters} sourcetype=wazuh | top agent.name`,'top5AgentsVizz'),
+      new AreaChart('alertsEvoTop5Agents',`${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,'alertsEvoTop5Agents'),
+      new Table('agentsSummaryVizz',`${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'agentsSummaryVizz')
       ]
       
       /**

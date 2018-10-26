@@ -2,20 +2,16 @@ define([
   '../../module',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/search/search-handler',
 ], function (
   app,
   ColumnChart,
   PieChart,
-  AreaChart,
   Table,
   LinearChart,
   TimePicker,
-  SearchHandler
   ) {
     
     'use strict'
