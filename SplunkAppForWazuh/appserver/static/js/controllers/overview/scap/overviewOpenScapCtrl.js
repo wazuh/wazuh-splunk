@@ -35,6 +35,7 @@ define([
         'dropDownInput',
         `${filters} sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
+        '$form.profile$',
         'dropDownInput'
       )
       const dropdownInstance = dropdown.getElement()
