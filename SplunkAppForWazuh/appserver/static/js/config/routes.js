@@ -395,7 +395,6 @@ define(['./module'], function (module) {
       }
     })
     
-    
     // agents
     .state('agents', {
       templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/views/agents/agents/agents.html',
@@ -407,7 +406,11 @@ define(['./module'], function (module) {
           return Promise.all([
             $requestService.apiReq('/agents/summary'),
             $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
-            $requestService.httpReq('GET', `/agents/agents_uniq?id=${$currentDataService.getApi().id}`)
+            $requestService.apiReq('/agents/stats/distinct', { fields: 'os.name,os.version', select: 'os.name,os.version' }),
+            $requestService.apiReq('/agents/stats/distinct', { fields: 'version', select: 'version' }),
+            $requestService.apiReq('/agents/stats/distinct', { fields: 'node_name', select: 'node_name' }),
+            //$requestService.apiReq('/agents/stats/distinct', { select: 'os.name,os.version' }),
+            //$requestService.httpReq('GET', `/agents/agents_uniq?id=${$currentDataService.getApi().id}`)
           ])
           .then(function (response) {
             return response

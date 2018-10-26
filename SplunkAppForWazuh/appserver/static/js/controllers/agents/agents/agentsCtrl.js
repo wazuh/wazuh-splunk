@@ -129,12 +129,15 @@ define([
     const lastAgent = data[1].data.data.items[0]
 
     // Building operating system filter
-    const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
-    vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
+    //const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
+    //vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
     // Building version filter
-    const rawVersions = data[2].data.data.items.map(one => one.version)
-    vm.versions = [... new Set(rawVersions.filter(one => !!one))]
 
+    //const rawVersions = data[2].data.data.items.map(one => one.version)
+    //vm.versions = [... new Set(rawVersions.filter(one => !!one))]
+    vm.os = data[2].data.data.items
+    vm.versions = data[3].data.data.items
+    vm.nodes = data[4].data.data.items
     vm.lastAgent = lastAgent
     vm.agentsCountActive = summary.Active - 1
     vm.agentsCountDisconnected = summary.Disconnected
