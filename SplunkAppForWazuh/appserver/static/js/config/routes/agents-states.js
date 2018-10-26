@@ -150,7 +150,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/fim/agents-fim.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-fim') },
         controller: 'agentsFimCtrl',
-        controllerAs: 'afc',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
@@ -170,7 +169,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/audit/agents-audit.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-audit') },
         controller: 'agentsAuditCtrl',
-        controllerAs: 'aac',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
