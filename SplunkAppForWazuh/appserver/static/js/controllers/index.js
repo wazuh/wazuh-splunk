@@ -14,5 +14,6 @@ define([
   './settings/index/settingsIndexCtrl',
   './settings/api/settingsApiCtrl',
   './settings/logs/logsCtrl',
+  './management/index',
   './main/mainCtrl'
 ], function () {})
