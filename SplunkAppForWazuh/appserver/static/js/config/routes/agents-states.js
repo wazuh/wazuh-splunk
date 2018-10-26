@@ -91,7 +91,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/osquery/osquery.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-osquery') },
         controller: 'osqueryAgentCtrl',
-        controllerAs: 'aoq',
         params: { id: null },
         resolve: {
           osquery: ['$requestService','$currentDataService', '$stateParams', ($requestService,$currentDataService, $stateParams) => {
