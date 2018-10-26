@@ -55,7 +55,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset-id.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
       controller: 'managerRulesetIdCtrl',
-      controllerAs: 'mrid',
       params: { id: null, filters: null },
       resolve: {
         ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {

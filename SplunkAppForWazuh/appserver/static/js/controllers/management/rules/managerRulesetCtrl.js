@@ -178,7 +178,7 @@ define(['../../module'], function (controllers) {
     includesFilter(filterName){
       return this.scope.appliedFilters.map(item => item.name).includes(filterName)
     }
-    
   }
   controllers.controller('managerRulesetCtrl', Ruleset)
+  return Ruleset
 })
