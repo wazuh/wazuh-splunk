@@ -16,7 +16,7 @@ define([
       * @param {String} fieldName 
       * @param {String} attachedElement 
       */
-      constructor(id, search, fieldName, attachedElement){
+      constructor(id, search, fieldName, value, attachedElement){
         super(new DropdownInput({
           "id": `${id}`,
           "choices": [
@@ -27,7 +27,7 @@ define([
           "initialValue": "*",
           "selectFirstChoice": false,
           "showClearButton": true,
-          "value": "$form.profile$",
+          "value": value,
           "searchWhenChanged": true,
           "managerid": `${id}Search`,
           "el": $(`#${attachedElement}`)
