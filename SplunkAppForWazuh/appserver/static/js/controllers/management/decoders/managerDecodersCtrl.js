@@ -5,7 +5,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
   class Decoders extends Ruleset {
     constructor($scope, $sce, $notificationService) {
       super($scope, $sce, $notificationService, 'decoders')
-      this.scope = $scope
+      this.scope.typeFilter = 'all'
     }
 
     /**
@@ -13,8 +13,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      */
     $onInit() {
       // Reloading event listener
-      console.log('decoders, deleting filter in table')
-
       this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
       this.scope.$on('decodersIsReloaded', () => {
         this.scope.viewingDetail = false
@@ -31,7 +29,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
       this.scope.$on('loadedTable', () => {
         try {
-          console.log('loaded table decoders')
           if (window.localStorage.decoders) {
             const parsedFilter = JSON.parse(window.localStorage.decoders)
             this.scope.appliedFilters = parsedFilter
@@ -48,7 +45,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
     onlyParents(typeFilter) {
       this.scope.appliedFilters = []
       if (window.localStorage.decoders){
-        console.log('deleting filters')
         delete window.localStorage.decoders
       }
       if (typeFilter === 'all') this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })

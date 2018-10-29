@@ -14,8 +14,6 @@ define(['../../module','./ruleset'], function (controllers, Ruleset) {
     }
     
     $onInit(){
-      console.log('ON INIT rulesetidctrl')
-      //this.scope.colorRuleArg = (ruleArg) => super.colorRuleArg(ruleArg)
       this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
     }
     

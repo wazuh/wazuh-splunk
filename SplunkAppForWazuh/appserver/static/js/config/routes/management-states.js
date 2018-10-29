@@ -60,7 +60,6 @@ define(['../module'], function (module) {
         ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
           return $requestService.apiReq(`/rules/${$stateParams.id}`)
           .then(function (response) {
-            console.log('returning ruleInfo ',response)
             return response
           }, function (response) {
             return response

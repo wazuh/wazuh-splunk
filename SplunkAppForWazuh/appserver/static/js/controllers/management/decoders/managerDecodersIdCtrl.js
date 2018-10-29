@@ -14,7 +14,6 @@ define(['../../module','../rules/ruleset'], function (controllers, Ruleset) {
     }
     
     $onInit(){
-      console.log('ON INIT decoders id ctrl')
       this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
     }
     

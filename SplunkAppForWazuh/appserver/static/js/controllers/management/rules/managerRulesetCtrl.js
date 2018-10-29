@@ -11,9 +11,7 @@ define(['../../module','./ruleset'], function (controllers,Ruleset) {
      * On controller load
      */
     $onInit() {
-      console.log('ruleset, deleting filter in table')
       this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
-
       this.scope.$on('loadedTable', () => {
         try{
           if (window.localStorage.ruleset) {
