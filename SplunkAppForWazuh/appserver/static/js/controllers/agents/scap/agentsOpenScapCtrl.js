@@ -21,6 +21,7 @@ define([
     'use strict'
     
     app.controller('agentsOpenScapCtrl', function ($urlTokenModel, $scope, $currentDataService, agent) {
+      if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()

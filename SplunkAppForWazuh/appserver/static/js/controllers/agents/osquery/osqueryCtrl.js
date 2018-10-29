@@ -14,6 +14,7 @@ define([
     'use strict'
     
     app.controller('osqueryAgentCtrl', function ($urlTokenModel, $scope, agent, $notificationService, $currentDataService, $state, osquery) {
+      if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()

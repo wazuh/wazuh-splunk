@@ -15,6 +15,7 @@ define([
     'use strict'
     
     app.controller('agentsPolicyMonitoringCtrl', function ($urlTokenModel, $scope, $state, $currentDataService,agent) {
+      if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
