@@ -3,7 +3,6 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
 ], function (
@@ -11,7 +10,6 @@ define([
   LinearChart,
   ColumnChart,
   PieChart,
-  AreaChart,
   Table,
   TimePicker,
   ) {

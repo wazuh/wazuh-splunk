@@ -16,7 +16,7 @@ define([
     
     'use strict'
     
-    app.controller('agentsGdprCtrl', function ($urlTokenModel, $currentDataService, $scope, $rulesDescription,$state, agent) {
+    app.controller('agentsGdprCtrl', function ($urlTokenModel, $currentDataService, $scope ,$state, agent) {
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker')
       const timePickerInstance = timePicker.get()
