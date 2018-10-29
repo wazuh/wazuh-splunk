@@ -1,15 +1,11 @@
-define(['../../module','./managerRulesetCtrl'], function (controllers, Ruleset) {
+define(['../../module','./ruleset'], function (controllers, Ruleset) {
   
   'use strict'
   
-  class RulesetId extends Ruleset{
+  class RulesetId extends Ruleset {
     constructor($scope, $sce, $notificationService, $state, ruleInfo) {
-      console.log('ruleinfo ',ruleInfo)
-
-      super($scope,$sce,$notificationService)
-      this.scope = $scope
+      super($scope,$sce,$notificationService,'ruleset')
       this.state = $state
-      console.log('ruleinfo ',ruleInfo)
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch(err){ this.filters = [] }
@@ -18,10 +14,14 @@ define(['../../module','./managerRulesetCtrl'], function (controllers, Ruleset) 
     }
     
     $onInit(){
-      this.scope.colorRuleArg = (ruleArg) => this.colorRuleArg(ruleArg)
-      this.scope.addDetailFilter = (name,value) => super.addDetailFilter(name,value)
+      this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
     }
     
+    /**
+    * Adds a filter
+    * @param {String} name 
+    * @param {String} value 
+    */
     addDetailFilter (name, value) {
       try{
         const filter = { name: name, value: value }
@@ -29,7 +29,7 @@ define(['../../module','./managerRulesetCtrl'], function (controllers, Ruleset) 
         window.localStorage.setItem('ruleset', JSON.stringify(this.filters))
         this.state.go('mg-rules')
       } catch(err) {
-        super.toast(err.message || err)
+        this.toast(err.message || err)
       }
     }
     
