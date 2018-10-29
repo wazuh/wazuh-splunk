@@ -24,9 +24,8 @@
       </button>
 
       <div layout="column" class="height-40 wz-select-input wz-margin-right-8">
-        <select flex class="kuiSelect wz-border-none cursor-pointer" ng-model="typeFilter" ng-change="onlyParents(typeFilter)"
-          aria-label="Filter by type" ng-init="typeFilter=all">
-          <option selected value="all">All decoders</option>
+        <select flex class="kuiSelect wz-border-none cursor-pointer" ng-model="typeFilter" aria-label="Filter by type" ng-init="typeFilter='all'" ng-change="onlyParents(typeFilter)">
+          <option value="all">All decoders</option>
           <option value="parents">Parent decoders</option>
         </select>
       </div>
