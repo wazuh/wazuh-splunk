@@ -44,7 +44,7 @@
         <div ng-if="configurationTab !== 'welcome'">
           <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
           <span> / </span>
-          <span>{{ configurationTab }}</span>
+          <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
         </div>
         <div flex></div>
       </div>
