@@ -4,8 +4,6 @@ define(['../../module'], function (controllers) {
 
   class Ruleset {
     constructor($scope, $sce, $notificationService, view) {
-      console.log(' constructor ruleset class')
-
       this.scope = $scope
       this.view = view
       this.toast = $notificationService.showSimpleToast
@@ -31,7 +29,7 @@ define(['../../module'], function (controllers) {
      * On controller load
      */
     initialize() {
-      console.log('DELETING ALL FILTERS');
+      //this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
       (window.localStorage.decoders) ? delete window.localStorage.ruleset : delete window.localStorage.decoders
       this.scope.search = (term) => this.search(term)
       this.scope.includesFilter = (filterName) => this.includesFilter(filterName)
@@ -44,7 +42,7 @@ define(['../../module'], function (controllers) {
       } else {
         this.scope.colorRegex = (regex) => this.colorRegex(regex)
       }
-      this.scope.colorOrder = (order) => this.colorOrder(regex)
+      this.scope.colorOrder = (order) => this.colorOrder(order)
     }
 
     colorRegex(regex) {
@@ -86,26 +84,26 @@ define(['../../module'], function (controllers) {
     * @param {String} term 
     */
     search(term) {
-      console.log('search ',term)
-      if (term && term.startsWith('group:') && term.split('group:')[1].trim()) {
+      if(!term) term = ''
+      if (this.view === 'ruleset' && term && term.startsWith('group:') && term.split('group:')[1].trim()) {
         this.scope.customSearch = ''
         const filter = { name: 'group', value: term.split('group:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(item => item.name !== 'group')
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
-      } else if (term && term.startsWith('level:') && term.split('level:')[1].trim()) {
+      } else if (this.view === 'ruleset' && term && term.startsWith('level:') && term.split('level:')[1].trim()) {
         this.scope.customSearch = ''
         const filter = { name: 'level', value: term.split('level:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(item => item.name !== 'level')
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
-      } else if (term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
+      } else if (this.view === 'ruleset' && term && term.startsWith('pci:') && term.split('pci:')[1].trim()) {
         this.scope.customSearch = ''
         const filter = { name: 'pci', value: term.split('pci:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(item => item.name !== 'pci')
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
-      } else if (term && term.startsWith('gdpr:') && term.split('gdpr:')[1].trim()) {
+      } else if (this.view === 'ruleset' && term && term.startsWith('gdpr:') && term.split('gdpr:')[1].trim()) {
         this.scope.customSearch = ''
         const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(item => item.name !== 'gdpr')
@@ -124,7 +122,7 @@ define(['../../module'], function (controllers) {
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
       } else {
-        this.scope.$broadcast('wazuhSearch', { term, removeFilters: 0 })
+        this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
       }
       return
     }
