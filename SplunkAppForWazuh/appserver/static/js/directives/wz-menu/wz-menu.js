@@ -24,8 +24,8 @@ define(['../module'], function (directives) {
         
         const update = () => {
           $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
-          $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName
-          $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
+          $scope.currentAPI = (!$currentDataService.getApi()) ? '-' : $currentDataService.getApi().managerName
+          $scope.theresAPI = ($scope.currentAPI === '-') ? false : true
           if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview')) {
             $scope.menuNavItem = 'overview'
             if (!$scope.$$phase) $scope.$digest()

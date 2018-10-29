@@ -128,7 +128,7 @@
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'"
-          ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
+          ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Configuration to ensure compliance with security policies, standards and hardening guides'"></wz-welcome-card>
           <wz-welcome-card  class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
           title="'System auditing'" ui-sref='ag-audit({id:aoc.agent.id})' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
@@ -150,7 +150,7 @@
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'" title="'Vulnerabilities'"
-            ui-sref='ag-vul({id:aoc.agent.id})' current-tab="'vuls'" description="'Discover what applications in your environment are affected by well-known vulnerabilities.'"></wz-welcome-card>
+            ui-sref='ag-vul({id:aoc.agent.id})' current-tab="'vuls'" description="'Discover what applications are affected by well-known vulnerabilities'"></wz-welcome-card>
             <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
             title="'Virustotal'" switch-tab="switchTab('virustotal')" current-tab="'virustotal'" description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.png'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
