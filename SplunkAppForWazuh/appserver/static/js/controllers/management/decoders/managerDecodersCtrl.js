@@ -1,47 +1,55 @@
-define(['../../module'], function (controllers) {
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
   'use strict'
 
-  controllers.controller('managerDecodersCtrl', function ($scope, $sce, $stateParams) {
-    const vm = this
-
-    vm.appliedFilters = []
-    //Initialization
-    vm.searchTerm = ''
-    vm.viewingDetail = false
-    vm.typeFilter = "all"
-    vm.isArray = angular.isArray
-    let filter = window.localStorage.decoders || []
-
-
-    // Reloading event listener
-    $scope.$on('decodersIsReloaded', () => {
-      vm.viewingDetail = false
-      if (!$scope.$$phase) $scope.$digest()
-    })
-
-    vm.onlyParents = typeFilter => {
-      vm.appliedFilters = []
-      if (window.localStorage.decoders)
-        delete window.localStorage.decoders
-      if (typeFilter === 'all') $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
-      else $scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders/parents' })
+  class Decoders extends Ruleset {
+    constructor($scope, $sce, $notificationService) {
+      super($scope, $sce, $notificationService, 'decoders')
+      this.scope = $scope
     }
 
-    $scope.$on('wazuhShowDecoder', (event, parameters) => {
-      vm.currentDecoder = parameters.decoder
-      vm.viewingDetail = true
-      if (!$scope.$$phase) $scope.$digest()
-    })
+    /**
+     * On controller load
+     */
+    $onInit() {
+      // Reloading event listener
+      this.scope.$on('decodersIsReloaded', () => {
+        this.scope.viewingDetail = false
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
-    $scope.$on('loadedTable', () => {
-      if (window.localStorage.decoders && JSON.parse(window.localStorage.decoders).length > 0) {
-        const jsonFilters = JSON.parse(window.localStorage.decoders)
-        vm.appliedFilters = jsonFilters
-        if (filter.length > 0)
-          $scope.$broadcast('wazuhFilter', { filter: JSON.parse(filter) })
-      }
-    })
+      this.scope.onlyParents = (typeFilter) => this.onlyParents(typeFilter)
 
-  })
+      this.scope.$on('wazuhShowDecoder', (event, parameters) => {
+        this.scope.currentDecoder = parameters.decoder
+        this.scope.viewingDetail = true
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+
+      this.scope.$on('loadedTable', () => {
+        try {
+          console.log('loaded table decoders')
+          if (window.localStorage.decoders) {
+            const parsedFilter = JSON.parse(window.localStorage.decoders)
+            this.scope.appliedFilters = parsedFilter
+            if (this.filter.length > 0)
+              this.scope.$broadcast('wazuhFilter', { filter: this.filter })
+          }
+        } catch (err) {
+          console.error('err ',err)
+          this.toast('Error applying filter')
+        }
+      })
+    }
+
+    onlyParents(typeFilter) {
+      this.scope.appliedFilters = []
+      if (window.localStorage.decoders)
+        delete window.localStorage.decoders
+      if (typeFilter === 'all') this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
+      else this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders/parents' })
+    }
+  }
+  controllers.controller('managerDecodersCtrl', Decoders)
+  return Decoders
 })
