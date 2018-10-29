@@ -13,6 +13,9 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      */
     $onInit() {
       // Reloading event listener
+      console.log('decoders, deleting filter in table')
+
+      this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
       this.scope.$on('decodersIsReloaded', () => {
         this.scope.viewingDetail = false
         if (!this.scope.$$phase) this.scope.$digest()
@@ -44,8 +47,10 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     onlyParents(typeFilter) {
       this.scope.appliedFilters = []
-      if (window.localStorage.decoders)
+      if (window.localStorage.decoders){
+        console.log('deleting filters')
         delete window.localStorage.decoders
+      }
       if (typeFilter === 'all') this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
       else this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders/parents' })
     }

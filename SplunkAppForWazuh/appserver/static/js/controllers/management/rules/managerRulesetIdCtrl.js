@@ -4,8 +4,7 @@ define(['../../module','./ruleset'], function (controllers, Ruleset) {
   
   class RulesetId extends Ruleset {
     constructor($scope, $sce, $notificationService, $state, ruleInfo) {
-      super($scope,$sce,$notificationService)
-      //this.scope = $scope
+      super($scope,$sce,$notificationService,'ruleset')
       this.state = $state
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
@@ -15,11 +14,16 @@ define(['../../module','./ruleset'], function (controllers, Ruleset) {
     }
     
     $onInit(){
-      console.log('ON INIT')
+      console.log('ON INIT rulesetidctrl')
       //this.scope.colorRuleArg = (ruleArg) => super.colorRuleArg(ruleArg)
       this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
     }
     
+    /**
+    * Adds a filter
+    * @param {String} name 
+    * @param {String} value 
+    */
     addDetailFilter (name, value) {
       try{
         const filter = { name: name, value: value }

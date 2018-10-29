@@ -5,13 +5,15 @@ define(['../../module','./ruleset'], function (controllers,Ruleset) {
   class Rules extends Ruleset{
     constructor($scope, $sce, $notificationService) {
      super($scope,$sce,$notificationService,'ruleset')
-     this.scope = $scope
     }
     
     /**
      * On controller load
      */
     $onInit() {
+      console.log('ruleset, deleting filter in table')
+      this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
+
       this.scope.$on('loadedTable', () => {
         try{
           if (window.localStorage.ruleset) {

@@ -4,22 +4,25 @@ define(['../../module','../rules/ruleset'], function (controllers, Ruleset) {
   
   class DecodersId extends Ruleset {
     constructor($scope, $sce, $notificationService, $state, currentDecoder) {
-      super($scope,$sce,$notificationService)
-      //this.scope = $scope
+      super($scope,$sce,$notificationService,'decoders')
       this.state = $state
       try {
-        this.filters = JSON.parse(window.localStorage.ruleset) || []
+        this.filters = JSON.parse(window.localStorage.decoders) || []
       } catch(err){ this.filters = [] }
       
       this.scope.currentDecoder = currentDecoder.data.data.items[0]
     }
     
     $onInit(){
-      console.log('ON INIT')
-      //this.scope.colorRuleArg = (ruleArg) => super.colorRuleArg(ruleArg)
+      console.log('ON INIT decoders id ctrl')
       this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
     }
     
+    /**
+    * Adds a filter
+    * @param {String} name 
+    * @param {String} value 
+    */
     addDetailFilter (name, value) {
       try{
         const filter = { name: name, value: value }

@@ -29,8 +29,7 @@ define(['../../module'], function (controllers) {
      * On controller load
      */
     initialize() {
-      //this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
-      (window.localStorage.decoders) ? delete window.localStorage.ruleset : delete window.localStorage.decoders
+      (this.view === 'decoders') ? delete window.localStorage.ruleset : delete window.localStorage.decoders
       this.scope.search = (term) => this.search(term)
       this.scope.includesFilter = (filterName) => this.includesFilter(filterName)
       this.scope.getFilter = (filterName) => this.getFilter(filterName)
