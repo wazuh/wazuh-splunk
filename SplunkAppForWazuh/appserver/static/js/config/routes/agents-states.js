@@ -257,7 +257,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/policy-monitoring/agents-pm.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pm') },
         controller: 'agentsPolicyMonitoringCtrl',
-        controllerAs: 'apm',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
@@ -277,7 +276,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/pcidss/agents-pci.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-pci') },
         controller: 'agentsPciCtrl',
-        controllerAs: 'apd',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
