@@ -31,7 +31,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/overview/overview.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('agent-overview') },
         controller: 'agentsOverviewCtrl',
-        controllerAs: 'aoc',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {

@@ -14,19 +14,18 @@ define(['../../module'], function (app) {
   
   'use strict'
   
-  app.controller('agentsOverviewCtrl', function ($stateParams, $requestService, $state, $notificationService ,agent) {
-    const vm = this
+  app.controller('agentsOverviewCtrl', function ($stateParams, $scope, $requestService, $state, $notificationService ,agent) {
     try {
-      vm.agent = agent[0].data.data
-      vm.agentOS = `${vm.agent.os.name || '-'} ${vm.agent.os.codename || '-'} ${vm.agent.os.version || '-'}`
-      vm.syscheck = agent[1].data.data
-      vm.id = $stateParams.id
-      vm.rootcheck = agent[2].data.data
+      $scope.agent = agent[0].data.data
+      $scope.agentOS = `${$scope.agent.os.name || '-'} ${$scope.agent.os.codename || '-'} ${$scope.agent.os.version || '-'}`
+      $scope.syscheck = agent[1].data.data
+      $scope.id = $stateParams.id
+      $scope.rootcheck = agent[2].data.data
     } catch (err) {
       $state.go('agents')
     }
     
-    vm.goGroups = async (group) => {
+    $scope.goGroups = async (group) => {
       try {
         const groupInfo = await $requestService.apiReq(`/agents/groups/`)
         const groupData = groupInfo.data.data.items.filter( item => item.name === group)
@@ -39,9 +38,9 @@ define(['../../module'], function (app) {
       }
     }
     
-    vm.formatAgentStatus = agentStatus => {
+    $scope.formatAgentStatus = agentStatus => {
       return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
     }
-    vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+    $scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
   })
 })
