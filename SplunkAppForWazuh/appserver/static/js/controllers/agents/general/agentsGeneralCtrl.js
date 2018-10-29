@@ -27,6 +27,7 @@ define([
       
       const agentInfo = {
         name: agent[0].data.data.name,
+        id: agent[0].data.data.id,
         status: agent[0].data.data.status,
         ip: agent[0].data.data.ip,
         version: agent[0].data.data.version,
