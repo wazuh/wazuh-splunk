@@ -186,7 +186,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/scap/agents-openscap.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-os') },
         controller: 'agentsOpenScapCtrl',
-        controllerAs: 'aos',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
