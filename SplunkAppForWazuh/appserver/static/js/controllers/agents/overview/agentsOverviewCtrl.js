@@ -10,11 +10,11 @@
 * Find more information about this on the LICENSE file.
 */
 
-define(['../../module'], function (controllers) {
+define(['../../module'], function (app) {
   
   'use strict'
   
-  controllers.controller('agentsOverviewCtrl', function ($stateParams, $requestService, $state, $notificationService ,agent) {
+  app.controller('agentsOverviewCtrl', function ($stateParams, $requestService, $state, $notificationService ,agent) {
     const vm = this
     try {
       vm.agent = agent[0].data.data

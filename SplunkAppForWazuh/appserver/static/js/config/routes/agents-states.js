@@ -294,7 +294,6 @@ define(['../module'], function (module) {
         templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/vulnerabilities/agents-vulnerabilities.html',
         onEnter: ($navigationService) => { $navigationService.storeRoute('ag-vul') },
         controller: 'agentsVulnerabilitiesCtrl',
-        controllerAs: 'avu',
         params: { id: null },
         resolve: {
           agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
