@@ -13,7 +13,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/monitoring/monitoring.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-monitoring') },
       controller: 'monitoringCtrl',
-      controllerAs: 'mmt',
       params: { id: null, filters: null },
       resolve: {
         monitoringInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {

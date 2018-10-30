@@ -37,6 +37,27 @@ define([
         }, { tokens: true, tokenNamespace: "submitted" })
         this.element = element
       }
+
+      changeSearch(newSearch){
+        mvc.Components.revokeInstance(`${this.id}Search`)
+        this.search = null
+        this.search = new SearchManager({
+          "id": `${this.id}Search`,
+          "earliest_time": "$when.earliest$",
+          "latest_time": "$when.latest$",
+          "status_buckets": 0,
+          "sample_ratio": null,
+          "cancelOnUnload": true,
+          "search": `${newSearch}`,
+          "app": utils.getCurrentApp(),
+          "auto_cancel": 90,
+          "preview": true,
+          "tokenDependencies": {
+          },
+          "runWhenTimeIsUndefined": false
+        }, { tokens: true, tokenNamespace: "submitted" })
+        this.search.startSearch()
+      }
       
       /**
       * Obtains the search of this viz
