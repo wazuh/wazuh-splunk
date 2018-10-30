@@ -24,7 +24,6 @@ define([
       if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
       const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-      const timePickerInstance = timePicker.get()
       const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       
       $scope.agent = agent.data.data
