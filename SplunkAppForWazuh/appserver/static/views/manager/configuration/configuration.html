@@ -44,7 +44,7 @@
         <div ng-if="configurationTab !== 'welcome'">
           <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
           <span> / </span>
-          <span>{{ configurationTab }}</span>
+          <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
         </div>
         <div flex></div>
       </div>
@@ -71,7 +71,6 @@
       </div> 
       <span class="font-size-18" ng-show="!agent || agent.id === '000'">
         <i class="fa fa-fw fa-cog" aria-hidden="true"></i> Configuration</span>
-        <span class="md-subheader">Check your Wazuh cluster configuration</span>
       </div>
       <!-- End headline -->
       
@@ -92,19 +91,19 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">Global configuration</h3>
-                    <p>Global and remote settings that apply to the whole Wazuh cluster</p>
+                    <p>Global and remote settings</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">Cluster</h3>
-                    <p>Availability and scalability enhancement of the Wazuh service</p>
+                    <p>Master node configuration</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">Registration service</h3>
-                    <p>Automatic agent registration using the <span class="wz-text-monospace">ossec-authd</span> binary</p>
+                    <p>Automatic agent registration using service</p>
                   </div>
                 </md-list-item>
                 <!-- <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
@@ -124,7 +123,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('client', [{component:'agent',configuration:'client'}])">Client configuration</h3>
-                    <p>Configure the connection with the manager</p>
+                    <p>Settings related to the connection with the manager</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
@@ -132,6 +131,12 @@
                     <h3 class="wz-text-link" ng-click="switchConfigTab('client-buffer', [{component:'agent',configuration:'buffer'}])">Anti-flooding settings</h3>
                     <p>Agent bucket parameters to avoid event flooding</p>
                   </div>
+                </md-list-item>
+                <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
+                    <div class="md-list-item-text">
+                        <h3 class="wz-text-link" ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">Labels</h3>
+                        <p>User-defined information about the agent included in alerts</p>
+                    </div>
                 </md-list-item>
                 <!-- End agent sections -->
               </md-list>
@@ -141,22 +146,15 @@
           <!-- End main configurations card -->
           
           <!-- Alerts and output management card -->
-          <md-card class="wz-md-card">
+          <md-card class="wz-md-card" ng-if="!agent || agent.id === '000'">
             <md-card-content>
-              <span class="font-size-16">Alerts and output management</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              
+                <span class="font-size-16" ng-if="!agent || agent.id === '000'">Alerts and output management</span>
+                <md-divider class="wz-margin-top-10"></md-divider>
               <md-list layout="row" layout-wrap>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">Alerts</h3>
-                    <p>Configure everything related to the alerts and their format</p>
-                  </div>
-                </md-list-item>
-                <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
-                  <div class="md-list-item-text">
-                    <h3 class="wz-text-link" ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">Alerts</h3>
-                    <p>Configure everything related to the alerts and their format</p>
+                    <p>Settings related to the alerts and their format</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
@@ -187,7 +185,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}])">Policy monitoring</h3>
-                    <p>Verify that your systems are configured according to your security policies baseline</p>
+                    <p>Configuration to ensure compliance with security policies, standards and hardening guides</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
@@ -218,7 +216,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchWodle('vulnerability-detector')">Vulnerabilities</h3>
-                    <p>Discover what applications in your environment are affected by well-known vulnerabilities</p>
+                    <p>Discover what applications are affected by well-known vulnerabilities</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
@@ -230,7 +228,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchWodle('syscollector')">Inventory data</h3>
-                    <p>Gather relevant information about your system OS, hardware and packages.</p>
+                    <p>Gather relevant information about system OS, hardware and packages.</p>
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
@@ -241,13 +239,13 @@
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
                   <div class="md-list-item-text">
-                      <h3 class="wz-text-link" ng-click="switchConfigTab('active-response',[{component:'com',configuration:'active-response'}])">Active response</h3>
-                      <p>Active threat addressing by inmmediate response</p>
+                    <h3 class="wz-text-link" ng-click="switchConfigTab('active-response',[{component:'com',configuration:'active-response'}])">Active response</h3>
+                    <p>Active threat addressing by inmmediate response</p>
                   </div>
-              </md-list-item>
+                </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
-                    <h3 class="wz-text-link" ng-click="switchWodle('command')">Wazuh commands</h3>
+                    <h3 class="wz-text-link" ng-click="switchWodle('command')">Commands</h3>
                     <p>Configuration options of the Command wodle</p>
                   </div>
                 </md-list-item>
@@ -298,7 +296,7 @@
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
                   <div class="md-list-item-text">
                     <h3 class="wz-text-link" ng-click="switchWodle('aws-s3')">Amazon S3</h3>
-                    <p>Security events related to your Amazon AWS services, collected directly via AWS API</p>
+                    <p>Security events related to Amazon AWS services, collected directly via AWS API</p>
                   </div>
                 </md-list-item>
               </md-list>
@@ -327,7 +325,7 @@
     <!-- End configuration section cards and right sidenav -->
     
   </div>
-
+  
   <div flex="auto" layout="column" ng-if="configurationTab === 'global-configuration'" ng-init="switchConfigurationSubTab('global')">
     
     <!-- Headline -->
@@ -335,7 +333,7 @@
       <div>
         <span class="font-size-18">Global configuration</span>
       </div>
-      <span class="md-subheader">Global and remote settings that apply to the whole Wazuh cluster</span>
+      <span class="md-subheader">Global and remote settings</span>
     </div>
     <!-- End headline -->
     
@@ -416,7 +414,7 @@
     value="currentConfig['analysis-global'].global.custom_alert_output">
   </wz-config-item>
   <wz-config-item
-  label="Write Wazuh internal logs in plain text"
+  label="Write internal logs in plain text"
   value="currentConfig['com-logging'].logging.plain">
 </wz-config-item>
 <wz-config-item
@@ -520,9 +518,6 @@ value="currentConfig['analysis-global'].global.geoip_db_path">
 
 <div ng-if="!agent || agent.id === '000'" class="wz-margin-top-10">
   <span class="font-size-16">Prelude and ZeroMQ output</span>
-  <div class="wz-margin-top-10">
-    <span class="md-subheader small">Configure custom Prelude or ZeroMQ outputs</span>
-  </div>
 </div>
 <md-divider ng-if="!agent || agent.id === '000'" class="wz-margin-top-10"></md-divider>
 
@@ -670,18 +665,18 @@ md-is-locked-open="true">
                 <td>{{ item.connection || '---' }}</td>
                 <td>{{ item.port || '---' }}</td>
                 <td>{{ item.protocol || 'udp' }}</td>
-                <td>{{ item.ipv6 || 'n/a' }}</td>
+                <td>{{ item.ipv6 || '-' }}</td>
                 <td>
                   <ul ng-if="item['allowed-ips']">
                     <li ng-repeat="ip in item['allowed-ips']">{{ ip }}</li>
                   </ul>
-                  <span ng-if="!item['allowed-ips']">n/a</span>
+                  <span ng-if="!item['allowed-ips']">-</span>
                 </td>
                 <td>
                   <ul ng-if="item['denied-ips']">
                     <li ng-repeat="ip in item['denied-ips']">{{ ip }}</li>
                   </ul>
-                  <span ng-if="!item['denied-ips']">n/a</span>
+                  <span ng-if="!item['denied-ips']">-</span>
                 </td>
                 <td>{{ item.local_ip || 'All interfaces' }}</td>
                 <td>{{ item.queue_size || '16384' }}</td>
@@ -774,7 +769,6 @@ md-is-locked-open="true">
       <span ng-if="currentConfig['com-cluster'] && currentConfig['com-cluster'].disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="currentConfig['com-cluster'] && isString(currentConfig['com-cluster'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Availability and scalability enhancement of the Wazuh service</span>
   </div>
   <!-- End headline -->
   
@@ -801,10 +795,7 @@ md-is-locked-open="true">
         <md-card-content>
           <div layout="row" layout-align="start center">
             <div>
-              <span class="font-size-16">All settings</span>
-              <div class="wz-margin-top-10">
-                <span class="md-subheader small">These settings apply to the whole Wazuh cluster</span>
-              </div>
+              <span class="font-size-16">Master node settings</span>
             </div>
             <span flex></span>
             <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
@@ -937,7 +928,7 @@ md-is-locked-open="true">
       <span ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && currentConfig['auth-auth'].auth.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Automatic agent registration using the <span class="wz-text-monospace">ossec-authd</span> binary</span>
+    <span class="md-subheader">Automatic agent registration service</span>
   </div>
   <!-- End headline -->
   
@@ -1126,9 +1117,12 @@ md-is-locked-open="true">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
-      <span class="font-size-18">Alerts</span>
+      <!-- <span class="font-size-18">Alerts</span> -->
+      <span ng-if="!agent || agent.id === '000'" class="font-size-18">Alerts</span>
+      <span ng-if="agent && agent.id !== '000'" class="font-size-18">Labels</span>
     </div>
-    <span class="md-subheader">Configure everything related to the alerts and their format</span>
+    <span ng-if="!agent || agent.id === '000'" class="md-subheader">Settings related to the alerts and their format</span>
+    <span ng-if="agent && agent.id !== '000'" class="md-subheader">User-defined information about the agent included in alerts</span>
   </div>
   <!-- End headline -->
   
@@ -1460,9 +1454,6 @@ md-is-locked-open="true">
         <div layout="row" layout-align="start center">
           <div>
             <span class="font-size-16">Defined labels</span>
-            <div class="wz-margin-top-10">
-              <span class="md-subheader small">Enrich your alerts with useful information</span>
-            </div>
           </div>
           <span flex></span>
           <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
@@ -1586,7 +1577,7 @@ md-is-locked-open="true">
           <div>
             <span class="font-size-16">Main settings</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Customize daily reports about your alerts</span>
+              <span class="md-subheader small">Daily reports about alerts</span>
             </div>
           </div>
           <span flex></span>
@@ -1785,14 +1776,14 @@ md-is-locked-open="true">
             </thead>
             <tbody class="wz-word-wrap">
               <tr ng-repeat="item in currentConfig['csyslog-csyslog'].syslog_output">
-                <td>{{ item.server || 'n/a' }}</td>
-                <td>{{ item.port || '514' }}</td>
+                <td>{{ item.server }}</td>
+                <td>{{ item.port }}</td>
                 <td>{{ item.level }}</td>
                 <td>{{ item.format || 'default' }}</td>
                 <td>{{ item.use_fqdn || 'no' }}</td>
-                <td>{{ item.rule_id || 'n/a' }}</td>
-                <td>{{ item.group || 'n/a' }}</td>
-                <td>{{ item.location || 'n/a' }}</td>
+                <td>{{ item.rule_id }}</td>
+                <td>{{ item.group }}</td>
+                <td>{{ item.location }}</td>
               </tr>
             </tbody>
           </table>
@@ -1950,7 +1941,7 @@ md-is-locked-open="true">
 <div class="wz-margin-top-10" ng-if="integrations['slack']">
   <span class="font-size-16">Slack</span>
   <div class="wz-margin-top-10">
-    <span class="md-subheader small">Get alerts from your Wazuh server directly on your Slack workspace</span>
+    <span class="md-subheader small">Get alerts directly on Slack</span>
   </div>
 </div>
 <md-divider class="wz-margin-top-10" ng-if="integrations['slack']"></md-divider>
@@ -2118,7 +2109,7 @@ md-is-locked-open="true">
       (currentConfig['syscheck-rootcheck']
       && isString(currentConfig['syscheck-rootcheck']))" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Verify that your systems are configured according to your security policies baseline</span>
+    <span class="md-subheader">Configuration to ensure compliance with security policies, standards and hardening guides</span>
   </div>
   <!-- End headline -->
   
@@ -2470,7 +2461,7 @@ md-is-locked-open="true">
                   <ul>
                     <li ng-repeat="profile in item.profile">{{profile}}</li>
                   </ul>
-                  <span ng-if="!item.profile">n/a</span>
+                  <span ng-if="!item.profile">-</span>
                 </td>
                 <td>{{ item.type }}</td>
                 <td>{{ item.timeout }}</td>
@@ -2852,7 +2843,7 @@ md-is-locked-open="true">
       <span ng-if="currentConfig && currentConfig['vulnerability-detector'] && currentConfig['vulnerability-detector'].disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="(currentConfig && currentConfig['vulnerability-detector'] && currentConfig['vulnerability-detector'].disabled === 'yes') || (currentConfig && !currentConfig['vulnerability-detector'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Discover what applications in your environment are affected by well-known vulnerabilities</span>
+    <span class="md-subheader">Discover what applications are affected by well-known vulnerabilities</span>
   </div>
   <!-- End headline -->
   
@@ -3255,7 +3246,7 @@ md-is-locked-open="true">
       <span ng-if="currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
       <span ng-if="(currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'yes') || (currentConfig && !currentConfig.syscollector)" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Gather relevant information about your system OS, hardware and packages.</span>
+    <span class="md-subheader">Gather relevant information about system OS, hardware and packages.</span>
   </div>
   <!-- End headline -->
   
@@ -4056,7 +4047,7 @@ md-is-locked-open="true">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
-      <span class="font-size-18">Wazuh commands</span>
+      <span class="font-size-18">Commands</span>
     </div>
     <span class="md-subheader">Configuration options of the Command wodle</span>
   </div>
@@ -4089,7 +4080,7 @@ md-is-locked-open="true">
         <md-card-content flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
-              <span class="font-size-16">Wazuh command definitions</span>
+              <span class="font-size-16">Command definitions</span>
               <div class="wz-margin-top-10">
                 <span class="md-subheader small">Find here all the currently defined commands</span>
               </div>
@@ -4318,41 +4309,41 @@ md-is-locked-open="true">
             
             <div flex="auto" class="wz-item-detail">
               <wz-config-item
-              label="Log location"
-              value="currentConfig['logcollector-localfile'].localfile[selectedItem].file || 'n/a'">
+              label="Log format"
+              value="currentConfig['logcollector-localfile'].localfile[selectedItem].logformat">
             </wz-config-item>
             <wz-config-item
-            label="Run this command"
-            value="currentConfig['logcollector-localfile'].localfile[selectedItem].command || 'n/a'">
+            label="Log location"
+            value="currentConfig['logcollector-localfile'].localfile[selectedItem].file || '-'">
           </wz-config-item>
           <wz-config-item
-          label="Command alias"
-          value="currentConfig['logcollector-localfile'].localfile[selectedItem].alias || 'n/a'">
+          label="Run this command"
+          value="currentConfig['logcollector-localfile'].localfile[selectedItem].command || '-'">
         </wz-config-item>
         <wz-config-item
-        label="Interval between command executions"
-        value="currentConfig['logcollector-localfile'].localfile[selectedItem].frequency || 'n/a'">
+        label="Command alias"
+        value="currentConfig['logcollector-localfile'].localfile[selectedItem].alias || '-'">
       </wz-config-item>
       <wz-config-item
-      label="Only receive logs occured after start"
-      value="currentConfig['logcollector-localfile'].localfile[selectedItem]['only-future-events'] || 'n/a'">
+      label="Interval between command executions"
+      value="currentConfig['logcollector-localfile'].localfile[selectedItem].frequency || '-'">
     </wz-config-item>
     <wz-config-item
-    label="Filter logs using this XPATH query"
-    value="currentConfig['logcollector-localfile'].localfile[selectedItem].query || 'n/a'">
+    label="Only receive logs occured after start"
+    value="currentConfig['logcollector-localfile'].localfile[selectedItem]['only-future-events'] || '-'">
   </wz-config-item>
   <wz-config-item
-  label="Log labels"
-  value="currentConfig['logcollector-localfile'].localfile[selectedItem].labels || 'n/a'">
+  label="Filter logs using this XPATH query"
+  value="currentConfig['logcollector-localfile'].localfile[selectedItem].query || '-'">
+</wz-config-item>
+<wz-config-item
+label="Log labels"
+value="currentConfig['logcollector-localfile'].localfile[selectedItem].labels || '-'">
 </wz-config-item>
 <wz-config-item
 is-array="true"
 label="Redirect output to this socket"
 value="currentConfig['logcollector-localfile'].localfile[selectedItem].target || 'agent'">
-</wz-config-item>
-<wz-config-item
-label="Log format"
-value="currentConfig['logcollector-localfile'].localfile[selectedItem].log_format || 'n/a'">
 </wz-config-item>
 <wz-config-item
 is-array="true"
@@ -4492,11 +4483,11 @@ md-is-locked-open="true">
             <div flex="auto" class="wz-item-detail">
               <wz-config-item
               label="Socket name"
-              value="currentConfig['logcollector-socket'].target[selectedItem].name || 'n/a'">
+              value="currentConfig['logcollector-socket'].target[selectedItem].name || '-'">
             </wz-config-item>
             <wz-config-item
             label="Socket location"
-            value="currentConfig['logcollector-socket'].target[selectedItem].location || 'n/a'">
+            value="currentConfig['logcollector-socket'].target[selectedItem].location || '-'">
           </wz-config-item>
           <wz-config-item
           label="UNIX socket protocol"
@@ -4504,7 +4495,7 @@ md-is-locked-open="true">
         </wz-config-item>
         <wz-config-item
         label="Prefix to place before the message"
-        value="currentConfig['logcollector-socket'].target[selectedItem].prefix || 'n/a'">
+        value="currentConfig['logcollector-socket'].target[selectedItem].prefix || '-'">
       </wz-config-item>
     </div>
     
@@ -4680,11 +4671,11 @@ md-is-locked-open="true">
       </wz-config-item>
       <wz-config-item
       label="Time of day to run integrity scans"
-      value="currentConfig['syscheck-syscheck'].syscheck.scan_time || 'n/a'">
+      value="currentConfig['syscheck-syscheck'].syscheck.scan_time || '-'">
     </wz-config-item>
     <wz-config-item
     label="Day of the week to run integrity scans"
-    value="currentConfig['syscheck-syscheck'].syscheck.scan_day || 'n/a'">
+    value="currentConfig['syscheck-syscheck'].syscheck.scan_day || '-'">
   </wz-config-item>
   <wz-config-item
   ng-if="!agent || agent.id === '000'"
@@ -4717,7 +4708,7 @@ value="currentConfig['syscheck-syscheck'].syscheck.windows_audit_interval || '30
 </wz-config-item>
 <wz-config-item
 label="Command to prevent prelinking"
-value="currentConfig['syscheck-syscheck'].syscheck.prefilter_cmd || 'n/a'">
+value="currentConfig['syscheck-syscheck'].syscheck.prefilter_cmd || '-'">
 </wz-config-item>
 
 </div>
@@ -5125,7 +5116,7 @@ md-is-locked-open="true">
             <div>
               <span class="font-size-16">Devices list</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">List of monitored devices that don't use the Wazuh agent component</span>
+                <span class="md-subheader small">List of monitored devices that don't use the agent component</span>
               </div>
             </div>
             <span flex></span>
@@ -5263,7 +5254,7 @@ md-is-locked-open="true">
       <span class="font-size-18">Amazon S3</span>
       <span class="wz-agent-status-indicator small teal">Enabled</span>
     </div>
-    <span class="md-subheader">Security events related to your Amazon AWS services, collected directly via AWS API</span>
+    <span class="md-subheader">Security events related to Amazon AWS services, collected directly via AWS API</span>
   </div>
   <!-- End headline -->
   
@@ -5373,6 +5364,10 @@ label="Parse only logs from this date onwards"
 value="currentConfig['aws-s3'].buckets[selectedItem].only_logs_after">
 </wz-config-item>
 <wz-config-item
+label="Remove bucket logs after being read"
+value="currentConfig['aws-s3'].buckets[selectedItem].remove_from_bucket || 'yes'">
+</wz-config-item>
+<wz-config-item
 label="Limit log parsing to these regions"
 value="currentConfig['aws-s3'].buckets[selectedItem].regions">
 </wz-config-item>
@@ -5421,7 +5416,7 @@ value="currentConfig['aws-s3'].buckets[selectedItem].regions">
 </wz-config-item>
 <wz-config-item
 label="Remove bucket logs after being read"
-value="'n/a'">
+value="currentConfig['aws-s3'].remove_from_bucket || 'yes'">
 </wz-config-item>
 <wz-config-item
 label="Skip logs that can't be processed"
@@ -5515,7 +5510,7 @@ md-is-locked-open="true">
     <div>
       <span class="font-size-18">Client configuration</span>
     </div>
-    <span class="md-subheader">Configure the connection with the manager</span>
+    <span class="md-subheader">Settings related to the connection with the manager</span>
   </div>
   <!-- End headline -->
   
@@ -5575,11 +5570,12 @@ md-is-locked-open="true">
     </wz-config-item>
     <wz-config-item
     label="Configuration profiles"
-    value="currentConfig['agent-client'].client['config-profile'] || 'n/a'">
+    value="currentConfig['agent-client'].client['config-profile'] || '-'">
   </wz-config-item>
   <wz-config-item
-  label="IP address used to communicate with the manager"
-  value="currentConfig['agent-client'].client.local_ip || 'n/a'">
+  ng-if="currentConfig['agent-client'].client.local_ip"
+  label="IP address used when the agent has multiple network interfaces"
+  value="currentConfig['agent-client'].client.local_ip">
 </wz-config-item>
 
 </div>
@@ -5731,7 +5727,7 @@ md-is-locked-open="true">
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">These settings determine the event processing rate for your agent</span>
+                <span class="md-subheader small">These settings determine the event processing rate for the agent</span>
               </div>
             </div>
             <span flex></span>
