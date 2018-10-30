@@ -12,9 +12,9 @@ define([
       /**
       * Generates a new visualization
       * @param {Object} element 
-      * @param {String} id 
+      * @param {Function} handleValueChange 
       */
-      constructor(element) {
+      constructor(element, handleValueChange) {
         this.input = new TimeRangeInput({
           "id": `timePicker`,
           "default": { "latest_time": "now", "earliest_time": "-24h@h" },
@@ -23,6 +23,11 @@ define([
           "latest_time": "$form.when.latest$",
           "el": $(`${element}`)
         }, { tokens: true }).render()
+        this.handleValueChange = handleValueChange
+        this.input.on('change', (newValue) => {
+          if (newValue && this.input)
+          this.handleValueChange(this.input)
+        })
         
       }
       
@@ -38,6 +43,8 @@ define([
        */
       destroy(){
         mvc.Components.revokeInstance(`timePicker`)
+        this.input.off('change')
+        this.input = null
       }
     }
   })
