@@ -33,7 +33,6 @@ define([
         'dropDownInput'
         )
         const dropdownInstance = dropdown.getElement()
-        const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         dropdownInstance.on("change", function(newValue){
           if (newValue && dropdownInstance)
           $urlTokenModel.handleValueChange(dropdownInstance)

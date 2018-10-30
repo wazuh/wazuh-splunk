@@ -1,33 +1,31 @@
 <md-content flex layout="column" layout-align="start">
-
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding>
     <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ui-sref='agent-overview({id:apd.agent.id})' class="wz-text-link cursor-pointer">{{apd.agent.name}} ({{apd.agent.id}})</span>
+      <span ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
       <span> / </span>
-      <span>PCI-DSS</span>
+      <span>GDPR</span>
     </div>
-    <div ng-if="apd.agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="apd.getAgentStatusClass(apd.agent.status)" aria-label="Agent status indicator">{{apd.formatAgentStatus(apd.agent.status)}}</span>
+    <div ng-if="agc.agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="agc.getAgentStatusClass(agc.agent.status)" aria-label="Agent status indicator">{{agc.formatAgentStatus(agc.agent.status)}}</span>
     </div>
     <div flex></div>
-    <div style="margin-right:7px;" id='input1'></div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+    <div style="margin-right:7px;" id='dropDownInput'></div>
   </div>
 
   <!-- Filter bar -->
 
   <wazuh-bar></wazuh-bar>
-  <!-- first row  -->
-
   <div layout="row" layout-align="center stretch">
-    <md-card flex class="wz-md-card" ng-show='apd.pciTabs'>
-      <md-tabs md-selected="apd.selectedPciIndex" class="wz-md-tab" md-border-bottom>
-        <md-tab ng-repeat="tab in apd.pciTabs" label="{{tab.rule}}">
+    <md-card flex class="wz-md-card" ng-show='gdprTabs'>
+      <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom>
+        <md-tab ng-repeat="tab in gdprTabs" label="{{tab.rule}}">
           <div class="md-padding">
-            <span class="wz-headline-title">PCI-DSS Requirement: {{tab.rule}}</span>
+            <span class="wz-headline-title">GDPR Requirement: {{tab.rule}}</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-padding-top-10 wz-line-height">
               <div>{{tab.description}}</div>
@@ -37,19 +35,20 @@
       </md-tabs>
     </md-card>
   </div>
+
   <div layout="row" layout-align="center stretch">
     <md-card flex="70" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">PCI Requirements</span>
+        <span class="wz-headline-title">GDPR Requirements</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='element1'></div>
+        <div id='gdprRequirementsVizz'></div>
       </md-card-content>
     </md-card>
     <md-card flex="30" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Groups</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='element2'></div>
+        <div id='groupsVizz'></div>
       </md-card-content>
     </md-card>
   </div>
@@ -59,14 +58,14 @@
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Agents</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='element3'></div>
+        <div id='agentsVizz'></div>
       </md-card-content>
     </md-card>
     <md-card flex="70" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Requirements by agent</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='element4'></div>
+        <div id='requirementsByAgentVizz'></div>
       </md-card-content>
     </md-card>
   </div>
@@ -76,7 +75,7 @@
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alerts summary</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='element5'></div>
+        <div id='alertsSummaryVizz'></div>
       </md-card-content>
     </md-card>
   </div>

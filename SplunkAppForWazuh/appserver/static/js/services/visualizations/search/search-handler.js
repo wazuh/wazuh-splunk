@@ -18,9 +18,11 @@ define([
       * @param {String} value 
       * @param {Object} bindedValue 
       * @param {UrlTokenModel} submittedTokenModel 
+      * @param {Scope} $scope
+      * @param {Boolean} loading
+      * @param {String} loadingBindedValue
       */
-      constructor(id, search,token, value, bindedValue, submittedTokenModel, $scope) {
-        
+      constructor(id, search, token, value, bindedValue, submittedTokenModel, $scope, loading=false, loadingBindedValue) {
         super(new SearchEventHandler({
           id: id,
           managerid: `${id}Search`,
@@ -33,9 +35,19 @@ define([
                 { 'type': 'set', 'token': token, 'value': value },
               ]
             }
-          ]
+          ],
         }), id, search)
+
+        this.loading = loading
+        this.loadingBindedValue = loadingBindedValue
+
+        this.getSearch().on('search:progress', () => {
+          if (this.loading) { $scope[this.loadingBindedValue] = true }
+        })
+
         this.getSearch().on('search:done', () => {
+          if (this.loading) { $scope[this.loadingBindedValue] = false }
+          this.loading = false
           const result = submittedTokenModel.get(token)
           if (result && result !== value && typeof result !== 'undefined' && result !== 'undefined') {
             $scope[bindedValue] = result
