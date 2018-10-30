@@ -1,0 +1,15 @@
+define([
+  './agents/agentsCtrl',
+  './audit/agentsAuditCtrl',
+  './configuration/agentConfigCtrl',
+  './fim/agentsFimCtrl',
+  './gdpr/agentsGdprCtrl',
+  './general/agentsGeneralCtrl',
+  './inventory/inventoryCtrl',
+  './osquery/osqueryCtrl',
+  './overview/agentsOverviewCtrl',
+  './pcidss/agentsPciCtrl',
+  './policy-monitoring/agentsPolicyMonitoringCtrl',
+  './scap/agentsOpenScapCtrl',
+  './vulnerabilities/agentsVulnerabilitiesCtrl'
+],function(){})
