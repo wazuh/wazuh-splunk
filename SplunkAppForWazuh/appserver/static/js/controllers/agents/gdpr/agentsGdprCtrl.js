@@ -19,13 +19,9 @@ define([
     app.controller('agentsGdprCtrl', function ($urlTokenModel, $currentDataService, $scope ,$state, agent) {
       if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
       const timePickerInstance = timePicker.get()
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
-      
+
       const dropdown = new Dropdown(
         'dropDownInput',
         `${filters} sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,

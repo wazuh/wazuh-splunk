@@ -16,13 +16,8 @@ define([
     
     app.controller('overviewGdprCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
-      
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+
       const dropdown = new Dropdown(
         'dropDownInput',
         `${filters} sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
@@ -30,12 +25,7 @@ define([
         '$form.gdpr$',
         'dropDownInput'
         )
-        const dropdownInstance = dropdown.getElement()
-        dropdownInstance.on("change", function(newValue){
-          if (newValue && dropdownInstance)
-          $urlTokenModel.handleValueChange(dropdownInstance)
-        })  
-        
+
         const launchSearches = () => {
           filters = $currentDataService.getSerializedFilters()
           $state.reload();

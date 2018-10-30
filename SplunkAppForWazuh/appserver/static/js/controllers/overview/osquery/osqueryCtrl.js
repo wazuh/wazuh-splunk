@@ -16,8 +16,7 @@ define([
     
     app.controller('osqueryCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, osquery) {
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
       $scope.osqueryWodle = false
       try {
         const wodles = osquery.data.data.wmodules
@@ -25,11 +24,7 @@ define([
       } catch (err) {
         $notificationService.showSimpleToast('Cannot load wodle configuration. Osquery is not configured.')
       }
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
-      
+
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();

@@ -18,14 +18,8 @@ define([
     
     app.controller('awsCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
-      
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
-      
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
         $state.reload();

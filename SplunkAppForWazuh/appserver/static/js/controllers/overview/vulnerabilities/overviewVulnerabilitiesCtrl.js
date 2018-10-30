@@ -22,13 +22,8 @@ define([
     
     app.controller('overviewVulnerabilitiesCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
       const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
 
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()

@@ -23,14 +23,9 @@ define([
     app.controller('agentsAuditCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, agent) {
       if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
       const timePickerInstance = timePicker.get()
       const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
       
       $scope.agent = agent.data.data
       

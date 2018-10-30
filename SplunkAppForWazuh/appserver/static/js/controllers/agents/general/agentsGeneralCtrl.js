@@ -18,13 +18,7 @@ define([
     app.controller('agentsGeneralCtrl', function ($urlTokenModel, $scope, $requestService, $notificationService, $stateParams, $currentDataService, agent, $state) {
       if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
-      
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
       
       const agentInfo = {
         name: agent[0].data.data.name,

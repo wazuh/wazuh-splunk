@@ -24,12 +24,7 @@ define([
     
     app.controller('overviewOpenScapCtrl', function ($urlTokenModel, $scope, $currentDataService, $state ) {
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
 
       const dropdown = new Dropdown(
         'dropDownInput',

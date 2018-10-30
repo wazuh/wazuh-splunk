@@ -23,13 +23,8 @@ define([
     app.controller('agentsOpenScapCtrl', function ($urlTokenModel, $scope, $currentDataService, agent) {
       if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
-      
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+
       $scope.agent = agent.data.data
       
       const dropdown = new Dropdown(

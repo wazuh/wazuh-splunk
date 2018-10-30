@@ -1,7 +1,3 @@
-<!-- Loading ring -->
-<div class='uil-ring-css' ng-show="loading">
-  <div></div>
-</div>
 <!-- End loading ring -->
 <div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
   <div layout="row" layout-align="space-between stretch">
@@ -40,8 +36,7 @@
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-padding-top-10">
           <p flex="35" class="manager-status-subtitle">Last registered agent</p>
-          <p ng-if="lastAgent.id !== '000'" class="wz-text-right" tooltip="Click to open this agent" tooltip-placement="right"
-            ng-click="showAgent(lastAgent)">{{lastAgent.name}}</p>
+          <p ng-if="lastAgent.id !== '000'" class="wz-text-right" tooltip="Click to open this agent" tooltip-placement="right" ng-click="showAgent(lastAgent)">{{lastAgent.name}}</p>
           <p ng-if="lastAgent.id === '000'" class="wz-text-right" tooltip-placement="right">{{lastAgent.name}} (manager)</p>
         </div>
         <div layout="row" class="wz-padding-top-10">
@@ -52,68 +47,62 @@
       </md-card-content>
     </md-card>
   </div>
-
+  
   <!-- Search bar -->
-
-  <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
-    <div layout="column" flex="40" class="height-40 wz-margin-right-15">
+  
+  <div ng-show="!loading" layout="row" layout-align="start center">
+    <div layout="column" flex class="height-40">
       <div layout="row">
-        <input placeholder="Filter agents..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-          aria-invalid="false" wz-enter="search(custom_search)">
+        <input placeholder="Filter agents..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false" wz-enter="search(custom_search)">
         <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(custom_search)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
     </div>
-
-    <!-- Platform selector -->
-    <div layout='column'>
-      <select class="input input-dropdown" flex id="eventBox1" ng-model="osPlatform" ng-change="filter({name:'platform',value:osPlatform})"
-        aria-label="Filter by operative system" style='width:400px; height: 33px; margin-top:3px;'>
-        <option value="all">All OS platforms</option>
-        <option ng-repeat='platform in osPlatforms' value="{{platform.platform}}">
-          {{platform.name}} {{platform.version}}
-        </option>
-      </select>
-    </div>
-
-    <!-- Version selector -->
-    <div layout='column' class='wz-padding-left-16'>
-      <select class="input input-dropdown" flex id="eventBox1" ng-model="version" ng-change="filter({name:'version',value:version})"
-        aria-label="Filter by operative system" style='width:400px; height: 33px; margin-top:3px;'>
-        <option value="all">All versions</option>
-        <option ng-repeat='version in versions' value="{{version}}">
-          {{version}}
-        </option>
-      </select>
-    </div>
-    <!-- Nodes selector -->
-    <div ng-show="isClusterEnabled" layout="column" class='wz-padding-left-16'>
-      <select class="input input-dropdown" flex id="eventBox2" ng-disabled="realtime" ng-model="node_name" ng-change="filter({name:'node',value:node_name})"
-        aria-label="Filter by node" style='width:400px; height: 33px; margin-top:3px;  margin-left:10px;'>
-        <option value="all">All nodes</option>
-        <option ng-repeat='node in nodes' value="{{node}}">
-          {{node}}
-        </option>
-      </select>
-    </div>
-
+  </div>
+  <div ng-show="!loading" layout="row" layout-align="start center" >
+    
     <!-- Status selector -->
-    <div layout="column" class='wz-padding-left-16'>
-      <select class="input input-dropdown" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="status"
-        ng-change="filter({name:'status',value:status})" aria-label="Filter by status" style='width:400px; height: 33px;margin-top:3px;'>
-        <option value="all">All states</option>
-        <option value="active">Active</option>
-        <option value="disconnected">Disconnected</option>
-        <option value="Never Connected">Never connected</option>
-      </select>
-    </div>
-
+    <select class="input input-dropdown wz-margin-right-10" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="status" ng-change="filter({name:'status',value:status})" aria-label="Filter by status">
+      <option value="all">All states</option>
+      <option value="active">Active</option>
+      <option value="disconnected">Disconnected</option>
+      <option value="Never Connected">Never connected</option>
+    </select>
+    
+    <!-- Node selector -->
+    <select ng-show="nodes" class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="node" ng-change="filter({name:'node_name',value:node})" aria-label="Filter by cluster node" ng-init="node='all'">
+      <option value="all">Cluster nodes</option>
+      <option ng-repeat='aNode in nodes' value="{{aNode['node_name']}}">
+        {{aNode['node_name']}}
+      </option>
+    </select>
+    
+    <!-- Platform selector -->
+    <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="osPlatform" ng-change="filter({name:'platform',value:osPlatform})" aria-label="Filter by operative system">
+      <option value="all">All OS platforms</option>
+      <option ng-repeat='os in os' value="{{os.os.platform}}">
+        {{os.os.name}} {{os.os.version}} {{os.os.platform}}
+      </option>
+    </select>
+    
+    <!-- Version selector -->
+    <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="versionModel" ng-change="filter({name:'version',value:versionModel})" aria-label="Filter by operative system">
+      <option value="all">All versions</option>
+      <option ng-repeat='version in versions' value="{{version.version}}">
+        {{version.version}}
+      </option>
+    </select>
+    
+    <select class="input input-dropdown" flex id="levelBox" placeholder="Group selector" class="md-no-underline" ng-model="groupModel" ng-change="filter({name:'group',value:groupModel})" aria-label="Filter by group" ng-init="groupModel='all'">
+      <option value="all">All groups</option>
+      <option ng-repeat='group in groups' value="{{group.name}}">
+        {{group.name}}
+      </option>
+    </select>
   </div>
+</div>
 
-  <div layout="row" class="margin-top-30">
-    <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version']"
-      allow-click="true" rows-per-page="17">
-    </wazuh-table>
-  </div>
+<div ng-if="!loading" layout="row" class="wz-margin-10">
+  <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version']" allow-click="true" rows-per-page="17"></wazuh-table>
 </div>

@@ -19,13 +19,8 @@ define([
     app.controller('agentsPciCtrl', function ($urlTokenModel, $scope, $state, $currentDataService, agent) {
       if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker')
-      const timePickerInstance = timePicker.get()
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
-          
+      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+
       const dropdown = new Dropdown(
         'dropDownInput',
         `${filters} sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count`,

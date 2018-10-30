@@ -14,15 +14,15 @@ define([
     'use strict'
     class Monitoring {
       /**
-       * Constructor class
-       * @param {Object} $stateParams 
-       * @param {Object} $urlTokenModel 
-       * @param {Object} $scope 
-       * @param {Object} $currentDataService 
-       * @param {Object} $requestService 
-       * @param {Object} $notificationService 
-       * @param {Object} monitoringInfo 
-       */
+      * Constructor class
+      * @param {Object} $stateParams 
+      * @param {Object} $urlTokenModel 
+      * @param {Object} $scope 
+      * @param {Object} $currentDataService 
+      * @param {Object} $requestService 
+      * @param {Object} $notificationService 
+      * @param {Object} monitoringInfo 
+      */
       constructor($stateParams,$urlTokenModel, $scope, $currentDataService, $requestService, $notificationService, monitoringInfo){
         this.scope = $scope
         this.urlTokenModel = $urlTokenModel
@@ -33,7 +33,8 @@ define([
         this.scope.currentNode = $stateParams.currentNode || null
         this.filters = $currentDataService.getSerializedFilters()
         this.currentApi = $currentDataService.getApi()
-        this.timePicker = new TimePicker('#timePicker')
+        this.timePicker = new TimePicker('#timePicker',this.urlTokenModel.handleValueChange)
+
         this.toast = $notificationService.showSimpleToast
         this.apiReq = $requestService.apiReq
         this.vizz = [
@@ -60,18 +61,15 @@ define([
         this.version = version
         this.agents = agents
         this.health = health
+        
+        
       }
       
       /**
-       * On controller load
-       */
+      * On controller load
+      */
       $onInit(){
-        const timePickerInstance = this.timePicker.get()
-        timePickerInstance.on("change", (newValue) => {
-          if (newValue && timePickerInstance)
-          this.urlTokenModel.handleValueChange(timePickerInstance)
-        })
-        
+
         this.scope.currentApi = this.currentApi.clusterName || this.currentApi.managerName 
         this.scope.search = term => this.search(term)
         this.scope.status = 'yes'
@@ -142,19 +140,26 @@ define([
         
         this.nodes.master_node = this.configuration.node_name
         
+        /**
+        * When controller is destroyed
+        */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map( viz => viz.destroy() )
+        })
       }
       
       /**
-       * Searches for a term
-       * @param {String} term 
-       */
+      * Searches for a term
+      * @param {String} term 
+      */
       search(term) {
         this.scope.$broadcast('wazuhSearch', { term })
       }
       
       /**
-       * Resets the view
-       */
+      * Resets the view
+      */
       reset(){
         this.scope.showConfig = false
         this.scope.showNodes = false
@@ -163,9 +168,9 @@ define([
       }
       
       /**
-       * Sets the view conditions
-       * @param {String} component 
-       */
+      * Sets the view conditions
+      * @param {String} component 
+      */
       setBooleans(component) {
         this.scope.showConfig = component === 'showConfig'
         this.scope.showNodes = component === 'showNodes'
@@ -174,22 +179,22 @@ define([
       }
       
       /**
-       * Navigates to the node configuration
-       */
+      * Navigates to the node configuration
+      */
       goConfiguration(){
         this.setBooleans('showConfig')
       }
       
       /**
-       * Navigates to nodes list
-       */
+      * Navigates to nodes list
+      */
       goNodes(){
         this.setBooleans('showNodes')
       }
       
       /**
-       * Launches the searches
-       */
+      * Launches the searches
+      */
       launchSearches(){
         this.vizz[3].changeSearch(`${this.filters} cluster.node=${this.scope.currentNode.name} sourcetype=wazuh | timechart span=2h count`)
       }

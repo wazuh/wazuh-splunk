@@ -20,14 +20,8 @@ define([
     
     app.controller('overviewAuditCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
       let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#input1')
-      const timePickerInstance = timePicker.get()
+      const timePicker = new TimePicker('#input1',$urlTokenModel.handleValueChange)
       const submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      
-      timePickerInstance.on("change", function (newValue) {
-        if (newValue && timePickerInstance)
-        $urlTokenModel.handleValueChange(timePickerInstance)
-      })
       
       const launchSearches = () => {
         filters = $currentDataService.getSerializedFilters()
