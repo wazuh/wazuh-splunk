@@ -402,21 +402,29 @@ define(['./module'], function (module) {
       controller: 'agentsCtrl',
       controllerAs: 'ag',
       resolve: {
-        data: ['$requestService', '$currentDataService', ($requestService, $currentDataService) => {
-          return Promise.all([
-            $requestService.apiReq('/agents/summary'),
-            $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
-            $requestService.apiReq('/agents/stats/distinct', { fields: 'os.name,os.version', select: 'os.name,os.version' }),
-            $requestService.apiReq('/agents/stats/distinct', { fields: 'version', select: 'version' }),
-            $requestService.apiReq('/agents/stats/distinct', { fields: 'node_name', select: 'node_name' }),
-            $requestService.apiReq('/agents/groups', {}),
-          ])
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        data: ['$requestService','$state', async ($requestService, $state) => {
+          try{
+            const responseStatus = await $requestService.apiReq('/cluster/status')
+            return Promise.all([
+              $requestService.apiReq('/agents/summary'),
+              $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
+              $requestService.apiReq('/agents/stats/distinct', { fields: 'os.name,os.version', select: 'os.name,os.version' }),
+              $requestService.apiReq('/agents/stats/distinct', { fields: 'version', select: 'version' }),
+              (responseStatus && responseStatus.data && responseStatus.data.data && responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'yes') 
+              ? $requestService.apiReq('/agents/stats/distinct', { fields: 'node_name', select: 'node_name' }) 
+              : Promise.resolve(false),
+              $requestService.apiReq('/agents/groups', {}),
+            ])
+            .then(function (response) {
+              return response
+            }, function (response) {
+              return response
+            })
+          } catch(err) {
+            $state.go('settings.api')
+          }
         }]
+        
       }
     })
     
