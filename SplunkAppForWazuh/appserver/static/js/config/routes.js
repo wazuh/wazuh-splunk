@@ -409,8 +409,7 @@ define(['./module'], function (module) {
             $requestService.apiReq('/agents/stats/distinct', { fields: 'os.name,os.version', select: 'os.name,os.version' }),
             $requestService.apiReq('/agents/stats/distinct', { fields: 'version', select: 'version' }),
             $requestService.apiReq('/agents/stats/distinct', { fields: 'node_name', select: 'node_name' }),
-            //$requestService.apiReq('/agents/stats/distinct', { select: 'os.name,os.version' }),
-            //$requestService.httpReq('GET', `/agents/agents_uniq?id=${$currentDataService.getApi().id}`)
+            $requestService.apiReq('/agents/groups', {}),
           ])
           .then(function (response) {
             return response

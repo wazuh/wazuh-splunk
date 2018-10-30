@@ -69,8 +69,8 @@
   <div ng-show="!loading" layout="row" layout-align="start center" >
 
     <!-- Node selector -->
-      <select class="input input-dropdown" flex id="eventBox1" ng-model="ag.node" ng-change="ag.filter({name:'node',value:ag.node})"
-        aria-label="Filter by cluster node">
+      <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="ag.node" ng-change="ag.filter({name:'node_name',value:ag.node})"
+        aria-label="Filter by cluster node" ng-init="ag.node='all'">
         <option value="all">Cluster nodes</option>
         <option ng-repeat='aNode in ag.nodes' value="{{aNode['node_name']}}">
           {{aNode['node_name']}}
@@ -78,7 +78,7 @@
       </select>
 
     <!-- Platform selector -->
-      <select class="input input-dropdown" flex id="eventBox1" ng-model="ag.osPlatform" ng-change="ag.filter({name:'platform',value:ag.osPlatform})"
+      <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="ag.osPlatform" ng-change="ag.filter({name:'platform',value:ag.osPlatform})"
         aria-label="Filter by operative system">
         <option value="all">All OS platforms</option>
         <option ng-repeat='os in ag.os' value="{{os.os.platform}}">
@@ -87,7 +87,7 @@
       </select>
 
     <!-- Version selector -->
-      <select class="input input-dropdown" flex id="eventBox1" ng-model="ag.version" ng-change="ag.filter({name:'version',value:ag.version})"
+      <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="ag.version" ng-change="ag.filter({name:'version',value:ag.version})"
         aria-label="Filter by operative system">
         <option value="all">All versions</option>
         <option ng-repeat='version in ag.versions' value="{{version.version}}">
@@ -96,12 +96,20 @@
       </select>
 
     <!-- Status selector -->
-      <select class="input input-dropdown" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="ag.status"
+      <select class="input input-dropdown wz-margin-right-10" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="ag.status"
         ng-change="ag.filter({name:'status',value:ag.status})" aria-label="Filter by status">
         <option value="all">All states</option>
         <option value="active">Active</option>
         <option value="disconnected">Disconnected</option>
         <option value="Never Connected">Never connected</option>
+      </select>
+
+      <select class="input input-dropdown" flex id="levelBox" placeholder="Group selector" class="md-no-underline" ng-model="ag.group"
+        ng-change="ag.filter({name:'group',value:ag.group})" aria-label="Filter by group" ng-init="ag.group='all'">
+        <option value="all">All groups</option>
+        <option ng-repeat='group in ag.groups' value="{{group.name}}">
+            {{group.name}}
+          </option>
       </select>
     </div>
   </div>

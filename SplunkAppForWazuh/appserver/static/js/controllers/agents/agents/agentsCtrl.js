@@ -138,6 +138,7 @@ define([
     vm.os = data[2].data.data.items
     vm.versions = data[3].data.data.items
     vm.nodes = data[4].data.data.items
+    vm.groups = data[5].data.data.items
     vm.lastAgent = lastAgent
     vm.agentsCountActive = summary.Active - 1
     vm.agentsCountDisconnected = summary.Disconnected
