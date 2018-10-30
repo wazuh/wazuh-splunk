@@ -6,14 +6,13 @@ define(['../module'], function (module) {
     
     // Manager
     .state('manager', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-welcome.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html',
     })
     // Manager - Monitoring
     .state('mg-monitoring', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/monitoring/monitoring.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/monitoring/monitoring.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-monitoring') },
       controller: 'monitoringCtrl',
-      controllerAs: 'mmt',
       params: { id: null, filters: null },
       resolve: {
         monitoringInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
@@ -38,25 +37,23 @@ define(['../module'], function (module) {
     })
     // Manager - rules
     .state('mg-logs', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-logs.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/logs/manager-logs.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-logs') },
       controller: 'managerLogsCtrl',
       controllerAs: 'mlog',
     })
     // Manager - Ruleset
     .state('mg-rules', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
       controller: 'managerRulesetCtrl',
-      controllerAs: 'mrules',
       params: { filters: null }
     })
     // Manager - Ruleset/:id
     .state('mg-rules-id', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-ruleset-id.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset-id.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-rules') },
       controller: 'managerRulesetIdCtrl',
-      controllerAs: 'mrid',
       params: { id: null, filters: null },
       resolve: {
         ruleInfo: ['$requestService', '$stateParams', ($requestService, $stateParams) => {
@@ -74,7 +71,7 @@ define(['../module'], function (module) {
     })
     // Manager - Decoders
     .state('mg-decoders', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-decoders.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
       controller: 'managerDecodersCtrl',
       controllerAs: 'mdec',
@@ -83,7 +80,7 @@ define(['../module'], function (module) {
     
     // Manager - Decoders/:id
     .state('mg-decoders-id', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/manager-decoders-id.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders-id.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
       controller: 'managerDecodersIdCtrl',
       controllerAs: 'mdid',
@@ -105,7 +102,7 @@ define(['../module'], function (module) {
     
     // Manager - Groups
     .state('mg-groups', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/groups/groups.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/groups/groups.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-groups') },
       controller: 'groupsCtrl',
       controllerAs: 'mgr',
@@ -114,13 +111,13 @@ define(['../module'], function (module) {
     
     // Manager - Groups
     .state('mg-conf', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/configuration/configuration.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-conf') },
     })
     
     // Manager - Status
     .state('mg-status', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/status/status.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/status/status.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-status') },
       controller: 'statusCtrl',
       controllerAs: 'mst',
