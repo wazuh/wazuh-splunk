@@ -11,6 +11,7 @@ define([
   './overview/pci/overviewPciCtrl',
   './overview/policy-monitoring/overviewPolicyMonitoringCtrl',
   './overview/vulnerabilities/overviewVulnerabilitiesCtrl',
+
   //Agents
   './agents/agents/agentsCtrl',
   './agents/audit/agentsAuditCtrl',
@@ -30,6 +31,6 @@ define([
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',
   './settings/logs/logsCtrl',
-  //Main
+  './management/index',
   './main/mainCtrl'
 ], function () {})

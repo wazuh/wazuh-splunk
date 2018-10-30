@@ -1,5 +1,5 @@
 define([
-  '../module',
+  '../../module',
   "splunkjs/mvc",
   "splunkjs/mvc/utils",
   "underscore",
