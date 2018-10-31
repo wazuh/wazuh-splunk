@@ -20,7 +20,7 @@ define([
       * @param {UrlTokenModel} submittedTokenModel 
       * @param {$scope} $scope
       */
-      constructor(id, search, token, value, bindedValue, submittedTokenModel, $scope) {
+      constructor(id, search, token, value, bindedValue, submittedTokenModel, $scope,loading,loadingBindedValue) {
         super(new SearchEventHandler({
           id: id,
           managerid: `${id}Search`,
@@ -37,30 +37,26 @@ define([
         }), id, search)
         this.submittedTokenModel = submittedTokenModel
         this.token = token
-
-        this.getSearch().on('search:start', () => {
-          //if (this.loading) { $scope[loadingBindedValue] = true }
-        })
-
+        this.loading = loading
+        this.loadingBindedValue = loadingBindedValue
+        
         this.getSearch().on('search:failed', () => {
-          console.log('failed!....',id)
-          //if (this.loading) { $scope[loadingBindedValue] = true }
+          console.error('Failed search')
         })
         this.getSearch().on('search:cancelled', () => {
-          console.log('cancelled!....',id)
-          //if (this.loading) { $scope[loadingBindedValue] = true }
+          console.error('Cancelled search')
         })
-
-        this.getSearch().on('search:error', (props) => {
-          console.log('error!....',props)
-          //if (this.loading) { $scope[loadingBindedValue] = true }
+        
+        this.getSearch().on('search:error', (error) => {
+          console.error(error)
         })
         
         this.getSearch().on('search:progress', () => {
-          //if (this.loading) { $scope[loadingBindedValue] = true }
+          if (this.loading) { $scope[this.loadingBindedValue] = true }
         })
         
         this.getSearch().on('search:done', () => {
+          if (this.loading) { $scope[this.loadingBindedValue] = false }
           const result = submittedTokenModel.get(this.token)
           if (result && result !== value && typeof result !== 'undefined' && result !== 'undefined') {
             $scope[bindedValue] = result
@@ -92,6 +88,10 @@ define([
       */
       destroy(){
         this.getSearch().off('search:done')
+        this.getSearch().off('search:error')
+        this.getSearch().off('search:cancelled')
+        this.getSearch().off('search:failed')
+        this.getSearch().off('search:start')
         this.getSearch().off('search:progress')
         this.submittedTokenModel.off(`change:${this.token}`)
         super.destroy()

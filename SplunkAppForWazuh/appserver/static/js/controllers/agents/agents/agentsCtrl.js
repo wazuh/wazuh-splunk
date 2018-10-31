@@ -64,7 +64,7 @@ define([
         this.scope.agentsCountNeverConnected = summary['Never connected']
         this.scope.agentsCountTotal = summary.Total - 1
         this.scope.agentsCoverity = this.scope.agentsCountTotal ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) * 100 : 0
-        this.topAgent = new SearchHandler('searchTopAgent',`index=wazuh | top agent.name`,'activeAgentToken','$result.agent.name$','mostActiveAgent',this.submittedTokenModel,this.scope)
+        this.topAgent = new SearchHandler('searchTopAgent',`index=wazuh ${this.filters} | top agent.name`,'activeAgentToken','$result.agent.name$','mostActiveAgent',this.submittedTokenModel,this.scope,true,'loadingSearch')
         if (!this.scope.$$phase) this.scope.$digest() 
       }
       
