@@ -16,8 +16,9 @@ define([
       * @param {String} fieldName 
       * @param {String} attachedElement 
       */
-      constructor(id, search, fieldName, value, attachedElement){
-        super(new DropdownInput({
+      constructor(id, search, fieldName, value, attachedElement, defaultValue, earliestTtime, latestTime){
+        defaultValue = (defaultValue) ? defaultValue : "*"
+         super(new DropdownInput({
           "id": `${id}`,
           "choices": [
             { "label": "ALL", "value": "*" }
@@ -25,13 +26,14 @@ define([
           "labelField": fieldName,
           "valueField": fieldName,
           "initialValue": "*",
+          "default": defaultValue,
           "selectFirstChoice": false,
           "showClearButton": true,
           "value": value,
           "searchWhenChanged": true,
           "managerid": `${id}Search`,
           "el": $(`#${attachedElement}`)
-        }, { tokens: true, tokenNamespace: "submitted" }).render(), id, search)
+        }, { tokens: true, tokenNamespace: "submitted" }).render(), id, search, earliestTtime, latestTime)
 
       }
     }
