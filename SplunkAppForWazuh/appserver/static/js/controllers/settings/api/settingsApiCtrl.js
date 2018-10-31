@@ -2,234 +2,202 @@ define([
   '../../module',
 ], function (
   controllers
-) {
+  ) {
     'use strict'
-    controllers.controller('settingsApiCtrl', function ($scope, $currentDataService, apiList, $notificationService) {
-      const vm = this
-      vm.addManagerContainer = false
-      vm.isEditing = false
-      vm.showForm = (apiList.length === 0) ? true : false
-      vm.entry = {}
-      vm.currentEntryKey = ''
-      const epoch = (new Date).getTime()
-      // Validation RegEx
-      const userRegEx = new RegExp(/^.{3,100}$/)
-      const passRegEx = new RegExp(/^.{3,100}$/)
-      const urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
-      const urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
-      const portRegEx = new RegExp(/^[0-9]{2,5}$/)
-      /**
-       * Initializes the controller
-       */
-      vm.init = async () => {
+    
+    class SettingsApi{
+      constructor($scope, $currentDataService, apiList, $notificationService) {
+        this.scope = $scope
+        this.scope.addManagerContainer = false
+        this.scope.isEditing = false
+        this.scope.showForm = (apiList.length === 0) ? true : false
+        this.scope.entry = {}
+        this.scope.currentEntryKey = ''
+        this.userRegEx = new RegExp(/^.{3,100}$/)
+        this.passRegEx = new RegExp(/^.{3,100}$/)
+        this.urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
+        this.urlRegExIP = new RegExp(/^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/)
+        this.portRegEx = new RegExp(/^[0-9]{2,5}$/)
+        this.apiList = apiList
+        this.currentDataService = $currentDataService
+        this.toast = $notificationService.showSimpleToast
+      }
+      
+      $onInit(){
+        this.scope.init = () => this.init()
+        this.scope.addNewApiClick = () => this.addNewApiClick()
+        this.scope.checkManager = (entry) => this.checkManager(entry)
+        this.scope.editEntry = (entry) => this.editEntry(entry)
+        this.scope.removeManager = (entry) => this.removeManager(entry)
+        this.scope.updateEntry = () => this.updateEntry()
+        this.scope.selectManager = (mg) => this.selectManager(mg)
+        this.scope.submitApiForm = () => this.submitApiForm()
+        this.init()
+        
+      }
+      
+      async init () {
         try {
           // If no API, then remove cookie
-          if (Array.isArray(apiList) && apiList.length === 0) {
-            $currentDataService.removeCurrentApi()
-            $scope.$emit('updatedAPI', () => { })
+          if (Array.isArray(this.apiList) && this.apiList.length === 0) {
+            this.currentDataService.removeCurrentApi()
+            this.scope.$emit('updatedAPI', () => { })
           }
+          
+          this.scope.apiList = this.apiList
 
-          vm.apiList = apiList
-
-          let currentApi = $currentDataService.getApi()
-
-          if (!currentApi && Array.isArray(vm.apiList)) {
-            for (const apiEntry of vm.apiList) {
+          let currentApi = this.currentDataService.getApi()
+          
+          if (!currentApi && Array.isArray(this.scope.apiList)) {
+            for (const apiEntry of this.scope.apiList) {
               try {
-                await vm.selectManager(apiEntry.id)
+                await this.selectManager(apiEntry.id)
                 // setAPI
-                currentApi = $currentDataService.getApi()
+                currentApi = this.currentDataService.getApi()
                 break
               } catch (error) { }
             }
           }
-
-          vm.apiList.map(item => { delete item.selected })
-
+          
+          this.scope.apiList.map(item => { delete item.selected })
+          
           if (currentApi) {
-            vm.apiList.map(item => {
+            this.scope.apiList.map(item => {
               if (item.id === currentApi.id) {
                 item.selected = true
               }
             })
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Error loading data')
+          this.toast('Error loading data')
         }
       }
-
+      
       /**
-       * Removes an API from the list
-       * @param {Object} entry 
-       */
-      vm.removeManager = async (entry) => {
+      * Removes an API from the list
+      * @param {Object} entry 
+      */
+      async removeManager (entry) {
         try {
-          const currentApi = $currentDataService.getApi()
+          const currentApi = this.currentDataService.getApi()
           if (currentApi && currentApi.id === entry.id) {
-            $notificationService.showSimpleToast('Cannot delete selected API')
+            this.toast('Cannot delete selected API')
           } else {
-            const index = vm.apiList.indexOf(entry)
+            const index = this.scope.apiList.indexOf(entry)
             if (index > -1) {
-              vm.apiList.splice(index, 1)
-              await $currentDataService.remove(entry)
+              this.scope.apiList.splice(index, 1)
+              await this.currentDataService.remove(entry)
             }
-            $notificationService.showSimpleToast('Manager was removed')
+            this.toast('Manager was removed')
           }
         } catch (err) {
-          $notificationService.showSimpleToast('Cannot remove API:', err.message || err)
+          this.toast('Cannot remove API:', err.message || err)
         }
       }
-
+      
       /**
-       * Check API connectivity
-       * @param {Object} entry 
-       */
-      vm.checkManager = async (entry) => {
+      * Check API connectivity
+      * @param {Object} entry 
+      */
+      async checkManager(entry) {
         try {
-          const connectionData = await $currentDataService.checkApiConnection(entry.id)
-          for (let i = 0; i < vm.apiList.length; i++) {
-            if (vm.apiList[i].id === entry.id) {
-              vm.apiList[i] = connectionData
+          const connectionData = await this.currentDataService.checkApiConnection(entry.id)
+          for (let i = 0; i < this.scope.apiList.length; i++) {
+            if (this.scope.apiList[i].id === entry.id) {
+              this.scope.apiList[i] = connectionData
               break
             }
           }
-          $notificationService.showSimpleToast('Established connection')
-          if (!$scope.$$phase) $scope.$digest()
-
+          this.toast('Established connection')
+          if (!this.scope.$$phase) this.scope.$digest()
+          
         } catch (err) {
-          $notificationService.showSimpleToast('Unreachable API')
+          console.error('err ',err)
+          this.toast('Unreachable API')
         }
       }
-
+      
       /**
-       * Set form visible
-       */
-      vm.addNewApiClick = () => {
-        vm.showForm = !vm.showForm
-        vm.edit = false
+      * Set form visible
+      */
+      addNewApiClick () {
+        this.scope.showForm = !this.scope.showForm
+        this.scope.edit = false
       }
-
+      
       /**
-       * Shows form for editting an API entry
-       * @param {Object} entry 
-       */
-      vm.editEntry = (entry) => {
+      * Shows form for editting an API entry
+      * @param {Object} entry 
+      */
+      editEntry(entry){
         try {
-          vm.edit = !vm.edit
-          vm.showForm = false
-          vm.currentEntryKey = entry.id
-          vm.url = entry.url
-          vm.pass = entry.pass
-          vm.port = entry.portapi
-          vm.user = entry.userapi
-          vm.managerName = entry.managerName
-          vm.filterType = entry.filterType
-          vm.filterName = entry.filterName
-          vm.entry.url = entry
+          this.scope.edit = !this.scope.edit
+          this.scope.showForm = false
+          this.scope.currentEntryKey = entry.id
+          this.scope.url = entry.url
+          this.scope.pass = entry.pass
+          this.scope.port = entry.portapi
+          this.scope.user = entry.userapi
+          this.scope.managerName = entry.managerName
+          this.scope.filterType = entry.filterType
+          this.scope.filterName = entry.filterName
+          this.scope.entry.url = entry
         } catch (err) {
-          $notificationService.showSimpleToast('Could not open API form')
+          this.toast('Could not open API form')
         }
       }
-
+      
       /**
-       * Edits an entry
-       * @param {Object} entry 
-       */
-      vm.updateEntry = async () => {
+      * Edits an entry
+      * @param {Object} entry 
+      */
+      async updateEntry () {
         try {
-          vm.edit = !vm.edit
-          vm.showForm = false
-          vm.entry.url = vm.url
-          vm.entry.portapi = vm.port
-          vm.entry.userapi = vm.user
-          vm.entry.passapi = vm.pass
-          vm.entry.filterType = vm.filterType
-          vm.entry.filterName = vm.filterName
-          vm.entry.managerName = vm.managerName
-          vm.entry.id = vm.currentEntryKey
-
-          // const resultNewApi = await $currentDataService.checkRawConnection(vm.entry)
-          // if (resultNewApi.data.error) {
-          //   $notificationService.showSimpleToast('Unreachable API. Cannot update')
-          //   return
-          // }
-          delete vm.entry['$$hashKey']
-          await $currentDataService.checkRawConnection(vm.entry)
-          await $currentDataService.update(vm.entry)
-          const updatedApi = await $currentDataService.checkApiConnection(vm.entry.id)
-
-          // const updatedEntry = await $currentDataService.checkApiConnection(vm.currentEntryKey)
-
-          for (let i = 0; i < vm.apiList.length; i++) {
-            if (vm.apiList[i].id === updatedApi.id) {
-              vm.apiList[i] = updatedApi
+          this.scope.edit = !this.scope.edit
+          this.scope.showForm = false
+          this.scope.entry.url = this.scope.url
+          this.scope.entry.portapi = this.scope.port
+          this.scope.entry.userapi = this.scope.user
+          this.scope.entry.passapi = this.scope.pass
+          this.scope.entry.filterType = this.scope.filterType
+          this.scope.entry.filterName = this.scope.filterName
+          this.scope.entry.managerName = this.scope.managerName
+          this.scope.entry.id = this.scope.currentEntryKey
+          
+          delete this.scope.entry['$$hashKey']
+          await this.currentDataService.checkRawConnection(this.scope.entry)
+          await this.currentDataService.update(this.scope.entry)
+          const updatedApi = await this.currentDataService.checkApiConnection(this.scope.entry.id)
+                    
+          for (let i = 0; i < this.scope.apiList.length; i++) {
+            if (this.scope.apiList[i].id === updatedApi.id) {
+              this.scope.apiList[i] = updatedApi
             }
           }
-          if (!$scope.$$phase) $scope.$digest()
-
-          if ($currentDataService.getApi() && $currentDataService.getApi().id === vm.entry.id) {
-            vm.selectManager(updatedApi.id)
+          if (!this.scope.$$phase) this.scope.$digest()
+          
+          if (this.currentDataService.getApi() && this.currentDataService.getApi().id === this.scope.entry.id) {
+            this.selectManager(updatedApi.id)
           }
-
-          vm.edit = false
-          $notificationService.showSimpleToast('Updated API')
+          
+          this.scope.edit = false
+          this.toast('Updated API')
         } catch (err) {
-          $notificationService.showSimpleToast('Cannot update API')
+          this.toast('Cannot update API')
         }
       }
-
+      
+      
       /**
-       * Check if an URL is valid or not
-       * @param {String} url 
-       */
-      const validUrl = url => {
-        return urlRegEx.test(url) || urlRegExIP.test(url)
-      }
-
-      /**
-       * Check if a port is valid or not
-       * @param {String} port 
-       */
-      const validPort = port => {
-        return portRegEx.test(port)
-      }
-
-      /**
-       * Check if an user is valid or not
-       * @param {String} user 
-       */
-      const validUsername = user => {
-        return userRegEx.test(user)
-      }
-
-      /**
-       * Check if a password is valid or not
-       * @param {String} pass 
-       */
-      const validPassword = pass => {
-        return passRegEx.test(pass)
-      }
-
-      /**
-       * Empties the form fields
-       */
-      const clearForm = () => {
-        vm.url = ''
-        vm.port = ''
-        vm.user = ''
-        vm.pass = ''
-      }
-
-      /**
-       * Select an API as the default one
-       * @param {Object} entry 
-       */
-      vm.selectManager = async (entry) => {
+      * Select an API as the default one
+      * @param {Object} entry 
+      */
+      async selectManager(entry){
         try {
-          const connectionData = await $currentDataService.checkApiConnection(entry)
-          await $currentDataService.chose(entry)
-          vm.apiList.map(api => api.selected = false)
-          for (let item of vm.apiList) {
+          const connectionData = await this.currentDataService.checkApiConnection(entry)
+          await this.currentDataService.chose(entry)
+          this.scope.apiList.map(api => api.selected = false)
+          for (let item of this.scope.apiList) {
             if (item.id === entry) {
               if (connectionData.cluster) {
                 item.cluster = connectionData.cluster
@@ -240,29 +208,30 @@ define([
               item.selected = true
             }
           }
-          $notificationService.showSimpleToast('API selected')
-          $scope.$emit('updatedAPI', () => { })
-          if (!$scope.$$phase) $scope.$digest()
+          this.toast('API selected')
+          this.scope.$emit('updatedAPI', () => { })
+          if (!this.scope.$$phase) this.scope.$digest()
         } catch (err) {
-          $notificationService.showSimpleToast('Could not select manager')
+          this.toast('Could not select manager')
         }
       }
-
+      
       /**
-       * Adds a new API
-       */
-      vm.submitApiForm = async () => {
+      * Adds a new API
+      */
+      async submitApiForm (){
         try {
           // When the Submit button is clicked, get all the form fields by accessing to the input values
-          const form_url = vm.url
-          const form_apiport = vm.port
-          const form_apiuser = vm.user
-          const form_apipass = vm.pass
-
+          const form_url = this.scope.url
+          const form_apiport = this.scope.port
+          const form_apiuser = this.scope.user
+          const form_apipass = this.scope.pass
+          
           // If values are not valid then throw an error
-          if (!validPassword(form_apipass) || !validPort(form_apiport) || !validUrl(form_url) || !validUsername(form_apiuser))
+          if (!this.validPassword(form_apipass) || !this.validPort(form_apiport) || !this.validUrl(form_url) || !this.validUsername(form_apiuser)){
             throw new Error('Invalid format. Please check the fields again')
-
+          }
+          
           // Create an object to store the field names and values
           const record = {
             "url": form_url,
@@ -270,39 +239,86 @@ define([
             "userapi": form_apiuser,
             "passapi": form_apipass,
           }
-
+          
           // If connected to the API then continue
-          await $currentDataService.checkRawConnection(record)
-
+          await this.currentDataService.checkRawConnection(record)
+          
           // Get the new API database ID
-          const { result } = await $currentDataService.insert(record)
+          const { result } = await this.currentDataService.insert(record)
           const id = result
           try {
             // Get the full API info
-            const api = await $currentDataService.checkApiConnection(id)
+            const api = await this.currentDataService.checkApiConnection(id)
             // Empties the form fields
-            clearForm()
-
+            this.clearForm()
+            
             // If the only one API in the list, then try to select it
-            vm.apiList.push(api)
-            if (apiList && apiList.length === 1) {
-              await vm.selectManager(id)
+            this.scope.apiList.push(api)
+            if (this.scope.apiList && this.scope.apiList.length === 1) {
+              await this.selectManager(id)
             }
-            vm.showForm = false
-            if (!$scope.$$phase) $scope.$digest()
-            $notificationService.showSimpleToast('API was added')
-
+            this.scope.showForm = false
+            if (!this.scope.$$phase) this.scope.$digest()
+            this.toast('API was added')
+            
           } catch (err) {
-            $currentDataService.remove(id).then(() => { }).catch((err) => { $notificationService.showSimpleToast('Unexpected error') })
-            $notificationService.showSimpleToast('Unreachable API')
-          }
+            this.currentDataService.remove(id).then(() => { }).catch((err) => { this.toast('Unexpected error') })
+            console.error('err ',err)
 
+            this.toast('Unreachable API')
+          }
+          
         } catch (err) {
-          $notificationService.showSimpleToast(err.message)
+          console.error('err ',err)
+
+          this.toast(err.message)
         }
       }
-
-      vm.init()
-    })
+      
+      /**
+      * Check if an URL is valid or not
+      * @param {String} url 
+      */
+      validUrl (url) {
+        return this.urlRegEx.test(url) || this.urlRegExIP.test(url)
+      }
+      
+      /**
+      * Check if a port is valid or not
+      * @param {String} port 
+      */
+      validPort (port) {
+        return this.portRegEx.test(port)
+      }
+      
+      /**
+      * Check if an user is valid or not
+      * @param {String} user 
+      */
+      validUsername (user) {
+        return this.userRegEx.test(user)
+      }
+      
+      /**
+      * Check if a password is valid or not
+      * @param {String} pass 
+      */
+      validPassword (pass)  {
+        return this.passRegEx.test(pass)
+      }
+      
+      /**
+      * Empties the form fields
+      */
+      clearForm ()  {
+        this.scope.url = ''
+        this.scope.port = ''
+        this.scope.user = ''
+        this.scope.pass = ''
+      }
+      
+    }
+    controllers.controller('settingsApiCtrl', SettingsApi)
   })
-
+  
+  

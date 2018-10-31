@@ -13,7 +13,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/settings/api/api.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') },
       controller: 'settingsApiCtrl',
-      controllerAs: 'sac',
       resolve: {
         apiList: ['$currentDataService', ($currentDataService) => {
           return $currentDataService.getApiList()
