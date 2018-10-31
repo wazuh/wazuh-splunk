@@ -15,6 +15,7 @@ define([
       * @param {Function} handleValueChange 
       */
       constructor(element, handleValueChange) {
+        mvc.Components.revokeInstance(`timePicker`)
         this.input = new TimeRangeInput({
           "id": `timePicker`,
           "default": { "latest_time": "now", "earliest_time": "-24h@h" },
