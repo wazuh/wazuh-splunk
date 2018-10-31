@@ -32,7 +32,6 @@ define(['../module'], function (module) {
       templateUrl: '/static/app/SplunkAppForWazuh/js/controllers/settings/logs/logs.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('settings.logs') },
       controller: 'logsCtrl',
-      controllerAs: 'slc',
       resolve: {
         logs: ['$requestService', ($requestService) => {
           return $requestService.httpReq(`GET`,`/manager/get_log_lines`)

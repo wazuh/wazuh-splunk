@@ -6,7 +6,7 @@
   </div>
 
   <div layout="row" ng-show="!loadingLogs">
-    <md-button class="wz-report-refresh-btn" ng-click="slc.refreshLogs()"><i class="fa fa-fw fa-refresh"></i> Refresh</md-button>
+    <md-button class="wz-report-refresh-btn" ng-click="refreshLogs()"><i class="fa fa-fw fa-refresh"></i> Refresh</md-button>
   </div>
 
   <!-- End headline -->
@@ -18,7 +18,7 @@
         <th class="wz-text-left">Message</th>
       </thead>
       <tbody>
-        <tr class="wz-word-wrap" ng-repeat="item in slc.logs">
+        <tr class="wz-word-wrap" ng-repeat="item in logs">
           <td>
             {{ item.date }}
           </td>
