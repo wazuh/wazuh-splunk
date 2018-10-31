@@ -26,6 +26,12 @@ define([
         'dropDownInput'
         )
 
+        const dropdownInstance = dropdown.getElement()
+        dropdownInstance.on("change", function(newValue){
+          if (newValue && dropdownInstance)
+          $urlTokenModel.handleValueChange(dropdownInstance)
+        })  
+
         const launchSearches = () => {
           filters = $currentDataService.getSerializedFilters()
           $state.reload();
