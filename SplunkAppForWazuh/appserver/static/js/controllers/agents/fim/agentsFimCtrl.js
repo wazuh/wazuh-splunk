@@ -13,68 +13,88 @@ define([
   AreaChart,
   TimePicker
   ) {
-
+    
     'use strict'
-
-    app.controller('agentsFimCtrl', function ($urlTokenModel, $state, $scope, $currentDataService, agent) {
-      if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
-      let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
- 
-      $scope.agent = agent.data.data
-      $scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
-      $scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
-      }
-
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
-        // searches.map(search => search.startSearch())
-      }
-
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
-      })
-
-      $scope.$on('barFilter', () => {
-        launchSearches()
-      })
-
-      const vizz = [
-        /**
-        * Visualizations
-        */
-        new AreaChart('eventsOverTimeElement',
-        `${filters} sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
-        'eventsOverTimeElement'),
-        new ColumnChart('topGroupOwnersElement',
-        `${filters} sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"`,
-        'topGroupOwnersElement'),
-        new PieChart('topUserOwnersElement',
-        `${filters} sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"`,
-        'topUserOwnersElement'),
-        new PieChart('topFileChangesElement',
-        `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path`,
-        'topFileChangesElement'),
-        new PieChart('rootUserFileChangesElement',
-        `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path`,
-        'rootUserFileChangesElement'),
-        new PieChart('wordWritableFilesElement',
-        `${filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1`,
-        'wordWritableFilesElement'),
-        new Table('eventsSummaryElement',
-        `${filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-        'eventsSummaryElement')
-        ]
-
+    
+    class Fim {
+      
       /**
-       * When controller is destroyed
-       */
-      $scope.$on('$destroy', () => {
-        timePicker.destroy()
-        vizz.map( (vizz) => vizz.destroy())      
-      })
-
-    })
+      * Class constructor
+      * @param {Object} $urlTokenModel 
+      * @param {Object} $state 
+      * @param {Object} $scope 
+      * @param {Object} $currentDataService 
+      * @param {Object} agent
+      */
+      
+      
+      constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
+        this.state = $state
+        if (!$currentDataService.getCurrentAgent()) { this.state.go('overview') }
+        this.scope = $scope
+        this.filters = $currentDataService.getSerializedFilters()
+        this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+        this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+        
+        this.scope.agent = agent.data.data  
+        
+        this.launchSearches = () => {
+          this.filters = $currentDataService.getSerializedFilters()
+          this.state.reload();
+          // searches.map(search => search.startSearch())
+        }
+        
+        this.scope.$on('deletedFilter', () => {
+          launchSearches()
+        })
+        
+        this.scope.$on('barFilter', () => {
+          launchSearches()
+        })
+        
+        this.vizz = [
+          /**
+          * Visualizations
+          */
+          new AreaChart('eventsOverTimeElement',
+          `${this.filters} sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
+          'eventsOverTimeElement'),
+          new ColumnChart('topGroupOwnersElement',
+          `${this.filters} sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"`,
+          'topGroupOwnersElement'),
+          new PieChart('topUserOwnersElement',
+          `${this.filters} sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"`,
+          'topUserOwnersElement'),
+          new PieChart('topFileChangesElement',
+          `${this.filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path`,
+          'topFileChangesElement'),
+          new PieChart('rootUserFileChangesElement',
+          `${this.filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path`,
+          'rootUserFileChangesElement'),
+          new PieChart('wordWritableFilesElement',
+          `${this.filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1`,
+          'wordWritableFilesElement'),
+          new Table('eventsSummaryElement',
+          `${this.filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          'eventsSummaryElement')
+        ]
+        
+        /**
+        * When controller is destroyed
+        */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map( (vizz) => vizz.destroy())      
+        })
+        
+      }
+      
+      $onInit(){
+        this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+        this.scope.formatAgentStatus = agentStatus => {
+          return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+        }
+      }   
+    }  
+    app.controller('agentsFimCtrl', Fim)
   })
