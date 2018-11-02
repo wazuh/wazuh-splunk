@@ -129,13 +129,13 @@ define([
         })
         this.scope.nodesCount = this.nodesCount
         
-        this.scope.configuration = this.configuration.data.data
+        this.scope.configuration = this.configuration
         
-        this.scope.version = this.version.data.data
+        this.scope.version = this.version
         
-        this.scope.agentsCount = this.agents.data.data.totalItems - 1
+        this.scope.agentsCount = this.agents.totalItems - 1
         
-        this.scope.healthCheck = this.health.data.data
+        this.scope.healthCheck = this.health
         
         this.nodes.name = this.configuration.name
         
