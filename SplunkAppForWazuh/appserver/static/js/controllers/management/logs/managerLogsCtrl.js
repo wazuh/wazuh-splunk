@@ -1,44 +1,68 @@
-define(['../../module'], function (controllers) {
-
+define(['../../module'], function (app) {
+  
   'use strict'
-
-  controllers.controller('managerLogsCtrl', function ($scope,$requestService, $notificationService) {
-    const vm = this
-    vm.type_log = 'all';
-    vm.category = 'all';
-
-    vm.search = term => {
-      $scope.$broadcast('wazuhSearch', { term })
+  
+  class Logs{
+    constructor($scope,$requestService, $notificationService, logs){
+      this.scope = $scope
+      this.apiReq = $requestService.apiReq
+      this.toast = $notificationService.showSimpleToast
+      this.scope.type_log = 'all'
+      this.scope.category = 'all'
+      this.logs = logs
     }
-
-    vm.filter = async filter => {
-      $scope.$broadcast('wazuhFilter', { filter })
-    }
-
-    vm.playRealtime = () => {
-      vm.realtime = true;
-      $scope.$broadcast('wazuhPlayRealTime')
-    }
-
-    vm.stopRealtime = () => {
-      vm.realtime = false;
-      $scope.$broadcast('wazuhStopRealTime')
-    }
-
-    const initialize = async () => {
+    
+    /**
+    * On controller loads
+    */
+    $onInit(){
       try {
-        // logs summary
-        const data = await $requestService.apiReq(`/manager/logs/summary`)
-        vm.summary = data.data.data;
-        if (!$scope.$$phase) $scope.$digest();
-        return;
+        this.scope.search = term => this.search(term)
+        this.scope.filter = term => this.filter(term)
+        this.scope.stopRealtime = () => this.stopRealtime()
+        this.scope.playRealtime = () => this.playRealtime()
+        this.scope.summary = this.logs.data.data
+        return
       } catch (err) {
-        $notificationService.showSimpleToast('error en logs ctrl', err)
+        this.toast('Cannot fetch logs data from server')
       }
-      return;
+    }
+    
+    /**
+    * Searches by a term
+    * @param {String} term 
+    */
+    search (term) {
+      this.scope.$broadcast('wazuhSearch', { term })
+      return
+    }
+    
+    /**
+    * Filters by a term
+    * @param {Object} filter 
+    */
+    async filter(filter) {
+      this.scope.$broadcast('wazuhFilter', { filter })
+      return
+    }
+    
+    /**
+    * Starts fetching logs in real time
+    */
+    playRealtime () {
+      this.scope.realtime = true
+      this.scope.$broadcast('wazuhPlayRealTime')
+      return
     }
 
-    initialize();
-
-  })
+    /**
+    * Stops fetching logs in real time
+    */
+    stopRealtime () {
+      this.scope.realtime = false
+      this.scope.$broadcast('wazuhStopRealTime')
+      return
+    }
+  }
+  app.controller('managerLogsCtrl', Logs)
 })

@@ -1,7 +1,7 @@
 define(['../module'], function (module) {
   'use strict'
   
-  module.config([ '$stateProvider','BASE_URL', function ($stateProvider,BASE_URL) {
+  module.config([ '$stateProvider','BASE_URL',function ($stateProvider,BASE_URL) {
     $stateProvider
     
     // Manager
@@ -40,7 +40,18 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/logs/manager-logs.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-logs') },
       controller: 'managerLogsCtrl',
-      controllerAs: 'mlog',
+      resolve: {
+        logs: ['$requestService',($requestService) => {
+          return $requestService.apiReq('/manager/logs/summary')
+          .then( (response) => {
+            return response
+          }, (response) => {
+            return response
+          })
+          .catch(err => console.error('settings.api')
+          )
+        }]
+      }
     })
     // Manager - Ruleset
     .state('mg-rules', {
@@ -124,11 +135,12 @@ define(['../module'], function (module) {
       resolve: {
         statusData: ['$requestService', async ($requestService) => {
           const responseStatus = await $requestService.apiReq('/cluster/status')
+          let promises = []
           if (!responseStatus || !responseStatus.data || !responseStatus.data.error){
             const nodes = await $requestService.apiReq('/cluster/nodes')
             if (responseStatus.data.data && responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'yes') {
               const masterNode = nodes.data.data.items.filter(item => item.type === 'master')[0]
-              return Promise.all([
+              promises = [
                 $requestService.apiReq('/agents/summary'),
                 $requestService.apiReq(`/cluster/${masterNode.name}/status`),
                 $requestService.apiReq(`/cluster/${masterNode.name}/info`),
@@ -137,17 +149,9 @@ define(['../module'], function (module) {
                 Promise.resolve(masterNode),
                 Promise.resolve(nodes),
                 Promise.resolve(responseStatus.data)
-              ])
-              .then(function (response) {
-                return response
-              }, function (response) {
-                return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
-              })
+              ]
             } else if(responseStatus.data.data.enabled === 'yes' && responseStatus.data.data.running === 'no'){
-              return Promise.all([
+              promises = [
                 $requestService.apiReq('/agents/summary'),
                 Promise.resolve(false),
                 Promise.resolve(false),
@@ -156,52 +160,36 @@ define(['../module'], function (module) {
                 Promise.resolve(false),
                 Promise.resolve(nodes),
                 Promise.resolve(responseStatus.data)
-              ])
-              .then(function (response) {
-                return response
-              }, function (response) {
-                return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
-              })
+              ]
             } else {
-              return Promise.all([
+              promises = [
                 $requestService.apiReq('/agents/summary'),
                 $requestService.apiReq(`/manager/status`),
                 $requestService.apiReq(`/manager/info`),
                 $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
                 $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
                 Promise.resolve(false)
-                
-              ])
-              .then(function (response) {
-                return response
-              }, function (response) {
-                return response
-              })
-              .catch(err => {
-                console.error('Error route: ', err)
-              })
+              ]
             }
           } else {
-            return Promise.all([
+            promises = [
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq(`/manager/status`),
               $requestService.apiReq(`/manager/info`),
               $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
               $requestService.apiReq('/decoders', { offset: 0, limit: 1 }),
               Promise.resolve(false)
-            ])
-            .then(function (response) {
-              return response
-            }, function (response) {
-              return response
-            })
-            .catch(err => {
-              console.error('Error route: ', err)
-            })
+            ]
           }
+          return Promise.all(promises)
+          .then(function (response) {
+            return response
+          }, function (response) {
+            return response
+          })
+          .catch(err => {
+            console.error('Error route: ', err)
+          })
         }],
         agentInfo: ['$requestService', ($requestService) => {
           return $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' })

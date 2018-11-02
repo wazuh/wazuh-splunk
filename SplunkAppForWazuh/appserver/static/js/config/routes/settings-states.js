@@ -3,7 +3,7 @@ define(['../module'], function (module) {
   
   module.config([ '$stateProvider','BASE_URL', function ($stateProvider,BASE_URL) {
     $stateProvider
-
+    
     // settings
     .state('settings', { abstract: true, templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/settings/main/settings.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.api') } })
     // settings -> about
@@ -45,6 +45,11 @@ define(['../module'], function (module) {
           })
         }]
       }
+    })
+    .state('dev-tools', {
+      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/dev-tools/dev-tools.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('dev-tools') },
+      controller: 'devToolsCtrl',
     })
   }])
 })

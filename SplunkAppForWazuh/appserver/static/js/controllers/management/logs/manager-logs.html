@@ -19,9 +19,9 @@
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div layout="column" flex="40" class="height-40 wz-margin-right-15">
       <div layout="row">
-        <input placeholder="Filter logs..." ng-model="mlog.custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-          aria-invalid="false" wz-enter="mlog.search(mlog.custom_search)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="mlog.search(custom_search)">
+        <input placeholder="Filter logs..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="search(customSearch)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
@@ -30,10 +30,10 @@
 
     <div layout="column">
 
-      <select class="input input-dropdown" flex id="categoryBox" ng-disabled="mlog.realtime" ng-model="mlog.category" ng-change="mlog.filter({name:'category',value:mlog.category})"
+      <select class="input input-dropdown" flex id="categoryBox" ng-disabled="realtime" ng-model="category" ng-change="filter({name:'category',value:category})"
         aria-label="Logs category" style='width:400px; height: 33px; margin-top:3px;'>
         <option value="all">All daemons</option>
-        <option ng-repeat="(key, value) in mlog.summary" value="{{key}}">{{key}}</option>
+        <option ng-repeat="(key, value) in summary" value="{{key}}">{{key}}</option>
       </select>
 
     </div>
@@ -42,8 +42,8 @@
 
     <div layout="column">
 
-      <select class="input input-dropdown" flex id="levelBox" ng-disabled="mlog.realtime" ng-model="mlog.type_log" placeholder="Log level"
-        class="md-no-underline" ng-change="mlog.filter({name:'type_log',value:mlog.type_log})" aria-label="Logs level" style='width:400px; margin-left:10px; height: 33px;margin-top:3px;'>
+      <select class="input input-dropdown" flex id="levelBox" ng-disabled="realtime" ng-model="type_log" placeholder="Log level"
+        class="md-no-underline" ng-change="filter({name:'type_log',value:type_log})" aria-label="Logs level" style='width:400px; margin-left:10px; height: 33px;margin-top:3px;'>
         <option value="all">All log levels</option>
         <option value="info">Info</option>
         <option value="error">Error</option>
@@ -59,12 +59,12 @@
     <!-- White space between filters and Realtime button -->
     <span flex></span>
 
-    <md-button ng-if="!mlog.realtime" class="wz-button md-raised md-primary" style='margin-top:-4px;' ng-click="mlog.playRealtime()"
+    <md-button ng-if="!realtime" class="wz-button md-raised md-primary" style='margin-top:-4px;' ng-click="playRealtime()"
       aria-label="Play realtime button">
       <i class="fa fa-play fa-fw" aria-hidden="true"></i>
       Play realtime
     </md-button>
-    <md-button ng-if="mlog.realtime" class="wz-button md-raised md-primary" style='margin-top:-4px;' ng-click="mlog.stopRealtime()" aria-label="Stop realtime button">
+    <md-button ng-if="realtime" class="wz-button md-raised md-primary" style='margin-top:-4px;' ng-click="stopRealtime()" aria-label="Stop realtime button">
       <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
       Stop realtime
     </md-button>
