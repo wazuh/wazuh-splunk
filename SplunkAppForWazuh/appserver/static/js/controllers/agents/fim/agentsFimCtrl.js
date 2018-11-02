@@ -16,7 +16,7 @@ define([
     
     'use strict'
     
-    class Fim {
+    class AgentsFim {
       
       /**
       * Class constructor
@@ -32,9 +32,10 @@ define([
         this.state = $state
         if (!$currentDataService.getCurrentAgent()) { this.state.go('overview') }
         this.scope = $scope
+        this.urlTokenModel = $urlTokenModel
         this.filters = $currentDataService.getSerializedFilters()
-        this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-        this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+        this.timePicker = new TimePicker('#timePicker',this.urlTokenModel.handleValueChange)
+        this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
         
         this.scope.agent = agent.data.data  
         
@@ -96,5 +97,5 @@ define([
         }
       }   
     }  
-    app.controller('agentsFimCtrl', Fim)
+    app.controller('agentsFimCtrl', AgentsFim)
   })
