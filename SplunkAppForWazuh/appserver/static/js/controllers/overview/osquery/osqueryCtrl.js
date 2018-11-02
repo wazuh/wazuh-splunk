@@ -14,46 +14,58 @@ define([
     
     'use strict'
     
-    app.controller('osqueryCtrl', function ($urlTokenModel, $scope, $currentDataService, $state, osquery) {
-      let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-      $scope.osqueryWodle = false
-      try {
-        const wodles = osquery.data.data.wmodules
-        $scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
-      } catch (err) {
-        $notificationService.showSimpleToast('Cannot load wodle configuration. Osquery is not configured.')
-      }
+    class Osquery{
+      constructor($urlTokenModel, $scope, $currentDataService, $state,$notificationService, osquery){
+        this.scope = $scope
+        this.osquery = osquery
+        this.state = $state
+        this.getFilters = $currentDataService.getSerializedFilters
+        this.filters = this.getFilters()
+        this.scope.osqueryWodle = false
+        this.scope.$on('deletedFilter', () => {
+          this.launchSearches()
+        })
+        
+        this.scope.$on('barFilter', () => {
+          this.launchSearches()
+        })
 
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
+        this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+        this.toast = $notificationService.showSimpleToast
+        this.vizz = [
+          /**
+          * Visualizations
+          */
+          new AreaChart('alertsOverTime',`${this.filters} sourcetype=wazuh | timechart span=1h count`,'alertsOverTime'),
+          new AreaChart('alertsEvolution',`${this.filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,'alertsEvolution'),
+          new PieChart('mostCommonEvents',`${this.filters} sourcetype=wazuh  | top data.osquery.name limit=5`,'mostCommonEvents'),
+          new Table('topPacks',`${this.filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,'topPacks'),
+          new Table('topRules',`${this.filters} sourcetype=wazuh  | top rule.id, rule.description limit=5`,'topRules')
+        ]
+        
+        /**
+        * On controller destroy
+        */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map( (vizz) => vizz.destroy())
+        })
       }
       
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
-      })
+      $onInit(){
+        try {
+          const wodles = this.osquery.data.data.wmodules
+          this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
+        } catch (err) {
+          this.toast('Cannot load wodle configuration. Osquery is not configured.')
+        }
+      }
       
-      $scope.$on('barFilter', () => {
-        launchSearches()
-      })
-      
-      const vizz = [
-      /**
-      * Visualizations
-      */
-      new AreaChart('alertsOverTime',`${filters} sourcetype=wazuh | timechart span=1h count`,'alertsOverTime'),
-      new AreaChart('alertsEvolution',`${filters} sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,'alertsEvolution'),
-      new PieChart('mostCommonEvents',`${filters} sourcetype=wazuh  | top data.osquery.name limit=5`,'mostCommonEvents'),
-      new Table('topPacks',`${filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,'topPacks'),
-      new Table('topRules',`${filters} sourcetype=wazuh  | top rule.id, rule.description limit=5`,'topRules')
-      ]
-      /**
-      * On controller destroy
-      */
-      $scope.$on('$destroy', () => {
-        timePicker.destroy()
-        vizz.map( (vizz) => vizz.destroy())
-      })
-    })
+      launchSearches(){
+        this.filters = this.getFilters()
+        this.state.reload()
+      }
+    }
+    
+    app.controller('osqueryCtrl', Osquery)
   })
