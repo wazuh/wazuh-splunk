@@ -65,17 +65,10 @@ define([
           '$form.profile$',
           'dropDownInput'
           )
-          console.log('dropdown ', this.dropdown)
           this.dropdownInstance = this.dropdown.getElement()
-          console.log('dropdownInstance ', this.dropdownInstance)
           this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-          console.log('submittedTokenModel ', this.submittedTokenModel)
           this.dropdownInstance.on("change", function(newValue){
-            console.log('onChange dropdownInstance', this.dropdownInstance)
-            console.log('onChange newValue', newValue)
             if (newValue && this.dropdownInstance){
-              console.log('CHANGED')
-              console.log('CHANGED dropdownInstance', this.dropdownInstance)
               this.urlTokenModel.handleValueChange(this.dropdownInstance)
             }
           })  

@@ -45,13 +45,8 @@ define([
           )
           
           this.dropdownInstance = this.dropdown.getElement()
-          console.log("dropDownInstance : ", this.dropdownInstance)
           this.dropdownInstance.on("change", function(newValue){
-            console.log("newValue : ", newValue)
-            console.log("in change")
-            console.log("instancia dropdown cambiad : ", this.dropdownInstance)
             if (newValue && this.dropdownInstance){
-              console.log("ha cambiado")
               this.urlTokenModel.handleValueChange(this.dropdownInstance)
             }
           })  
