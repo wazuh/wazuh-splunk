@@ -23,7 +23,7 @@ define([
         this.dropdown = new Dropdown(
           'inputIndexes',
           `| metasearch index=* sourcetype=wazuh | stats count by index, sourcetype | fields index`,
-          'rule.gdpr{}',
+          'index',
           '$form.index$',
           'inputIndexes',
           'wazuh',
@@ -31,7 +31,7 @@ define([
           'now'
         )
       }
-      
+
       /**
        * On controller loads
        */
