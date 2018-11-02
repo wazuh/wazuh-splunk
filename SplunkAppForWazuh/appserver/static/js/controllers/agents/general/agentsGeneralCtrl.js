@@ -1,3 +1,15 @@
+/*
+* Wazuh app - Agents controller
+* Copyright (C) 2018 Wazuh, Inc.
+*
+* This program is free software you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation either version 2 of the License, or
+* (at your option) any later version.
+*
+* Find more information about this on the LICENSE file.
+*/
+
 define([
   '../../module',
   '../../../services/visualizations/chart/linear-chart',
@@ -15,89 +27,117 @@ define([
   ) {
     'use strict'
     
-    app.controller('agentsGeneralCtrl', function ($urlTokenModel, $scope, $requestService, $notificationService, $stateParams, $currentDataService, agent, $state) {
-      if (!$currentDataService.getCurrentAgent()) { $state.go('overview') }
-      let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-      
-      const agentInfo = {
-        name: agent[0].data.data.name,
-        id: agent[0].data.data.id,
-        status: agent[0].data.data.status,
-        ip: agent[0].data.data.ip,
-        version: agent[0].data.data.version,
-        group: agent[0].data.data.group,
-        lastKeepAlive: agent[0].data.data.lastKeepAlive,
-        dateAdd: agent[0].data.data.dateAdd,
-        agentOS: `${agent[0].data.data.os.name} ${agent[0].data.data.os.codename} ${agent[0].data.data.os.version}`,
-        syscheck: agent[1].data.data,
-        rootcheck: agent[2].data.data
-      }
-      $scope.agentInfo = agentInfo
-      
-      $scope.agent = agent[0].data.data
-      $scope.id = $stateParams.id
-      
-      $scope.goGroups = async (group) => {
-        try {
-          const groupInfo = await $requestService.apiReq(`/agents/groups/`)
-          const groupData = groupInfo.data.data.items.filter( item => item.name === group)
-          if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
-            throw Error('Missing fields')
-          }
-          $state.go(`mg-groups`, { group: groupData[0] } )
-        } catch (err) {
-          $notificationService.showSimpleToast('Error fetching group data')
-        }
-      }
-      
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
-        searches.map(search => search.startSearch())
-      }
-      
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
-      })
-      
-      $scope.$on('barFilter', () => {
-        launchSearches()
-      })
-      
-      const vizz = [      
-        /**
-        * Visualizations
-        */
-       new PieChart('top5AlertsVizz',
-       `${filters} sourcetype=wazuh | top \"rule.description\" limit=5`,
-       'top5AlertsVizz'),
-       new PieChart('top5GroupsVizz',
-       `${filters} sourcetype=wazuh | top rule.groups limit=5`,
-       'top5GroupsVizz'),
-       new PieChart('top5PCIreqVizz',
-       `${filters} sourcetype=wazuh | top rule.pci_dss{} limit=5`,
-       'top5PCIreqVizz'),
-       new LinearChart('alertLevelEvoVizz',
-       `${filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-       'alertLevelEvoVizz'),
-       new ColumnChart('alertsVizz',
-       `${filters} sourcetype=wazuh | timechart span=2h count`,
-       'alertsVizz'),
-       new Table('agentsSummaryVizz',
-       `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
-       'agentsSummaryVizz')
-      ]
+    class AgentsGeneral{
       
       /**
-      * When controller is destroyed
+      * Class constructor
+      * @param {Object} $scope 
+      * @param {Object} $currentDataService
+      * @param {Object} $urlTokenModel
+      * @param {Object} $requestService
+      * @param {Object} $notificationService
+      * @param {Object} $stateParams
+      * @param {Object} $state
+      * @param {Object} agent
       */
-      $scope.$on('$destroy', () => {
-        timePicker.destroy()
-        vizz.map( (vizz) => vizz.destroy())
-      })
       
-    })
+      constructor($urlTokenModel, $scope, $requestService, $notificationService, $stateParams, $currentDataService, agent, $state){
+        this.state = $state
+        if (!$currentDataService.getCurrentAgent()) { this.state.go('overview') }
+        
+        this.urlTokenModel = $urlTokenModel
+        this.scope = $scope
+        this.requestService = $requestService
+        this.notificationService = $notificationService
+        this.stateParams = $stateParams
+        this.agent = agent
+        
+        this.filters = $currentDataService.getSerializedFilters()
+        this.timePicker = new TimePicker('#timePicker', this.urlTokenModel.handleValueChange)
+
+        this.agentInfo = {
+          name: this.agent[0].data.data.name,
+          id: this.agent[0].data.data.id,
+          status: this.agent[0].data.data.status,
+          ip: this.agent[0].data.data.ip,
+          version: this.agent[0].data.data.version,
+          group: this.agent[0].data.data.group,
+          lastKeepAlive: this.agent[0].data.data.lastKeepAlive,
+          dateAdd: this.agent[0].data.data.dateAdd,
+          agentOS: `${this.agent[0].data.data.os.name} ${this.agent[0].data.data.os.codename} ${this.agent[0].data.data.os.version}`,
+          syscheck: this.agent[1].data.data,
+          rootcheck: this.agent[2].data.data
+        }
+
+        this.scope.agentInfo = this.agentInfo
+      
+        this.scope.agent = this.agent[0].data.data
+        this.scope.id = this.stateParams.id
+        
+        this.scope.goGroups = async (group) => {
+          try {
+            this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
+            this.groupData = this.groupInfo.data.data.items.filter( item => item.name === group)
+            if (!this.groupInfo || !this.groupInfo.data || !this.groupInfo.data.data || this.groupInfo.data.error) {
+              throw Error('Missing fields')
+            }
+            this.state.go(`mg-groups`, { group: this.groupData[0] } )
+          } catch (err) {
+            this.notificationService.showSimpleToast('Error fetching group data')
+          }
+        }
+        
+        this.launchSearches = () => {
+          this.filters = $currentDataService.getSerializedFilters()
+          this.state.reload();
+          this.searches.map(search => search.startSearch())
+        }
+        
+        this.scope.$on('deletedFilter', () => {
+          launchSearches()
+        })
+        
+        this.scope.$on('barFilter', () => {
+          launchSearches()
+        })
+        
+        this.vizz = [      
+          /**
+          * Visualizations
+          */
+         new PieChart('top5AlertsVizz',
+         `${this.filters} sourcetype=wazuh | top \"rule.description\" limit=5`,
+         'top5AlertsVizz'),
+         new PieChart('top5GroupsVizz',
+         `${this.filters} sourcetype=wazuh | top rule.groups limit=5`,
+         'top5GroupsVizz'),
+         new PieChart('top5PCIreqVizz',
+         `${this.filters} sourcetype=wazuh | top rule.pci_dss{} limit=5`,
+         'top5PCIreqVizz'),
+         new LinearChart('alertLevelEvoVizz',
+         `${this.filters} sourcetype=wazuh rule.level=*| timechart count by rule.level`,
+         'alertLevelEvoVizz'),
+         new ColumnChart('alertsVizz',
+         `${this.filters} sourcetype=wazuh | timechart span=2h count`,
+         'alertsVizz'),
+         new Table('agentsSummaryVizz',
+         `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
+         'agentsSummaryVizz')
+        ]
+        
+        /**
+        * When controller is destroyed
+        */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map( (vizz) => vizz.destroy())
+        })        
+
+      }
+    }
+    
+    app.controller('agentsGeneralCtrl', AgentsGeneral)
+    
   })
   
   
