@@ -131,7 +131,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/status/status.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-status') },
       controller: 'statusCtrl',
-      controllerAs: 'mst',
       resolve: {
         statusData: ['$requestService', async ($requestService) => {
           const responseStatus = await $requestService.apiReq('/cluster/status')
