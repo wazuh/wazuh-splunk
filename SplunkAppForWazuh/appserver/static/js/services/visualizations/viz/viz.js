@@ -18,12 +18,15 @@ define([
       * @param {String} id 
       * @param {SearchManager} search 
       */
-      constructor(element,id,search) {
+
+      constructor(element,id,search, earliestTime, latestTime) {
         this.id = id
+        this.earliestTime = (earliestTime) ? earliestTime : '$when.earliest$'
+        this.latestTime = (latestTime) ? latestTime : '$when.latest$'
         this.search = new SearchManager({
           "id": `${this.id}Search`,
-          "earliest_time": "$when.earliest$",
-          "latest_time": "$when.latest$",
+          "earliest_time": this.earliestTime,
+          "latest_time":  this.latestTime ,
           "status_buckets": 0,
           "sample_ratio": null,
           "cancelOnUnload": true,

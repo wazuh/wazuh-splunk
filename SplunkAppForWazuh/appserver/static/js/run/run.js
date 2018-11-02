@@ -9,13 +9,14 @@ define(['./module'], function (module) {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $navigationService.storeRoute(state)
+          $navigationService.storeRoute(state.label)
           $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
-          $rootScope.$broadcast('stateChanged', state)
+          $rootScope.$broadcast('stateChanged', state.state)
         }catch (err){
           $rootScope.$broadcast('loading', { status: false })
-          if (state != 'settings.api')
+          if (state.label != 'settings.api')
+          $rootScope.$broadcast('stateChanged', 'settings')
           $state.go('settings.api')
         }
       }
@@ -30,11 +31,11 @@ define(['./module'], function (module) {
       $transitions.onStart({}, async (trans) => {
         $rootScope.$broadcast('loading', { status: true })
         //Primary states
-        if ( trans.to().name === 'dev-tools' ) { checkBeforeTransition('dev-tools') }
-        if ( trans.to().name === 'settings.api' ) { checkBeforeTransition('settings.api') }
-        if ( trans.to().name === 'agents' ) { checkBeforeTransition('agents') }
-        if ( trans.to().name === 'overview' ) { checkBeforeTransition('overview') }
-        if ( trans.to().name === 'manager' ) { checkBeforeTransition('manager') }
+        if ( trans.to().name === 'dev-tools' ) { checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
+        if ( trans.to().name === 'settings.api' ) { checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
+        if ( trans.to().name === 'agents' ) { checkBeforeTransition({label: 'agents', state: 'agents'}) }
+        if ( trans.to().name === 'overview' ) { checkBeforeTransition({label: 'overview', state: 'overview'}) }
+        if ( trans.to().name === 'manager' ) { checkBeforeTransition({label: 'manager', state: 'manager'}) }
         //Secondary states
         if ( trans.to().name.includes('agent') || trans.to().name.includes('ag-') ) {
           $rootScope.$broadcast('stateChanged', 'agents')
