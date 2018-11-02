@@ -26,8 +26,8 @@ define([
     'use strict'
     
     class OsqueryAgents {
-
-            /**
+      
+      /**
       * Class constructor
       * @param {Object} $urlTokenModel 
       * @param {Object} $state 
@@ -37,25 +37,25 @@ define([
       * @param {Object} agent
       * @param {Object} osquery
       */
-
+      
       constructor ($urlTokenModel, $scope, agent, $notificationService, $currentDataService, $state, osquery) {
         this.state = $state
         this.currentDataService = $currentDataService
-
+        
         if (!this.currentDataService.getCurrentAgent()) { this.state.go('overview') }
-
+        
         this.scope = $scope
         this.urlTokenModel = $urlTokenModel
         this.notificationService = $notificationService
         this.scope.agent = agent.data.data
         this.osquery = osquery
-
+        
         this.filters = this.currentDataService.getSerializedFilters()
         this.timePicker = new TimePicker('#timePicker',this.urlTokenModel.handleValueChange)
-
-
+        
+        
         this.scope.osqueryWodle = null
-
+        
         try {
           this.currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
           this.wodles = this.osquery.data.data.wmodules
@@ -63,7 +63,7 @@ define([
         } catch (err) {
           this.notificationService.showSimpleToast('Cannot load wodle configuration. Osquery not configured.')
         }
-
+        
         this.launchSearches = () => {
           this.filters = this.currentDataService.getSerializedFilters()
           this.state.reload();
@@ -76,7 +76,7 @@ define([
         this.scope.$on('barFilter', () => {
           launchSearches()
         })
-
+        
         this.vizz= [
           /**
           * Visualizations
@@ -105,9 +105,9 @@ define([
           this.timePicker.destroy()
           this.vizz.map( (vizz) => vizz.destroy())
         })
-
+        
       }
-
+      
       $onInit(){
         this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
         this.scope.formatAgentStatus = agentStatus => {
@@ -115,9 +115,9 @@ define([
         }
       }
     }
-
+    
     app.controller('osqueryAgentCtrl', OsqueryAgents)
-
+    
   })
   
   
