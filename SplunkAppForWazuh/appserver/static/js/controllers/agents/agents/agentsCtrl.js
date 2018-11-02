@@ -83,11 +83,6 @@ define([
         this.scope.node_name = 'all'
         this.scope.versionModel = 'all'
         
-        // this.scope.mostActiveAgent = {
-        //   name: '',
-        //   id: ''
-        // }
-        
         this.scope.$on('$destroy', () => {
           this.topAgent.destroy()
         })
