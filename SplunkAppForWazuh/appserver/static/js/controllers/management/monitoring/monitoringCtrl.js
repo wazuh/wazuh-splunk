@@ -43,7 +43,8 @@ define([
           new PieChart('topNodes',`${this.filters} sourcetype=wazuh | top cluster.node`,'topNodes'),
           new ColumChart('overviewNode',`${this.filters} sourcetype=wazuh | timechart span=2h count`,'overviewNode'),
         ]
-        
+        const parsedResult = monitoringInfo.map(item => item && item.data && item.data.data ? item.data.data : false)
+
         const [
           status,
           nodes,
@@ -51,12 +52,12 @@ define([
           version,
           agents,
           health,
-        ] = monitoringInfo
+        ] = parsedResult
         
-        this.running = status.data.data.running
-        this.enabled = status.data.data.enabled
-        this.nodes = nodes.data.data
-        this.nodesCount = nodes.data.data.totalItems
+        this.running = status.running
+        this.enabled = status.enabled
+        this.nodes = nodes
+        this.nodesCount = nodes.totalItems
         this.configuration = configuration
         this.version = version
         this.agents = agents
