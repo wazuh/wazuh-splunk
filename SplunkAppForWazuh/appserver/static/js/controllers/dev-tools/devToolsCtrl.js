@@ -41,12 +41,12 @@ define([
       }
 
       unescapeBuffer(s, decodeSpaces) {
-        var out = new Buffer(s.length);
-        var state = 0;
-        var n, m, hexchar;
+        let out = new Buffer(s.length);
+        let state = 0;
+        let n, m, hexchar;
 
-        for (var inIndex = 0, outIndex = 0; inIndex <= s.length; inIndex++) {
-          var c = inIndex < s.length ? s.charCodeAt(inIndex) : NaN;
+        for (let inIndex = 0, outIndex = 0; inIndex <= s.length; inIndex++) {
+          let c = inIndex < s.length ? s.charCodeAt(inIndex) : NaN;
           switch (state) {
             case 0: // Any character
               switch (c) {
