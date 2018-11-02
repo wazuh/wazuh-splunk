@@ -211,9 +211,7 @@ define(['../module'], function (module) {
     
     // agents - configuration
     .state('ag-conf', {
-      //TODO change templateUrl location
-      //templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/configuration/configuration.html',
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/views/manager/configuration/configuration.html',
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/configuration/configuration.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ag-conf') },
       controller: 'configurationAgentCtrl',
       params: { id: null },
