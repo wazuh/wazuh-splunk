@@ -46,10 +46,10 @@ define([
           /**
           * Metrics
           */
-          new SearchHandler(`filesAddedSearch`,`${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',submittedTokenModel,$scope),
-          new SearchHandler(`readFilesSearch`,`${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',submittedTokenModel,$scope),
-          new SearchHandler(`modifiedFiles`,`${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',submittedTokenModel,$scope),
-          new SearchHandler(`deletedFiles`,`${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',submittedTokenModel,$scope),
+          new SearchHandler(`filesAddedSearch`,`${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,`filesAddedToken`,'$result.count$','newFiles',this.submittedTokenModel,this.scope),
+          new SearchHandler(`readFilesSearch`,`${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,`readFilesToken`,'$result.count$','readFiles',this.submittedTokenModel,this.scope),
+          new SearchHandler(`modifiedFiles`,`${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,`filesModifiedToken`,'$result.count$','filesModifiedToken',this.submittedTokenModel,this.scope),
+          new SearchHandler(`deletedFiles`,`${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,'filesDeletedToken','$result.count$','filesDeleted',this.submittedTokenModel,this.scope),
           /**
           * Visualizations
           */
