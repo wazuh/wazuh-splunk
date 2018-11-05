@@ -31,6 +31,18 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/settings/extensions/extensions.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('settings.extensions') },
       controller: 'extensionsCtrl',
+      resolve: {
+        extensions: ['$requestService', '$currentDataService', async ($requestService, $currentDataService) => {
+          try{
+            const id = $currentDataService.getApi().id
+            const result = ($currentDataService.getExtensions(id)) ? $currentDataService.getExtensions(id) : $requestService.httpReq(`GET`,`/manager/extensions`)
+            console.log('result ',result)
+            return await result
+          }catch(err) {
+            console.error('Error route: ', err)
+          }
+        }]
+      }
     })
     .state('settings.index', { templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/settings/index/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
     .state('settings.logs', {

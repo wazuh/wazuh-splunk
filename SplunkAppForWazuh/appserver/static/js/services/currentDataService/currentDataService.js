@@ -89,8 +89,8 @@ define(['../module'], function (module) {
       return $apiIndexStorageService.getExtensions()
     }
 
-    const setExtensions = (api) => {
-      return $apiIndexStorageService.setExtensions(api)
+    const setExtensions = (api,extensions) => {
+      return $apiIndexStorageService.setExtensions(api,extensions)
     }
 
     const removeCurrentApi = () => {

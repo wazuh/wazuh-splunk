@@ -80,11 +80,11 @@ define(['../module'], function (app) {
     }
     
     setExtensions(id, extensions) {
-      const current = this.sessionStorage.extensions || {}
-      current[id] = {...extensions}
-      if (extensions) {
-        this.sessionStorage.extensions = current
-      }
+      try{
+        if (extensions) {
+          this.sessionStorage.setItem('extensions', JSON.stringify({id:id,...extensions}) || {})
+        }
+      } catch(err) {}
     }
     
     
