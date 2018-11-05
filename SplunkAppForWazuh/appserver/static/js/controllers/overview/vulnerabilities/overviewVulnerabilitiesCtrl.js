@@ -23,10 +23,11 @@ define([
       constructor($urlTokenModel, $scope, $currentDataService, $state) {
         this.scope = $scope
         this.state = $state
-        this.filters = $currentDataService.getSerializedFilters()
         this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         this.getFilters = $currentDataService.getSerializedFilters
+        this.filters = this.getFilters()
+
         this.$on('deletedFilter', () => {
           this.launchSearches()
         })
