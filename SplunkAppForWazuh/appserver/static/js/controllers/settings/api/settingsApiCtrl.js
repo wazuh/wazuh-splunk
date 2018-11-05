@@ -112,7 +112,6 @@ define([
           if (!this.scope.$$phase) this.scope.$digest()
           
         } catch (err) {
-          console.error('err ',err)
           this.toast('Unreachable API')
         }
       }
@@ -263,14 +262,10 @@ define([
             
           } catch (err) {
             this.currentDataService.remove(id).then(() => { }).catch((err) => { this.toast('Unexpected error') })
-            console.error('err ',err)
-
             this.toast('Unreachable API')
           }
           
         } catch (err) {
-          console.error('err ',err)
-
           this.toast(err.message)
         }
       }

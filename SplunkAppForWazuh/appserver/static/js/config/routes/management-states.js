@@ -116,7 +116,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/groups/groups.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-groups') },
       controller: 'groupsCtrl',
-      controllerAs: 'mgr',
       params: { group: null }
     })
     

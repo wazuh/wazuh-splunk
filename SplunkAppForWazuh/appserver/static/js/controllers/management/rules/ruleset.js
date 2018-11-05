@@ -155,7 +155,6 @@ define(['../../module'], function (controllers) {
         }
         return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
       } catch (err) {
-        console.error('err ', err)
         this.toast('Error removing the filter')
       }
     }

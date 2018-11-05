@@ -22,7 +22,6 @@ define(['../../module','./ruleset'], function (controllers,Ruleset) {
             }
           }
         } catch(err) {
-          console.error('err',err)
           this.toast('Error applying filter')
         }
       })

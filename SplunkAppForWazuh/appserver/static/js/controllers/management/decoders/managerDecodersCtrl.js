@@ -36,7 +36,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
               this.scope.$broadcast('wazuhFilter', { filter: this.filter })
           }
         } catch (err) {
-          console.error('err ',err)
           this.toast('Error applying filter')
         }
       })

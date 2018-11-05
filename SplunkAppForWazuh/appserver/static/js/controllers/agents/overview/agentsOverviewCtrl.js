@@ -41,7 +41,7 @@ define(['../../module'], function (app) {
         try {
           this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
           this.groupData = this.groupInfo.data.data.items.filter( item => item.name === group)
-          if (!groupInfo || !this.groupInfo.data || !this.groupInfo.data.data || this.groupInfo.data.error) {
+          if (!this.groupInfo || !this.groupInfo.data || !this.groupInfo.data.data || this.groupInfo.data.error) {
             throw Error('Missing fields')
           }
           this.state.go(`mg-groups`, { group: this.groupData[0] } )
