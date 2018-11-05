@@ -16,50 +16,59 @@ define([
     
     'use strict'
     
-    app.controller('overviewFimCtrl', function ($urlTokenModel, $scope, $currentDataService, $state) {
-      let filters = $currentDataService.getSerializedFilters()
-      const timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
+    class OverviewFIM{
+      constructor($urlTokenModel, $scope, $currentDataService, $state){
+        this.scope = $scope
+        this.state = $state
+        this.getFilters = $currentDataService.getSerializedFilters
+        this.filters = this.getFilters()
+        this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+        this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
+        
+        this.vizz = [
+          /**
+          * Visualizations
+          */
+          new PieChart('deletedFiles',`${this.filters} sourcetype=wazuh syscheck.event=deleted | top agent.name limit=5`,'deletedFiles'),
+          new ColumnChart('whodataUsage',`${this.filters} sourcetype=wazuh
+          | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
+          | stats count BY WHODATA
+          | addcoltotals count labelfield=WHODATA label=Total
+          | where NOT WHODATA="NOWHO"`,'whodataUsage'),
+          new PieChart('alertsVolume',`${this.filters} sourcetype=wazuh | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
+          | stats count BY SYSCHECK
+          | addcoltotals count labelfield=SYSCHECK label=Total
+          | where NOT SYSCHECK="NO"`,'alertsVolume'),
+          new PieChart('newFiles',`${this.filters} sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,'newFiles'),
+          new PieChart('modifiedFiles',`${this.filters} sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,'modifiedFiles'),
+          new LinearChart('eventsSummary',`${this.filters} sourcetype=wazuh | timechart count`,'eventsSummary'),
+          new Table('topRules',`${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'topRules'),
+          new Table('topUsers',`${this.filters} sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,'topUsers')
+        ]
+        
+        this.$on('deletedFilter', () => {
+          this.launchSearches()
+        })
+        
+        this.$on('barFilter', () => {
+          this.launchSearches()
+        })
+        
+        /**
+        * On controller destroy
+        */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map( (vizz) => vizz.destroy())
+        })
+        
       }
       
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
-      })
+      launchSearches() {
+        this.filters = this.getFilters()
+        this.state.reload()
+      }
       
-      $scope.$on('barFilter', () => {
-        launchSearches()
-      })
-      
-      const vizz = [
-      /**
-      * Visualizations
-      */
-      new PieChart('deletedFiles',`${filters} sourcetype=wazuh syscheck.event=deleted | top agent.name limit=5`,'deletedFiles'),
-      new ColumnChart('whodataUsage',`${filters} sourcetype=wazuh
-      | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
-      | stats count BY WHODATA
-      | addcoltotals count labelfield=WHODATA label=Total
-      | where NOT WHODATA="NOWHO"`,'whodataUsage'),
-      new PieChart('alertsVolume',`${filters} sourcetype=wazuh | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
-      | stats count BY SYSCHECK
-      | addcoltotals count labelfield=SYSCHECK label=Total
-      | where NOT SYSCHECK="NO"`,'alertsVolume'),
-      new PieChart('newFiles',`${filters} sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,'newFiles'),
-      new PieChart('modifiedFiles',`${filters} sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,'modifiedFiles'),
-      new LinearChart('eventsSummary',`${filters} sourcetype=wazuh | timechart count`,'eventsSummary'),
-      new Table('topRules',`${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'topRules'),
-      new Table('topUsers',`${filters} sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,'topUsers')
-      ]
-
-      /**
-      * On controller destroy
-      */
-      $scope.$on('$destroy', () => {
-        timePicker.destroy()
-        vizz.map( (vizz) => vizz.destroy())       
-      })
-    })
+    }
+    app.controller('overviewFimCtrl', OverviewFIM)
   })
