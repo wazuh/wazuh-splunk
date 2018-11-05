@@ -46,11 +46,11 @@ define([
           new Table('topUsers',`${this.filters} sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,'topUsers')
         ]
         
-        this.$on('deletedFilter', () => {
+        this.scope.$on('deletedFilter', () => {
           this.launchSearches()
         })
         
-        this.$on('barFilter', () => {
+        this.scope.$on('barFilter', () => {
           this.launchSearches()
         })
         

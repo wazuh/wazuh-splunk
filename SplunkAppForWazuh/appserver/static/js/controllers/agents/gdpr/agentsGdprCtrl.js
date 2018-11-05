@@ -28,26 +28,27 @@ define([
       */
       
       constructor($urlTokenModel, $currentDataService, $scope ,$state, agent) {
+        this.scope = $scope
         this.state = $state
         if (!$currentDataService.getCurrentAgent()) { this.state.go('overview') }
-        this.urlTokenModel = $urlTokenModel
-        this.scope = $scope
+        //this.urlTokenModel = $urlTokenModel
         this.agent = agent
-        this.filters = $currentDataService.getSerializedFilters()
-        this.timePicker = new TimePicker('#timePicker',this.urlTokenModel.handleValueChange)
+        this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
         
         this.dropdown = new Dropdown(
           'dropDownInput',
-          `${this.filters} sourcetype=wazuh rule.gdpr{}=* | stats count by rule.gdpr{} | spath rule.gdpr{} | fields - count`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
           'rule.gdpr{}',
           '$form.gdpr$',
           'dropDownInput'
           )
-          
+          this.getFilters = $currentDataService.getSerializedFilters
+          this.filters = this.getFilters()
+
           this.dropdownInstance = this.dropdown.getElement()
-          this.dropdownInstance.on("change", function(newValue){
+          this.dropdownInstance.on("change", (newValue) => {
             if (newValue && this.dropdownInstance){
-              this.urlTokenModel.handleValueChange(this.dropdownInstance)
+              $urlTokenModel.handleValueChange(this.dropdownInstance)
             }
           })  
           
@@ -55,17 +56,12 @@ define([
           
           this.scope.gdprTabs = false
           
-          this.launchSearches = () => {
-            this.filters = $currentDataService.getSerializedFilters()
-            this.state.reload();
-            // searches.map(search => search.startSearch())
-          }
           this.scope.$on('deletedFilter', () => {
-            launchSearches()
+            this.launchSearches()
           })
           
           this.scope.$on('barFilter', () => {
-            launchSearches()
+            this.launchSearches()
           })
           
           this.vizz = [
@@ -104,6 +100,11 @@ define([
           this.scope.formatAgentStatus = agentStatus => {
             return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
           }
+        }
+
+        launchSearches(){
+          this.filters = this.getFilters()
+          this.state.reload()
         }
         
       }

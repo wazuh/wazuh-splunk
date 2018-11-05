@@ -37,11 +37,11 @@ define([
           new PieChart('topSources',`${this.filters} sourcetype=wazuh | top "data.aws.log_info.s3bucket"`,'topSources'),
           new Table('topRules',`${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,'topRules')
         ]
-        this.$on('deletedFilter', () => {
+        this.scope.$on('deletedFilter', () => {
           this.launchSearches()
         })
         
-        this.$on('barFilter', () => {
+        this.scope.$on('barFilter', () => {
           this.launchSearches()
         })
         

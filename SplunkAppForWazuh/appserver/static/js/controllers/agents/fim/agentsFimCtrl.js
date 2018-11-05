@@ -39,18 +39,12 @@ define([
         
         this.scope.agent = agent.data.data  
         
-        this.launchSearches = () => {
-          this.filters = $currentDataService.getSerializedFilters()
-          this.state.reload();
-          // searches.map(search => search.startSearch())
-        }
-        
         this.scope.$on('deletedFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.scope.$on('barFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.vizz = [
@@ -95,7 +89,13 @@ define([
         this.scope.formatAgentStatus = agentStatus => {
           return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
         }
-      }   
+      }
+
+      launchSearches(){
+        this.filters = $currentDataService.getSerializedFilters()
+        this.state.reload()
+      }
+      
     }  
     app.controller('agentsFimCtrl', AgentsFim)
   })

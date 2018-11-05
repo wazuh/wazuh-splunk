@@ -28,11 +28,11 @@ define([
         this.getFilters = $currentDataService.getSerializedFilters
         this.filters = this.getFilters()
 
-        this.$on('deletedFilter', () => {
+        this.scope.$on('deletedFilter', () => {
           this.launchSearches()
         })
         
-        this.$on('barFilter', () => {
+        this.scope.$on('barFilter', () => {
           this.launchSearches()
         })
    

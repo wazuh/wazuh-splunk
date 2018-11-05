@@ -28,7 +28,7 @@ define([
         })
         
         this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-        this.dropdown = new Dropdown('dropDownInput',
+        this.dropdown = new Dropdown('dropDownInputAgent',
         `${this.filters} sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
@@ -37,8 +37,9 @@ define([
         
         this.dropdownInstance = this.dropdown.getElement()
         this.dropdownInstance.on("change", (newValue) => {
-          if (newValue && this.dropdownInstance)
-          $urlTokenModel.handleValueChange(this.dropdownInstance)
+          if (newValue && this.dropdownInstance){
+            $urlTokenModel.handleValueChange(this.dropdownInstance)
+          }
         })
         
         this.vizz = [

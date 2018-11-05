@@ -54,17 +54,12 @@ define([
         
         this.scope.agent = agent.data.data
         
-        this.launchSearches = () => {
-          this.filters = $currentDataService.getSerializedFilters()
-          this.state.reload();
-        }
-        
         this.scope.$on('deletedFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.scope.$on('barFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.vizz = [
@@ -124,7 +119,12 @@ define([
           this.timePicker.destroy()
           this.vizz.map( (vizz) => vizz.destroy())
         })
-      } 
+      }
+
+      launchSearches(){
+        this.filters = $currentDataService.getSerializedFilters()
+        this.state.reload()
+      }
     }
     app.controller('agentsAuditCtrl', AgentsAudit)
   })

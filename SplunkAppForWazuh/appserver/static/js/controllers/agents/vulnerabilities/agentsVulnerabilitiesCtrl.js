@@ -52,18 +52,13 @@ define([
 
         this.timePicker = new TimePicker('#timePicker', this.urlTokenModel.handleValueChange)
         this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
-        this.launchSearches = () => {
-          this.filters = this.currentDataService.getSerializedFilters()
-          this.state.reload();
-        }
-        
+       
         this.scope.$on('deletedFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.scope.$on('barFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
 
         this.scope.agent = this.agent.data.data
@@ -127,6 +122,12 @@ define([
           return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
         }
       }
+
+      launchSearches(){
+        this.filters = $currentDataService.getSerializedFilters()
+        this.state.reload()
+      }
+      
     }
 
     app.controller('agentsVulnerabilitiesCtrl', AgentsVulnerabilities)

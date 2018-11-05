@@ -26,11 +26,11 @@ define([
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         this.timePicker = new TimePicker('#input1',$urlTokenModel.handleValueChange)
         
-        this.$on('deletedFilter', () => {
+        this.scope.$on('deletedFilter', () => {
           this.launchSearches()
         })
         
-        this.$on('barFilter', () => {
+        this.scope.$on('barFilter', () => {
           this.launchSearches()
         })
         

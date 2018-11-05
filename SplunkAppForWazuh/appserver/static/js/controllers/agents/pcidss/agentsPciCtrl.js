@@ -25,15 +25,16 @@ define([
         this.filters = $currentDataService.getSerializedFilters()
         this.timePicker = new TimePicker('#timePicker',this.urlTokenModel.handleValueChange)
         this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-        this.$on('deletedFilter', () => {
+        this.scope.$on('deletedFilter', () => {
           this.launchSearches()
         })
         
-        this.$on('barFilter', () => {
+        this.scope.$on('barFilter', () => {
           this.launchSearches()
         })
         
         this.scope.$on('$destroy', () => {
+          this.dropdown.destroy()
           this.timePicker.destroy()
           this.vizz.map( (vizz) => vizz.destroy())
         })

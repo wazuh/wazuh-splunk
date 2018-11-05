@@ -63,18 +63,13 @@ define([
         } catch (err) {
           this.notificationService.showSimpleToast('Cannot load wodle configuration. Osquery not configured.')
         }
-        
-        this.launchSearches = () => {
-          this.filters = this.currentDataService.getSerializedFilters()
-          this.state.reload();
-        }
-        
+
         this.scope.$on('deletedFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.scope.$on('barFilter', () => {
-          launchSearches()
+          this.launchSearches()
         })
         
         this.vizz= [
@@ -113,6 +108,11 @@ define([
         this.scope.formatAgentStatus = agentStatus => {
           return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
         }
+      }
+      
+      launchSearches(){
+        this.filters = $currentDataService.getSerializedFilters()
+        this.state.reload()
       }
     }
     
