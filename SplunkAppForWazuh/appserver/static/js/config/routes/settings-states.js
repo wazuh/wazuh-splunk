@@ -29,8 +29,8 @@ define(['../module'], function (module) {
     })
     .state('settings.extensions', {
       templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/settings/extensions/extensions.html',
-      onEnter: ($navigationService) => { $navigationService.storeRoute('dev-tools') },
-      controller: 'devToolsCtrl',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('extensions') },
+      controller: 'extensionsCtrl',
     })
     .state('settings.index', { templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/settings/index/index.html', onEnter: ($navigationService) => { $navigationService.storeRoute('settings.index') } })
     .state('settings.logs', {
