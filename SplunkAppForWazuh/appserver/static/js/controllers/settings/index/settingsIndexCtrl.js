@@ -37,7 +37,7 @@ define([
        */
       $onInit(){
         this.dropdownInstance = this.dropdown.getElement()    
-        this.dropdownInstance.on("change", function(newValue){
+        this.dropdownInstance.on("change", (newValue) => {
           if (newValue && this.dropdownInstance)
           this.urlTokenModel.handleValueChange(this.dropdownInstance)
         })  

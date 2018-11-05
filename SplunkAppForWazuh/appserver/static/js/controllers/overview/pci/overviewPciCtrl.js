@@ -59,7 +59,7 @@ define([
           `${this.filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count`,
           'alertsSummaryViz')
         ]
-        this.dropdownInstance.on("change", function(newValue){
+        this.dropdownInstance.on("change", (newValue) => {
           if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         })

@@ -67,7 +67,7 @@ define([
           )
           this.dropdownInstance = this.dropdown.getElement()
           this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-          this.dropdownInstance.on("change", function(newValue){
+          this.dropdownInstance.on("change", (newValue) => {
             if (newValue && this.dropdownInstance){
               this.urlTokenModel.handleValueChange(this.dropdownInstance)
             }
