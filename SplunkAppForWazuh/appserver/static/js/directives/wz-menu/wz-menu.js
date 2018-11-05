@@ -1,15 +1,15 @@
 
 /*
- * Wazuh app - Top nav bar directive
- * Copyright (C) 2018 Wazuh, Inc.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * Find more information about this on the LICENSE file.
- */
+* Wazuh app - Top nav bar directive
+* Copyright (C) 2018 Wazuh, Inc.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* Find more information about this on the LICENSE file.
+*/
 define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzMenu', function (BASE_URL) {
@@ -20,6 +20,16 @@ define(['../module'], function (directives) {
         $scope.select = (item) => {
           $scope.menuNavItem = item
           if (!$scope.$$phase) $scope.$digest()
+        }
+        
+        $scope.dumpHtml = (item) => {
+          $scope.menuNavItem = item
+          $scope.$broadcast('stateChanged', 'discover')
+          if (!$scope.$$phase) $scope.$digest()         
+          //Generate url           
+          let filters = $currentDataService.getSerializedFilters()
+          let url = `${BASE_URL}/app/search/search?q=${filters}`
+          window.open(url)
         }
         
         const update = () => {
@@ -46,14 +56,15 @@ define(['../module'], function (directives) {
             $scope.menuNavItem = 'dev-tools'
             if (!$scope.$$phase) $scope.$digest()
           }
+
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
           update()
         })
+        //Listens for changes in states
         $scope.$on('stateChanged', (params,data) => {
           $scope.select(data)
-          //update()
         })
         update()
       },
