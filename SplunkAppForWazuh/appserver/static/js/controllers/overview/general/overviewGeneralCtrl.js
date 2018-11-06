@@ -22,7 +22,8 @@ define([
     
     class OverviewGeneral{
       constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, pollingState){
-        this.filters = $currentDataService.getSerializedFilters()
+        this.currentDataService = $currentDataService
+        this.filters = this.currentDataService.getSerializedFilters()
         this.scope = $scope
         this.apiReq = $requestService.apiReq
         this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
@@ -81,7 +82,26 @@ define([
           
         } else {
           this.scope.wzMonitoringEnabled = true
-          this.vizz.push(new AreaChart(`agentStatusHistory`,`index=wazuh-monitoring-3x status=* | timechart span=1h count by status usenull=f`,`agentStatus`))
+
+          //Filters for agents Status
+          this.backupFilters = this.currentDataService.getFilters()
+          if (Object.keys(this.backupFilters[0])[0] == 'manager.name'){
+            this.managerName = this.backupFilters[0]['manager.name']
+            this.currentDataService.cleanFilters()
+            this.currentDataService.addFilter(JSON.stringify({manager:this.managerName}))
+            this.currentDataService.addFilter(JSON.stringify({index:'wazuh-monitoring-3x'}))
+            this.agentsStatusFilter = this.currentDataService.getSerializedFilters()
+            this.currentDataService.cleanFilters()
+            this.backupFilters.map( (bf) => {
+              this.currentDataService.addFilter(JSON.stringify(bf))
+            })
+          }else {
+            this.currentDataService.addFilter(JSON.stringify({index:'wazuh-monitoring-3x'}))
+            this.agentsStatusFilter = this.currentDataService.getSerializedFilters()
+            this.currentDataService.addFilter(JSON.stringify({index:'wazuh'}))
+          }        
+          
+          this.vizz.push(new LinearChart(`agentStatusHistory`,`${this.agentsStatusFilter} status=* | timechart span=1m count by status usenull=f`,`agentStatus`))
         }
         
         
@@ -92,7 +112,7 @@ define([
       }
       
       launchSearches(){
-        this.filters = $currentDataService.getSerializedFilters()
+        this.filters = this.currentDataService.getSerializedFilters()
         this.state.reload()
       }
       

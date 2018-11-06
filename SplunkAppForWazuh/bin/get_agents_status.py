@@ -1,4 +1,3 @@
-
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
@@ -10,8 +9,10 @@ import re
 import datetime
 from splunk.clilib import cli_common as cli
 from db import database
+from log import log
 
 db = database()
+logger = log()
 
 def get_apis():
     try:
@@ -51,7 +52,6 @@ def check_status():
                 request_cluster_status = requests.get(
                     final_url_cluster, auth=auth, timeout=1, verify=verify).json()
                 cluster_status = request_cluster_status["data"]["enabled"]
-                # print ("cluster status " + cluster_status)
                 final_url_cluster_name = url + '/cluster/node'
                 request_cluster_name = requests.get(
                     final_url_cluster_name, timeout=1, auth=auth, verify=verify).json()
@@ -60,14 +60,12 @@ def check_status():
                         item["cluster"] = {}
                         item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
                     item["timestamp"] = date
-
-                    # print("fecha " + str(date))
-                    # print (datetime.datetime.utcnow())
                     print(json.dumps(item))
             except Exception as e:
+                logger.error("Error requesting agents status: %s" % str(e))
                 pass
     except Exception as e:
-        # print ("exception" + str(e))
+        logger.error("Error requesting agents status: %s" % str(e))
         pass
 
 
