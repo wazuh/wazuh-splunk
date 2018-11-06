@@ -35,8 +35,8 @@ define(['../module'], function (module) {
         extensions: ['$requestService', '$currentDataService', async ($requestService, $currentDataService) => {
           try{
             const id = $currentDataService.getApi().id
-            const result = ($currentDataService.getExtensions(id)) ? $currentDataService.getExtensions(id) : $requestService.httpReq(`GET`,`/manager/extensions`)
-            console.log('result ',result)
+            const currentExtensions = $currentDataService.getExtensions(id)
+            const result = (currentExtensions) ? currentExtensions : $requestService.httpReq(`GET`,`/manager/extensions`)
             return await result
           }catch(err) {
             console.error('Error route: ', err)

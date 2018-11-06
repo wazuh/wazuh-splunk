@@ -15,16 +15,15 @@ define([
         this.getExtensions = $currentDataService.getExtensions
         this.setExtensions = $currentDataService.setExtensions
         this.extensions = extensions
-        console.log('extensions ',this.extensions)
       }
       
       $onInit(){
-        const api = this.currentApi.id
+        const id = this.currentApi.id
         this.scope.toggleExtension = (extension, state) => this.toggleExtension(extension, state)
         this.currentExtensions = this.extensions.data || this.extensions
         const keys = Object.keys(this.currentExtensions)
         keys.map(key => this.scope.extensions[key] = (this.currentExtensions[key] === 'true') ? true : false)
-        this.setExtensions(api,this.currentExtensions)
+        this.setExtensions(id,this.currentExtensions)
         if (!this.scope.$$phase) this.scope.$digest()
       }
       

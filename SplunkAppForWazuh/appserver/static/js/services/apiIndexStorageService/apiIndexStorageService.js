@@ -72,19 +72,39 @@ define(['../module'], function (app) {
     
     getExtensions(id) {
       try{
-        const current = JSON.parse(this.sessionStorage.extensions)
-        return current ? current[id] : false
+        const currentExtensions = JSON.parse(this.sessionStorage.extensions)
+        const result = (currentExtensions.length >= 1) ? currentExtensions.filter(item => item.id === id)[0] : false
+        return result
       } catch(err) {
+        console.error('error ',err)
         return false
       }
     }
     
     setExtensions(id, extensions) {
       try{
-        if (extensions) {
-          this.sessionStorage.setItem('extensions', JSON.stringify({id:id,...extensions}) || {})
+        if (extensions.length && this.sessionStorage.getItem('extensions')) {
+          let parsedExtensions = JSON.parse(this.sessionStorage.getItem('extensions'))
+          let existentApi = false
+          for(let i=0;i<parsedExtensions.length;i++) {
+            if(parsedExtensions[i].id === id) {
+              parsedExtensions[i] = {id:id,...extensions}
+              existentApi = true
+              break
+            }
+          }
+          if(!existentApi){
+            parsedExtensions.push({id:id,...extensions})
+          }
+          this.sessionStorage.setItem('extensions', JSON.stringify(parsedExtensions) || [])
+        } else if(extensions) {
+          const newSet = []
+          newSet.push({id:id,...extensions})
+          this.sessionStorage.setItem('extensions', JSON.stringify(newSet) || [])
         }
-      } catch(err) {}
+      } catch(err) {
+        console.error('err ',err)
+      }
     }
     
     

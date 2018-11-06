@@ -85,8 +85,8 @@ define(['../module'], function (module) {
       return $apiMgrService.setApi(api)
     }
 
-    const getExtensions = () => {
-      return $apiIndexStorageService.getExtensions()
+    const getExtensions = (id) => {
+      return $apiIndexStorageService.getExtensions(id)
     }
 
     const setExtensions = (api,extensions) => {
