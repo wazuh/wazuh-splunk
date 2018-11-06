@@ -130,8 +130,8 @@
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" title="'Policy monitoring'"
           ui-sref='ag-pm({id:agent.id})' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
           <wz-welcome-card  class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-          title="'System auditing'" ui-sref='ag-audit({id:agent.id})' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
-          <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+          title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit" current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
+          <wz-welcome-card ng-if="oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
           title="'Open SCAP'" ui-sref='ag-os({id:agent.id})' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
           <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
           title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
@@ -153,21 +153,21 @@
             ui-sref='ag-vul({id:agent.id})' current-tab="'vuls'" description="'Discover what applications in your environment are affected by well-known vulnerabilities.'"></wz-welcome-card>
             <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
             title="'Virustotal'" switch-tab="switchTab('virustotal')" current-tab="'virustotal'" description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.png'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
+            <wz-welcome-card ng-if="osquery" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.png'" title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'"
             description="'Osquery allows to expose an operating system as a high-performance relational database.'"></wz-welcome-card>
           </div>
         </div>
       </div>
     </div>
-    <div class="euiFlexItem">
+    <div ng-if="gdpr || pci" class="euiFlexItem">
       <div class="euiFlexItem">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle">Regulatory Compliance</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
+            <wz-welcome-card ng-if="pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
             title="'PCI DSS'" ui-sref='ag-pci({id:agent.id})' current-tab="'pci'" description="'Global security standard for entities that process, store or transmit payment cardholder data.'"></wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            <wz-welcome-card ng-if="gdpr" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
             title="'GDPR'" ui-sref='ag-gdpr({id:agent.id})' current-tab="'gdpr'" description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'"></wz-welcome-card>
           </div>
         </div>

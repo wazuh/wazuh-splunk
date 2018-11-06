@@ -26,6 +26,16 @@ define(['../module'], function (module) {
           .catch(err => {
             $state.go('settings.api')
           })
+        }],
+        extensions: ['$requestService', '$currentDataService', async ($requestService, $currentDataService) => {
+          try{
+            const id = $currentDataService.getApi().id
+            const currentExtensions = $currentDataService.getExtensions(id)
+            const result = (currentExtensions) ? currentExtensions : $requestService.httpReq(`GET`,`/manager/extensions`)
+            return await result
+          }catch(err) {
+            return false
+          }
         }]
       }
     })
