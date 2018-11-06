@@ -14,7 +14,7 @@ define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzMenu', function (BASE_URL) {
     return {
-      controller: function ($scope, $currentDataService, $navigationService) {
+      controller: function ($scope, $currentDataService, $navigationService, $state) {
         $scope.logoUrl = BASE_URL + '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
         
         $scope.select = (item) => {
@@ -29,7 +29,8 @@ define(['../module'], function (directives) {
           //Generate url           
           let filters = $currentDataService.getSerializedFilters()
           let url = `${BASE_URL}/app/search/search?q=${filters}`
-          window.open(url)
+          localStorage.setItem("urlDiscover", url);
+          $state.go('discover')
         }
         
         const update = () => {
@@ -56,7 +57,10 @@ define(['../module'], function (directives) {
             $scope.menuNavItem = 'dev-tools'
             if (!$scope.$$phase) $scope.$digest()
           }
-
+          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('discover')) {
+            $scope.menuNavItem = 'discover'
+            if (!$scope.$$phase) $scope.$digest()
+          }
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {

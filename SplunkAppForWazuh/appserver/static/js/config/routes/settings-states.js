@@ -51,5 +51,9 @@ define(['../module'], function (module) {
       onEnter: ($navigationService) => { $navigationService.storeRoute('dev-tools') },
       controller: 'devToolsCtrl',
     })
+    .state('discover', {
+      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/discover/discover.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('discover') }
+    })
   }])
 })

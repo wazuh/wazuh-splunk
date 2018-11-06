@@ -1,0 +1,31 @@
+<iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
+
+<script>
+  function hideHeader(){
+    var iframe = document.getElementById("searchAndReporting")
+    var header = iframe.contentWindow.document.getElementsByTagName('header')[0]
+    if (header) {
+      header.style.display = "none"
+      return true
+    }
+  }
+
+  $(document).ready(function(){
+    $.when(
+      $("#searchAndReporting").attr("src", localStorage.getItem('urlDiscover'))
+    ).then( function(){
+      setTimeout( function(){ 
+        hideHeader()
+      },1500)
+    })
+  })
+</script>
+
+<style>
+  .iframeSr {
+    width: calc(100% - 5px);
+    height: 90vh;  
+    position: absolute;
+    overflow: scroll;
+  }
+</style>

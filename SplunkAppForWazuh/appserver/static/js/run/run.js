@@ -33,6 +33,7 @@ define(['./module'], function (module) {
         //Primary states
         if ( trans.to().name === 'dev-tools' ) { checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
         if ( trans.to().name === 'settings.api' ) { checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
+        if ( trans.to().name === 'discover' ) { checkBeforeTransition({label: 'discover', state: 'discover'}) }
         if ( trans.to().name === 'agents' ) { checkBeforeTransition({label: 'agents', state: 'agents'}) }
         if ( trans.to().name === 'overview' ) { checkBeforeTransition({label: 'overview', state: 'overview'}) }
         if ( trans.to().name === 'manager' ) { checkBeforeTransition({label: 'manager', state: 'manager'}) }
