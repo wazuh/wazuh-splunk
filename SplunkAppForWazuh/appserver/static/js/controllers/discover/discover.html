@@ -1,14 +1,6 @@
 <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
 
 <script>
-  function hideHeader(){
-    var iframe = document.getElementById("searchAndReporting")
-    var header = iframe.contentWindow.document.getElementsByTagName('header')[0]
-    if (header) {
-      header.style.display = "none"
-      return true
-    }
-  }
   
   $(document).ready(function(){
     $.when(
