@@ -85,7 +85,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/audit/overview-audit.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-audit') },
       controller: 'overviewAuditCtrl',
-      controllerAs: 'oac',
     })
     // Overview - OpenSCAP
     .state('ow-os', {
