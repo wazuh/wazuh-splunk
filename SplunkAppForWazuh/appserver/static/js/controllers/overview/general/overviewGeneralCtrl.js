@@ -84,21 +84,13 @@ define([
           this.scope.wzMonitoringEnabled = true
 
           //Filters for agents Status
-          this.backupFilters = this.currentDataService.getFilters()
-          if (Object.keys(this.backupFilters[0])[0] == 'manager.name'){
-            this.managerName = this.backupFilters[0]['manager.name']
-            this.currentDataService.cleanFilters()
-            this.currentDataService.addFilter(JSON.stringify({manager:this.managerName}))
-            this.currentDataService.addFilter(JSON.stringify({index:'wazuh-monitoring-3x'}))
-            this.agentsStatusFilter = this.currentDataService.getSerializedFilters()
-            this.currentDataService.cleanFilters()
-            this.backupFilters.map( (bf) => {
-              this.currentDataService.addFilter(JSON.stringify(bf))
-            })
+          this.clusOrMng = Object.keys(this.currentDataService.getFilters()[0])[0]
+          if (this.clusOrMng == 'manager.name'){
+            this.mngName = this.currentDataService.getFilters()[0]['manager.name']
+            this.agentsStatusFilter = `manager=${this.mngName} index=wazuh-monitoring-3x`
           }else {
-            this.currentDataService.addFilter(JSON.stringify({index:'wazuh-monitoring-3x'}))
-            this.agentsStatusFilter = this.currentDataService.getSerializedFilters()
-            this.currentDataService.addFilter(JSON.stringify({index:'wazuh'}))
+            this.clusName = this.currentDataService.getFilters()[0]['cluster.name']
+            this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring-3x`
           }        
           
           this.vizz.push(new LinearChart(
