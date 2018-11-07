@@ -69,7 +69,6 @@ define(['../module'], function (module) {
       templateUrl: 'static/app/SplunkAppForWazuh/js/controllers/agents/inventory/inventory.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ag-inventory') },
       controller: 'inventoryCtrl',
-      controllerAs: 'aic',
       params: { id: null },
       resolve: {
         syscollector: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
