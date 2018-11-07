@@ -101,7 +101,11 @@ define([
             this.currentDataService.addFilter(JSON.stringify({index:'wazuh'}))
           }        
           
-          this.vizz.push(new LinearChart(`agentStatusHistory`,`${this.agentsStatusFilter} status=* | timechart span=1m count by status usenull=f`,`agentStatus`))
+          this.vizz.push(new LinearChart(
+            `agentStatusHistory`,
+            `${this.agentsStatusFilter} status=* | timechart span=1h count by status usenull=f`,
+            `agentStatus`
+            ))
         }
         
         
