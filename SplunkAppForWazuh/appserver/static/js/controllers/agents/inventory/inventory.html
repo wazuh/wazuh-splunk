@@ -4,16 +4,16 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ui-sref='agent-overview({id:aic.agent.id})' class="wz-text-link cursor-pointer">{{aic.agent.name}} ({{aic.agent.id}})</span>
+      <span ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
       <span> / </span>
       <span>Inventory data</span>
     </div>
-    <div ng-if="aic.agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="aic.getAgentStatusClass(aic.agent.status)" aria-label="Agent status indicator">{{aic.formatAgentStatus(aic.agent.status)}}</span>
+    <div ng-if="agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
     </div>
   </div>
   
-  <div layout="row" layout-align="layout-padding" ng-if="!aic.syscollector">
+  <div layout="row" layout-align="layout-padding" ng-if="!syscollector">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">
         <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Inventory disabled</span>
@@ -28,25 +28,25 @@
   </md-card>
 </div>
 
-<div layout="row" class="inventory-metrics" ng-if="aic.syscollector">
+<div layout="row" class="inventory-metrics" ng-if="syscollector">
   <md-card flex class="wz-metric-color wz-md-card">
     <md-card-content layout="row" class="wz-padding-metric">
-      <div flex="10">Cores: <span class="wz-text-bold">{{ aic.syscollector.hardware.cpu.cores }}</span></div>
-      <div flex="15">Memory: <span class="wz-text-bold">{{ (aic.syscollector.hardware.ram.total / 1024) | number: 2 }}
+      <div flex="10">Cores: <span class="wz-text-bold">{{ syscollector.hardware.cpu.cores }}</span></div>
+      <div flex="15">Memory: <span class="wz-text-bold">{{ (syscollector.hardware.ram.total / 1024) | number: 2 }}
         MB
       </span></div>
-      <div flex="10">Arch: <span class="wz-text-bold">{{ aic.syscollector.os.architecture }}</span></div>
-      <div flex>OS: <span class="wz-text-bold">{{ aic.syscollector.os.os.name }} {{ aic.syscollector.os.os.version }}</span></div>
-      <div flex>CPU: <span class="wz-text-bold">{{ aic.syscollector.hardware.cpu.name }}</span></div>
+      <div flex="10">Arch: <span class="wz-text-bold">{{ syscollector.os.architecture }}</span></div>
+      <div flex>OS: <span class="wz-text-bold">{{ syscollector.os.os.name }} {{ syscollector.os.os.version }}</span></div>
+      <div flex>CPU: <span class="wz-text-bold">{{ syscollector.hardware.cpu.name }}</span></div>
     </md-card-content>
   </md-card>
 </div>
 
-<div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="aic.syscollector">
+<div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="syscollector">
   <md-card flex class="wz-md-card">
     <md-card-content>
       <span class="wz-headline-title"><i class="fa fa-fw fa-sitemap"></i> Network interfaces</span>
-      <span class="color-grey pull-right">Last scan: {{aic.syscollector.netiface.items[0].scan.time}}</span>
+      <span class="color-grey pull-right">Last scan: {{syscollector.netiface.items[0].scan.time}}</span>
       <md-divider class="wz-margin-top-10"></md-divider>
       
       <table class="table table-striped table-condensed table-layout-fixed">
@@ -58,7 +58,7 @@
           <th class="wz-text-left">Type</th>
         </thead>
         <tbody>
-          <tr class="wz-word-wrap" ng-repeat="interface in aic.syscollector.netiface.items">
+          <tr class="wz-word-wrap" ng-repeat="interface in syscollector.netiface.items">
             <td>{{interface.name}}</td>
             <td>{{interface.mac}}</td>
             <td>
@@ -82,7 +82,7 @@
     </md-card-content>
   </md-card>
   <md-card flex class="wz-md-card">
-    <md-card-content class="wz-text-center wz-margin-bottom-40-inv" ng-if="aic.syscollector.ports && !aic.syscollector.ports.items.length">
+    <md-card-content class="wz-text-center wz-margin-bottom-40-inv" ng-if="syscollector.ports && !syscollector.ports.items.length">
       <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No ports scan available</span>
       <md-divider class="wz-margin-top-10"></md-divider>
       <div layout="column" class="wz-padding-top-10">
@@ -91,32 +91,36 @@
     </md-card-content>
     <md-card-content class="wz-margin-bottom-40-inv">
       <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
-      <span class="color-grey pull-right">Last scan: {{aic.syscollector.ports.items[0].scan.time}}</span>
+      <span class="color-grey pull-right">Last scan: {{syscollector.ports.items[0].scan.time}}</span>
       <md-divider class="wz-margin-top-10"></md-divider>
-      <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
+      <wazuh-table flex path="'/syscollector/' + agent.id + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
       </wazuh-table>
     </md-card-content>
   </md-card>
 </div>
 
-<div layout="row" class="layout-padding wz-padding-top-0" ng-if="aic.syscollector">
+<div layout="row" class="layout-padding wz-padding-top-0" ng-if="syscollector">
   <md-card flex class="wz-md-card">
     <md-card-content>
       <span class="wz-headline-title"><i class="fa fa-fw fa-cubes"></i> Packages</span>
-      <span class="color-grey pull-right">Last scan: {{aic.syscollector.packagesDate}}</span>
+      <span class="color-grey pull-right">Last scan: {{syscollector.packagesDate}}</span>
       <md-divider class="wz-margin-top-10"></md-divider>
       <div layout="row" class="wz-margin-top-10">
-        <input flex placeholder="Filter packages..." ng-model="aic.packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-        aria-invalid="false" wz-enter="aic.search(aic.packageSearch,'packages')">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="aic.search(aic.packageSearch,'packages')">
+        <input flex placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+        aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(packageSearch,'packages')">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
       
-      <div layout="row" ng-if="aic.agent.id && aic.syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-        <wazuh-table flex path="'/syscollector/' + aic.agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
+      <div layout="row" ng-if="agent.id && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+        <wazuh-table flex path="'/syscollector/' + agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
         </wazuh-table>
       </div>
+      <div layout="row" ng-if="agent.id && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+        <wazuh-table flex path="'/syscollector/' + agent.id + '/processes'" row-sizes="[6,4,3,3]" extra-limit="true" keys="['name','euser','nice','state']">
+        </wazuh-table>
+    </div>
     </md-card-content>
   </md-card>
 </div>

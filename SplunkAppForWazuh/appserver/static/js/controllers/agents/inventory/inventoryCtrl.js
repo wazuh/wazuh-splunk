@@ -14,8 +14,7 @@ define(['../../module'], function (module) {
   'use strict'
   class Inventory {
     constructor($requestService, syscollector, $rootScope, $notificationService, $scope) {
-      this.vm = this
-      this.$scope = $scope
+      this.scope = $scope
       this.data = syscollector
       this.httpReq = $requestService.httpReq
       this.root = $rootScope
@@ -34,10 +33,10 @@ define(['../../module'], function (module) {
      */
     $onInit() {
       try {
-        this.vm.search = this.search
-        this.vm.agent = this.data[5].data.data
-        this.vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
-        this.vm.formatAgentStatus = agentStatus => {
+        this.scope.search = this.search
+        this.scope.agent = this.data[5].data.data
+        this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+        this.scope.formatAgentStatus = agentStatus => {
           return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
         }
         if (
@@ -52,7 +51,7 @@ define(['../../module'], function (module) {
           typeof this.data[1].data.data !== 'object' ||
           !Object.keys(this.data[1].data.data).length
         ) {
-          this.vm.syscollector = null
+          this.scope.syscollector = null
         } else {
           const netiface = {}
           const ports = {}
@@ -63,7 +62,7 @@ define(['../../module'], function (module) {
             Object.assign(ports, this.data[3].data.data)
           if (this.data[4] && this.data[4].data && this.data[4].data.data)
             Object.assign(packagesDate, this.data[4].data.data)
-          this.vm.syscollector = {
+          this.scope.syscollector = {
             hardware: this.data[0].data.data,
             os: this.data[1].data.data,
             netiface: netiface,
