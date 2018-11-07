@@ -22,7 +22,8 @@ define([
     
     class OverviewGeneral{
       constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, pollingState){
-        this.filters = $currentDataService.getSerializedFilters()
+        this.currentDataService = $currentDataService
+        this.filters = this.currentDataService.getSerializedFilters()
         this.scope = $scope
         this.apiReq = $requestService.apiReq
         this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
@@ -81,7 +82,22 @@ define([
           
         } else {
           this.scope.wzMonitoringEnabled = true
-          this.vizz.push(new AreaChart(`agentStatusHistory`,`index=wazuh-monitoring-3x status=* | timechart span=1h count by status usenull=f`,`agentStatus`))
+
+          //Filters for agents Status
+          this.clusOrMng = Object.keys(this.currentDataService.getFilters()[0])[0]
+          if (this.clusOrMng == 'manager.name'){
+            this.mngName = this.currentDataService.getFilters()[0]['manager.name']
+            this.agentsStatusFilter = `manager=${this.mngName} index=wazuh-monitoring-3x`
+          }else {
+            this.clusName = this.currentDataService.getFilters()[0]['cluster.name']
+            this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring-3x`
+          }        
+          
+          this.vizz.push(new LinearChart(
+            `agentStatusHistory`,
+            `${this.agentsStatusFilter} status=* | timechart span=1h count by status usenull=f`,
+            `agentStatus`
+            ))
         }
         
         
@@ -92,7 +108,7 @@ define([
       }
       
       launchSearches(){
-        this.filters = $currentDataService.getSerializedFilters()
+        this.filters = this.currentDataService.getSerializedFilters()
         this.state.reload()
       }
       
