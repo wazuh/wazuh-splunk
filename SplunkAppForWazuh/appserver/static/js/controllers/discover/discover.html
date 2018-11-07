@@ -1,21 +1,17 @@
 <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
 
 <script>
-  
   $(document).ready(function(){
+    var iframe = $("#searchAndReporting")
     $.when(
-    $("#searchAndReporting").attr("src", localStorage.getItem('urlDiscover'))
-    ).then( function(){
-      var iframe = document.getElementById("searchAndReporting")
-      var getHeader = setInterval(function() {
-        if (iframe.contentWindow.document.getElementsByTagName('header')[0]) {
-          var header = iframe.contentWindow.document.getElementsByTagName('header')[0]
-          if (header) {
-            header.style.display = "none"
-          }
-          clearInterval(getHeader);
+    iframe.attr("src", localStorage.getItem('urlDiscover'))
+    ).then( function(){     
+      var getHeader = setInterval( function(){
+        if (iframe.contents().find("header")) {
+          var header = iframe.contents().find("header")
+          header.hide()
         }
-      }, 500);
+      },500)
     })
   })
 </script>
