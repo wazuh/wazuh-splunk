@@ -7,7 +7,6 @@ define(['./module'], function (module) {
       async function checkBeforeTransition(state){
         try{
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
-          console.log('throwing statechanged to ',state.state)
           $rootScope.$broadcast('stateChanged', state.state)
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
@@ -24,29 +23,30 @@ define(['./module'], function (module) {
 
       $navigationService.goToLastState()
       
-      $transitions.onSuccess({}, async (trans) => {
-        $rootScope.$broadcast('loading', { status: false })
-      })
-      
-      
-      $transitions.onStart({}, async (trans) => {
+      $transitions.onBefore({}, async () => {
         $rootScope.$broadcast('loading', { status: true })
+      })
+
+      $transitions.onStart({}, async (trans) => {
         //Primary states
         if ( trans.to().name === 'dev-tools' ) { checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
-        if ( trans.to().name === 'settings.api' ) { console.log('checkbeforetransition api');checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
+        if ( trans.to().name === 'settings.api' ) { checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
         if ( trans.to().name === 'agents' ) { checkBeforeTransition({label: 'agents', state: 'agents'}) }
         if ( trans.to().name === 'overview' ) { checkBeforeTransition({label: 'overview', state: 'overview'}) }
-        if ( trans.to().name === 'manager' ) {           console.log('checkbeforetransition manager')
-        checkBeforeTransition({label: 'manager', state: 'manager'}) }
+        if ( trans.to().name === 'manager' ) { checkBeforeTransition({label: 'manager', state: 'manager'}) }
         //Secondary states
         if ( trans.to().name.includes('agent') || trans.to().name.includes('ag-') ) {
           $rootScope.$broadcast('stateChanged', 'agents')
         } else if ( trans.to().name.includes('ow-') ) {
           $rootScope.$broadcast('stateChanged', 'overview') 
         } else if ( trans.to().name.includes('mg-') ) {
-          console.log('ELSE IF MG-')
           $rootScope.$broadcast('stateChanged', 'manager')
         }
       })  
+
+      $transitions.onSuccess({}, async (trans) => {
+        $rootScope.$broadcast('loading', { status: false })
+      })
+
     }])
   })
