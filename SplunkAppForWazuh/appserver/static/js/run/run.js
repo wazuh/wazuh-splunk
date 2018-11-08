@@ -3,11 +3,13 @@ define(['./module'], function (module) {
   module.run([
     '$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService',
     function ($rootScope, $state, $transitions, $navigationService, $currentDataService) {
+    
+      //Go to last state at login
+      $navigationService.goToLastState()
 
       async function checkBeforeTransition(state){
         try{
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
-          $rootScope.$broadcast('stateChanged', state.state)
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
           $navigationService.storeRoute(state.label)
@@ -21,21 +23,20 @@ define(['./module'], function (module) {
         }
       }
 
-      $navigationService.goToLastState()
-      
-      $transitions.onBefore({}, async () => {
-        $rootScope.$broadcast('loading', { status: true })
+      $transitions.onBefore({}, async (trans) => {
+        
       })
 
       $transitions.onStart({}, async (trans) => {
+        $rootScope.$broadcast('loading', { status: true })
         //Primary states
-        if ( trans.to().name === 'dev-tools' ) { checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
-        if ( trans.to().name === 'settings.api' ) { checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
-        if ( trans.to().name === 'agents' ) { checkBeforeTransition({label: 'agents', state: 'agents'}) }
-        if ( trans.to().name === 'overview' ) { checkBeforeTransition({label: 'overview', state: 'overview'}) }
-        if ( trans.to().name === 'manager' ) { checkBeforeTransition({label: 'manager', state: 'manager'}) }
+        if ( trans.to().name === 'dev-tools' ) { await checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
+        if ( trans.to().name === 'settings.api' ) { await checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
+        if ( trans.to().name === 'agents' ) { await checkBeforeTransition({label: 'agents', state: 'agents'}) }
+        if ( trans.to().name === 'overview' ) { await checkBeforeTransition({label: 'overview', state: 'overview'}) }
+        if ( trans.to().name === 'manager' ) { await checkBeforeTransition({label: 'manager', state: 'manager'}) }
         //Secondary states
-        if ( trans.to().name.includes('agent') || trans.to().name.includes('ag-') ) {
+        if (trans.to().name !== 'agents' && trans.to().name.includes('agent') || trans.to().name.includes('ag-') ) {
           $rootScope.$broadcast('stateChanged', 'agents')
         } else if ( trans.to().name.includes('ow-') ) {
           $rootScope.$broadcast('stateChanged', 'overview') 
@@ -47,6 +48,16 @@ define(['./module'], function (module) {
       $transitions.onSuccess({}, async (trans) => {
         $rootScope.$broadcast('loading', { status: false })
       })
+
+      $transitions.onError({}, async (trans) => {
+        trans.abort()
+      })
+
+      $transitions.onFinish({}, async (trans) => {
+        
+      })
+
+
 
     }])
   })
