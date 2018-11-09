@@ -29,18 +29,19 @@ define(['./module'], function (module) {
 
       $transitions.onStart({}, async (trans) => {
         $rootScope.$broadcast('loading', { status: true })
+        const to = trans.to().name
         //Primary states
-        if ( trans.to().name === 'dev-tools' ) { await checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
-        if ( trans.to().name === 'settings.api' ) { await checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
-        if ( trans.to().name === 'agents' ) { await checkBeforeTransition({label: 'agents', state: 'agents'}) }
-        if ( trans.to().name === 'overview' ) { await checkBeforeTransition({label: 'overview', state: 'overview'}) }
-        if ( trans.to().name === 'manager' ) { await checkBeforeTransition({label: 'manager', state: 'manager'}) }
+        if ( to === 'dev-tools' ) { await checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
+        if ( to === 'settings.api' ) { await checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
+        if ( to === 'agents' ) { await checkBeforeTransition({label: 'agents', state: 'agents'}) }
+        if ( to === 'overview' ) { await checkBeforeTransition({label: 'overview', state: 'overview'}) }
+        if ( to === 'manager' ) { await checkBeforeTransition({label: 'manager', state: 'manager'}) }
         //Secondary states
-        if (trans.to().name !== 'agents' && trans.to().name.includes('agent') || trans.to().name.includes('ag-') ) {
+        if (to !== 'agents' && to.includes('agent') || to.includes('ag-') ) {
           $rootScope.$broadcast('stateChanged', 'agents')
-        } else if ( trans.to().name.includes('ow-') ) {
+        } else if ( to.includes('ow-') ) {
           $rootScope.$broadcast('stateChanged', 'overview') 
-        } else if ( trans.to().name.includes('mg-') ) {
+        } else if ( to.includes('mg-') ) {
           $rootScope.$broadcast('stateChanged', 'manager')
         }
       })  
