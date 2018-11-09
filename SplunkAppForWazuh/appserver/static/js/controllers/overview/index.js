@@ -3,6 +3,7 @@ define([
   './welcome/overviewWelcomeCtrl',
   './audit/overviewAuditCtrl',
   './fim/overviewFimCtrl',
+  './virustotal/overviewVirusTotal',
   './aws/awsCtrl',
   './osquery/osqueryCtrl',
   './scap/overviewOpenScapCtrl',
