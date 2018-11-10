@@ -31,10 +31,14 @@ define([
   UrlTokenModel) {
     'use strict'
 
-    controllers.controller('agentsGeneralCtrl', function ($scope, $currentDataService, agent, $state) {
+    controllers.controller('agentsGeneralCtrl', function ($scope,$requestService,$notificationService, $stateParams,$currentDataService, agent, $state) {
       const vm = this
       const epoch = (new Date).getTime()
-      vm.agent = agent.data.data
+      vm.agent = agent[0].data.data
+      vm.agentOS = `${vm.agent.os.name} ${vm.agent.os.codename} ${vm.agent.os.version}`
+      vm.syscheck = agent[1].data.data
+      vm.id = $stateParams.id
+      vm.rootcheck = agent[2].data.data
       const baseUrl = $currentDataService.getBaseUrl()
       let filters = $currentDataService.getSerializedFilters()
       // Create token namespaces
@@ -50,6 +54,19 @@ define([
           submittedTokenModel.clear()
         }
       })
+
+      vm.goGroups = async (group) => {
+        try {
+          const groupInfo = await $requestService.apiReq(`/agents/groups/`)
+          const groupData = groupInfo.data.data.items.filter( item => item.name === group)
+          if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
+            throw Error('Missing fields')
+          }
+          $state.go(`mg-groups`, { group: groupData[0] } )
+        } catch (err) {
+          $notificationService.showSimpleToast('Error fetching group data')
+        }
+      }
 
       // Initialize tokens
       defaultTokenModel.set(urlTokenModel.toJSON())
@@ -394,7 +411,7 @@ define([
         "sample_ratio": 1,
         "status_buckets": 0,
         "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"`,
+        "search": `${filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
         "app": utils.getCurrentApp(),
         "auto_cancel": 90,
         "preview": true,
@@ -590,7 +607,7 @@ define([
         "dataOverlayMode": "none",
         "drilldown": "cell",
         "percentagesRow": "false",
-        "rowNumbers": "false",
+        "rowNumbers": "10",
         "totalsRow": "false",
         "wrap": "true",
         "managerid": "search14" + epoch,
@@ -601,7 +618,7 @@ define([
       agentsElement14.on("click", function (e) {
         if (e.field !== undefined) {
           e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort count DESC | head 10 | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
+          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} |stats count sparkline by rule.id, rule.description, rule.groups, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count, rule.groups as \"Rule group\"&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
           utils.redirect(url, false, "_blank")
         }
       })

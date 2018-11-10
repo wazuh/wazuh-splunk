@@ -9,6 +9,7 @@ define([
   './overview/overviewGdprCtrl',
   './overview/overviewWelcomeCtrl',
   './overview/aws/awsCtrl',
+  './overview/osquery/osqueryCtrl',
   './management/managerCtrl',
   './management/logs/managerLogsCtrl',
   './management/rules/managerRulesetCtrl',
@@ -18,6 +19,7 @@ define([
   './management/groups/groupsCtrl',
   './management/configuration/configurationCtrl',
   './management/status/statusCtrl',
+  './management/monitoring/monitoringCtrl',
   './settings/settingsCtrl',
   './settings/settingsIndexCtrl',
   './settings/settingsApiCtrl',
@@ -34,6 +36,7 @@ define([
   './agents/gdpr/agentsGdprCtrl',
   './agents/configuration/agentConfigCtrl',
   './agents/inventory/inventoryCtrl',
+  './agents/osquery/osqueryCtrl',
   './dev-tools/devToolsCtrl',
   './main/mainCtrl'
 ], function () {})

@@ -34,7 +34,7 @@ define(['../module', 'underscore'], function (directives, _) {
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.allowClick = true
         $scope.clickAction = item => {
-          if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*$/).test(instance.path)) {
+          if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path)) {
             // Go to and store an agent details
             $currentDataService.setCurrentAgent(item.id)
             $currentDataService.addFilter(`{"agent.id":"${item.id}", "implicit":true}`)
@@ -42,7 +42,7 @@ define(['../module', 'underscore'], function (directives, _) {
             $state.go('agent-overview', { id: item.id })
           } else if (instance.path === '/agents/groups') {
             $scope.$emit('wazuhShowGroup', { group: item })
-          } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9]*\/files$/).test(instance.path)) {
+          } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*\/files$/).test(instance.path)) {
             $scope.$emit('wazuhShowGroupFile', { groupName: instance.path.split('groups/')[1].split('/files')[0], fileName: item.filename })
           } else if (instance.path === '/rules') {
             $state.go('mg-rules-id', { id: item.id })
@@ -115,13 +115,17 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.searchTable()
             return
           } catch (error) {
+            if(error && !error.data && error.status === -1 && error.xhrStatus === 'abort') {
+              return Promise.reject('Request took too long, aborted')
+            }
             return Promise.reject(error)
           }
         }
 
         $scope.nextPage = async currentPage => {
           try {
-            if (!currentPage && ($scope.currentPage < $scope.pagedItems.length - 1)) {
+            $scope.error = false
+            if (!currentPage && currentPage !== 0 && ($scope.currentPage < $scope.pagedItems.length - 1)) {
               $scope.currentPage++
             }
             if ($scope.pagedItems[currentPage || $scope.currentPage].includes(null)) {
@@ -134,6 +138,8 @@ define(['../module', 'underscore'], function (directives, _) {
               if (!$scope.$$phase) $scope.$digest()
             }
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error paginating table due to ${error.message || error}.`
             $notificationService.showSimpleToast(`Error paginating table due to ${error.message || error}`)
           }
           return
@@ -144,6 +150,7 @@ define(['../module', 'underscore'], function (directives, _) {
           $scope.currentPage = this.n
           $scope.nextPage(this.n)
         }
+
         ////////////////////////////////////
 
         const instance = new $dataService($scope.path, $scope.implicitFilter)
@@ -151,6 +158,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         $scope.sort = async field => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             instance.addSorting(field.value || field)
             $scope.sortValue = instance.sortValue
@@ -159,6 +167,10 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error sorting table by ${
+              field ? field.value : 'undefined'
+            }. ${error.message || error}.`
             $notificationService.showSimpleToast(`Error sorting table by ${field ? field.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -166,6 +178,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const search = async (term, removeFilters) => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             if (removeFilters) instance.removeFilters()
             instance.addFilter('search', term)
@@ -174,6 +187,8 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error searching. ${error.message || error}.`;
             $notificationService.showSimpleToast(`Error searching. ${error.message || error}`)
           }
           return
@@ -181,6 +196,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const filter = async filter => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             if (_.isArray(filter)) {
               filter.forEach(item => {
@@ -206,6 +222,10 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.wazuh_table_loading = false
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error filtering by ${
+              filter ? filter.value : 'undefined'
+            }. ${error.message || error}.`
             $notificationService.showSimpleToast(`Error filtering by ${filter ? filter.value : 'undefined'}. ${error.message || error}`)
           }
           return
@@ -236,7 +256,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const realTimeFunction = async () => {
           try {
-
+            $scope.error = false;
             while (realTime) {
               await fetch({ realTime: true, limit: 10 })
               if (!$scope.$$phase) $scope.$digest()
@@ -244,6 +264,7 @@ define(['../module', 'underscore'], function (directives, _) {
             }
           } catch (error) {
             realTime = false
+            $scope.error = `Real time feature aborted. ${error.message || error}.`
             $notificationService.showSimpleToast(`Real time feature aborted. ${error.message || error}`)
           }
           return
@@ -268,6 +289,7 @@ define(['../module', 'underscore'], function (directives, _) {
 
         const init = async () => {
           try {
+            $scope.error = false;
             $scope.wazuh_table_loading = true
             await fetch()
             $tableFilterService.set(instance.filters)
@@ -275,7 +297,8 @@ define(['../module', 'underscore'], function (directives, _) {
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            console.error('error ',error)
+            $scope.wazuh_table_loading = false;
+            $scope.error = `Error while init table. ${error.message || error}.`
             $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
           }
           return
@@ -306,20 +329,21 @@ define(['../module', 'underscore'], function (directives, _) {
         })
 
         $scope.nonDecoderValue = (key, item) => {
+          if((key === 'description' || key.value && key.value === 'description') && !item.description) return '-'
           return key.value === 'local.ip'
             ? (item.local && item.local.ip
               ? `${item.local.ip}:${item.local.port}`
-              : false) || '---'
+              : false) || '-'
             : key === 'remote.ip'
               ? (item.remote && item.remote.ip
                 ? `${item.remote.ip}:${item.remote.port}`
-                : false) || '---'
+                : false) || '-'
               : key === 'os.name'
-                ? (item.os && item.os.name ? item.os.name : false) || '---'
+                ? (item.os && item.os.name ? item.os.name : false) || '-'
                 : key === 'os.version'
                   ? (item.os && item.os.version ? item.os.version : false) ||
-                  '---'
-                  : checkIfArray(item[key.value || key]) || '---'
+                  '-'
+                  : checkIfArray(item[key.value || key]) || '-'
         }
 
         $scope.decoderValue = (key, item) => {
@@ -327,12 +351,12 @@ define(['../module', 'underscore'], function (directives, _) {
             key.value === 'details.program_name'
             ? (item.details && item.details.program_name
               ? item.details.program_name
-              : false) || '---'
+              : false) || '-'
             : key === 'details.order' || key.value === 'details.order'
               ? (item.details && item.details.order
                 ? item.details.order
-                : false) || '---'
-              : checkIfArray(item[key.value || key]) || '---'
+                : false) || '-'
+              : checkIfArray(item[key.value || key]) || '-'
         }
 
       },

@@ -591,7 +591,6 @@ define([
 
 
         } catch (error) {
-          console.error('err: ', error)
           const parsedError = this.errorHandler.showSimpleToast(error)
           if (typeof parsedError === 'string') {
             return this.apiOutputBox.setValue(parsedError)

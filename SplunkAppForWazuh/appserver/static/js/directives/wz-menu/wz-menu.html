@@ -5,23 +5,23 @@
 
     <!-- Wazuh app logo -->
     <a class="cursor-pointer wz-logo-container wz-margin-right-15" ui-sref="overview">
-      <img class="wz-responsive-img" aria-hidden="true" src='{{logoUrl}}'></img>
+      <img class="wz-responsive-img" aria-hidden="true" src='{{logoUrl}}'>
     </a>
 
     <!-- Main Wazuh app navigation buttons -->
-    <md-button class="wz-menu-button" ui-sref="overview" ng-class="{'wz-menu-active': menuNavItem === 'overview' }" aria-label="Overview tab">
+    <md-button class="wz-menu-button" ui-sref="overview" ng-click="select('overview')" ng-class="{'wz-menu-active': menuNavItem === 'overview' }" aria-label="Overview tab">
       <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview
     </md-button>
 
-    <md-button class="wz-menu-button" ui-sref="manager" ng-class="{'wz-menu-active': menuNavItem === 'manager' }" aria-label="Cluster tab">
+    <md-button class="wz-menu-button" ui-sref="manager" ng-click="select('manager')" ng-class="{'wz-menu-active': menuNavItem === 'manager' }" aria-label="Cluster tab">
       <i class="fa fa-fw fa-server" aria-hidden="true"></i> Management
     </md-button>
 
-    <md-button class="wz-menu-button" ui-sref="agents" ng-class="{'wz-menu-active': menuNavItem === 'agents' }" aria-label="Agents tab">
+    <md-button class="wz-menu-button" ui-sref="agents" ng-click="select('agents')" ng-class="{'wz-menu-active': menuNavItem === 'agents' }" aria-label="Agents tab">
       <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agents
     </md-button>
     <!-- Dev tools buttom -->
-    <md-button class="wz-menu-button" ui-sref="dev-tools" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
+    <md-button class="wz-menu-button" ui-sref="dev-tools" ng-click="select('dev-tools')" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
       <i class="fa fa-fw fa-code" aria-hidden="true"></i> Dev tools
     </md-button>
 
@@ -48,7 +48,7 @@
     </span>
 
     <!-- Settings tab button -->
-    <md-button class="wz-menu-button md-icon-button" ui-sref='settings.api' ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
+    <md-button class="wz-menu-button md-icon-button" ui-sref='settings.api' ng-click="select('settings')" ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
       aria-label="Settings tab">
       <i class="fa fa-cog" aria-hidden="true"></i>
     </md-button>

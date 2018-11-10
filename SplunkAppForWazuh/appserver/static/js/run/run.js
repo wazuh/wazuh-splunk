@@ -7,6 +7,17 @@ define(['./module'], function (module) {
       $rootScope.$broadcast('loading', { status: false })
     })
 
+
+    $transitions.onStart({}, function(transition) {
+      if (transition.to().name.includes('ag-') || transition.to().name.includes('agent')) {
+        $rootScope.$broadcast('stateChanged', 'agents')
+      } else if(transition.to().name.includes('mg-')) {
+        $rootScope.$broadcast('stateChanged', 'manager')
+      } else if(transition.to().name.includes('ow-')) {
+        $rootScope.$broadcast('stateChanged', 'overview')
+      }
+    })
+
     $transitions.onStart({}, async (trans) => {
       $rootScope.$broadcast('loading', { status: true })
     })
@@ -84,6 +95,7 @@ define(['./module'], function (module) {
         $state.go('settings.api')
       }
     })
+
   }])
 })
 

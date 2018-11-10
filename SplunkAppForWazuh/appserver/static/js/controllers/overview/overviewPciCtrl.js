@@ -35,7 +35,7 @@ define([
 
     'use strict'
 
-    controllers.controller('overviewPciCtrl', function ($scope, $currentDataService, $rulesDescription, $state) {
+    controllers.controller('overviewPciCtrl', function ($scope, $currentDataService, $rulesDescription, $state, $getIdService, $notificationService) {
       const vm = this
       const epoch = (new Date).getTime()
       let pageLoading = true
@@ -402,11 +402,17 @@ define([
         "el": $('#element5')
       }, { tokens: true, tokenNamespace: "submitted" }).render()
 
-      element5.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$`,_.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
-          utils.redirect(url, false, "_blank")
+      element5.on("click", async (e) => {
+        try{
+          if (e.field !== undefined) {
+            e.preventDefault()
+            if (e.data['click.value']=== e.data['click.value2']) {
+              const id = await $getIdService.agent(e.data['click.value'])
+              $state.go('agent-overview', { id:`${id}` })
+            }
+          }
+        } catch(err) {
+          $notificationService.showSimpleToast(err)
         }
       })
 
