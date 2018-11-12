@@ -55,9 +55,9 @@ define([
           /**
           * Visualizations
           */
-          new ColumnChart('topCiscatGroups',`${this.filters} sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,'topCiscatGroups'),
-          new LinearChart('scanResultEvolution',`${this.filters} sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,'scanResultEvolution'),
-          new Table('alertsSummary',`${this.filters} sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc`,'alertsSummaryElement')
+          new ColumnChart('topCiscatGroups',`${this.filters} sourcetype=wazuh rule.groups=\"ciscat\" | top data.cis.group`,'topCiscatGroups'),
+          new LinearChart('scanResultEvolution',`${this.filters} sourcetype=wazuh rule.groups=\"ciscat\" agent.name=* | top agent.name`,'scanResultEvolution'),
+          new Table('alertsSummary',`${this.filters} sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title", rename " data.cis.remediation" as "Remediation", rename "data.cis.group" as "Group" `,'alertsSummary')
         ]
       }
     }
