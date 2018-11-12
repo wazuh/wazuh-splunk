@@ -1,0 +1,87 @@
+<md-content flex layout="column" layout-align="end">
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span> / </span>
+      <span>VirusTotal</span>
+    </div>
+    <div ng-if="agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+  <!-- Filter bar -->
+  
+  <wazuh-bar></wazuh-bar>
+  <!-- first row  -->
+  <div layout="row">
+    
+    <md-card flex class="wz-metric-color wz-md-card">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>Files added:
+          <span class="wz-text-bold">{{filesAdded}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Files modified:
+          <span class="wz-text-bold">{{filesModified}}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>Files deleted:
+          <span class="wz-text-bold">{{filesDeleted}}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  
+  <!-- second row  -->
+  <div id="row2" layout="row">
+    <div flex="40">
+      <!-- second row - first vis -->
+      <md-card flex="100" class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">VirusToal alerts volume</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='alertsVolume'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex="60">
+      <md-card flex="100" class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Events summary</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='eventsSummaryElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+  
+  <!-- third row  -->
+  <div id="row3" layout='row'>
+      <div flex="40">
+          <!-- second row - first vis -->
+          <md-card flex="100" class="wz-md-card">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Events over time</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id='eventsOverTimeElement'></div>
+            </md-card-content>
+          </md-card>
+        </div>
+    <div flex="60">
+      <md-card flex="100" class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 Rules</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5Rules'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+  
+  
+  <!-- end document  -->
+</md-content>
