@@ -61,7 +61,7 @@ define(['../module'], function (module) {
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-fim') },
       controller: 'overviewFimCtrl',
     })
-    // Overview - FIM
+    // Overview - OSQUERy
     .state('ow-osquery', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/osquery/osquery.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-osquery') },
@@ -109,6 +109,12 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/vulnerabilities/overview-vulnerabilities.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-vul') },
       controller: 'overviewVulnerabilitiesCtrl',
+    })
+    // Overview - VirusTotal
+    .state('ow-virustotal', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/virustotal/overview-virustotal.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ow-virustotal') },
+      controller: 'overviewVirusTotal', 
     })
     // =========== AWS =========== //
     .state('ow-aws', {
