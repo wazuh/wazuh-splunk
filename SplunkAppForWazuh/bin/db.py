@@ -19,8 +19,8 @@ from log import log
 
 
 class database():
-    self.logger = log()
     def __init__(self):
+        self.logger = log()
         self.origin = TinyDB(os.path.dirname(os.path.abspath(__file__))+'/apilist.json')
         self.db = self.origin.table('apis',cache_size=0)
         self.Api = Query()
