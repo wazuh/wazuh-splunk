@@ -52,7 +52,7 @@ define([
           new SearchHandler(`lastScanDate`,`${this.filters}  | search data.cis.timestamp=* | table data.cis.timestamp | head 1`,'lastScanDate','$result.data.cis.timestamp$','lastScanDate',this.submittedTokenModel,this.scope),
           new SearchHandler(`lastErrors`,`${this.filters} | search data.cis.error=* | table data.cis.error | head 1`,'lastErrors','$result.data.cis.error$','lastErrors',this.submittedTokenModel,this.scope),
           new SearchHandler(`lastFails`,`${this.filters} | search data.cis.fail=* | table data.cis.fail | head 1`,'lastFails','$result.data.cis.fail$','lastFails',this.submittedTokenModel,this.scope),
-          new SearchHandler(`lastUnknown`,`${this.filters} | search data.unknown.fail=* | table data.cis.unknown | head 1`,'lastUnknown','$result.data.cis.unknown$','lastUknown',this.submittedTokenModel,this.scope),
+          new SearchHandler(`lastUnknown`,`${this.filters} | search data.unknown.fail=* | table data.cis.unknown | head 1`,'lastUnknown','$result.data.cis.unknown$','lastUnknown',this.submittedTokenModel,this.scope),
           new SearchHandler(`lastScanBenchmark`,`${this.filters} rule.groups=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,'lastScanBenchmark','$result.data.cis.benchmark$','lastScanBenchmark',this.submittedTokenModel,this.scope),
           /**
           * Visualizations
