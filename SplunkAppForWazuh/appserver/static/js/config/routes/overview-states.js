@@ -111,11 +111,11 @@ define(['../module'], function (module) {
       controller: 'overviewVulnerabilitiesCtrl',
     })
     // Overview - CIS-CAT
-    .state('ow-ciscat', {
-      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/vulnerabilities/overview-vulnerabilities.html',
-      onEnter: ($navigationService) => { $navigationService.storeRoute('ow-ciscat') },
-      controller: 'ciscatCtrl',
-    })
+    // .state('ow-ciscat', {
+    //   templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/vulnerabilities/overview-vulnerabilities.html',
+    //   onEnter: ($navigationService) => { $navigationService.storeRoute('ow-ciscat') },
+    //   controller: 'ciscatCtrl',
+    // })
     // =========== AWS =========== //
     .state('ow-aws', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
