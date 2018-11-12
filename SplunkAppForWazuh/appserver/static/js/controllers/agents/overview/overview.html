@@ -133,7 +133,7 @@
           title="'System auditing'" ui-sref='ag-audit({id:agent.id})' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
           title="'Open SCAP'" ui-sref='ag-os({id:agent.id})' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
-          <wz-welcome-card ng-if="false" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
+          <wz-welcome-card ui-sref='ag-ciscat({id:agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_management.svg'"
           title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
         </div>
       </div>

@@ -293,6 +293,25 @@ define(['../module'], function (module) {
         }]
       }
     })
+
+    // agents - CIS-CAT
+    .state('ag-ciscat', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/ciscat/agents-ciscat.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ag-ciscat') },
+      controller: 'agentsCiscatCtrl',
+      params: { id: null },
+      resolve: {
+        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+          return $requestService.apiReq(`/agents/${id}`)
+          .then(function (response) {
+            return response
+          }, function (response) {
+            return response
+          })
+        }]
+      }
+    })
     
     // agents - Vulnerabilities
     .state('ag-vul', {

@@ -5,6 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
+
 ], function (
   app,
   ColumnChart,
@@ -15,17 +16,16 @@ define([
   ) {
     
     'use strict'
-    class Ciscat{
-      constructor($urlTokenModel, $scope, $currentDataService, $state) {
-        this.scope = $scope
+    
+    class AgentsCiscat{
+      constructor($urlTokenModel, $scope, $state, $currentDataService, agent){
         this.state = $state
-        this.addFilter = $currentDataService.addFilter
-        this.getFilters = $currentDataService.getSerializedFilters
-
-        this.filters = this.getFilters()
-        this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-        this.timePicker = new TimePicker('#timePicker',$urlTokenModel.handleValueChange)
-        
+        if (!$currentDataService.getCurrentAgent()) { this.state.go('overview') }
+        this.scope = $scope
+        this.urlTokenModel = $urlTokenModel
+        this.filters = $currentDataService.getSerializedFilters()
+        this.timePicker = new TimePicker('#timePicker',this.urlTokenModel.handleValueChange)
+        this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
         this.scope.$on('deletedFilter', () => {
           this.launchSearches()
         })
@@ -34,13 +34,13 @@ define([
           this.launchSearches()
         })
         
-        /**
-        * On controller destroy
-        */
         this.scope.$on('$destroy', () => {
+          this.dropdown.destroy()
           this.timePicker.destroy()
           this.vizz.map( (vizz) => vizz.destroy())
         })
+        
+        this.agent = agent
         
         this.vizz = [
           /**
@@ -61,15 +61,24 @@ define([
           new LinearChart('scanResultEvolution',`${this.filters} sourcetype=wazuh rule.groups=\"ciscat\" | timechart count by data.cis.result usenull=f`,'scanResultEvolution'),
           new Table('alertsSummary',`${this.filters} sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,'alertsSummary')
         ]
-      }
-      $onInit(){
-        this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
+        
+        
       }
       
+      $onInit(){
+        this.scope.agent = this.agent.data.data
+        this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red"
+        this.scope.formatAgentStatus = agentStatus => {
+          return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected'
+        }
+      }
+
       launchSearches(){
         this.filters = $currentDataService.getSerializedFilters()
         this.state.reload()
       }
+      
     }
-    app.controller('ciscatCtrl', Ciscat)
+    app.controller('agentsCiscatCtrl', AgentsCiscat)
   })
+  
