@@ -21,7 +21,7 @@ define([
         this.scope = $scope
         this.state = $state
         //Add filer for VirusTotal
-        $currentDataService.addFilter(`{"data.integration":"virustotal", "implicit":true}`)
+        $currentDataService.addFilter(`{"rule.groups":"virustotal", "implicit":true}`)
         this.getFilters = $currentDataService.getSerializedFilters
         this.filters = this.getFilters()
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
