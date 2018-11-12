@@ -6,12 +6,14 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/chart/bar-chart',
 ], function (
   app,
   PieChart,
   Table,
   LinearChart,
   TimePicker,
+  BarChart
   ) {
     
     'use strict'
@@ -35,6 +37,7 @@ define([
           new PieChart('top5AgentsNoPositive',`${this.filters} rule.id=87104 | top agent.name limit=5`,'top5AgentsNoPositive'),
           new Table('top5Rules',`${this.filters} |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,'top5Rules'),
           new LinearChart('eventsSummary',`${this.filters} | timechart count`,'eventsSummary'),
+          new BarChart('alertsPerAgent', `${this.filters} | top agent.name`, 'alertsPerAgent')
         ]
         
         this.scope.$on('deletedFilter', () => {
