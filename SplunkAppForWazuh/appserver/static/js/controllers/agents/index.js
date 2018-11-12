@@ -3,6 +3,7 @@ define([
   './audit/agentsAuditCtrl',
   './configuration/agentConfigCtrl',
   './fim/agentsFimCtrl',
+  './virustotal/agentsVirusTotalCtrl',
   './gdpr/agentsGdprCtrl',
   './general/agentsGeneralCtrl',
   './inventory/inventoryCtrl',

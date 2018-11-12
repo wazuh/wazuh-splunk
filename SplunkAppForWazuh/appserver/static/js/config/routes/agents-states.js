@@ -168,7 +168,26 @@ define(['../module'], function (module) {
         }]
       }
     })
-    
+
+    // agents - VirusTotal
+    .state('ag-virustotal', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/virustotal/agents-virustotal.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ag-virustotal') },
+      controller: 'agentsVirusTotalCtrl',
+      params: { id: null },
+      resolve: {
+        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
+          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
+          return $requestService.apiReq(`/agents/${id}`)
+          .then(function (response) {
+            return response
+          }, function (response) {
+            return response
+          })
+        }]
+      }
+    })
+
     // agents - audit
     .state('ag-audit', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/audit/agents-audit.html',
