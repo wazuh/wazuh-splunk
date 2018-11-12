@@ -66,6 +66,9 @@ define([
           new PieChart('alertsVolume',
           `${this.filters} | stats count by rule.description | rename "rule.description" as "Description"`,
           'alertsVolume'),
+          new Table('filesAffected',
+          `${this.filters}  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
+          'filesAffected')
         ]
         
         /**
