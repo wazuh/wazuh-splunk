@@ -61,3 +61,35 @@ class api(controllers.BaseController):
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})
         return result
+
+    
+    @expose_page(must_login=False, methods=['POST'])
+    def csv(self, **kwargs):
+        try:
+            if 'payload[id]' not in kwargs or 'payload[path]' not in kwargs:
+                #missing_params = diff_keys_dic_update_api(kwargs)
+                raise Exception("Invalid arguments, missing params. Already got these params : %s" % str(kwargs))
+            filters = {}
+            if 'payload[filters]' in kwargs:
+              filters = kwargs['payload[filters]']
+            the_id = kwargs['payload[id]']
+            api = self.db.get(the_id)
+            opt_username = api[0]["userapi"]
+            opt_password = api[0]["passapi"]
+            opt_base_url = api[0]["url"]
+            opt_base_port = api[0]["portapi"]
+            opt_endpoint = kwargs['payload[path]']
+            del kwargs['id']
+            del kwargs['endpoint']
+            url = opt_base_url + ":" + opt_base_port
+            auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+            request = self.session.get(
+                url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
+            result = json.dumps(request)
+            self.logger.info('CSV Params: %s' % str(kwargs))
+            parsed_data = json.dumps(request)
+        except Exception as e:
+            self.logger.error("Error in CSV generation: %s" % (e))
+            return json.dumps({"error":str(e)})
+        return parsed_data
