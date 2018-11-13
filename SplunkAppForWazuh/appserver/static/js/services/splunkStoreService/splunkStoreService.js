@@ -34,7 +34,9 @@ define(['../module'], function (module) {
      */
     const insert = async (payload) => {
       try {
-        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, $.param(payload))
+        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, $.param({
+          payload
+        }))
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -47,7 +49,9 @@ define(['../module'], function (module) {
      */
     const deletes = async (id) => {
       try {
-        const { data } = await $requestService.httpReq(`DELETE`, `manager/remove_api`, $.param(id))
+        const { data } = await $requestService.httpReq(`POST`, `manager/remove_api`, $.param({
+          id
+        }))
         if (data.error || data.status === 400)
           throw new Error(data.error)
         return data
@@ -63,7 +67,9 @@ define(['../module'], function (module) {
      */
     const update = async (newRegister) => {
       try {
-        const { data } = await $requestService.httpReq(`PUT`, `manager/update_api`, $.param(newRegister))
+        const { data } = await $requestService.httpReq(`POST`, `manager/update_api`, $.param({
+          newRegister
+        }))
         return data
       } catch (err) {
         return Promise.reject(err)
