@@ -5,7 +5,6 @@ define(['../module'], function (module) {
     $stateProvider
     
     // agents
-    // agents
     .state('agents', {
       templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/agents/agents/agents.html',
       controller: 'agentsCtrl',
@@ -13,7 +12,7 @@ define(['../module'], function (module) {
         agentData: ['$requestService','$state', async ($requestService, $state) => {
           try{
             const responseStatus = await $requestService.apiReq('/cluster/status')
-            return Promise.all([
+            return await Promise.all([
               $requestService.apiReq('/agents/summary'),
               $requestService.apiReq('/agents', { limit: 1, sort: '-dateAdd' }),
               $requestService.apiReq('/agents/stats/distinct', { fields: 'os.name,os.version,os.platform', select: 'os.name,os.version,os.platform' }),
@@ -23,11 +22,6 @@ define(['../module'], function (module) {
               : Promise.resolve(false),
               $requestService.apiReq('/agents/groups', {}),
             ])
-            .then(function (response) {
-              return response
-            }, function (response) {
-              return response
-            })
           } catch(err) {
             $state.go('settings.api')
           }
@@ -42,24 +36,23 @@ define(['../module'], function (module) {
       controller: 'agentsOverviewCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return Promise.all([
-            $requestService.apiReq(`/agents/${id}`),
-            $requestService.apiReq(`/syscheck/${id}/last_scan`),
-            $requestService.apiReq(`/rootcheck/${id}/last_scan`),
-            $requestService.apiReq(`/syscollector/${id}/hardware`),
-            $requestService.apiReq(`/syscollector/${id}/os`),
-            $requestService.apiReq(`/agents/${id}/group/is_sync`)
-          ])
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
-          .catch(err => {
-            $state.go('settings.api')
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const results = await Promise.all([
+              $requestService.apiReq(`/agents/${id}`),
+              $requestService.apiReq(`/syscheck/${id}/last_scan`),
+              $requestService.apiReq(`/rootcheck/${id}/last_scan`),
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`),
+              $requestService.apiReq(`/agents/${id}/group/is_sync`)
+            ])
+            results.map((result) => { if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0))  $state.go('agents') })
+            return results
+          } catch(err) {
+            $state.go('agents')
+          }
+          
         }]
       }
     })
@@ -71,24 +64,22 @@ define(['../module'], function (module) {
       controller: 'inventoryCtrl',
       params: { id: null },
       resolve: {
-        syscollector: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return Promise.all([
-            $requestService.apiReq(`/syscollector/${id}/hardware`),
-            $requestService.apiReq(`/syscollector/${id}/os`),
-            $requestService.apiReq(`/syscollector/${id}/netiface`),
-            $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
-            $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
-            $requestService.apiReq(`/agents/${id}`)
-          ])
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
-          .catch(err => {
-            console.error('Error route: ', err)
-          })
+        syscollector: ['$requestService', '$stateParams', '$currentDataService', '$state', async ($requestService, $stateParams, $currentDataService,$state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const results = await Promise.all([
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`),
+              $requestService.apiReq(`/syscollector/${id}/netiface`),
+              $requestService.apiReq(`/syscollector/${id}/ports`, { limit: 1 }),
+              $requestService.apiReq(`/syscollector/${id}/packages`, { limit: 1, select: 'scan_time' }),
+              $requestService.apiReq(`/agents/${id}`)
+            ])
+            results.map((result) => { if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents') })
+            return results
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -100,28 +91,25 @@ define(['../module'], function (module) {
       controller: 'osqueryAgentCtrl',
       params: { id: null },
       resolve: {
-        osquery: ['$requestService','$currentDataService', '$stateParams', ($requestService,$currentDataService, $stateParams) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}/config/wmodules/wmodules`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
-          .catch(err => {
-            console.error('Error route: ', err)
-          })
+        osquery: ['$requestService','$currentDataService', '$stateParams','$state', async ($requestService,$currentDataService, $stateParams, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}/config/wmodules/wmodules`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+          } catch(err) {
+            $state.go('agents')
+          }
         }],
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService', '$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
-        
       }
     })
     
@@ -132,20 +120,21 @@ define(['../module'], function (module) {
       controller: 'agentsGeneralCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return Promise.all([
-            $requestService.apiReq(`/agents/${id}`),
-            $requestService.apiReq(`/syscheck/${id}/last_scan`),
-            $requestService.apiReq(`/rootcheck/${id}/last_scan`),
-            $requestService.apiReq(`/syscollector/${id}/hardware`),
-            $requestService.apiReq(`/syscollector/${id}/os`)
-          ])
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService,$state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const results = await Promise.all([
+              $requestService.apiReq(`/agents/${id}`),
+              $requestService.apiReq(`/syscheck/${id}/last_scan`),
+              $requestService.apiReq(`/rootcheck/${id}/last_scan`),
+              $requestService.apiReq(`/syscollector/${id}/hardware`),
+              $requestService.apiReq(`/syscollector/${id}/os`)
+            ])
+            results.map((result) => { if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0))  $state.go('agents') })
+            return results
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -157,18 +146,19 @@ define(['../module'], function (module) {
       controller: 'agentsFimCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
-
+    
     // agents - VirusTotal
     .state('ag-virustotal', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/virustotal/agents-virustotal.html',
@@ -176,18 +166,19 @@ define(['../module'], function (module) {
       controller: 'agentsVirusTotalCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
-
+    
     // agents - audit
     .state('ag-audit', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/agents/audit/agents-audit.html',
@@ -195,14 +186,15 @@ define(['../module'], function (module) {
       controller: 'agentsAuditCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state',async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -214,14 +206,15 @@ define(['../module'], function (module) {
       controller: 'agentsOpenScapCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
       
@@ -234,23 +227,25 @@ define(['../module'], function (module) {
       controller: 'configurationAgentCtrl',
       params: { id: null },
       resolve: {
-        data: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}/group/is_sync`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        data: ['$requestService', '$stateParams', '$currentDataService', '$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}/group/is_sync`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }],
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService', '$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -262,14 +257,15 @@ define(['../module'], function (module) {
       controller: 'agentsGdprCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService', '$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -282,14 +278,15 @@ define(['../module'], function (module) {
       controller: 'agentsPolicyMonitoringCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -301,14 +298,15 @@ define(['../module'], function (module) {
       controller: 'agentsPciCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err) {
+            $state.go('agents')
+          }
         }]
       }
     })
@@ -320,14 +318,15 @@ define(['../module'], function (module) {
       controller: 'agentsVulnerabilitiesCtrl',
       params: { id: null },
       resolve: {
-        agent: ['$requestService', '$stateParams', '$currentDataService', ($requestService, $stateParams, $currentDataService) => {
-          const id = $stateParams.id || $currentDataService.getCurrentAgent() || '000'
-          return $requestService.apiReq(`/agents/${id}`)
-          .then(function (response) {
-            return response
-          }, function (response) {
-            return response
-          })
+        agent: ['$requestService', '$stateParams', '$currentDataService', '$state', async ($requestService, $stateParams, $currentDataService, $state) => {
+          try{
+            const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
+            const result = await $requestService.apiReq(`/agents/${id}`)
+            if (!result.data || !result.data.data || (result.data.data.error && result.data.data.error!=0)) $state.go('agents')
+            return result
+          } catch(err){
+            $state.go('agents')
+          }
         }]
       }
     })  
