@@ -34,7 +34,6 @@ define([
       * @param {Object} $requestService 
       * @param {Object} agentData 
       */
-
       constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService,$tableFilterService, agentData){
         this.scope = $scope
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
