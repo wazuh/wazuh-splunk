@@ -28,10 +28,10 @@ describe('manager-api', () => {
 
   it('GET /check_connection => "ERROR"', async () => {
     const params = {
-      "user": "bad_user",
-      "pass": "bad_pass",
-      "ip": "http://bad_url",
-      "port": "12345"
+      user: 'bad_user',
+      pass: 'bad_pass',
+      ip: 'http://bad_url',
+      port: 12345
     }
     const res = await needle(`get`, `${s_url}/check_connection`, params, {})
     const resBodyJson = JSON.parse(res.body)
@@ -63,7 +63,7 @@ describe('manager-api', () => {
   })
   
   it('GET /get_api => "CORRECT ID"', async () => {
-    const params = { "id": "353b4bc3-61de-4118-9d5f-d1708a46486f" }
+    const params = { id: '2cc42206-bbe9-416c-a95f-7a4e46c445a5' }
     const res = await needle(`get`, `${s_url}/get_api`, params, {})
     const resBodyJson = JSON.parse(res.body) 
     //Check status
@@ -81,7 +81,7 @@ describe('manager-api', () => {
   })
   
   it('GET /get_api => "WRONG ID"', async () => {
-    const params = { "id": "2cc42206-bbe9-bad-id-api" }
+    const params = { id: '2cc42206-bbe9-bad-id-api' }
     const res = await needle(`get`, `${s_url}/get_api`, params, {})
     const resBodyJson = JSON.parse(res.body)
     //Check status
@@ -105,13 +105,13 @@ describe('manager-api', () => {
   
   it ('POST /add_api => "SUCCESFULLY"', async () => {
     const payload = {
-      "url": "http://127.0.0.1",
-      "portapi": "55000",
-      "userapi": "foo",
-      "passapi": "bar"
+      'payload[url]': 'http://127.0.0.1',
+      'payload[portapi]': '55000',
+      'payload[userapi]': 'foo',
+      'payload[passapi]': 'bar'
     }
     const res = await needle(`post`, `${s_url}/add_api`, payload, {})
-    const resBodyJson = JSON.parse(res.body)
+    resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -123,11 +123,11 @@ describe('manager-api', () => {
   
   it ('POST /add_api => "INVALID NUMBER OF ARGUMENTS"', async () => {
     const payload = {
-      "url": "http://127.0.0.1",
-      "portapi": "55000"
+      'payload[url]': 'http://127.0.0.1',
+      'payload[portapi]': '55000'
     }
     const res = await needle(`post`, `${s_url}/add_api`, payload, {})
-    const resBodyJson = JSON.parse(res.body)
+    resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -137,11 +137,10 @@ describe('manager-api', () => {
     resBodyJson.error.should.equal('Invalid number of arguments')
   })
   
-  it ('DELETE /remove_api => "SUCCESFULLY"', async () => {
-    const api_id = "8b89c00b-e7ff-40a0-92f9-292ea22a4ea8"
-    const url = `${s_url}/remove_api?id=${api_id}`
-    const res = await needle(`delete`, url, null)
-    const resBodyJson = JSON.parse(res.body) 
+  it ('POST /remove_api => "SUCCESFULLY"', async () => {
+    const payload = { 'id[id]':'9cef9c0a-3aa1-4b70-84de-f92f63a3f317' }
+    const res = await needle(`post`, `${s_url}/remove_api`, payload, {})
+    resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -150,20 +149,20 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.a('string')
     resBodyJson.data.should.be.equal('success')
   })
-
-  it ('PUT /update_api => "SUCCESFULLY"', async () => {
+  
+  it ('POST /update_api => "SUCCESFULLY"', async () => {
     const payload = {
-      "id":"a7e328f0-7883-4845-8b5a-2cedf8c9e016",
-      "url": "http://127.0.0.1",
-      "portapi": "55000",
-      "userapi": "foo",
-      "passapi": "bar",
-      "filterName":"test.filter.name",
-      "filterType":"test.filter.type",
-      "managerName":"test.manager.name"
+      'newRegister[id]':'723e583e-3d1f-46c8-bea6-606479769947',
+      'newRegister[url]':'http://test',
+      'newRegister[portapi]':'2529',
+      'newRegister[userapi]':'user',
+      'newRegister[passapi]':'pass',
+      'newRegister[filterName]':'test.filter.name',
+      'newRegister[filterType]':'test.filter.type',
+      'newRegister[managerName]':'test.manager.name'
     }
-    const res = await needle(`put`, `${s_url}/update_api`, payload, {})
-    const resBodyJson = JSON.parse(res.body)
+    const res = await needle(`post`, `${s_url}/update_api`, payload, {})
+    resBodyJson = JSON.parse(res.body)
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
     //Check body
@@ -172,17 +171,17 @@ describe('manager-api', () => {
     resBodyJson.data.should.be.equal('success')
   })
   
-  it ('PUT /update_api => "MISSING ANY ARGUMENT"', async () => {
+  it ('POST /update_api => "MISSING ANY ARGUMENT"', async () => {
     const payload = {
-      "id":"35950e41-ab59-4b5f-bc8d-3432286eff5b",
-      "url":"http://test",
-      "portapi":"2529",
-      "filterName":"test.filter.name",
-      "filterType":"test.filter.type",
-      "managerName":"test.manager.name"
+      'newRegister[id]':'723e583e-3d1f-46c8-bea6-606479769947',
+      'newRegister[url]':'http://test',
+      'newRegister[portapi]':'2529',
+      'newRegister[filterName]':'test.filter.name',
+      'newRegister[filterType]':'test.filter.type',
+      'newRegister[managerName]':'test.manager.name'
     }
-    const res = await needle(`put`, `${s_url}/update_api`, payload, {})
-    const resBodyJson = JSON.parse(res.body)
+    const res = await needle(`post`, `${s_url}/update_api`, payload, {})
+    resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
@@ -194,7 +193,7 @@ describe('manager-api', () => {
   
   it ('GET /get_log_lines => "SUCCESFULLY"', async () => {
     const res = await needle(`get`, `${s_url}/get_log_lines`)
-    const resBodyJson = JSON.parse(res.body)
+    resBodyJson = JSON.parse(res.body)
     //Check status
     res.statusCode.should.be.a('number')
     res.statusCode.should.equal(200)
