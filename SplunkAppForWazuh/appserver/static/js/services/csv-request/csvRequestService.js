@@ -36,8 +36,9 @@ define(['../module'], function (app) {
             payload
           })
           )
-          if(output.error){
-            throw Error(output.error)
+          console.log('output ',output)
+          if(output.data.error){
+            throw Error(output.data.error)
           }
           return output
         } catch (error) {
