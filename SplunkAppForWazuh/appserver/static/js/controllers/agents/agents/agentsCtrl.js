@@ -34,7 +34,7 @@ define([
       * @param {Object} $requestService 
       * @param {Object} agentData 
       */
-      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService, agentData){
+      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService,$tableFilterService, agentData){
         this.scope = $scope
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         this.submittedTokenModel.set('activeAgentToken', '-')
@@ -45,6 +45,7 @@ define([
         this.currentClusterInfo = $currentDataService.getClusterInfo()
         this.filters = $currentDataService.getSerializedFilters()
         this.csvReq = $csvRequestService
+        this.wzTableFilter = $tableFilterService
         const parsedResult = agentData.map(item => item && item.data && item.data.data ? item.data.data : false)
         
         const [
@@ -84,7 +85,7 @@ define([
         this.scope.version = 'all'
         this.scope.node_name = 'all'
         this.scope.versionModel = 'all'
-        
+        this.scope.downloadCsv = (dataPath) => this.downloadCsv(dataPath)
         this.scope.$on('$destroy', () => {
           this.topAgent.destroy()
         })
@@ -93,14 +94,15 @@ define([
       
       /**
        * Exports the table in CSV format
-       * @param {String} data_path 
+       * @param {String} dataPath 
        */
-      async downloadCsv(data_path) {
+      async downloadCsv(dataPath) {
         try {
+          console.log('downloading csv...')
           this.toast('Your download should begin automatically...')
           const currentApi = this.api.id
           const output = await this.csvReq.fetch(
-            data_path,
+            dataPath,
             currentApi,
             this.wzTableFilter.get()
           )
@@ -110,6 +112,7 @@ define([
     
           return
         } catch (error) {
+          console.error('error ',error)
           this.toast('Error downloading CSV')
         }
         return
