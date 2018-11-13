@@ -34,7 +34,11 @@ define([
       * @param {Object} $requestService 
       * @param {Object} agentData 
       */
+<<<<<<< HEAD
       constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService,$tableFilterService, agentData){
+=======
+      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService, agentData){
+>>>>>>> Added download csv method to agents controller
         this.scope = $scope
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         this.submittedTokenModel.set('activeAgentToken', '-')
@@ -45,7 +49,10 @@ define([
         this.currentClusterInfo = $currentDataService.getClusterInfo()
         this.filters = $currentDataService.getSerializedFilters()
         this.csvReq = $csvRequestService
+<<<<<<< HEAD
         this.wzTableFilter = $tableFilterService
+=======
+>>>>>>> Added download csv method to agents controller
         const parsedResult = agentData.map(item => item && item.data && item.data.data ? item.data.data : false)
         
         const [
