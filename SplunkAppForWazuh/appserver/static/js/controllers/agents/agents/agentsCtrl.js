@@ -13,9 +13,11 @@
 define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
+  '../../../services/file-saver/file-saver'
 ],function (
   app,
-  SearchHandler
+  SearchHandler,
+  FileSaver
   ){
     
     'use strict'
@@ -32,17 +34,17 @@ define([
       * @param {Object} $requestService 
       * @param {Object} agentData 
       */
-      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, agentData){
+      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService, agentData){
         this.scope = $scope
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         this.submittedTokenModel.set('activeAgentToken', '-')
-
+        this.api = $currentDataService.getApi()
         this.apiReq = $requestService.apiReq
         this.state = $state
         this.toast = $notificationService.showSimpleToast
         this.currentClusterInfo = $currentDataService.getClusterInfo()
         this.filters = $currentDataService.getSerializedFilters()
-        
+        this.csvReq = $csvRequestService
         const parsedResult = agentData.map(item => item && item.data && item.data.data ? item.data.data : false)
         
         const [
@@ -89,6 +91,30 @@ define([
         
       }
       
+      /**
+       * Exports the table in CSV format
+       * @param {String} data_path 
+       */
+      async downloadCsv(data_path) {
+        try {
+          this.toast('Your download should begin automatically...')
+          const currentApi = this.api.id
+          const output = await this.csvReq.fetch(
+            data_path,
+            currentApi,
+            this.wzTableFilter.get()
+          )
+          const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+    
+          FileSaver.saveAs(blob, 'packages.csv')
+    
+          return
+        } catch (error) {
+          this.toast('Error downloading CSV')
+        }
+        return
+      }
+
       /**
       * Searches by a term
       * @param {String} term 
