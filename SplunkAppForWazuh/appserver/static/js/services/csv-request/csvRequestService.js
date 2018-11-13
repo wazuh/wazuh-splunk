@@ -11,7 +11,7 @@
 */
 define(['../module'], function (app) {
   class CSVRequest {
-
+    
     /**
     * Constructor
     * @param {*} $requestService Service to make requests to our server
@@ -28,12 +28,18 @@ define(['../module'], function (app) {
     */
     async fetch(path, id, filters = null) {
       try {
+        const payload = {path:path,id:id,filters:filters}
         const output = await this.httpReq(
           'POST',
           '/api/csv',
-          { path, id, filters }
+          $.param({
+            payload
+          })
           )
-          return output.data
+          if(output.error){
+            throw Error(output.error)
+          }
+          return output
         } catch (error) {
           return Promise.reject(error)
         }
