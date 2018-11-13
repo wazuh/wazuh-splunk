@@ -13,7 +13,7 @@
 define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/file-saver/file-saver'
+  'FileSaver'
 ],function (
   app,
   SearchHandler,
@@ -88,31 +88,27 @@ define([
         this.scope.version = 'all'
         this.scope.node_name = 'all'
         this.scope.versionModel = 'all'
-        this.scope.downloadCsv = (dataPath) => this.downloadCsv(dataPath)
+        this.scope.downloadCsv = () => this.downloadCsv()
         this.scope.$on('$destroy', () => {
           this.topAgent.destroy()
         })
-        
       }
       
       /**
        * Exports the table in CSV format
-       * @param {String} dataPath 
        */
-      async downloadCsv(dataPath) {
+      async downloadCsv() {
         try {
           console.log('downloading csv...')
           this.toast('Your download should begin automatically...')
           const currentApi = this.api.id
           const output = await this.csvReq.fetch(
-            dataPath,
+            '/agents',
             currentApi,
             this.wzTableFilter.get()
           )
           const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-    
-          FileSaver.saveAs(blob, 'packages.csv')
-    
+          saveAs(blob, 'packages.csv')
           return
         } catch (error) {
           console.error('error ',error)
