@@ -20,6 +20,21 @@ define(['../../module'], function (module) {
       this.root = $rootScope
     }
 
+    /**
+     * Initialize
+     */
+    $onInit() {
+      this.scope.refreshLogs = () => this.refreshLogs()
+      try {
+        this.scope.logs = this.logs.data.logs.map(item => JSON.parse(item))
+      } catch (error) {
+        this.scope.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
+      }
+    }
+
+    /**
+     * Reloads the logs
+     */
     async refreshLogs() {
       try {
         this.root.$broadcast('loading', { status: true })
@@ -32,16 +47,6 @@ define(['../../module'], function (module) {
       }
     }
 
-    /**
-     * Initialize
-     */
-    $onInit() {
-      try {
-        this.scope.logs = this.logs.data.logs.map(item => JSON.parse(item))
-      } catch (error) {
-        this.scope.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
-      }
-    }
   }
   // Logs controller
   module.controller('logsCtrl', Logs)
