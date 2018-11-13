@@ -22,6 +22,44 @@ from db import database
 from log import log
 
 
+# Useful function for removing sensible keys
+def cleanKeys(response): 
+    try:
+        res = response["data"]
+        hide = "********"
+
+        # Remove agent key
+        if "internal_key" in res:
+            res["internal_key"] = hide
+
+        # Remove cluster key (/come/cluster)
+        if "node_type" in res and "key" in res:
+            res["key"] = hide
+
+        # Remove cluster key (/manager/configuration)
+        if "cluster" in res:
+            if "node_type" in res["cluster"] and "key" in res["cluster"]:
+                res["cluster"]["key"] = hide
+        
+        # Remove AWS keys
+        if "wmodules" in res:
+            for wmod in res["wmodules"]:
+                if "aws-s3" in wmod:
+                    if "buckets" in wmod["aws-s3"]:
+                        for bucket in wmod["aws-s3"]["buckets"]:
+                            bucket["access_key"] = hide
+                            bucket["secret_key"] = hide
+
+        # Remove integrations keys
+        if "integration" in res:
+            for integ in res["integration"]:
+                integ["api_key"] = hide
+
+        response["data"] = res
+        return json.dumps(response)                
+    except Exception as e:
+        return json.dumps({'error': str(e)})
+
 class api(controllers.BaseController):
 
     def __init__(self):
@@ -56,7 +94,19 @@ class api(controllers.BaseController):
             verify = False
             request = self.session.get(
                 url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
-            result = json.dumps(request)
+            result = cleanKeys(request)
+        except Exception as e:
+            self.logger.error("Error making API request: %s" % (e))
+            return json.dumps({'error': str(e)})
+        return result
+
+    # Useful function for test ofuscate keys
+    @expose_page(must_login=False, methods=['POST'])
+    def ofuscate_test(self, **kwargs):
+        try:
+            data = kwargs.keys()[0]
+            data = json.loads(data)
+            result = cleanKeys(data)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})
