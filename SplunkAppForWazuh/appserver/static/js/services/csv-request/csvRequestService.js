@@ -11,7 +11,7 @@
 */
 define(['../module'], function (app) {
   class CSVRequest {
-
+    
     /**
     * Constructor
     * @param {*} $requestService Service to make requests to our server
