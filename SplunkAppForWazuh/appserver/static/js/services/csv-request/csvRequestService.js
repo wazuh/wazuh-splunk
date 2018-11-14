@@ -28,11 +28,14 @@ define(['../module'], function (app) {
     */
     async fetch(path, id, filters = null) {
       try {
-        let filterArr = '{'
-        filters.map(filter => filterArr+=`"${filter.name}": "${filter.value}",`)
-        filterArr.slice(filterArr.length,1)
-        filterArr+='}'
-        const payload = {'path':path,'id':id,'filters':filterArr}
+        let filterStr = '{'
+        filters.map(filter => filterStr+=`"${filter.name}": "${filter.value}",`)
+        console.log('filterstr before ',filterStr)
+        filterStr = filterStr.slice(0, -1)
+        console.log('filterstr after ',filterStr)
+
+        filterStr+='}'
+        const payload = {'path':path,'id':id,'filters':filterStr}
         console.log('payload ',payload)
         const output = await this.httpReq('POST','/api/csv',$.param(payload))
         if(output.data.error){
