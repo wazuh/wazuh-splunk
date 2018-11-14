@@ -34,7 +34,7 @@ define(['../module'], function (app) {
         if(output.data.error){
           throw Error(output.data.error)
         }
-        return JSON.stringify(output.data)
+        return output.data
       } catch (error) {
         return Promise.reject(error)
       }

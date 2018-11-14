@@ -95,9 +95,11 @@ class api(controllers.BaseController):
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
             final_obj = request["data"]["items"]
             keys = final_obj[0].keys()
+            for key in keys:
+                key = '"'+key+'"'
             self.logger.info("Keys!: %s" % (keys))
             output_file = cStringIO.StringIO()
-            dict_writer = csv.DictWriter(output_file, fieldnames=keys,extrasaction='ignore',lineterminator=' ')
+            dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n')
             dict_writer.writeheader()
             dict_writer.writerows(final_obj)
             self.logger.info("Returning this!: %s" % (output_file.getvalue()))
