@@ -102,6 +102,7 @@ define([
           console.log('downloading csv...')
           this.toast('Your download should begin automatically...')
           const currentApi = this.api.id
+          console.log('sending these filters : ',this.wzTableFilter.get())
           const output = await this.csvReq.fetch(
             '/agents',
             currentApi,

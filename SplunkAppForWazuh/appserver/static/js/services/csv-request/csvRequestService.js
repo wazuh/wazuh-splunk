@@ -28,8 +28,13 @@ define(['../module'], function (app) {
     */
     async fetch(path, id, filters = null) {
       try {
-        const payload = {path:path,id:id,filters:filters}
-        const output = await this.httpReq('POST','/api/csv',$.param({payload}))
+        let filterArr = '{'
+        filters.map(filter => filterArr+=`"${filter.name}": "${filter.value}",`)
+        filterArr.slice(filterArr.length,1)
+        filterArr+='}'
+        const payload = {'path':path,'id':id,'filters':filterArr}
+        console.log('payload ',payload)
+        const output = await this.httpReq('POST','/api/csv',$.param(payload))
         if(output.data.error){
           throw Error(output.data.error)
         }
