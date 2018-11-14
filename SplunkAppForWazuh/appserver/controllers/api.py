@@ -43,11 +43,11 @@ class api(controllers.BaseController):
                     if isinstance(item,dict):
                         for key, value in item.iteritems():
                             if isinstance(item[key],dict):
-                                item[key] = '"'+json.dumps(item[key])+'"'
+                                item[key] = json.dumps(item[key])
                             else:
-                                item[key] = '"'+str(item[key])+'"'
+                                item[key] = str(item[key])
                     else:
-                        item = '"'+str(item)+'"'
+                        item = str(item)
             return arr
         except Exception as e:
             raise e
@@ -120,7 +120,7 @@ class api(controllers.BaseController):
             total_items = request["data"]["totalItems"]
             # initializes CSV buffer
             
-            dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n')
+            dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n',quotechar='"')
              # write CSV header
             dict_writer.writeheader()
             dict_writer.writerows(final_obj_dict)
