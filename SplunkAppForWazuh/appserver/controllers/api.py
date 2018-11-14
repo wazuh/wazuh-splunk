@@ -103,18 +103,19 @@ class api(controllers.BaseController):
             total_items = request["data"]["totalItems"]
             keys = final_obj[0].keys()
             # initializes CSV buffer
+            
             dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n')
-            dict_writer.writerow(final_obj)
-
-            # write CSV header
+             # write CSV header
             dict_writer.writeheader()
-            offset = 1000
+            dict_writer.writerows(final_obj)
+
+            offset = 0
             # get the rest of results
-            while offset < total_items:
+            while offset <= total_items:
                 offset+=filters['limit']
                 filters['offset']=offset
                 req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-                dict_writer.writerow(req['data']['items'])
+                dict_writer.writerows(req['data']['items'])
 
             csv_result = output_file.getvalue()
             output_file.close()

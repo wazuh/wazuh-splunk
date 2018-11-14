@@ -30,7 +30,6 @@ define(['../module'], function (app) {
       try {
         const payload = {path:path,id:id,filters:filters}
         const output = await this.httpReq('POST','/api/csv',$.param({payload}))
-        console.log('output ',output.data)
         if(output.data.error){
           throw Error(output.data.error)
         }
