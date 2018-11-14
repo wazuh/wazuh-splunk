@@ -75,6 +75,7 @@ class api(controllers.BaseController):
                 raise Exception("Invalid arguments, missing params. Already got these params : %s" % str(kwargs))
             filters = {}
             filters['limit'] = 1000
+            filters['offset'] = 0
             self.logger.info('Declaring filters route')
 
             # if 'payload[filters]' in kwargs:
@@ -92,19 +93,30 @@ class api(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
+            # init csv writer
+            output_file = cStringIO.StringIO()
+            # get total items and keys
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
             final_obj = request["data"]["items"]
+            # for item in final_obj_dict:
+            #     if item typeof
+            total_items = request["data"]["totalItems"]
             keys = final_obj[0].keys()
-            for key in keys:
-                key = '"'+key+'"'
-            self.logger.info("Keys!: %s" % (keys))
-            output_file = cStringIO.StringIO()
+            # initializes CSV buffer
             dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n')
+            dict_writer.writerow(final_obj)
+
+            # write CSV header
             dict_writer.writeheader()
-            dict_writer.writerows(final_obj)
-            self.logger.info("Returning this!: %s" % (output_file.getvalue()))
+            offset = 1000
+            # get the rest of results
+            while offset < total_items:
+                offset+=filters['limit']
+                filters['offset']=offset
+                req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
+                dict_writer.writerow(req['data']['items'])
+
             csv_result = output_file.getvalue()
-            self.logger.info("Returned this!: %s" % (output_file.getvalue()))
             output_file.close()
         except Exception as e:
             self.logger.error("Error in CSV generation!: %s" % (e))
