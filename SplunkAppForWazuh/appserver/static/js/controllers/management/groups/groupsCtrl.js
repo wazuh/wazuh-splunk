@@ -40,7 +40,6 @@ define(['../../module'], function (controllers) {
     }
     
     $onInit(){
-      console.log('on init')
       this.scope.search = term => { this.scope.$broadcast('wazuhSearch', { term }) }
       this.scope.loadGroup = (group,firstLoad) => this.loadGroup(group,firstLoad)
       this.scope.toggle = () => this.scope.lookingGroup = true
