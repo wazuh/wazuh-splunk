@@ -16,11 +16,12 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
   
   class ConfigurationController {
 
-    constructor($scope,$requestService, $stateParams, $currentDataService, $beautifierJson, $notificationService, data, agent) {
+    constructor($scope,$requestService, $state, $stateParams, $currentDataService, $beautifierJson, $notificationService, data, agent) {
       this.$scope = $scope
       this.$scope.currentAgent = agent.data.data
       this.errorHandler = $notificationService
       this.apiReq = $requestService
+      this.state = $state
       this.$scope.load = false
       this.id = $stateParams.id || $currentDataService.getCurrentAgent()
       this.$scope.isArray = Array.isArray
@@ -49,7 +50,26 @@ define(['../../module','../../../utils/config-handler'], function (controllers, 
       this.$scope.switchConfigurationSubTab = configurationSubTab => this.configurationHandler.switchConfigurationSubTab(configurationSubTab, this.$scope)
       this.$scope.updateSelectedItem = i => this.$scope.selectedItem = i
       this.$scope.getIntegration = list => this.configurationHandler.getIntegration(list, this.$scope)
+      this.$scope.goGroups = (group) => this.goGroups(group)
     }
+
+    /**
+     * Navigates to a group
+     * @param {String} group 
+     */
+    async goGroups (group) {
+      try {
+        const groupInfo = await this.apiReq.apiReq(`/agents/groups/`)
+        const groupData = groupInfo.data.data.items.filter( item => item.name === group)
+        if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
+          throw Error('Missing fields')
+        }
+        this.state.go(`mg-groups`, { group: groupData[0] } )
+      } catch (err) {
+        this.errorHandler.showSimpleToast('Error fetching group data')
+      }
+    }
+
   }
   
   controllers.controller('configurationAgentCtrl', ConfigurationController)
