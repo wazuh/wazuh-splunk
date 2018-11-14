@@ -36,6 +36,22 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in API module constructor: %s" % (e))
 
+    def format(self,arr):
+        try:
+            if isinstance(arr,list):
+                for item in arr:
+                    if isinstance(item,dict):
+                        for key, value in item.iteritems():
+                            if isinstance(item[key],dict):
+                                item[key] = '"'+json.dumps(item[key])+'"'
+                            else:
+                                item[key] = '"'+str(item[key])+'"'
+                    else:
+                        item = '"'+str(item)+'"'
+            return arr
+        except Exception as e:
+            raise e
+
     # /custom/SplunkAppForWazuh/api/node
     # This will perform an HTTP request to Wazuh API
     # It will return the full API response with including its error codes
@@ -68,28 +84,27 @@ class api(controllers.BaseController):
     @expose_page(must_login=False, methods=['POST'])
     def csv(self, **kwargs):
         try:
-            self.logger.info('Entring CSV route')
+            self.logger.info('Generating CSV.')
 
-            if 'payload[id]' not in kwargs or 'payload[path]' not in kwargs:
-                #missing_params = diff_keys_dic_update_api(kwargs)
-                raise Exception("Invalid arguments, missing params. Already got these params : %s" % str(kwargs))
+            if 'id' not in kwargs or 'path' not in kwargs:
+                raise Exception("Invalid arguments or missing params.")
             filters = {}
             filters['limit'] = 1000
             filters['offset'] = 0
-            self.logger.info('Declaring filters route')
 
-            # if 'payload[filters]' in kwargs:
-            #     for key, value in kwargs['payload[filters]'].iteritems():
-            #         filters[key] = value
-            the_id = kwargs['payload[id]']
+            if 'filters' in kwargs:
+                self.logger.info('Filters route: %s ' % (kwargs['filters']))
+                parsed_filters = json.loads(kwargs['filters'])
+                filters.update(parsed_filters)
+            the_id = kwargs['id']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
             opt_password = api[0]["passapi"]
             opt_base_url = api[0]["url"]
             opt_base_port = api[0]["portapi"]
-            opt_endpoint = kwargs['payload[path]']
-            del kwargs['payload[id]']
-            del kwargs['payload[path]']
+            opt_endpoint = kwargs['path']
+            del kwargs['id']
+            del kwargs['path']
             url = opt_base_url + ":" + opt_base_port
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
@@ -98,16 +113,17 @@ class api(controllers.BaseController):
             # get total items and keys
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
             final_obj = request["data"]["items"]
-            # for item in final_obj_dict:
-            #     if item typeof
-            total_items = request["data"]["totalItems"]
             keys = final_obj[0].keys()
+            self.format(keys)
+            final_obj_dict = self.format(final_obj)
+
+            total_items = request["data"]["totalItems"]
             # initializes CSV buffer
             
             dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n')
              # write CSV header
             dict_writer.writeheader()
-            dict_writer.writerows(final_obj)
+            dict_writer.writerows(final_obj_dict)
 
             offset = 0
             # get the rest of results
@@ -115,10 +131,14 @@ class api(controllers.BaseController):
                 offset+=filters['limit']
                 filters['offset']=offset
                 req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-                dict_writer.writerows(req['data']['items'])
+                paginated_result = req['data']['items']
+                format_paginated_results = self.format(paginated_result)
+                dict_writer.writerows(format_paginated_results)
 
             csv_result = output_file.getvalue()
             output_file.close()
+            self.logger.info('CSV generated successfully.')
+
         except Exception as e:
             self.logger.error("Error in CSV generation!: %s" % (e))
             return json.dumps({"error":str(e)})
