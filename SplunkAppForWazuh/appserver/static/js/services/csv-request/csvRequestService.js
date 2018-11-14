@@ -17,7 +17,7 @@ define(['../module'], function (app) {
     * @param {*} $requestService Service to make requests to our server
     */
     constructor($requestService) {
-      this.httpReq = $requestService.httpReq;
+      this.httpReq = $requestService.httpReq
     }
     
     /**
@@ -29,22 +29,16 @@ define(['../module'], function (app) {
     async fetch(path, id, filters = null) {
       try {
         const payload = {path:path,id:id,filters:filters}
-        const output = await this.httpReq(
-          'POST',
-          '/api/csv',
-          $.param({
-            payload
-          })
-          )
-          console.log('output ',output)
-          if(output.data.error){
-            throw Error(output.data.error)
-          }
-          return output
-        } catch (error) {
-          return Promise.reject(error)
+        const output = await this.httpReq('POST','/api/csv',$.param({payload}))
+        console.log('output ',output.data)
+        if(output.data.error){
+          throw Error(output.data.error)
         }
+        return JSON.stringify(output.data)
+      } catch (error) {
+        return Promise.reject(error)
       }
     }
-    app.service('$csvRequestService', CSVRequest )
-  })
+  }
+  app.service('$csvRequestService', CSVRequest )
+})
