@@ -14,6 +14,8 @@ import sys
 import json
 import requests
 import re
+import csv
+import cStringIO
 import splunk.appserver.mrsparkle.controllers as controllers
 import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
@@ -90,10 +92,19 @@ class api(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            request = self.session.get(
-                url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-            json_response = json.dumps(request)
+            request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
+            final_obj = request["data"]["items"]
+            keys = final_obj[0].keys()
+            self.logger.info("Keys!: %s" % (keys))
+            output_file = cStringIO.StringIO()
+            dict_writer = csv.DictWriter(output_file, fieldnames=keys,extrasaction='ignore',lineterminator=' ')
+            dict_writer.writeheader()
+            dict_writer.writerows(final_obj)
+            self.logger.info("Returning this!: %s" % (output_file.getvalue()))
+            csv_result = output_file.getvalue()
+            self.logger.info("Returned this!: %s" % (output_file.getvalue()))
+            output_file.close()
         except Exception as e:
             self.logger.error("Error in CSV generation!: %s" % (e))
             return json.dumps({"error":str(e)})
-        return json_response
+        return csv_result
