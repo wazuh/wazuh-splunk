@@ -1,15 +1,23 @@
 
 
-define(['../../module'], function (controllers) {
+define(['../../module',
+'FileSaver'
+], function (controllers) {
   
   'use strict'
   
   class Groups{
-    constructor($scope, $state, $stateParams, $requestService, $beautifierJson, $notificationService){
+    constructor($scope,$tableFilterService,$csvRequestService, $currentDataService,$state, $stateParams, $requestService, $beautifierJson, $notificationService){
       this.scope = $scope
       this.state = $state
       this.beautifier = $beautifierJson
       this.stateParams = $stateParams
+      this.api = $currentDataService.getApi()
+      
+      this.csvReq = $csvRequestService
+      
+      this.wzTableFilter = $tableFilterService
+      
       this.apiReq = $requestService.apiReq
       this.toast = $notificationService.showSimpleToast
       this.mainGroup = ''
@@ -47,6 +55,8 @@ define(['../../module'], function (controllers) {
       this.scope.reload = () => this.reload()
       this.scope.goBackFiles = () => this.goBackFiles()
       this.scope.goBackGroups = () => this.goBackGroups()
+      this.scope.downloadCsv = (path,name) => this.downloadCsv(path,name)
+
       this.scope.showFile = (groupName, fileName) => this.showFile(groupName, fileName)
       if (this.stateParams.group) {
         if(this.stateParams && this.stateParams.group && typeof this.stateParams.group === 'object') {
@@ -55,9 +65,30 @@ define(['../../module'], function (controllers) {
         }
       }
       if (!this.scope.$$phase) this.scope.$digest()
-
     }
-  
+    
+          /**
+       * Exports the table in CSV format
+       */
+      async downloadCsv(path,name) {
+        try {
+          this.toast('Your download should begin automatically...')
+          const currentApi = this.api.id
+          const output = await this.csvReq.fetch(
+            path,
+            currentApi,
+            this.wzTableFilter.get()
+          )
+          const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+          saveAs(blob, name)
+          return
+        } catch (error) {
+          console.error('error ',error)
+          this.toast('Error downloading CSV')
+        }
+        return
+      }
+
     async loadGroup (group, firstLoad) {
       try {
         if (!firstLoad) this.scope.lookingGroup = true
@@ -72,8 +103,8 @@ define(['../../module'], function (controllers) {
       }
       return
     }
-
-      
+    
+    
     goBackToAgents () {
       this.scope.groupsSelectedTab = 'agents'
       this.scope.file = false
@@ -85,7 +116,7 @@ define(['../../module'], function (controllers) {
       if (this.stateParams && this.stateParams.group && typeof this.stateParams.group === 'object') this.state.go('.', {group: undefined} )
       else this.state.reload()
     }
-
+    
     goBackFiles() {
       this.scope.groupsSelectedTab = 'files'
       this.scope.file = false
