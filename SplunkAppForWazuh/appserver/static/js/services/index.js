@@ -13,6 +13,7 @@ define([
   './beautifier/beautifier-json',
   './notificationService/notificationService',
   './xml-beautifier/xml-beautifier',
-  './get-ids/getIdService'
+  './get-ids/getIdService',
+  './token-model/urlTokenModelService'
 
 ], function () {})

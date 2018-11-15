@@ -4,115 +4,120 @@ define(['../../module'], function (controllers) {
   
   'use strict'
   
-  controllers.controller('groupsCtrl', function ($scope, $state, $stateParams, $requestService, $beautifierJson, $notificationService) {
-    const vm = this
-    let mainGroup
-    vm.loadGroup = async (group, firstTime) => {
+  class Groups{
+    constructor($scope, $state, $stateParams, $requestService, $beautifierJson, $notificationService){
+      this.scope = $scope
+      this.state = $state
+      this.beautifier = $beautifierJson
+      this.stateParams = $stateParams
+      this.apiReq = $requestService.apiReq
+      this.toast = $notificationService.showSimpleToast
+      this.mainGroup = ''
+      this.scope.lookingGroup = false
+      this.scope.loadingRing = false
+      
+      
+      this.scope.$watch('lookingGroup', value => {
+        if (!value) {
+          this.scope.file = false
+          this.scope.filename = false
+        }
+      })
+      
+      this.scope.$on('groupsIsReloaded', () => {
+        this.scope.currentGroup = false
+        this.scope.lookingGroup = false
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+      
+      this.scope.$on('wazuhShowGroup', (event, parameters) => {
+        return this.loadGroup(parameters.group)
+      })
+      
+      this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
+        return this.showFile(parameters.groupName, parameters.fileName)
+      })
+    }
+    
+    $onInit(){
+      console.log('on init')
+      this.scope.search = term => { this.scope.$broadcast('wazuhSearch', { term }) }
+      this.scope.loadGroup = (group,firstLoad) => this.loadGroup(group,firstLoad)
+      this.scope.toggle = () => this.scope.lookingGroup = true
+      this.scope.goBackToAgents = () => this.goBackToAgents()
+      this.scope.reload = () => this.reload()
+      this.scope.goBackFiles = () => this.goBackFiles()
+      this.scope.goBackGroups = () => this.goBackGroups()
+      this.scope.showFile = (groupName, fileName) => this.showFile(groupName, fileName)
+      if (this.stateParams.group) {
+        if(this.stateParams && this.stateParams.group && typeof this.stateParams.group === 'object') {
+          this.mainGroup = this.stateParams.group
+          this.loadGroup(this.mainGroup)
+        }
+      }
+      if (!this.scope.$$phase) this.scope.$digest()
+
+    }
+  
+    async loadGroup (group, firstLoad) {
       try {
-        if (!firstTime) vm.lookingGroup = true
-        const count = await $requestService.apiReq(`/agents/groups/${group.name}/files`, { limit: 1 })
-        vm.totalFiles = count.data.data.totalItems
-        vm.fileViewer = false
-        vm.currentGroup = group
-        mainGroup = group
-        if (!$scope.$$phase) $scope.$digest()
+        if (!firstLoad) this.scope.lookingGroup = true
+        const count = await this.apiReq(`/agents/groups/${group.name}/files`, { limit: 1 })
+        this.scope.totalFiles = count.data.data.totalItems
+        this.scope.fileViewer = false
+        this.scope.currentGroup = group
+        this.mainGroup = group
+        if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        $notificationService.showSimpleToast(error, 'Groups')
+        this.toast('Cannot load group data')
       }
       return
     }
-    
-    if ($stateParams.group) {
-      if($stateParams && $stateParams.group && typeof $stateParams.group === 'object') {
-        mainGroup = $stateParams.group
-        vm.loadGroup(mainGroup)
-      }
+
+      
+    goBackToAgents () {
+      this.scope.groupsSelectedTab = 'agents'
+      this.scope.file = false
+      this.scope.filename = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
     
-    $scope.$on('groupsIsReloaded', () => {
-      vm.currentGroup = false
-      vm.lookingGroup = false
-      if (!$scope.$$phase) $scope.$digest()
-    })
-    
-    vm.load = true
-    
-    vm.search = term => {
-      $scope.$broadcast('wazuhSearch', { term })
+    reload ()  {
+      if (this.stateParams && this.stateParams.group && typeof this.stateParams.group === 'object') this.state.go('.', {group: undefined} )
+      else this.state.reload()
+    }
+
+    goBackFiles() {
+      this.scope.groupsSelectedTab = 'files'
+      this.scope.file = false
+      this.scope.filename = false
+      this.scope.fileViewer = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
     
-    // Store a boolean variable to check if come from agents
+    goBackGroups () {
+      this.scope.currentGroup = false
+      this.scope.lookingGroup = false
+      if (!this.scope.$$phase) this.scope.$digest()
+    }
     
-    const load = async () => {
+    async showFile (groupName, fileName) {
       try {
-        vm.load = false
-        if (!$scope.$$phase) $scope.$digest()
-      } catch (error) {
-        $notificationService.showSimpleToast(error, 'Groups')
-      }
-      return
-    }
-    
-    load()
-    
-    vm.toggle = () => vm.lookingGroup = true
-    
-    
-    $scope.$on('wazuhShowGroup', (event, parameters) => {
-      return vm.loadGroup(parameters.group)
-    })
-    
-    $scope.$on('wazuhShowGroupFile', (event, parameters) => {
-      return vm.showFile(parameters.groupName, parameters.fileName)
-    })
-    
-    vm.goBackToAgents = () => {
-      vm.groupsSelectedTab = 'agents'
-      vm.file = false
-      vm.filename = false
-      if (!$scope.$$phase) $scope.$digest()
-    }
-    
-    vm.reload = () => {
-      if ($stateParams && $stateParams.group && typeof $stateParams.group === 'object') $state.go('.', {group: undefined} )
-      else $state.reload()
-    }
-    vm.goBackFiles = () => {
-      vm.groupsSelectedTab = 'files'
-      vm.file = false
-      vm.filename = false
-      vm.fileViewer = false
-      if (!$scope.$$phase) $scope.$digest()
-    }
-    
-    vm.goBackGroups = () => {
-      vm.currentGroup = false
-      vm.lookingGroup = false
-      if (!$scope.$$phase) $scope.$digest()
-    }
-    
-    vm.showFile = async (groupName, fileName) => {
-      try {
-        if (vm.filename) vm.filename = ''
+        if (this.scope.filename) this.scope.filename = ''
         if (fileName === '../ar.conf') fileName = 'ar.conf'
-        vm.fileViewer = true
+        this.scope.fileViewer = true
         const tmpName = `/agents/groups/${groupName}/files/${fileName}`
-        const data = await $requestService.apiReq(tmpName)
-        vm.file = $beautifierJson.prettyPrint(data.data.data)
-        vm.filename = fileName
+        const data = await this.apiReq(tmpName)
+        this.scope.file = this.beautifier.prettyPrint(data.data.data)
+        this.scope.filename = fileName
         
-        if (!$scope.$$phase) $scope.$digest()
+        if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        $notificationService.showSimpleToast('error at showing file ',error)
+        this.toast('Error showing file ')
       }
       return
     }
     
-    $scope.$watch('lookingGroup', value => {
-      if (!value) {
-        vm.file = false
-        vm.filename = false
-      }
-    })
-  })
+  }
+  controllers.controller('groupsCtrl', Groups)
 })

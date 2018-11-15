@@ -13,8 +13,8 @@
 define(['../../module'], function (module) {
   'use strict'
   class Logs {
-    constructor($requestService, logs, $rootScope) {
-      this.vm = this
+    constructor($scope, $requestService, logs, $rootScope) {
+      this.scope = $scope
       this.logs = logs
       this.httpReq = $requestService.httpReq
       this.root = $rootScope
@@ -24,11 +24,11 @@ define(['../../module'], function (module) {
       try {
         this.root.$broadcast('loading', { status: true })
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
-        this.vm.logs = result.data.logs.map(item => JSON.parse(item))
+        this.scope.logs = result.data.logs.map(item => JSON.parse(item))
         this.root.$broadcast('loading', { status: false })
       } catch (error) {
         this.root.$broadcast('loading', { status: false })
-        this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
+        this.scope.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
       }
     }
 
@@ -37,9 +37,9 @@ define(['../../module'], function (module) {
      */
     $onInit() {
       try {
-        this.vm.logs = this.logs.data.logs.map(item => JSON.parse(item))
+        this.scope.logs = this.logs.data.logs.map(item => JSON.parse(item))
       } catch (error) {
-        this.vm.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
+        this.scope.logs = [{ date: new Date(), level: 'error', message: 'Error when loading Wazuh app logs' }]
       }
     }
   }

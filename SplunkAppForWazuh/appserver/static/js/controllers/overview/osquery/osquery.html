@@ -1,0 +1,97 @@
+<md-content flex layout="column" layout-align="end">
+  <div layout="row">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+      <span>/ Osquery </span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+  
+  <!-- Filter bar -->
+  <wazuh-bar></wazuh-bar>
+  
+  <!-- first row  -->
+  <div id="row2" layout="row">
+    <md-card flex="40" class="wz-md-card">
+      <md-card-content class="wazuh-column" ng-show="osqueryWodle">
+        <span class="wz-headline-title">Wodle configuration</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row">
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10"></div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Add labels</p>
+              <p class="wz-text-right color-grey">{{osqueryWodle.add_labels}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10"></div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Configuration path</p>
+              <p class="wz-text-right color-grey">{{osqueryWodle.config_path}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Disabled</p>
+              <p class="wz-text-right color-grey">{{osqueryWodle.disabled}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Log path</p>
+              <p class="wz-text-right color-grey">{{osqueryWodle.log_path}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Run daemon</p>
+              <p class="wz-text-right color-grey">{{(osqueryWodle.run_daemon)}}</p>
+            </div>
+          </div>
+        </div>
+      </md-card-content>
+    </md-card>
+    <!-- first row - first vis -->
+    <md-card flex="60" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Alerts over time</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='alertsOverTime'></div>
+      </md-card-content>
+    </md-card>
+    
+  </div>
+  
+  <!-- second row  -->
+  <div id="row2" layout="row">
+    <!-- first row - second vis -->
+    <md-card flex="40" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Most common packs</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='mostCommonEvents'></div>
+      </md-card-content>
+    </md-card>
+    <!-- first row - first vis -->
+    <md-card flex="60" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Alerts evolution - Top 5 agents</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='alertsEvolution'></div>
+      </md-card-content>
+    </md-card>
+    
+  </div>
+  <div id="row3" layout="row">
+    <!-- second row - third vis -->
+    <md-card flex="100" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top 5 packs</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='topPacks'></div>
+      </md-card-content>
+    </md-card>
+    <!-- second row - third vis -->
+    <md-card flex="100" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top 5 rules</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='topRules'></div>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>
