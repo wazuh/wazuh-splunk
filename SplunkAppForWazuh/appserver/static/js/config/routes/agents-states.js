@@ -8,6 +8,7 @@ define(['../module'], function (module) {
     .state('agents', {
       templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/controllers/agents/agents/agents.html',
       controller: 'agentsCtrl',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('agents') },
       resolve: {
         agentData: ['$requestService','$state', async ($requestService, $state) => {
           try{

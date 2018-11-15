@@ -1,15 +1,24 @@
-define(['../../module'], function (app) {
+define([
+  '../../module',
+  'FileSaver'
+], function (app) {
 
   'use strict'
 
   class Logs {
-    constructor($scope, $requestService, $notificationService, logs) {
+
+    constructor($scope, $requestService, $tableFilterService, $notificationService, $currentDataService, $csvRequestService, logs) {
+
       this.scope = $scope
       this.apiReq = $requestService.apiReq
       this.toast = $notificationService.showSimpleToast
       this.scope.type_log = 'all'
       this.scope.category = 'all'
+      this.api = $currentDataService.getApi()
       this.logs = logs
+      this.csvReq = $csvRequestService
+      this.wzTableFilter = $tableFilterService
+
     }
 
     /**
@@ -23,14 +32,39 @@ define(['../../module'], function (app) {
         this.scope.stopRealtime = () => this.stopRealtime()
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
-        this.initialize()
-        return
+        this.scope.downloadCsv = () => this.downloadCsv()
+        this.initialize()     
       } catch (err) {
         this.toast('Cannot fetch logs data from server')
       }
     }
 
     /**
+     * Exports the table in CSV format
+     */
+    async downloadCsv() {
+      try {
+        this.toast('Your download should begin automatically...')
+        const currentApi = this.api.id
+        const output = await this.csvReq.fetch(
+          '/manager/logs',
+          currentApi,
+          this.wzTableFilter.get()
+        )
+        if (output.length > 0) {
+          const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+          saveAs(blob, 'logs.csv')
+        } else {
+          this.toast('Empty results.')
+        }
+        return
+      } catch (error) {
+        console.error('error ', error)
+        this.toast('Error downloading CSV')
+      }
+      return
+    }
+
      * Initializes data
      */
     async initialize() {
@@ -62,6 +96,7 @@ define(['../../module'], function (app) {
       }
       return
     }
+
 
     /**
      * Changes the cluster node
