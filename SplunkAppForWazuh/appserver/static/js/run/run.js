@@ -7,6 +7,10 @@ define(['./module'], function (module) {
       //Go to last state at login
       $navigationService.goToLastState()
 
+      /**
+       * Checks the destination state
+       * @param {Object} state 
+       */
       async function checkBeforeTransition(state){
         try{
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
