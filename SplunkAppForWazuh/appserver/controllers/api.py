@@ -120,9 +120,11 @@ class api(controllers.BaseController):
             output_file = cStringIO.StringIO()
             # get total items and keys
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-            if 'items' in request['data']:
+            self.logger.info('Data items: %s ' % (request['data']['items']))
+            self.logger.info('Items length: %s ' % (len(request['data']['items'])))
+            if 'items' in request['data'] and len(request['data']['items']) > 0:
                 final_obj = request["data"]["items"]
-                if isinstance(final_obj,list) and len(final_obj) > 0:
+                if isinstance(final_obj,list):
                     keys = final_obj[0].keys()
                     self.format(keys)
                     final_obj_dict = self.format(final_obj)
@@ -147,9 +149,10 @@ class api(controllers.BaseController):
                         csv_result = output_file.getvalue()
                         self.logger.info('CSV generated successfully.')
                 else:
-                    csv_result = []
+                    csv_result = '[]'
             else:
-                    csv_result = []
+                self.logger.info('Else')
+                csv_result = '[]'
             output_file.close()
 
         except Exception as e:
