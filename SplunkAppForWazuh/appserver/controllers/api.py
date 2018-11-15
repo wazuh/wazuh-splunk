@@ -42,10 +42,20 @@ class api(controllers.BaseController):
                 for item in arr:
                     if isinstance(item,dict):
                         for key, value in item.iteritems():
-                            if isinstance(item[key],dict):
-                                item[key] = json.dumps(item[key])
+                            if isinstance(value,dict):
+                                self.logger.info('This is a dict '+str(value))
+
+                                item[key] = json.dumps(value)
+                            elif isinstance(value,list):
+                                i = 0
+                                while i < len(value):
+                                    value[i] = str(value[i])
+                                    i += 1
                             else:
-                                item[key] = str(item[key])
+                                item[key] = str(value)
+                    elif isinstance(item,list):
+                        for each in item:
+                            each = str(each)
                     else:
                         item = str(item)
             return arr
@@ -84,8 +94,6 @@ class api(controllers.BaseController):
     @expose_page(must_login=False, methods=['POST'])
     def csv(self, **kwargs):
         try:
-            self.logger.info('Generating CSV.')
-
             if 'id' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
@@ -112,7 +120,7 @@ class api(controllers.BaseController):
             output_file = cStringIO.StringIO()
             # get total items and keys
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-            if 'items' in request:
+            if 'items' in request['data']:
                 final_obj = request["data"]["items"]
                 if isinstance(final_obj,list) and len(final_obj) > 0:
                     keys = final_obj[0].keys()
@@ -140,7 +148,9 @@ class api(controllers.BaseController):
                         self.logger.info('CSV generated successfully.')
                 else:
                     csv_result = []
-                    output_file.close()
+            else:
+                    csv_result = []
+            output_file.close()
 
         except Exception as e:
             self.logger.error("Error in CSV generation!: %s" % (e))
