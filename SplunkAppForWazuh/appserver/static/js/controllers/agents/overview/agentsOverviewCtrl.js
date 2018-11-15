@@ -10,38 +10,53 @@
 * Find more information about this on the LICENSE file.
 */
 
-define(['../../module'], function (controllers) {
+define(['../../module'], function (app) {
   
   'use strict'
   
-  controllers.controller('agentsOverviewCtrl', function ($stateParams, $requestService, $state, $notificationService ,agent) {
-    const vm = this
-    try {
-      vm.agent = agent[0].data.data
-      vm.agentOS = `${vm.agent.os.name || '-'} ${vm.agent.os.codename || '-'} ${vm.agent.os.version || '-'}`
-      vm.syscheck = agent[1].data.data
-      vm.id = $stateParams.id
-      vm.rootcheck = agent[2].data.data
-    } catch (err) {
-      $state.go('agents')
-    }
-    
-    vm.goGroups = async (group) => {
+  class AgentsOverview {
+
+    constructor($stateParams, $scope, $requestService, $state, $notificationService ,agent){
+
+      this.stateParams = $stateParams
+      this.scope = $scope
+      this.requestService = $requestService
+      this.state = $state 
+      this.notificationService = $notificationService
+      this.agent = agent
+
       try {
-        const groupInfo = await $requestService.apiReq(`/agents/groups/`)
-        const groupData = groupInfo.data.data.items.filter( item => item.name === group)
-        if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
-          throw Error('Missing fields')
-        }
-        $state.go(`mg-groups`, { group: groupData[0] } )
+        this.scope.agent = this.agent[0].data.data
+        this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope.agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
+        this.scope.syscheck = this.agent[1].data.data
+        this.scope.id = this.stateParams.id
+        this.scope.rootcheck = this.agent[2].data.data
       } catch (err) {
-        $notificationService.showSimpleToast('Error fetching group data')
+        this.state.go('agents')
       }
     }
-    
-    vm.formatAgentStatus = agentStatus => {
-      return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+
+    $onInit(){
+      this.scope.goGroups = async (group) => {
+        try {
+          this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
+          this.groupData = this.groupInfo.data.data.items.filter( item => item.name === group)
+          if (!this.groupInfo || !this.groupInfo.data || !this.groupInfo.data.data || this.groupInfo.data.error) {
+            throw Error('Missing fields')
+          }
+          this.state.go(`mg-groups`, { group: this.groupData[0] } )
+        } catch (err) {
+          this.notificationService.showSimpleToast('Error fetching group data')
+        }
+      }
+
+      this.scope.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+      }
+      this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
     }
-    vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
-  })
+  }
+
+  app.controller('agentsOverviewCtrl', AgentsOverview)
+
 })

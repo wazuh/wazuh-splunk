@@ -1,156 +1,126 @@
 /*
- * Wazuh app - Agents controller
- * Copyright (C) 2018 Wazuh, Inc.
- *
- * This program is free software you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation either version 2 of the License, or
- * (at your option) any later version.
- *
- * Find more information about this on the LICENSE file.
- */
+* Wazuh app - Agents controller
+* Copyright (C) 2018 Wazuh, Inc.
+*
+* This program is free software you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation either version 2 of the License, or
+* (at your option) any later version.
+*
+* Find more information about this on the LICENSE file.
+*/
 
 define([
   '../../module',
-  'splunkjs/mvc',
-  'splunkjs/mvc/simplexml/searcheventhandler',
-  'splunkjs/mvc/searchmanager',
-  "splunkjs/mvc/utils"
-], function (modules, mvc, SearchEventHandler, SearchManager, utils) {
+  '../../../services/visualizations/search/search-handler',
+],function (
+  app,
+  SearchHandler
+  ){
+    
+    'use strict'
+    
+    class Agents{
 
-  'use strict'
+      /**
+      * Class constructor
+      * @param {Object} $urlTokenModel 
+      * @param {Object} $scope 
+      * @param {Object} $currentDataService 
+      * @param {Object} $state 
+      * @param {Object} $notificationService 
+      * @param {Object} $requestService 
+      * @param {Object} agentData 
+      */
+      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, agentData){
+        this.scope = $scope
+        this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+        this.submittedTokenModel.set('activeAgentToken', '-')
 
-  modules.controller('agentsCtrl', function ($scope, $currentDataService, $state, $notificationService, $requestService, data) {
-    const vm = this
-    let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-    submittedTokenModel.set("activeAgentToken", '-')
-    vm.loadingSearch = true
-
-    vm.search = term => {
-      $scope.$broadcast('wazuhSearch', { term })
-    }
-
-    vm.filter = filter => {
-      $scope.$broadcast('wazuhFilter', { filter })
-    }
-
-    vm.showAgent = async (agent) => {
-      try {
-        const agentInfo = await $requestService.apiReq(`/agents`, { name: agent })
-        if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error)
+        this.apiReq = $requestService.apiReq
+        this.state = $state
+        this.toast = $notificationService.showSimpleToast
+        this.currentClusterInfo = $currentDataService.getClusterInfo()
+        this.filters = $currentDataService.getSerializedFilters()
+        
+        const parsedResult = agentData.map(item => item && item.data && item.data.data ? item.data.data : false)
+        
+        const [
+          summary,
+          lastAgent,
+          platforms,
+          versions,
+          nodes,
+          groups
+        ] = parsedResult
+        
+        this.scope.agentsCountActive = summary.Active - 1
+        this.scope.lastAgent = lastAgent.items[0]
+        this.scope.os = platforms.items
+        this.scope.versions = versions.items
+        this.scope.nodes = nodes && nodes.items ? nodes.items : false
+        this.scope.groups = groups.items
+        this.scope.agentsCountDisconnected = summary.Disconnected
+        this.scope.agentsCountNeverConnected = summary['Never connected']
+        this.scope.agentsCountTotal = summary.Total - 1
+        this.scope.agentsCoverity = this.scope.agentsCountTotal ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) * 100 : 0
+        this.topAgent = new SearchHandler('searchTopAgent',`index=wazuh ${this.filters} | top agent.name`,'activeAgentToken','$result.agent.name$','mostActiveAgent',this.submittedTokenModel,this.scope,true,'loadingSearch')
+        if (!this.scope.$$phase) this.scope.$digest() 
+      }
+      
+      /**
+      * On controller loads
+      */
+      $onInit(){
+        this.scope.search = term => this.search(term)
+        this.scope.filter = filter => this.filter(filter)
+        this.scope.showAgent = agent => this.showAgent(agent)
+        this.scope.isClusterEnabled = (this.clusterInfo && this.clusterInfo.status === 'enabled')
+        this.scope.loading = false
+        this.scope.status = 'all'
+        this.scope.osPlatform = 'all'
+        this.scope.version = 'all'
+        this.scope.node_name = 'all'
+        this.scope.versionModel = 'all'
+        
+        this.scope.$on('$destroy', () => {
+          this.topAgent.destroy()
+        })
+        
+      }
+      
+      /**
+      * Searches by a term
+      * @param {String} term 
+      */
+      search(term){
+        this.scope.$broadcast('wazuhSearch', { term })
+      }
+      
+      /**
+      * Filters by a term
+      * @param {String} filter 
+      */
+      filter(filter){
+        this.scope.$broadcast('wazuhFilter', { filter })
+      }
+      
+      /**
+      * Selects an agent
+      * @param {String} agent 
+      */
+      async showAgent(agent){
+        try {
+          const agentInfo = await this.apiReq(`/agents`, { name: agent })
+          if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error)
           throw Error('Error')
-        if (agentInfo.data.data.id !== '000')
-          $state.go(`agent-overview`, { id: agentInfo.data.data.id })
-      } catch (err) {
-        $notificationService.showSimpleToast('Error fetching agent data')
-      }
-    }
-
-    vm.isClusterEnabled = ($currentDataService.getClusterInfo() && $currentDataService.getClusterInfo().status === 'enabled')
-    vm.loading = true
-
-    vm.status = 'all'
-    vm.osPlatform = 'all'
-    vm.version = 'all'
-    vm.osPlatforms = []
-    vm.versions = []
-    vm.groups = []
-    vm.nodes = []
-    vm.node_name = 'all'
-    vm.mostActiveAgent = {
-      name: '',
-      id: ''
-    }
-
-    const clusterInfo = $currentDataService.getClusterInfo()
-
-    const epoch = (new Date).getTime()
-    const filters = $currentDataService.getSerializedFilters()
-    let searchTopAgent = new SearchManager({
-      "id": `searchTopAgent${epoch}`,
-      "cancelOnUnload": true,
-      "sample_ratio": 1,
-      "earliest_time": "$when.earliest$",
-      "status_buckets": 0,
-      "search": `${filters} | top agent.name`,
-      "latest_time": "$when.latest$",
-      "app": utils.getCurrentApp(),
-      "auto_cancel": 90,
-      "preview": true,
-      "tokenDependencies": {
-      },
-      "runWhenTimeIsUndefined": true
-    }, { tokens: true, tokenNamespace: "submitted" })
-
-    let handlerTopAgent = new SearchEventHandler({
-      managerid: `searchTopAgent${epoch}`,
-      event: "done",
-      conditions: [
-        {
-          attr: "any",
-          value: "*",
-          actions: [
-            { "type": "set", "token": "activeAgentToken", "value": "$result.agent.name$" },
-          ]
-        }
-      ]
-    })
-
-    searchTopAgent.on('search:progress', () => {
-      vm.loadingSearch = true
-    })
-    searchTopAgent.on('search:done', () => {
-      vm.loadingSearch = false
-      const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
-      if (activeAgentTokenJS) {
-        vm.loadingSearch = false
-        vm.mostActiveAgent = activeAgentTokenJS === '$result.agent.name$' ?
-          $currentDataService.getApi().managerName :
-          `${activeAgentTokenJS}`
-
-        if (!$scope.$$phase) $scope.$digest()
-      }
-    })
-
-    submittedTokenModel.on("change:activeAgentToken", function (model, activeAgentToken, options) {
-      if (submittedTokenModel) {
-        const activeAgentTokenJS = submittedTokenModel.get("activeAgentToken")
-        if (activeAgentTokenJS) {
-          vm.loadingSearch = false
-          vm.mostActiveAgent = activeAgentTokenJS === '$result.agent.name$' ?
-            $currentDataService.getApi().managerName :
-            `${activeAgentTokenJS}`
-          if (!$scope.$$phase) $scope.$digest()
+          if (agentInfo.data.data.id !== '000')
+          this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
+        } catch (err) {
+          this.toast('Error fetching agent data')
         }
       }
-    })
-
-    const summary = data[0].data.data
-    const lastAgent = data[1].data.data.items[0]
-
-    // Building operating system filter
-    vm.os = data[2].data.data.items
-    vm.versions = data[3].data.data.items
-    vm.nodes = (data[4] && data[4].data && data[4].data.data && data[4].data.data.items) ? data[4].data.data.items : false
-    vm.groups = data[5].data.data.items
-    vm.lastAgent = lastAgent
-    vm.agentsCountActive = summary.Active - 1
-    vm.agentsCountDisconnected = summary.Disconnected
-    vm.agentsCountNeverConnected = summary['Never connected']
-    vm.agentsCountTotal = summary.Total - 1
-    vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
-
-    vm.loading = false
-    if (!$scope.$$phase) $scope.$digest()
-
-    /**
-     * When controller is destroyed
-     */
-    $scope.$on('$destroy', () => {
-      searchTopAgent.cancel()
-      searchTopAgent = null
-      handlerTopAgent = null
-    })
-
+      
+    }
+    app.controller('agentsCtrl',Agents)
   })
-})
