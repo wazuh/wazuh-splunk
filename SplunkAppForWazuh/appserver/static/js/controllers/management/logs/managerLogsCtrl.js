@@ -1,9 +1,9 @@
 define(['../../module'], function (app) {
-  
+
   'use strict'
-  
-  class Logs{
-    constructor($scope,$requestService, $notificationService, logs){
+
+  class Logs {
+    constructor($scope, $requestService, $notificationService, logs) {
       this.scope = $scope
       this.apiReq = $requestService.apiReq
       this.toast = $notificationService.showSimpleToast
@@ -11,11 +11,11 @@ define(['../../module'], function (app) {
       this.scope.category = 'all'
       this.logs = logs
     }
-    
+
     /**
     * On controller loads
     */
-    $onInit(){
+    $onInit() {
       try {
         this.scope.search = term => this.search(term)
         this.scope.filter = term => this.filter(term)
@@ -30,32 +30,35 @@ define(['../../module'], function (app) {
       }
     }
 
-    async initialize(){
+    /**
+     * Initializes data
+     */
+    async initialize() {
       try {
-        // logs summary
-        
+
         const clusterStatus = await this.apiReq('/cluster/status')
         const clusterEnabled = clusterStatus && clusterStatus.data && clusterStatus.data.data && clusterStatus.data.data.running === 'yes' && clusterStatus.data.data.enabled === 'yes'
-        
-        if(clusterEnabled) {
+
+        if (clusterEnabled) {
           const nodeList = await this.apiReq('/cluster/nodes')
-          if(nodeList && nodeList.data && nodeList.data.data && Array.isArray(nodeList.data.data.items)){
+          if (nodeList && nodeList.data && nodeList.data.data && Array.isArray(nodeList.data.data.items)) {
             this.scope.nodeList = nodeList.data.data.items.map(item => item.name).reverse()
             this.scope.selectedNode = nodeList.data.data.items.filter(item => item.type === 'master')[0].name
           }
-        } 
-        
+        }
+
         this.scope.logsPath = clusterEnabled ? `/cluster/${this.scope.selectedNode}/logs` : '/manager/logs'
-        
+
         const data = clusterEnabled ?
-        await $requestService.apiReq(`/cluster/${this.scope.selectedNode}/logs/summary`):
-        await $requestService.apiReq('/manager/logs/summary')
+          await this.apiReq(`/cluster/${this.scope.selectedNode}/logs/summary`) :
+          await this.apiReq('/manager/logs/summary')
         const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({ title: item }))
         if (!this.scope.$$phase) this.scope.$digest()
-        return          
+        return
       } catch (err) {
-        this.toast('error en logs ctrl', err)
+        console.error('err ', err)
+        this.toast('Error initializing data')
       }
       return
     }
@@ -64,30 +67,30 @@ define(['../../module'], function (app) {
      * Changes the cluster node
      * @param {String} node 
      */
-    async changeNode(node){
+    async changeNode(node) {
       try {
         this.scope.type_log = 'all'
         this.scope.category = 'all'
         this.scope.selectedNode = node
         this.scope.$broadcast('wazuhUpdateInstancePath', { path: `/cluster/${node}/logs` })
-        const summary = await this.apiReq(`/cluster/${node}/logs/summary`,{})
+        const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
         const daemons = summary.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({ title: item }))
         if (!this.scope.$$phase) this.scope.$digest()
-      } catch(error) {
+      } catch (error) {
         this.toast('Error at fetching logs')
       }
     }
-    
+
     /**
     * Searches by a term
     * @param {String} term 
     */
-    search (term) {
+    search(term) {
       this.scope.$broadcast('wazuhSearch', { term })
       return
     }
-    
+
     /**
     * Filters by a term
     * @param {Object} filter 
@@ -96,11 +99,11 @@ define(['../../module'], function (app) {
       this.scope.$broadcast('wazuhFilter', { filter })
       return
     }
-    
+
     /**
     * Starts fetching logs in real time
     */
-    playRealtime () {
+    playRealtime() {
       this.scope.realtime = true
       this.scope.$broadcast('wazuhPlayRealTime')
       return
@@ -109,7 +112,7 @@ define(['../../module'], function (app) {
     /**
     * Stops fetching logs in real time
     */
-    stopRealtime () {
+    stopRealtime() {
       this.scope.realtime = false
       this.scope.$broadcast('wazuhStopRealTime')
       return
