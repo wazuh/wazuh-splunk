@@ -3,14 +3,15 @@ define(['../../module','./ruleset'], function (controllers,Ruleset) {
   'use strict'
   
   class Rules extends Ruleset{
-    constructor($scope, $sce, $notificationService) {
-     super($scope,$sce,$notificationService,'ruleset')
+    constructor($scope, $sce, $notificationService, $currentDataService,$tableFilterService,$csvRequestService) {
+     super($scope,$sce,$notificationService,'ruleset',$currentDataService,$tableFilterService,$csvRequestService)
     }
     
     /**
      * On controller load
      */
     $onInit() {
+      this.scope.downloadCsv = (path,name) => this.downloadCsv(path,name)
       this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
       this.scope.$on('loadedTable', () => {
         try{
