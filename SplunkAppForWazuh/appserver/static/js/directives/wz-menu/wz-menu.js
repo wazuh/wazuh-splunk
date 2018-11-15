@@ -1,15 +1,14 @@
-
 /*
- * Wazuh app - Top nav bar directive
- * Copyright (C) 2018 Wazuh, Inc.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * Find more information about this on the LICENSE file.
- */
+* Wazuh app - Top nav bar directive
+* Copyright (C) 2018 Wazuh, Inc.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* Find more information about this on the LICENSE file.
+*/
 define(['../module'], function (directives) {
   'use strict'
   directives.directive('wzMenu', function (BASE_URL) {
@@ -22,38 +21,31 @@ define(['../module'], function (directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
         
-        const update = () => {
-          $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
-          $scope.currentAPI = (!$currentDataService.getApi()) ? '-' : $currentDataService.getApi().managerName
-          $scope.theresAPI = ($scope.currentAPI === '-') ? false : true
-          if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ow-') || $navigationService.getLastState().includes('overview')) {
-            $scope.menuNavItem = 'overview'
-            if (!$scope.$$phase) $scope.$digest()
-          }
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('mg-') || $navigationService.getLastState().includes('manager')) {
-            $scope.menuNavItem = 'manager'
-            if (!$scope.$$phase) $scope.$digest()
-          }
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('ag-') || $navigationService.getLastState().includes('agents')) {
-            $scope.menuNavItem = 'agents'
-            if (!$scope.$$phase) $scope.$digest()
-          }
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('api.') || $navigationService.getLastState().includes('settings')) {
-            $scope.menuNavItem = 'settings'
-            if (!$scope.$$phase) $scope.$digest()
-          }
-          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('dev-tools')) {
-            $scope.menuNavItem = 'dev-tools'
-            if (!$scope.$$phase) $scope.$digest()
+        const checkLastState = (prefix, state) => {
+          if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes(prefix) || $navigationService.getLastState().includes(state)) {
+            return true
+          } else { 
+            return false 
           }
         }
+        
+        const update = () => {
+          $scope.currentIndex = (!$currentDataService.getIndex()) ? 'wazuh' : $currentDataService.getIndex().index
+          $scope.currentAPI = (!$currentDataService.getApi()) ? '---' : $currentDataService.getApi().managerName
+          $scope.theresAPI = ($scope.currentAPI === '---') ? false : true
+          if (checkLastState('ow-', 'overview')) { $scope.menuNavItem = 'overview' }
+          else if (checkLastState('mg-', 'manager')) { $scope.menuNavItem = 'manager' }
+          else if (checkLastState('ag-', 'agents')) { $scope.menuNavItem = 'agents' }
+          else if (checkLastState('api.','settings')) { $scope.menuNavItem = 'settings' }
+          else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('dev-tools')) { $scope.menuNavItem = 'dev-tools'  }
+          if (!$scope.$$phase) $scope.$digest()
+        }
         // Listens for changes in the selected API
-        $scope.$on('updatedAPI', () => {
+        $scope.$on('updatedAPI', (event) => {
           update()
         })
-        $scope.$on('stateChanged', (params,data) => {
+        $scope.$on('stateChanged', (event,data) => {
           $scope.select(data)
-          //update()
         })
         update()
       },
