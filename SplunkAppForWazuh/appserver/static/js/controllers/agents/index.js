@@ -12,5 +12,6 @@ define([
   './pcidss/agentsPciCtrl',
   './policy-monitoring/agentsPolicyMonitoringCtrl',
   './scap/agentsOpenScapCtrl',
+  './ciscat/agentsCiscatCtrl',
   './vulnerabilities/agentsVulnerabilitiesCtrl'
 ],function(){})

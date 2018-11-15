@@ -110,6 +110,12 @@ define(['../module'], function (module) {
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-vul') },
       controller: 'overviewVulnerabilitiesCtrl',
     })
+    // Overview - CIS-CAT
+    .state('ow-ciscat', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/ciscat/overview-ciscat.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ow-ciscat') },
+      controller: 'ciscatCtrl'
+     })
     // Overview - VirusTotal
     .state('ow-virustotal', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/virustotal/overview-virustotal.html',
