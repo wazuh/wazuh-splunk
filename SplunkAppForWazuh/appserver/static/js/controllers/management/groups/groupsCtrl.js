@@ -1,5 +1,3 @@
-
-
 define(['../../module',
 'FileSaver'
 ], function (controllers) {

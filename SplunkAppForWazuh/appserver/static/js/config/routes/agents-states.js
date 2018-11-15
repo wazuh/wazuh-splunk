@@ -37,6 +37,7 @@ define(['../module'], function (module) {
       controller: 'agentsOverviewCtrl',
       params: { id: null },
       resolve: {
+
         agent: ['$requestService', '$stateParams', '$currentDataService','$state', async ($requestService, $stateParams, $currentDataService, $state) => {
           try{
             const id = $stateParams.id || $currentDataService.getCurrentAgent() || $state.go('agents')
@@ -53,7 +54,6 @@ define(['../module'], function (module) {
           } catch(err) {
             $state.go('agents')
           }
-          
         }]
       }
     })

@@ -85,6 +85,14 @@ define(['../module'], function (module) {
       return $apiMgrService.setApi(api)
     }
 
+    const getExtensions = (id) => {
+      return $apiIndexStorageService.getExtensions(id)
+    }
+
+    const setExtensions = (api,extensions) => {
+      return $apiIndexStorageService.setExtensions(api,extensions)
+    }
+
     const removeCurrentApi = () => {
       return $apiIndexStorageService.removeAPI()
     }
@@ -121,7 +129,9 @@ define(['../module'], function (module) {
       removeCurrentApi: removeCurrentApi,
       setApi: setApi,
       getCurrentAgent: getCurrentAgent,
-      setCurrentAgent: setCurrentAgent
+      setCurrentAgent: setCurrentAgent,
+      getExtensions: getExtensions,
+      setExtensions: setExtensions
     }
   })
 })
