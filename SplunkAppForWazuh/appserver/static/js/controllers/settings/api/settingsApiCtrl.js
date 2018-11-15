@@ -21,6 +21,7 @@ define([
         this.apiList = apiList
         this.currentDataService = $currentDataService
         this.toast = $notificationService.showSimpleToast
+        this.savingApi = false
       }
       
       $onInit(){
@@ -152,6 +153,11 @@ define([
       */
       async updateEntry () {
         try {
+          if(this.savingApi) {
+            this.toast('Please, wait for success message')
+            return
+          }
+          this.savingApi = true
           this.scope.edit = !this.scope.edit
           this.scope.showForm = false
           this.scope.entry.url = this.scope.url
@@ -184,6 +190,7 @@ define([
         } catch (err) {
           this.toast('Cannot update API')
         }
+        this.savingApi = false
       }
       
       
@@ -220,6 +227,11 @@ define([
       */
       async submitApiForm (){
         try {
+          if(this.savingApi) {
+            this.toast('Please, wait for success message')
+            return
+          }
+          this.savingApi = true
           // When the Submit button is clicked, get all the form fields by accessing to the input values
           const form_url = this.scope.url
           const form_apiport = this.scope.port
@@ -263,11 +275,14 @@ define([
           } catch (err) {
             this.currentDataService.remove(id).then(() => { }).catch((err) => { this.toast('Unexpected error') })
             this.toast('Unreachable API')
+            this.savingApi = false
           }
           
         } catch (err) {
           this.toast(err.message)
+          this.savingApi = false
         }
+        this.savingApi = false
       }
       
       /**

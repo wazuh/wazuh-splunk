@@ -1,12 +1,17 @@
-define(['../../module'], function (controllers) {
-
+define(['../../module',
+'FileSaver'
+], function (app) {
+  
   'use strict'
-
+  
   class Ruleset {
-    constructor($scope, $sce, $notificationService, view) {
+    constructor($scope, $sce, $notificationService, view, $currentDataService,$tableFilterService,$csvRequestService) {
       this.scope = $scope
       this.view = view
       this.toast = $notificationService.showSimpleToast
+      this.api = $currentDataService.getApi()
+      this.wzTableFilter = $tableFilterService
+      this.csvReq = $csvRequestService
       this.sce = $sce
       this.colors = [
         '#004A65', '#00665F', '#BF4B45', '#BF9037', '#1D8C2E', 'BB3ABF',
@@ -24,10 +29,10 @@ define(['../../module'], function (controllers) {
       this.scope.isArray = angular.isArray
       this.initialize()
     }
-
+    
     /**
-     * On controller load
-     */
+    * On controller load
+    */
     initialize() {
       (this.view === 'decoders') ? delete window.localStorage.ruleset : delete window.localStorage.decoders
       this.scope.search = (term) => this.search(term)
@@ -36,6 +41,7 @@ define(['../../module'], function (controllers) {
       this.scope.removeFilter = (filterName) => this.removeFilter(filterName)
       this.scope.colorRuleArg = (ruleArg) => this.colorRegex(ruleArg)
       this.scope.closeDetailView = (clear) => this.closeDetailView(clear)
+      this.scope.downloadCsv = (path,name) => this.downloadCsv(path,name)
       if (this.view === 'ruleset') {
         this.scope.colorRuleArg = (regex) => this.colorRegex(regex)
       } else {
@@ -44,6 +50,29 @@ define(['../../module'], function (controllers) {
       this.scope.colorOrder = (order) => this.colorOrder(order)
     }
 
+          /**
+       * Exports the table in CSV format
+       */
+      async downloadCsv(path,name) {
+        try {
+          this.toast('Your download should begin automatically...')
+          const currentApi = this.api.id
+          const output = await this.csvReq.fetch(
+            path,
+            currentApi,
+            this.wzTableFilter.get()
+          )
+          const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+          saveAs(blob, name)
+          return
+        } catch (error) {
+          console.error('error ',error)
+          this.toast('Error downloading CSV')
+        }
+        return
+      }
+
+    
     colorRegex(regex) {
       regex = regex.toString()
       let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gmi)
@@ -55,7 +84,7 @@ define(['../../module'], function (controllers) {
       }
       return this.sce.trustAsHtml(coloredString)
     }
-
+    
     colorOrder(order) {
       order = order.toString()
       let valuesArray = order.split(',')
@@ -65,19 +94,19 @@ define(['../../module'], function (controllers) {
       }
       return this.sce.trustAsHtml(coloredString)
     }
-
-
+    
+    
     /**
     * Closes the detail view
     */
     closeDetailView(clear) {
       if (clear) this.scope.appliedFilters = this.scope.appliedFilters.slice(0, this.scope.appliedFilters.length - 1)
       this.scope.viewingDetail = false
-        (this.view === 'ruleset') ? this.scope.currentRule = false : this.scope.currentDecoder = false
+      (this.view === 'ruleset') ? this.scope.currentRule = false : this.scope.currentDecoder = false
       if (!this.scope.$$phase) this.scope.$digest()
     }
-
-
+    
+    
     /**
     * Searches a rule
     * @param {String} term 
@@ -125,7 +154,7 @@ define(['../../module'], function (controllers) {
       }
       return
     }
-
+    
     /**
     * Gets a filter by name
     * @param {String} filterName 
@@ -135,7 +164,7 @@ define(['../../module'], function (controllers) {
       const filtered = this.scope.appliedFilters.filter(item => item.name === filterName)
       return filtered.length ? filtered[0].value : ''
     }
-
+    
     /**
     * Removes a filter by name
     * @param {String} filterName 
@@ -158,7 +187,7 @@ define(['../../module'], function (controllers) {
         this.toast('Error removing the filter')
       }
     }
-
+    
     /**
     * Checks if a filter contains the passed string
     * @param {String} filterName 
@@ -168,6 +197,6 @@ define(['../../module'], function (controllers) {
       return this.scope.appliedFilters.map(item => item.name).includes(filterName)
     }
   }
-  controllers.controller('managerRulesetCtrl', Ruleset)
+  app.controller('managerRulesetCtrl', Ruleset)
   return Ruleset
 })
