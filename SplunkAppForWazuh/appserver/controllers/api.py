@@ -112,32 +112,35 @@ class api(controllers.BaseController):
             output_file = cStringIO.StringIO()
             # get total items and keys
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-            final_obj = request["data"]["items"]
-            keys = final_obj[0].keys()
-            self.format(keys)
-            final_obj_dict = self.format(final_obj)
+            if 'items' in request:
+                final_obj = request["data"]["items"]
+                if isinstance(final_obj,list) and len(final_obj) > 0:
+                    keys = final_obj[0].keys()
+                    self.format(keys)
+                    final_obj_dict = self.format(final_obj)
+                    total_items = request["data"]["totalItems"]
+                    # initializes CSV buffer
+                    if total_items > 0:
+                        dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n',quotechar='"')
+                        # write CSV header
+                        dict_writer.writeheader()
+                        dict_writer.writerows(final_obj_dict)
 
-            total_items = request["data"]["totalItems"]
-            # initializes CSV buffer
-            
-            dict_writer = csv.DictWriter(output_file, delimiter=',',fieldnames=keys,extrasaction='ignore',lineterminator='\n',quotechar='"')
-             # write CSV header
-            dict_writer.writeheader()
-            dict_writer.writerows(final_obj_dict)
+                        offset = 0
+                        # get the rest of results
+                        while offset <= total_items:
+                            offset+=filters['limit']
+                            filters['offset']=offset
+                            req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
+                            paginated_result = req['data']['items']
+                            format_paginated_results = self.format(paginated_result)
+                            dict_writer.writerows(format_paginated_results)
 
-            offset = 0
-            # get the rest of results
-            while offset <= total_items:
-                offset+=filters['limit']
-                filters['offset']=offset
-                req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-                paginated_result = req['data']['items']
-                format_paginated_results = self.format(paginated_result)
-                dict_writer.writerows(format_paginated_results)
-
-            csv_result = output_file.getvalue()
-            output_file.close()
-            self.logger.info('CSV generated successfully.')
+                        csv_result = output_file.getvalue()
+                        self.logger.info('CSV generated successfully.')
+                else:
+                    csv_result = []
+                    output_file.close()
 
         except Exception as e:
             self.logger.error("Error in CSV generation!: %s" % (e))

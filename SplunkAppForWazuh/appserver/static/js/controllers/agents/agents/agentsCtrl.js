@@ -46,8 +46,6 @@ define([
         this.currentClusterInfo = $currentDataService.getClusterInfo()
         this.filters = $currentDataService.getSerializedFilters()
         this.csvReq = $csvRequestService
-
-        this.wzTableFilter = $tableFilterService
         this.wzTableFilter = $tableFilterService
         const parsedResult = agentData.map(item => item && item.data && item.data.data ? item.data.data : false)
         
@@ -107,7 +105,7 @@ define([
             this.wzTableFilter.get()
           )
           const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-          saveAs(blob, 'packages.csv')
+          saveAs(blob, 'agents.csv')
           return
         } catch (error) {
           console.error('error ',error)

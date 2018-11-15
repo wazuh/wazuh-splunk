@@ -11,7 +11,7 @@
 */
 define(['../module'], function (app) {
   class CSVRequest {
-    
+
     /**
     * Constructor
     * @param {*} $requestService Service to make requests to our server
@@ -19,7 +19,7 @@ define(['../module'], function (app) {
     constructor($requestService) {
       this.httpReq = $requestService.httpReq
     }
-    
+
     /**
     * Fetchs data from /api/csv route using the below parameters.
     * @param {string} path Wazuh API route
@@ -29,23 +29,25 @@ define(['../module'], function (app) {
     async fetch(path, id, filters = null) {
       try {
         let filterStr = '{'
-        filters.map(filter => filterStr+=`"${filter.name}": "${filter.value}",`)
-        console.log('filterstr before ',filterStr)
-        filterStr = filterStr.slice(0, -1)
-        console.log('filterstr after ',filterStr)
-
-        filterStr+='}'
-        const payload = {'path':path,'id':id,'filters':filterStr}
-        console.log('payload ',payload)
-        const output = await this.httpReq('POST','/api/csv',$.param(payload))
-        if(output.data.error){
+        if (filters && typeof filters === 'object' && filters.length > 0) {
+          filters.map(filter => filterStr += `"${filter.name}": "${filter.value}",`)
+          filterStr = filterStr.slice(0, -1)
+          filterStr += '}'
+        } else {
+          filterStr = null
+        }
+        const payload = (filterStr) ? { 'path': path, 'id': id, 'filters': filterStr } :  { 'path': path, 'id': id }
+        const output = await this.httpReq('POST', '/api/csv', $.param(payload))
+        if (output.data.error) {
           throw Error(output.data.error)
         }
-        return output.data
+        if (output && output.data && output.data.length)
+          return output.data
+        else return []
       } catch (error) {
         return Promise.reject(error)
       }
     }
   }
-  app.service('$csvRequestService', CSVRequest )
+  app.service('$csvRequestService', CSVRequest)
 })
