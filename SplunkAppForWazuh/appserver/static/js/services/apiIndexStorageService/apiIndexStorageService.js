@@ -71,12 +71,13 @@ define(['../module'], function (app) {
     }
     
     getExtensions(id) {
-      try{
-        const currentExtensions = JSON.parse(this.sessionStorage.extensions)
-        const result = (currentExtensions.length >= 1) ? currentExtensions.filter(item => item.id === id)[0] : false
-        return result
-      } catch(err) {
-        console.error('error ',err)
+      try {
+        if (this.sessionStorage.extensions) {
+          const currentExtensions = JSON.parse(this.sessionStorage.extensions)
+          const result = (currentExtensions.length >= 1) ? currentExtensions.filter(item => item.id === id)[0] : false
+          return result
+        }
+      } catch (err) {
         return false
       }
     }
