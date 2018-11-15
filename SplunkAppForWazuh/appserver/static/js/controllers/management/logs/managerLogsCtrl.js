@@ -33,7 +33,7 @@ define([
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
-        this.initialize()     
+        this.initialize()
       } catch (err) {
         this.toast('Cannot fetch logs data from server')
       }
@@ -65,6 +65,7 @@ define([
       return
     }
 
+    /**
      * Initializes data
      */
     async initialize() {
