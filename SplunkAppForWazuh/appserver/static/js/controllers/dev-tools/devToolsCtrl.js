@@ -41,7 +41,8 @@ define([
       $document,
       $navigationService,
       $notificationService,
-      $requestService
+      $requestService,
+      extensions
     ) {
       this.$scope = $scope;
       this.request = $requestService;
@@ -52,6 +53,7 @@ define([
       this.groups = [];
       this.linesWithClass = [];
       this.widgets = [];
+      this.admin = ( extensions.data['admin'] === 'true') ? true : false;
     }
 
     unescapeBuffer(s, decodeSpaces) {
@@ -590,7 +592,9 @@ define([
             return;
           }
 
-          const method = desiredGroup.requestText.startsWith('GET')
+          let method = ''
+          if (this.admin) {
+          method = desiredGroup.requestText.startsWith('GET')
             ? 'GET'
             : desiredGroup.requestText.startsWith('POST')
               ? 'POST'
@@ -599,7 +603,9 @@ define([
                 : desiredGroup.requestText.startsWith('DELETE')
                   ? 'DELETE'
                   : 'GET';
-
+          } else {
+            method = 'GET'
+          }
           const requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
             : desiredGroup.requestText;
