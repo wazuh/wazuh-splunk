@@ -43,8 +43,6 @@ class api(controllers.BaseController):
                     if isinstance(item,dict):
                         for key, value in item.iteritems():
                             if isinstance(value,dict):
-                                self.logger.info('This is a dict '+str(value))
-
                                 item[key] = json.dumps(value)
                             elif isinstance(value,list):
                                 i = 0
@@ -100,10 +98,17 @@ class api(controllers.BaseController):
             filters['limit'] = 1000
             filters['offset'] = 0
 
-            if 'filters' in kwargs:
-                self.logger.info('Filters route: %s ' % (kwargs['filters']))
+            if 'filters' in kwargs and kwargs['filters'] != '':
                 parsed_filters = json.loads(kwargs['filters'])
+                keys_to_delete = []
+                for key,value in parsed_filters.iteritems():
+                    if parsed_filters[key] == "":
+                        keys_to_delete.append(key)
+                if len(keys_to_delete) > 0:
+                    for key in keys_to_delete:
+                        parsed_filters.pop(key,None)
                 filters.update(parsed_filters)
+            
             the_id = kwargs['id']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
@@ -156,6 +161,6 @@ class api(controllers.BaseController):
             output_file.close()
 
         except Exception as e:
-            self.logger.error("Error in CSV generation!: %s" % (e))
+            self.logger.error("Error in CSV generation!: %s" % (str(e)))
             return json.dumps({"error":str(e)})
         return csv_result
