@@ -3,8 +3,8 @@ define(['../../module','./ruleset'], function (controllers, Ruleset) {
   'use strict'
   
   class RulesetId extends Ruleset {
-    constructor($scope, $sce, $notificationService, $state, ruleInfo) {
-      super($scope,$sce,$notificationService,'ruleset')
+    constructor($scope, $sce, $notificationService, $state, ruleInfo,$currentDataService,$tableFilterService,$csvRequestService) {
+      super($scope,$sce,$notificationService,'ruleset',$currentDataService,$tableFilterService,$csvRequestService)
       this.state = $state
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
@@ -14,6 +14,7 @@ define(['../../module','./ruleset'], function (controllers, Ruleset) {
     }
     
     $onInit(){
+      this.scope.downloadCsv = (path,name) => this.downloadCsv(path,name)
       this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
     }
     

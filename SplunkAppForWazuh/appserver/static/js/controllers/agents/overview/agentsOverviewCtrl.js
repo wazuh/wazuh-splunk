@@ -16,7 +16,7 @@ define(['../../module'], function (app) {
   
   class AgentsOverview {
 
-    constructor($stateParams, $scope, $requestService, $state, $notificationService ,agent){
+    constructor($stateParams, extensions,$scope, $requestService, $state, $notificationService ,agent){
 
       this.stateParams = $stateParams
       this.scope = $scope
@@ -24,6 +24,7 @@ define(['../../module'], function (app) {
       this.state = $state 
       this.notificationService = $notificationService
       this.agent = agent
+      this.extensions = extensions
 
       try {
         this.scope.agent = this.agent[0].data.data
@@ -37,6 +38,9 @@ define(['../../module'], function (app) {
     }
 
     $onInit(){
+      const keys = Object.keys(this.extensions)
+      keys.map(key => (this.extensions[key] === 'true') ? this.scope[key] = key : this.scope[key]=null)
+
       this.scope.goGroups = async (group) => {
         try {
           this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)

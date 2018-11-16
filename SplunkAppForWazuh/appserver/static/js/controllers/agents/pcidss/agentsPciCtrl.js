@@ -76,9 +76,9 @@ define([
         
         $onInit(){
           this.scope.agent = this.agent.data.data
-          this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+          this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red"
           this.scope.formatAgentStatus = agentStatus => {
-            return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
+            return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected'
           }
         }
       }

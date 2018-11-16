@@ -85,7 +85,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
       controller: 'managerDecodersCtrl',
-      controllerAs: 'mdec',
       params: { filters: null, }
     })
     
@@ -94,7 +93,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders-id.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('mg-decoders') },
       controller: 'managerDecodersIdCtrl',
-      controllerAs: 'mdid',
       params: { id: null, name: null },
       resolve: {
         currentDecoder: ['$requestService', '$stateParams', ($requestService, $stateParams) => {

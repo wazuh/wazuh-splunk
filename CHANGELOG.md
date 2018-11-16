@@ -5,10 +5,14 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Osquery integration ([#252](https://github.com/wazuh/wazuh-splunk/pull/252)).
 - Cluster monitoring ([#246](https://github.com/wazuh/wazuh-splunk/pull/246)).
 - Added a node selector for _Management > Status_ section when Wazuh cluster is enabled ([#291](https://github.com/wazuh/wazuh-splunk/pull/291)).
+- Added a node selector for _Management > Logs_ section when Wazuh cluster is enabled ([#299](https://github.com/wazuh/wazuh-splunk/pull/299)).
+
 ### Changed
 - Configuration section ([#261](https://github.com/wazuh/wazuh-splunk/pull/261))
 - FIM section ([#255](https://github.com/wazuh/wazuh-splunk/pull/255)).
 - Settings section ([#265](https://github.com/wazuh/wazuh-splunk/pull/265)).
+- The `wz-table` directive now checks if a request is aborted ([#301](https://github.com/wazuh/wazuh-splunk/pull/301)).
+
 ### Fixes
 - Minor fixes.
 ## Wazuh v3.6.1 - Splunk Enterprise v7.1.3 - Splunk app v3.6.1-rev-16

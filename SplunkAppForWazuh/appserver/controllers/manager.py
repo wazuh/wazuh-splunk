@@ -23,6 +23,14 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 
+def getSelfConfStanza(stanza):
+  try:
+    apikeyconf = cli.getConfStanza('config',stanza)
+    parsed_data = json.dumps(apikeyconf)
+  except Exception as e:
+    raise e
+  return parsed_data
+
 def diff_keys_dic_update_api(kwargs_dic):
     try:
         diff_dic = []
@@ -38,7 +46,7 @@ def diff_keys_dic_update_api(kwargs_dic):
                 diff_dic.append(key)
         return str(', '.join(diff_dic))
     except Exception as e:
-        return "Error comparing diccionaries"
+        return "Error comparing dictionaries"
 
 class manager(controllers.BaseController):
     def __init__(self):
@@ -80,6 +88,15 @@ class manager(controllers.BaseController):
             polling_dict = {}
             polling_dict['disabled'] = disabled
             data_temp = json.dumps(polling_dict)
+        except Exception as e:
+            return json.dumps({'error':str(e)})
+        return data_temp
+
+    @expose_page(must_login=False, methods=['GET'])
+    def extensions(self, **kwargs):
+        try:
+            stanza = getSelfConfStanza("extensions")
+            data_temp = stanza
         except Exception as e:
             return json.dumps({'error':str(e)})
         return data_temp

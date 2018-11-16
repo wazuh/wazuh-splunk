@@ -26,6 +26,16 @@ define(['../module'], function (module) {
           .catch(err => {
             $state.go('settings.api')
           })
+        }],
+        extensions: ['$requestService', '$currentDataService', async ($requestService, $currentDataService) => {
+          try{
+            const id = $currentDataService.getApi().id
+            const currentExtensions = $currentDataService.getExtensions(id)
+            const result = (currentExtensions) ? currentExtensions : $requestService.httpReq(`GET`,`/manager/extensions`)
+            return await result
+          }catch(err) {
+            return false
+          }
         }]
       }
     })
@@ -61,7 +71,7 @@ define(['../module'], function (module) {
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-fim') },
       controller: 'overviewFimCtrl',
     })
-    // Overview - FIM
+    // Overview - OSQUERy
     .state('ow-osquery', {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/osquery/osquery.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-osquery') },
@@ -85,7 +95,6 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/audit/overview-audit.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-audit') },
       controller: 'overviewAuditCtrl',
-      controllerAs: 'oac',
     })
     // Overview - OpenSCAP
     .state('ow-os', {
@@ -110,6 +119,18 @@ define(['../module'], function (module) {
       templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/vulnerabilities/overview-vulnerabilities.html',
       onEnter: ($navigationService) => { $navigationService.storeRoute('ow-vul') },
       controller: 'overviewVulnerabilitiesCtrl',
+    })
+    // Overview - CIS-CAT
+    .state('ow-ciscat', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/ciscat/overview-ciscat.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ow-ciscat') },
+      controller: 'ciscatCtrl'
+     })
+    // Overview - VirusTotal
+    .state('ow-virustotal', {
+      templateUrl: BASE_URL + 'static/app/SplunkAppForWazuh/js/controllers/overview/virustotal/overview-virustotal.html',
+      onEnter: ($navigationService) => { $navigationService.storeRoute('ow-virustotal') },
+      controller: 'overviewVirusTotal', 
     })
     // =========== AWS =========== //
     .state('ow-aws', {

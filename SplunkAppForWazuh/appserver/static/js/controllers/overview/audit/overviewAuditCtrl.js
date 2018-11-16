@@ -66,6 +66,10 @@ define([
           new Table('alertsSummary',`${this.filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as \"Effective user id\"`,'alertsSummaryElement')
         ]
       }
+      launchSearches(){
+        this.filters = $currentDataService.getSerializedFilters()
+        this.state.reload()
+      }
     }
     app.controller('overviewAuditCtrl', Audit)
   })
