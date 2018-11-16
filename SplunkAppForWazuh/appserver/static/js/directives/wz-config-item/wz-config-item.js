@@ -9,8 +9,8 @@
 *
 * Find more information about this on the LICENSE file.
 */
-define(['../module'], function (directives) {
-  'use strict'
+define(['../module'], function(directives) {
+  'use strict';
   directives.directive('wzConfigItem', function(BASE_URL) {
     return {
       restrict: 'E',
@@ -19,7 +19,9 @@ define(['../module'], function (directives) {
         value: '=value',
         isArray: '=isArray'
       },
-      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-config-item/wz-config-item.html'
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-config-item/wz-config-item.html'
     };
   });
-})
+});

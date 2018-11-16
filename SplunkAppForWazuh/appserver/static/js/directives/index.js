@@ -7,4 +7,4 @@ define([
   './wz-bar/wz-bar',
   './wz-no-config/wz-no-config',
   './wz-config-item/wz-config-item'
-], function () {})
+], function() {});

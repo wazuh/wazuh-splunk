@@ -27,8 +27,8 @@ from log import log
 class api(controllers.BaseController):
 
     def __init__(self):
-        self.logger = log()
         try:
+            self.logger = log()
             controllers.BaseController.__init__(self)
             self.db = database()
             self.session = requests.Session()
@@ -36,15 +36,47 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in API module constructor: %s" % (e))
 
-    def format(self,arr):
+    # This hides any password returned in plain text from API
+    def clean_keys(self,response):
+        try:
+            res = response["data"]
+            hide = "********"
+            # Remove agent key
+            if "internal_key" in res:
+                res["internal_key"] = hide
+            # Remove cluster key (/come/cluster)
+            if "node_type" in res and "key" in res:
+                res["key"] = hide
+            # Remove cluster key (/manager/configuration)
+            if "cluster" in res:
+                if "node_type" in res["cluster"] and "key" in res["cluster"]:
+                    res["cluster"]["key"] = hide
+
+            # Remove AWS keys
+            if "wmodules" in res:
+                for wmod in res["wmodules"]:
+                    if "aws-s3" in wmod:
+                        if "buckets" in wmod["aws-s3"]:
+                            for bucket in wmod["aws-s3"]["buckets"]:
+                                bucket["access_key"] = hide
+                                bucket["secret_key"] = hide
+            # Remove integrations keys
+            if "integration" in res:
+                for integ in res["integration"]:
+                    integ["api_key"] = hide
+            response["data"] = res
+            return json.dumps(response)                
+        except Exception as e:
+            raise e
+
+    # This will format the data for the CSV file generation
+    def format_output(self,arr):
         try:
             if isinstance(arr,list):
                 for item in arr:
                     if isinstance(item,dict):
                         for key, value in item.iteritems():
                             if isinstance(value,dict):
-                                self.logger.info('This is a dict '+str(value))
-
                                 item[key] = json.dumps(value)
                             elif isinstance(value,list):
                                 i = 0
@@ -85,12 +117,13 @@ class api(controllers.BaseController):
             request = self.session.get(
                 url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
             result = json.dumps(request)
+            #result = self.clean_keys(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})
         return result
 
-    
+    # POST /api/csv : Generates a CSV file with the returned data from API
     @expose_page(must_login=False, methods=['POST'])
     def csv(self, **kwargs):
         try:
@@ -100,10 +133,17 @@ class api(controllers.BaseController):
             filters['limit'] = 1000
             filters['offset'] = 0
 
-            if 'filters' in kwargs:
-                self.logger.info('Filters route: %s ' % (kwargs['filters']))
+            if 'filters' in kwargs and kwargs['filters'] != '':
                 parsed_filters = json.loads(kwargs['filters'])
+                keys_to_delete = []
+                for key,value in parsed_filters.iteritems():
+                    if parsed_filters[key] == "":
+                        keys_to_delete.append(key)
+                if len(keys_to_delete) > 0:
+                    for key in keys_to_delete:
+                        parsed_filters.pop(key,None)
                 filters.update(parsed_filters)
+            
             the_id = kwargs['id']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
@@ -120,13 +160,11 @@ class api(controllers.BaseController):
             output_file = cStringIO.StringIO()
             # get total items and keys
             request = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
-            self.logger.info('Data items: %s ' % (request['data']['items']))
-            self.logger.info('Items length: %s ' % (len(request['data']['items'])))
             if 'items' in request['data'] and len(request['data']['items']) > 0:
                 final_obj = request["data"]["items"]
                 if isinstance(final_obj,list):
                     keys = final_obj[0].keys()
-                    self.format(keys)
+                    self.format_output(keys)
                     final_obj_dict = self.format(final_obj)
                     total_items = request["data"]["totalItems"]
                     # initializes CSV buffer
@@ -151,11 +189,10 @@ class api(controllers.BaseController):
                 else:
                     csv_result = '[]'
             else:
-                self.logger.info('Else')
                 csv_result = '[]'
             output_file.close()
 
         except Exception as e:
-            self.logger.error("Error in CSV generation!: %s" % (e))
+            self.logger.error("Error in CSV generation!: %s" % (str(e)))
             return json.dumps({"error":str(e)})
         return csv_result

@@ -9,9 +9,9 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (directives) {
-  'use strict'
-  directives.directive('wzWelcomeCard', function (BASE_URL) {
+define(['../module'], function(directives) {
+  'use strict';
+  directives.directive('wzWelcomeCard', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -23,10 +23,12 @@ define(['../module'], function (directives) {
       },
       replace: true,
       controller($scope) {
-        $scope.finalUrl = `${BASE_URL}${$scope.logo}`
-        $scope.callSwitchTab = () => $scope.switchTab()
+        $scope.finalUrl = `${BASE_URL}${$scope.logo}`;
+        $scope.callSwitchTab = () => $scope.switchTab();
       },
-      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-welcome-card/wz-welcome-card.html'
-    }
-  })
-})
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-welcome-card/wz-welcome-card.html'
+    };
+  });
+});

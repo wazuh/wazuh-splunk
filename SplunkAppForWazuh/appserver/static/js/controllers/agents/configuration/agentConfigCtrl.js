@@ -10,67 +10,110 @@
 * Find more information about this on the LICENSE file.
 */
 
-define(['../../module','../../../utils/config-handler'], function (controllers, ConfigHandler) {
-  
-  'use strict'
-  
-  class ConfigurationController {
+define(['../../module', '../../../utils/config-handler'], function(
+  controllers,
+  ConfigHandler
+) {
+  'use strict';
 
-    constructor($scope,$requestService, $state, $stateParams, $currentDataService, $beautifierJson, $notificationService, data, agent) {
-      this.$scope = $scope
-      this.$scope.currentAgent = agent.data.data
-      this.errorHandler = $notificationService
-      this.apiReq = $requestService
-      this.state = $state
-      this.$scope.load = false
-      this.id = $stateParams.id || $currentDataService.getCurrentAgent()
-      this.$scope.isArray = Array.isArray
-      this.configurationHandler = new ConfigHandler(this.apiReq,$beautifierJson, this.errorHandler)
-      this.$scope.currentConfig = null
-      this.$scope.configurationTab = ''
-      this.$scope.configurationSubTab = ''
-      this.$scope.integrations = {}
-      this.$scope.selectedItem = 0
-      this.$scope.isSynchronized = data && data.data && data.data.data && data.data.data.synced
-      this.$scope.agent = agent.data.data
+  class ConfigurationController {
+    constructor(
+      $scope,
+      $requestService,
+      $state,
+      $stateParams,
+      $currentDataService,
+      $beautifierJson,
+      $notificationService,
+      data,
+      agent
+    ) {
+      this.$scope = $scope;
+      this.$scope.currentAgent = agent.data.data;
+      this.errorHandler = $notificationService;
+      this.apiReq = $requestService;
+      this.state = $state;
+      this.$scope.load = false;
+      this.id = $stateParams.id || $currentDataService.getCurrentAgent();
+      this.$scope.isArray = Array.isArray;
+      this.configurationHandler = new ConfigHandler(
+        this.apiReq,
+        $beautifierJson,
+        this.errorHandler
+      );
+      this.$scope.currentConfig = null;
+      this.$scope.configurationTab = '';
+      this.$scope.configurationSubTab = '';
+      this.$scope.integrations = {};
+      this.$scope.selectedItem = 0;
+      this.$scope.isSynchronized =
+        data && data.data && data.data.data && data.data.data.synced;
+      this.$scope.agent = agent.data.data;
     }
-    
+
     $onInit() {
-      this.$scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+      this.$scope.getAgentStatusClass = agentStatus =>
+        agentStatus === 'Active' ? 'teal' : 'red';
       this.$scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
-      }
+        return ['Active', 'Disconnected'].includes(agentStatus)
+          ? agentStatus
+          : 'Never connected';
+      };
       // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
-      this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
-      this.$scope.isString = item => typeof item === 'string'
-      this.$scope.hasSize = obj => obj && typeof obj === 'object' && Object.keys(obj).length
-      this.$scope.switchConfigTab = (configurationTab, sections) => this.configurationHandler.switchConfigTab(configurationTab, sections, this.$scope, this.id)
-      this.$scope.switchWodle = wodleName => this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)
-      this.$scope.switchConfigurationTab = configurationTab => this.configurationHandler.switchConfigurationTab(configurationTab, this.$scope)
-      this.$scope.switchConfigurationSubTab = configurationSubTab => this.configurationHandler.switchConfigurationSubTab(configurationSubTab, this.$scope)
-      this.$scope.updateSelectedItem = i => this.$scope.selectedItem = i
-      this.$scope.getIntegration = list => this.configurationHandler.getIntegration(list, this.$scope)
-      this.$scope.goGroups = (group) => this.goGroups(group)
+      this.$scope.getJSON = () =>
+        this.configurationHandler.getJSON(this.$scope);
+      this.$scope.isString = item => typeof item === 'string';
+      this.$scope.hasSize = obj =>
+        obj && typeof obj === 'object' && Object.keys(obj).length;
+      this.$scope.switchConfigTab = (configurationTab, sections) =>
+        this.configurationHandler.switchConfigTab(
+          configurationTab,
+          sections,
+          this.$scope,
+          this.id
+        );
+      this.$scope.switchWodle = wodleName =>
+        this.configurationHandler.switchWodle(wodleName, this.$scope, this.id);
+      this.$scope.switchConfigurationTab = configurationTab =>
+        this.configurationHandler.switchConfigurationTab(
+          configurationTab,
+          this.$scope
+        );
+      this.$scope.switchConfigurationSubTab = configurationSubTab =>
+        this.configurationHandler.switchConfigurationSubTab(
+          configurationSubTab,
+          this.$scope
+        );
+      this.$scope.updateSelectedItem = i => (this.$scope.selectedItem = i);
+      this.$scope.getIntegration = list =>
+        this.configurationHandler.getIntegration(list, this.$scope);
+      this.$scope.goGroups = group => this.goGroups(group);
     }
 
     /**
      * Navigates to a group
-     * @param {String} group 
+     * @param {String} group
      */
-    async goGroups (group) {
+    async goGroups(group) {
       try {
-        const groupInfo = await this.apiReq.apiReq(`/agents/groups/`)
-        const groupData = groupInfo.data.data.items.filter( item => item.name === group)
-        if (!groupInfo || !groupInfo.data || !groupInfo.data.data || groupInfo.data.error) {
-          throw Error('Missing fields')
+        const groupInfo = await this.apiReq.apiReq(`/agents/groups/`);
+        const groupData = groupInfo.data.data.items.filter(
+          item => item.name === group
+        );
+        if (
+          !groupInfo ||
+          !groupInfo.data ||
+          !groupInfo.data.data ||
+          groupInfo.data.error
+        ) {
+          throw Error('Missing fields');
         }
-        this.state.go(`mg-groups`, { group: groupData[0] } )
+        this.state.go(`mg-groups`, { group: groupData[0] });
       } catch (err) {
-        this.errorHandler.showSimpleToast('Error fetching group data')
+        this.errorHandler.showSimpleToast('Error fetching group data');
       }
     }
-
   }
-  
-  controllers.controller('configurationAgentCtrl', ConfigurationController)
-})
+
+  controllers.controller('configurationAgentCtrl', ConfigurationController);
+});
