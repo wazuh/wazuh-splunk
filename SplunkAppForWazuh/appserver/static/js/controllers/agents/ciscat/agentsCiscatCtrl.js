@@ -35,7 +35,6 @@ define([
         })
         
         this.scope.$on('$destroy', () => {
-          this.dropdown.destroy()
           this.timePicker.destroy()
           this.vizz.map( (vizz) => vizz.destroy())
         })
