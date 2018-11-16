@@ -632,7 +632,7 @@ define([
           const path = req.includes('?') ? req.split('?')[0] : req;
 
           // if (typeof JSONraw === 'object') JSONraw.devTools = true
-          const output = await this.request.apiReq(path, JSONraw);
+          const output = await this.request.apiReq(path, JSONraw, method);
           const result =
             output.data && output.data.data && !output.data.error
               ? JSON.stringify(output.data.data, null, 2)
