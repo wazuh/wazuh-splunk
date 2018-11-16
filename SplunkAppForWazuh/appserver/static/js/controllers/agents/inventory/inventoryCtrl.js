@@ -10,37 +10,48 @@
 * Find more information about this on the LICENSE file.
 */
 
-define(['../../module'], function (module) {
-  'use strict'
+define(['../../module'], function(module) {
+  'use strict';
   class Inventory {
-    constructor($requestService, syscollector, $rootScope, $notificationService, $scope) {
-      this.scope = $scope
-      this.data = syscollector
-      this.httpReq = $requestService.httpReq
-      this.root = $rootScope
-      this.toast = $notificationService.showSimpleToast
+    constructor(
+      $requestService,
+      syscollector,
+      $rootScope,
+      $notificationService,
+      $scope
+    ) {
+      this.scope = $scope;
+      this.data = syscollector;
+      this.httpReq = $requestService.httpReq;
+      this.root = $rootScope;
+      this.toast = $notificationService.showSimpleToast;
     }
-    
+
     /**
-    * Filters by a term in table
-    * @param {String} term 
-    * @param {String} specificPath 
-    */
-    search(term, specificPath) { 
-      this.scope.$broadcast('wazuhSearch', { term, specificPath })
+     * Filters by a term in table
+     * @param {String} term
+     * @param {String} specificPath
+     */
+    search(term, specificPath) {
+      this.scope.$broadcast('wazuhSearch', { term, specificPath });
     }
-    
+
     /**
-    * Initialize
-    */
+     * Initialize
+     */
     $onInit() {
       try {
-        this.scope.search = (term, specificPath) => { this.search(term, specificPath) }
-        this.scope.agent = this.data[5].data.data
-        this.scope.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
+        this.scope.search = (term, specificPath) => {
+          this.search(term, specificPath);
+        };
+        this.scope.agent = this.data[5].data.data;
+        this.scope.getAgentStatusClass = agentStatus =>
+          agentStatus === 'Active' ? 'teal' : 'red';
         this.scope.formatAgentStatus = agentStatus => {
-          return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
-        }
+          return ['Active', 'Disconnected'].includes(agentStatus)
+            ? agentStatus
+            : 'Never connected';
+        };
         if (
           !this.data[0] ||
           !this.data[0].data ||
@@ -52,35 +63,35 @@ define(['../../module'], function (module) {
           !this.data[1].data.data ||
           typeof this.data[1].data.data !== 'object' ||
           !Object.keys(this.data[1].data.data).length
-          ) {
-            this.scope.syscollector = null
-          } else {
-            const netiface = {}
-            const ports = {}
-            const packagesDate = {}
-            if (this.data[2] && this.data[2].data && this.data[2].data.data)
-            Object.assign(netiface, this.data[2].data.data)
-            if (this.data[3] && this.data[3].data && this.data[3].data.data)
-            Object.assign(ports, this.data[3].data.data)
-            if (this.data[4] && this.data[4].data && this.data[4].data.data)
-            Object.assign(packagesDate, this.data[4].data.data)
-            this.scope.syscollector = {
-              hardware: this.data[0].data.data,
-              os: this.data[1].data.data,
-              netiface: netiface,
-              ports: ports,
-              packagesDate:
+        ) {
+          this.scope.syscollector = null;
+        } else {
+          const netiface = {};
+          const ports = {};
+          const packagesDate = {};
+          if (this.data[2] && this.data[2].data && this.data[2].data.data)
+            Object.assign(netiface, this.data[2].data.data);
+          if (this.data[3] && this.data[3].data && this.data[3].data.data)
+            Object.assign(ports, this.data[3].data.data);
+          if (this.data[4] && this.data[4].data && this.data[4].data.data)
+            Object.assign(packagesDate, this.data[4].data.data);
+          this.scope.syscollector = {
+            hardware: this.data[0].data.data,
+            os: this.data[1].data.data,
+            netiface: netiface,
+            ports: ports,
+            packagesDate:
               packagesDate && packagesDate.items && packagesDate.items.length
-              ? packagesDate.items[0].scan_time
-              : 'Unknown'
-            }
-          }
-          return
-        } catch (error) {
-          this.toast(error.message || error)
+                ? packagesDate.items[0].scan_time
+                : 'Unknown'
+          };
         }
+        return;
+      } catch (error) {
+        this.toast(error.message || error);
       }
     }
-    // Logs controller
-    module.controller('inventoryCtrl', Inventory)
-  })
+  }
+  // Logs controller
+  module.controller('inventoryCtrl', Inventory);
+});

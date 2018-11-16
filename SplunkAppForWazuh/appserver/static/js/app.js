@@ -9,7 +9,17 @@ define([
   './filters/index',
   './run/index',
   './config/index'
-], function (ng) {
-  'use strict'
-  return ng.module('wazuhApp', ['ngMaterial','ngAnimate','ui.router','app.services','app.directives','app.controllers','app.filter','app.run','app.config'])
-})
+], function(ng) {
+  'use strict';
+  return ng.module('wazuhApp', [
+    'ngMaterial',
+    'ngAnimate',
+    'ui.router',
+    'app.services',
+    'app.directives',
+    'app.controllers',
+    'app.filter',
+    'app.run',
+    'app.config'
+  ]);
+});

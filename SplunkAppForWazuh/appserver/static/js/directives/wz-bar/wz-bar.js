@@ -9,30 +9,29 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (directives) {
-  'use strict'
-  directives.directive('wazuhBar', function ($notificationService, BASE_URL) {
+define(['../module'], function(directives) {
+  'use strict';
+  directives.directive('wazuhBar', function($notificationService, BASE_URL) {
     return {
       restrict: 'E',
-      controller: function ($scope, $currentDataService) {
-
+      controller: function($scope, $currentDataService) {
         /**
          * Prettifies filters for md-chips
          * @returns {Array}
          */
         const getPrettyFilters = () => {
-          const prettyFilters = []
-          const uglyFilters = $currentDataService.getFilters()
+          const prettyFilters = [];
+          const uglyFilters = $currentDataService.getFilters();
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
-              const key = Object.keys(filter)[0]
-              prettyFilters.push(`${key}:${filter[key]}`)
+              const key = Object.keys(filter)[0];
+              prettyFilters.push(`${key}:${filter[key]}`);
             }
           }
-          return prettyFilters
-        }
+          return prettyFilters;
+        };
 
-        $scope.filters = getPrettyFilters()
+        $scope.filters = getPrettyFilters();
 
         /**
          * Returns if a string is static
@@ -40,45 +39,58 @@ define(['../module'], function (directives) {
          * @returns {Boolean}
          */
         $scope.filterStatic = filter => {
-          const key = filter.split(':')[0]
-          const staticTrue = $currentDataService.getFilters().filter(item => !!item.implicit)
-          const isIncluded = staticTrue.filter(item => typeof item[key] !== 'undefined')
-          return !!isIncluded.length
-        }
+          const key = filter.split(':')[0];
+          const staticTrue = $currentDataService
+            .getFilters()
+            .filter(item => !!item.implicit);
+          const isIncluded = staticTrue.filter(
+            item => typeof item[key] !== 'undefined'
+          );
+          return !!isIncluded.length;
+        };
 
         /**
          * Removes a filter on click
-         * @param {String}: The filter to be removed 
+         * @param {String}: The filter to be removed
          */
-        $scope.removeFilter = (filter) => {
-          const index = $scope.filters.indexOf(filter)
+        $scope.removeFilter = filter => {
+          const index = $scope.filters.indexOf(filter);
           if (index > -1) {
-            $currentDataService.removeFilter($scope.filters[index])
-            $scope.filters.splice(index, 1)
+            $currentDataService.removeFilter($scope.filters[index]);
+            $scope.filters.splice(index, 1);
           }
-          $scope.$emit('deletedFilter', {})
-        }
+          $scope.$emit('deletedFilter', {});
+        };
 
         /**
          * Applies the written filter to visualizations
-         * @param {Object | String} filter 
+         * @param {Object | String} filter
          */
-        $scope.applyFilters = (customSearch) => {
+        $scope.applyFilters = customSearch => {
           try {
-            if (!customSearch || customSearch.split(':').length !== 2 || customSearch.split(':')[1].length === 0) {
-              throw new Error('Incorrent format. Please use key:value syntax')
-
+            if (
+              !customSearch ||
+              customSearch.split(':').length !== 2 ||
+              customSearch.split(':')[1].length === 0
+            ) {
+              throw new Error('Incorrent format. Please use key:value syntax');
             }
-            $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
-            $scope.filters = getPrettyFilters()
-            $scope.$emit('barFilter', {})
-            if (!$scope.$$phase) $scope.$digest()
+            $currentDataService.addFilter(
+              `{"${customSearch.split(':')[0]}":"${
+                customSearch.split(':')[1]
+              }"}`
+            );
+            $scope.filters = getPrettyFilters();
+            $scope.$emit('barFilter', {});
+            if (!$scope.$$phase) $scope.$digest();
           } catch (err) {
-            $notificationService.showSimpleToast(err.message || err)
+            $notificationService.showSimpleToast(err.message || err);
           }
-        }
+        };
       },
-      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
-    }
-  })
-})
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
+    };
+  });
+});

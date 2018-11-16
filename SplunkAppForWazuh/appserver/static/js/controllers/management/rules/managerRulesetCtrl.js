@@ -1,44 +1,58 @@
-define(['../../module','./ruleset'], function (controllers,Ruleset) {
-  
-  'use strict'
-  
-  class Rules extends Ruleset{
-    constructor($scope, $sce, $notificationService, $currentDataService,$tableFilterService,$csvRequestService) {
-     super($scope,$sce,$notificationService,'ruleset',$currentDataService,$tableFilterService,$csvRequestService)
+define(['../../module', './ruleset'], function(controllers, Ruleset) {
+  'use strict';
+
+  class Rules extends Ruleset {
+    constructor(
+      $scope,
+      $sce,
+      $notificationService,
+      $currentDataService,
+      $tableFilterService,
+      $csvRequestService
+    ) {
+      super(
+        $scope,
+        $sce,
+        $notificationService,
+        'ruleset',
+        $currentDataService,
+        $tableFilterService,
+        $csvRequestService
+      );
     }
-    
+
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.downloadCsv = (path,name) => this.downloadCsv(path,name)
-      this.scope.$broadcast('wazuhSearch', { term:'', removeFilters: true });
+      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name);
+      this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true });
       this.scope.$on('loadedTable', () => {
-        try{
+        try {
           if (window.localStorage.ruleset) {
-            const parsedFilter = JSON.parse(window.localStorage.ruleset)
-            this.scope.appliedFilters = parsedFilter
-            if (this.filter.length > 0){
-              this.scope.$broadcast('wazuhFilter', { filter: this.filter })
+            const parsedFilter = JSON.parse(window.localStorage.ruleset);
+            this.scope.appliedFilters = parsedFilter;
+            if (this.filter.length > 0) {
+              this.scope.$broadcast('wazuhFilter', { filter: this.filter });
             }
           }
-        } catch(err) {
-          this.toast('Error applying filter')
+        } catch (err) {
+          this.toast('Error applying filter');
         }
-      })
-      
+      });
+
       this.scope.$on('rulesetIsReloaded', () => {
-        this.scope.viewingDetail = false
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-      
+        this.scope.viewingDetail = false;
+        if (!this.scope.$$phase) this.scope.$digest();
+      });
+
       this.scope.$on('wazuhShowRule', (event, parameters) => {
-        this.scope.currentRule = parameters.rule
-        this.scope.viewingDetail = true
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
+        this.scope.currentRule = parameters.rule;
+        this.scope.viewingDetail = true;
+        if (!this.scope.$$phase) this.scope.$digest();
+      });
     }
   }
-  controllers.controller('managerRulesetCtrl', Rules)
-  return Rules
-})
+  controllers.controller('managerRulesetCtrl', Rules);
+  return Rules;
+});
