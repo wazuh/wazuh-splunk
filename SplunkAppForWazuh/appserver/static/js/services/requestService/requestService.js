@@ -73,7 +73,7 @@ define(['../module'], function(module) {
      * @param {String} endpoint
      * @param {Object} opts
      */
-    const apiReq = async (endpoint, opts) => {
+    const apiReq = async (endpoint, opts, method='GET') => {
       try {
         const currentApi = $apiIndexStorageService.getApi();
         const id = currentApi && currentApi.id ? currentApi.id : opts.id;
