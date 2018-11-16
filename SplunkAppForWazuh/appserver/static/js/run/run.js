@@ -35,11 +35,14 @@ define(['./module'], function (module) {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
         //Primary states
+
         if ( to === 'dev-tools' ) { await checkBeforeTransition({label: 'dev-tools', state: 'dev-tools'}) }
         if ( to === 'settings.api' ) { await checkBeforeTransition({label: 'settings.api', state: 'settings'}) }
         if ( to === 'agents' ) { await checkBeforeTransition({label: 'agents', state: 'agents'}) }
         if ( to === 'overview' ) { await checkBeforeTransition({label: 'overview', state: 'overview'}) }
         if ( to === 'manager' ) { await checkBeforeTransition({label: 'manager', state: 'manager'}) }
+        if ( to === 'discover' ) { await checkBeforeTransition({label: 'discover', state: 'discover'}) }
+
         //Secondary states
         if (to !== 'agents' && to.includes('agent') || to.includes('ag-') ) {
           $rootScope.$broadcast('stateChanged', 'agents')

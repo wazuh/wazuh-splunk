@@ -1,59 +1,69 @@
 <md-toolbar class="wz-menu">
 
-  <!-- Main toolbar content -->
-  <div class="md-toolbar-tools wz-menu-content">
-
-    <!-- Wazuh app logo -->
-    <a class="cursor-pointer wz-logo-container wz-margin-right-15" ui-sref="overview">
-      <img class="wz-responsive-img" aria-hidden="true" src='{{logoUrl}}'>
-    </a>
-
-    <!-- Main Wazuh app navigation buttons -->
-    <md-button class="wz-menu-button" ui-sref="overview" ng-click="select('overview')" ng-class="{'wz-menu-active': menuNavItem === 'overview' }" aria-label="Overview tab">
-      <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview
-    </md-button>
-
-    <md-button class="wz-menu-button" ui-sref="manager" ng-click="select('manager')" ng-class="{'wz-menu-active': menuNavItem === 'manager' }" aria-label="Cluster tab">
-      <i class="fa fa-fw fa-server" aria-hidden="true"></i> Management
-    </md-button>
-
-    <md-button class="wz-menu-button" ui-sref="agents" ng-click="select('agents')" ng-class="{'wz-menu-active': menuNavItem === 'agents' }" aria-label="Agents tab">
-      <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agents
-    </md-button>
-    <!-- Dev tools buttom -->
-    <md-button class="wz-menu-button" ui-sref="dev-tools" ng-click="select('dev-tools')" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
-      <i class="fa fa-fw fa-code" aria-hidden="true"></i> Dev tools
-    </md-button>
-
-    <!-- Fill up the space between left and right area -->
-    <span flex></span>
-
-    <!-- API/Index pattern section -->
-    <!-- Case 1a - There's API -->
-    <span ng-show="theresAPI" class="small" tooltip="Selected API" tooltip-placement="bottom">
-      <i class="fa fa-star fa-fw wz-color-orange" aria-hidden="true"></i>{{currentAPI}}
-      <span>&nbsp;&ndash;&nbsp;</span>
-    </span>
-
-    <!-- Case 1b - There's no API -->
-    <span ng-show="!theresAPI" class="small" tooltip="No API credentials inserted" tooltip-placement="bottom">
-      No API
-      <span ng-if="showSelector">&nbsp;&ndash;&nbsp;</span>
-    </span>
-
-
-    <!-- Case 2b - There's pattern and there's only one-->
-    <span ng-if="theresAPI" class="small" tooltip="Selected index pattern" tooltip-placement="bottom">
-      {{currentIndex}}
-    </span>
-
-    <!-- Settings tab button -->
-    <md-button class="wz-menu-button md-icon-button" ui-sref='settings.api' ng-click="select('settings')" ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
-      aria-label="Settings tab">
-      <i class="fa fa-cog" aria-hidden="true"></i>
-    </md-button>
-
-  </div>
-
-</md-toolbar>
-<toaster-container></toaster-container>
+    <!-- Main toolbar content -->
+    <div class="md-toolbar-tools wz-menu-content">
+  
+      <!-- Wazuh app logo -->
+      <a class="cursor-pointer wz-logo-container wz-margin-right-15" ui-sref="overview">
+        <img class="wz-responsive-img" aria-hidden="true" src='{{logoUrl}}'>
+      </a>
+  
+      <!-- Main Wazuh app navigation buttons -->
+  
+      <!-- Overview buttom-->
+      <md-button class="wz-menu-button" ui-sref="overview" ng-click="select('overview')" ng-class="{'wz-menu-active': menuNavItem === 'overview' }" aria-label="Overview tab">
+        <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview
+      </md-button>
+  
+      <!-- Manager buttom-->
+      <md-button class="wz-menu-button" ui-sref="manager" ng-click="select('manager')" ng-class="{'wz-menu-active': menuNavItem === 'manager' }" aria-label="Cluster tab">
+        <i class="fa fa-fw fa-server" aria-hidden="true"></i> Management
+      </md-button>
+  
+      <!-- Agents buttom-->
+      <md-button class="wz-menu-button" ui-sref="agents" ng-click="select('agents')" ng-class="{'wz-menu-active': menuNavItem === 'agents' }" aria-label="Agents tab">
+        <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agents
+      </md-button>
+  
+      <!-- Discover buttom -->
+      <md-button class="wz-menu-button" ng-click="dumpHtml('discover')" ng-class="{'wz-menu-active': menuNavItem === 'discover' }" aria-label="Discover">
+          <i class="fa fa-fw fa-compass" aria-hidden="true"></i>Discover
+        </md-button>
+  
+      <!-- Dev tools buttom -->
+      <md-button class="wz-menu-button" ui-sref="dev-tools" ng-click="select('dev-tools')" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
+        <i class="fa fa-fw fa-code" aria-hidden="true"></i> Dev tools
+      </md-button>
+  
+      <!-- Fill up the space between left and right area -->
+      <span flex></span>
+  
+      <!-- API/Index pattern section -->
+      <!-- Case 1a - There's API -->
+      <span ng-show="theresAPI" class="small" tooltip="Selected API" tooltip-placement="bottom">
+        <i class="fa fa-star fa-fw wz-color-orange" aria-hidden="true"></i>{{currentAPI}}
+        <span>&nbsp;&ndash;&nbsp;</span>
+      </span>
+  
+      <!-- Case 1b - There's no API -->
+      <span ng-show="!theresAPI" class="small" tooltip="No API credentials inserted" tooltip-placement="bottom">
+        No API
+        <span ng-if="showSelector">&nbsp;&ndash;&nbsp;</span>
+      </span>
+  
+  
+      <!-- Case 2b - There's pattern and there's only one-->
+      <span ng-if="theresAPI" class="small" tooltip="Selected index pattern" tooltip-placement="bottom">
+        {{currentIndex}}
+      </span>
+  
+      <!-- Settings tab button -->
+      <md-button class="wz-menu-button md-icon-button" ui-sref='settings.api' ng-click="select('settings')" ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
+        aria-label="Settings tab">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+      </md-button>
+  
+    </div>
+  
+  </md-toolbar>
+  <toaster-container></toaster-container>
