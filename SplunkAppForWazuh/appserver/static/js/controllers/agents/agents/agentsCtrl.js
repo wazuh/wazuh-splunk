@@ -14,15 +14,15 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-],function (
+], function (
   app,
   SearchHandler,
   FileSaver
-  ){
-    
+) {
+
     'use strict'
-    
-    class Agents{
+
+    class Agents {
 
       /**
       * Class constructor
@@ -34,8 +34,8 @@ define([
       * @param {Object} $requestService 
       * @param {Object} agentData 
       */
-     
-      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService,$tableFilterService, agentData){
+
+      constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $requestService, $csvRequestService, $tableFilterService, agentData) {
         this.scope = $scope
         this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
         this.submittedTokenModel.set('activeAgentToken', '-')
@@ -48,7 +48,7 @@ define([
         this.csvReq = $csvRequestService
         this.wzTableFilter = $tableFilterService
         const parsedResult = agentData.map(item => item && item.data && item.data.data ? item.data.data : false)
-        
+
         const [
           summary,
           lastAgent,
@@ -57,7 +57,7 @@ define([
           nodes,
           groups
         ] = parsedResult
-        
+
         this.scope.agentsCountActive = summary.Active - 1
         this.scope.lastAgent = lastAgent.items[0]
         this.scope.os = platforms.items
@@ -68,14 +68,14 @@ define([
         this.scope.agentsCountNeverConnected = summary['Never connected']
         this.scope.agentsCountTotal = summary.Total - 1
         this.scope.agentsCoverity = this.scope.agentsCountTotal ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) * 100 : 0
-        this.topAgent = new SearchHandler('searchTopAgent',`index=wazuh ${this.filters} | top agent.name`,'activeAgentToken','$result.agent.name$','mostActiveAgent',this.submittedTokenModel,this.scope,true,'loadingSearch')
-        if (!this.scope.$$phase) this.scope.$digest() 
+        this.topAgent = new SearchHandler('searchTopAgent', `index=wazuh ${this.filters} | top agent.name`, 'activeAgentToken', '$result.agent.name$', 'mostActiveAgent', this.submittedTokenModel, this.scope, true, 'loadingSearch')
+        if (!this.scope.$$phase) this.scope.$digest()
       }
-      
+
       /**
       * On controller loads
       */
-      $onInit(){
+      $onInit() {
         this.scope.search = term => this.search(term)
         this.scope.filter = filter => this.filter(filter)
         this.scope.showAgent = agent => this.showAgent(agent)
@@ -91,7 +91,7 @@ define([
           this.topAgent.destroy()
         })
       }
-      
+
       /**
        * Exports the table in CSV format
        */
@@ -108,7 +108,6 @@ define([
           saveAs(blob, 'agents.csv')
           return
         } catch (error) {
-          console.error('error ',error)
           this.toast('Error downloading CSV')
         }
         return
@@ -118,34 +117,41 @@ define([
       * Searches by a term
       * @param {String} term 
       */
-      search(term){
+      search(term) {
         this.scope.$broadcast('wazuhSearch', { term })
       }
-      
+
       /**
       * Filters by a term
       * @param {String} filter 
       */
-      filter(filter){
+      filter(filter) {
         this.scope.$broadcast('wazuhFilter', { filter })
       }
-      
+
       /**
       * Selects an agent
       * @param {String} agent 
       */
-      async showAgent(agent){
+      async showAgent(agent) {
         try {
-          const agentInfo = await this.apiReq(`/agents`, { name: agent })
-          if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error)
-          throw Error('Error')
-          if (agentInfo.data.data.id !== '000')
-          this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
+          if (agent) {
+            const agentName = (typeof agent === 'object') ? agent.name : agent
+            const agentInfo = await this.apiReq(`/agents`, { name: agentName })
+            if (!agentInfo || !agentInfo.data || !agentInfo.data.data || agentInfo.data.error) {
+              throw Error('Error')
+            }
+            if (agentInfo.data.data.id !== '000') {
+              this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
+            }
+          } else {
+            throw Error('Cannot fetch agent name')
+          }
         } catch (err) {
-          this.toast('Error fetching agent data')
+          this.toast(err.message || 'Error fetching agent data')
         }
       }
-      
+
     }
-    app.controller('agentsCtrl',Agents)
+    app.controller('agentsCtrl', Agents)
   })
