@@ -15,34 +15,34 @@ define([
   TimePicker,
   SearchHandler
 ) {
-  'use strict';
+  'use strict'
   class Audit {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.state = $state;
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
+      this.scope = $scope
+      this.state = $state
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
         '#input1',
         $urlTokenModel.handleValueChange
-      );
+      )
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
 
       this.vizz = [
         /**
@@ -164,12 +164,12 @@ define([
           } sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as \"Effective user id\"`,
           'alertsSummaryElement'
         )
-      ];
+      ]
     }
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
-  app.controller('overviewAuditCtrl', Audit);
-});
+  app.controller('overviewAuditCtrl', Audit)
+})

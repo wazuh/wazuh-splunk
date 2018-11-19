@@ -4,4 +4,4 @@ define([
   './api/settingsApiCtrl',
   './extensions/extensionsCtrl',
   './logs/logsCtrl'
-], function() {});
+], function() {})

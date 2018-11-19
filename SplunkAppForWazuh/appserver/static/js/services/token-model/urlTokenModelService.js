@@ -4,34 +4,34 @@ define([
   'splunkjs/mvc/simpleform/formutils',
   'splunkjs/mvc/simplexml/urltokenmodel'
 ], function(module, mvc, FormUtils, UrlTokenModel) {
-  'use strict';
+  'use strict'
 
   class urlTokenModel {
     /**
      * Encapsulates the Splunk token management
      */
     constructor() {
-      this.urlTokenModel = new UrlTokenModel({ id: 'tokenModel' });
+      this.urlTokenModel = new UrlTokenModel({ id: 'tokenModel' })
       this.defaultTokenModel = mvc.Components.getInstance('default', {
         create: true
-      });
+      })
       this.submittedTokenModel = mvc.Components.getInstance('submitted', {
         create: true
-      });
-      mvc.Components.registerInstance('url', this.urlTokenModel);
-      this.defaultTokenModel.set(this.urlTokenModel.toJSON());
+      })
+      mvc.Components.registerInstance('url', this.urlTokenModel)
+      this.defaultTokenModel.set(this.urlTokenModel.toJSON())
 
       this.urlTokenModel.on('url:navigate', () => {
-        this.defaultTokenModel.set(this.urlTokenModel.toJSON());
+        this.defaultTokenModel.set(this.urlTokenModel.toJSON())
         if (
           !_.isEmpty(this.urlTokenModel.toJSON()) &&
           !_.all(this.urlTokenModel.toJSON(), _.isUndefined)
         ) {
-          this.submitTokens();
+          this.submitTokens()
         } else {
-          this.submittedTokenModel.clear();
+          this.submittedTokenModel.clear()
         }
-      });
+      })
     }
 
     /**
@@ -39,7 +39,7 @@ define([
      * @param {String} token
      */
     has(token) {
-      return this.defaultTokenModel.has(token);
+      return this.defaultTokenModel.has(token)
     }
 
     /**
@@ -47,7 +47,7 @@ define([
      * @param {String} value
      */
     handleValueChange(value) {
-      FormUtils.handleValueChange(value);
+      FormUtils.handleValueChange(value)
     }
 
     /**
@@ -55,7 +55,7 @@ define([
      * @param {Boolean} pageLoading
      */
     submitTokens(pageLoading) {
-      FormUtils.submitForm({ replaceState: pageLoading });
+      FormUtils.submitForm({ replaceState: pageLoading })
     }
 
     /**
@@ -63,7 +63,7 @@ define([
      * @param {String} name
      */
     get(name) {
-      return this.submittedTokenModel.get(name);
+      return this.submittedTokenModel.get(name)
     }
 
     /**
@@ -71,14 +71,14 @@ define([
      * @param {String} token
      */
     set(token) {
-      this.defaultTokenModel.set(token);
+      this.defaultTokenModel.set(token)
     }
 
     /**
      * Returns the submittedTokenModel of the app
      */
     getSubmittedTokenModel() {
-      return this.submittedTokenModel;
+      return this.submittedTokenModel
     }
 
     /**
@@ -86,7 +86,7 @@ define([
      * @param {String} token
      */
     defaultTokenModelHas(token) {
-      return this.defaultTokenModel.has(token);
+      return this.defaultTokenModel.has(token)
     }
 
     /**
@@ -103,11 +103,11 @@ define([
             authSuccessToken,
             opts,
             this.submittedTokenModel.get(event)
-          );
+          )
         }
-      );
+      )
     }
   }
 
-  module.service('$urlTokenModel', urlTokenModel);
-});
+  module.service('$urlTokenModel', urlTokenModel)
+})

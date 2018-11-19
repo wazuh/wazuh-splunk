@@ -1,9 +1,9 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
-  };
-  module.constant('BASE_URL', module.paths.root);
+  }
+  module.constant('BASE_URL', module.paths.root)
   module.config([
     '$mdIconProvider',
     '$locationProvider',
@@ -20,12 +20,12 @@ define(['../module'], function(module) {
       $mdThemingProvider
         .theme('default')
         .primaryPalette('blue')
-        .accentPalette('blue');
+        .accentPalette('blue')
       $locationProvider.html5Mode({
         enabled: true,
         requirebase: false,
         rewriteLinks: false
-      });
+      })
       $stateProvider
         .state('overview', {
           templateUrl:
@@ -41,15 +41,15 @@ define(['../module'], function(module) {
                   .apiReq('/agents/summary')
                   .then(
                     function(response) {
-                      return response;
+                      return response
                     },
                     function(response) {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    $state.go('settings.api');
-                  });
+                    $state.go('settings.api')
+                  })
               }
             ],
             extensions: [
@@ -57,16 +57,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async ($requestService, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi().id;
+                  const id = $currentDataService.getApi().id
                   const currentExtensions = $currentDataService.getExtensions(
                     id
-                  );
+                  )
                   const result = currentExtensions
                     ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`);
-                  return await result;
+                    : $requestService.httpReq(`GET`, `/manager/extensions`)
+                  return await result
                 } catch (err) {
-                  return false;
+                  return false
                 }
               }
             ]
@@ -79,7 +79,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/general/overview-general.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-general');
+            $navigationService.storeRoute('ow-general')
           },
           controller: 'overviewGeneralCtrl',
           resolve: {
@@ -91,15 +91,15 @@ define(['../module'], function(module) {
                   .httpReq(`GET`, `/manager/polling_state`)
                   .then(
                     response => {
-                      return response;
+                      return response
                     },
                     response => {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    $state.go('settings.api');
-                  });
+                    $state.go('settings.api')
+                  })
               }
             ]
           }
@@ -110,7 +110,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/policy-monitoring/overview-pm.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-pm');
+            $navigationService.storeRoute('ow-pm')
           },
           controller: 'overviewPolicyMonitoringCtrl'
         })
@@ -120,7 +120,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/fim/overview-fim.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-fim');
+            $navigationService.storeRoute('ow-fim')
           },
           controller: 'overviewFimCtrl'
         })
@@ -130,7 +130,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/osquery/osquery.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-osquery');
+            $navigationService.storeRoute('ow-osquery')
           },
           controller: 'osqueryCtrl',
           resolve: {
@@ -142,15 +142,15 @@ define(['../module'], function(module) {
                   .apiReq(`/agents/000/config/wmodules/wmodules`)
                   .then(
                     function(response) {
-                      return response;
+                      return response
                     },
                     function(response) {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    $state.go('settings.api');
-                  });
+                    $state.go('settings.api')
+                  })
               }
             ]
           }
@@ -161,7 +161,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/audit/overview-audit.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-audit');
+            $navigationService.storeRoute('ow-audit')
           },
           controller: 'overviewAuditCtrl'
         })
@@ -171,7 +171,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/scap/overview-openscap.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-os');
+            $navigationService.storeRoute('ow-os')
           },
           controller: 'overviewOpenScapCtrl'
         })
@@ -181,7 +181,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/pci/overview-pci.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-pci');
+            $navigationService.storeRoute('ow-pci')
           },
           controller: 'overviewPciCtrl'
         })
@@ -191,7 +191,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/gdpr/overview-gdpr.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-gdpr');
+            $navigationService.storeRoute('ow-gdpr')
           },
           controller: 'overviewGdprCtrl'
         })
@@ -201,7 +201,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/vulnerabilities/overview-vulnerabilities.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-vul');
+            $navigationService.storeRoute('ow-vul')
           },
           controller: 'overviewVulnerabilitiesCtrl'
         })
@@ -211,7 +211,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/ciscat/overview-ciscat.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-ciscat');
+            $navigationService.storeRoute('ow-ciscat')
           },
           controller: 'ciscatCtrl'
         })
@@ -221,7 +221,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/virustotal/overview-virustotal.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-virustotal');
+            $navigationService.storeRoute('ow-virustotal')
           },
           controller: 'overviewVirusTotal'
         })
@@ -231,10 +231,10 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('aws');
+            $navigationService.storeRoute('aws')
           },
           controller: 'awsCtrl'
-        });
+        })
     }
-  ]);
-});
+  ])
+})

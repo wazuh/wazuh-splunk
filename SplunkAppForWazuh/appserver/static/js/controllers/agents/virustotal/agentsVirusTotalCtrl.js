@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
-  'use strict';
+  'use strict'
 
   class AgentsVirusTotal {
     /**
@@ -19,33 +19,33 @@ define([
      */
 
     constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
-      this.state = $state;
+      this.state = $state
       if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview');
+        this.state.go('overview')
       }
-      this.scope = $scope;
+      this.scope = $scope
       //Add filer for VirusTotal
       $currentDataService.addFilter(
         `{"rule.groups":"virustotal", "implicit":true}`
-      );
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.urlTokenModel = $urlTokenModel;
-      this.filters = $currentDataService.getSerializedFilters();
+      )
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.urlTokenModel = $urlTokenModel
+      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      );
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel();
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.agent = agent.data.data;
+      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -84,33 +84,33 @@ define([
           }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
           'filesAffected'
         )
-      ];
+      ]
 
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     $onInit() {
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red';
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : 'Never connected';
-      };
+          : 'Never connected'
+      }
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
-  app.controller('agentsVirusTotalCtrl', AgentsVirusTotal);
-});
+  app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)
+})
 
 //data.virustotal.source.file

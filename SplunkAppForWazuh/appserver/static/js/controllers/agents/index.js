@@ -14,4 +14,4 @@ define([
   './scap/agentsOpenScapCtrl',
   './ciscat/agentsCiscatCtrl',
   './vulnerabilities/agentsVulnerabilitiesCtrl'
-], function() {});
+], function() {})

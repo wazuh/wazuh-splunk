@@ -1,42 +1,42 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
 
   class navigationService {
     constructor($state, $window) {
-      this.$state = $state;
-      this.$window = $window;
+      this.$state = $state
+      this.$window = $window
     }
 
     storeRoute(params) {
-      sessionStorage.params = params;
+      sessionStorage.params = params
     }
 
     goToLastState() {
       sessionStorage.params
         ? this.$state.go(sessionStorage.params)
-        : this.$state.go('settings.api');
+        : this.$state.go('settings.api')
     }
 
     getLastState() {
-      if (sessionStorage.params) return sessionStorage.params;
+      if (sessionStorage.params) return sessionStorage.params
     }
 
     setCurrentAgent(currentAgentId) {
-      sessionStorage.currentAgent = currentAgentId;
+      sessionStorage.currentAgent = currentAgentId
     }
 
     getCurrentAgent() {
-      if (sessionStorage.currentAgent) return sessionStorage.currentAgent;
+      if (sessionStorage.currentAgent) return sessionStorage.currentAgent
     }
 
     setCurrentDevTools(current) {
-      this.$window.localStorage.setItem('currentDevTools', current);
+      this.$window.localStorage.setItem('currentDevTools', current)
     }
 
     getCurrentDevTools() {
-      return this.$window.localStorage.getItem('currentDevTools');
+      return this.$window.localStorage.getItem('currentDevTools')
     }
   }
 
-  module.service('$navigationService', navigationService);
-});
+  module.service('$navigationService', navigationService)
+})

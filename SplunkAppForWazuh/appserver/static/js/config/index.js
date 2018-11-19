@@ -3,4 +3,4 @@ define([
   './routes/settings-states',
   './routes/management-states',
   './routes/agents-states'
-], function() {});
+], function() {})

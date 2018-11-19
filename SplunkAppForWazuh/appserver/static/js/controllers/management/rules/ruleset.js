@@ -1,5 +1,5 @@
 define(['../../module', 'FileSaver'], function(app) {
-  'use strict';
+  'use strict'
 
   class Ruleset {
     constructor(
@@ -11,13 +11,13 @@ define(['../../module', 'FileSaver'], function(app) {
       $tableFilterService,
       $csvRequestService
     ) {
-      this.scope = $scope;
-      this.view = view;
-      this.toast = $notificationService.showSimpleToast;
-      this.api = $currentDataService.getApi();
-      this.wzTableFilter = $tableFilterService;
-      this.csvReq = $csvRequestService;
-      this.sce = $sce;
+      this.scope = $scope
+      this.view = view
+      this.toast = $notificationService.showSimpleToast
+      this.api = $currentDataService.getApi()
+      this.wzTableFilter = $tableFilterService
+      this.csvReq = $csvRequestService
+      this.sce = $sce
       this.colors = [
         '#004A65',
         '#00665F',
@@ -49,17 +49,17 @@ define(['../../module', 'FileSaver'], function(app) {
         '#E5AD43',
         '#25B23B',
         'E045E5'
-      ];
-      this.scope.appliedFilters = [];
+      ]
+      this.scope.appliedFilters = []
       try {
-        this.filter = JSON.parse(window.localStorage[`${this.view}`]) || [];
+        this.filter = JSON.parse(window.localStorage[`${this.view}`]) || []
       } catch (err) {
-        this.filter = [];
+        this.filter = []
       }
-      this.scope.searchTerm = '';
-      this.scope.viewingDetail = false;
-      this.scope.isArray = angular.isArray;
-      this.initialize();
+      this.scope.searchTerm = ''
+      this.scope.viewingDetail = false
+      this.scope.isArray = angular.isArray
+      this.initialize()
     }
 
     /**
@@ -68,20 +68,20 @@ define(['../../module', 'FileSaver'], function(app) {
     initialize() {
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
-        : delete window.localStorage.decoders;
-      this.scope.search = term => this.search(term);
-      this.scope.includesFilter = filterName => this.includesFilter(filterName);
-      this.scope.getFilter = filterName => this.getFilter(filterName);
-      this.scope.removeFilter = filterName => this.removeFilter(filterName);
-      this.scope.colorRuleArg = ruleArg => this.colorRegex(ruleArg);
-      this.scope.closeDetailView = clear => this.closeDetailView(clear);
-      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name);
+        : delete window.localStorage.decoders
+      this.scope.search = term => this.search(term)
+      this.scope.includesFilter = filterName => this.includesFilter(filterName)
+      this.scope.getFilter = filterName => this.getFilter(filterName)
+      this.scope.removeFilter = filterName => this.removeFilter(filterName)
+      this.scope.colorRuleArg = ruleArg => this.colorRegex(ruleArg)
+      this.scope.closeDetailView = clear => this.closeDetailView(clear)
+      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       if (this.view === 'ruleset') {
-        this.scope.colorRuleArg = regex => this.colorRegex(regex);
+        this.scope.colorRuleArg = regex => this.colorRegex(regex)
       } else {
-        this.scope.colorRegex = regex => this.colorRegex(regex);
+        this.scope.colorRegex = regex => this.colorRegex(regex)
       }
-      this.scope.colorOrder = order => this.colorOrder(order);
+      this.scope.colorOrder = order => this.colorOrder(order)
     }
 
     /**
@@ -89,27 +89,27 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async downloadCsv(path, name) {
       try {
-        this.toast('Your download should begin automatically...');
-        const currentApi = this.api.id;
+        this.toast('Your download should begin automatically...')
+        const currentApi = this.api.id
         const output = await this.csvReq.fetch(
           path,
           currentApi,
           this.wzTableFilter.get()
-        );
-        const blob = new Blob([output], { type: 'text/csv' }); // eslint-disable-line
-        saveAs(blob, name);
-        return;
+        )
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, name)
+        return
       } catch (error) {
-        console.error('error ', error);
-        this.toast('Error downloading CSV');
+        console.error('error ', error)
+        this.toast('Error downloading CSV')
       }
-      return;
+      return
     }
 
     colorRegex(regex) {
-      regex = regex.toString();
-      let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gim);
-      let coloredString = regex;
+      regex = regex.toString()
+      let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gim)
+      let coloredString = regex
       if (valuesArray && valuesArray.length) {
         for (let i = 0, len = valuesArray.length; i < len; i++) {
           coloredString = coloredString.replace(
@@ -119,16 +119,16 @@ define(['../../module', 'FileSaver'], function(app) {
               ' ">' +
               valuesArray[i] +
               '</span>'
-          );
+          )
         }
       }
-      return this.sce.trustAsHtml(coloredString);
+      return this.sce.trustAsHtml(coloredString)
     }
 
     colorOrder(order) {
-      order = order.toString();
-      let valuesArray = order.split(',');
-      let coloredString = order;
+      order = order.toString()
+      let valuesArray = order.split(',')
+      let coloredString = order
       for (let i = 0, len = valuesArray.length; i < len; i++) {
         coloredString = coloredString.replace(
           valuesArray[i],
@@ -137,9 +137,9 @@ define(['../../module', 'FileSaver'], function(app) {
             ' ">' +
             valuesArray[i] +
             '</span>'
-        );
+        )
       }
-      return this.sce.trustAsHtml(coloredString);
+      return this.sce.trustAsHtml(coloredString)
     }
 
     /**
@@ -150,11 +150,11 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.appliedFilters = this.scope.appliedFilters.slice(
           0,
           this.scope.appliedFilters.length - 1
-        );
+        )
       this.scope.viewingDetail = false(this.view === 'ruleset')
         ? (this.scope.currentRule = false)
-        : (this.scope.currentDecoder = false);
-      if (!this.scope.$$phase) this.scope.$digest();
+        : (this.scope.currentDecoder = false)
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     /**
@@ -162,87 +162,87 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {String} term
      */
     search(term) {
-      if (!term) term = '';
+      if (!term) term = ''
       if (
         this.view === 'ruleset' &&
         term &&
         term.startsWith('group:') &&
         term.split('group:')[1].trim()
       ) {
-        this.scope.customSearch = '';
-        const filter = { name: 'group', value: term.split('group:')[1].trim() };
+        this.scope.customSearch = ''
+        const filter = { name: 'group', value: term.split('group:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'group'
-        );
-        this.scope.appliedFilters.push(filter);
-        this.scope.$broadcast('wazuhFilter', { filter });
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         this.view === 'ruleset' &&
         term &&
         term.startsWith('level:') &&
         term.split('level:')[1].trim()
       ) {
-        this.scope.customSearch = '';
-        const filter = { name: 'level', value: term.split('level:')[1].trim() };
+        this.scope.customSearch = ''
+        const filter = { name: 'level', value: term.split('level:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'level'
-        );
-        this.scope.appliedFilters.push(filter);
-        this.scope.$broadcast('wazuhFilter', { filter });
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         this.view === 'ruleset' &&
         term &&
         term.startsWith('pci:') &&
         term.split('pci:')[1].trim()
       ) {
-        this.scope.customSearch = '';
-        const filter = { name: 'pci', value: term.split('pci:')[1].trim() };
+        this.scope.customSearch = ''
+        const filter = { name: 'pci', value: term.split('pci:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'pci'
-        );
-        this.scope.appliedFilters.push(filter);
-        this.scope.$broadcast('wazuhFilter', { filter });
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         this.view === 'ruleset' &&
         term &&
         term.startsWith('gdpr:') &&
         term.split('gdpr:')[1].trim()
       ) {
-        this.scope.customSearch = '';
-        const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() };
+        this.scope.customSearch = ''
+        const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'gdpr'
-        );
-        this.scope.appliedFilters.push(filter);
-        this.scope.$broadcast('wazuhFilter', { filter });
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         term &&
         term.startsWith('file:') &&
         term.split('file:')[1].trim()
       ) {
-        this.scope.customSearch = '';
-        const filter = { name: 'file', value: term.split('file:')[1].trim() };
+        this.scope.customSearch = ''
+        const filter = { name: 'file', value: term.split('file:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'file'
-        );
-        this.scope.appliedFilters.push(filter);
-        this.scope.$broadcast('wazuhFilter', { filter });
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         term &&
         term.startsWith('path:') &&
         term.split('path:')[1].trim()
       ) {
-        this.scope.customSearch = '';
-        const filter = { name: 'path', value: term.split('path:')[1].trim() };
+        this.scope.customSearch = ''
+        const filter = { name: 'path', value: term.split('path:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'path'
-        );
-        this.scope.appliedFilters.push(filter);
-        this.scope.$broadcast('wazuhFilter', { filter });
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
       } else {
-        this.scope.$broadcast('wazuhSearch', { term, removeFilters: false });
+        this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
       }
-      return;
+      return
     }
 
     /**
@@ -253,8 +253,8 @@ define(['../../module', 'FileSaver'], function(app) {
     getFilter(filterName) {
       const filtered = this.scope.appliedFilters.filter(
         item => item.name === filterName
-      );
-      return filtered.length ? filtered[0].value : '';
+      )
+      return filtered.length ? filtered[0].value : ''
     }
 
     /**
@@ -265,27 +265,25 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         this.filter = this.scope.appliedFilters.filter(
           item => item.name !== filterName
-        );
+        )
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== filterName
-        );
+        )
         if (
           window.localStorage[`${this.view}`] &&
           JSON.parse(window.localStorage[`${this.view}`])
         ) {
           JSON.parse(window.localStorage[`${this.view}`]).map((item, index) => {
             if (item.name === filterName) {
-              const tempFilter = JSON.parse(
-                window.localStorage[`${this.view}`]
-              );
-              tempFilter.splice(index, 1);
-              window.localStorage[`${this.view}`] = JSON.stringify(tempFilter);
+              const tempFilter = JSON.parse(window.localStorage[`${this.view}`])
+              tempFilter.splice(index, 1)
+              window.localStorage[`${this.view}`] = JSON.stringify(tempFilter)
             }
-          });
+          })
         }
-        return this.scope.$broadcast('wazuhRemoveFilter', { filterName });
+        return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
       } catch (err) {
-        this.toast('Error removing the filter');
+        this.toast('Error removing the filter')
       }
     }
 
@@ -297,9 +295,9 @@ define(['../../module', 'FileSaver'], function(app) {
     includesFilter(filterName) {
       return this.scope.appliedFilters
         .map(item => item.name)
-        .includes(filterName);
+        .includes(filterName)
     }
   }
-  app.controller('managerRulesetCtrl', Ruleset);
-  return Ruleset;
-});
+  app.controller('managerRulesetCtrl', Ruleset)
+  return Ruleset
+})

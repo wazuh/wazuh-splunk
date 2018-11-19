@@ -1,14 +1,14 @@
 /*
-* Wazuh app - Agents controller
-* Copyright (C) 2018 Wazuh, Inc.
-*
-* This program is free software you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation either version 2 of the License, or
-* (at your option) any later version.
-*
-* Find more information about this on the LICENSE file.
-*/
+ * Wazuh app - Agents controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 define([
   '../../module',
@@ -29,7 +29,7 @@ define([
   TimePicker,
   SearchHandler
 ) {
-  'use strict';
+  'use strict'
 
   class AgentsAudit {
     /**
@@ -42,28 +42,28 @@ define([
      */
 
     constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
-      this.state = $state;
+      this.state = $state
       if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview');
+        this.state.go('overview')
       }
-      this.scope = $scope;
-      this.urlTokenModel = $urlTokenModel;
-      this.filters = $currentDataService.getSerializedFilters();
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      );
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel();
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.agent = agent.data.data;
+      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -193,21 +193,21 @@ define([
           } sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`,
           'alertsSummaryVizz'
         )
-      ];
+      ]
 
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
-  app.controller('agentsAuditCtrl', AgentsAudit);
-});
+  app.controller('agentsAuditCtrl', AgentsAudit)
+})

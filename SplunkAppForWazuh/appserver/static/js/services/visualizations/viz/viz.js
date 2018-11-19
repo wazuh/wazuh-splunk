@@ -3,7 +3,7 @@ define([
   'splunkjs/mvc/utils',
   'splunkjs/mvc/searchmanager'
 ], function(mvc, utils, SearchManager) {
-  'use strict';
+  'use strict'
 
   return class Viz {
     /**
@@ -14,9 +14,9 @@ define([
      */
 
     constructor(element, id, search, earliestTime, latestTime) {
-      this.id = id;
-      this.earliestTime = earliestTime ? earliestTime : '$when.earliest$';
-      this.latestTime = latestTime ? latestTime : '$when.latest$';
+      this.id = id
+      this.earliestTime = earliestTime ? earliestTime : '$when.earliest$'
+      this.latestTime = latestTime ? latestTime : '$when.latest$'
       this.search = new SearchManager(
         {
           id: `${this.id}Search`,
@@ -33,13 +33,13 @@ define([
           runWhenTimeIsUndefined: false
         },
         { tokens: true, tokenNamespace: 'submitted' }
-      );
-      this.element = element;
+      )
+      this.element = element
     }
 
     changeSearch(newSearch) {
-      mvc.Components.revokeInstance(`${this.id}Search`);
-      this.search = null;
+      mvc.Components.revokeInstance(`${this.id}Search`)
+      this.search = null
       this.search = new SearchManager(
         {
           id: `${this.id}Search`,
@@ -56,28 +56,28 @@ define([
           runWhenTimeIsUndefined: false
         },
         { tokens: true, tokenNamespace: 'submitted' }
-      );
-      this.search.startSearch();
+      )
+      this.search.startSearch()
     }
 
     /**
      * Obtains the search of this viz
      */
     getSearch() {
-      return this.search;
+      return this.search
     }
 
     /**
      * Obtains the element
      */
     getElement() {
-      return this.element;
+      return this.element
     }
     /**
      * Cancels the search of this viz
      */
     cancel() {
-      this.search.cancel();
+      this.search.cancel()
     }
 
     /**
@@ -86,12 +86,12 @@ define([
      */
     destroy() {
       try {
-        this.cancel();
-        mvc.Components.revokeInstance(this.id);
-        mvc.Components.revokeInstance(`${this.id}Search`);
-        this.element = null;
-        this.search = null;
+        this.cancel()
+        mvc.Components.revokeInstance(this.id)
+        mvc.Components.revokeInstance(`${this.id}Search`)
+        this.element = null
+        this.search = null
       } catch (err) {}
     }
-  };
-});
+  }
+})

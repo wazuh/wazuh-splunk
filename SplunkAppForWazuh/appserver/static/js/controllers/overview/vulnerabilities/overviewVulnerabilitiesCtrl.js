@@ -17,26 +17,26 @@ define([
   TimePicker,
   SearchHandler
 ) {
-  'use strict';
+  'use strict'
   class OverviewVulnerabilities {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.state = $state;
+      this.scope = $scope
+      this.state = $state
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
+      )
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       const vizz = [
         /**
@@ -121,21 +121,21 @@ define([
           } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
           'alertsSummary'
         )
-      ];
+      ]
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
-  app.controller('overviewVulnerabilitiesCtrl', OverviewVulnerabilities);
-});
+  app.controller('overviewVulnerabilitiesCtrl', OverviewVulnerabilities)
+})

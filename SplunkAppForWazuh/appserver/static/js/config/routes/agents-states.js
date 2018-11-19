@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
 
   module.config([
     '$stateProvider',
@@ -14,7 +14,7 @@ define(['../module'], function(module) {
             '/static/app/SplunkAppForWazuh/js/controllers/agents/agents/agents.html',
           controller: 'agentsCtrl',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('agents');
+            $navigationService.storeRoute('agents')
           },
           resolve: {
             agentData: [
@@ -24,7 +24,7 @@ define(['../module'], function(module) {
                 try {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
-                  );
+                  )
                   return await Promise.all([
                     $requestService.apiReq('/agents/summary'),
                     $requestService.apiReq('/agents', {
@@ -50,9 +50,9 @@ define(['../module'], function(module) {
                         })
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
-                  ]);
+                  ])
                 } catch (err) {
-                  $state.go('settings.api');
+                  $state.go('settings.api')
                 }
               }
             ]
@@ -65,7 +65,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/overview/overview.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('agent-overview');
+            $navigationService.storeRoute('agent-overview')
           },
           controller: 'agentsOverviewCtrl',
           params: { id: null },
@@ -85,7 +85,7 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
+                    $state.go('agents')
                   const results = await Promise.all([
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
@@ -93,18 +93,18 @@ define(['../module'], function(module) {
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`),
                     $requestService.apiReq(`/agents/${id}/group/is_sync`)
-                  ]);
+                  ])
                   results.map(result => {
                     if (
                       !result.data ||
                       !result.data.data ||
                       (result.data.data.error && result.data.data.error != 0)
                     )
-                      $state.go('agents');
-                  });
-                  return results;
+                      $state.go('agents')
+                  })
+                  return results
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ],
@@ -113,16 +113,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async ($requestService, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi().id;
+                  const id = $currentDataService.getApi().id
                   const currentExtensions = $currentDataService.getExtensions(
                     id
-                  );
+                  )
                   const result = currentExtensions
                     ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`);
-                  return await result;
+                    : $requestService.httpReq(`GET`, `/manager/extensions`)
+                  return await result
                 } catch (err) {
-                  return false;
+                  return false
                 }
               }
             ]
@@ -134,7 +134,7 @@ define(['../module'], function(module) {
           templateUrl:
             'static/app/SplunkAppForWazuh/js/controllers/agents/inventory/inventory.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-inventory');
+            $navigationService.storeRoute('ag-inventory')
           },
           controller: 'inventoryCtrl',
           params: { id: null },
@@ -154,7 +154,7 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
+                    $state.go('agents')
                   const results = await Promise.all([
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`),
@@ -167,18 +167,18 @@ define(['../module'], function(module) {
                       select: 'scan_time'
                     }),
                     $requestService.apiReq(`/agents/${id}`)
-                  ]);
+                  ])
                   results.map(result => {
                     if (
                       !result.data ||
                       !result.data.data ||
                       (result.data.data.error && result.data.data.error != 0)
                     )
-                      $state.go('agents');
-                  });
-                  return results;
+                      $state.go('agents')
+                  })
+                  return results
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -191,7 +191,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/osquery/osquery.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-osquery');
+            $navigationService.storeRoute('ag-osquery')
           },
           controller: 'osqueryAgentCtrl',
           params: { id: null },
@@ -211,18 +211,18 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents/${id}/config/wmodules/wmodules`
-                  );
+                  )
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
+                    $state.go('agents')
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ],
@@ -241,17 +241,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -264,7 +264,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/general/agents-general.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-general');
+            $navigationService.storeRoute('ag-general')
           },
           controller: 'agentsGeneralCtrl',
           params: { id: null },
@@ -284,25 +284,25 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
+                    $state.go('agents')
                   const results = await Promise.all([
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
                     $requestService.apiReq(`/rootcheck/${id}/last_scan`),
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`)
-                  ]);
+                  ])
                   results.map(result => {
                     if (
                       !result.data ||
                       !result.data.data ||
                       (result.data.data.error && result.data.data.error != 0)
                     )
-                      $state.go('agents');
-                  });
-                  return results;
+                      $state.go('agents')
+                  })
+                  return results
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -315,7 +315,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/fim/agents-fim.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-fim');
+            $navigationService.storeRoute('ag-fim')
           },
           controller: 'agentsFimCtrl',
           params: { id: null },
@@ -335,17 +335,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -358,7 +358,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/virustotal/agents-virustotal.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-virustotal');
+            $navigationService.storeRoute('ag-virustotal')
           },
           controller: 'agentsVirusTotalCtrl',
           params: { id: null },
@@ -378,17 +378,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -401,7 +401,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/audit/agents-audit.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-audit');
+            $navigationService.storeRoute('ag-audit')
           },
           controller: 'agentsAuditCtrl',
           params: { id: null },
@@ -421,17 +421,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -444,7 +444,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/scap/agents-openscap.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-os');
+            $navigationService.storeRoute('ag-os')
           },
           controller: 'agentsOpenScapCtrl',
           params: { id: null },
@@ -464,17 +464,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -487,7 +487,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/configuration.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-conf');
+            $navigationService.storeRoute('ag-conf')
           },
           controller: 'configurationAgentCtrl',
           params: { id: null },
@@ -507,19 +507,19 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents/${id}/group/is_sync`
-                  );
+                  )
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ],
@@ -538,17 +538,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -561,7 +561,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/gdpr/agents-gdpr.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-gdpr');
+            $navigationService.storeRoute('ag-gdpr')
           },
           controller: 'agentsGdprCtrl',
           params: { id: null },
@@ -581,17 +581,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -604,7 +604,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/policy-monitoring/agents-pm.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-pm');
+            $navigationService.storeRoute('ag-pm')
           },
           controller: 'agentsPolicyMonitoringCtrl',
           params: { id: null },
@@ -624,17 +624,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -647,7 +647,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/pcidss/agents-pci.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-pci');
+            $navigationService.storeRoute('ag-pci')
           },
           controller: 'agentsPciCtrl',
           params: { id: null },
@@ -667,17 +667,17 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
@@ -690,7 +690,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/ciscat/agents-ciscat.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-ciscat');
+            $navigationService.storeRoute('ag-ciscat')
           },
           controller: 'agentsCiscatCtrl',
           params: { id: null },
@@ -703,15 +703,15 @@ define(['../module'], function(module) {
                 const id =
                   $stateParams.id ||
                   $currentDataService.getCurrentAgent() ||
-                  '000';
+                  '000'
                 return $requestService.apiReq(`/agents/${id}`).then(
                   function(response) {
-                    return response;
+                    return response
                   },
                   function(response) {
-                    return response;
+                    return response
                   }
-                );
+                )
               }
             ]
           }
@@ -723,7 +723,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/agents/vulnerabilities/agents-vulnerabilities.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ag-vul');
+            $navigationService.storeRoute('ag-vul')
           },
           controller: 'agentsVulnerabilitiesCtrl',
           params: { id: null },
@@ -743,22 +743,22 @@ define(['../module'], function(module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go('agents');
-                  const result = await $requestService.apiReq(`/agents/${id}`);
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
                   if (
                     !result.data ||
                     !result.data.data ||
                     (result.data.data.error && result.data.data.error != 0)
                   )
-                    $state.go('agents');
-                  return result;
+                    $state.go('agents')
+                  return result
                 } catch (err) {
-                  $state.go('agents');
+                  $state.go('agents')
                 }
               }
             ]
           }
-        });
+        })
     }
-  ]);
-});
+  ])
+})

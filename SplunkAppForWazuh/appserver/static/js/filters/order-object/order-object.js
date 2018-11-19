@@ -1,37 +1,37 @@
 define(['../module'], function(app) {
   app.filter('orderObjectBy', function() {
     return function(items, field, reverse) {
-      if (!items) return [];
+      if (!items) return []
 
-      const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
+      const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n)
 
-      const filtered = [];
+      const filtered = []
 
       items.forEach((item, key) => {
-        item.key = key;
-        filtered.push(item);
-      });
+        item.key = key
+        filtered.push(item)
+      })
 
-      const index = (obj, i) => obj[i];
+      const index = (obj, i) => obj[i]
 
       filtered.sort((a, b) => {
-        let reducedA = field.split('.').reduce(index, a);
-        let reducedB = field.split('.').reduce(index, b);
+        let reducedA = field.split('.').reduce(index, a)
+        let reducedB = field.split('.').reduce(index, b)
 
         if (isNumeric(reducedA) && isNumeric(reducedB)) {
-          reducedA = Number(reducedA);
-          reducedB = Number(reducedB);
+          reducedA = Number(reducedA)
+          reducedB = Number(reducedB)
         }
 
-        if (reducedA === reducedB) return 0;
-        else return reducedA > reducedB ? 1 : -1;
-      });
+        if (reducedA === reducedB) return 0
+        else return reducedA > reducedB ? 1 : -1
+      })
 
       if (reverse) {
-        filtered.reverse();
+        filtered.reverse()
       }
 
-      return filtered;
-    };
-  });
-});
+      return filtered
+    }
+  })
+})
