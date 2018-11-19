@@ -11,6 +11,7 @@ define([
   './key-equivalence/keyEquivalenceService',
   './currentDataService/currentDataService',
   './beautifier/beautifier-json',
+  './reporting/reportingService',
   './notificationService/notificationService',
   './csv-request/csvRequestService',
   './xml-beautifier/xml-beautifier',
