@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // Manager
@@ -26,31 +26,55 @@ define(['../module'], function(module) {
           resolve: {
             monitoringInfo: [
               '$requestService',
-              '$stateParams',
-              ($requestService, $stateParams) => {
-                return Promise.all([
-                  $requestService.apiReq('/cluster/status'),
-                  $requestService.apiReq('/cluster/nodes'),
-                  $requestService.apiReq('/cluster/config'),
-                  $requestService.apiReq('/version'),
-                  $requestService.apiReq('/agents', { limit: 1 }),
-                  $requestService.apiReq('/cluster/healthcheck')
-                ])
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await Promise.all([
+                    $requestService.apiReq('/cluster/status'),
+                    $requestService.apiReq('/cluster/nodes'),
+                    $requestService.apiReq('/cluster/config'),
+                    $requestService.apiReq('/version'),
+                    $requestService.apiReq('/agents', { limit: 1 }),
+                    $requestService.apiReq('/cluster/healthcheck')
+                  ])
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
         })
+
+        // Manager - Reporting
+        .state('mg-reporting', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/reporting/reporting.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-reporting')
+          },
+          controller: 'reportingCtrl',
+          params: { id: null, filters: null },
+          // resolve: {
+          //   reportsList: [
+          //     '$requestService',
+          //     '$state',
+          //     async ($requestService, $state) => {
+          //       try {
+          //         const result = await Promise.all([
+          //           //$requestService.apiReq('/cluster/status')
+          //           Promise.resolve({data:['file1,file2,fil3']})
+          //         ])
+          //         return result
+          //       } catch (err) {
+          //         $state.go('settings.api')
+          //       }
+          //     }
+          //   ]
+          // }
+        })
+
         // Manager - rules
         .state('mg-logs', {
           templateUrl:
@@ -108,10 +132,10 @@ define(['../module'], function(module) {
                 return $requestService
                   .apiReq(`/rules/${$stateParams.id}`)
                   .then(
-                    function(response) {
+                    function (response) {
                       return response
                     },
-                    function(response) {
+                    function (response) {
                       return response
                     }
                   )
@@ -152,10 +176,10 @@ define(['../module'], function(module) {
                 return $requestService
                   .apiReq(`/decoders/${$stateParams.name}`)
                   .then(
-                    function(response) {
+                    function (response) {
                       return response
                     },
-                    function(response) {
+                    function (response) {
                       return response
                     }
                   )
@@ -282,10 +306,10 @@ define(['../module'], function(module) {
                 }
                 return Promise.all(promises)
                   .then(
-                    function(response) {
+                    function (response) {
                       return response
                     },
-                    function(response) {
+                    function (response) {
                       return response
                     }
                   )
@@ -300,14 +324,14 @@ define(['../module'], function(module) {
                 return $requestService
                   .apiReq('/agents', { limit: 1, sort: '-dateAdd' })
                   .then(
-                    function(response) {
+                    function (response) {
                       return $requestService
                         .apiReq(`/agents/${response.data.data.items[0].id}`, {})
                         .then(
-                          function(response) {
+                          function (response) {
                             return response
                           },
-                          function(response) {
+                          function (response) {
                             console.error('error getting last agent')
                             return response
                           }
@@ -316,7 +340,7 @@ define(['../module'], function(module) {
                           console.error('Error route: ', err)
                         })
                     },
-                    function(response) {
+                    function (response) {
                       console.error('error getting agents')
                       return response
                     }
