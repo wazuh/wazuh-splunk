@@ -43,9 +43,9 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `POST`,
           `manager/add_api`,
-          $.param({
+          $.param(
             payload
-          })
+          )
         )
         return data
       } catch (err) {
@@ -60,11 +60,11 @@ define(['../module'], function(module) {
     const deletes = async id => {
       try {
         const { data } = await $requestService.httpReq(
-          `POST`,
+          `DELETE`,
           `manager/remove_api`,
-          $.param({
+          $.param(
             id
-          })
+          )
         )
         if (data.error || data.status === 400) throw new Error(data.error)
         return data
@@ -83,9 +83,9 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `PUT`,
           `manager/update_api`,
-          $.param({
+          $.param(
             newRegister
-          })
+          )
         )
         return data
       } catch (err) {
