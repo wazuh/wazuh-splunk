@@ -81,7 +81,7 @@ define(['../module'], function(module) {
     const update = async newRegister => {
       try {
         const { data } = await $requestService.httpReq(
-          `POST`,
+          `PUT`,
           `manager/update_api`,
           $.param({
             newRegister
