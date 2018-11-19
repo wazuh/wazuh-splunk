@@ -2,7 +2,7 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
   mvc,
   TimeRangeInput
 ) {
-  'use strict';
+  'use strict'
 
   return class TimePicker {
     /**
@@ -11,7 +11,7 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
      * @param {Function} handleValueChange
      */
     constructor(element, handleValueChange) {
-      mvc.Components.revokeInstance(`timePicker`);
+      mvc.Components.revokeInstance(`timePicker`)
       this.input = new TimeRangeInput(
         {
           id: `timePicker`,
@@ -22,27 +22,27 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
           el: $(`${element}`)
         },
         { tokens: true }
-      ).render();
-      this.handleValueChange = handleValueChange;
+      ).render()
+      this.handleValueChange = handleValueChange
       this.input.on('change', newValue => {
-        if (newValue && this.input) this.handleValueChange(this.input);
-      });
+        if (newValue && this.input) this.handleValueChange(this.input)
+      })
     }
 
     /**
      * Gets the TimeRangeInput
      */
     get() {
-      return this.input;
+      return this.input
     }
 
     /**
      * Destroys the TimeRangeInput instance
      */
     destroy() {
-      mvc.Components.revokeInstance(`timePicker`);
-      this.input.off('change');
-      this.input = null;
+      mvc.Components.revokeInstance(`timePicker`)
+      this.input.off('change')
+      this.input = null
     }
-  };
-});
+  }
+})

@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
   module.service('$splunkStoreService', function($requestService) {
     /**
      * Select an API by ID
@@ -10,12 +10,12 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `GET`,
           `/manager/get_apis`
-        );
-        return data;
+        )
+        return data
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Select an API by ID
@@ -27,12 +27,12 @@ define(['../module'], function(module) {
           `GET`,
           `/manager/get_api`,
           { id: id }
-        );
-        return data[0];
+        )
+        return data[0]
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Inserts an entry
@@ -46,12 +46,12 @@ define(['../module'], function(module) {
           $.param({
             payload
           })
-        );
-        return data;
+        )
+        return data
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * DELETE method
@@ -65,13 +65,13 @@ define(['../module'], function(module) {
           $.param({
             id
           })
-        );
-        if (data.error || data.status === 400) throw new Error(data.error);
-        return data;
+        )
+        if (data.error || data.status === 400) throw new Error(data.error)
+        return data
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Update a record
@@ -86,12 +86,12 @@ define(['../module'], function(module) {
           $.param({
             newRegister
           })
-        );
-        return data;
+        )
+        return data
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     const methods = {
       getAllApis: getAllApis,
@@ -99,7 +99,7 @@ define(['../module'], function(module) {
       insert: insert,
       delete: deletes,
       update: update
-    };
-    return methods;
-  });
-});
+    }
+    return methods
+  })
+})

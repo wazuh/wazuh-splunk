@@ -6,19 +6,19 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, ColumnChart, PieChart, Table, LinearChart, TimePicker) {
-  'use strict';
+  'use strict'
 
   class OverviewFIM {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.state = $state;
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
+      this.scope = $scope
+      this.state = $state
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
+      )
 
       this.vizz = [
         /**
@@ -83,29 +83,29 @@ define([
           } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,
           'topUsers'
         )
-      ];
+      ]
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
-  app.controller('overviewFimCtrl', OverviewFIM);
-});
+  app.controller('overviewFimCtrl', OverviewFIM)
+})

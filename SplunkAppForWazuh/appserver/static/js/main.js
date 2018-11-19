@@ -30,7 +30,7 @@ require.config({
   config: {
     es6: {
       resolveModuleSource: function(source) {
-        return 'es6!' + source;
+        return 'es6!' + source
       }
     }
   },
@@ -60,4 +60,4 @@ require.config({
 
   // kick start application
   deps: ['angular', 'ngMaterial', 'ngAnimate', 'ngAria', 'js/bootstrap']
-});
+})

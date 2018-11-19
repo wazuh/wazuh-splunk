@@ -19,31 +19,31 @@ define([
   Dropdown,
   SearchHandler
 ) {
-  'use strict';
+  'use strict'
 
   class OpenSCAP {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.state = $state;
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
+      this.scope = $scope
+      this.state = $state
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
+      )
       this.dropdown = new Dropdown(
         'dropDownInput',
         `${
@@ -52,7 +52,7 @@ define([
         'oscap.scan.profile.title',
         '$form.profile$',
         'dropDownInput'
-      );
+      )
       this.vizz = [
         /**
          * Metrics
@@ -146,17 +146,17 @@ define([
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'alertsSummaryVizz'
         )
-      ];
-      this.dropdownInstance = this.dropdown.getElement();
+      ]
+      this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance)
-          $urlTokenModel.handleValueChange(this.dropdownInstance);
-      });
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
+      })
     }
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
-  app.controller('overviewOpenScapCtrl', OpenSCAP);
-});
+  app.controller('overviewOpenScapCtrl', OpenSCAP)
+})

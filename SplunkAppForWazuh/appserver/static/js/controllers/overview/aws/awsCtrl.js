@@ -6,19 +6,19 @@ define([
   '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, PieChart, AreaChart, Table, Map, TimePicker) {
-  'use strict';
+  'use strict'
 
   class AWS {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.state = $state;
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
+      this.scope = $scope
+      this.state = $state
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
+      )
       this.vizz = [
         /**
          * Visualizations
@@ -69,27 +69,27 @@ define([
           } sourcetype=wazuh | top rule.id, rule.description limit=5`,
           'topRules'
         )
-      ];
+      ]
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
-  app.controller('awsCtrl', AWS);
-});
+  app.controller('awsCtrl', AWS)
+})

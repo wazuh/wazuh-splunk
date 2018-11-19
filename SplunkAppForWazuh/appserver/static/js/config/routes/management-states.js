@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
 
   module.config([
     '$stateProvider',
@@ -19,7 +19,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/monitoring/monitoring.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-monitoring');
+            $navigationService.storeRoute('mg-monitoring')
           },
           controller: 'monitoringCtrl',
           params: { id: null, filters: null },
@@ -38,15 +38,15 @@ define(['../module'], function(module) {
                 ])
                   .then(
                     function(response) {
-                      return response;
+                      return response
                     },
                     function(response) {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    console.error('Error route: ', err);
-                  });
+                    console.error('Error route: ', err)
+                  })
               }
             ]
           }
@@ -57,7 +57,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/logs/manager-logs.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-logs');
+            $navigationService.storeRoute('mg-logs')
           },
           controller: 'managerLogsCtrl',
           resolve: {
@@ -68,13 +68,13 @@ define(['../module'], function(module) {
                   .apiReq('/manager/logs/summary')
                   .then(
                     response => {
-                      return response;
+                      return response
                     },
                     response => {
-                      return response;
+                      return response
                     }
                   )
-                  .catch(err => console.error('settings.api'));
+                  .catch(err => console.error('settings.api'))
               }
             ]
           }
@@ -85,7 +85,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-rules');
+            $navigationService.storeRoute('mg-rules')
           },
           controller: 'managerRulesetCtrl',
           params: { filters: null }
@@ -96,7 +96,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset-id.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-rules');
+            $navigationService.storeRoute('mg-rules')
           },
           controller: 'managerRulesetIdCtrl',
           params: { id: null, filters: null },
@@ -109,15 +109,15 @@ define(['../module'], function(module) {
                   .apiReq(`/rules/${$stateParams.id}`)
                   .then(
                     function(response) {
-                      return response;
+                      return response
                     },
                     function(response) {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    console.error('Error route: ', err);
-                  });
+                    console.error('Error route: ', err)
+                  })
               }
             ]
           }
@@ -128,7 +128,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-decoders');
+            $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersCtrl',
           params: { filters: null }
@@ -140,7 +140,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders-id.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-decoders');
+            $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersIdCtrl',
           params: { id: null, name: null },
@@ -153,15 +153,15 @@ define(['../module'], function(module) {
                   .apiReq(`/decoders/${$stateParams.name}`)
                   .then(
                     function(response) {
-                      return response;
+                      return response
                     },
                     function(response) {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    console.error('Error route: ', err);
-                  });
+                    console.error('Error route: ', err)
+                  })
               }
             ]
           }
@@ -173,7 +173,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/groups/groups.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-groups');
+            $navigationService.storeRoute('mg-groups')
           },
           controller: 'groupsCtrl',
           params: { group: null }
@@ -185,7 +185,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/configuration.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf');
+            $navigationService.storeRoute('mg-conf')
           }
         })
 
@@ -195,7 +195,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/status/status.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-status');
+            $navigationService.storeRoute('mg-status')
           },
           controller: 'statusCtrl',
           resolve: {
@@ -204,14 +204,14 @@ define(['../module'], function(module) {
               async $requestService => {
                 const responseStatus = await $requestService.apiReq(
                   '/cluster/status'
-                );
-                let promises = [];
+                )
+                let promises = []
                 if (
                   !responseStatus ||
                   !responseStatus.data ||
                   !responseStatus.data.error
                 ) {
-                  const nodes = await $requestService.apiReq('/cluster/nodes');
+                  const nodes = await $requestService.apiReq('/cluster/nodes')
                   if (
                     responseStatus.data.data &&
                     responseStatus.data.data.enabled === 'yes' &&
@@ -219,7 +219,7 @@ define(['../module'], function(module) {
                   ) {
                     const masterNode = nodes.data.data.items.filter(
                       item => item.type === 'master'
-                    )[0];
+                    )[0]
                     promises = [
                       $requestService.apiReq('/agents/summary'),
                       $requestService.apiReq(
@@ -236,7 +236,7 @@ define(['../module'], function(module) {
                       Promise.resolve(masterNode),
                       Promise.resolve(nodes),
                       Promise.resolve(responseStatus.data)
-                    ];
+                    ]
                   } else if (
                     responseStatus.data.data.enabled === 'yes' &&
                     responseStatus.data.data.running === 'no'
@@ -253,7 +253,7 @@ define(['../module'], function(module) {
                       Promise.resolve(false),
                       Promise.resolve(nodes),
                       Promise.resolve(responseStatus.data)
-                    ];
+                    ]
                   } else {
                     promises = [
                       $requestService.apiReq('/agents/summary'),
@@ -265,7 +265,7 @@ define(['../module'], function(module) {
                         limit: 1
                       }),
                       Promise.resolve(false)
-                    ];
+                    ]
                   }
                 } else {
                   promises = [
@@ -278,20 +278,20 @@ define(['../module'], function(module) {
                       limit: 1
                     }),
                     Promise.resolve(false)
-                  ];
+                  ]
                 }
                 return Promise.all(promises)
                   .then(
                     function(response) {
-                      return response;
+                      return response
                     },
                     function(response) {
-                      return response;
+                      return response
                     }
                   )
                   .catch(err => {
-                    console.error('Error route: ', err);
-                  });
+                    console.error('Error route: ', err)
+                  })
               }
             ],
             agentInfo: [
@@ -305,29 +305,29 @@ define(['../module'], function(module) {
                         .apiReq(`/agents/${response.data.data.items[0].id}`, {})
                         .then(
                           function(response) {
-                            return response;
+                            return response
                           },
                           function(response) {
-                            console.error('error getting last agent');
-                            return response;
+                            console.error('error getting last agent')
+                            return response
                           }
                         )
                         .catch(err => {
-                          console.error('Error route: ', err);
-                        });
+                          console.error('Error route: ', err)
+                        })
                     },
                     function(response) {
-                      console.error('error getting agents');
-                      return response;
+                      console.error('error getting agents')
+                      return response
                     }
                   )
                   .catch(err => {
-                    console.error('Error route: ', err);
-                  });
+                    console.error('Error route: ', err)
+                  })
               }
             ]
           }
-        });
+        })
     }
-  ]);
-});
+  ])
+})

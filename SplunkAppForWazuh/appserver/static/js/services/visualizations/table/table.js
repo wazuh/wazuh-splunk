@@ -2,7 +2,7 @@ define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function(
   TableElement,
   Viz
 ) {
-  'use strict';
+  'use strict'
 
   return class Table extends Viz {
     /**
@@ -29,7 +29,7 @@ define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function(
         ).render(),
         id,
         search
-      );
+      )
     }
-  };
-});
+  }
+})

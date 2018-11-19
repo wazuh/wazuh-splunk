@@ -1,14 +1,14 @@
 /*
-* Wazuh app - Configuration handler class
-* Copyright (C) 2018 Wazuh, Inc.
-*
-* This program is free software you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation either version 2 of the License, or
-* (at your option) any later version.
-*
-* Find more information about this on the LICENSE file.
-*/
+ * Wazuh app - Configuration handler class
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 /* import js2xmlparser from 'js2xmlparser'
 import XMLBeautifier from './xml-beautifier'
 */
@@ -18,19 +18,19 @@ define([
   './remove-hash-key',
   '../services/xml-beautifier/xml-beautifier'
 ], function(queryConfig, objectWithoutProperties, XMLBeautifier) {
-  'use strict';
+  'use strict'
 
   return class ConfigurationHandler {
     constructor($requestService, beautifier, errorHandler) {
-      this.apiReq = $requestService;
-      this.errorHandler = errorHandler;
-      this.beautifier = beautifier;
+      this.apiReq = $requestService
+      this.errorHandler = errorHandler
+      this.beautifier = beautifier
     }
 
     buildIntegrations(list, $scope) {
-      if (!list || !list.length) return;
+      if (!list || !list.length) return
       for (const integration of list)
-        $scope.integrations[integration.name] = integration;
+        $scope.integrations[integration.name] = integration
     }
 
     /**
@@ -40,31 +40,31 @@ define([
      */
     async switchConfigTab(configurationTab, sections, $scope, agentId = false) {
       try {
-        $scope.load = true;
-        $scope.currentConfig = null;
-        $scope.XMLContent = false;
-        $scope.JSONContent = false;
-        $scope.configurationSubTab = false;
-        $scope.configurationTab = configurationTab;
+        $scope.load = true
+        $scope.currentConfig = null
+        $scope.XMLContent = false
+        $scope.JSONContent = false
+        $scope.configurationSubTab = false
+        $scope.configurationTab = configurationTab
         $scope.currentConfig = await queryConfig(
           agentId || '000',
           sections,
           this.apiReq
-        );
+        )
         if (sections[0].component === 'integrator') {
           this.buildIntegrations(
             $scope.currentConfig['integrator-integration'].integration
-          );
+          )
         } else {
-          $scope.integrations = {};
+          $scope.integrations = {}
         }
-        $scope.load = false;
-        if (!$scope.$$phase) $scope.$digest();
+        $scope.load = false
+        if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        this.errorHandler.showSimpleToast(error, 'Manager');
-        $scope.load = false;
+        this.errorHandler.showSimpleToast(error, 'Manager')
+        $scope.load = false
       }
-      return;
+      return
     }
 
     /**
@@ -73,21 +73,21 @@ define([
      */
     async switchWodle(wodleName, $scope, agentId = false) {
       try {
-        $scope.load = true;
-        $scope.currentConfig = null;
-        $scope.XMLContent = false;
-        $scope.JSONContent = false;
-        $scope.configurationSubTab = false;
-        $scope.configurationTab = wodleName;
+        $scope.load = true
+        $scope.currentConfig = null
+        $scope.XMLContent = false
+        $scope.JSONContent = false
+        $scope.configurationSubTab = false
+        $scope.configurationTab = wodleName
 
         $scope.currentConfig = await queryConfig(
           agentId || '000',
           [{ component: 'wmodules', configuration: 'wmodules' }],
           this.apiReq
-        );
+        )
 
         // Filter by provided wodleName
-        let result = [];
+        let result = []
         if (
           wodleName &&
           $scope.currentConfig &&
@@ -96,23 +96,23 @@ define([
         ) {
           result = $scope.currentConfig['wmodules-wmodules'].wmodules.filter(
             item => typeof item[wodleName] !== 'undefined'
-          );
+          )
         }
 
         if (result.length) {
           $scope.currentConfig =
             wodleName === 'command'
               ? { commands: result.map(item => item.command) }
-              : result[0];
+              : result[0]
         }
 
-        $scope.load = false;
-        if (!$scope.$$phase) $scope.$digest();
+        $scope.load = false
+        if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
-        this.errorHandler.showSimpleToast(error, 'Manager');
-        $scope.load = false;
+        this.errorHandler.showSimpleToast(error, 'Manager')
+        $scope.load = false
       }
-      return;
+      return
     }
 
     /**
@@ -120,13 +120,13 @@ define([
      * @param {*} configurationTab
      */
     switchConfigurationTab(configurationTab, $scope) {
-      $scope.selectedItem = 0;
-      $scope.currentConfig = null;
-      $scope.XMLContent = false;
-      $scope.JSONContent = false;
-      $scope.configurationSubTab = false;
-      $scope.configurationTab = configurationTab;
-      if (!$scope.$$phase) $scope.$digest();
+      $scope.selectedItem = 0
+      $scope.currentConfig = null
+      $scope.XMLContent = false
+      $scope.JSONContent = false
+      $scope.configurationSubTab = false
+      $scope.configurationTab = configurationTab
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     /**
@@ -134,11 +134,11 @@ define([
      * @param {*} configurationSubTab
      */
     switchConfigurationSubTab(configurationSubTab, $scope) {
-      $scope.selectedItem = 0;
-      $scope.XMLContent = false;
-      $scope.JSONContent = false;
-      $scope.configurationSubTab = configurationSubTab;
-      if (!$scope.$$phase) $scope.$digest();
+      $scope.selectedItem = 0
+      $scope.XMLContent = false
+      $scope.JSONContent = false
+      $scope.configurationSubTab = configurationSubTab
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     /**
@@ -146,22 +146,22 @@ define([
      * @param {object} config Raw content to show in XML
      */
     getXML($scope) {
-      const config = {};
-      Object.assign(config, $scope.currentConfig);
-      $scope.JSONContent = false;
+      const config = {}
+      Object.assign(config, $scope.currentConfig)
+      $scope.JSONContent = false
       if ($scope.XMLContent) {
-        $scope.XMLContent = false;
+        $scope.XMLContent = false
       } else {
         try {
-          const cleaned = objectWithoutProperties(config);
+          const cleaned = objectWithoutProperties(config)
           $scope.XMLContent = XMLBeautifier(
             js2xmlparser.parse('configuration', cleaned)
-          );
+          )
         } catch (error) {
-          $scope.XMLContent = false;
+          $scope.XMLContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest();
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     /**
@@ -169,28 +169,28 @@ define([
      * @param {object} config Raw content to show in JSON
      */
     getJSON($scope) {
-      const config = {};
-      Object.assign(config, $scope.currentConfig);
-      $scope.XMLContent = false;
+      const config = {}
+      Object.assign(config, $scope.currentConfig)
+      $scope.XMLContent = false
       if ($scope.JSONContent) {
-        $scope.JSONContent = false;
+        $scope.JSONContent = false
       } else {
         try {
-          const cleaned = objectWithoutProperties(config);
-          $scope.JSONContent = this.beautifier.prettyPrint(cleaned);
+          const cleaned = objectWithoutProperties(config)
+          $scope.JSONContent = this.beautifier.prettyPrint(cleaned)
         } catch (error) {
-          $scope.JSONContent = false;
+          $scope.JSONContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest();
+      if (!$scope.$$phase) $scope.$digest()
     }
 
     reset($scope) {
-      $scope.currentConfig = null;
-      $scope.configurationTab = '';
-      $scope.configurationSubTab = '';
-      $scope.integrations = {};
-      $scope.selectedItem = 0;
+      $scope.currentConfig = null
+      $scope.configurationTab = ''
+      $scope.configurationSubTab = ''
+      $scope.integrations = {}
+      $scope.selectedItem = 0
     }
-  };
-});
+  }
+})

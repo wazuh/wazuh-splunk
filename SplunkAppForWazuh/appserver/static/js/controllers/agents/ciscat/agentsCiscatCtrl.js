@@ -6,24 +6,24 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler'
 ], function(app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler) {
-  'use strict';
+  'use strict'
 
   class AgentsCiscat {
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
-      this.state = $state;
+      this.state = $state
       if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview');
+        this.state.go('overview')
       }
-      this.scope = $scope;
-      this.urlTokenModel = $urlTokenModel;
-      this.filters = $currentDataService.getSerializedFilters();
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      );
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel();
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.agent = agent;
+      this.agent = agent
 
       this.vizz = [
         /**
@@ -141,37 +141,37 @@ define([
           } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary'
         )
-      ];
+      ]
     }
 
     $onInit() {
-      this.scope.agent = this.agent.data.data;
+      this.scope.agent = this.agent.data.data
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red';
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : 'Never connected';
-      };
+          : 'Never connected'
+      }
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
-  app.controller('agentsCiscatCtrl', AgentsCiscat);
-});
+  app.controller('agentsCiscatCtrl', AgentsCiscat)
+})

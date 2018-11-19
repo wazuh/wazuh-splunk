@@ -2,7 +2,7 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
   ChartElement,
   Viz
 ) {
-  'use strict';
+  'use strict'
 
   return class BarChart extends Viz {
     /**
@@ -26,7 +26,7 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
         ).render(),
         id,
         search
-      );
+      )
     }
-  };
-});
+  }
+})

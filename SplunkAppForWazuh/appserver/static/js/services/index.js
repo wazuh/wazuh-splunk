@@ -16,4 +16,4 @@ define([
   './xml-beautifier/xml-beautifier',
   './get-ids/getIdService',
   './token-model/urlTokenModelService'
-], function() {});
+], function() {})

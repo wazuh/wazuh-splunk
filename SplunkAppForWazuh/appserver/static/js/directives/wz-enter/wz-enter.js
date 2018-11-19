@@ -17,18 +17,18 @@
 // const app = uiModules.get('app/wazuh', []);
 
 define(['../module'], function(directives) {
-  'use strict';
+  'use strict'
   directives.directive('wzEnter', function() {
     return function(scope, element, attrs) {
       element.bind('keydown keypress', function(event) {
         if (event.which === 13) {
           scope.$apply(function() {
-            scope.$eval(attrs.wzEnter);
-          });
+            scope.$eval(attrs.wzEnter)
+          })
 
-          event.preventDefault();
+          event.preventDefault()
         }
-      });
-    };
-  });
-});
+      })
+    }
+  })
+})

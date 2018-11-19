@@ -2,7 +2,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
   DropdownInput,
   Viz
 ) {
-  'use strict';
+  'use strict'
 
   return class Dropdown extends Viz {
     /**
@@ -22,7 +22,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
       earliestTtime,
       latestTime
     ) {
-      defaultValue = defaultValue ? defaultValue : '*';
+      defaultValue = defaultValue ? defaultValue : '*'
       super(
         new DropdownInput(
           {
@@ -45,7 +45,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
         search,
         earliestTtime,
         latestTime
-      );
+      )
     }
-  };
-});
+  }
+})

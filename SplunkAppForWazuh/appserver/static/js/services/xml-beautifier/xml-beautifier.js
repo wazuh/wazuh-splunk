@@ -10,19 +10,19 @@
  * Find more information about this on the LICENSE file.
  */
 define([], function() {
-  'use strict';
+  'use strict'
   return function() {
-    const reg = /(>)\s*(<)(\/*)/g; // updated Mar 30, 2015
-    const wsexp = / *(.*) +\n/g;
-    const contexp = /(<.+>)(.+\n)/g;
+    const reg = /(>)\s*(<)(\/*)/g // updated Mar 30, 2015
+    const wsexp = / *(.*) +\n/g
+    const contexp = /(<.+>)(.+\n)/g
     xml = xml
       .replace(reg, '$1\n$2$3')
       .replace(wsexp, '$1\n')
-      .replace(contexp, '$1\n$2');
-    let formatted = '';
-    const lines = xml.split('\n');
-    let indent = 0;
-    let lastType = 'other';
+      .replace(contexp, '$1\n$2')
+    let formatted = ''
+    const lines = xml.split('\n')
+    let indent = 0
+    let lastType = 'other'
     // 4 types of tags - single, closing, opening, other (text, doctype, comment) - 4*4 = 16 transitions
     const transitions = {
       'single->single': 0,
@@ -41,40 +41,40 @@ define([], function() {
       'other->closing': -1,
       'other->opening': 0,
       'other->other': 0
-    };
+    }
 
     for (const ln of lines) {
       // Luca Viggiani 2017-07-03: handle optional <?xml ... ?> declaration
       if (ln.match(/\s*<\?xml/)) {
-        formatted += ln + '\n';
-        continue;
+        formatted += ln + '\n'
+        continue
       }
       // ---
 
-      const single = Boolean(ln.match(/<.+\/>/)); // is this line a single tag? ex. <br />
-      const closing = Boolean(ln.match(/<\/.+>/)); // is this a closing tag? ex. </a>
-      const opening = Boolean(ln.match(/<[^!].*>/)); // is this even a tag (that's not <!something>)
+      const single = Boolean(ln.match(/<.+\/>/)) // is this line a single tag? ex. <br />
+      const closing = Boolean(ln.match(/<\/.+>/)) // is this a closing tag? ex. </a>
+      const opening = Boolean(ln.match(/<[^!].*>/)) // is this even a tag (that's not <!something>)
       const type = single
         ? 'single'
         : closing
-          ? 'closing'
-          : opening
-            ? 'opening'
-            : 'other';
-      const fromTo = lastType + '->' + type;
-      lastType = type;
-      let padding = '';
+        ? 'closing'
+        : opening
+        ? 'opening'
+        : 'other'
+      const fromTo = lastType + '->' + type
+      lastType = type
+      let padding = ''
 
-      indent += transitions[fromTo];
+      indent += transitions[fromTo]
       for (let j = 0; j < indent; j++) {
-        padding += '\t';
+        padding += '\t'
       }
       if (fromTo == 'opening->closing')
-        formatted = formatted.substr(0, formatted.length - 1) + ln + '\n';
+        formatted = formatted.substr(0, formatted.length - 1) + ln + '\n'
       // substr removes line break (\n) from prev loop
-      else formatted += padding + ln + '\n';
+      else formatted += padding + ln + '\n'
     }
 
-    return formatted;
-  };
-});
+    return formatted
+  }
+})

@@ -5,7 +5,7 @@
  * @param {object} apiReq API request service reference
  */
 define([], function() {
-  'use strict';
+  'use strict'
   return async function queryConfig(agentId, sections, apiReq) {
     try {
       if (
@@ -16,31 +16,31 @@ define([], function() {
         typeof sections !== 'object' ||
         !Array.isArray(sections)
       ) {
-        throw new Error('Invalid parameters');
+        throw new Error('Invalid parameters')
       }
 
-      const result = {};
+      const result = {}
       for (const section of sections) {
-        const { component, configuration } = section;
+        const { component, configuration } = section
         if (
           !component ||
           typeof component !== 'string' ||
           !configuration ||
           typeof configuration !== 'string'
         ) {
-          throw new Error('Invalid section');
+          throw new Error('Invalid section')
         }
         const partialResult = await apiReq.apiReq(
           `/agents/${agentId}/config/${component}/${configuration}`
-        );
-        result[`${component}-${configuration}`] = partialResult.data.data;
+        )
+        result[`${component}-${configuration}`] = partialResult.data.data
         if (partialResult.data.error) {
-          result[`${component}-${configuration}`] = partialResult.data.message;
+          result[`${component}-${configuration}`] = partialResult.data.message
         }
       }
-      return result;
+      return result
     } catch (error) {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-  };
-});
+  }
+})

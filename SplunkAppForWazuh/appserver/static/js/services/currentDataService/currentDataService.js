@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
 
   module.service('$currentDataService', function(
     $apiMgrService,
@@ -9,106 +9,106 @@ define(['../module'], function(module) {
     $requestService
   ) {
     const getPollintState = () => {
-      return $apiMgrService.getPollintState;
-    };
+      return $apiMgrService.getPollintState
+    }
 
     const getBaseUrl = () => {
-      return $requestService.getBaseUrl();
-    };
+      return $requestService.getBaseUrl()
+    }
 
     const getApi = () => {
-      return $apiMgrService.getApi();
-    };
+      return $apiMgrService.getApi()
+    }
 
     const getApiList = () => {
-      return $apiMgrService.getApiList();
-    };
+      return $apiMgrService.getApiList()
+    }
 
     const checkRawConnection = api => {
-      return $apiMgrService.checkRawConnection(api);
-    };
+      return $apiMgrService.checkRawConnection(api)
+    }
 
     const checkSelectedApiConnection = () => {
-      return $apiMgrService.checkSelectedApiConnection();
-    };
+      return $apiMgrService.checkSelectedApiConnection()
+    }
 
     const checkApiConnection = id => {
-      return $apiMgrService.checkApiConnection(id);
-    };
+      return $apiMgrService.checkApiConnection(id)
+    }
 
     const remove = key => {
-      return $apiMgrService.remove(key);
-    };
+      return $apiMgrService.remove(key)
+    }
 
     const insert = record => {
-      return $apiMgrService.insert(record);
-    };
+      return $apiMgrService.insert(record)
+    }
 
     const chose = key => {
-      return $apiMgrService.chose(key);
-    };
+      return $apiMgrService.chose(key)
+    }
 
     const getFilters = () => {
-      return $filterService.getFilters();
-    };
+      return $filterService.getFilters()
+    }
 
     const addFilter = filter => {
-      return $filterService.addFilter(filter);
-    };
+      return $filterService.addFilter(filter)
+    }
 
     const getSerializedFilters = () => {
-      return $filterService.getSerializedFilters();
-    };
+      return $filterService.getSerializedFilters()
+    }
 
     const removeFilter = filter => {
-      return $filterService.removeFilter(filter);
-    };
+      return $filterService.removeFilter(filter)
+    }
 
     const cleanFilters = () => {
-      return $filterService.cleanFilters();
-    };
+      return $filterService.cleanFilters()
+    }
 
     const update = register => {
-      return $apiMgrService.update(register);
-    };
+      return $apiMgrService.update(register)
+    }
     const getClusterInfo = () => {
-      return $apiMgrService.getClusterInfo();
-    };
+      return $apiMgrService.getClusterInfo()
+    }
     const getFilter = () => {
-      return $apiMgrService.getFilter();
-    };
+      return $apiMgrService.getFilter()
+    }
 
     const getIndex = () => {
-      return $apiMgrService.getIndex();
-    };
+      return $apiMgrService.getIndex()
+    }
 
     const setIndex = index => {
-      return $apiMgrService.setIndex(index);
-    };
+      return $apiMgrService.setIndex(index)
+    }
 
     const setApi = api => {
-      return $apiMgrService.setApi(api);
-    };
+      return $apiMgrService.setApi(api)
+    }
 
     const getExtensions = id => {
-      return $apiIndexStorageService.getExtensions(id);
-    };
+      return $apiIndexStorageService.getExtensions(id)
+    }
 
     const setExtensions = (api, extensions) => {
-      return $apiIndexStorageService.setExtensions(api, extensions);
-    };
+      return $apiIndexStorageService.setExtensions(api, extensions)
+    }
 
     const removeCurrentApi = () => {
-      return $apiIndexStorageService.removeAPI();
-    };
+      return $apiIndexStorageService.removeAPI()
+    }
 
     const getCurrentAgent = () => {
-      return $navigationService.getCurrentAgent();
-    };
+      return $navigationService.getCurrentAgent()
+    }
 
     const setCurrentAgent = id => {
-      return $navigationService.setCurrentAgent(id);
-    };
+      return $navigationService.setCurrentAgent(id)
+    }
 
     return {
       getPollintState: getPollintState,
@@ -137,6 +137,6 @@ define(['../module'], function(module) {
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
       setExtensions: setExtensions
-    };
-  });
-});
+    }
+  })
+})

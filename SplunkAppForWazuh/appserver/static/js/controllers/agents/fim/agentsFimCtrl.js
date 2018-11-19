@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
-  'use strict';
+  'use strict'
 
   class AgentsFim {
     /**
@@ -19,28 +19,28 @@ define([
      */
 
     constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
-      this.state = $state;
+      this.state = $state
       if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview');
+        this.state.go('overview')
       }
-      this.scope = $scope;
-      this.urlTokenModel = $urlTokenModel;
-      this.filters = $currentDataService.getSerializedFilters();
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      );
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel();
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.agent = agent.data.data;
+      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -95,31 +95,31 @@ define([
           } sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement'
         )
-      ];
+      ]
 
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     $onInit() {
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red';
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : 'Never connected';
-      };
+          : 'Never connected'
+      }
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
-  app.controller('agentsFimCtrl', AgentsFim);
-});
+  app.controller('agentsFimCtrl', AgentsFim)
+})

@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, PieChart, AreaChart, Table, TimePicker) {
-  'use strict';
+  'use strict'
 
   class Osquery {
     constructor(
@@ -16,25 +16,25 @@ define([
       $notificationService,
       osquery
     ) {
-      this.scope = $scope;
-      this.osquery = osquery;
-      this.state = $state;
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
-      this.scope.osqueryWodle = false;
+      this.scope = $scope
+      this.osquery = osquery
+      this.state = $state
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
+      this.scope.osqueryWodle = false
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
-      this.toast = $notificationService.showSimpleToast;
+      )
+      this.toast = $notificationService.showSimpleToast
       this.vizz = [
         /**
          * Visualizations
@@ -68,35 +68,33 @@ define([
           } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
           'topRules'
         )
-      ];
+      ]
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     $onInit() {
       try {
-        const wodles = this.osquery.data.data.wmodules;
-        this.scope.osqueryWodle = wodles.filter(
-          item => item.osquery
-        )[0].osquery;
+        const wodles = this.osquery.data.data.wmodules
+        this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
       } catch (err) {
         this.toast(
           'Cannot load wodle configuration. Osquery is not configured.'
-        );
+        )
       }
     }
 
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
 
-  app.controller('osqueryCtrl', Osquery);
-});
+  app.controller('osqueryCtrl', Osquery)
+})

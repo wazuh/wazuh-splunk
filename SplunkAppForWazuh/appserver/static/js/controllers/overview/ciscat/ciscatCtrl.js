@@ -6,28 +6,28 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler'
 ], function(app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler) {
-  'use strict';
+  'use strict'
   class Ciscat {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.state = $state;
-      this.addFilter = $currentDataService.addFilter;
-      this.getFilters = $currentDataService.getSerializedFilters;
+      this.scope = $scope
+      this.state = $state
+      this.addFilter = $currentDataService.addFilter
+      this.getFilters = $currentDataService.getSerializedFilters
 
-      this.filters = this.getFilters();
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
+      this.filters = this.getFilters()
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
+      )
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -145,24 +145,24 @@ define([
           } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary'
         )
-      ];
+      ]
     }
     $onInit() {
-      this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`);
+      this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
-  app.controller('ciscatCtrl', Ciscat);
-});
+  app.controller('ciscatCtrl', Ciscat)
+})

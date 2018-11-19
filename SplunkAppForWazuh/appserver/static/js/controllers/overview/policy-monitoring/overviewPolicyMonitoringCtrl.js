@@ -5,18 +5,18 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, PieChart, AreaChart, Table, TimePicker) {
-  'use strict';
+  'use strict'
   class PM {
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
-      this.scope = $scope;
-      this.urlTokenModel = $urlTokenModel;
-      this.state = $state;
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.state = $state
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      );
+      )
       this.vizz = [
         /**
          * Visualizations
@@ -56,28 +56,28 @@ define([
           } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`,
           'alertsSummary'
         )
-      ];
+      ]
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
-  app.controller('overviewPolicyMonitoringCtrl', PM);
-});
+  app.controller('overviewPolicyMonitoringCtrl', PM)
+})

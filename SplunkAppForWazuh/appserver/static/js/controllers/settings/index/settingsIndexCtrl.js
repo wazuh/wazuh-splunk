@@ -11,9 +11,9 @@ define([
      */
 
     constructor($scope, $currentDataService, $urlTokenModel) {
-      this.scope = $scope;
-      this.$currentDataService = $currentDataService;
-      this.urlTokenModel = $urlTokenModel;
+      this.scope = $scope
+      this.$currentDataService = $currentDataService
+      this.urlTokenModel = $urlTokenModel
 
       this.dropdown = new Dropdown(
         'inputIndexes',
@@ -24,24 +24,24 @@ define([
         'wazuh',
         '2017-03-14T10:0:0',
         'now'
-      );
+      )
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.dropdownInstance = this.dropdown.getElement();
+      this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance)
-          this.urlTokenModel.handleValueChange(this.dropdownInstance);
-      });
+          this.urlTokenModel.handleValueChange(this.dropdownInstance)
+      })
 
       this.scope.$on('$destroy', () => {
-        this.dropdown.destroy();
-      });
+        this.dropdown.destroy()
+      })
     }
   }
 
-  app.controller('settingsIndexCtrl', SettingIndex);
-});
+  app.controller('settingsIndexCtrl', SettingIndex)
+})

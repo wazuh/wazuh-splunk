@@ -4,17 +4,17 @@ define([
   'splunkjs/mvc/simplexml',
   '../../services/visualizations/inputs/time-picker'
 ], function(app, LayoutView, DashboardController, TimePicker) {
-  'use strict';
+  'use strict'
 
   class MainCtrl {
     constructor($scope, $urlTokenModel) {
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
-      this.scope = $scope;
-      this.dashboardController = DashboardController;
-      this.urlTokenModel = $urlTokenModel;
+      )
+      this.scope = $scope
+      this.dashboardController = DashboardController
+      this.urlTokenModel = $urlTokenModel
       this.layoutView = new LayoutView({
         hideFooter: false,
         hideSplunkBar: false,
@@ -23,42 +23,42 @@ define([
       })
         .render()
         .getContainerElement()
-        .appendChild($('.empty-body-class')[0]);
+        .appendChild($('.empty-body-class')[0])
 
-      this.dashboardController.ready();
+      this.dashboardController.ready()
     }
 
     $onInit() {
       this.scope.$on('loading', (event, data) => {
-        if (data.status) this.scope.loading = true;
-        else this.scope.loading = false;
-        if (!this.scope.$$phase) this.scope.$digest();
-      });
+        if (data.status) this.scope.loading = true
+        else this.scope.loading = false
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       this.dashboardController.onReady(() => {
         if (
           !this.urlTokenModel.has('earliest') &&
           !this.urlTokenModel.has('latest')
         ) {
-          this.urlTokenModel.set({ earliest: '0', latest: '' });
+          this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
-      });
+      })
 
       // Initialize time tokens to default
       if (
         !this.urlTokenModel.has('earliest') &&
         !this.urlTokenModel.has('latest')
       ) {
-        this.urlTokenModel.set({ earliest: '0', latest: '' });
+        this.urlTokenModel.set({ earliest: '0', latest: '' })
       }
 
       /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-      });
+        this.timePicker.destroy()
+      })
     }
   }
-  app.controller('mainCtrl', MainCtrl);
-});
+  app.controller('mainCtrl', MainCtrl)
+})
