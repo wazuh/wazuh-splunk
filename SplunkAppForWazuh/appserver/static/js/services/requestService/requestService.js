@@ -53,7 +53,7 @@ define(['../module'], function(module) {
           Object.assign(data, await $http.post(tmpUrl, payload))
         // DELETE METHOD
         else if (method === 'DELETE')
-          Object.assign(data, await $http.delete(tmpUrl))
+          Object.assign(data, await $http.post(tmpUrl, payload))
         if (!data) {
           throw new Error(
             `Error doing a request to ${tmpUrl}, method: ${method}.`
