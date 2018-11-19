@@ -116,8 +116,7 @@ class api(controllers.BaseController):
             verify = False
             request = self.session.get(
                 url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
-            result = json.dumps(request)
-            #result = self.clean_keys(request)
+            result = self.clean_keys(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})
