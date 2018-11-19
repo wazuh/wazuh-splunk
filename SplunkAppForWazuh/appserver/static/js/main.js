@@ -21,18 +21,15 @@ require.config({
     'search-cursor': 'js/utils/codemirror/search-cursor',
     codemirror: 'js/utils/codemirror/lib/codemirror',
     querystring: 'js/utils/codemirror/querystring',
-    jsonLint: 'js/utils/codemirror/json-lint',
-    es6: 'js/libs/es6',
-    babel: 'js/libs/babel',
-    FileSaver: 'js/libs/file-saver/file-saver'
-  },
 
-  config: {
-    es6: {
-      resolveModuleSource: function(source) {
-        return 'es6!' + source
-      }
-    }
+    // dev-dependencies
+    jsonLint: 'js/utils/codemirror/json-lint',
+
+    // File saver
+    FileSaver: 'js/libs/file-saver/file-saver',
+
+    // dom-to-image
+    'dom-to-image': 'js/libs/dom-to-image/dom-to-image.min'
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
