@@ -114,7 +114,7 @@
       </div>
       
       <div layout="row" ng-if="agent.id && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-        <wazuh-table flex path="'/syscollector/' + agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
+        <wazuh-table flex path="'/syscollector/' + agent.id + '/packages'" row-sizes="[10]" extra-limit="true" keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
         </wazuh-table>
       </div>
 
@@ -135,7 +135,7 @@
               </button>
           </div>
           <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <wazuh-table flex path="'/syscollector/' + agent.id + '/processes'" row-sizes="[6,4,3,3]" extra-limit="true" keys="['name','euser','nice','state']">
+              <wazuh-table flex path="'/syscollector/' + agent.id + '/processes'" row-sizes="[10]" extra-limit="true" keys="['name','euser','nice','state']">
               </wazuh-table>
           </div>
       </md-card-content>
