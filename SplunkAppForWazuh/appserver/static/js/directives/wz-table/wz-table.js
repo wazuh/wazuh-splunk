@@ -402,7 +402,11 @@ define(['../module', 'underscore'], function(directives, _) {
             return '-'
           return key.value === 'local.ip'
             ? (item.local && item.local.ip
-                ? `${item.local.ip}:${item.local.port}`
+                ? `${item.local.ip}`
+                : false) || '-'
+          : key.value === 'local.port'
+            ? (item.local && item.local.port
+                ? `${item.local.port}`
                 : false) || '-'
             : key === 'remote.ip'
             ? (item.remote && item.remote.ip

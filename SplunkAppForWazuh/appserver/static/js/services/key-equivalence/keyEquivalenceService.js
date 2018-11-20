@@ -57,7 +57,8 @@ define(['../module'], function(module) {
           address: 'Address',
           protocol: 'Protocol',
           'local.ip': 'Local',
-          'remote.ip': 'Remote'
+          'remote.ip': 'Remote',
+          'local.port': 'Port'
         }
       }
     }
