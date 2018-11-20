@@ -29,7 +29,7 @@ define([
     async deleteReport(name) {
       try {
         this.loading = true
-        await this.genericReq.request('DELETE', '/reports/' + name, {})
+        await this.genericReq('DELETE', '/reports/' + name, {})
         await this.load()
         this.toast('Deleted report')
       } catch (error) {
