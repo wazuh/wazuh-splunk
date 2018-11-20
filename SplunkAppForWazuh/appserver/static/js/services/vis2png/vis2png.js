@@ -12,9 +12,10 @@
 
 define([
   '../module',
-  'dom-to-image'
+  'domToImg'
 ], function (app,domToImg) {
-  'use strict';
+  console.log('domtoimg ',domToImg)
+  'use strict'
   class Vis2PNG {
     constructor($rootScope) {
       this.$rootScope = $rootScope
@@ -25,6 +26,7 @@ define([
 
     async checkArray(visArray) {
       try {
+        console.log('check array ',visArray)
         this.working = true
         const len = visArray.length
         let currentCompleted = 0
@@ -32,14 +34,17 @@ define([
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
             try {
-              const tmpResult = await domToImg.toPng(tmpNode[0])
+              console.log('converting to PNG this: ',tmpNode[0])
+              const tmpResult = await toPng(tmpNode[0])
+              console.log('DOM in PNG: ',tmpResult)
+
               this.rawArray.push({
                 element: tmpResult,
                 width: tmpNode.width(),
                 height: tmpNode.height(),
                 id: currentValue
               })
-            } catch (error) { } // eslint-disable-line
+            } catch (error) { console.error('error converting ',error)} // eslint-disable-line
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100
@@ -50,8 +55,10 @@ define([
 
         this.working = false
         this.$rootScope.reportStatus = `Generating PDF document...`
+        console.log('returning ,',this.rawArray)
         return this.rawArray
       } catch (error) {
+        console.log('vis2png catch ',error)
         this.working = false
         return Promise.reject(error)
       }
@@ -67,6 +74,7 @@ define([
     }
 
     assignHTMLItem(id, content) {
+      console.log('assigning id, content ',id,content)
       this.htmlObject[id] = content
     }
   }

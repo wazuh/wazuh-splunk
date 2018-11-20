@@ -15,7 +15,7 @@ define([
       this.$rootScope = $rootScope
       this.vis2png = vis2png
       //  this.rawVisualizations = rawVisualizations
-      this.visHandlers = $currentDataService.getFilters()
+      this.visHandlers = $currentDataService
       this.genericReq = $requestService.httpReq
       this.errorHandler = $notificationService.showSimpleToast
     }
@@ -32,17 +32,19 @@ define([
 
         this.vis2png.clear()
 
-        const idArray = this.rawVisualizations.getList().map(item => item.id)
+        // const idArray = this.rawVisualizations.getList().map(item => item.id)
+        const idArray = ['alertLevEvoVizz']
 
         for (const item of idArray) {
           const tmpHTMLElement = $(`#${item}`)
+          console.log('the HTML DOM element ',tmpHTMLElement)
           this.vis2png.assignHTMLItem(item, tmpHTMLElement)
         }
 
-        const appliedFilters = this.visHandlers.getAppliedFilters(
-          syscollectorFilters
-        )
+        const appliedFilters = this.visHandlers.getSerializedFilters()
+        
 
+        console.log('checking array')
         const array = await this.vis2png.checkArray(idArray)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
@@ -61,7 +63,8 @@ define([
           isAgents
         }
 
-        await this.genericReq.request(
+        console.log('data ',data)
+        await this.genericReq(
           'POST',
           '/reports',
           data
