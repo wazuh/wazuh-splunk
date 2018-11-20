@@ -5,8 +5,8 @@ define([
 
   class Reporting {
     constructor($scope, $notificationService, $requestService) {
-      this.$scope = $scope
-      this.errorHandler = $notificationService.showSimpleToast
+      this.scope = $scope
+      this.toast = $notificationService.showSimpleToast
       this.genericReq = $requestService.httpReq
       this.loading = true
       this.itemsPerPage = 15
@@ -31,9 +31,9 @@ define([
         this.loading = true
         await this.genericReq.request('DELETE', '/reports/' + name, {})
         await this.load()
-        this.errorHandler('Reporting')
+        this.toast('Deleted report')
       } catch (error) {
-        this.errorHandler('Reporting error')
+        this.toast('Reporting error')
       }
     }
 
@@ -88,7 +88,7 @@ define([
     async load() {
       try {
         this.loading = true
-        const data = await this.genericReq.request('GET', '/reports', {})
+        const data = await this.genericReq('GET', '/manager/reports', {})
         this.items = data.data.list
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
@@ -96,12 +96,13 @@ define([
           gap - parseInt(this.items.length / 15) > 0
             ? gapInteger + 1
             : gapInteger
-        if (this.gap > 5) this.gap = 5
+        if (this.gap > 5) { this.gap = 5 }
         this.search()
         this.loading = false
-        if (!this.$scope.$$phase) this.$scope.$digest()
+        if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.errorHandler('Reporting')
+        console.error('err', error)
+        this.toast('Error loading reports')
       }
     }
   }

@@ -4,11 +4,10 @@ define([
   '../vis2png/vis2png'
 ], function (module, $, vis2png) {
   'use strict'
-
+  console.log('vis2vis ',vis2png)
   class ReportingService {
     constructor(
       $rootScope,
-      vis2png,
       //  rawVisualizations,
       $currentDataService,
       $requestService,

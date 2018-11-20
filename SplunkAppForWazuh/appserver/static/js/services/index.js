@@ -12,6 +12,7 @@ define([
   './currentDataService/currentDataService',
   './beautifier/beautifier-json',
   './reporting/reportingService',
+  './vis2png/vis2png',
   './notificationService/notificationService',
   './csv-request/csvRequestService',
   './xml-beautifier/xml-beautifier',

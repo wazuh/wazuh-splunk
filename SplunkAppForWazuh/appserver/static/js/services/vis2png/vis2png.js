@@ -11,8 +11,9 @@
  */
 
 define([
+  '../module',
   'dom-to-image'
-], function (domToImg) {
+], function (app,domToImg) {
   'use strict';
   class Vis2PNG {
     constructor($rootScope) {
@@ -69,5 +70,5 @@ define([
       this.htmlObject[id] = content
     }
   }
-  return Vis2PNG
+  app.service('vis2png', Vis2PNG)
 })
