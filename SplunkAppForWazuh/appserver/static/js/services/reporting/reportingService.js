@@ -1,13 +1,12 @@
 define([
   '../module',
   'jquery',
-  '../vis2png/vis2png'
-], function (module, $, vis2png) {
+], function (module, $) {
   'use strict'
-  console.log('vis2vis ',vis2png)
   class ReportingService {
     constructor(
       $rootScope,
+      vis2png,
       //  rawVisualizations,
       $currentDataService,
       $requestService,
@@ -75,9 +74,10 @@ define([
 
         return
       } catch (error) {
+        console.error('err ',error)
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
-        this.errorHandler('Reporting')
+        this.errorHandler('Reporting error')
       }
     }
   }
