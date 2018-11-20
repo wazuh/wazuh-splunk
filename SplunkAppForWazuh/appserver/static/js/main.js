@@ -29,7 +29,7 @@ require.config({
     FileSaver: 'js/libs/file-saver/file-saver',
 
     // dom-to-image
-    'dom-to-image': 'js/libs/dom-to-image/dom-to-image.min'
+    'domToImg': 'js/libs/dom-to-image/dom-to-image.min'
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
