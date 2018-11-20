@@ -177,12 +177,13 @@ define([
           } index=wazuh-monitoring-3x`
         }
 
+        this.spanTime = '1h'
         this.vizz.push(
           new LinearChart(
             `agentStatusHistory`,
             `${
               this.agentsStatusFilter
-            } status=* | timechart span=1h count by status usenull=f`,
+            } status=* | timechart span=${this.spanTime} count by status usenull=f | eval now = relative_time(now(),"-${this.spanTime}") | where _time < now  | fields - now`,
             `agentStatus`
           )
         )
