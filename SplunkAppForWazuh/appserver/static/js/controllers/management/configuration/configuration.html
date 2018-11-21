@@ -54,8 +54,11 @@
     <!-- End separator -->
     
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ui-sref="settings.about" aria-label="Link to open app about section">
+    <md-button md-no-ink class="md-icon-button small" ui-sref="settings.about" aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+      <md-tooltip md-direction="left" class="wz-tooltip">
+        About and help
+      </md-tooltip>
     </md-button>
     <!-- End help button -->
   </div>
@@ -141,10 +144,10 @@
                   </div>
                 </md-list-item>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="agent && agent.id !== '000'">
-                    <div class="md-list-item-text">
-                        <h3 class="wz-text-link" ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">Labels</h3>
-                        <p>User-defined information about the agent included in alerts</p>
-                    </div>
+                  <div class="md-list-item-text">
+                    <h3 class="wz-text-link" ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">Labels</h3>
+                    <p>User-defined information about the agent included in alerts</p>
+                  </div>
                 </md-list-item>
                 <!-- End agent sections -->
               </md-list>
@@ -156,8 +159,8 @@
           <!-- Alerts and output management card -->
           <md-card class="wz-md-card" ng-if="!agent || agent.id === '000'">
             <md-card-content>
-                <span class="font-size-16" ng-if="!agent || agent.id === '000'">Alerts and output management</span>
-                <md-divider class="wz-margin-top-10"></md-divider>
+              <span class="font-size-16" ng-if="!agent || agent.id === '000'">Alerts and output management</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
               <md-list layout="row" layout-wrap>
                 <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line" ng-if="!agent || agent.id === '000'">
                   <div class="md-list-item-text">
