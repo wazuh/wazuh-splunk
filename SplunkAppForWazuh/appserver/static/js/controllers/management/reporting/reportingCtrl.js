@@ -29,11 +29,13 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.load()
       this.scope.setPage = (n) => this.setPage(n)
       this.scope.nextPage = (n) => this.nextPage(n)
       this.scope.prevPage = () => this.prevPage()
+      this.scope.load = () => this.load()
       this.scope.deleteReport = (name) => this.deleteReport(name)
+      this.load()
+
     }
 
     /**
@@ -117,7 +119,6 @@ define([
     load() {
       try {
         this.loading = true
-
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
         this.scope.gap =
