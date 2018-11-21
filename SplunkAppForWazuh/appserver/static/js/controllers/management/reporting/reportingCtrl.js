@@ -4,6 +4,14 @@ define([
   'use strict'
 
   class Reporting {
+
+    /**
+     * This class handles generated PDF reports
+     * @param {Object} $scope 
+     * @param {Object} $notificationService 
+     * @param {Object} $requestService 
+     * @param {Array} reportsList 
+     */
     constructor($scope, $notificationService, $requestService, reportsList) {
       this.scope = $scope
       this.toast = $notificationService.showSimpleToast
@@ -17,31 +25,45 @@ define([
       this.items = reportsList.data.data
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.load()
       this.scope.setPage = (n) => this.setPage(n)
       this.scope.nextPage = (n) => this.nextPage(n)
       this.scope.prevPage = () => this.prevPage()
+      this.scope.deleteReport = (name) => this.deleteReport(name)
     }
 
+    /**
+     * Searches for current PDF reports
+     */
     search() {
       this.filteredItems = this.items
       this.scope.currentPage = 0
       this.groupToPages()
     }
 
+    /**
+     * Deletes a PDF report by name
+     * @param {String} name 
+     */
     async deleteReport(name) {
       try {
         this.loading = true
-        await this.genericReq('DELETE', '/reports/' + name, {})
+        await this.genericReq('GET', '/report/remove', {name:name})
         await this.load()
         this.toast('Deleted report')
       } catch (error) {
+        console.error('err ',error)
         this.toast('Reporting error')
       }
     }
 
-    // calculate page in place
+    /**
+     * Calculates pages in place
+     */
     groupToPages() {
       this.scope.pagedItems = []
 
@@ -89,6 +111,9 @@ define([
       this.nextPage(n)
     }
 
+    /**
+     * First load
+     */
     load() {
       try {
         this.loading = true
