@@ -35,7 +35,7 @@ define([
             const tmpNode = this.htmlObject[currentValue]
             try {
               console.log('converting to PNG this: ',tmpNode[0])
-              const tmpResult = await toPng(tmpNode[0])
+              const tmpResult = await domToImg.toPng(tmpNode[0])
               console.log('DOM in PNG: ',tmpResult)
 
               this.rawArray.push({
