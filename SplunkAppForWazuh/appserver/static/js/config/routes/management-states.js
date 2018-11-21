@@ -64,8 +64,7 @@ define(['../module'], function (module) {
                 try {
                   const result = await Promise.all([
                     $requestService.httpReq('GET', '/report/reports')
-                  ])
-                  console.log('THE REPORT LIST: ', result[0])
+                    ])
                   return result[0]
                 } catch (err) {
                   $state.go('settings.api')
