@@ -66,7 +66,7 @@ define([
         console.log('data ',data)
         await this.genericReq(
           'POST',
-          '/reports',
+          '/report/generate',
           data
         )
 
