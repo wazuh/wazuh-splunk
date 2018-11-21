@@ -4,16 +4,17 @@ define([
   'use strict'
 
   class Reporting {
-    constructor($scope, $notificationService, $requestService) {
+    constructor($scope, $notificationService, $requestService, reportsList) {
       this.scope = $scope
       this.toast = $notificationService.showSimpleToast
       this.genericReq = $requestService.httpReq
       this.loading = true
       this.itemsPerPage = 15
-      this.pagedItems = []
+      this.scope.pagedItems = []
       this.currentPage = 0
       this.items = []
       this.gap = 0
+      this.items = reportsList.data.data
     }
 
     $onInit() {
@@ -39,15 +40,15 @@ define([
 
     // calculate page in place
     groupToPages() {
-      this.pagedItems = []
+      this.scope.pagedItems = []
 
       for (let i = 0; i < this.filteredItems.length; i++) {
         if (i % this.itemsPerPage === 0) {
-          this.pagedItems[Math.floor(i / this.itemsPerPage)] = [
+          this.scope.pagedItems[Math.floor(i / this.itemsPerPage)] = [
             this.filteredItems[i]
           ]
         } else {
-          this.pagedItems[Math.floor(i / this.itemsPerPage)].push(
+          this.scope.pagedItems[Math.floor(i / this.itemsPerPage)].push(
             this.filteredItems[i]
           )
         }
@@ -75,7 +76,7 @@ define([
     }
 
     nextPage(n) {
-      if (!n && n !== 0 && this.currentPage < this.pagedItems.length - 1) {
+      if (!n && n !== 0 && this.currentPage < this.scope.pagedItems.length - 1) {
         this.currentPage++
       }
     }
@@ -85,11 +86,10 @@ define([
       this.nextPage(n)
     }
 
-    async load() {
+    load() {
       try {
         this.loading = true
-        const data = await this.genericReq('GET', '/manager/reports', {})
-        this.items = data.data.list
+
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
         this.gap =

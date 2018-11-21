@@ -56,23 +56,23 @@ define(['../module'], function (module) {
           },
           controller: 'reportingCtrl',
           params: { id: null, filters: null },
-          // resolve: {
-          //   reportsList: [
-          //     '$requestService',
-          //     '$state',
-          //     async ($requestService, $state) => {
-          //       try {
-          //         const result = await Promise.all([
-          //           //$requestService.apiReq('/cluster/status')
-          //           Promise.resolve({data:['file1,file2,fil3']})
-          //         ])
-          //         return result
-          //       } catch (err) {
-          //         $state.go('settings.api')
-          //       }
-          //     }
-          //   ]
-          // }
+          resolve: {
+            reportsList: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await Promise.all([
+                    $requestService.httpReq('GET', '/report/reports')
+                  ])
+                  console.log('THE REPORT LIST: ', result[0])
+                  return result[0]
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
 
         // Manager - rules
