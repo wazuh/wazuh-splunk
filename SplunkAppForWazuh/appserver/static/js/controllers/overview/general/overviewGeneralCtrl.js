@@ -183,7 +183,7 @@ define([
             `agentStatusHistory`,
             `${
               this.agentsStatusFilter
-            } status=* | timechart span=${this.spanTime} count by status usenull=f | eval now = relative_time(now(),"-${this.spanTime}") | where _time < now  | fields - now`,
+            } status=* | timechart span=${this.spanTime} count by status usenull=f`,
             `agentStatus`
           )
         )
