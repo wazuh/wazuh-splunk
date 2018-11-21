@@ -53,7 +53,19 @@ class report(controllers.BaseController):
     def reports(self, **kwargs):
         try:
             self.logger.info("Returning list of PDF files")
-            pdf_files = [f for f in os.listdir(self.path) if os.path.isfile(os.path.join(self.path, f))]
+            #pdf_files = [f for f in os.listdir(self.path) if os.path.isfile(os.path.join(self.path, f))]
+            pdf_files = []
+            for f in os.listdir(self.path):
+                if os.path.isfile(os.path.join(self.path, f)):
+                    filename, file_extension = os.path.splitext(self.path+f)
+                    if file_extension == '.pdf':
+                        file = {}
+                        file['size'] = os.path.getsize(self.path+f)
+                        file['name'] = f
+                        file['date'] = os.path.getmtime(self.path+f)
+                        pdf_files.append(file)
+
+
             parsed_data = json.dumps({'data': pdf_files})
         except Exception as e:
             self.logger.error("Error getting PDF files: %s" % (e))
