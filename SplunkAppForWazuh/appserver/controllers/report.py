@@ -71,3 +71,18 @@ class report(controllers.BaseController):
             self.logger.error("Error getting PDF files: %s" % (e))
             return json.dumps({"error":str(e)})
         return parsed_data
+
+    # Deletes a report from disk
+    @expose_page(must_login=False, methods=['GET'])
+    def remove(self, **kwargs):
+        try:
+            if not 'name' in kwargs:
+                raise Exception('Missing filename')
+            self.logger.info("Removing report %s" % kwargs['name'])
+            filename = kwargs['name']
+            os.remove(self.path+filename)
+            parsed_data = json.dumps({"data": "Deleted file"})
+        except Exception as e:
+            self.logger.error("Error deleting PDF file: %s" % (e))
+            return json.dumps({"error":str(e)})
+        return parsed_data
