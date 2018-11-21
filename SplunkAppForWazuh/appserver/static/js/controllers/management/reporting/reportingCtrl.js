@@ -11,19 +11,22 @@ define([
       this.loading = true
       this.itemsPerPage = 15
       this.scope.pagedItems = []
-      this.currentPage = 0
+      this.scope.currentPage = 0
       this.items = []
-      this.gap = 0
+      this.scope.gap = 0
       this.items = reportsList.data.data
     }
 
     $onInit() {
       this.load()
+      this.scope.setPage = (n) => this.setPage(n)
+      this.scope.nextPage = (n) => this.nextPage(n)
+      this.scope.prevPage = () => this.prevPage()
     }
 
     search() {
       this.filteredItems = this.items
-      this.currentPage = 0
+      this.scope.currentPage = 0
       this.groupToPages()
     }
 
@@ -60,7 +63,7 @@ define([
 
       if (size < end) {
         end = size
-        start = size - this.gap
+        start = size - this.scope.gap
       }
       for (let i = start; i < end; i++) {
         ret.push(i)
@@ -70,19 +73,19 @@ define([
     }
 
     prevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage--
+      if (this.scope.currentPage > 0) {
+        this.scope.currentPage--
       }
     }
 
     nextPage(n) {
-      if (!n && n !== 0 && this.currentPage < this.scope.pagedItems.length - 1) {
-        this.currentPage++
+      if (!n && n !== 0 && this.scope.currentPage < this.scope.pagedItems.length - 1) {
+        this.scope.currentPage++
       }
     }
 
     setPage(n) {
-      this.currentPage = n
+      this.scope.currentPage = n
       this.nextPage(n)
     }
 
@@ -92,11 +95,11 @@ define([
 
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
-        this.gap =
+        this.scope.gap =
           gap - parseInt(this.items.length / 15) > 0
             ? gapInteger + 1
             : gapInteger
-        if (this.gap > 5) { this.gap = 5 }
+        if (this.scope.gap > 5) { this.scope.gap = 5 }
         this.search()
         this.loading = false
         if (!this.scope.$$phase) this.scope.$digest()
