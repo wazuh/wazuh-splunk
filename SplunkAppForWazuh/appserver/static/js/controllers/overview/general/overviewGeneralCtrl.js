@@ -183,7 +183,7 @@ define([
             `agentStatusHistory`,
             `${
               this.agentsStatusFilter
-            } status=* | timechart span=${this.spanTime} count by status usenull=f`,
+            } status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
             `agentStatus`
           )
         )
