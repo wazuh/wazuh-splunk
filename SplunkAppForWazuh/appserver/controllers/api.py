@@ -103,7 +103,6 @@ class api(controllers.BaseController):
             if 'id' not in kwargs or 'endpoint' not in kwargs:
                 return json.dumps({'error': 'Missing ID or endpoint.'})
             the_id = kwargs['id']
-            self.logger.info("kwargs: %s" % (kwargs))
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
             opt_password = api[0]["passapi"]
