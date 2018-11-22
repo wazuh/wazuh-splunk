@@ -19,34 +19,36 @@ import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
-from pyPdf import PdfFileWriter
+# import cStringIO
+from fpdf import FPDF
 
 class report(controllers.BaseController):
     def __init__(self):
         self.logger = log()
         try:
             #self.path = os.path.dirname(os.path.abspath(__file__))
-            self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/bin/'
+            self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))
 
-    @expose_page(must_login=False, methods=['POST'])
-    def generate(self, **kwargs):
-        try:
-            self.logger.info("Start generating report")
-            #self.logger.info("Arguments received: "+str(kwargs))
-            self.logger.info("Path file: "+str(self.path))
+    # @expose_page(must_login=False, methods=['POST'])
+    # def generate(self, **kwargs):
+    #     try:
+    #         self.logger.info("Start generating report")
+    #         self.logger.info("Image received: "+str(kwargs))
+    #         self.logger.info("Path file: "+str(self.path))
+    #         file_like = cStringIO.StringIO(kwargs['array'][0]['element'])
 
-            output = PdfFileWriter()
-            outputStream = file(str(self.path)+"salida.pdf", "wb")
-            output.write(outputStream)
-            outputStream.close()
-            parsed_data = json.dumps({'data': 'success'})
-        except Exception as e:
-            self.logger.error("Error generating report: %s" % (e))
-            return json.dumps({"error":str(e)})
-        return parsed_data
+    #         output = PdfFileWriter()
+    #         outputStream = file(str(self.path)+"salida.pdf", "wb")
+    #         output.addAttachment((self.path)+"salida.pdf",kwargs['array'][0]['element'].encode())
+    #         #outputStream.close(self.path)+"salida.pdf",kwargs)
+    #         parsed_data = json.dumps({'data': 'success'})
+    #     except Exception as e:
+    #         self.logger.error("Error generating report: %s" % (e))
+    #         return json.dumps({"error":str(e)})
+    #     return parsed_data
 
     # Returns a list with all PDF files in the bin directory
     @expose_page(must_login=False, methods=['GET'])
