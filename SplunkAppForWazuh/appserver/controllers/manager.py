@@ -35,11 +35,11 @@ def diff_keys_dic_update_api(kwargs_dic):
     try:
         diff_dic = []
         dic = {
-            'newRegister[id]': True,
-            'newRegister[url]': True,
-            'newRegister[portapi]': True,
-            'newRegister[userapi]': True,
-            'newRegister[passapi]': True
+            'id': True,
+            'url': True,
+            'portapi': True,
+            'userapi': True,
+            'passapi': True
         }
         for key in dic:
             if key not in kwargs_dic:
@@ -127,15 +127,11 @@ class manager(controllers.BaseController):
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
         try:
-            if 'payload[url]' not in kwargs or 'payload[portapi]' not in kwargs or 'payload[userapi]' not in kwargs or 'payload[passapi]' not in kwargs:
+            if 'url' not in kwargs or 'portapi' not in kwargs or 'userapi' not in kwargs or 'passapi' not in kwargs:
                 return json.dumps({'error': 'Invalid number of arguments'})
-            record = {}
+            record = kwargs
             record['id'] = str(uuid.uuid4())
-            record['url'] = kwargs['payload[url]']
-            record['portapi'] = kwargs['payload[portapi]']
-            record['userapi'] = kwargs['payload[userapi]']
-            record['passapi'] = kwargs['payload[passapi]']
-            result = self.db.insert(record)
+            self.db.insert(record)
             parsed_data = json.dumps({'result': record['id']})
         except Exception as e:
             self.logger.error({'error': str(e)})
@@ -145,9 +141,9 @@ class manager(controllers.BaseController):
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
         try:
-            if 'id[id]' not in kwargs:
+            if 'id' not in kwargs:
                 return json.dumps({'error': 'Missing ID'})
-            self.db.remove(str(kwargs['id[id]']))
+            self.db.remove(str(kwargs['id']))
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error in remove_api endpoint: %s" % (e))
@@ -157,19 +153,12 @@ class manager(controllers.BaseController):
     @expose_page(must_login=False, methods=['POST'])
     def update_api(self, **kwargs):
         try:
-            if 'newRegister[id]' not in kwargs or 'newRegister[url]' not in kwargs or 'newRegister[portapi]' not in kwargs or 'newRegister[userapi]' not in kwargs or 'newRegister[passapi]' not in kwargs:
-                missing_params = diff_keys_dic_update_api(kwargs)
-                raise Exception("Invalid arguments, missing params : %s" % str(missing_params))
+            if 'id' not in kwargs or 'url' not in kwargs or 'portapi' not in kwargs or 'userapi' not in kwargs or 'passapi' not in kwargs:
+                #missing_params = diff_keys_dic_update_api(kwargs)
+                raise Exception("Invalid arguments, missing params")
             # building a new object
-            entry = {}
-            entry['id'] = kwargs['newRegister[id]']
-            entry['url'] = kwargs['newRegister[url]']
-            entry['portapi'] = kwargs['newRegister[portapi]']
-            entry['userapi'] = kwargs['newRegister[userapi]']
-            entry['passapi'] = kwargs['newRegister[passapi]']
-            entry['managerName'] = kwargs['newRegister[managerName]']
-            entry['filterName'] = kwargs['newRegister[filterName]']
-            entry['filterType'] = kwargs['newRegister[filterType]']
+            entry = kwargs
+
             self.db.update(entry)
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
