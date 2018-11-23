@@ -19,30 +19,33 @@ import splunk.appserver.mrsparkle.lib.util as util
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
-# import cStringIO
+import base64
 from fpdf import FPDF
-from PIL import Image
+#from PIL import Image
 
 class report(controllers.BaseController):
     def __init__(self):
         self.logger = log()
         try:
             #self.path = os.path.dirname(os.path.abspath(__file__))
-            self.pdf = FPDF()
+            self.pdf = FPDF('P', 'mm', 'A4')
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))
-
+        
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
         try:
-            self.logger.info("Start generating report")
+            self.logger.info("Start generating report %s " % kwargs['array[0][element]'])
             self.pdf.add_page()
             self.pdf.set_font('Arial', 'B', 16)
             self.pdf.cell(40, 10, 'Hello World!')
             self.pdf.output(self.path+'tuto1.pdf', 'F')
-            #outputStream.close(self.path)+"salida.pdf",kwargs)
+            # imgdata = base64.b64decode(kwargs['array[0][element]'])
+            with open(self.path+'sample.png', 'wb') as f:
+                f.write(base64.decodestring(kwargs['array[0][element]'].split(',')[1].encode()))
+            # outputStream.close(self.path)+"salida.pdf",kwargs)
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
