@@ -1,14 +1,10 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'syscollector'">
-
+<div flex="auto" layout="column" ng-if="configurationTab === 'agentless'">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
-      <span class="font-size-18">Inventory data</span>
-      <span ng-if="currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="(currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'yes') || (currentConfig && !currentConfig.syscollector)"
-        class="wz-agent-status-indicator small red">Disabled</span>
+      <span class="font-size-18">Agentless</span>
     </div>
-    <span class="md-subheader">Gather relevant information about system OS, hardware and packages.</span>
+    <span class="md-subheader">Run integrity checks on devices such as routers, firewalls or switches.</span>
   </div>
   <!-- End headline -->
 
@@ -21,21 +17,21 @@
   <div flex="auto" layout="row" ng-if="!load">
 
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig.syscollector && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config flex error="currentConfig['agentless-agentless']" ng-if="currentConfig['agentless-agentless'] && isString(currentConfig['agentless-agentless'])"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig.syscollector">
+    <div flex layout="column" ng-if="currentConfig['agentless-agentless'] && !isString(currentConfig['agentless-agentless'])">
 
       <!-- The main card will all the settings -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-        <md-card-content>
+      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
+        <md-card-content flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
-              <span class="font-size-16">Main settings</span>
+              <span class="font-size-16">Devices list</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">General settings applied to all the scans</span>
+                <span class="md-subheader small">List of monitored devices that don't use the agent
+                  component</span>
               </div>
             </div>
             <span flex></span>
@@ -45,48 +41,40 @@
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
-          <!-- Configuration block -->
-          <div class="wz-padding-top-10">
+          <!-- The container for both list and detail -->
+          <div flex="auto" layout="row" class="wz-margin-top-10">
 
-            <wz-config-item label="Syscollector integration status" value="currentConfig.syscollector.disabled === 'yes' ? 'disabled' : 'enabled'">
-            </wz-config-item>
-            <wz-config-item label="Interval between system scans" value="currentConfig.syscollector.interval">
-            </wz-config-item>
-            <wz-config-item label="Scan on start" value="currentConfig.syscollector['scan-on-start']">
-            </wz-config-item>
+            <!-- List container -->
+            <div flex="30" layout="column">
 
-          </div>
-          <!-- End configuration block -->
+              <md-list flex="auto" class="wz-item-list">
+                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['agentless-agentless'].agentless">{{
+                  item.type }} ({{ item.state }})</md-list-item>
+              </md-list>
 
-          <div class="wz-margin-top-10">
-            <span class="font-size-16">Scan settings</span>
-            <div class="wz-margin-top-10">
-              <span class="md-subheader small">Specific inventory scans to collect</span>
             </div>
+            <!-- End list container -->
+
+            <!-- Detail container -->
+            <div flex layout="column" ng-if="currentConfig['agentless-agentless'].agentless.length">
+
+              <div flex="auto" class="wz-item-detail">
+                <wz-config-item label="Agentless monitoring type" value="currentConfig['agentless-agentless'].agentless[selectedItem].type">
+                </wz-config-item>
+                <wz-config-item label="Interval (in seconds) between checks" value="currentConfig['agentless-agentless'].agentless[selectedItem].frequency">
+                </wz-config-item>
+                <wz-config-item is-array="true" label="Device username and hostname" value="currentConfig['agentless-agentless'].agentless[selectedItem].host">
+                </wz-config-item>
+                <wz-config-item label="Device check type" value="currentConfig['agentless-agentless'].agentless[selectedItem].state">
+                </wz-config-item>
+                <wz-config-item label="Pass these arguments to check" value="currentConfig['agentless-agentless'].agentless[selectedItem].arguments">
+                </wz-config-item>
+              </div>
+
+            </div>
+            <!-- End detail container -->
           </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- Configuration block -->
-          <div class="wz-padding-top-10">
-
-            <wz-config-item label="Scan hardware info" value="currentConfig.syscollector.hardware">
-            </wz-config-item>
-            <wz-config-item label="Scan current processes" value="currentConfig.syscollector.processes">
-            </wz-config-item>
-            <wz-config-item label="Scan operating system info" value="currentConfig.syscollector.os">
-            </wz-config-item>
-            <wz-config-item label="Scan installed packages" value="currentConfig.syscollector.packages">
-            </wz-config-item>
-            <wz-config-item label="Scan network interfaces" value="currentConfig.syscollector.network">
-            </wz-config-item>
-            <wz-config-item label="Scan listening network ports" value="currentConfig.syscollector.ports">
-            </wz-config-item>
-            <wz-config-item label="Scan all network ports" value="currentConfig.syscollector.ports_all">
-            </wz-config-item>
-
-          </div>
-          <!-- End configuration block -->
-
+          <!-- End container for both list and detail -->
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
@@ -150,10 +138,10 @@
     <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/syscollector.html">Syscollector
-          module documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html">Syscollector
-          module reference</md-list-item>
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/agentless-monitoring/index.html">How
+          to monitor agentless devices</md-list-item>
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/agentless.html">Agentless
+          reference</md-list-item>
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->

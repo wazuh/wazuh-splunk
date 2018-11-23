@@ -1,14 +1,14 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'syscollector'">
+<div flex="auto" layout="column" ng-if="configurationTab === 'osquery'">
 
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
-      <span class="font-size-18">Inventory data</span>
-      <span ng-if="currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="(currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'yes') || (currentConfig && !currentConfig.syscollector)"
+      <span class="font-size-18">Osquery</span>
+      <span ng-if="currentConfig && currentConfig.osquery && currentConfig.osquery.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
+      <span ng-if="(currentConfig && currentConfig.osquery && currentConfig.osquery.disabled === 'yes') || (currentConfig && !currentConfig.osquery)"
         class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Gather relevant information about system OS, hardware and packages.</span>
+    <span class="md-subheader">Expose an operating system as a high-performance relational database</span>
   </div>
   <!-- End headline -->
 
@@ -22,11 +22,11 @@
 
     <!-- No configuration section -->
     <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig.syscollector && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig.osquery && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig.syscollector">
+    <div flex layout="column" ng-if="currentConfig && currentConfig.osquery">
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
@@ -35,7 +35,7 @@
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">General settings applied to all the scans</span>
+                <span class="md-subheader small">General Osquery integration settings</span>
               </div>
             </div>
             <span flex></span>
@@ -48,45 +48,52 @@
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
 
-            <wz-config-item label="Syscollector integration status" value="currentConfig.syscollector.disabled === 'yes' ? 'disabled' : 'enabled'">
+            <wz-config-item label="Osquery integration status" value="currentConfig.osquery.disabled === 'yes' ? 'disabled' : 'enabled'">
             </wz-config-item>
-            <wz-config-item label="Interval between system scans" value="currentConfig.syscollector.interval">
+            <wz-config-item label="Auto-run the Osquery daemon" value="currentConfig.osquery.run_daemon">
             </wz-config-item>
-            <wz-config-item label="Scan on start" value="currentConfig.syscollector['scan-on-start']">
+            <wz-config-item label="Path to the Osquery executable" value="currentConfig.osquery.bin_path">
+            </wz-config-item>
+            <wz-config-item label="Path to the Osquery results log file" value="currentConfig.osquery.log_path">
+            </wz-config-item>
+            <wz-config-item label="Path to the Osquery configuration file" value="currentConfig.osquery.config_path">
+            </wz-config-item>
+            <wz-config-item label="Use defined labels as decorators" value="currentConfig.osquery.add_labels">
             </wz-config-item>
 
           </div>
           <!-- End configuration block -->
 
-          <div class="wz-margin-top-10">
-            <span class="font-size-16">Scan settings</span>
+          <div ng-if="currentConfig.osquery.packs && isArray(currentConfig.osquery.packs) && currentConfig.osquery.packs.length"
+            class="wz-margin-top-10">
+            <span class="font-size-16">Osquery packs</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Specific inventory scans to collect</span>
+              <span class="md-subheader small">A pack contains multiple queries to quickly retrieve system
+                information</span>
             </div>
           </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
+          <md-divider ng-if="currentConfig.osquery.packs && isArray(currentConfig.osquery.packs) && currentConfig.osquery.packs.length"
+            class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
-          <div class="wz-padding-top-10">
+          <div ng-if="currentConfig.osquery.packs && isArray(currentConfig.osquery.packs) && currentConfig.osquery.packs.length"
+            class="wz-padding-top-10">
 
-            <wz-config-item label="Scan hardware info" value="currentConfig.syscollector.hardware">
-            </wz-config-item>
-            <wz-config-item label="Scan current processes" value="currentConfig.syscollector.processes">
-            </wz-config-item>
-            <wz-config-item label="Scan operating system info" value="currentConfig.syscollector.os">
-            </wz-config-item>
-            <wz-config-item label="Scan installed packages" value="currentConfig.syscollector.packages">
-            </wz-config-item>
-            <wz-config-item label="Scan network interfaces" value="currentConfig.syscollector.network">
-            </wz-config-item>
-            <wz-config-item label="Scan listening network ports" value="currentConfig.syscollector.ports">
-            </wz-config-item>
-            <wz-config-item label="Scan all network ports" value="currentConfig.syscollector.ports_all">
-            </wz-config-item>
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left col-lg-4">Name</th>
+                <th class="wz-text-left col-lg-8">Path</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="item in currentConfig.osquery.packs">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.path }}</td>
+                </tr>
+              </tbody>
+            </table>
 
           </div>
           <!-- End configuration block -->
-
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
@@ -150,9 +157,9 @@
     <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/syscollector.html">Syscollector
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/osquery.html">Osquery
           module documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html">Syscollector
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-osquery.html">Osquery
           module reference</md-list-item>
       </md-list>
     </md-sidenav>

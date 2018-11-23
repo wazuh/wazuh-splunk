@@ -1,0 +1,64 @@
+<div flex="auto" layout="column" ng-init="switchConfigurationTab('welcome')">
+  <div layout="row" layout-align="start center">
+
+    <div ng-if='!currentAgent'>
+      <!-- Navigation section (Breadcrumbs, etc) -->
+      <!-- Breadcrumbs -->
+      <div layout="row" layout-padding>
+        <!-- Welcome section -->
+        <div ng-if="configurationTab === 'welcome'">
+          <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+          <span> / </span>
+          <span>Configuration</span>
+        </div>
+        <!-- First-level section -->
+        <div ng-if="configurationTab !== 'welcome'">
+          <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+          <span> / </span>
+          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+          <span> / </span>
+          <span>{{ configurationTab }}</span>
+        </div>
+      </div>
+      <!-- End breadcrumbs -->
+    </div>
+    <div ng-if='currentAgent'>
+      <!-- Navigation section (Breadcrumbs, etc) -->
+      <!-- Breadcrumbs -->
+      <div layout="row" layout-padding>
+        <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+        <div>
+          <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+          <span> / </span>
+          <span ui-sref='agent-overview({id:currentAgent.id})' class="wz-text-link cursor-pointer">{{currentAgent.name}}
+            ({{currentAgent.id}})</span>
+        </div>
+        <div ng-if="currentAgent.status">
+          <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)" aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
+        </div>
+        <span> / </span>
+        <!-- Welcome section -->
+        <div ng-if="configurationTab === 'welcome'">
+          <span>Configuration</span>
+        </div>
+        <!-- First-level section -->
+        <div ng-if="configurationTab !== 'welcome'">
+          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+          <span> / </span>
+          <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
+        </div>
+        <div flex></div>
+      </div>
+    </div>
+    <!-- Separator -->
+    <span flex></span>
+    <!-- End separator -->
+
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ui-sref="settings.about"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+  </div>
+  <!-- End navigation section -->

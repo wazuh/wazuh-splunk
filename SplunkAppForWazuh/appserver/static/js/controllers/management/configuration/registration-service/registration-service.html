@@ -1,14 +1,14 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'syscollector'">
-
+<div flex="auto" layout="column" ng-if="configurationTab === 'registration-service'">
+  
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
-      <span class="font-size-18">Inventory data</span>
-      <span ng-if="currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="(currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'yes') || (currentConfig && !currentConfig.syscollector)"
-        class="wz-agent-status-indicator small red">Disabled</span>
+      <span class="font-size-18">Registration service</span>
+      <span ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && currentConfig['auth-auth'].auth.disabled === 'no'"
+        class="wz-agent-status-indicator small teal">Enabled</span>
+      <span ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Gather relevant information about system OS, hardware and packages.</span>
+    <span class="md-subheader">Automatic agent registration service</span>
   </div>
   <!-- End headline -->
 
@@ -19,14 +19,12 @@
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig.syscollector && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config flex error="currentConfig['auth-auth']" ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth']) && !currentConfig['auth-auth'].auth"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig.syscollector">
+    <div flex layout="column" ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && !isString(currentConfig['auth-auth'].auth)">
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
@@ -35,7 +33,7 @@
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">General settings applied to all the scans</span>
+                <span class="md-subheader small">General settings applied to the registration service</span>
               </div>
             </div>
             <span flex></span>
@@ -48,20 +46,28 @@
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
 
-            <wz-config-item label="Syscollector integration status" value="currentConfig.syscollector.disabled === 'yes' ? 'disabled' : 'enabled'">
+            <wz-config-item label="Service status" value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
             </wz-config-item>
-            <wz-config-item label="Interval between system scans" value="currentConfig.syscollector.interval">
+            <wz-config-item label="Listen to connections at port" value="currentConfig['auth-auth'].auth.port">
             </wz-config-item>
-            <wz-config-item label="Scan on start" value="currentConfig.syscollector['scan-on-start']">
+            <wz-config-item label="Use client's source IP address" value="currentConfig['auth-auth'].auth.use_source_ip">
+            </wz-config-item>
+            <wz-config-item label="Use a password to register agents" value="currentConfig['auth-auth'].auth.use_password">
+            </wz-config-item>
+            <wz-config-item label="Purge agents list when removing agents" value="currentConfig['auth-auth'].auth.purge">
+            </wz-config-item>
+            <wz-config-item label="Limit registration to maximum number of agents" value="currentConfig['auth-auth'].auth.limit_maxagents">
+            </wz-config-item>
+            <wz-config-item label="Force registration when using an existing IP address" value="currentConfig['auth-auth'].auth.force_insert">
             </wz-config-item>
 
           </div>
           <!-- End configuration block -->
 
           <div class="wz-margin-top-10">
-            <span class="font-size-16">Scan settings</span>
+            <span class="font-size-16">SSL settings</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Specific inventory scans to collect</span>
+              <span class="md-subheader small">Applied when the registration service uses SSL certificates</span>
             </div>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
@@ -69,24 +75,21 @@
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
 
-            <wz-config-item label="Scan hardware info" value="currentConfig.syscollector.hardware">
+            <wz-config-item label="Verify agents using a CA certificate" value="currentConfig['auth-auth'].auth.ssl_verify_host">
             </wz-config-item>
-            <wz-config-item label="Scan current processes" value="currentConfig.syscollector.processes">
+            <wz-config-item label="Auto-select the SSL negotiation method" value="currentConfig['auth-auth'].auth.ssl_auto_negotiate">
             </wz-config-item>
-            <wz-config-item label="Scan operating system info" value="currentConfig.syscollector.os">
+            <wz-config-item label="CA certificate location" value="currentConfig['auth-auth'].auth.ssl_agent_ca">
             </wz-config-item>
-            <wz-config-item label="Scan installed packages" value="currentConfig.syscollector.packages">
+            <wz-config-item label="Server SSL certificate location" value="currentConfig['auth-auth'].auth.ssl_manager_cert">
             </wz-config-item>
-            <wz-config-item label="Scan network interfaces" value="currentConfig.syscollector.network">
+            <wz-config-item label="Server SSL key location" value="currentConfig['auth-auth'].auth.ssl_manager_key">
             </wz-config-item>
-            <wz-config-item label="Scan listening network ports" value="currentConfig.syscollector.ports">
-            </wz-config-item>
-            <wz-config-item label="Scan all network ports" value="currentConfig.syscollector.ports_all">
+            <wz-config-item label="Use the following SSL ciphers" value="currentConfig['auth-auth'].auth.ciphers">
             </wz-config-item>
 
           </div>
           <!-- End configuration block -->
-
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
@@ -150,10 +153,10 @@
     <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/syscollector.html">Syscollector
-          module documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html">Syscollector
-          module reference</md-list-item>
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/registering/use-registration-service.html">How
+          to use the registration service</md-list-item>
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/auth.html">Registration
+          service reference</md-list-item>
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
