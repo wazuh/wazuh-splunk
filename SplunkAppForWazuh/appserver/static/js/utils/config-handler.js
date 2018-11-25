@@ -147,7 +147,6 @@ define([
      * @param {object} config Raw content to show in XML
      */
     getXML($scope) {
-      console.log('get XML')
       const config = {}
       Object.assign(config, $scope.currentConfig)
       $scope.JSONContent = false
