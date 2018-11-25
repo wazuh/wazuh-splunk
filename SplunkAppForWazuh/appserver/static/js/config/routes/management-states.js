@@ -186,7 +186,8 @@ define(['../module'], function(module) {
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf')
-          }
+          },
+          controller: 'configurationCtrl'
         })
 
         // Manager - Status
