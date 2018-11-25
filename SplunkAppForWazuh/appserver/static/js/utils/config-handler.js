@@ -16,8 +16,9 @@ import XMLBeautifier from './xml-beautifier'
 define([
   './query-config',
   './remove-hash-key',
-  '../services/xml-beautifier/xml-beautifier'
-], function(queryConfig, objectWithoutProperties, XMLBeautifier) {
+  '../services/xml-beautifier/xml-beautifier',
+  'js2xmlparser'
+], function(queryConfig, objectWithoutProperties, XMLBeautifier,js2xmlparser) {
   'use strict'
 
   return class ConfigurationHandler {
@@ -146,6 +147,7 @@ define([
      * @param {object} config Raw content to show in XML
      */
     getXML($scope) {
+      console.log('get XML')
       const config = {}
       Object.assign(config, $scope.currentConfig)
       $scope.JSONContent = false
@@ -155,9 +157,11 @@ define([
         try {
           const cleaned = objectWithoutProperties(config)
           $scope.XMLContent = XMLBeautifier(
-            js2xmlparser.parse('configuration', cleaned)
+            js2xmlparser(cleaned)
           )
         } catch (error) {
+          console.error('error getting XML',error)
+
           $scope.XMLContent = false
         }
       }
