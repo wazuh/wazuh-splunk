@@ -1,164 +1,153 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'syscollector'">
-
-  <!-- Headline -->
-  <div layout="column" layout-padding>
+<md-content layout="column">
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
     <div>
-      <span class="font-size-18">Inventory data</span>
-      <span ng-if="currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'no'" class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="(currentConfig && currentConfig.syscollector && currentConfig.syscollector.disabled === 'yes') || (currentConfig && !currentConfig.syscollector)"
-        class="wz-agent-status-indicator small red">Disabled</span>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span> / </span>
+      <span>Inventory data</span>
     </div>
-    <span class="md-subheader">Gather relevant information about system OS, hardware and packages.</span>
-  </div>
-  <!-- End headline -->
-
-  <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="load">
-    <div></div>
-  </div>
-
-  <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load">
-
-    <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig.syscollector && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <!-- End no configuration section -->
-
-    <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig.syscollector">
-
-      <!-- The main card will all the settings -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-        <md-card-content>
-          <div layout="row" layout-align="start center">
-            <div>
-              <span class="font-size-16">Main settings</span>
-              <div class="wz-margin-top-10">
-                <span class="md-subheader small">General settings applied to all the scans</span>
-              </div>
-            </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
-            <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- Configuration block -->
-          <div class="wz-padding-top-10">
-
-            <wz-config-item label="Syscollector integration status" value="currentConfig.syscollector.disabled === 'yes' ? 'disabled' : 'enabled'">
-            </wz-config-item>
-            <wz-config-item label="Interval between system scans" value="currentConfig.syscollector.interval">
-            </wz-config-item>
-            <wz-config-item label="Scan on start" value="currentConfig.syscollector['scan-on-start']">
-            </wz-config-item>
-
-          </div>
-          <!-- End configuration block -->
-
-          <div class="wz-margin-top-10">
-            <span class="font-size-16">Scan settings</span>
-            <div class="wz-margin-top-10">
-              <span class="md-subheader small">Specific inventory scans to collect</span>
-            </div>
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- Configuration block -->
-          <div class="wz-padding-top-10">
-
-            <wz-config-item label="Scan hardware info" value="currentConfig.syscollector.hardware">
-            </wz-config-item>
-            <wz-config-item label="Scan current processes" value="currentConfig.syscollector.processes">
-            </wz-config-item>
-            <wz-config-item label="Scan operating system info" value="currentConfig.syscollector.os">
-            </wz-config-item>
-            <wz-config-item label="Scan installed packages" value="currentConfig.syscollector.packages">
-            </wz-config-item>
-            <wz-config-item label="Scan network interfaces" value="currentConfig.syscollector.network">
-            </wz-config-item>
-            <wz-config-item label="Scan listening network ports" value="currentConfig.syscollector.ports">
-            </wz-config-item>
-            <wz-config-item label="Scan all network ports" value="currentConfig.syscollector.ports_all">
-            </wz-config-item>
-
-          </div>
-          <!-- End configuration block -->
-
-        </md-card-content>
-      </md-card>
-      <!-- End main card with all the settings -->
-
-      <!-- JSON card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="JSONContent">
-        <md-card-content flex layout="column">
-          <div layout="row" layout-align="start center">
-            <div>
-              <span class="font-size-16">JSON viewer</span>
-              <div class="wz-margin-top-10">
-                <span class="md-subheader small">View this configuration in raw JSON format</span>
-              </div>
-            </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
-            <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- The JSON viewer -->
-          <div flex="auto" class="wz-margin-top-10 wz-code-viewer">
-            <pre><code wz-dynamic="JSONContent"></code></pre>
-          </div>
-          <!-- End JSON viewer -->
-        </md-card-content>
-      </md-card>
-      <!-- End JSON card -->
-
-      <!-- XML card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="XMLContent">
-        <md-card-content flex layout="column">
-          <div layout="row" layout-align="start center">
-            <div>
-              <span class="font-size-16">XML viewer</span>
-              <div class="wz-margin-top-10">
-                <span class="md-subheader small">View this configuration in raw XML format</span>
-              </div>
-            </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <!-- <span class="small">&nbsp;&centerdot;&nbsp;</span> -->
-            <!-- <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span> -->
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- The XML viewer -->
-          <div flex="auto" class="wz-margin-top-10 wz-code-viewer">
-            <pre>{{ XMLContent }}</pre>
-          </div>
-          <!-- End XML viewer -->
-        </md-card-content>
-      </md-card>
-      <!-- End XML card -->
-
+    <div ng-if="agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
     </div>
-    <!-- End main content section -->
-
-    <!-- This section is the right sidenav content -->
-    <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
-      <md-list>
-        <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/syscollector.html">Syscollector
-          module documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html">Syscollector
-          module reference</md-list-item>
-      </md-list>
-    </md-sidenav>
-    <!-- End right sidenav section -->
-
   </div>
-  <!-- End main content and right sidenav section -->
 
-</div>
+  <div layout="row" layout-align="layout-padding" ng-if="!syscollector">
+    <md-card flex class="wz-md-card" flex>
+      <md-card-content class="wz-text-center">
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Inventory disabled</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="column" class="wz-padding-top-10">
+          <p>Inventory (syscollector) is disabled for this agent. Visit the documentation on <a target="_blank" href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html">this
+              link
+            </a> to learn about how to enable it.
+          </p>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row" class="inventory-metrics" ng-if="syscollector">
+    <md-card flex class="wz-metric-color wz-md-card">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div flex="10">Cores: <span class="wz-text-bold">{{ syscollector.hardware.cpu.cores }}</span></div>
+        <div flex="15">Memory: <span class="wz-text-bold">{{ (syscollector.hardware.ram.total / 1024) | number: 2 }}
+            MB
+          </span></div>
+        <div flex="10">Arch: <span class="wz-text-bold">{{ syscollector.os.architecture }}</span></div>
+        <div flex>OS: <span class="wz-text-bold">{{ syscollector.os.os.name }} {{ syscollector.os.os.version }}</span></div>
+        <div flex>CPU: <span class="wz-text-bold">{{ syscollector.hardware.cpu.name }}</span></div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="syscollector">
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title"><i class="fa fa-fw fa-sitemap"></i> Network interfaces</span>
+        <span class="color-grey pull-right">Last scan: {{syscollector.netiface.items[0].scan.time}}</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+
+        <table class="table table-striped table-condensed table-layout-fixed">
+          <thead class="wz-text-bold">
+            <th class="wz-text-left">Name</th>
+            <th class="wz-text-left">Mac</th>
+            <th class="wz-text-left">State</th>
+            <th class="wz-text-left">MTU</th>
+            <th class="wz-text-left">Type</th>
+          </thead>
+          <tbody>
+            <tr class="wz-word-wrap" ng-repeat="interface in syscollector.netiface.items">
+              <td>{{interface.name}}</td>
+              <td>{{interface.mac}}</td>
+              <td>
+                <svg ng-if="interface.state !== 'up'" class="euiIcon euiIcon--medium euiIcon--warning" focusable="false"
+                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
+                  viewBox="0 0 16 16">
+                  <defs>
+                    <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+                  </defs>
+                  <use xlink:href="#dot-a"></use>
+                </svg>
+                <svg ng-if="interface.state === 'up'" class="euiIcon euiIcon--medium euiIcon--success" focusable="false"
+                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
+                  viewBox="0 0 16 16">
+                  <defs>
+                    <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+                  </defs>
+                  <use xlink:href="#dot-a"></use>
+                </svg>
+                {{interface.state}}
+              </td>
+              <td>{{interface.mtu}}</td>
+              <td>{{interface.type}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </md-card-content>
+    </md-card>
+    <md-card flex class="wz-md-card">
+      <md-card-content class="wz-text-center wz-margin-bottom-40-inv" ng-if="syscollector.ports && !syscollector.ports.items.length">
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No ports scan
+          available</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="column" class="wz-padding-top-10">
+          <p>The ports scan is disabled or not ready yet. Wait a little bit and try refreshing the page.</p>
+        </div>
+      </md-card-content>
+      <md-card-content class="wz-margin-bottom-40-inv">
+        <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
+        <span class="color-grey pull-right">Last scan: {{syscollector.ports.items[0].scan.time}}</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <wazuh-table flex path="'/syscollector/' + agent.id + '/ports'" row-sizes="[4]" keys="[{value:'local.ip',nosortable:true},{value:'local.port',nosortable:true},{value:'remote.ip',nosortable:true},'state','protocol']">
+        </wazuh-table>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row" class="layout-padding wz-padding-top-0" ng-if="syscollector">
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title"><i class="fa fa-fw fa-cubes"></i> Packages</span>
+        <span class="color-grey pull-right">Last scan: {{syscollector.packagesDate}}</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-margin-top-10">
+          <input flex placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+            aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(packageSearch,'packages')">
+            <span class="fa fa-search" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div layout="row" ng-if="agent.id && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+          <wazuh-table flex path="'/syscollector/' + agent.id + '/packages'" row-sizes="[6,4,3,3]" extra-limit="true"
+            keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
+          </wazuh-table>
+        </div>
+
+      </md-card-content>
+    </md-card>
+  </div>
+  <div layout="row" class="layout-padding wz-padding-top-0" ng-if="syscollector">
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title"><i class="fa fa-fw fa-terminal"></i> Processes</span>
+        <span class="color-grey pull-right">Last scan: {{syscollector.processesDate}}</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-margin-top-10">
+          <input flex placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+            aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
+            <span class="fa fa-search" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+          <wazuh-table flex path="'/syscollector/' + agent.id + '/processes'" row-sizes="[6,4,3,3]" extra-limit="true"
+            keys="['name','euser','nice','state']">
+          </wazuh-table>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>
