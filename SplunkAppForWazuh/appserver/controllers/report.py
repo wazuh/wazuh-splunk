@@ -33,19 +33,33 @@ class report(controllers.BaseController):
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))
-        
+
+    def header(self):
+        # Logo
+        self.pdf.image(self.path+'css/images/wazuh/png/logo.png')
+        # Arial bold 15
+        self.pdf.set_font('Arial', 'B', 15)
+        # Move to the right
+        self.pdf.cell(80)
+        # Title
+        self.pdf.cell(30, 10, 'Report', 1, 0, 'C')
+        # Line break
+        self.pdf.ln(20)
+
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
         try:
-            self.logger.info("Start generating report %s " % kwargs['array[0][element]'])
+            self.logger.info("Start generating report ")
+            self.pdf.alias_nb_pages()
             self.pdf.add_page()
-            self.pdf.set_font('Arial', 'B', 16)
-            self.pdf.cell(40, 10, 'Hello World!')
-            self.pdf.output(self.path+'tuto1.pdf', 'F')
-            # imgdata = base64.b64decode(kwargs['array[0][element]'])
+            self.header()
+            self.pdf.set_font('Arial', '', 12)
+            self.pdf.cell(40, 10, 'Security events report')
             with open(self.path+'sample.png', 'wb') as f:
                 f.write(base64.decodestring(kwargs['array[0][element]'].split(',')[1].encode()))
-            # outputStream.close(self.path)+"salida.pdf",kwargs)
+
+            self.pdf.image(self.path+'sample.png',10,8,33)
+            self.pdf.output(self.path+'tuto1.pdf', 'F')
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
