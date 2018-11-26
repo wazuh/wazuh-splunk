@@ -63,11 +63,10 @@ define([
           isAgents
         }
 
-        console.log('data ',data)
         await this.genericReq(
           'POST',
           '/report/generate',
-          data
+          {data: JSON.stringify(data)}
         )
 
         this.$rootScope.reportBusy = false
