@@ -50,13 +50,16 @@ class report(controllers.BaseController):
     def generate(self, **kwargs):
         try:
             self.logger.info("Start generating report ")
+            json_acceptable_string = kwargs['data'].replace("'", "\"")
+            args = json.loads(json_acceptable_string)
+            self.logger.info("keys of kwargs "+ str(args.keys()))
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             self.header()
             self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(40, 10, 'Security events report')
             with open(self.path+'sample.png', 'wb') as f:
-                f.write(base64.decodestring(kwargs['array[0][element]'].split(',')[1].encode()))
+                f.write(base64.decodestring(args['array'][0]['element'].split(',')[1].encode()))
 
             self.pdf.image(self.path+'sample.png',10,8,33)
             self.pdf.output(self.path+'tuto1.pdf', 'F')
