@@ -61,7 +61,7 @@ class report(controllers.BaseController):
             with open(self.path+'sample.png', 'wb') as f:
                 f.write(base64.decodestring(args['array'][0]['element'].split(',')[1].encode()))
 
-            self.pdf.image(self.path+'sample.png',10,8,33)
+            self.pdf.image(self.path+'sample.png',10,30,33)
             self.pdf.output(self.path+'tuto1.pdf', 'F')
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:

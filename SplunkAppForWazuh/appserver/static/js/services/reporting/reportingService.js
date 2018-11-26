@@ -20,7 +20,14 @@ define([
       this.errorHandler = $notificationService.showSimpleToast
     }
 
-    async startVis2Png(tab, isAgents = false, syscollectorFilters = null) {
+    /**
+     * Converts an array of Splunk visualizations to PNG format
+     * @param {String} tab 
+     * @param {Boolean} isAgents 
+     * @param {Object} syscollectorFilters 
+     * @param {Array} vizz 
+     */
+    async startVis2Png(tab, vizz = [], isAgents = false, syscollectorFilters = null) {
       try {
         if (this.vis2png.isWorking()) {
           this.errorHandler('Report in progress')
@@ -33,7 +40,7 @@ define([
         this.vis2png.clear()
 
         // const idArray = this.rawVisualizations.getList().map(item => item.id)
-        const idArray = ['alertLevEvoVizz']
+        const idArray = vizz
 
         for (const item of idArray) {
           const tmpHTMLElement = $(`#${item}`)
