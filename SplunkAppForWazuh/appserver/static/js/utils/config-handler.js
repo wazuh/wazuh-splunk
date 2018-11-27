@@ -159,8 +159,6 @@ define([
             js2xmlparser(cleaned)
           )
         } catch (error) {
-          console.error('error getting XML',error)
-
           $scope.XMLContent = false
         }
       }
