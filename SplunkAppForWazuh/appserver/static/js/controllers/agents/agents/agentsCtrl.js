@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function(app, SearchHandler, FileSaver) {
+], function (app, SearchHandler, FileSaver) {
   'use strict'
 
   class Agents {
@@ -97,9 +97,7 @@ define([
       this.scope.search = term => this.search(term)
       this.scope.filter = filter => this.filter(filter)
       this.scope.showAgent = agent => this.showAgent(agent)
-      this.scope.isClusterEnabled =
-        this.clusterInfo && this.clusterInfo.status === 'enabled'
-      this.scope.loading = false
+      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'
