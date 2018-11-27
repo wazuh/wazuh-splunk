@@ -16,9 +16,11 @@
     <div ng-show="!loadingRing" layout="column" layout-padding>
       <span class="font-size-18">
         <!-- Back button -->
-        <md-button ng-show="lookingGroup" class="md-icon-button" aria-label="Back to groups" tooltip="Back" tooltip-placement="bottom"
-          ng-click='reload()'>
+        <md-button ng-show="lookingGroup" class="md-icon-button" aria-label="Back to groups" ng-click='reload()'>
           <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+          <md-tooltip md-direction="bottom" class="wz-tooltip">
+            Back
+          </md-tooltip>    
         </md-button>
         <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
       <span>List and check your groups, its agents and files</span>
@@ -51,16 +53,30 @@
             <span class="wz-headline-title">Details</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-padding-top-10">
-              <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='agents' ? 'wz-text-active' : ''" ng-click="goBackToAgents()"
-                tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
-              <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right" ng-click="goBackToAgents()">{{
-                currentGroup.count }}</span>
+              <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='agents' ? 'wz-text-active' : ''" ng-click="goBackToAgents()">Agents
+                <md-tooltip md-direction="left" class="wz-tooltip">
+                  Click to open the list of agent
+                </md-tooltip>  
+              </span>
+              <span class="wz-text-link" ng-click="goBackToAgents()">{{
+                currentGroup.count }}
+                <md-tooltip md-direction="right" class="wz-tooltip">
+                  Click to open the list of agent
+                </md-tooltip>          
+              </span>
             </div>
             <div layout="row" class="wz-padding-top-10">
-              <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="goBackFiles()"
-                tooltip="Click to open the list of files" tooltip-placement="left">Content</span>
-              <span class="wz-text-link" tooltip="Click to open the list of files" tooltip-placement="right" ng-click="goBackFiles()">{{
-                totalFiles }}</span>
+              <span flex="20" class="wz-text-link" ng-class="groupsSelectedTab==='files' ? 'wz-text-active' : ''" ng-click="goBackFiles()">Content
+                <md-tooltip md-direction="left" class="wz-tooltip">
+                  Click to open the list of files
+                </md-tooltip>
+              </span>
+              <span class="wz-text-link" ng-click="goBackFiles()">{{
+                totalFiles }}
+                <md-tooltip md-direction="right" class="wz-tooltip">
+                  Click to open the list of files
+                </md-tooltip>
+              </span>
             </div>
           </md-card-content>
         </md-card>
