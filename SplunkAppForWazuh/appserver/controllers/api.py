@@ -102,6 +102,15 @@ class api(controllers.BaseController):
         try:
             if 'id' not in kwargs or 'endpoint' not in kwargs:
                 return json.dumps({'error': 'Missing ID or endpoint.'})
+            if 'method' not in kwargs:
+                method = 'GET'
+            elif kwargs['method'] == 'GET':
+                del kwargs['method']
+                method = 'GET'
+            else:
+                method = kwargs['method']
+                del kwargs['method']
+
             the_id = kwargs['id']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
@@ -114,9 +123,16 @@ class api(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            request = self.session.get(
-                url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
-            result = self.clean_keys(request)
+            if method == 'GET':
+                request = self.session.get(url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
+            if method == 'POST':
+                request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth, verify=verify).json()
+            if method == 'PUT':
+                request = self.session.put(url + opt_endpoint, data=kwargs, auth=auth, verify=verify).json()
+            if method == 'DELETE':
+                request = self.session.delete(url + opt_endpoint, params=kwargs, auth=auth, verify=verify).json()
+            result = json.dumps(request)
+            #result = self.clean_keys(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})
@@ -164,7 +180,7 @@ class api(controllers.BaseController):
                 if isinstance(final_obj,list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)
-                    final_obj_dict = self.format(final_obj)
+                    final_obj_dict = self.format_output(final_obj)
                     total_items = request["data"]["totalItems"]
                     # initializes CSV buffer
                     if total_items > 0:
@@ -180,7 +196,7 @@ class api(controllers.BaseController):
                             filters['offset']=offset
                             req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
                             paginated_result = req['data']['items']
-                            format_paginated_results = self.format(paginated_result)
+                            format_paginated_results = self.format_output(paginated_result)
                             dict_writer.writerows(format_paginated_results)
 
                         csv_result = output_file.getvalue()

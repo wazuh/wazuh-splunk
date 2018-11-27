@@ -29,10 +29,11 @@
         <md-card-content layout="row" class="wz-padding-metric">
           <div class="wz-text-truncatable" flex>
             Name:
-            <span class="wz-text-bold">{{ agent.name }}</span>
-            <md-tooltip ng-if="agent.name.length" md-direction="bottom" class="wz-tooltip">
-              Full name: {{ agent.name }}
-            </md-tooltip>
+            <span class="wz-text-bold">{{ agent.name }}
+              <md-tooltip ng-if="agent.name.length" md-direction="bottom" class="wz-tooltip">
+                Full name: {{ agent.name }}
+              </md-tooltip>
+            </span>
           </div>
           <div class="wz-text-truncatable" flex>
             IP:
@@ -48,10 +49,11 @@
           </div>
           <div class="wz-text-truncatable" flex>
             OS:
-            <span class="wz-text-bold">{{ agentOS }}</span>
-            <md-tooltip ng-if="agentOS.length" md-direction="bottom" class="wz-tooltip">
-              Full OS name: {{ agentOS }}
-            </md-tooltip>
+            <span class="wz-text-bold">{{ agentOS }}
+              <md-tooltip ng-if="agentOS.length" md-direction="bottom" class="wz-tooltip">
+                Full OS name: {{ agentOS }}
+              </md-tooltip>
+            </span>
           </div>
         </md-card-content>
       </md-card>
@@ -60,7 +62,11 @@
       <md-card flex class="wz-metric-color wz-md-card">
         <md-card-content layout="row" class="wz-padding-metric">
           <div class="wz-word-break" flex ng-if="agent.group">
-            Groups: <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{ group }}&nbsp;</span>
+            Groups: <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{ group }}&nbsp;
+              <md-tooltip ng-if="agentOS.length" md-direction="bottom" class="wz-tooltip">
+                Click to open this group
+              </md-tooltip>
+            </span>
           </div>
         </md-card-content>
       </md-card>
@@ -78,13 +84,15 @@
             <span class="wz-text-bold"> Scan in progress</span>
           </div>
           <div class="wz-text-truncatable" flex ng-if="!syscheck.inProgress">Last syscheck scan:
-            <span class="wz-text-bold"> {{syscheck.end || 'Unknown'}}</span>
-            <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom"
-            class="wz-tooltip">
-            Start time: {{ syscheck.start || 'Unknown'}}
-            <br> End time: {{ syscheck.end || 'Unknown'}}
-            <br> Duration time: {{ syscheck.duration +' minutes' || 'Unknown'}}
-          </md-tooltip>
+            <span class="wz-text-bold"> {{syscheck.end || 'Unknown'}}
+              <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom"
+              class="wz-tooltip">
+              
+              Start time: {{ syscheck.start || 'Unknown'}}
+              <br> End time: {{ syscheck.end || 'Unknown'}}
+              <br> Duration time: {{ syscheck.duration +' minutes' || 'Unknown'}}
+            </md-tooltip>
+          </span>
         </div>
         <div class="wz-text-truncatable" flex ng-if="rootcheck.inProgress">Last rootcheck scan:
           <span class="wz-text-bold"> Scan in progress</span>
@@ -97,9 +105,10 @@
           <br> End time: {{ rootcheck.end || 'Unknown'}}
           <br> Duration time: {{ rootcheck.duration +' minutes' || 'Unknown'}}
         </md-tooltip>
-      </div>
-    </md-card-content>
-  </md-card>
+      </span>
+    </div>
+  </md-card-content>
+</md-card>
 </div>
 <!-- End agent information section -->
 
