@@ -165,7 +165,7 @@ class api(controllers.BaseController):
                 if isinstance(final_obj,list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)
-                    final_obj_dict = self.format(final_obj)
+                    final_obj_dict = self.format_output(final_obj)
                     total_items = request["data"]["totalItems"]
                     # initializes CSV buffer
                     if total_items > 0:
@@ -181,7 +181,7 @@ class api(controllers.BaseController):
                             filters['offset']=offset
                             req = self.session.get(url + opt_endpoint, params=filters, auth=auth, verify=verify).json()
                             paginated_result = req['data']['items']
-                            format_paginated_results = self.format(paginated_result)
+                            format_paginated_results = self.format_output(paginated_result)
                             dict_writer.writerows(format_paginated_results)
 
                         csv_result = output_file.getvalue()
