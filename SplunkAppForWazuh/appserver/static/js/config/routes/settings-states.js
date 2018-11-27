@@ -38,20 +38,12 @@ define(['../module'], function(module) {
           resolve: {
             apiList: [
               '$currentDataService',
-              $currentDataService => {
-                return $currentDataService
-                  .getApiList()
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+              async ($currentDataService) => {
+                try {
+                  return await $currentDataService.getApiList()
+                } catch (error) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -68,18 +60,15 @@ define(['../module'], function(module) {
             extensions: [
               '$requestService',
               '$currentDataService',
-              async ($requestService, $currentDataService) => {
+              async ($currentDataService) => {
                 try {
                   const id = $currentDataService.getApi().id
-                  const currentExtensions = $currentDataService.getExtensions(
+                  const currentExtensions = await $currentDataService.getExtensionsById(
                     id
                   )
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`)
-                  return await result
+                  return currentExtensions
                 } catch (err) {
-                  console.error('Error route: ', err)
+                  $state.go('settings.api')
                 }
               }
             ]
@@ -103,20 +92,12 @@ define(['../module'], function(module) {
           resolve: {
             logs: [
               '$requestService',
-              $requestService => {
-                return $requestService
-                  .httpReq(`GET`, `/manager/get_log_lines`)
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+              async ($requestService) => {
+                try {
+                  return await $requestService.httpReq(`GET`, `/manager/get_log_lines`)
+                } catch (error) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -144,7 +125,7 @@ define(['../module'], function(module) {
                     : $requestService.httpReq(`GET`, `/manager/extensions`);
                   return await result;
                 } catch (err) {
-                  console.error('Error route: ', err);
+                  $state.go('settings.api')
                 }
               }
             ]
