@@ -1,4 +1,4 @@
-define(['../../module', '../../../utils/config-handler'], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
@@ -29,7 +29,8 @@ define(['../../module', '../../../utils/config-handler'], function(
     }
 
     $onInit() {
-      // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
+      //Loads html
+      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
       this.$scope.isString = item => typeof item === 'string'
       this.$scope.hasSize = obj =>
@@ -55,7 +56,9 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.updateSelectedItem = i => (this.$scope.selectedItem = i)
       this.$scope.getIntegration = list =>
         this.configurationHandler.getIntegration(list, this.$scope)
+
     }
+
   }
 
   controllers.controller('configurationCtrl', ConfigurationController)

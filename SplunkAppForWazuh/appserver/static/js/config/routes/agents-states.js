@@ -485,7 +485,7 @@ define(['../module'], function(module) {
         .state('ag-conf', {
           templateUrl:
             BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/configuration.html',
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('ag-conf')
           },
