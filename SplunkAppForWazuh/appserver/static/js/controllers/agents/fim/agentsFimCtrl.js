@@ -26,14 +26,10 @@ define([
       $scope,
       $currentDataService,
       agent,
-      $tableFilterService,
-      $csvRequestService,
       $notificationService
     ) {
       this.state = $state
-      this.wzTableFilter = $tableFilterService
       this.api = $currentDataService.getApi()
-      this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
       if (!$currentDataService.getCurrentAgent()) {
         this.state.go('overview')
@@ -132,29 +128,6 @@ define([
           ? agentStatus
           : 'Never connected'
       }
-      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-    }
-
-    /**
-     * Exports the table in CSV format
-     */
-    async downloadCsv(path, name) {
-      try {
-        this.toast('Your download should begin automatically...')
-        const currentApi = this.api.id
-        const output = await this.csvReq.fetch(
-          path,
-          currentApi,
-          this.wzTableFilter.get()
-        )
-        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, name)
-        return
-      } catch (error) {
-        console.error('error ', error)
-        this.toast('Error downloading CSV')
-      }
-      return
     }
 
     launchSearches() {

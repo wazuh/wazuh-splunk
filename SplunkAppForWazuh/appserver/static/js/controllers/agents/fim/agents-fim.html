@@ -110,35 +110,5 @@
 
   </div>
 
-  <!-- Fifth row  -->
-  <div layout='row'>
-
-    <md-card flex class="wz-md-card">
-      <md-card-content>
-        <span class="wz-headline-title"><i class="fa fa-fw fa-terminal"></i> Monitored files</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-margin-top-10">
-          <input flex placeholder="Filter files..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-            aria-invalid="false" wz-enter="search(processSearch,'processes')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
-            <span class="fa fa-search" aria-hidden="true"></span>
-          </button>
-        </div>
-        <div layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-          <wazuh-table flex path="'/syscheck/'+agent.id" row-sizes="[6]" extra-limit="true"
-            keys="['file','size','uname','gname','perm']">
-          </wazuh-table>
-        </div>
-        <div layout="row" class="wz-margin-top-10">
-          <span flex></span>
-          <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">Formatted
-            <i aria-hidden="true" class="fa fa-download"></i>
-          </a>
-        </div>
-      </md-card-content>
-    </md-card>
-
-  </div>
-
   <!-- end document  -->
 </md-content>
