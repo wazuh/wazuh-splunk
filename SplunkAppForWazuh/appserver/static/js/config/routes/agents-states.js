@@ -117,10 +117,14 @@ define(['../module'], function(module) {
                   const currentExtensions = $currentDataService.getExtensions(
                     id
                   )
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`)
-                  return await result
+                  const result = {};
+                  if (currentExtensions) {
+                    Object.assign(result, currentExtensions)
+                  }else {
+                    const ext = await $requestService.httpReq(`GET`, `/manager/extensions`)
+                    Object.assign(result, ext.data)
+                  }
+                  return result
                 } catch (err) {
                   return false
                 }
