@@ -202,59 +202,83 @@ define(['../module'], function(module) {
           resolve: {
             statusData: [
               '$requestService',
-              async $requestService => {
-                const responseStatus = await $requestService.apiReq(
-                  '/cluster/status'
-                )
-                let promises = []
-                if (
-                  !responseStatus ||
-                  !responseStatus.data ||
-                  !responseStatus.data.error
-                ) {
-                  const nodes = await $requestService.apiReq('/cluster/nodes')
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const responseStatus = await $requestService.apiReq(
+                    '/cluster/status'
+                  )
+                  let promises = []
                   if (
-                    responseStatus.data.data &&
-                    responseStatus.data.data.enabled === 'yes' &&
-                    responseStatus.data.data.running === 'yes'
+                    !responseStatus ||
+                    !responseStatus.data ||
+                    !responseStatus.data.error
                   ) {
-                    const masterNode = nodes.data.data.items.filter(
-                      item => item.type === 'master'
-                    )[0]
-                    promises = [
-                      $requestService.apiReq('/agents/summary'),
-                      $requestService.apiReq(
-                        `/cluster/${masterNode.name}/status`
-                      ),
-                      $requestService.apiReq(
-                        `/cluster/${masterNode.name}/info`
-                      ),
-                      $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
-                      $requestService.apiReq('/decoders', {
-                        offset: 0,
-                        limit: 1
-                      }),
-                      Promise.resolve(masterNode),
-                      Promise.resolve(nodes),
-                      Promise.resolve(responseStatus.data)
-                    ]
-                  } else if (
-                    responseStatus.data.data.enabled === 'yes' &&
-                    responseStatus.data.data.running === 'no'
-                  ) {
-                    promises = [
-                      $requestService.apiReq('/agents/summary'),
-                      Promise.resolve(false),
-                      Promise.resolve(false),
-                      $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
-                      $requestService.apiReq('/decoders', {
-                        offset: 0,
-                        limit: 1
-                      }),
-                      Promise.resolve(false),
-                      Promise.resolve(nodes),
-                      Promise.resolve(responseStatus.data)
-                    ]
+                    const nodes = await $requestService.apiReq('/cluster/nodes')
+                    if (
+                      responseStatus.data.data &&
+                      responseStatus.data.data.enabled === 'yes' &&
+                      responseStatus.data.data.running === 'yes'
+                    ) {
+                      const masterNode = nodes.data.data.items.filter(
+                        item => item.type === 'master'
+                      )[0]
+                      promises = [
+                        $requestService.apiReq('/agents/summary'),
+                        $requestService.apiReq(
+                          `/cluster/${masterNode.name}/status`
+                        ),
+                        $requestService.apiReq(
+                          `/cluster/${masterNode.name}/info`
+                        ),
+                        $requestService.apiReq('/rules', {
+                          offset: 0,
+                          limit: 1
+                        }),
+                        $requestService.apiReq('/decoders', {
+                          offset: 0,
+                          limit: 1
+                        }),
+                        Promise.resolve(masterNode),
+                        Promise.resolve(nodes),
+                        Promise.resolve(responseStatus.data)
+                      ]
+                    } else if (
+                      responseStatus.data.data.enabled === 'yes' &&
+                      responseStatus.data.data.running === 'no'
+                    ) {
+                      promises = [
+                        $requestService.apiReq('/agents/summary'),
+                        Promise.resolve(false),
+                        Promise.resolve(false),
+                        $requestService.apiReq('/rules', {
+                          offset: 0,
+                          limit: 1
+                        }),
+                        $requestService.apiReq('/decoders', {
+                          offset: 0,
+                          limit: 1
+                        }),
+                        Promise.resolve(false),
+                        Promise.resolve(nodes),
+                        Promise.resolve(responseStatus.data)
+                      ]
+                    } else {
+                      promises = [
+                        $requestService.apiReq('/agents/summary'),
+                        $requestService.apiReq(`/manager/status`),
+                        $requestService.apiReq(`/manager/info`),
+                        $requestService.apiReq('/rules', {
+                          offset: 0,
+                          limit: 1
+                        }),
+                        $requestService.apiReq('/decoders', {
+                          offset: 0,
+                          limit: 1
+                        }),
+                        Promise.resolve(false)
+                      ]
+                    }
                   } else {
                     promises = [
                       $requestService.apiReq('/agents/summary'),
@@ -268,63 +292,30 @@ define(['../module'], function(module) {
                       Promise.resolve(false)
                     ]
                   }
-                } else {
-                  promises = [
-                    $requestService.apiReq('/agents/summary'),
-                    $requestService.apiReq(`/manager/status`),
-                    $requestService.apiReq(`/manager/info`),
-                    $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
-                    $requestService.apiReq('/decoders', {
-                      offset: 0,
-                      limit: 1
-                    }),
-                    Promise.resolve(false)
-                  ]
+                  return await Promise.all(promises)
+                } catch (err) {
+                  $state.go('settings.api')
                 }
-                return Promise.all(promises)
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
               }
             ],
             agentInfo: [
               '$requestService',
-              $requestService => {
-                return $requestService
-                  .apiReq('/agents', { limit: 1, sort: '-dateAdd' })
-                  .then(
-                    function(response) {
-                      return $requestService
-                        .apiReq(`/agents/${response.data.data.items[0].id}`, {})
-                        .then(
-                          function(response) {
-                            return response
-                          },
-                          function(response) {
-                            console.error('error getting last agent')
-                            return response
-                          }
-                        )
-                        .catch(err => {
-                          console.error('Error route: ', err)
-                        })
-                    },
-                    function(response) {
-                      console.error('error getting agents')
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const response = await $requestService.apiReq('/agents', {
+                    limit: 1,
+                    sort: '-dateAdd'
                   })
+
+                  const lastAgent = await $requestService.apiReq(
+                    `/agents/${response.data.data.items[0].id}`,
+                    {}
+                  )
+                  return lastAgent
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }

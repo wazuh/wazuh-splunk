@@ -402,11 +402,19 @@ define(['../module', 'underscore'], function(directives, _) {
             return '-'
           return key.value === 'local.ip'
             ? (item.local && item.local.ip
-                ? `${item.local.ip}:${item.local.port}`
+                ? `${item.local.ip}`
                 : false) || '-'
-            : key === 'remote.ip'
+          : key.value === 'local.port'
+            ? (item.local && item.local.port
+                ? `${item.local.port}`
+                : false) || '-'
+            : key.value === 'remote.ip'
             ? (item.remote && item.remote.ip
-                ? `${item.remote.ip}:${item.remote.port}`
+                ? `${item.remote.ip}`
+                : false) || '-'
+            : key.value === 'remote.port'
+            ? (item.remote && item.remote.port
+                ? `${item.remote.port}`
                 : false) || '-'
             : key === 'os.name'
             ? (item.os && item.os.name ? item.os.name : false) || '-'
