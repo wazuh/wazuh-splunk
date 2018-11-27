@@ -41,17 +41,19 @@ define([
       $document,
       $navigationService,
       $notificationService,
-      $requestService
+      $requestService,
+      extensions
     ) {
-      this.$scope = $scope
-      this.request = $requestService
-      this.$window = $window
-      this.appState = $navigationService
-      this.errorHandler = $notificationService
-      this.$document = $document
-      this.groups = []
-      this.linesWithClass = []
-      this.widgets = []
+      this.$scope = $scope;
+      this.request = $requestService;
+      this.$window = $window;
+      this.appState = $navigationService;
+      this.errorHandler = $notificationService;
+      this.$document = $document;
+      this.groups = [];
+      this.linesWithClass = [];
+      this.widgets = [];
+      this.admin = ( extensions.data['admin'] === 'true') ? true : false;
     }
 
     unescapeBuffer(s, decodeSpaces) {
@@ -588,16 +590,20 @@ define([
             return
           }
 
-          const method = desiredGroup.requestText.startsWith('GET')
+          let method = ''
+          if (this.admin) {
+          method = desiredGroup.requestText.startsWith('GET')
             ? 'GET'
             : desiredGroup.requestText.startsWith('POST')
-            ? 'POST'
-            : desiredGroup.requestText.startsWith('PUT')
-            ? 'PUT'
-            : desiredGroup.requestText.startsWith('DELETE')
-            ? 'DELETE'
-            : 'GET'
-
+              ? 'POST'
+              : desiredGroup.requestText.startsWith('PUT')
+                ? 'PUT'
+                : desiredGroup.requestText.startsWith('DELETE')
+                  ? 'DELETE'
+                  : 'GET';
+          } else {
+            method = 'GET'
+          }
           const requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
             : desiredGroup.requestText
@@ -630,7 +636,7 @@ define([
           const path = req.includes('?') ? req.split('?')[0] : req
 
           // if (typeof JSONraw === 'object') JSONraw.devTools = true
-          const output = await this.request.apiReq(path, JSONraw)
+          const output = await this.request.apiReq(path, JSONraw, method);
           const result =
             output.data && output.data.data && !output.data.error
               ? JSON.stringify(output.data.data, null, 2)
