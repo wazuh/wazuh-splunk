@@ -1,5 +1,5 @@
 define(['../../module', './ruleset'], function(controllers, Ruleset) {
-  'use strict';
+  'use strict'
 
   class RulesetId extends Ruleset {
     constructor(
@@ -20,21 +20,21 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $currentDataService,
         $tableFilterService,
         $csvRequestService
-      );
-      this.state = $state;
+      )
+      this.state = $state
       try {
-        this.filters = JSON.parse(window.localStorage.ruleset) || [];
+        this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
-        this.filters = [];
+        this.filters = []
       }
 
-      this.scope.ruleInfo = ruleInfo.data.data.items[0];
+      this.scope.ruleInfo = ruleInfo.data.data.items[0]
     }
 
     $onInit() {
-      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name);
+      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>
-        this.addDetailFilter(name, value);
+        this.addDetailFilter(name, value)
     }
 
     /**
@@ -44,14 +44,14 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      */
     addDetailFilter(name, value) {
       try {
-        const filter = { name: name, value: value };
-        this.filters.push(filter);
-        window.localStorage.setItem('ruleset', JSON.stringify(this.filters));
-        this.state.go('mg-rules');
+        const filter = { name: name, value: value }
+        this.filters.push(filter)
+        window.localStorage.setItem('ruleset', JSON.stringify(this.filters))
+        this.state.go('mg-rules')
       } catch (err) {
-        this.toast(err.message || err);
+        this.toast(err.message || err)
       }
     }
   }
-  controllers.controller('managerRulesetIdCtrl', RulesetId);
-});
+  controllers.controller('managerRulesetIdCtrl', RulesetId)
+})

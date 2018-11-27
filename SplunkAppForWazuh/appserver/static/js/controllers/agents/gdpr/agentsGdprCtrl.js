@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
 ], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
-  'use strict';
+  'use strict'
 
   class AgentsGdpr {
     /**
@@ -19,17 +19,17 @@ define([
      */
 
     constructor($urlTokenModel, $currentDataService, $scope, $state, agent) {
-      this.scope = $scope;
-      this.state = $state;
+      this.scope = $scope
+      this.state = $state
       if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview');
+        this.state.go('overview')
       }
       //this.urlTokenModel = $urlTokenModel
-      this.agent = agent;
+      this.agent = agent
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
+      )
 
       this.dropdown = new Dropdown(
         'dropDownInput',
@@ -39,28 +39,28 @@ define([
         'rule.gdpr{}',
         '$form.gdpr$',
         'dropDownInput'
-      );
-      this.getFilters = $currentDataService.getSerializedFilters;
-      this.filters = this.getFilters();
+      )
+      this.getFilters = $currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
 
-      this.dropdownInstance = this.dropdown.getElement();
+      this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance) {
-          $urlTokenModel.handleValueChange(this.dropdownInstance);
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
-      });
+      })
 
-      this.scope.agent = this.agent.data.data;
+      this.scope.agent = this.agent.data.data
 
-      this.scope.gdprTabs = false;
+      this.scope.gdprTabs = false
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -101,32 +101,32 @@ define([
           } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count`,
           'alertsSummaryVizz'
         )
-      ];
+      ]
 
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.dropdown.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.dropdown.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     $onInit() {
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red';
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : 'Never connected';
-      };
+          : 'Never connected'
+      }
     }
 
     launchSearches() {
-      this.filters = this.getFilters();
-      this.state.reload();
+      this.filters = this.getFilters()
+      this.state.reload()
     }
   }
-  app.controller('agentsGdprCtrl', AgentsGdpr);
-});
+  app.controller('agentsGdprCtrl', AgentsGdpr)
+})

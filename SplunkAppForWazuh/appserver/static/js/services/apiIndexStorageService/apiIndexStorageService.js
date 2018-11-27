@@ -1,16 +1,16 @@
 define(['../module'], function(app) {
-  'use strict';
+  'use strict'
 
   class ApiIndexStorageService {
     constructor() {
-      this.sessionStorage = sessionStorage;
+      this.sessionStorage = sessionStorage
     }
 
     /**
      * Removes the selected index
      */
     removeIndex() {
-      delete this.sessionStorage.selectedIndex;
+      delete this.sessionStorage.selectedIndex
     }
 
     /**
@@ -18,7 +18,7 @@ define(['../module'], function(app) {
      * @param {String} index
      */
     setIndex(index) {
-      this.sessionStorage.selectedIndex = `{"index":"${index}"}`;
+      this.sessionStorage.selectedIndex = `{"index":"${index}"}`
     }
 
     /**
@@ -27,8 +27,8 @@ define(['../module'], function(app) {
      */
     getIndex() {
       if (this.sessionStorage.selectedIndex) {
-        return JSON.parse(this.sessionStorage.selectedIndex);
-      } else return { index: 'wazuh' };
+        return JSON.parse(this.sessionStorage.selectedIndex)
+      } else return { index: 'wazuh' }
     }
 
     /**
@@ -36,7 +36,7 @@ define(['../module'], function(app) {
      */
     removeAPI() {
       try {
-        delete this.sessionStorage.selectedAPI;
+        delete this.sessionStorage.selectedAPI
       } catch (err) {}
     }
 
@@ -46,9 +46,9 @@ define(['../module'], function(app) {
      */
     setApi(API) {
       try {
-        delete this.sessionStorage.selectedAPI;
+        delete this.sessionStorage.selectedAPI
         if (typeof API === 'object') {
-          this.sessionStorage.selectedAPI = JSON.stringify(API);
+          this.sessionStorage.selectedAPI = JSON.stringify(API)
         }
       } catch (error) {}
     }
@@ -60,25 +60,25 @@ define(['../module'], function(app) {
     getApi() {
       try {
         if (this.sessionStorage.selectedAPI) {
-          return JSON.parse(this.sessionStorage.selectedAPI);
+          return JSON.parse(this.sessionStorage.selectedAPI)
         }
       } catch (err) {
-        return null;
+        return null
       }
     }
 
     getExtensions(id) {
       try {
         if (this.sessionStorage.extensions) {
-          const currentExtensions = JSON.parse(this.sessionStorage.extensions);
+          const currentExtensions = JSON.parse(this.sessionStorage.extensions)
           const result =
             currentExtensions.length >= 1
               ? currentExtensions.filter(item => item.id === id)[0]
-              : false;
-          return result;
+              : false
+          return result
         }
       } catch (err) {
-        return false;
+        return false
       }
     }
 
@@ -87,34 +87,34 @@ define(['../module'], function(app) {
         if (extensions.length && this.sessionStorage.getItem('extensions')) {
           let parsedExtensions = JSON.parse(
             this.sessionStorage.getItem('extensions')
-          );
-          let existentApi = false;
+          )
+          let existentApi = false
           for (let i = 0; i < parsedExtensions.length; i++) {
             if (parsedExtensions[i].id === id) {
-              parsedExtensions[i] = { id: id, ...extensions };
-              existentApi = true;
-              break;
+              parsedExtensions[i] = { id: id, ...extensions }
+              existentApi = true
+              break
             }
           }
           if (!existentApi) {
-            parsedExtensions.push({ id: id, ...extensions });
+            parsedExtensions.push({ id: id, ...extensions })
           }
           this.sessionStorage.setItem(
             'extensions',
             JSON.stringify(parsedExtensions) || []
-          );
+          )
         } else if (extensions) {
-          const newSet = [];
-          newSet.push({ id: id, ...extensions });
+          const newSet = []
+          newSet.push({ id: id, ...extensions })
           this.sessionStorage.setItem(
             'extensions',
             JSON.stringify(newSet) || []
-          );
+          )
         }
       } catch (err) {
-        console.error('err ', err);
+        console.error('err ', err)
       }
     }
   }
-  app.service('$apiIndexStorageService', ApiIndexStorageService);
-});
+  app.service('$apiIndexStorageService', ApiIndexStorageService)
+})

@@ -1,14 +1,14 @@
 /*
-* Wazuh app - Agents controller
-* Copyright (C) 2018 Wazuh, Inc.
-*
-* This program is free software you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation either version 2 of the License, or
-* (at your option) any later version.
-*
-* Find more information about this on the LICENSE file.
-*/
+ * Wazuh app - Agents controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 define([
   '../../module',
@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
 ], function(app, PieChart, AreaChart, Table, TimePicker) {
-  'use strict';
+  'use strict'
 
   class OsqueryAgents {
     /**
@@ -40,48 +40,48 @@ define([
       $state,
       osquery
     ) {
-      this.state = $state;
-      this.currentDataService = $currentDataService;
+      this.state = $state
+      this.currentDataService = $currentDataService
 
       if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview');
+        this.state.go('overview')
       }
 
-      this.scope = $scope;
-      this.urlTokenModel = $urlTokenModel;
-      this.notificationService = $notificationService;
-      this.scope.agent = agent.data.data;
-      this.osquery = osquery;
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.notificationService = $notificationService
+      this.scope.agent = agent.data.data
+      this.osquery = osquery
 
-      this.filters = this.currentDataService.getSerializedFilters();
+      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      );
+      )
 
-      this.scope.osqueryWodle = null;
+      this.scope.osqueryWodle = null
 
       try {
         this.currentDataService.addFilter(
           `{"rule.groups":"osquery", "implicit":true}`
-        );
-        this.wodles = this.osquery.data.data.wmodules;
+        )
+        this.wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = this.wodles.filter(
           item => item.osquery
-        )[0].osquery;
+        )[0].osquery
       } catch (err) {
         this.notificationService.showSimpleToast(
           'Cannot load wodle configuration. Osquery not configured.'
-        );
+        )
       }
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -118,32 +118,32 @@ define([
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertsOverTime'
         )
-      ];
+      ]
 
       /*
-        * When controller is destroyed
-        */
+       * When controller is destroyed
+       */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     $onInit() {
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red';
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : 'Never connected';
-      };
+          : 'Never connected'
+      }
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = $currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
 
-  app.controller('osqueryAgentCtrl', OsqueryAgents);
-});
+  app.controller('osqueryAgentCtrl', OsqueryAgents)
+})

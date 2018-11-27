@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
   module.service('$apiMgrService', function(
     $requestService,
     $apiIndexStorageService,
@@ -13,12 +13,12 @@ define(['../module'], function(module) {
      */
     const select = async id => {
       try {
-        const entry = await $splunkStoreService.getApiById(id);
-        return entry;
+        const entry = await $splunkStoreService.getApiById(id)
+        return entry
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Deletes a record by ID
@@ -30,14 +30,14 @@ define(['../module'], function(module) {
           $apiIndexStorageService.getApi() &&
           $apiIndexStorageService.getApi().url === api.url
         ) {
-          $apiIndexStorageService.removeAPI();
+          $apiIndexStorageService.removeAPI()
         }
-        await $splunkStoreService.delete({ id: api.id });
-        return;
+        await $splunkStoreService.delete({ id: api.id })
+        return
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Inserts a new record in the DB engine
@@ -45,20 +45,20 @@ define(['../module'], function(module) {
      */
     const insert = async record => {
       try {
-        const result = await $splunkStoreService.insert(record);
-        return result;
+        const result = await $splunkStoreService.insert(record)
+        return result
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Updates an API
      * @param {Object} api
      */
     const update = register => {
-      return $splunkStoreService.update(register);
-    };
+      return $splunkStoreService.update(register)
+    }
 
     // =========== API METHODS =========== //
 
@@ -66,8 +66,8 @@ define(['../module'], function(module) {
      * Gets the current selected API
      */
     const getApi = () => {
-      return $apiIndexStorageService.getApi();
-    };
+      return $apiIndexStorageService.getApi()
+    }
 
     /**
      * Returns the API list
@@ -75,8 +75,8 @@ define(['../module'], function(module) {
      */
     const getApiList = async () => {
       try {
-        const apiList = await $splunkStoreService.getAllApis();
-        const selectedApi = $apiIndexStorageService.getApi();
+        const apiList = await $splunkStoreService.getAllApis()
+        const selectedApi = $apiIndexStorageService.getApi()
         for (let i = 0; i < apiList.length; i++) {
           if (
             selectedApi &&
@@ -86,22 +86,22 @@ define(['../module'], function(module) {
             JSON.parse(selectedApi).url &&
             apiList[i].url === JSON.parse(selectedApi).url
           ) {
-            apiList[i].selected = true;
+            apiList[i].selected = true
           }
         }
-        return apiList;
+        return apiList
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Sets an API
      * @param {Object} api
      */
     const setApi = api => {
-      return $apiIndexStorageService.setApi(api);
-    };
+      return $apiIndexStorageService.setApi(api)
+    }
 
     /**
      * Returns currently selected API
@@ -112,11 +112,11 @@ define(['../module'], function(module) {
         $apiIndexStorageService.getApi() &&
         $apiIndexStorageService.getApi().cluster
       ) {
-        return getApi().cluster;
+        return getApi().cluster
       } else {
-        return null;
+        return null
       }
-    };
+    }
 
     /**
      * Returns the API filter (manager.name / cluster.name)
@@ -126,25 +126,25 @@ define(['../module'], function(module) {
         $apiIndexStorageService.getApi() &&
         $apiIndexStorageService.getApi().filter
       ) {
-        return $apiIndexStorageService.getApi().filter;
+        return $apiIndexStorageService.getApi().filter
       } else {
-        return null;
+        return null
       }
-    };
+    }
 
     /**
      * Sets index
      */
     const setIndex = index => {
-      return $apiIndexStorageService.setIndex(index);
-    };
+      return $apiIndexStorageService.setIndex(index)
+    }
 
     /**
      * Gets index
      */
     const getIndex = () => {
-      return $apiIndexStorageService.getIndex();
-    };
+      return $apiIndexStorageService.getIndex()
+    }
 
     /**
      * Select an API as the default one, 'selected' field to true by ID
@@ -152,17 +152,17 @@ define(['../module'], function(module) {
      */
     const chose = async id => {
       try {
-        const apiList = await getApiList();
+        const apiList = await getApiList()
         for (const api of apiList) {
           if (api.id === id) {
-            $apiIndexStorageService.setApi(api);
+            $apiIndexStorageService.setApi(api)
           }
         }
-        return;
+        return
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Check if connection with selected API was successful
@@ -170,33 +170,33 @@ define(['../module'], function(module) {
      */
     const checkSelectedApiConnection = async () => {
       try {
-        const currentApi = $apiIndexStorageService.getApi();
+        const currentApi = $apiIndexStorageService.getApi()
         if (!currentApi) {
-          throw new Error('No selected API in sessionStorage.');
+          throw new Error('No selected API in sessionStorage.')
         }
-        const api = await checkApiConnection(currentApi.id);
-        let selectedIndex = $apiIndexStorageService.getIndex();
-        return { api, selectedIndex };
+        const api = await checkApiConnection(currentApi.id)
+        let selectedIndex = $apiIndexStorageService.getIndex()
+        return { api, selectedIndex }
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Check the current state of agents status history
      */
     const checkPollingState = async () => {
       try {
-        const getPollingStateRoute = '/manager/polling_state/';
+        const getPollingStateRoute = '/manager/polling_state/'
         const pollingStatus = await $requestService.httpReq(
           `GET`,
           getPollingStateRoute
-        );
-        return pollingStatus.disabled === 'true' ? false : true;
+        )
+        return pollingStatus.disabled === 'true' ? false : true
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Checks a connection passed directly
@@ -214,22 +214,22 @@ define(['../module'], function(module) {
         ) {
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`;
+          }&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
-          );
+          )
           if (result.data.status === 400 || result.data.error) {
-            throw new Error('Cannot connect to API.');
+            throw new Error('Cannot connect to API.')
           }
-          return result;
+          return result
         }
         // Otherwise throw a new error
-        throw new Error('Missing API fields.');
+        throw new Error('Missing API fields.')
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     /**
      * Check if connection with API was successful, also returns the full needed information about it
@@ -237,44 +237,44 @@ define(['../module'], function(module) {
      */
     const checkApiConnection = async id => {
       try {
-        const api = await select(id);
+        const api = await select(id)
         const clusterData = await $requestService.apiReq(`/cluster/status`, {
           id: id
-        });
+        })
         if (clusterData.data.error) {
-          throw new Error(clusterData.data.error);
+          throw new Error(clusterData.data.error)
         }
         // Get manager name. Necessary for both cases
         const managerName = await $requestService.apiReq(`/agents/000`, {
           id: id,
           select: 'name'
-        });
+        })
         if (
           managerName &&
           managerName.data &&
           managerName.data.data &&
           managerName.data.data.name
         ) {
-          api.managerName = managerName.data.data.name;
+          api.managerName = managerName.data.data.name
         }
         // If cluster is disabled, then filter by manager.name
         if (clusterData.data.data.enabled === 'yes') {
-          api.filterType = 'cluster.name';
+          api.filterType = 'cluster.name'
           const clusterName = await $requestService.apiReq(`/cluster/node`, {
             id: id
-          });
-          api.filterName = clusterName.data.data.cluster;
+          })
+          api.filterName = clusterName.data.data.cluster
         } else {
-          api.filterType = 'manager.name';
-          api.filterName = api.managerName;
+          api.filterType = 'manager.name'
+          api.filterName = api.managerName
         }
-        await $splunkStoreService.update(api);
-        delete api['passapi'];
-        return api;
+        await $splunkStoreService.update(api)
+        delete api['passapi']
+        return api
       } catch (err) {
-        return Promise.reject(err);
+        return Promise.reject(err)
       }
-    };
+    }
 
     return {
       checkApiConnection: checkApiConnection,
@@ -294,6 +294,6 @@ define(['../module'], function(module) {
       setIndex: setIndex,
       getApi: getApi,
       setApi: setApi
-    };
-  });
-});
+    }
+  })
+})

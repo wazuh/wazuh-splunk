@@ -2,7 +2,7 @@ define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function(
   MapElement,
   Viz
 ) {
-  'use strict';
+  'use strict'
 
   return class AreaChart extends Viz {
     /**
@@ -51,7 +51,7 @@ define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function(
         ).render(),
         id,
         search
-      );
+      )
     }
-  };
-});
+  }
+})

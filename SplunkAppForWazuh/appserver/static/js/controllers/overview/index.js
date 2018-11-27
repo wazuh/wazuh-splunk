@@ -12,4 +12,4 @@ define([
   './ciscat/ciscatCtrl',
   './policy-monitoring/overviewPolicyMonitoringCtrl',
   './vulnerabilities/overviewVulnerabilitiesCtrl'
-], function() {});
+], function() {})

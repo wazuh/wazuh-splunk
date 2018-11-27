@@ -17,7 +17,7 @@ define([
   TimePicker,
   SearchHandler
 ) {
-  'use strict';
+  'use strict'
 
   class OverviewGeneral {
     constructor(
@@ -29,31 +29,31 @@ define([
       $requestService,
       pollingState
     ) {
-      this.currentDataService = $currentDataService;
-      this.filters = this.currentDataService.getSerializedFilters();
-      this.scope = $scope;
-      this.apiReq = $requestService.apiReq;
+      this.currentDataService = $currentDataService
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.scope = $scope
+      this.apiReq = $requestService.apiReq
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
-      );
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel();
-      this.state = $state;
+      )
+      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+      this.state = $state
       this.pollingEnabled =
         pollingState &&
         pollingState.data &&
         (pollingState.data.error || pollingState.data.disabled === 'true')
           ? false
-          : true;
-      this.toast = $notificationService.showSimpleToast;
+          : true
+      this.toast = $notificationService.showSimpleToast
 
       this.scope.$on('deletedFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.scope.$on('barFilter', () => {
-        this.launchSearches();
-      });
+        this.launchSearches()
+      })
 
       this.vizz = [
         /**
@@ -133,7 +133,7 @@ define([
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz'
         )
-      ];
+      ]
     }
 
     /**
@@ -141,68 +141,65 @@ define([
      */
     $onInit() {
       if (!this.pollingEnabled) {
-        this.scope.wzMonitoringEnabled = false;
+        this.scope.wzMonitoringEnabled = false
         this.apiReq(`/agents/summary`)
           .then(data => {
-            this.scope.agentsCountTotal = data.data.data.Total - 1;
-            this.scope.agentsCountActive = data.data.data.Active - 1;
-            this.scope.agentsCountDisconnected = data.data.data.Disconnected;
+            this.scope.agentsCountTotal = data.data.data.Total - 1
+            this.scope.agentsCountActive = data.data.data.Active - 1
+            this.scope.agentsCountDisconnected = data.data.data.Disconnected
             this.scope.agentsCountNeverConnected =
-              data.data.data['Never connected'];
+              data.data.data['Never connected']
             this.scope.agentsCoverity = this.scope.agentsCountTotal
               ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                 100
-              : 0;
-            if (!this.scope.$$phase) this.scope.$digest();
+              : 0
+            if (!this.scope.$$phase) this.scope.$digest()
           })
           .catch(error => {
-            this.toast('Cannot fetch agent status data');
-          });
+            this.toast('Cannot fetch agent status data')
+          })
       } else {
-        this.scope.wzMonitoringEnabled = true;
+        this.scope.wzMonitoringEnabled = true
 
         //Filters for agents Status
-        this.clusOrMng = Object.keys(
-          this.currentDataService.getFilters()[0]
-        )[0];
+        this.clusOrMng = Object.keys(this.currentDataService.getFilters()[0])[0]
         if (this.clusOrMng == 'manager.name') {
-          this.mngName = this.currentDataService.getFilters()[0][
-            'manager.name'
-          ];
+          this.mngName = this.currentDataService.getFilters()[0]['manager.name']
           this.agentsStatusFilter = `manager=${
             this.mngName
-          } index=wazuh-monitoring-3x`;
+          } index=wazuh-monitoring-3x`
         } else {
           this.clusName = this.currentDataService.getFilters()[0][
             'cluster.name'
-          ];
+          ]
           this.agentsStatusFilter = `cluster.name=${
             this.clusName
-          } index=wazuh-monitoring-3x`;
+          } index=wazuh-monitoring-3x`
         }
 
+        this.spanTime = '1h'
         this.vizz.push(
           new LinearChart(
             `agentStatusHistory`,
             `${
               this.agentsStatusFilter
-            } status=* | timechart span=1h count by status usenull=f`,
+            } status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
             `agentStatus`
           )
-        );
+        )
       }
 
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy();
-        this.vizz.map(vizz => vizz.destroy());
-      });
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
     }
 
     launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters();
-      this.state.reload();
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.state.reload()
     }
   }
 
-  app.controller('overviewGeneralCtrl', OverviewGeneral);
-});
+  app.controller('overviewGeneralCtrl', OverviewGeneral)
+})

@@ -1,18 +1,18 @@
 define([], function() {
-  'use strict';
+  'use strict'
   return function objectWithoutProperties(obj) {
     try {
       const result = JSON.parse(
         JSON.stringify(obj, function(key, val) {
           if (key == '$$hashKey') {
-            return undefined;
+            return undefined
           }
-          return val;
+          return val
         })
-      );
-      return result;
+      )
+      return result
     } catch (error) {
-      return {};
+      return {}
     }
-  };
-});
+  }
+})

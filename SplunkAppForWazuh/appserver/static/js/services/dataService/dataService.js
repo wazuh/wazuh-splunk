@@ -11,7 +11,7 @@
  */
 
 define(['../module', 'splunkjs/mvc'], function(module) {
-  'use strict';
+  'use strict'
   /**
    * Class that handles dynamic table methods
    */
@@ -23,14 +23,14 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * @param {Object} implicitFilter
        */
       constructor(path, implicitFilter) {
-        this.implicitFilter = implicitFilter || false;
-        this.items = [];
-        this.path = path;
-        this.filters = [];
-        this.sortValue = false;
-        this.sortDir = false;
-        this.sortValue = false;
-        if (this.implicitFilter) this.filters.push(...this.implicitFilter);
+        this.implicitFilter = implicitFilter || false
+        this.items = []
+        this.path = path
+        this.filters = []
+        this.sortValue = false
+        this.sortDir = false
+        this.sortValue = false
+        if (this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
       /**
@@ -38,16 +38,16 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * @param {String} value
        */
       addSorting(value) {
-        this.sortValue = value;
-        this.sortDir = !this.sortDir;
+        this.sortValue = value
+        this.sortDir = !this.sortDir
       }
 
       /**
        * Removes filters added to table
        */
       removeFilters() {
-        this.filters = [];
-        if (this.implicitFilter) this.filters.push(...this.implicitFilter);
+        this.filters = []
+        if (this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
       /**
@@ -56,13 +56,11 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        */
       serializeFilters(parameters) {
         if (this.sortValue) {
-          parameters.sort = this.sortDir
-            ? '-' + this.sortValue
-            : this.sortValue;
+          parameters.sort = this.sortDir ? '-' + this.sortValue : this.sortValue
         }
 
         for (const filter of this.filters) {
-          if (filter.value !== '') parameters[filter.name] = filter.value;
+          if (filter.value !== '') parameters[filter.name] = filter.value
         }
       }
 
@@ -72,14 +70,12 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * @param {String} value
        */
       addFilter(filterName, value) {
-        this.filters = this.filters.filter(
-          filter => filter.name !== filterName
-        );
+        this.filters = this.filters.filter(filter => filter.name !== filterName)
         if (typeof value !== 'undefined') {
           this.filters.push({
             name: filterName,
             value: value
-          });
+          })
         }
       }
 
@@ -89,40 +85,40 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        */
       async fetch(options = {}) {
         try {
-          const start = new Date();
+          const start = new Date()
 
           // If offset is not given, it means we need to start again
-          if (!options.offset) this.items = [];
-          const offset = options.offset || 0;
-          const limit = options.limit || 500;
-          const parameters = { limit, offset };
+          if (!options.offset) this.items = []
+          const offset = options.offset || 0
+          const limit = options.limit || 500
+          const parameters = { limit, offset }
 
-          this.serializeFilters(parameters);
+          this.serializeFilters(parameters)
 
           // Fetch next <limit> items
-          const firstPage = await $requestService.apiReq(this.path, parameters);
-          this.items = this.items.filter(item => !!item);
-          this.items.push(...firstPage.data.data.items);
+          const firstPage = await $requestService.apiReq(this.path, parameters)
+          this.items = this.items.filter(item => !!item)
+          this.items.push(...firstPage.data.data.items)
 
-          const totalItems = firstPage.data.data.totalItems;
+          const totalItems = firstPage.data.data.totalItems
 
           const remaining =
             this.items.length === totalItems
               ? 0
-              : totalItems - this.items.length;
+              : totalItems - this.items.length
 
           // Ignore manager as an agent, once the team solves this issue, review this line
           if (this.path === '/agents')
-            this.items = this.items.filter(item => item.id !== '000');
+            this.items = this.items.filter(item => item.id !== '000')
 
-          if (remaining > 0) this.items.push(...Array(remaining).fill(null));
+          if (remaining > 0) this.items.push(...Array(remaining).fill(null))
 
-          const end = new Date();
-          const elapsed = (end - start) / 1000;
+          const end = new Date()
+          const elapsed = (end - start) / 1000
 
-          return { items: this.items, time: elapsed };
+          return { items: this.items, time: elapsed }
         } catch (error) {
-          return Promise.reject(error);
+          return Promise.reject(error)
         }
       }
 
@@ -130,13 +126,13 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * Resets table parameters
        */
       reset() {
-        this.items = [];
-        this.filters = [];
-        this.sortValue = false;
-        this.sortDir = false;
-        this.sortValue = false;
-        if (this.implicitFilter) this.filters.push(...this.implicitFilter);
+        this.items = []
+        this.filters = []
+        this.sortValue = false
+        this.sortDir = false
+        this.sortValue = false
+        if (this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
-    };
-  });
-});
+    }
+  })
+})

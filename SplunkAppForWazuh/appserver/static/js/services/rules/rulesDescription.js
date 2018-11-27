@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
 
   module.service('$rulesDescription', function($state) {
     const service = {
@@ -26,7 +26,7 @@ define(['../module'], function(module) {
             'Perform a data protection impact evaluation for high risk processes. Implement appropriate technical measures to safeguard the rights and freedoms of data subjects, informed by an assessment of the risks to these rights and freedoms.',
           'IV_35.7.d':
             'Capabilities for identification, blocking and forensic investigation of data breaches by malicious actors, through compromised credentials, unauthorized network access, persistent threats and verification of the correct operation of all components.<br>Network perimeter and endpoint security tools to prevent unauthorized access to the network, prevent the entry of unwanted data types and malicious threats. Anti-malware and anti-ransomware to prevent malware and ransomware threats from entering your devices.<br>A behavioral analysis that uses machine intelligence to identify people who do anomalous things on the network, in order to give early visibility and alert employees who start to become corrupt.'
-        };
+        }
       },
       pciRules: params => {
         return {
@@ -101,10 +101,10 @@ define(['../module'], function(module) {
             'Use intrusion detection and/or intrusion prevention techniques to detect and/or prevent intrusions into the network.<br>Monitor all traffic at the perimeter of the cardholder data environment as well as at critical points in the cardholder data environment, and alert personnel to suspected compromises. Keep all intrusion detection and prevention engines, baselines, and signatures up to date.',
           '11.5':
             'Deploy a change detection mechanism (for example, file integrity monitoring tools) to alert personnel to unauthorized modification of critical system files, configuration files, or content files; and configure the software to perform critical file comparisons at least weekly.'
-        };
+        }
       }
-    };
+    }
 
-    return service;
-  });
-});
+    return service
+  })
+})

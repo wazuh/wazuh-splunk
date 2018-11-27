@@ -1,5 +1,5 @@
 define(['../../module', 'FileSaver'], function(app) {
-  'use strict';
+  'use strict'
 
   class Logs {
     constructor(
@@ -11,15 +11,15 @@ define(['../../module', 'FileSaver'], function(app) {
       $csvRequestService,
       logs
     ) {
-      this.scope = $scope;
-      this.apiReq = $requestService.apiReq;
-      this.toast = $notificationService.showSimpleToast;
-      this.scope.type_log = 'all';
-      this.scope.category = 'all';
-      this.api = $currentDataService.getApi();
-      this.logs = logs;
-      this.csvReq = $csvRequestService;
-      this.wzTableFilter = $tableFilterService;
+      this.scope = $scope
+      this.apiReq = $requestService.apiReq
+      this.toast = $notificationService.showSimpleToast
+      this.scope.type_log = 'all'
+      this.scope.category = 'all'
+      this.api = $currentDataService.getApi()
+      this.logs = logs
+      this.csvReq = $csvRequestService
+      this.wzTableFilter = $tableFilterService
     }
 
     /**
@@ -27,16 +27,16 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     $onInit() {
       try {
-        this.scope.search = term => this.search(term);
-        this.scope.filter = term => this.filter(term);
-        this.scope.changeNode = node => this.changeNode(node);
-        this.scope.stopRealtime = () => this.stopRealtime();
-        this.scope.playRealtime = () => this.playRealtime();
-        this.scope.summary = this.logs.data.data;
-        this.scope.downloadCsv = () => this.downloadCsv();
-        this.initialize();
+        this.scope.search = term => this.search(term)
+        this.scope.filter = term => this.filter(term)
+        this.scope.changeNode = node => this.changeNode(node)
+        this.scope.stopRealtime = () => this.stopRealtime()
+        this.scope.playRealtime = () => this.playRealtime()
+        this.scope.summary = this.logs.data.data
+        this.scope.downloadCsv = () => this.downloadCsv()
+        this.initialize()
       } catch (err) {
-        this.toast('Cannot fetch logs data from server');
+        this.toast('Cannot fetch logs data from server')
       }
     }
 
@@ -45,25 +45,25 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...');
-        const currentApi = this.api.id;
+        this.toast('Your download should begin automatically...')
+        const currentApi = this.api.id
         const output = await this.csvReq.fetch(
           '/manager/logs',
           currentApi,
           this.wzTableFilter.get()
-        );
+        )
         if (output.length > 0) {
-          const blob = new Blob([output], { type: 'text/csv' }); // eslint-disable-line
-          saveAs(blob, 'logs.csv');
+          const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+          saveAs(blob, 'logs.csv')
         } else {
-          this.toast('Empty results.');
+          this.toast('Empty results.')
         }
-        return;
+        return
       } catch (error) {
-        console.error('error ', error);
-        this.toast('Error downloading CSV');
+        console.error('error ', error)
+        this.toast('Error downloading CSV')
       }
-      return;
+      return
     }
 
     /**
@@ -71,16 +71,16 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async initialize() {
       try {
-        const clusterStatus = await this.apiReq('/cluster/status');
+        const clusterStatus = await this.apiReq('/cluster/status')
         const clusterEnabled =
           clusterStatus &&
           clusterStatus.data &&
           clusterStatus.data.data &&
           clusterStatus.data.data.running === 'yes' &&
-          clusterStatus.data.data.enabled === 'yes';
+          clusterStatus.data.data.enabled === 'yes'
 
         if (clusterEnabled) {
-          const nodeList = await this.apiReq('/cluster/nodes');
+          const nodeList = await this.apiReq('/cluster/nodes')
           if (
             nodeList &&
             nodeList.data &&
@@ -89,33 +89,33 @@ define(['../../module', 'FileSaver'], function(app) {
           ) {
             this.scope.nodeList = nodeList.data.data.items
               .map(item => item.name)
-              .reverse();
+              .reverse()
             this.scope.selectedNode = nodeList.data.data.items.filter(
               item => item.type === 'master'
-            )[0].name;
+            )[0].name
           }
         }
 
         this.scope.logsPath = clusterEnabled
           ? `/cluster/${this.scope.selectedNode}/logs`
-          : '/manager/logs';
+          : '/manager/logs'
 
         const data = clusterEnabled
           ? await this.apiReq(
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
-          : await this.apiReq('/manager/logs/summary');
-        const daemons = data.data.data;
+          : await this.apiReq('/manager/logs/summary')
+        const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({
           title: item
-        }));
-        if (!this.scope.$$phase) this.scope.$digest();
-        return;
+        }))
+        if (!this.scope.$$phase) this.scope.$digest()
+        return
       } catch (err) {
-        console.error('err ', err);
-        this.toast('Error initializing data');
+        console.error('err ', err)
+        this.toast('Error initializing data')
       }
-      return;
+      return
     }
 
     /**
@@ -124,21 +124,21 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async changeNode(node) {
       try {
-        this.scope.type_log = 'all';
-        this.scope.category = 'all';
-        this.scope.selectedNode = node;
-        this.scope.custom_search = null;
+        this.scope.type_log = 'all'
+        this.scope.category = 'all'
+        this.scope.selectedNode = node
+        this.scope.custom_search = null
         this.scope.$broadcast('wazuhUpdateInstancePath', {
           path: `/cluster/${node}/logs`
-        });
-        const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {});
-        const daemons = summary.data.data;
+        })
+        const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
+        const daemons = summary.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({
           title: item
-        }));
-        if (!this.scope.$$phase) this.scope.$digest();
+        }))
+        if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Error at fetching logs');
+        this.toast('Error at fetching logs')
       }
     }
 
@@ -147,8 +147,8 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {String} term
      */
     search(term) {
-      this.scope.$broadcast('wazuhSearch', { term });
-      return;
+      this.scope.$broadcast('wazuhSearch', { term })
+      return
     }
 
     /**
@@ -156,27 +156,27 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {Object} filter
      */
     async filter(filter) {
-      this.scope.$broadcast('wazuhFilter', { filter });
-      return;
+      this.scope.$broadcast('wazuhFilter', { filter })
+      return
     }
 
     /**
      * Starts fetching logs in real time
      */
     playRealtime() {
-      this.scope.realtime = true;
-      this.scope.$broadcast('wazuhPlayRealTime');
-      return;
+      this.scope.realtime = true
+      this.scope.$broadcast('wazuhPlayRealTime')
+      return
     }
 
     /**
      * Stops fetching logs in real time
      */
     stopRealtime() {
-      this.scope.realtime = false;
-      this.scope.$broadcast('wazuhStopRealTime');
-      return;
+      this.scope.realtime = false
+      this.scope.$broadcast('wazuhStopRealTime')
+      return
     }
   }
-  app.controller('managerLogsCtrl', Logs);
-});
+  app.controller('managerLogsCtrl', Logs)
+})

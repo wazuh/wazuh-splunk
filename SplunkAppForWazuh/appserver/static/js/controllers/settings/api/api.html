@@ -28,17 +28,37 @@
           <!-- API entry -->
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
             <p flex="15">
-              <i ng-show="entry.selected" tooltip="This is the default Manager" tooltip-placement="right" class="fa fa-star wz-color-orange"
-                aria-hidden="true"></i> {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}</p>
+              <i ng-show="entry.selected" class="fa fa-star wz-color-orange"
+                aria-hidden="true"></i> {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
+                <md-tooltip md-direction="right" class="wz-tooltip">
+                  This is the default Manager
+                </md-tooltip>
+              </p>
             <p flex="20">{{entry.managerName}}</p>
             <p flex="15">{{entry.url}}</p>
             <p flex="15">{{entry.portapi}}</p>
             <p flex="15">{{entry.userapi}}</p>
             <p flex="20">
-              <i ng-click="selectManager(entry.id)" tooltip="Set as default Manager" class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true"></i>
-              <i ng-click="removeManager(entry)" tooltip="Remove manager" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
-              <i ng-click="checkManager(entry)" tooltip="Check connection" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
-              <i ng-click="editEntry(entry)" tooltip="Edit" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true"></i>
+              <i ng-click="selectManager(entry.id)"  class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Set as default Manager
+                </md-tooltip>
+              </i>
+              <i ng-click="removeManager(entry)" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  BacRemove managek
+                </md-tooltip>
+              </i>
+              <i ng-click="checkManager(entry)" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Check connection
+                </md-tooltip>
+              </i>
+              <i ng-click="editEntry(entry)" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Edit
+                </md-tooltip>
+              </i>
             </p>
           </div>
           <!-- End edit API form -->

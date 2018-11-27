@@ -17,17 +17,17 @@
 // const app = uiModules.get('app/wazuh', []);
 
 define(['../module'], function(directives) {
-  'use strict';
+  'use strict'
   directives.directive('wzDynamic', function($compile) {
     return {
       restrict: 'A',
       replace: true,
       link: function(scope, ele, attrs) {
         scope.$watch(attrs.wzDynamic, function(html) {
-          ele.html(html);
-          $compile(ele.contents())(scope);
-        });
+          ele.html(html)
+          $compile(ele.contents())(scope)
+        })
       }
-    };
-  });
-});
+    }
+  })
+})

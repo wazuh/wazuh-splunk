@@ -2,7 +2,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
   SearchEventHandler,
   Viz
 ) {
-  'use strict';
+  'use strict'
 
   return class SearchHandler extends Viz {
     /**
@@ -41,84 +41,84 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         }),
         id,
         search
-      );
-      this.submittedTokenModel = submittedTokenModel;
-      this.token = token;
-      this.loading = loading;
-      this.loadingBindedValue = loadingBindedValue;
+      )
+      this.submittedTokenModel = submittedTokenModel
+      this.token = token
+      this.loading = loading
+      this.loadingBindedValue = loadingBindedValue
 
       this.getSearch().on('search:failed', () => {
-        console.error('Failed search');
-      });
+        console.error('Failed search')
+      })
       this.getSearch().on('search:cancelled', () => {
-        console.error('Cancelled search');
-      });
+        console.error('Cancelled search')
+      })
 
       this.getSearch().on('search:error', error => {
-        console.error(error);
-      });
+        console.error(error)
+      })
 
       this.getSearch().on('search:progress', () => {
         if (this.loading) {
-          $scope[this.loadingBindedValue] = true;
+          $scope[this.loadingBindedValue] = true
         }
-      });
+      })
 
       this.getSearch().on('search:done', () => {
         if (this.loading) {
-          $scope[this.loadingBindedValue] = false;
+          $scope[this.loadingBindedValue] = false
         }
-        const result = submittedTokenModel.get(this.token);
+        const result = submittedTokenModel.get(this.token)
         if (
           result &&
           result !== value &&
           typeof result !== 'undefined' &&
           result !== 'undefined'
         ) {
-          $scope[bindedValue] = result;
+          $scope[bindedValue] = result
         } else {
-          $scope[bindedValue] = '0';
+          $scope[bindedValue] = '0'
         }
-        if (!$scope.$$phase) $scope.$digest();
-      });
+        if (!$scope.$$phase) $scope.$digest()
+      })
 
       this.submittedTokenModel.on(
         `change:${this.token}`,
         (model, loadedToken, options) => {
-          const loadedTokenJS = this.submittedTokenModel.get(token);
+          const loadedTokenJS = this.submittedTokenModel.get(token)
           if (
             loadedTokenJS &&
             loadedTokenJS !== value &&
             typeof loadedTokenJS !== 'undefined' &&
             loadedTokenJS !== 'undefined'
           ) {
-            $scope[bindedValue] = loadedTokenJS;
+            $scope[bindedValue] = loadedTokenJS
           } else {
-            $scope[bindedValue] = '0';
+            $scope[bindedValue] = '0'
           }
-          if (!$scope.$$phase) $scope.$digest();
+          if (!$scope.$$phase) $scope.$digest()
         }
-      );
+      )
 
-      this.initSearch();
+      this.initSearch()
     }
 
     initSearch() {
-      this.getSearch().startSearch();
+      this.getSearch().startSearch()
     }
 
     /**
      * On class destroy
      */
     destroy() {
-      this.getSearch().off('search:done');
-      this.getSearch().off('search:error');
-      this.getSearch().off('search:cancelled');
-      this.getSearch().off('search:failed');
-      this.getSearch().off('search:start');
-      this.getSearch().off('search:progress');
-      this.submittedTokenModel.off(`change:${this.token}`);
-      super.destroy();
+      this.getSearch().off('search:done')
+      this.getSearch().off('search:error')
+      this.getSearch().off('search:cancelled')
+      this.getSearch().off('search:failed')
+      this.getSearch().off('search:start')
+      this.getSearch().off('search:progress')
+      this.submittedTokenModel.off(`change:${this.token}`)
+      super.destroy()
     }
-  };
-});
+  }
+})

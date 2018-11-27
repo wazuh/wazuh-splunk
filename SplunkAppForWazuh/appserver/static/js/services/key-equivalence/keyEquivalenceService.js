@@ -1,5 +1,5 @@
 define(['../module'], function(module) {
-  'use strict';
+  'use strict'
 
   module.service('$keyEquivalenceService', function($state) {
     const service = {
@@ -58,9 +58,9 @@ define(['../module'], function(module) {
           protocol: 'Protocol',
           'local.ip': 'Local',
           'remote.ip': 'Remote'
-        };
+        }
       }
-    };
-    return service;
-  });
-});
+    }
+    return service
+  })
+})

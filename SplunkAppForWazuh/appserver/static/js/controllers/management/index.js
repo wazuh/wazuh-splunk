@@ -8,4 +8,4 @@ define([
   './rules/managerRulesetCtrl',
   './rules/managerRulesetIdCtrl',
   './status/statusCtrl'
-], function() {});
+], function() {})

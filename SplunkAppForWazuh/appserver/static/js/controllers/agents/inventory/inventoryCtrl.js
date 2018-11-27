@@ -1,17 +1,17 @@
 /*
-* Wazuh app - Dev tools controller
-* Copyright (C) 2018 Wazuh, Inc.
-*
-* This program is free software you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation either version 2 of the License, or
-* (at your option) any later version.
-*
-* Find more information about this on the LICENSE file.
-*/
+ * Wazuh app - Dev tools controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 define(['../../module'], function(module) {
-  'use strict';
+  'use strict'
   class Inventory {
     constructor(
       $requestService,
@@ -20,11 +20,11 @@ define(['../../module'], function(module) {
       $notificationService,
       $scope
     ) {
-      this.scope = $scope;
-      this.data = syscollector;
-      this.httpReq = $requestService.httpReq;
-      this.root = $rootScope;
-      this.toast = $notificationService.showSimpleToast;
+      this.scope = $scope
+      this.data = syscollector
+      this.httpReq = $requestService.httpReq
+      this.root = $rootScope
+      this.toast = $notificationService.showSimpleToast
     }
 
     /**
@@ -33,7 +33,7 @@ define(['../../module'], function(module) {
      * @param {String} specificPath
      */
     search(term, specificPath) {
-      this.scope.$broadcast('wazuhSearch', { term, specificPath });
+      this.scope.$broadcast('wazuhSearch', { term, specificPath })
     }
 
     /**
@@ -42,16 +42,16 @@ define(['../../module'], function(module) {
     $onInit() {
       try {
         this.scope.search = (term, specificPath) => {
-          this.search(term, specificPath);
-        };
-        this.scope.agent = this.data[5].data.data;
+          this.search(term, specificPath)
+        }
+        this.scope.agent = this.data[5].data.data
         this.scope.getAgentStatusClass = agentStatus =>
-          agentStatus === 'Active' ? 'teal' : 'red';
+          agentStatus === 'Active' ? 'teal' : 'red'
         this.scope.formatAgentStatus = agentStatus => {
           return ['Active', 'Disconnected'].includes(agentStatus)
             ? agentStatus
-            : 'Never connected';
-        };
+            : 'Never connected'
+        }
         if (
           !this.data[0] ||
           !this.data[0].data ||
@@ -64,17 +64,17 @@ define(['../../module'], function(module) {
           typeof this.data[1].data.data !== 'object' ||
           !Object.keys(this.data[1].data.data).length
         ) {
-          this.scope.syscollector = null;
+          this.scope.syscollector = null
         } else {
-          const netiface = {};
-          const ports = {};
-          const packagesDate = {};
+          const netiface = {}
+          const ports = {}
+          const packagesDate = {}
           if (this.data[2] && this.data[2].data && this.data[2].data.data)
-            Object.assign(netiface, this.data[2].data.data);
+            Object.assign(netiface, this.data[2].data.data)
           if (this.data[3] && this.data[3].data && this.data[3].data.data)
-            Object.assign(ports, this.data[3].data.data);
+            Object.assign(ports, this.data[3].data.data)
           if (this.data[4] && this.data[4].data && this.data[4].data.data)
-            Object.assign(packagesDate, this.data[4].data.data);
+            Object.assign(packagesDate, this.data[4].data.data)
           this.scope.syscollector = {
             hardware: this.data[0].data.data,
             os: this.data[1].data.data,
@@ -84,14 +84,14 @@ define(['../../module'], function(module) {
               packagesDate && packagesDate.items && packagesDate.items.length
                 ? packagesDate.items[0].scan_time
                 : 'Unknown'
-          };
+          }
         }
-        return;
+        return
       } catch (error) {
-        this.toast(error.message || error);
+        this.toast(error.message || error)
       }
     }
   }
   // Logs controller
-  module.controller('inventoryCtrl', Inventory);
-});
+  module.controller('inventoryCtrl', Inventory)
+})
