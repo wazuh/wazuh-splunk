@@ -33,7 +33,7 @@ def diff_keys_dic_update_api(kwargs_dic):
                 diff.append(key)
         return str(', '.join(diff))
     except Exception as e:
-        return "Error comparing diccionaries"
+        return "Error comparing dictionaries"
 
 class manager(controllers.BaseController):
     def __init__(self):
