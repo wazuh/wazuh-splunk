@@ -60,6 +60,9 @@ define(['../module'], function(module) {
           'remote.ip': 'Remote IP',
           'local.port': 'Local port',
           'remote.port': 'Remote port'
+          uname: 'User',
+          gname: 'Group',
+          perm: 'Permissions'
         }
       }
     }

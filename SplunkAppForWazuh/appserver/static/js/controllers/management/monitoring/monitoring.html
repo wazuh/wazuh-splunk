@@ -81,13 +81,29 @@
           <md-divider class="wz-margin-top-10"></md-divider>
           <!-- Nodes -->
           <div layout="row" class="wz-padding-top-10 cursor-pointer" ng-click="goNodes()">
-            <span flex="25" class="wz-text-link" tooltip="Click to open the list of nodes" tooltip-placement="left">Nodes</span>
-            <span class="wz-text-link" tooltip="Click to open the list of nodes" tooltip-placement="right">{{nodesCount}}</span>
+            <span flex="25" class="wz-text-link">Nodes
+              <md-tooltip md-direction="left" class="wz-tooltip">
+                Click to open the list of nodes
+              </md-tooltip>
+            </span>
+            <span class="wz-text-link">{{nodesCount}}
+              <md-tooltip md-direction="right" class="wz-tooltip">
+                Click to open the list of nodes
+              </md-tooltip>
+            </span>
           </div>
           <!-- Agents -->
           <div layout="row" class="wz-padding-top-10 cursor-pointer" ui-sref='agents'>
-            <span flex="25" class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="left">Agents</span>
-            <span class="wz-text-link" tooltip="Click to open the list of agents" tooltip-placement="right">{{agentsCount}}</span>
+            <span flex="25" class="wz-text-link">Agents
+              <md-tooltip md-direction="left" class="wz-tooltip">
+                Click to open the list of agents
+              </md-tooltip>
+            </span>
+            <span class="wz-text-link">{{agentsCount}}
+              <md-tooltip md-direction="right" class="wz-tooltip">
+                Click to open the list of agents
+              </md-tooltip>             
+            </span>
           </div>
         </md-card-content>
       </md-card>

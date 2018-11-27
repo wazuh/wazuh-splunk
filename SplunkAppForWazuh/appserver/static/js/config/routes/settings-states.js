@@ -128,7 +128,27 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('dev-tools')
           },
-          controller: 'devToolsCtrl'
+          controller: 'devToolsCtrl',
+          resolve: {
+            extensions: [
+              '$requestService',
+              '$currentDataService',
+              async ($requestService, $currentDataService) => {
+                try {
+                  const id = $currentDataService.getApi().id;
+                  const currentExtensions = $currentDataService.getExtensions(
+                    id
+                  );
+                  const result = currentExtensions
+                    ? currentExtensions
+                    : $requestService.httpReq(`GET`, `/manager/extensions`);
+                  return await result;
+                } catch (err) {
+                  console.error('Error route: ', err);
+                }
+              }
+            ]
+          }
         })
         .state('discover', {
           templateUrl:
