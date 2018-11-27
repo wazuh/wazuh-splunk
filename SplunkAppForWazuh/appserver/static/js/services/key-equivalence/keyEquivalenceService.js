@@ -57,7 +57,10 @@ define(['../module'], function(module) {
           address: 'Address',
           protocol: 'Protocol',
           'local.ip': 'Local',
-          'remote.ip': 'Remote'
+          'remote.ip': 'Remote',
+          uname: 'User name',
+          gname: 'Group name',
+          perm: 'Permissions'
         }
       }
     }
