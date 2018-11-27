@@ -9,13 +9,12 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wazuhBar', function ($notificationService, BASE_URL) {
+  directives.directive('wazuhBar', function($notificationService, BASE_URL) {
     return {
       restrict: 'E',
-      controller: function ($scope, $currentDataService) {
-
+      controller: function($scope, $currentDataService) {
         /**
          * Prettifies filters for md-chips
          * @returns {Array}
@@ -41,16 +40,20 @@ define(['../module'], function (directives) {
          */
         $scope.filterStatic = filter => {
           const key = filter.split(':')[0]
-          const staticTrue = $currentDataService.getFilters().filter(item => !!item.implicit)
-          const isIncluded = staticTrue.filter(item => typeof item[key] !== 'undefined')
+          const staticTrue = $currentDataService
+            .getFilters()
+            .filter(item => !!item.implicit)
+          const isIncluded = staticTrue.filter(
+            item => typeof item[key] !== 'undefined'
+          )
           return !!isIncluded.length
         }
 
         /**
          * Removes a filter on click
-         * @param {String}: The filter to be removed 
+         * @param {String}: The filter to be removed
          */
-        $scope.removeFilter = (filter) => {
+        $scope.removeFilter = filter => {
           const index = $scope.filters.indexOf(filter)
           if (index > -1) {
             $currentDataService.removeFilter($scope.filters[index])
@@ -61,15 +64,22 @@ define(['../module'], function (directives) {
 
         /**
          * Applies the written filter to visualizations
-         * @param {Object | String} filter 
+         * @param {Object | String} filter
          */
-        $scope.applyFilters = (customSearch) => {
+        $scope.applyFilters = customSearch => {
           try {
-            if (!customSearch || customSearch.split(':').length !== 2 || customSearch.split(':')[1].length === 0) {
+            if (
+              !customSearch ||
+              customSearch.split(':').length !== 2 ||
+              customSearch.split(':')[1].length === 0
+            ) {
               throw new Error('Incorrent format. Please use key:value syntax')
-
             }
-            $currentDataService.addFilter(`{"${customSearch.split(':')[0]}":"${customSearch.split(':')[1]}"}`)
+            $currentDataService.addFilter(
+              `{"${customSearch.split(':')[0]}":"${
+                customSearch.split(':')[1]
+              }"}`
+            )
             $scope.filters = getPrettyFilters()
             $scope.$emit('barFilter', {})
             if (!$scope.$$phase) $scope.$digest()
@@ -78,7 +88,9 @@ define(['../module'], function (directives) {
           }
         }
       },
-      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
     }
   })
 })

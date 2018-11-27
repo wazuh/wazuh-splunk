@@ -10,19 +10,19 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'splunkjs/mvc'], function (module) {
+define(['../module', 'splunkjs/mvc'], function(module) {
   'use strict'
   /**
    * Class that handles dynamic table methods
    */
-  module.service('$dataService', function ($requestService) {
+  module.service('$dataService', function($requestService) {
     return class DataFactory {
       /**
        * Class constructor
-       * @param {String} path 
-       * @param {Object} implicitFilter 
+       * @param {String} path
+       * @param {Object} implicitFilter
        */
-      constructor(path,implicitFilter) {
+      constructor(path, implicitFilter) {
         this.implicitFilter = implicitFilter || false
         this.items = []
         this.path = path
@@ -30,12 +30,12 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         this.sortValue = false
         this.sortDir = false
         this.sortValue = false
-        if(this.implicitFilter) this.filters.push(...this.implicitFilter)
+        if (this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
       /**
        * Sorts table by a value
-       * @param {String} value 
+       * @param {String} value
        */
       addSorting(value) {
         this.sortValue = value
@@ -47,12 +47,12 @@ define(['../module', 'splunkjs/mvc'], function (module) {
        */
       removeFilters() {
         this.filters = []
-        if(this.implicitFilter) this.filters.push(...this.implicitFilter)
+        if (this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
 
       /**
        * Serializes filters
-       * @param {Object} parameters 
+       * @param {Object} parameters
        */
       serializeFilters(parameters) {
         if (this.sortValue) {
@@ -66,8 +66,8 @@ define(['../module', 'splunkjs/mvc'], function (module) {
 
       /**
        * Adds a filter to the table
-       * @param {String} filterName 
-       * @param {String} value 
+       * @param {String} filterName
+       * @param {String} value
        */
       addFilter(filterName, value) {
         this.filters = this.filters.filter(filter => filter.name !== filterName)
@@ -81,7 +81,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
 
       /**
        * Performs a HTTP request for fetching data
-       * @param {Object} options 
+       * @param {Object} options
        */
       async fetch(options = {}) {
         try {
@@ -102,10 +102,14 @@ define(['../module', 'splunkjs/mvc'], function (module) {
 
           const totalItems = firstPage.data.data.totalItems
 
-          const remaining = this.items.length === totalItems ? 0 : totalItems - this.items.length
+          const remaining =
+            this.items.length === totalItems
+              ? 0
+              : totalItems - this.items.length
 
           // Ignore manager as an agent, once the team solves this issue, review this line
-          if (this.path === '/agents') this.items = this.items.filter(item => item.id !== '000')
+          if (this.path === '/agents')
+            this.items = this.items.filter(item => item.id !== '000')
 
           if (remaining > 0) this.items.push(...Array(remaining).fill(null))
 
@@ -113,7 +117,6 @@ define(['../module', 'splunkjs/mvc'], function (module) {
           const elapsed = (end - start) / 1000
 
           return { items: this.items, time: elapsed }
-
         } catch (error) {
           return Promise.reject(error)
         }
@@ -128,7 +131,7 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         this.sortValue = false
         this.sortDir = false
         this.sortValue = false
-        if(this.implicitFilter) this.filters.push(...this.implicitFilter)
+        if (this.implicitFilter) this.filters.push(...this.implicitFilter)
       }
     }
   })

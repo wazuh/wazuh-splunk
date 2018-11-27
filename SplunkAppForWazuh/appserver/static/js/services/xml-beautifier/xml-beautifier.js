@@ -42,7 +42,7 @@ define([], function() {
       'other->opening': 0,
       'other->other': 0
     }
-  
+
     for (const ln of lines) {
       // Luca Viggiani 2017-07-03: handle optional <?xml ... ?> declaration
       if (ln.match(/\s*<\?xml/)) {
@@ -50,21 +50,21 @@ define([], function() {
         continue
       }
       // ---
-  
+
       const single = Boolean(ln.match(/<.+\/>/)) // is this line a single tag? ex. <br />
       const closing = Boolean(ln.match(/<\/.+>/)) // is this a closing tag? ex. </a>
       const opening = Boolean(ln.match(/<[^!].*>/)) // is this even a tag (that's not <!something>)
       const type = single
         ? 'single'
         : closing
-          ? 'closing'
-          : opening
-            ? 'opening'
-            : 'other'
+        ? 'closing'
+        : opening
+        ? 'opening'
+        : 'other'
       const fromTo = lastType + '->' + type
       lastType = type
       let padding = ''
-  
+
       indent += transitions[fromTo]
       for (let j = 0; j < indent; j++) {
         padding += '\t'
@@ -74,8 +74,7 @@ define([], function() {
       // substr removes line break (\n) from prev loop
       else formatted += padding + ln + '\n'
     }
-  
+
     return formatted
   }
-  
 })

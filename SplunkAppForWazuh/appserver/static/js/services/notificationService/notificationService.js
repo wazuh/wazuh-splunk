@@ -1,7 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$notificationService', function ($mdToast) {
-
+  module.service('$notificationService', function($mdToast) {
     let last = {
       bottom: true,
       top: false,
@@ -15,7 +14,9 @@ define(['../module'], function (module) {
       sanitizePosition()
 
       return Object.keys(toastPosition)
-        .filter((pos) => { return toastPosition[pos] })
+        .filter(pos => {
+          return toastPosition[pos]
+        })
         .join(' ')
     }
 
@@ -30,11 +31,12 @@ define(['../module'], function (module) {
       last = angular.extend({}, current)
     }
 
-    let showSimpleToast = (text) => {
+    let showSimpleToast = text => {
       let pinTo = getToastPosition()
 
       $mdToast.show(
-        $mdToast.simple()
+        $mdToast
+          .simple()
           .textContent(text)
           .position(pinTo)
           .hideDelay(2000)

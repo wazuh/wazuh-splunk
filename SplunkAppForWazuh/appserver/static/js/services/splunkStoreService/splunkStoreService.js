@@ -1,14 +1,16 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$splunkStoreService', function ($requestService) {
-
+  module.service('$splunkStoreService', function($requestService) {
     /**
      * Select an API by ID
-     * @param {Object} id 
+     * @param {Object} id
      */
-    const getAllApis = async (id) => {
+    const getAllApis = async id => {
       try {
-        const { data } = await $requestService.httpReq(`GET`, `/manager/get_apis`)
+        const { data } = await $requestService.httpReq(
+          `GET`,
+          `/manager/get_apis`
+        )
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -17,11 +19,15 @@ define(['../module'], function (module) {
 
     /**
      * Select an API by ID
-     * @param {Object} id 
+     * @param {Object} id
      */
-    const getApiById = async (id) => {
+    const getApiById = async id => {
       try {
-        const { data } = await $requestService.httpReq(`GET`, `/manager/get_api`, { id: id })
+        const { data } = await $requestService.httpReq(
+          `GET`,
+          `/manager/get_api`,
+          { id: id }
+        )
         return data[0]
       } catch (err) {
         return Promise.reject(err)
@@ -30,13 +36,17 @@ define(['../module'], function (module) {
 
     /**
      * Inserts an entry
-     * @param {Object} payload 
+     * @param {Object} payload
      */
-    const insert = async (payload) => {
+    const insert = async payload => {
       try {
-        const { data } = await $requestService.httpReq(`POST`, `manager/add_api`, $.param({
-          payload
-        }))
+        const { data } = await $requestService.httpReq(
+          `POST`,
+          `manager/add_api`,
+          $.param({
+            payload
+          })
+        )
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -45,15 +55,18 @@ define(['../module'], function (module) {
 
     /**
      * DELETE method
-     * @param {String} url 
+     * @param {String} url
      */
-    const deletes = async (id) => {
+    const deletes = async id => {
       try {
-        const { data } = await $requestService.httpReq(`POST`, `manager/remove_api`, $.param({
-          id
-        }))
-        if (data.error || data.status === 400)
-          throw new Error(data.error)
+        const { data } = await $requestService.httpReq(
+          `POST`,
+          `manager/remove_api`,
+          $.param({
+            id
+          })
+        )
+        if (data.error || data.status === 400) throw new Error(data.error)
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -62,14 +75,18 @@ define(['../module'], function (module) {
 
     /**
      * Update a record
-     * @param {String} key 
+     * @param {String} key
      * @param {Object} newRegister: The API to update
      */
-    const update = async (newRegister) => {
+    const update = async newRegister => {
       try {
-        const { data } = await $requestService.httpReq(`POST`, `manager/update_api`, $.param({
-          newRegister
-        }))
+        const { data } = await $requestService.httpReq(
+          `POST`,
+          `manager/update_api`,
+          $.param({
+            newRegister
+          })
+        )
         return data
       } catch (err) {
         return Promise.reject(err)

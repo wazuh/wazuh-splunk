@@ -17,8 +17,11 @@
   <!-- Back button and title -->
   <div layout="row" layout-align="start center">
     <!-- Back button -->
-    <md-button class="md-icon-button" aria-label="Back to decoders list" tooltip="Back" tooltip-placement="bottom" ui-sref='mg-decoders'>
+    <md-button class="md-icon-button" aria-label="Back to decoders list" ui-sref='mg-decoders'>
       <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+      <md-tooltip md-direction="bottom" class="wz-tooltip">
+        Back
+      </md-tooltip>
     </md-button>
     <!-- Decoder title -->
     <h1 class="md-headline wz-headline">{{currentDecoder.name}}</h1>
@@ -33,12 +36,18 @@
           <span class="wz-text-bold">{{currentDecoder.position}}</span>
         </div>
         <div flex="40" ng-if="currentDecoder.file" class="wz-text-truncatable">File:
-          <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('file', currentDecoder.file)" tooltip="Filter by this file"
-            tooltip-placement="bottom">{{currentDecoder.file}}</span>
+          <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('file', currentDecoder.file)">{{currentDecoder.file}}
+            <md-tooltip md-direction="bottom" class="wz-tooltip">
+              Filter by this file
+            </md-tooltip>
+          </span>
         </div>
         <div flex="40" ng-if="currentDecoder.path" class="wz-text-truncatable">Path:
-          <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('path', currentDecoder.path)" tooltip="Filter by this path"
-            tooltip-placement="bottom">{{currentDecoder.path}}</span>
+          <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('path', currentDecoder.path)">{{currentDecoder.path}}
+            <md-tooltip md-direction="bottom" class="wz-tooltip">
+              Filter by this path
+            </md-tooltip>
+          </span>
         </div>
       </md-card-content>
     </md-card>
@@ -198,7 +207,12 @@
       </wazuh-table>
     </div>
     <!-- End related decoders section -->
-
+    <div layout="row" class="wz-margin-top-10">
+      <span flex></span>
+      <a class="small" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">Formatted
+        <i aria-hidden="true" class="fa fa-download"></i>
+      </a>
+    </div>
   </div>
   <!-- End rest of decoder information -->
 </div>

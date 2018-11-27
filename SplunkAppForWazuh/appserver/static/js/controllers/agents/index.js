@@ -3,6 +3,7 @@ define([
   './audit/agentsAuditCtrl',
   './configuration/agentConfigCtrl',
   './fim/agentsFimCtrl',
+  './virustotal/agentsVirusTotalCtrl',
   './gdpr/agentsGdprCtrl',
   './general/agentsGeneralCtrl',
   './inventory/inventoryCtrl',
@@ -11,5 +12,6 @@ define([
   './pcidss/agentsPciCtrl',
   './policy-monitoring/agentsPolicyMonitoringCtrl',
   './scap/agentsOpenScapCtrl',
+  './ciscat/agentsCiscatCtrl',
   './vulnerabilities/agentsVulnerabilitiesCtrl'
-],function(){})
+], function() {})

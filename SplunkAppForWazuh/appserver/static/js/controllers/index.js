@@ -11,4 +11,4 @@ define([
   './dev-tools/devToolsCtrl',
   // Main
   './main/mainCtrl'
-], function () {})
+], function() {})

@@ -54,7 +54,7 @@
   </table>
 </div>
 
-<div layout="row" ng-if="!wazuh_table_loading && !totalItems">
+<div layout="row" ng-if="!error && !wazuh_table_loading && !totalItems">
   <div flex class="euiCallOut euiCallOut--warning" data-test-subj="discoverNoResults">
     <div class="euiCallOutHeader">
       <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"

@@ -7,5 +7,5 @@ define([
   './monitoring/monitoringCtrl',
   './rules/managerRulesetCtrl',
   './rules/managerRulesetIdCtrl',
-  './status/statusCtrl',
-], function () {})
+  './status/statusCtrl'
+], function() {})

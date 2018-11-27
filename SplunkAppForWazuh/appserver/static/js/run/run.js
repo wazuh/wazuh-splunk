@@ -24,10 +24,9 @@ define(['./module'], function (module) {
       }
 
       $transitions.onBefore({}, async (trans) => {
-        $rootScope.$broadcast('loading: ', { status: true })
       })
 
-      $transitions.onStart({}, async (trans) => {
+      $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
         //Primary states
@@ -54,13 +53,17 @@ define(['./module'], function (module) {
         }
       })
 
-      $transitions.onError({}, async (trans) => {
+      $transitions.onError({}, async trans => {
         const err = trans.error()
-        if (trans.to().name != 'settings.api' && err.message == 'The transition was ignored') { $state.reload() }
+        if (
+          trans.to().name != 'settings.api' &&
+          err.message == 'The transition was ignored'
+        ) {
+          $state.reload()
+        }
       })
 
-      $transitions.onFinish({}, async (trans) => {
-      })
-
-    }])
+    }
+  ])
 })
+

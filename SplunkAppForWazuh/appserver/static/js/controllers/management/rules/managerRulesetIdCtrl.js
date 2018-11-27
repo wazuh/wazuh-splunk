@@ -1,38 +1,57 @@
-define(['../../module','./ruleset'], function (controllers, Ruleset) {
-  
+define(['../../module', './ruleset'], function(controllers, Ruleset) {
   'use strict'
-  
+
   class RulesetId extends Ruleset {
-    constructor($scope, $sce, $notificationService, $state, ruleInfo) {
-      super($scope,$sce,$notificationService,'ruleset')
+    constructor(
+      $scope,
+      $sce,
+      $notificationService,
+      $state,
+      ruleInfo,
+      $currentDataService,
+      $tableFilterService,
+      $csvRequestService
+    ) {
+      super(
+        $scope,
+        $sce,
+        $notificationService,
+        'ruleset',
+        $currentDataService,
+        $tableFilterService,
+        $csvRequestService
+      )
       this.state = $state
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
-      } catch(err){ this.filters = [] }
-      
+      } catch (err) {
+        this.filters = []
+      }
+
       this.scope.ruleInfo = ruleInfo.data.data.items[0]
     }
-    
-    $onInit(){
-      this.scope.addDetailFilter = (name,value) => this.addDetailFilter(name,value)
+
+    $onInit() {
+      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+      this.scope.addDetailFilter = (name, value) =>
+        this.addDetailFilter(name, value)
     }
-    
+
     /**
-    * Adds a filter
-    * @param {String} name 
-    * @param {String} value 
-    */
-    addDetailFilter (name, value) {
-      try{
+     * Adds a filter
+     * @param {String} name
+     * @param {String} value
+     */
+    addDetailFilter(name, value) {
+      try {
         const filter = { name: name, value: value }
         this.filters.push(filter)
         window.localStorage.setItem('ruleset', JSON.stringify(this.filters))
         this.state.go('mg-rules')
-      } catch(err) {
+      } catch (err) {
         this.toast(err.message || err)
       }
     }
-    
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)
 })
