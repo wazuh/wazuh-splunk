@@ -46,7 +46,7 @@ define([
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
+      this.scope.showFiles = true
       this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
@@ -122,6 +122,7 @@ define([
     }
 
     $onInit() {
+      this.scope.show = () => this.show()
       this.scope.search = term => {
         this.scope.$broadcast('wazuhSearch', { term })
       }
@@ -135,6 +136,12 @@ define([
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
     }
 
+    show(){
+      console.log('showing')
+      this.scope.showFiles = !this.scope.showFiles 
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
+    }
     /**
      * Exports the table in CSV format
      */
