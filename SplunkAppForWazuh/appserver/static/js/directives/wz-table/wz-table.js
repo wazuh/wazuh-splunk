@@ -408,9 +408,13 @@ define(['../module', 'underscore'], function(directives, _) {
             ? (item.local && item.local.port
                 ? `${item.local.port}`
                 : false) || '-'
-            : key === 'remote.ip'
+            : key.value === 'remote.ip'
             ? (item.remote && item.remote.ip
-                ? `${item.remote.ip}:${item.remote.port}`
+                ? `${item.remote.ip}`
+                : false) || '-'
+            : key.value === 'remote.port'
+            ? (item.remote && item.remote.port
+                ? `${item.remote.port}`
                 : false) || '-'
             : key === 'os.name'
             ? (item.os && item.os.name ? item.os.name : false) || '-'
