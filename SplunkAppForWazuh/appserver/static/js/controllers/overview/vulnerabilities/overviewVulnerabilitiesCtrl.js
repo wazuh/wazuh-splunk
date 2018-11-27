@@ -38,7 +38,7 @@ define([
         this.launchSearches()
       })
 
-      const vizz = [
+      this.vizz = [
         /**
          * Metrics
          */
