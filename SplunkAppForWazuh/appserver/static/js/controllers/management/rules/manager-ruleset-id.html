@@ -19,8 +19,11 @@
     <!-- Back button and title -->
     <div layout="row" layout-align="start center">
       <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to rules list" tooltip="Back" tooltip-placement="bottom" ui-sref='mg-rules'>
+      <md-button class="md-icon-button" aria-label="Back to rules list" ui-sref='mg-rules'>
         <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          Back
+        </md-tooltip>
       </md-button>
       <!-- Rule title -->
       <h1 class="md-headline wz-headline" ng-bind-html="colorRuleArg(ruleInfo.description)"></h1>
@@ -36,16 +39,25 @@
             <span class="wz-text-bold">{{ruleInfo.id}}</span>
           </div>
           <div flex="15" ng-if="ruleInfo.level || ruleInfo.level == 0" class="wz-text-truncatable">Level:
-            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('level', ruleInfo.level)" tooltip="Filter by this level"
-              tooltip-placement="bottom">{{ruleInfo.level}}</span>
+            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('level', ruleInfo.level)">{{ruleInfo.level}}
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
+                Filter by this level
+              </md-tooltip>
+            </span>
           </div>
           <div flex="35" ng-if="ruleInfo.file" class="wz-text-truncatable">File:
-            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('file', ruleInfo.file)" tooltip="Filter by this file"
-              tooltip-placement="bottom">{{ruleInfo.file}}</span>
+            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('file', ruleInfo.file)">{{ruleInfo.file}}
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
+                Filter by this file
+              </md-tooltip>
+            </span>
           </div>
           <div flex="35" ng-if="ruleInfo.path" class="wz-text-truncatable">Path:
-            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('path', ruleInfo.path)" tooltip="Filter by this path"
-              tooltip-placement="bottom">{{ruleInfo.path}}</span>
+            <span class="wz-text-bold wz-text-link" ng-click="addDetailFilter('path', ruleInfo.path)">{{ruleInfo.path}}
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
+                Filter by this path
+              </md-tooltip>
+            </span>
           </div>
 
         </md-card-content>
@@ -65,9 +77,12 @@
               <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> Groups</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
-              <md-button class="md-primary wz-text-link" tooltip="Filter by this group" tooltip-placement="bottom" ng-repeat="item in ruleInfo.groups"
+              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.groups"
                 ng-click="addDetailFilter('group', item)">
                 {{item}}
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Filter by this group
+                </md-tooltip>
               </md-button>
             </div>
           </md-card-content>
@@ -163,9 +178,12 @@
               <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> PCI</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
-              <md-button class="md-primary wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom" ng-repeat="item in ruleInfo.pci"
+              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.pci"
                 ng-click="addDetailFilter('pci', item)">
                 {{item}}
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Filter by this requirement
+                </md-tooltip>
               </md-button>
             </div>
           </md-card-content>
@@ -179,9 +197,12 @@
               <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> GDPR</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
-              <md-button class="md-primary wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom" ng-repeat="item in ruleInfo.gdpr"
+              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.gdpr"
                 ng-click="addDetailFilter('gdpr', item)">
                 {{item}}
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Filter by this requirement
+                </md-tooltip>
               </md-button>
             </div>
           </md-card-content>
