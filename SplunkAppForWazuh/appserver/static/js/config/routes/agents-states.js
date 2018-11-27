@@ -111,16 +111,11 @@ define(['../module'], function(module) {
             extensions: [
               '$requestService',
               '$currentDataService',
-              async ($requestService, $currentDataService) => {
+              async ($currentDataService) => {
                 try {
                   const id = $currentDataService.getApi().id
-                  const currentExtensions = $currentDataService.getExtensions(
-                    id
-                  )
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`)
-                  return await result
+                  const result = $currentDataService.getExtensionsById(id)
+                  return result
                 } catch (err) {
                   return false
                 }
