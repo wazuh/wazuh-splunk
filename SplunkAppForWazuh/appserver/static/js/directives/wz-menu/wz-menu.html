@@ -40,27 +40,39 @@
   
       <!-- API/Index pattern section -->
       <!-- Case 1a - There's API -->
-      <span ng-show="theresAPI" class="small" tooltip="Selected API" tooltip-placement="bottom">
+      <span ng-show="theresAPI" class="small">
         <i class="fa fa-star fa-fw wz-color-orange" aria-hidden="true"></i>{{currentAPI}}
         <span>&nbsp;&ndash;&nbsp;</span>
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          "Selected API
+        </md-tooltip>
       </span>
   
       <!-- Case 1b - There's no API -->
-      <span ng-show="!theresAPI" class="small" tooltip="No API credentials inserted" tooltip-placement="bottom">
+      <span ng-show="!theresAPI" class="small">
         No API
         <span ng-if="showSelector">&nbsp;&ndash;&nbsp;</span>
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          No API credentials inserted
+        </md-tooltip>
       </span>
   
   
       <!-- Case 2b - There's pattern and there's only one-->
-      <span ng-if="theresAPI" class="small" tooltip="Selected index pattern" tooltip-placement="bottom">
+      <span ng-if="theresAPI" class="small">
         {{currentIndex}}
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          Selected index pattern
+        </md-tooltip>
       </span>
   
       <!-- Settings tab button -->
       <md-button class="wz-menu-button md-icon-button" ui-sref='settings.api' ng-click="select('settings')" ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
         aria-label="Settings tab">
         <i class="fa fa-cog" aria-hidden="true"></i>
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          Settings
+        </md-tooltip>
       </md-button>
   
     </div>

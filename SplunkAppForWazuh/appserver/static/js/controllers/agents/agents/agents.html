@@ -36,12 +36,24 @@
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-padding-top-10">
           <p flex="35" class="manager-status-subtitle">Last registered agent</p>
-          <p ng-if="lastAgent.id !== '000'" class="wz-text-right wz-text-bold wz-text-link" tooltip="Click to open this agent" tooltip-placement="right" ng-click="showAgent(lastAgent)">{{lastAgent.name}}</p>
-          <p ng-if="lastAgent.id === '000'" class="wz-text-right wz-text-bold wz-text-link" tooltip-placement="right">{{lastAgent.name}} (manager)</p>
+          <p ng-if="lastAgent.id !== '000'" class="wz-text-right wz-text-bold wz-text-link" ng-click="showAgent(lastAgent)">{{lastAgent.name}}
+            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+              Click to open this agent
+            </md-tooltip>
+          </p>
+          <p ng-if="lastAgent.id === '000'" class="wz-text-right wz-text-bold wz-text-link">{{lastAgent.name}} (manager)
+            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+              Click to open this agent
+            </md-tooltip>
+          </p>
         </div>
         <div layout="row" class="wz-padding-top-10">
           <p flex="35" class="manager-status-subtitle">Higher activity</p>
-          <p ng-show='!loadingSearch' class="wz-text-right wz-text-bold wz-text-link" tooltip="Click to open this agent" ng-click="showAgent(mostActiveAgent)" tooltip-placement="right" >{{mostActiveAgent}}</p>
+          <p ng-show='!loadingSearch' class="wz-text-right wz-text-bold wz-text-link" ng-click="showAgent(mostActiveAgent)">{{mostActiveAgent}}
+            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+              Click to open this agent
+            </md-tooltip>
+          </p>
           <md-progress-circular class="wz-text-right" md-mode="indeterminate" ng-show="loadingSearch"></md-progress-circular>
         </div>
       </md-card-content>
