@@ -11,7 +11,7 @@
  */
 define([], function() {
   'use strict'
-  return function() {
+  return function(xml) {
     const reg = /(>)\s*(<)(\/*)/g // updated Mar 30, 2015
     const wsexp = / *(.*) +\n/g
     const contexp = /(<.+>)(.+\n)/g

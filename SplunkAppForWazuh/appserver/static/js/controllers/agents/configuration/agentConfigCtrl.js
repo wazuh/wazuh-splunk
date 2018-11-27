@@ -59,7 +59,7 @@ define(['../../module', '../../../utils/config-handler'], function(
           ? agentStatus
           : 'Never connected'
       }
-      // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
+      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
       this.$scope.isString = item => typeof item === 'string'
       this.$scope.hasSize = obj =>
