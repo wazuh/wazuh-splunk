@@ -58,9 +58,9 @@ define(['../module'], function(module) {
           controller: 'extensionsCtrl',
           resolve: {
             extensions: [
-              '$requestService',
+              '$state',
               '$currentDataService',
-              async ($currentDataService) => {
+              async ($state, $currentDataService) => {
                 try {
                   const id = $currentDataService.getApi().id
                   const currentExtensions = await $currentDataService.getExtensionsById(
@@ -112,18 +112,15 @@ define(['../module'], function(module) {
           controller: 'devToolsCtrl',
           resolve: {
             extensions: [
-              '$requestService',
+              '$state',
               '$currentDataService',
-              async ($requestService, $currentDataService) => {
+              async ($state, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi().id;
-                  const currentExtensions = $currentDataService.getExtensions(
+                  const id = $currentDataService.getApi().id
+                  const currentExtensions = await $currentDataService.getExtensionsById(
                     id
-                  );
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`);
-                  return await result;
+                  )
+                  return await currentExtensions
                 } catch (err) {
                   $state.go('settings.api')
                 }
