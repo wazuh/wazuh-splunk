@@ -12,12 +12,12 @@ define(['./module'], function (module) {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
-          $navigationService.storeRoute(state.label)
+          $navigationService.storeRoute(state)
           $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
         } catch (err) {
           $rootScope.$broadcast('loading', { status: false })
-          if (state.label != 'settings.api')
+          if (state != 'settings.api')
             $rootScope.$broadcast('stateChanged', 'settings')
           $state.go('settings.api')
         }
@@ -29,19 +29,15 @@ define(['./module'], function (module) {
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
-        //Primary states
-        if (to === 'dev-tools') { await checkBeforeTransition({ label: 'dev-tools', state: 'dev-tools' }) }
-        if (to === 'settings.api') { await checkBeforeTransition({ label: 'settings.api', state: 'settings' }) }
-        if (to === 'agents') { await checkBeforeTransition({ label: 'agents', state: 'agents' }) }
-        if (to === 'overview') { await checkBeforeTransition({ label: 'overview', state: 'overview' }) }
-        if (to === 'manager') { await checkBeforeTransition({ label: 'manager', state: 'manager' }) }
+        await checkBeforeTransition(to)
       })
 
       $transitions.onSuccess({}, async (trans) => {
         $rootScope.$broadcast('loading', { status: false })
         const to = trans.to().name
-        $rootScope.$broadcast('stateChanged', trans.to().name)
-        //Secondary states
+        //Select primary states
+        $rootScope.$broadcast('stateChanged', to)
+        //Select secondary states
         if (to !== 'agents' && to.includes('agent') || to.includes('ag-')) {
           $rootScope.$broadcast('stateChanged', 'agents')
         } else if (to.includes('ow-')) {
