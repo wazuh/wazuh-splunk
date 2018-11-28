@@ -9,6 +9,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added extension management features ([#330](https://github.com/wazuh/wazuh-splunk/pull/330)).
 - Added native Angular.js md-tooltips ([#362](https://github.com/wazuh/wazuh-splunk/pull/362)).
 - Added export as CSV option for multiple tables ([#348](https://github.com/wazuh/wazuh-splunk/pull/348)).
+- Added VirusTotal integration ([#340](https://github.com/wazuh/wazuh-splunk/pull/340))
+- Added CIS-CAT integration ([#342](https://github.com/wazuh/wazuh-splunk/pull/342))
 
 ### Changed
 
