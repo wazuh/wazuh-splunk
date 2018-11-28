@@ -109,7 +109,6 @@ define(['../module'], function (module) {
               }
             ],
             extensions: [
-              '$requestService',
               '$currentDataService',
               async ($currentDataService) => {
                 try {
