@@ -151,7 +151,6 @@ define([
         saveAs(blob, name)
         return
       } catch (error) {
-        console.error('error ', error)
         this.toast('Error downloading CSV')
       }
       return
