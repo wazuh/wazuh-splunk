@@ -26,7 +26,7 @@ define(['../module'], function (module) {
           resolve: {
             monitoringInfo: [
               '$requestService',
-              '$stateParams',
+              '$state',
               async ($requestService, $state) => {
                 try {
                   const result = await Promise.all([
@@ -93,7 +93,8 @@ define(['../module'], function (module) {
           resolve: {
             ruleInfo: [
               '$requestService',
-              '$stateParams', $state,
+              '$stateParams', 
+              '$state',
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService
