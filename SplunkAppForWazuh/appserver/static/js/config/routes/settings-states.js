@@ -42,7 +42,7 @@ define(['../module'], function(module) {
                 try {
                   return await $currentDataService.getApiList()
                 } catch (error) {
-                  $state.go('settings.api')
+                  console.error('Could not fetch API list')
                 }
               }
             ]
@@ -91,8 +91,8 @@ define(['../module'], function(module) {
           controller: 'logsCtrl',
           resolve: {
             logs: [
-              '$requestService',
-              async ($requestService) => {
+              '$requestService','$state',
+              async ($requestService, $state) => {
                 try {
                   return await $requestService.httpReq(`GET`, `/manager/get_log_lines`)
                 } catch (error) {
