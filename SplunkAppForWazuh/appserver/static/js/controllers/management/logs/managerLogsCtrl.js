@@ -60,7 +60,6 @@ define(['../../module', 'FileSaver'], function(app) {
         }
         return
       } catch (error) {
-        console.error('error ', error)
         this.toast('Error downloading CSV')
       }
       return
@@ -112,7 +111,6 @@ define(['../../module', 'FileSaver'], function(app) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (err) {
-        console.error('err ', err)
         this.toast('Error initializing data')
       }
       return

@@ -30,7 +30,6 @@ define(['../../module'], function(module) {
           this.parseLogs(this.logs.data.logs)
         }
       } catch (error) {
-        console.error('err', error)
         this.scope.logs = [
           {
             date: new Date(),
@@ -96,7 +95,6 @@ define(['../../module'], function(module) {
         this.parseLogs(result.data.logs)
         return
       } catch (error) {
-        console.error('err', error)
         this.scope.logs = [
           {
             date: new Date(),

@@ -53,7 +53,7 @@ define([
       this.groups = [];
       this.linesWithClass = [];
       this.widgets = [];
-      this.admin = ( extensions.data['admin'] === 'true') ? true : false;
+      this.admin = ( extensions['admin'] === 'true') ? true : false;
     }
 
     unescapeBuffer(s, decodeSpaces) {
