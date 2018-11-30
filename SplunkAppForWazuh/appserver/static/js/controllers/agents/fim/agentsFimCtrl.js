@@ -32,7 +32,7 @@ define([
     ) {
       this.state = $state
       this.wzTableFilter = $tableFilterService
-      this.currentDataService = this.currentDataService
+      this.currentDataService = $currentDataService
 
       this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
