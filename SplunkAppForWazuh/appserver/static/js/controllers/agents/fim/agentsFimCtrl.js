@@ -32,15 +32,17 @@ define([
     ) {
       this.state = $state
       this.wzTableFilter = $tableFilterService
-      this.api = $currentDataService.getApi()
+      this.currentDataService = this.currentDataService
+
+      this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
-      if (!$currentDataService.getCurrentAgent()) {
+      if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -157,7 +159,7 @@ define([
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

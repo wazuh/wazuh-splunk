@@ -43,12 +43,13 @@ define([
 
     constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
+      this.currentDataService = $currentDataService
+      if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -205,7 +206,7 @@ define([
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

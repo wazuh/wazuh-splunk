@@ -11,7 +11,7 @@ define(['./module'], function (module) {
         try {
           const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
-          $currentDataService.cleanFilters()
+          //$currentDataService.cleanFilters()
           $navigationService.storeRoute(state)
           $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
           $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
@@ -38,6 +38,7 @@ define(['./module'], function (module) {
         //Select primary states
         $rootScope.$broadcast('stateChanged', to)
         //Select secondary states
+        if (to === 'overview' || to === 'agents' || to === 'agent-overview') $currentDataService.cleanFilters()
         if (to !== 'agents' && to.includes('agent') || to.includes('ag-')) {
           $rootScope.$broadcast('stateChanged', 'agents')
         } else if (to.includes('ow-')) {

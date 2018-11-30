@@ -13,7 +13,7 @@ define([
       this.state = $state
       this.addFilter = $currentDataService.addFilter
       this.getFilters = $currentDataService.getSerializedFilters
-
+      this.currentDataService = $currentDataService
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
@@ -160,7 +160,7 @@ define([
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

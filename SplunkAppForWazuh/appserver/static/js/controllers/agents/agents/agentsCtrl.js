@@ -43,12 +43,13 @@ define([
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
-      this.api = $currentDataService.getApi()
+      this.currentDataService = $currentDataService
+      this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
       this.toast = $notificationService.showSimpleToast
-      this.currentClusterInfo = $currentDataService.getClusterInfo()
-      this.filters = $currentDataService.getSerializedFilters()
+      this.currentClusterInfo = this.currentDataService.getClusterInfo()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       const parsedResult = agentData.map(item =>

@@ -1,11 +1,10 @@
 define([
   '../../module',
-  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
+], function(app, PieChart, Table, AreaChart, TimePicker) {
   'use strict'
 
   class AgentsVirusTotal {
@@ -20,17 +19,18 @@ define([
 
     constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
+      this.currentDataService = $currentDataService
+      if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.scope = $scope
       //Add filer for VirusTotal
-      $currentDataService.addFilter(
+      this.currentDataService.addFilter(
         `{"rule.groups":"virustotal", "implicit":true}`
       )
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -106,7 +106,7 @@ define([
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

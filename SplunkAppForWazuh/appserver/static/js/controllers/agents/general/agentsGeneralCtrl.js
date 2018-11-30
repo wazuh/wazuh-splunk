@@ -54,8 +54,8 @@ define([
       this.notificationService = $notificationService
       this.stateParams = $stateParams
       this.agent = agent
-
-      this.filters = $currentDataService.getSerializedFilters()
+      this.currentDataService = $currentDataService
+      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -160,7 +160,7 @@ define([
     }
 
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

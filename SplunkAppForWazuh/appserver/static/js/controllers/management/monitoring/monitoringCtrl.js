@@ -28,11 +28,13 @@ define([
     ) {
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
+      this.currentDataService = $currentDataService
+
       this.scope.showConfig = $stateParams.isClusterRunning || false
       this.scope.showNodes = $stateParams.showNodes || false
       this.scope.currentNode = $stateParams.currentNode || null
-      this.filters = $currentDataService.getSerializedFilters()
-      this.currentApi = $currentDataService.getApi()
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.currentApi = this.currentDataService.getApi()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -229,7 +231,6 @@ define([
         this.scope.isClusterRunning = false
         this.scope.status = 'no'
       } else if (this.running === 'no' && this.enabled === 'yes') {
-        console.log('this case')
         this.scope.isClusterRunning = false
         this.scope.status = 'no'
       } else if (this.running === 'yes' && this.enabled === 'yes') {
