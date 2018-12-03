@@ -35,6 +35,11 @@ define(['../../module'], function (app) {
     $onInit() {
       if (this.agent.length && typeof this.agent[0] === 'object' && this.agent[0].data && typeof this.agent[0].data.data === 'object') {
         this.scope.agent = this.agent[0].data.data
+        if (this.scope.agent.status == 'Never connected') {
+          this.scope.agent.os = { name: 'Unknown', codename: 'Unknown', version: 'Unknown' }
+          this.scope.agent.group = null
+          this.scope.agent.lastKeepAlive = 'Never connected'
+        }
       } else {
         this.scope.agent = { group: null, name: 'Unknown', id: null, status: null, ip: 'Unknown', os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' }, version: 'Unknown', dateAdd: 'Unknown', lastKeepAlive: 'Unknown' }
         if (this.agent[0].data.error) {
