@@ -34,13 +34,11 @@ define([
         this.launchSearches()
       })
 
-      console.log("filers: ", this.filters)
-
       this.scope.$on('barFilter', () => {
         this.launchSearches()
       })
 
-      this.scope.$on('$destroy', () => {
+      this.scope.$on('$destroy', () => {  
         this.timePicker.destroy()
         this.dropdown.destroy()
         this.vizz.map(vizz => vizz.destroy())
