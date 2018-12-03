@@ -5,12 +5,13 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>GDPR</span>
     </div>
-    <div ng-if="agc.agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="agc.getAgentStatusClass(agc.agent.status)" aria-label="Agent status indicator">{{agc.formatAgentStatus(agc.agent.status)}}</span>
+    <div ng-if="agent && agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
     </div>
     <div flex></div>
     <div style="margin-right:7px;" id='timePicker'></div>
