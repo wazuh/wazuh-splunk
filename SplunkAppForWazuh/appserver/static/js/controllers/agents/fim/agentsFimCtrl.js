@@ -33,13 +33,13 @@ define([
       this.state = $state
       this.wzTableFilter = $tableFilterService
       this.currentDataService = $currentDataService
-      this.addFilter = this.currentDataService.addFilter
       this.agent = agent
       this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -122,7 +122,6 @@ define([
 
     $onInit() {
       this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
       this.scope.search = term => {
         this.scope.$broadcast('wazuhSearch', { term })
       }

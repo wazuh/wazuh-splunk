@@ -14,8 +14,6 @@ define([
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.addFilter = this.currentDataService.addFilter
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -50,6 +48,8 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
       this.agent = agent
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
       this.vizz = [
         /**
          * Visualizations
@@ -94,7 +94,6 @@ define([
 
     $onInit() {
       this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
       this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
     }

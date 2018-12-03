@@ -12,21 +12,19 @@ define([
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
-      this.addFilter = this.currentDataService.addFilter
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
       this.agent = agent
-
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
       this.vizz = [
         /**
          * Metrics
@@ -148,7 +146,6 @@ define([
 
     $onInit() {
       this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
       this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
       this.scope.$on('deletedFilter', () => {

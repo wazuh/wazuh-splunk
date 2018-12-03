@@ -46,7 +46,9 @@ define([
       this.urlTokenModel = $urlTokenModel
       this.notificationService = $notificationService
       this.osquery = osquery
+      this.currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
       this.agent = agent
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -109,12 +111,7 @@ define([
     }
 
     $onInit() {
-      this.currentDataService.addFilter(
-        `{"rule.groups":"osquery", "implicit":true}`
-      )
       this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      if (this.scope.agent.id) this.currentDataService.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
-
       try {
         this.wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = this.wodles.filter(

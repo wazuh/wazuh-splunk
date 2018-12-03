@@ -51,13 +51,12 @@ define([
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
-      this.addFilter = this.currentDataService.addFilter
+      if (this.agent && this.agent.length && this.agent[0].data && this.agent[0].data.data && this.agent[0].data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`) 
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -134,10 +133,7 @@ define([
           rootcheck: this.agent[2].data.data
         }
 
-        this.scope.agentInfo = this.agentInfo
-
-        this.scope.agent = this.agent[0].data.data
-        if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
+        this.scope.agentInfo = this.agent[0].data.data
 
         this.scope.id = this.stateParams.id
       } catch (err) {

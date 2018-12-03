@@ -5,8 +5,8 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ng-if="!agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}} ({{agentInfo.id}})</span>
-      <span ng-if="agentInfo.error">Unknown agent</span>
+      <span ng-if="agentInfo.name && agentInfo.id && !agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}} ({{agentInfo.id}})</span>
+      <span ng-if="!agentInfo || agentInfo.error || !agentInfo.id">Unknown agent</span>
       <span> / </span>
       <span>General</span>
     </div>
@@ -24,7 +24,7 @@
   <wazuh-bar></wazuh-bar>
   <!-- first row  -->
   <!-- Agent information section -->
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="!agentInfo.error">
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="agentInfo && !agentInfo.error">
     <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>

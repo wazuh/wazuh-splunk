@@ -22,11 +22,11 @@ define([
       this.scope = $scope
       this.state = $state
       this.currentDataService = $currentDataService
-      this.addFilter = this.currentDataService.addFilter
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
       if (!$currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
-      //this.urlTokenModel = $urlTokenModel
       this.agent = agent
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -43,8 +43,6 @@ define([
         'dropDownInput'
       )
       this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
-
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance) {
@@ -115,7 +113,6 @@ define([
 
     $onInit() {
       this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
       this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
     }
