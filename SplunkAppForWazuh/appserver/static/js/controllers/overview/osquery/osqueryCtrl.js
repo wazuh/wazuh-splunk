@@ -19,7 +19,9 @@ define([
       this.scope = $scope
       this.osquery = osquery
       this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.scope.osqueryWodle = false
       this.scope.$on('deletedFilter', () => {
