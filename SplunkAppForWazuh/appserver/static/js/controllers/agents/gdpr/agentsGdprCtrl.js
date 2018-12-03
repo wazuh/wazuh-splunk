@@ -22,12 +22,12 @@ define([
       this.scope = $scope
       this.state = $state
       this.currentDataService = $currentDataService
+      this.agent = agent
       if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
       this.filters = this.currentDataService.getSerializedFilters()
       if (!$currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
-      this.agent = agent
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange

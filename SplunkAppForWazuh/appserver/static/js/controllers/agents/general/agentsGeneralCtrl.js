@@ -138,6 +138,7 @@ define([
         this.scope.id = this.stateParams.id
       } catch (err) {
         this.agentInfo = {}
+        this.agentInfo.id = (this.agent && this.agent.length && this.agent[0] && this.agent[0].data && this.agent[0].data.data) ? this.agent[0].data.data.id : null
         this.agentInfo.error = 'Unable to load agent data'
       }
 

@@ -52,9 +52,9 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.agent = agent
-      this.filters = this.currentDataService.getSerializedFilters()
       this.currentDataService.addFilter(`{"rule.groups":"audit", "implicit":true}`)
       if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
