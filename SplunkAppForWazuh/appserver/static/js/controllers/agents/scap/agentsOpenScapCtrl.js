@@ -182,7 +182,7 @@ define([
 
       $onInit() {
         this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-        this.scope.getAgentStatusClass = agentStatus => this.agentStatus(agentStatus)
+        this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
         this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
       }
 
