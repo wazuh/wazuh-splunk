@@ -58,10 +58,12 @@ class report(controllers.BaseController):
             self.header()
             self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(40, 10, 'Security events report')
-            with open(self.path+'sample.png', 'wb') as f:
-                f.write(base64.decodestring(args['array'][0]['element'].split(',')[1].encode()))
-
-            self.pdf.image(self.path+'sample.png',10,30,33)
+            i=0
+            while i in range(4):
+                with open(self.path+'sample.png', 'wb') as f:
+                    f.write(base64.decodestring(args['array'][i]['element'].split(',')[1].encode()))
+                self.pdf.image(self.path+'sample.png',100*i,100,500,500)
+                i+=1
             self.pdf.output(self.path+'tuto1.pdf', 'F')
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
