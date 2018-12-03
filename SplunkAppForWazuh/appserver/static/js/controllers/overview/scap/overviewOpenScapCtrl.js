@@ -25,12 +25,16 @@ define([
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(`{"rule.groups":"oscap", "implicit":true}`)
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
+
+      console.log("filers: ", this.filters)
 
       this.scope.$on('barFilter', () => {
         this.launchSearches()
