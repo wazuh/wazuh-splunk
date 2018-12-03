@@ -12,7 +12,9 @@ define([
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
