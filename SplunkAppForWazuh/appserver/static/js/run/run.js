@@ -26,7 +26,9 @@ define(['./module'], function (module) {
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
-        await checkBeforeTransition(to)
+        if (to != 'settings.about' && to != 'settings.extensions' && to != 'settings.index' && to != 'settings.logs') {
+          await checkBeforeTransition(to)
+        }
       })
 
       $transitions.onSuccess({}, async (trans) => {
