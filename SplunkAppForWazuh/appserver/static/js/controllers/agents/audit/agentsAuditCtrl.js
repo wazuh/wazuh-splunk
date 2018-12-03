@@ -44,9 +44,6 @@ define([
     constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
-      if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.filters = this.currentDataService.getSerializedFilters()
@@ -55,9 +52,8 @@ define([
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
-      this.scope.agent = agent.data.data
-
+      this.agent = agent
+      this.addFilter = this.currentDataService.addFilter
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -205,6 +201,23 @@ define([
       })
     }
 
+    $onInit(){
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : {error:true}
+      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+    }
+
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+    
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

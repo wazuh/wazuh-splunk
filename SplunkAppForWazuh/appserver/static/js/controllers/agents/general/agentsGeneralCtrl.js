@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
+], function (app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
   'use strict'
 
   class AgentsGeneral {
@@ -44,10 +44,6 @@ define([
       $state
     ) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
-
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.requestService = $requestService
@@ -55,52 +51,13 @@ define([
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
+      this.addFilter = this.currentDataService.addFilter
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
 
-      this.agentInfo = {
-        name: this.agent[0].data.data.name,
-        id: this.agent[0].data.data.id,
-        status: this.agent[0].data.data.status,
-        ip: this.agent[0].data.data.ip,
-        version: this.agent[0].data.data.version,
-        group: this.agent[0].data.data.group,
-        lastKeepAlive: this.agent[0].data.data.lastKeepAlive,
-        dateAdd: this.agent[0].data.data.dateAdd,
-        agentOS: `${this.agent[0].data.data.os.name} ${
-          this.agent[0].data.data.os.codename
-        } ${this.agent[0].data.data.os.version}`,
-        syscheck: this.agent[1].data.data,
-        rootcheck: this.agent[2].data.data
-      }
-
-      this.scope.agentInfo = this.agentInfo
-
-      this.scope.agent = this.agent[0].data.data
-      this.scope.id = this.stateParams.id
-
-      this.scope.goGroups = async group => {
-        try {
-          this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
-          this.groupData = this.groupInfo.data.data.items.filter(
-            item => item.name === group
-          )
-          if (
-            !this.groupInfo ||
-            !this.groupInfo.data ||
-            !this.groupInfo.data.data ||
-            this.groupInfo.data.error
-          ) {
-            throw Error('Missing fields')
-          }
-          this.state.go(`mg-groups`, { group: this.groupData[0] })
-        } catch (err) {
-          this.notificationService.showSimpleToast('Error fetching group data')
-        }
-      }
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -132,7 +89,7 @@ define([
         new LinearChart(
           'alertLevelEvoVizz',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
           'alertLevelEvoVizz'
         ),
@@ -144,7 +101,7 @@ define([
         new Table(
           'agentsSummaryVizz',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
           'agentsSummaryVizz'
         )
@@ -157,6 +114,73 @@ define([
         this.timePicker.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
+    }
+
+    $onInit() {
+      try {
+        this.agentInfo = {
+          name: this.agent[0].data.data.name,
+          id: this.agent[0].data.data.id,
+          status: this.agent[0].data.data.status,
+          ip: this.agent[0].data.data.ip,
+          version: this.agent[0].data.data.version,
+          group: this.agent[0].data.data.group,
+          lastKeepAlive: this.agent[0].data.data.lastKeepAlive,
+          dateAdd: this.agent[0].data.data.dateAdd,
+          agentOS: `${this.agent[0].data.data.os.name} ${
+            this.agent[0].data.data.os.codename
+            } ${this.agent[0].data.data.os.version}`,
+          syscheck: this.agent[1].data.data,
+          rootcheck: this.agent[2].data.data
+        }
+
+        this.scope.agentInfo = this.agentInfo
+
+        this.scope.agent = this.agent[0].data.data
+        if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
+
+        this.scope.id = this.stateParams.id
+      } catch (err) {
+        this.agentInfo = {}
+        this.agentInfo.error = 'Unable to load agent data'
+      }
+
+      this.scope.goGroups = group => this.goGroups(group)
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+    }
+    /**
+     * Navigates to a group
+     * @param {String} group 
+     */
+    async goGroups(group) {
+      try {
+        this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
+        this.groupData = this.groupInfo.data.data.items.filter(
+          item => item.name === group
+        )
+        if (
+          !this.groupInfo ||
+          !this.groupInfo.data ||
+          !this.groupInfo.data.data ||
+          this.groupInfo.data.error
+        ) {
+          throw Error('Missing fields')
+        }
+        this.state.go(`mg-groups`, { group: this.groupData[0] })
+      } catch (err) {
+        this.notificationService.showSimpleToast('Error fetching group data')
+      }
+    }
+
+    getAgentStatusClass(agentStatus) {
+      return agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
     }
 
     launchSearches() {

@@ -16,7 +16,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, TimePicker, l) {
+], function (app, PieChart, AreaChart, Table, TimePicker, l) {
   'use strict'
 
   class AgentsPM {
@@ -34,19 +34,13 @@ define([
       this.scope = $scope
       this.state = $state
       this.currentDataService = $currentDataService
+      this.addFilter = this.currentDataService.addFilter
       this.agent = agent
-
-      if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
-
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-
-      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -63,35 +57,35 @@ define([
         new AreaChart(
           'elementOverTime',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime'
         ),
         new PieChart(
           'cisRequirements',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" rule.cis{}=* | top  rule.cis{}`,
           'cisRequirements'
         ),
         new PieChart(
           'topPciDss',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss'
         ),
         new AreaChart(
           'eventsPerAgent',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" | timechart span=2h count by agent.name`,
           'eventsPerAgent'
         ),
         new Table(
           'alertsSummary',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`,
           'alertsSummary'
         )
@@ -107,13 +101,20 @@ define([
     }
 
     $onInit() {
-      this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
-          ? agentStatus
-          : 'Never connected'
-      }
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+    }
+
+    getAgentStatusClass(agentStatus) {
+      return agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
     }
 
     launchSearches() {

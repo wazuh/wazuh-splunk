@@ -23,9 +23,6 @@ define(['./module'], function (module) {
         }
       }
 
-      $transitions.onBefore({}, async (trans) => {
-      })
-
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name

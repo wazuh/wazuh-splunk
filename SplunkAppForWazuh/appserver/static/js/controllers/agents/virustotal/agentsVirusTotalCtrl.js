@@ -20,9 +20,6 @@ define([
     constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
-      if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
       this.scope = $scope
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
@@ -36,8 +33,6 @@ define([
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
-      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -96,6 +91,9 @@ define([
     }
 
     $onInit() {
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      if (this.scope.agent.id) this.currentDataService.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
+
       this.scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {

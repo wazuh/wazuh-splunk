@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
   'FileSaver'
-], function(app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
+], function (app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
   'use strict'
 
   class AgentsFim {
@@ -33,13 +33,11 @@ define([
       this.state = $state
       this.wzTableFilter = $tableFilterService
       this.currentDataService = $currentDataService
-
+      this.addFilter = this.currentDataService.addFilter
+      this.agent = agent
       this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
-      if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.filters = this.currentDataService.getSerializedFilters()
@@ -49,7 +47,6 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -66,49 +63,49 @@ define([
         new AreaChart(
           'eventsOverTimeElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement'
         ),
         new ColumnChart(
           'topGroupOwnersElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"`,
           'topGroupOwnersElement'
         ),
         new PieChart(
           'topUserOwnersElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"`,
           'topUserOwnersElement'
         ),
         new PieChart(
           'topFileChangesElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path`,
           'topFileChangesElement'
         ),
         new PieChart(
           'rootUserFileChangesElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path`,
           'rootUserFileChangesElement'
         ),
         new PieChart(
           'wordWritableFilesElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement'
         ),
         new Table(
           'eventsSummaryElement',
           `${
-            this.filters
+          this.filters
           } sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement'
         )
@@ -124,18 +121,27 @@ define([
     }
 
     $onInit() {
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      if (this.scope.agent.id) this.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
       this.scope.search = term => {
         this.scope.$broadcast('wazuhSearch', { term })
       }
-      this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
-          ? agentStatus
-          : 'Never connected'
-      }
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
     }
+
+
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
 
     /**
      * Exports the table in CSV format

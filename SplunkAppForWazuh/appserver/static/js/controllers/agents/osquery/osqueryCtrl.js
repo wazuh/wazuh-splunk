@@ -16,7 +16,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, TimePicker) {
+], function (app, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
 
   class OsqueryAgents {
@@ -42,38 +42,17 @@ define([
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
-
-      if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
-
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.notificationService = $notificationService
-      this.scope.agent = agent.data.data
       this.osquery = osquery
-
+      this.agent = agent
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-
       this.scope.osqueryWodle = null
-
-      try {
-        this.currentDataService.addFilter(
-          `{"rule.groups":"osquery", "implicit":true}`
-        )
-        this.wodles = this.osquery.data.data.wmodules
-        this.scope.osqueryWodle = this.wodles.filter(
-          item => item.osquery
-        )[0].osquery
-      } catch (err) {
-        this.notificationService.showSimpleToast(
-          'Cannot load wodle configuration. Osquery not configured.'
-        )
-      }
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -95,21 +74,21 @@ define([
         new AreaChart(
           'alertsPacksOverTime',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime'
         ),
         new PieChart(
           'mostCommonActions',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh  | top "data.osquery.action" limit=5`,
           'mostCommonActions'
         ),
         new Table(
           'topRules',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
           'topRules'
         ),
@@ -130,6 +109,23 @@ define([
     }
 
     $onInit() {
+      this.currentDataService.addFilter(
+        `{"rule.groups":"osquery", "implicit":true}`
+      )
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      if (this.scope.agent.id) this.currentDataService.addFilter(`{"agent.id":"${this.scope.agent.id}", "implicit":true}`)
+
+      try {
+        this.wodles = this.osquery.data.data.wmodules
+        this.scope.osqueryWodle = this.wodles.filter(
+          item => item.osquery
+        )[0].osquery
+      } catch (err) {
+        this.notificationService.showSimpleToast(
+          'Cannot load wodle configuration. Osquery not configured.'
+        )
+      }
+
       this.scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
