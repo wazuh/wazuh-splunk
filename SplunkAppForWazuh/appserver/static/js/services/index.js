@@ -15,5 +15,6 @@ define([
   './csv-request/csvRequestService',
   './xml-beautifier/xml-beautifier',
   './get-ids/getIdService',
-  './token-model/urlTokenModelService'
+  './token-model/urlTokenModelService',
+  './wz-table/wz-table-filter-service'
 ], function() {})
