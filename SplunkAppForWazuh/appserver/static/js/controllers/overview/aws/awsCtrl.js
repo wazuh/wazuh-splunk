@@ -2,10 +2,11 @@ define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, Map, TimePicker) {
+], function(app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker) {
   'use strict'
 
   class AWS {
@@ -25,27 +26,35 @@ define([
         /**
          * Visualizations
          */
-        new PieChart(
-          'topAddrs',
-          `${this.filters} sourcetype=wazuh | top data.aws.source_ip_address`,
-          'topAddrs'
-        ),
         new AreaChart(
-          'alertsOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count`,
-          'alertsOverTime'
+          'eventsByIdOverTime',
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId`,
+          'eventsByIdOverTime'
+        ),
+        new ColumnChart(
+          'eventsByRegionOverTime',
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.awsRegion`,
+          'eventsByRegionOverTime'
         ),
         new PieChart(
-          'topInstances',
-          `${
-            this.filters
-          } sourcetype=wazuh | top data.aws.requestParameters.instanceId`,
-          'topInstances'
+          'topEventsByServiceName',
+          `${this.filters} sourcetype=wazuh | stats count BY data.aws.source`,
+          'topEventsByServiceName'
         ),
         new PieChart(
-          'mostCommonEvents',
-          `${this.filters} sourcetype=wazuh | top data.aws.eventName limit=5`,
-          'mostCommonEvents'
+          'topEventsByInstanceId',
+          `${this.filters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
+          'topEventsByInstanceId'
+        ),
+        new PieChart(
+          'topEventsByResourceType',
+          `${this.filters} sourcetype=wazuh | top data.aws.resource.resourceType limit=5`,
+          'topEventsByResourceType'
+        ),
+        new PieChart(
+          'topEventsByRegion',
+          `${this.filters} sourcetype=wazuh | top data.aws.awsRegion limit=5`,
+          'topEventsByRegion'
         ),
         new Map(
           'map',
@@ -55,21 +64,14 @@ define([
           'map'
         ),
         new Table(
-          'topBuckets',
-          `${this.filters} sourcetype=wazuh | top "data.aws.source" limit=5`,
-          'topBuckets'
-        ),
-        new PieChart(
-          'topSources',
-          `${this.filters} sourcetype=wazuh | top "data.aws.log_info.s3bucket"`,
-          'topSources'
+          'top5Buckets',
+          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5`,
+          'top5Buckets'
         ),
         new Table(
-          'topRules',
-          `${
-            this.filters
-          } sourcetype=wazuh | top rule.id, rule.description limit=5`,
-          'topRules'
+          'top5Rules',
+          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
+          'top5Rules'
         )
       ]
       this.scope.$on('deletedFilter', () => {
