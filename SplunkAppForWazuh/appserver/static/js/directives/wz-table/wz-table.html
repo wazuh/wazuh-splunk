@@ -53,8 +53,8 @@
                     </md-tooltip>
                 </td>
                 <td ng-if="path === '/agents'" ng-click="$event.stopPropagation()" class="cursor-default">
-                  <i ng-click="clickAction(item, 'discover'); $event.stopPropagation()" class="fa fa-fw fa-compass cursor-pointer" tooltip="Open Discover panel for this agent" tooltip-placement="left" aria-hidden="true"></i>
-                  <i ng-click="clickAction(item, 'configuration'); $event.stopPropagation()" class="fa fa-fw fa-wrench cursor-pointer" tooltip="Open configuration for this agent" tooltip-placement="left" aria-hidden="true"></i>
+                  <i ng-click="clickAction(item, 'discover'); $event.stopPropagation()" class="fa fa-fw fa-compass cursor-pointer"> <md-tooltip>Open Discover panel for this agent"</md-tooltip></i>
+                  <i ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()" class="fa fa-fw fa-wrench cursor-pointer"><md-tooltip>Open Configuration for this agent"</md-tooltip></i></i>
                 </td>
             </tr>
         </tbody>
