@@ -51,7 +51,21 @@ define([], function () {
       try {
         $scope.error = false
         $scope.wazuhTableLoading = true
-        if (filter.name === 'platform' && instance.path === '/agents') {
+        if (Array.isArray(filter)) {
+          filter.forEach(item => {
+            if (item.name === 'platform' && instance.path === '/agents') {
+              const platform = item.value.split(' - ')[0]
+              const version = item.value.split(' - ')[1]
+              instance.addFilter('os.platform', platform)
+              instance.addFilter('os.version', version)
+            } else {
+              instance.addFilter(item.name, item.value)
+            }
+          })
+        } else if (
+          filter.name === 'platform' &&
+          instance.path === '/agents'
+        ) {
           const platform = filter.value.split(' - ')[0]
           const version = filter.value.split(' - ')[1]
           instance.addFilter('os.platform', platform)
@@ -62,18 +76,18 @@ define([], function () {
         $tableFilterService.set(instance.filters)
         await fetch()
         $scope.wazuhTableLoading = false
+        if (!$scope.$$phase) $scope.$digest()
       } catch (error) {
         $scope.wazuhTableLoading = false
         $scope.error = `Error filtering by ${
           filter ? filter.value : 'undefined'
-          } - ${error.message || error}.`
+        }. ${error.message || error}.`
         $notificationService.showSimpleToast(
           `Error filtering by ${
-          filter ? filter.value : 'undefined'
+            filter ? filter.value : 'undefined'
           }. ${error.message || error}`
         )
       }
-      if (!$scope.$$phase) $scope.$digest()
       return
     }
   }
