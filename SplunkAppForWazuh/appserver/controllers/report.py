@@ -12,6 +12,7 @@
 import os
 import sys
 import json
+import datetime
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -58,13 +59,19 @@ class report(controllers.BaseController):
             self.header()
             self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(40, 10, 'Security events report')
+            report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            self.logger.error("Size of array: %s" % (len(args['array'])))
             i=0
-            while i in range(4):
-                with open(self.path+'sample.png', 'wb') as f:
-                    f.write(base64.decodestring(args['array'][i]['element'].split(',')[1].encode()))
-                self.pdf.image(self.path+'sample.png',100*i,100,500,500)
+            while i in range(0,len(args['array'])):
+                self.logger.info("Value of index: %s" % (i))
+                f = open(self.path+'sample'+str(i)+'.png', 'wb')
+                f.write(base64.decodestring(args['array'][i]['element'].split(',')[1].encode()))
+                f.close()
+                self.pdf.image(self.path+'sample'+str(i)+'.png',5,(i+5)*60,150,60)
+                os.remove(self.path+'sample'+str(i)+'.png')
                 i+=1
-            self.pdf.output(self.path+'tuto1.pdf', 'F')
+
+            self.pdf.output(self.path+'tuto1'+report_id+'.pdf', 'F')
             parsed_data = json.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))

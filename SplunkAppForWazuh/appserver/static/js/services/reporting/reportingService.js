@@ -44,14 +44,11 @@ define([
 
         for (const item of idArray) {
           const tmpHTMLElement = $(`#${item}`)
-          console.log('the HTML DOM element ',tmpHTMLElement)
           this.vis2png.assignHTMLItem(item, tmpHTMLElement)
         }
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
         
-
-        console.log('checking array')
         const array = await this.vis2png.checkArray(idArray)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'

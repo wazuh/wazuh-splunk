@@ -190,7 +190,7 @@ define([
         )
       }
 
-      this.scope.startVis2Png = () => this.reportingService.startVis2Png('overview-general',['alertLevEvoVizz,alertsVizz,top5AgentsVizz,alertsEvoTop5Agents,agentsSummaryVizz'])
+      this.scope.startVis2Png = () => this.reportingService.startVis2Png('overview-general',['alertLevEvoVizz','alertsVizz','top5AgentsVizz','alertsEvoTop5Agents','agentsSummaryVizz'])
 
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
