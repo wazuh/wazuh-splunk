@@ -1,0 +1,127 @@
+<md-content flex layout="column" layout-align="end">
+  <!-- Breadcrumbs -->
+  <div layout="row" layout-padding>
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span ng-if="agent.error">Unknown agent</span>
+      <span> / </span>
+      <span>File integrity monitoring</span>
+    </div>
+    <div ng-if="agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+  <!-- Filter bar -->
+
+  <wazuh-bar></wazuh-bar>
+  <!-- first row  -->
+  <div id="row2" layout="row">
+    <div flex="50">
+      <!-- second row - first vis -->
+      <md-card flex class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Events over time</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='eventsOverTimeElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex="25">
+      <md-card flex class="wz-md-card">
+        <md-card-content>
+          <span class="wz-headline-title">Top group owners</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='topGroupOwnersElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex="25">
+      <!-- first row - second vis -->
+      <md-card flex class="wz-md-card">
+        <md-card-content layout='column'>
+          <span class="wz-headline-title">Top user owners</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div layout-fill id='topUserOwnersElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+
+  <!-- second row  -->
+  <div id="row3" layout='row'>
+    <!-- third row - first vis -->
+    <md-card flex="50" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top file changes</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='topFileChangesElement'></div>
+      </md-card-content>
+    </md-card>
+    <!-- second row - second vis -->
+    <md-card flex="50" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Root user file changes</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='rootUserFileChangesElement'></div>
+      </md-card-content>
+    </md-card>
+    <!-- second row - third vis -->
+    <!--<md-card flex="33" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">World writable modified files</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='wordWritableFilesElement'></div>
+      </md-card-content>
+    </md-card>-->
+  </div>
+
+  <!-- third row  -->
+  <div id="row5" layout='row'>
+
+    <md-card flex="100" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Events summary</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='eventsSummaryElement'></div>
+      </md-card-content>
+    </md-card>
+
+  </div>
+
+  <!-- 
+  <div layout='row'>
+
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title"><i class="fa fa-fw fa-terminal"></i> Monitored files</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-margin-top-10">
+          <input flex placeholder="Filter files..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+            aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
+            <span class="fa fa-search" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+          <wazuh-table flex path="'/syscheck/'+agent.id" row-sizes="[6]" extra-limit="true"
+            keys="['file','size','uname','gname','perm']">
+          </wazuh-table>
+        </div>
+        <div layout="row" class="wz-margin-top-10">
+          <span flex></span>
+          <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">Formatted
+            <i aria-hidden="true" class="fa fa-download"></i>
+          </a>
+        </div>
+      </md-card-content>
+    </md-card>
+
+  </div>
+
+  -->
+</md-content>

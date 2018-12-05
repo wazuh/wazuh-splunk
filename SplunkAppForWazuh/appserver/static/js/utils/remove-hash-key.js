@@ -9,10 +9,10 @@ define([], function() {
           }
           return val
         })
-        )
-        return result
-      } catch (error) {
-        return {}
-      }
+      )
+      return result
+    } catch (error) {
+      return {}
     }
-  })
+  }
+})

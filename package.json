@@ -1,8 +1,8 @@
 {
   "name": "wazuh-splunk",
-  "version": "3.7.0",
-  "revision": "17",
-  "code": "17-4",
+  "version": "3.7.1",
+  "revision": "18",
+  "code": "18-1",
   "description": "Splunk app for Wazuh",
   "main": "index.js",
   "keywords": [
@@ -24,7 +24,7 @@
     "prettier": "^1.14.3"
   },
   "scripts": {
-    "pretty": "prettier --single-quote --write SplunkAppForWazuh/**/*.js !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
+    "pretty": "prettier --single-quote --semi=false --write SplunkAppForWazuh/**/*.js !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "lint": "eslint . --ext .js -c .eslintrc.json",
     "test": "mocha tests/manager.js"
   },

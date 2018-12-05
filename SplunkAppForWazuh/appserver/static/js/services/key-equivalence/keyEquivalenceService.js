@@ -1,7 +1,7 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
-  module.service('$keyEquivalenceService', function ($state) {
+  module.service('$keyEquivalenceService', function($state) {
     const service = {
       equivalences: () => {
         return {
@@ -56,10 +56,15 @@ define(['../module'], function (module) {
           proto: 'Protocol',
           address: 'Address',
           protocol: 'Protocol',
-          'local.ip': 'Local',
-          'remote.ip': 'Remote'
+          'local.ip': 'Local IP',
+          'remote.ip': 'Remote IP',
+          'local.port': 'Local port',
+          'remote.port': 'Remote port',
+          uname: 'User',
+          gname: 'Group',
+          perm: 'Permissions'
         }
-      },
+      }
     }
     return service
   })

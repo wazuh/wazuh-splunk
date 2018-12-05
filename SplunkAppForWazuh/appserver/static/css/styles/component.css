@@ -46,13 +46,6 @@
   transition: none !important;
 }
 
-/* Custom tooltip styles */
-
-.wz-tooltip .md-content {
-  background-color: rgba(0,0,0,0.87) !important;
-  color: #FFF;
-}
-
 .wz-white-background {
   background-color:white !important;
 }

@@ -1,78 +1,118 @@
-define(['../module'], function (module) {
+define(['../module'], function(app) {
   'use strict'
 
-  module.service('$apiIndexStorageService', function () {
+  class ApiIndexStorageService {
+    constructor() {
+      this.sessionStorage = sessionStorage
+    }
 
     /**
      * Removes the selected index
      */
-    const removeIndex = () => {
-      delete sessionStorage.selectedIndex
+    removeIndex() {
+      delete this.sessionStorage.selectedIndex
     }
 
     /**
      * Select an Index by name
-     * @param {String} index 
+     * @param {String} index
      */
-    const setIndex = (index) => {
-      sessionStorage.selectedIndex = `{"index":"${index}"}`
+    setIndex(index) {
+      this.sessionStorage.selectedIndex = `{"index":"${index}"}`
     }
 
     /**
      * Returns currently selected index
-     * @param {String} index 
+     * @param {String} index
      */
-    const getIndex = () => {
-      if (sessionStorage.selectedIndex)
-        return JSON.parse(sessionStorage.selectedIndex)
-      else
-        return { "index": "wazuh" }
+    getIndex() {
+      if (this.sessionStorage.selectedIndex) {
+        return JSON.parse(this.sessionStorage.selectedIndex)
+      } else return { index: 'wazuh' }
     }
 
     /**
-    * Delete selected API
-    */
-    const removeAPI = () => {
-      delete sessionStorage.selectedAPI
+     * Delete selected API
+     */
+    removeAPI() {
+      try {
+        delete this.sessionStorage.selectedAPI
+      } catch (err) {}
     }
 
     /**
      * Select an API
-     * @param {String} API 
+     * @param {String} API
      */
-    const setApi = (API) => {
-      delete sessionStorage.selectedAPI
-      if (typeof API === 'object')
-        sessionStorage.selectedAPI = JSON.stringify(API)
+    setApi(API) {
+      try {
+        delete this.sessionStorage.selectedAPI
+        if (typeof API === 'object') {
+          this.sessionStorage.selectedAPI = JSON.stringify(API)
+        }
+      } catch (error) {}
     }
 
     /**
      * Returns currently selected API
-     * @param {String} API 
+     * @param {String} API
      */
-    const getApi = () => {
-      if (sessionStorage.selectedAPI)
-        return JSON.parse(sessionStorage.selectedAPI)
-      else
+    getApi() {
+      try {
+        if (this.sessionStorage.selectedAPI) {
+          return JSON.parse(this.sessionStorage.selectedAPI)
+        }
+      } catch (err) {
         return null
+      }
     }
 
-
-    return {
-
-      removeIndex: removeIndex,
-
-      setIndex: setIndex,
-
-      getIndex: getIndex,
-
-      removeAPI: removeAPI,
-
-      setApi: setApi,
-
-      getApi: getApi
-
+    getExtensions(id) {
+      try {
+        if (this.sessionStorage.extensions) {
+          const currentExtensions = JSON.parse(this.sessionStorage.extensions)
+          const result =
+            currentExtensions.length >= 1
+              ? currentExtensions.filter(item => item.id === id)[0]
+              : false
+          return result
+        }
+      } catch (err) {
+        return false
+      }
     }
 
-  })
+    setExtensions(id, extensions) {
+      try {
+        if (extensions.length && this.sessionStorage.getItem('extensions')) {
+          let parsedExtensions = JSON.parse(
+            this.sessionStorage.getItem('extensions')
+          )
+          let existentApi = false
+          for (let i = 0; i < parsedExtensions.length; i++) {
+            if (parsedExtensions[i].id === id) {
+              parsedExtensions[i] = { id: id, ...extensions }
+              existentApi = true
+              break
+            }
+          }
+          if (!existentApi) {
+            parsedExtensions.push({ id: id, ...extensions })
+          }
+          this.sessionStorage.setItem(
+            'extensions',
+            JSON.stringify(parsedExtensions) || []
+          )
+        } else if (extensions) {
+          const newSet = []
+          newSet.push({ id: id, ...extensions })
+          this.sessionStorage.setItem(
+            'extensions',
+            JSON.stringify(newSet) || []
+          )
+        }
+      } catch (err) {}
+    }
+  }
+  app.service('$apiIndexStorageService', ApiIndexStorageService)
 })

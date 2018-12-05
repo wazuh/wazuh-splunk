@@ -1,942 +1,227 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
-  "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
-  "underscore",
-  "jquery",
-  "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/element/chart",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simplexml/searcheventhandler",
-  "splunkjs/mvc/simpleform/input/timerange",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
-], function (controllers,
-  mvc,
-  utils,
-  TokenUtils,
-  _,
-  $,
-  DashboardController,
-  Dashboard,
-  ChartElement,
-  TableElement,
-  FormUtils,
-  SearchEventHandler,
-  TimeRangeInput,
-  SearchManager,
-  UrlTokenModel) {
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/chart/bar-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/search/search-handler'
+], function(
+  app,
+  ColumnChart,
+  PieChart,
+  AreaChart,
+  BarChart,
+  Table,
+  TimePicker,
+  SearchHandler
+) {
+  'use strict'
 
-    'use strict'
+  class AgentsAudit {
+    /**
+     * Class constructor
+     * @param {Object} $urlTokenModel
+     * @param {Object} $scope
+     * @param {Object} $currentDataService
+     * @param {Object} $state
+     * @param {Object} agent
+     */
 
-    controllers.controller('agentsAuditCtrl', function ($scope, $currentDataService, $state, agent) {
-      const vm = this
-      const epoch = (new Date).getTime()
-      let pageLoading = false
-      vm.loadingSearch = true
-      vm.agent = agent.data.data
-      // Create token namespaces
-      const baseUrl = $currentDataService.getBaseUrl()
-
-      let filters = $currentDataService.getSerializedFilters()
-      // Create token namespaces
-      const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
-      mvc.Components.registerInstance('url' + epoch, urlTokenModel)
-      let defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-      let submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-      urlTokenModel.on('url:navigate', function () {
-        defaultTokenModel.set(urlTokenModel.toJSON())
-        if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens()
-        } else {
-          submittedTokenModel.clear()
-        }
+    constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
+      this.state = $state
+      this.currentDataService = $currentDataService
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.timePicker = new TimePicker(
+        '#timePicker',
+        this.urlTokenModel.handleValueChange
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
+      this.agent = agent
+      this.currentDataService.addFilter(`{"rule.groups":"audit", "implicit":true}`)
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.scope.$on('deletedFilter', () => {
+        this.launchSearches()
       })
 
-      // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON())
-
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
-      }
-
-      const submitTokens = () => {
-        // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
-        FormUtils.submitForm({ replaceState: pageLoading })
-      }
-
-      const setToken = (name, value) => {
-        defaultTokenModel.set(name, value)
-        submittedTokenModel.set(name, value)
-      }
-
-      const unsetToken = (name) => {
-        defaultTokenModel.unset(name)
-        submittedTokenModel.unset(name)
-      }
-
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
+      this.scope.$on('barFilter', () => {
+        this.launchSearches()
       })
 
-      $scope.$on('barFilter', () => {
-        launchSearches()
-      })
-
-      let filesAddedSearch = ''
-      let readFilesSearch = ''
-      let modifiedFiles = ''
-      let deletedFiles = ''
-      let groups = ''
-      let agents = ''
-      let directories = ''
-      let files = ''
-      let alertsOverTime = ''
-      let fileReadAccess = ''
-      let fileWriteAccess = ''
-      let commands = ''
-      let createdFiles = ''
-      let removedFiles = ''
-      let alertsSummary = ''
-      let element6 = ''
-      let element7 = ''
-      let element8 = ''
-      let element9 = ''
-      let element10 = ''
-      let element11 = ''
-      let element12 = ''
-      let element13 = ''
-      let element14 = ''
-      let element15 = ''
-      let element16 = ''
-      let input1 = ''
+      this.vizz = [
+        /**
+         * Metrics
+         */
+        new SearchHandler(
+          `filesAddedSearch`,
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80790 | stats count`,
+          `filesAddedToken`,
+          '$result.count$',
+          'newFiles',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `readFilesSearch`,
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80784 | stats count`,
+          `readFilesToken`,
+          '$result.count$',
+          'readFiles',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `modifiedFiles`,
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80781 | stats count`,
+          `filesModifiedToken`,
+          '$result.count$',
+          'filesModifiedToken',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `deletedFiles`,
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80791 | stats count`,
+          'filesDeletedToken',
+          '$result.count$',
+          'filesDeleted',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'groupsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh | top rule.groups`,
+          'groupsVizz'
+        ),
+        new ColumnChart(
+          'agentsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh agent.name=* | top agent.name`,
+          'agentsVizz'
+        ),
+        new PieChart(
+          'directoriesVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh audit.directory.name=* | top audit.directory.name`,
+          'directoriesVizz'
+        ),
+        new PieChart(
+          'filesVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh audit.file.name=* | top audit.file.name`,
+          'filesVizz'
+        ),
+        new AreaChart(
+          'alertsOverTimeVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh | timechart limit=10 count by rule.description`,
+          'alertsOverTimeVizz'
+        ),
+        new PieChart(
+          'fileReadAccessVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80784 | top audit.file.name`,
+          'fileReadAccessVizz'
+        ),
+        new PieChart(
+          'fileWriteAccessVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80781 | top audit.file.name`,
+          'fileWriteAccessVizz'
+        ),
+        new BarChart(
+          'comandsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh | top audit.command`,
+          'comandsVizz'
+        ),
+        new BarChart(
+          'createdVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80790 | top audit.file.name`,
+          'createdVizz'
+        ),
+        new PieChart(
+          'removedFilesVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.id=80791 | top audit.file.name`,
+          'removedFilesVizz'
+        ),
+        new Table(
+          'alertsSummaryVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`,
+          'alertsSummaryVizz'
+        )
+      ]
 
       /**
        * When controller is destroyed
        */
-      $scope.$on('$destroy', () => {
-        filesAddedSearch.cancel()
-        readFilesSearch.cancel()
-        modifiedFiles.cancel()
-        deletedFiles.cancel()
-        groups.cancel()
-        agents.cancel()
-        directories.cancel()
-        files.cancel()
-        alertsOverTime.cancel()
-        fileReadAccess.cancel()
-        fileWriteAccess.cancel()
-        commands.cancel()
-        createdFiles.cancel()
-        removedFiles.cancel()
-        alertsSummary.cancel()
-        filesAddedHandler = null
-        readFilesHandler = null
-        modifiedFilesHandler = null
-        filesDeletedHandler = null
-        input1 = null
-        filesAddedSearch = null
-        readFilesSearch = null
-        modifiedFiles = null
-        deletedFiles = null
-        groups = null
-        agents = null
-        directories = null
-        files = null
-        alertsOverTime = null
-        fileReadAccess = null
-        fileWriteAccess = null
-        commands = null
-        createdFiles = null
-        removedFiles = null
-        alertsSummary = null
-        element6 = null
-        element7 = null
-        element8 = null
-        element9 = null
-        element10 = null
-        element11 = null
-        element12 = null
-        element13 = null
-        element14 = null
-        element15 = null
-        element16 = null
+      this.scope.$on('$destroy', () => {
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
       })
+    }
 
-      // Listen for a change to the token tokenTotalAlerts value
-      filesAddedSearch = new SearchManager({
-        "id": "filesAddedSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-      submittedTokenModel.set("filesAddedToken", '-')
+    $onInit(){
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : {error:true}
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+    }
 
-      let filesAddedHandler = new SearchEventHandler({
-        managerid: "filesAddedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesAddedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      filesAddedSearch.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
 
-      })
-      filesAddedSearch.on('search:done', () => {
-        vm.loadingSearch = false
-        if (!$scope.$$phase) $scope.$digest()
-      })
-      submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (filesAddedTokenJS) {
-          vm.newFiles = filesAddedTokenJS
-          vm.loadingSearch = false
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      // Listen for a change to the token tokenTotalAlerts value
-      readFilesSearch = new SearchManager({
-        "id": "readFilesSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      submittedTokenModel.set("readFilesToken", '-')
-
-      let readFilesHandler = new SearchEventHandler({
-        managerid: "readFilesSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "readFilesToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      readFilesSearch.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
-      })
-      readFilesSearch.on('search:done', () => {
-        vm.loadingSearch = false
-        if (!$scope.$$phase) $scope.$digest()
-
-      })
-      submittedTokenModel.on("change:readFilesToken", (model, readFilesToken, options) => {
-        const readFilesTokenJS = submittedTokenModel.get("readFilesToken")
-        if (readFilesTokenJS) {
-          vm.readFiles = readFilesTokenJS
-          vm.loadingSearch = false
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      // Listen for a change to the token tokenTotalAlerts value
-      modifiedFiles = new SearchManager({
-        "id": "modifiedFiles" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-      submittedTokenModel.set("filesModifiedToken", '-')
-
-      let modifiedFilesHandler = new SearchEventHandler({
-        managerid: "modifiedFiles" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesModifiedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      modifiedFiles.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
-
-      })
-      modifiedFiles.on('search:done', () => {
-        vm.loadingSearch = false
-        if (!$scope.$$phase) $scope.$digest()
-      })
-      
-      submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (filesModifiedTokenJS) {
-          vm.filesModifiedToken = filesModifiedTokenJS
-          vm.loadingSearch = false
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      // Listen for a change to the token tokenTotalAlerts value
-      deletedFiles = new SearchManager({
-        "id": "deletedFiles" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-      submittedTokenModel.set("filesDeletedToken", '-')
-
-      let filesDeletedHandler = new SearchEventHandler({
-        managerid: "deletedFiles" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesDeletedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      deletedFiles.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
-      })
-      deletedFiles.on('search:done', () => {
-        vm.loadingSearch = false
-        if (!$scope.$$phase) $scope.$digest()
-      })
-      submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (filesDeletedTokenJS) {
-          vm.filesDeleted = filesDeletedTokenJS
-          vm.loadingSearch = false
-          if (!$scope.$$phase) $scope.$digest()
-        } else {
-          vm.filesDeleted = 0
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      groups = new SearchManager({
-        "id": "groups" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      agents = new SearchManager({
-        "id": "agents" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      directories = new SearchManager({
-        "id": "directories" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      files = new SearchManager({
-        "id": "files" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      alertsOverTime = new SearchManager({
-        "id": "alertsOverTime" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      fileReadAccess = new SearchManager({
-        "id": "fileReadAccess" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      fileWriteAccess = new SearchManager({
-        "id": "fileWriteAccess" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      commands = new SearchManager({
-        "id": "commands" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | top audit.command`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      createdFiles = new SearchManager({
-        "id": "createdFiles" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      removedFiles = new SearchManager({
-        "id": "removedFiles" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      alertsSummary = new SearchManager({
-        "id": "alertsSummary" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-
-      element6 = new ChartElement({
-        "id": "element6" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "groups" + epoch,
-        "el": $('#element6')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element7 = new ChartElement({
-        "id": "element7" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "column",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "agents" + epoch,
-        "el": $('#element7')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element8 = new ChartElement({
-        "id": "element8" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "directories" + epoch,
-        "el": $('#element8')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element9 = new ChartElement({
-        "id": "element9" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "files" + epoch,
-        "el": $('#element9')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element10 = new ChartElement({
-        "id": "element10" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "stacked100",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "area",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "alertsOverTime" + epoch,
-        "el": $('#element10')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element11 = new ChartElement({
-        "id": "element11" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "fileReadAccess" + epoch,
-        "el": $('#element11')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element12 = new ChartElement({
-        "id": "element12" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "fileWriteAccess" + epoch,
-        "el": $('#element12')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element13 = new ChartElement({
-        "id": "element13" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "bar",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.axisTitleY.visibility": "collapsed",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "commands" + epoch,
-        "el": $('#element13')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element14 = new ChartElement({
-        "id": "element14" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "bar",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "createdFiles" + epoch,
-        "el": $('#element14')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element15 = new ChartElement({
-        "id": "element15" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "removedFiles" + epoch,
-        "el": $('#element15')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element16 = new TableElement({
-        "id": "element16" + epoch,
-        "dataOverlayMode": "none",
-        "drilldown": "cell",
-        "percentagesRow": "false",
-        "rowNumbers": "false",
-        "totalsRow": "false",
-        "wrap": "false",
-        "managerid": "alertsSummary" + epoch,
-        "el": $('#element16')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      element16.on("click", (e) => {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url =  `${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`
-          utils.redirect(url, false, "_blank")
-        }
-      })
-
-
-      //
-      // VIEWS: FORM INPUTS
-      //
-
-      input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "searchWhenChanged": true,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", (newValue) => {
-        if (newValue && input1)
-          FormUtils.handleValueChange(input1)
-      })
-
-      DashboardController.onReady(() => {
-        if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' })
-        }
-      })
-
-      // Initialize time tokens to default
-      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' })
-      }
-
-      submitTokens()
-
-      DashboardController.ready()
-
-    })
-  })
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+    
+    launchSearches() {
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.state.reload()
+    }
+  }
+  app.controller('agentsAuditCtrl', AgentsAudit)
+})

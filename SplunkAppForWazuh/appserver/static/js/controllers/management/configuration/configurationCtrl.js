@@ -1,34 +1,64 @@
-define(['../../module','../../../utils/config-handler'], function (controllers, ConfigHandler) {
-
+define(['../../module', '../../../utils/config-handler'], function (
+  controllers,
+  ConfigHandler
+) {
   'use strict'
 
   class ConfigurationController {
-    constructor($scope,$requestService, $beautifierJson, $notificationService) {
+    constructor(
+      $scope,
+      $requestService,
+      $beautifierJson,
+      $notificationService
+    ) {
       this.$scope = $scope
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.$scope.load = false
       this.$scope.isArray = Array.isArray
-      this.configurationHandler = new ConfigHandler(this.apiReq,$beautifierJson, this.errorHandler)
+      this.configurationHandler = new ConfigHandler(
+        this.apiReq,
+        $beautifierJson,
+        this.errorHandler
+      )
       this.$scope.currentConfig = null
       this.$scope.configurationTab = ''
       this.$scope.configurationSubTab = ''
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
     }
-  
+
     $onInit() {
-      // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
+      //Loads html
+      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
       this.$scope.isString = item => typeof item === 'string'
-      this.$scope.hasSize = obj => obj && typeof obj === 'object' && Object.keys(obj).length
-      this.$scope.switchConfigTab = (configurationTab, sections) => this.configurationHandler.switchConfigTab(configurationTab, sections, this.$scope)
-      this.$scope.switchWodle = wodleName => this.configurationHandler.switchWodle(wodleName, this.$scope)
-      this.$scope.switchConfigurationTab = configurationTab => this.configurationHandler.switchConfigurationTab(configurationTab, this.$scope)
-      this.$scope.switchConfigurationSubTab = configurationSubTab => this.configurationHandler.switchConfigurationSubTab(configurationSubTab, this.$scope)
-      this.$scope.updateSelectedItem = i => this.$scope.selectedItem = i
-      this.$scope.getIntegration = list => this.configurationHandler.getIntegration(list, this.$scope)
+      this.$scope.hasSize = obj =>
+        obj && typeof obj === 'object' && Object.keys(obj).length
+      this.$scope.switchConfigTab = (configurationTab, sections) =>
+        this.configurationHandler.switchConfigTab(
+          configurationTab,
+          sections,
+          this.$scope
+        )
+      this.$scope.switchWodle = wodleName =>
+        this.configurationHandler.switchWodle(wodleName, this.$scope)
+      this.$scope.switchConfigurationTab = configurationTab =>
+        this.configurationHandler.switchConfigurationTab(
+          configurationTab,
+          this.$scope
+        )
+      this.$scope.switchConfigurationSubTab = configurationSubTab =>
+        this.configurationHandler.switchConfigurationSubTab(
+          configurationSubTab,
+          this.$scope
+        )
+      this.$scope.updateSelectedItem = i => (this.$scope.selectedItem = i)
+      this.$scope.getIntegration = list =>
+        this.configurationHandler.getIntegration(list, this.$scope)
+
     }
+
   }
 
   controllers.controller('configurationCtrl', ConfigurationController)

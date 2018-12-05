@@ -1,643 +1,172 @@
 define([
   '../../module',
-  "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
-  "underscore",
-  "jquery",
-  "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/element/chart",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simplexml/searcheventhandler",
-  "splunkjs/mvc/simpleform/input/timerange",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel"
-], function (controllers,
-  mvc,
-  utils,
-  TokenUtils,
-  _,
-  $,
-  DashboardController,
-  Dashboard,
-  ChartElement,
-  TableElement,
-  FormUtils,
-  SearchEventHandler,
-  TimeRangeInput,
-  SearchManager,
-  UrlTokenModel) {
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/inputs/time-picker',
+  'FileSaver'
+], function (app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
+  'use strict'
 
-    'use strict'
+  class AgentsFim {
+    /**
+     * Class constructor
+     * @param {Object} $urlTokenModel
+     * @param {Object} $state
+     * @param {Object} $scope
+     * @param {Object} $currentDataService
+     * @param {Object} agent
+     * @param {Object} $notificationService
+     */
 
-    controllers.controller('agentsFimCtrl', function ($state, $scope, $currentDataService, agent) {
-      const vm = this
-      const epoch = (new Date).getTime()
-      // Create token namespaces
+    constructor(
+      $urlTokenModel,
+      $state,
+      $scope,
+      $currentDataService,
+      agent,
+      $tableFilterService,
+      $csvRequestService,
+      $notificationService
+    ) {
+      this.state = $state
+      this.wzTableFilter = $tableFilterService
+      this.currentDataService = $currentDataService
+      this.agent = agent
+      this.api = this.currentDataService.getApi()
+      this.csvReq = $csvRequestService
+      this.toast = $notificationService.showSimpleToast
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.timePicker = new TimePicker(
+        '#timePicker',
+        this.urlTokenModel.handleValueChange
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      vm.agent = agent.data.data
-      vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
-      vm.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
-      }
 
-      const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
-      mvc.Components.registerInstance('url' + epoch, urlTokenModel)
-      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
-      let filters = $currentDataService.getSerializedFilters()
-      urlTokenModel.on('url:navigate', () => {
-        defaultTokenModel.set(urlTokenModel.toJSON())
-        if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens()
-        } else {
-          submittedTokenModel.clear()
-        }
+      this.scope.$on('deletedFilter', () => {
+        this.launchSearches()
       })
 
-      // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON())
-
-      const submitTokens = () => {
-        FormUtils.submitForm({ replaceState: pageLoading })
-      }
-
-      const setToken = (name, value) => {
-        defaultTokenModel.set(name, value)
-        submittedTokenModel.set(name, value)
-      }
-
-      const unsetToken = (name) => {
-        defaultTokenModel.unset(name)
-        submittedTokenModel.unset(name)
-      }
-
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
-        // searches.map(search => search.startSearch())
-      }
-
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
+      this.scope.$on('barFilter', () => {
+        this.launchSearches()
       })
 
-      $scope.$on('barFilter', () => {
-        launchSearches()
-      })
-
-      let pageLoading = true
-
-      let eventsOverTimeSearch = ''
-      let topUserOwnersSearch = ''
-      let topGroupOwnersSearch = ''
-      let topFileChangesSearch = ''
-      let rootUserFileChangesSearch = ''
-      let wordWritableFilesSearch = ''
-      let eventsSummarySearch = ''
-      let filesAddedSearch = ''
-      let filesModifiedSearch = ''
-      let filesDeletedSearch = ''
-      let input1 = ''
-      let eventsOverTimeElement = ''
-      let topUserOwnersElement = ''
-      let topGroupOwnersElement = ''
-      let topFileChangesElement = ''
-      let rootUserFileChangesElement = ''
-      let wordWritableFilesElement = ''
-      let eventsSummaryElement = ''
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new AreaChart(
+          'eventsOverTimeElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
+          'eventsOverTimeElement'
+        ),
+        new ColumnChart(
+          'topGroupOwnersElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"`,
+          'topGroupOwnersElement'
+        ),
+        new PieChart(
+          'topUserOwnersElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"`,
+          'topUserOwnersElement'
+        ),
+        new PieChart(
+          'topFileChangesElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path`,
+          'topFileChangesElement'
+        ),
+        new PieChart(
+          'rootUserFileChangesElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path`,
+          'rootUserFileChangesElement'
+        ),
+        new PieChart(
+          'wordWritableFilesElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1`,
+          'wordWritableFilesElement'
+        ),
+        new Table(
+          'eventsSummaryElement',
+          `${
+          this.filters
+          } sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          'eventsSummaryElement'
+        )
+      ]
 
       /**
        * When controller is destroyed
        */
-      $scope.$on('$destroy', () => {
-        eventsOverTimeSearch.cancel()
-        topUserOwnersSearch.cancel()
-        topGroupOwnersSearch.cancel()
-        topFileChangesSearch.cancel()
-        rootUserFileChangesSearch.cancel()
-        wordWritableFilesSearch.cancel()
-        eventsSummarySearch.cancel()
-        filesAddedSearch.cancel()
-        filesModifiedSearch.cancel()
-        filesDeletedSearch.cancel()
-        eventsOverTimeSearch = null
-        topUserOwnersSearch = null
-        topGroupOwnersSearch = null
-        topFileChangesSearch = null
-        rootUserFileChangesSearch = null
-        wordWritableFilesSearch = null
-        eventsSummarySearch = null
-        filesAddedSearch = null
-        filesModifiedSearch = null
-        filesDeletedSearch = null
-        input1 = null
-        eventsOverTimeElement = null
-        topUserOwnersElement = null
-        topGroupOwnersElement = null
-        topFileChangesElement = null
-        rootUserFileChangesElement = null
-        wordWritableFilesElement = null
-        eventsSummaryElement = null
+      this.scope.$on('$destroy', () => {
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
       })
+    }
 
-
-      // Listen for a change to the token tokenTotalAlerts value
-      filesAddedSearch = new SearchManager({
-        "id": "filesAddedSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"rule.groups\"=\"syscheck\" |stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      new SearchEventHandler({
-        managerid: "filesAddedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesAddedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      filesAddedSearch.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
-
-      })
-      filesAddedSearch.on('search:done', () => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (filesAddedTokenJS) {
-          vm.filesAdded = filesAddedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      submittedTokenModel.on("change:filesAddedToken", (model, filesAddedToken, options) => {
-        const filesAddedTokenJS = submittedTokenModel.get("filesAddedToken")
-        if (typeof filesAddedTokenJS !== 'undefined' && filesAddedTokenJS !== 'undefined') {
-          vm.filesAdded = filesAddedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      // Listen for a change to the token tokenTotalAlerts value
-      filesModifiedSearch = new SearchManager({
-        "id": "filesModifiedSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      new SearchEventHandler({
-        managerid: "filesModifiedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesModifiedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      filesModifiedSearch.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
-
-      })
-      filesModifiedSearch.on('search:done', () => {
-        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (filesModifiedTokenJS) {
-          vm.filesModified = filesModifiedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      submittedTokenModel.on("change:filesModifiedToken", (model, filesModifiedToken, options) => {
-        const filesModifiedTokenJS = submittedTokenModel.get("filesModifiedToken")
-        if (typeof filesModifiedTokenJS !== 'undefined' && filesModifiedTokenJS !== 'undefined') {
-          vm.filesModified = filesModifiedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      // Listen for a change to the token tokenTotalAlerts value
-      filesDeletedSearch = new SearchManager({
-        "id": "filesDeletedSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"was deleted\" location!=\"syscheck-registry\" \"rule.groups\"=\"syscheck\" | stats count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": true
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      new SearchEventHandler({
-        managerid: "filesDeletedSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "filesDeletedToken", "value": "$result.count$" },
-            ]
-          }
-        ]
-      })
-      filesModifiedSearch.on('search:progress', () => {
-        vm.loadingSearch = true
-        if (!$scope.$$phase) $scope.$digest()
-
-      })
-      filesModifiedSearch.on('search:done', () => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (filesDeletedTokenJS) {
-          vm.filesDeleted = filesDeletedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-      submittedTokenModel.on("change:filesDeletedToken", (model, filesDeletedToken, options) => {
-        const filesDeletedTokenJS = submittedTokenModel.get("filesDeletedToken")
-        if (typeof filesDeletedTokenJS !== 'undefined' && filesDeletedTokenJS !== 'undefined') {
-          vm.filesDeleted = filesDeletedTokenJS
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-      eventsOverTimeSearch = new SearchManager({
-        "id": "eventsOverTimeSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\"  \"rule.groups\"=\"syscheck\" | timechart span=12h count by rule.description`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-
-      eventsOverTimeElement = new ChartElement({
-        "id": "eventsOverTimeElement" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "area",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.axisTitleY.visibility": "collapsed",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "bottom",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "log",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "eventsOverTimeSearch" + epoch,
-        "el": $('#eventsOverTimeElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      topUserOwnersSearch = new SearchManager({
-        "id": "topUserOwnersSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" uname_after| top limit=20 \"syscheck.uname_after\"`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      topUserOwnersElement = new ChartElement({
-        "id": "topUserOwnersElement" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "topUserOwnersSearch" + epoch,
-        "el": $('#topUserOwnersElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      topGroupOwnersSearch = new SearchManager({
-        "id": "topGroupOwnersSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" uname_after syscheck.gname_after!=\"\"| top limit=20 \"syscheck.gname_after\"`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      topGroupOwnersElement = new ChartElement({
-        "id": "topGroupOwnersElement" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "column",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.axisTitleY.visibility": "collapsed",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "topGroupOwnersSearch" + epoch,
-        "el": $('#topGroupOwnersElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      topFileChangesSearch = new SearchManager({
-        "id": "topFileChangesSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | top syscheck.path`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      topFileChangesElement = new ChartElement({
-        "id": "topFileChangesElement" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "topFileChangesSearch" + epoch,
-        "el": $('#topFileChangesElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      rootUserFileChangesSearch = new SearchManager({
-        "id": "rootUserFileChangesSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" \"Integrity checksum changed\" location!=\"syscheck-registry\" syscheck.path=\"*\" | search root | top limit=10 syscheck.path`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      rootUserFileChangesElement = new ChartElement({
-        "id": "rootUserFileChangesElement" + epoch,
-        "charting.axisY2.scale": "inherit",
-        "trellis.size": "medium",
-        "charting.chart.stackMode": "default",
-        "resizable": true,
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "charting.drilldown": "none",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.chart": "pie",
-        "trellis.scales.shared": "1",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.style": "shiny",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisX.scale": "linear",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.axisY2.enabled": "0",
-        "trellis.enabled": "0",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.axisY.scale": "linear",
-        "charting.chart.showDataLabels": "none",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "managerid": "topFileChangesSearch" + epoch,
-        "el": $('#rootUserFileChangesElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      wordWritableFilesSearch = new SearchManager({
-        "id": "wordWritableFilesSearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\" \"syscheck.perm_after\"=* | top \"syscheck.perm_after\" showcount=false showperc=false | head 1`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      wordWritableFilesElement = new ChartElement({
-        "id": "wordWritableFilesElement" + epoch,
-        "numberPrecision": "0",
-        "trellis.size": "medium",
-        "unitPosition": "after",
-        "useColors": "1",
-        "colorMode": "block",
-        "trendDisplayMode": "absolute",
-        "colorBy": "value",
-        "trendColorInterpretation": "standard",
-        "drilldown": "all",
-        "rangeColors": "[\"0x65a637\",\"0x65a637\"]",
-        "trellis.enabled": "0",
-        "showTrendIndicator": "1",
-        "trellis.scales.shared": "1",
-        "resizable": true,
-        "rangeValues": "[0]",
-        "showSparkline": "1",
-        "useThousandSeparators": "0",
-        "managerid": "wordWritableFilesSearch" + epoch,
-        "el": $('#wordWritableFilesElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      eventsSummarySearch = new SearchManager({
-        "id": "eventsSummarySearch" + epoch,
-        "cancelOnUnload": true,
-        "sample_ratio": 1,
-        "earliest_time": "$when.earliest$",
-        "status_buckets": 0,
-        "search": `${filters} sourcetype=\"wazuh\" rule.groups=\"syscheck\"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-        "latest_time": "$when.latest$",
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      eventsSummaryElement = new TableElement({
-        "id": "eventsSummaryElement" + epoch,
-        "dataOverlayMode": "heatmap",
-        "drilldown": "cell",
-        "percentagesRow": "false",
-        "rowNumbers": "true",
-        "totalsRow": "true",
-        "wrap": "false",
-        "managerid": "eventsSummarySearch" + epoch,
-        "el": $('#eventsSummaryElement')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "searchWhenChanged": true,
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", function (newValue) {
-        if (newValue && input1)
-          FormUtils.handleValueChange(input1)
-      })
-
-      DashboardController.onReady(function () {
-        if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' })
-        }
-      })
-
-      // Initialize time tokens to default
-      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' })
+    $onInit() {
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.scope.search = term => {
+        this.scope.$broadcast('wazuhSearch', { term })
       }
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+    }
 
-      submitTokens()
 
-      DashboardController.ready()
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
 
-    })
-  })
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+
+    /**
+     * Exports the table in CSV format
+     */
+    async downloadCsv(path, name) {
+      try {
+        this.toast('Your download should begin automatically...')
+        const currentApi = this.api.id
+        const output = await this.csvReq.fetch(
+          path,
+          currentApi,
+          this.wzTableFilter.get()
+        )
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, name)
+        return
+      } catch (error) {
+        this.toast('Error downloading CSV')
+      }
+      return
+    }
+
+    launchSearches() {
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.state.reload()
+    }
+  }
+  app.controller('agentsFimCtrl', AgentsFim)
+})

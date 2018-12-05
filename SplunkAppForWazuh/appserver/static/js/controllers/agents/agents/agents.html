@@ -1,0 +1,126 @@
+<!-- End loading ring -->
+<div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
+  <div layout="row" layout-align="space-between stretch">
+    <md-card flex class="no-margin-left wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">Status</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row">
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Active</p>
+              <p class="wz-text-right color-grey">{{agentsCountActive}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Disconnected</p>
+              <p class="wz-text-right color-grey">{{agentsCountDisconnected}}</p>
+            </div>
+          </div>
+          <div flex layout="column">
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Never connected</p>
+              <p class="wz-text-right color-grey">{{agentsCountNeverConnected}}</p>
+            </div>
+            <div layout="row" class="wz-padding-top-10">
+              <p flex="50">Agents coverage</p>
+              <p ng-if="agentsCoverity" class="wz-text-right color-grey">{{(agentsCoverity | number:2)}}%</p>
+              <p ng-if="!agentsCoverity" class="wz-text-right color-grey">0</p>
+            </div>
+          </div>
+        </div>
+      </md-card-content>
+    </md-card>
+    <md-card flex class="no-margin-right wz-md-card">
+      <md-card-content>
+        <span class="wz-headline-title">Top</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <p flex="35" class="manager-status-subtitle">Last registered agent</p>
+          <p ng-if="lastAgent.id !== '000'" class="wz-text-right wz-text-bold wz-text-link" ng-click="showAgent(lastAgent)">{{lastAgent.name}}
+            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+              Click to open this agent
+            </md-tooltip>
+          </p>
+          <p ng-if="lastAgent.id === '000'" class="wz-text-right wz-text-bold wz-text-link">{{lastAgent.name}} (manager)
+            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+              Click to open this agent
+            </md-tooltip>
+          </p>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <p flex="35" class="manager-status-subtitle">Higher activity</p>
+          <p ng-show='!loadingSearch' class="wz-text-right wz-text-bold wz-text-link" ng-click="showAgent(mostActiveAgent)">{{mostActiveAgent}}
+            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+              Click to open this agent
+            </md-tooltip>
+          </p>
+          <md-progress-circular class="wz-text-right" md-mode="indeterminate" ng-show="loadingSearch"></md-progress-circular>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  
+  <!-- Search bar -->
+  
+  <div ng-show="!loading" layout="row" layout-align="start center">
+    <div layout="column" flex class="height-40">
+      <div layout="row">
+        <input placeholder="Filter agents..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false" wz-enter="search(custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(custom_search)">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div ng-show="!loading" layout="row" layout-align="start center" >
+    
+    <!-- Status selector -->
+    <select class="input input-dropdown wz-margin-right-10" flex id="levelBox" placeholder="Agent status" class="md-no-underline" ng-model="status" ng-change="filter({name:'status',value:status})" aria-label="Filter by status">
+      <option value="all">All states</option>
+      <option value="active">Active</option>
+      <option value="disconnected">Disconnected</option>
+      <option value="Never Connected">Never connected</option>
+    </select>
+    
+    <!-- Node selector -->
+    <select ng-show="nodes" class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="node" ng-change="filter({name:'node_name',value:node})" aria-label="Filter by cluster node" ng-init="node='all'">
+      <option value="all">Cluster nodes</option>
+      <option ng-repeat='aNode in nodes' value="{{aNode['node_name']}}">
+        {{aNode['node_name']}}
+      </option>
+    </select>
+    
+    <!-- Platform selector -->
+    <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="osPlatform" ng-change="filter({name:'platform',value:osPlatform})" aria-label="Filter by operative system">
+      <option value="all">All OS platforms</option>
+      <option ng-repeat='os in os' value="{{os.os.platform}}">
+        {{os.os.name}} {{os.os.version}} {{os.os.platform}}
+      </option>
+    </select>
+    
+    <!-- Version selector -->
+    <select class="input input-dropdown wz-margin-right-10" flex id="eventBox1" ng-model="versionModel" ng-change="filter({name:'version',value:versionModel})" aria-label="Filter by operative system">
+      <option value="all">All versions</option>
+      <option ng-repeat='version in versions' value="{{version.version}}">
+        {{version.version}}
+      </option>
+    </select>
+    
+    <select class="input input-dropdown" flex id="levelBox" placeholder="Group selector" class="md-no-underline" ng-model="groupModel" ng-change="filter({name:'group',value:groupModel})" aria-label="Filter by group" ng-init="groupModel='all'">
+      <option value="all">All groups</option>
+      <option ng-repeat='group in groups' value="{{group.name}}">
+        {{group.name}}
+      </option>
+    </select>
+  </div>
+</div>
+
+<div ng-if="!loading" layout="row" class="wz-margin-10">
+  <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version']" allow-click="true" rows-per-page="17"></wazuh-table>
+</div>
+<div layout="row" class="wz-margin-top-10">
+  <span flex></span>
+  <a class="small" id="btnDownload" ng-click="downloadCsv()">Formatted
+    <i aria-hidden="true" class="fa fa-download"></i>
+  </a>
+</div>

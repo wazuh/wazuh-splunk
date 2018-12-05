@@ -1,42 +1,14 @@
 define([
-  './overview/overviewGeneralCtrl',
-  './overview/overviewFimCtrl',
-  './overview/overviewPolicyMonitoringCtrl',
-  './overview/overviewVulnerabilitiesCtrl',
-  './overview/overviewAuditCtrl',
-  './overview/overviewOpenScapCtrl',
-  './overview/overviewPciCtrl',
-  './overview/overviewGdprCtrl',
-  './overview/overviewWelcomeCtrl',
-  './overview/aws/awsCtrl',
-  './overview/osquery/osqueryCtrl',
-  './management/managerCtrl',
-  './management/logs/managerLogsCtrl',
-  './management/rules/managerRulesetCtrl',
-  './management/rules/managerRulesetIdCtrl',
-  './management/decoders/managerDecodersCtrl',
-  './management/decoders/managerDecodersIdCtrl',
-  './management/groups/groupsCtrl',
-  './management/configuration/configurationCtrl',
-  './management/status/statusCtrl',
-  './management/monitoring/monitoringCtrl',
-  './settings/settingsCtrl',
-  './settings/settingsIndexCtrl',
-  './settings/settingsApiCtrl',
-  './settings/logs/logsCtrl',
-  './agents/agents/agentsCtrl',
-  './agents/overview/agentsOverviewCtrl',
-  './agents/general/agentsGeneralCtrl',
-  './agents/fim/agentsFimCtrl',
-  './agents/policy-monitoring/agentsPolicyMonitoringCtrl',
-  './agents/vulnerabilities/agentsVulnerabilitiesCtrl',
-  './agents/audit/agentsAuditCtrl',
-  './agents/scap/agentsOpenScapCtrl',
-  './agents/pcidss/agentsPciCtrl',
-  './agents/gdpr/agentsGdprCtrl',
-  './agents/configuration/agentConfigCtrl',
-  './agents/inventory/inventoryCtrl',
-  './agents/osquery/osqueryCtrl',
+  //Overview
+  './overview/index',
+  //Agents
+  './agents/index',
+  //Settings
+  './settings/index',
+  //Management
+  './management/index',
+  //Dev-tools
   './dev-tools/devToolsCtrl',
+  // Main
   './main/mainCtrl'
-], function () {})
+], function() {})

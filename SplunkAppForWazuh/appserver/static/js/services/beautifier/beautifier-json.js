@@ -9,9 +9,9 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$beautifierJson', function () {
+  module.service('$beautifierJson', function() {
     const replacer = (match, pIndent, pKey, pVal, pEnd) => {
       let key = '<span class=json-key>'
       let val = '<span class=json-value>'
@@ -31,8 +31,8 @@ define(['../module'], function (module) {
         .replace(jsonLine, replacer)
     }
     return {
-      replacer:replacer,
-      prettyPrint:prettyPrint
+      replacer: replacer,
+      prettyPrint: prettyPrint
     }
   })
 })

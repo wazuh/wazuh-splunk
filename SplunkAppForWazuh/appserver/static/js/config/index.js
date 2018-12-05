@@ -1,4 +1,6 @@
 define([
-  './routes',
-
-], function () {})
+  './routes/overview-states',
+  './routes/settings-states',
+  './routes/management-states',
+  './routes/agents-states'
+], function() {})

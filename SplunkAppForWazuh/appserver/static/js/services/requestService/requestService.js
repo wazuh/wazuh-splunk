@@ -1,8 +1,11 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
-  module.service('$requestService', function ($http, $apiIndexStorageService, $q) {
-
+  module.service('$requestService', function(
+    $http,
+    $apiIndexStorageService,
+    $q
+  ) {
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
@@ -13,7 +16,7 @@ define(['../module'], function (module) {
     /**
      * Generates and returns the browser base URL + Splunk Port
      */
-    const getWellFormedUri = (endpoint) => {
+    const getWellFormedUri = endpoint => {
       try {
         return `${getBaseUrl()}en-US/custom/SplunkAppForWazuh/${endpoint}`
       } catch (err) {
@@ -23,10 +26,10 @@ define(['../module'], function (module) {
 
     /**
      * Performs a HTTP request
-     * @param {String} method 
-     * @param {String} endpoint 
-     * @param {Boolean} includedApi 
-     * @param {Object} payload 
+     * @param {String} method
+     * @param {String} endpoint
+     * @param {Boolean} includedApi
+     * @param {Object} payload
      */
     const httpReq = async (method, endpoint, payload = {}) => {
       try {
@@ -37,17 +40,24 @@ define(['../module'], function (module) {
         const data = {}
 
         // Set content type to form urlencoded
-        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"
+        $http.defaults.headers.post['Content-Type'] =
+          'application/x-www-form-urlencoded'
         // GET METHOD
-        if (method === "GET") Object.assign(data, await $http.get(tmpUrl, { params: payload }))
+        if (method === 'GET')
+          Object.assign(data, await $http.get(tmpUrl, { params: payload }))
         // PUT METHOD
-        else if (method === "PUT") Object.assign(data, await $http.post(tmpUrl, payload))
+        else if (method === 'PUT')
+          Object.assign(data, await $http.post(tmpUrl, payload))
         // POST METHOD
-        else if (method === "POST") Object.assign(data, await $http.post(tmpUrl, payload))
+        else if (method === 'POST')
+          Object.assign(data, await $http.post(tmpUrl, payload))
         // DELETE METHOD
-        else if (method === "DELETE") Object.assign(data, await $http.delete(tmpUrl))
+        else if (method === 'DELETE')
+          Object.assign(data, await $http.post(tmpUrl, payload))
         if (!data) {
-          throw new Error(`Error doing a request to ${tmpUrl}, method: ${method}.`)
+          throw new Error(
+            `Error doing a request to ${tmpUrl}, method: ${method}.`
+          )
         }
         if (data.error && data.error !== '0') {
           throw new Error('HTTP error from server: ', data.error)
@@ -60,14 +70,16 @@ define(['../module'], function (module) {
 
     /**
      * Performs a GET request to Wazuh API
-     * @param {String} endpoint 
-     * @param {Object} opts 
+     * @param {String} endpoint
+     * @param {Object} opts
      */
-    const apiReq = async (endpoint, opts) => {
+    const apiReq = async (endpoint, opts=null, method='GET') => {
       try {
+        $http.defaults.headers.post['Content-Type'] =
+        'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
         const id = currentApi && currentApi.id ? currentApi.id : opts.id
-        const payload = { id, endpoint }
+        const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }

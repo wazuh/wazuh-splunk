@@ -1,477 +1,118 @@
 define([
   '../../module',
-  "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/tokenutils",
-  "underscore",
-  "jquery",
-  "splunkjs/mvc/simplexml",
-  "splunkjs/mvc/simplexml/dashboardview",
-  "splunkjs/mvc/simplexml/element/chart",
-  "splunkjs/mvc/simplexml/element/table",
-  "splunkjs/mvc/simpleform/formutils",
-  "splunkjs/mvc/simplexml/searcheventhandler",
-  "splunkjs/mvc/simpleform/input/timerange",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/simplexml/urltokenmodel",
-  "splunkjs/mvc/simpleform/input/dropdown"
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/inputs/dropdown-input'
+], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
+  'use strict'
 
-], function (controllers,
-  mvc,
-  utils,
-  TokenUtils,
-  _,
-  $,
-  DashboardController,
-  Dashboard,
-  ChartElement,
-  TableElement,
-  FormUtils,
-  SearchEventHandler,
-  TimeRangeInput,
-  SearchManager,
-  UrlTokenModel,
-  DropdownInput) {
-
-    'use strict'
-
-    controllers.controller('agentsPciCtrl', function ($scope, $rulesDescription, $state, $currentDataService, agent) {
-      const vm = this
-      const epoch = (new Date).getTime()
-      let pageLoading = true
-      vm.agent = agent.data.data
-      vm.getAgentStatusClass = agentStatus => agentStatus === "Active" ? "teal" : "red";
-      vm.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus) ? agentStatus : 'Never connected';
-      }
-      const baseUrl = $currentDataService.getBaseUrl()
-
-      // Create token namespaces
-      const urlTokenModel = new UrlTokenModel({ id: 'tokenModel' + epoch })
-      mvc.Components.registerInstance('url' + epoch, urlTokenModel)
-      const defaultTokenModel = mvc.Components.getInstance('default', { create: true })
-      const submittedTokenModel = mvc.Components.getInstance('submitted', { create: true })
-
-      let filters = $currentDataService.getSerializedFilters()
-      urlTokenModel.on('url:navigate', function () {
-        defaultTokenModel.set(urlTokenModel.toJSON())
-        if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
-          submitTokens()
-        } else {
-          submittedTokenModel.clear()
-        }
+  class AgentsPCI {
+    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+      this.state = $state
+      this.currentDataService = $currentDataService
+      this.scope = $scope
+      this.urlTokenModel = $urlTokenModel
+      this.timePicker = new TimePicker(
+        '#timePicker',
+        this.urlTokenModel.handleValueChange
+      )
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
+      this.scope.$on('deletedFilter', () => {
+        this.launchSearches()
       })
 
-      /**
-       * Fires all the queries
-       */
-      const launchSearches = () => {
-        filters = $currentDataService.getSerializedFilters()
-        $state.reload();
-        // searches.map(search => search.startSearch())
-      }
-
-      $scope.$on('deletedFilter', () => {
-        launchSearches()
+      this.scope.$on('barFilter', () => {
+        this.launchSearches()
       })
 
-      $scope.$on('barFilter', () => {
-        launchSearches()
+      this.scope.$on('$destroy', () => {
+        this.dropdown.destroy()
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
       })
 
-      // Initialize tokens
-      defaultTokenModel.set(urlTokenModel.toJSON())
-
-      const submitTokens = () => {
-        FormUtils.submitForm({ replaceState: pageLoading })
-      }
-  
-      let dropdownSearch = ''
-      let pciReqSearch = ''
-      let groupsSearch = ''
-      let agentsSearch = ''
-      let requirementsByAgents = ''
-      let alertsSummary = ''
-      let element1 = ''
-      let element2 = ''
-      let element3 = ''
-      let element4 = ''
-      let element5 = ''
-      let input1 = ''
-      let input2 = ''
-      let myResults = ''
-
-      /**
-       * When controller is destroyed
-       */
-      $scope.$on('$destroy', () => {
-        dropdownSearch.cancel()
-        pciReqSearch.cancel()
-        groupsSearch.cancel()
-        agentsSearch.cancel()
-        requirementsByAgents.cancel()
-        alertsSummary.cancel()
-        myResults = null
-        dropdownSearch = null
-        pciReqSearch = null
-        groupsSearch = null
-        agentsSearch = null
-        requirementsByAgents = null
-        alertsSummary = null
-        element1 = null
-        element2 = null
-        element3 = null
-        element4 = null
-        element5 = null
-        input1.off()
-        input2.off()
-        input1 = null
-        input2 = null
+      this.dropdown = new Dropdown(
+        'dropDownInput',
+        `${
+          this.filters
+        } sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count`,
+        'rule.pci_dss{}',
+        '$form.pci$',
+        'dropDownInput'
+      )
+      this.dropdownInstance = this.dropdown.getElement()
+      this.dropdownInstance.on('change', newValue => {
+        if (newValue && this.dropdownInstance)
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
+      this.agent = agent
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new ColumnChart(
+          'pciReqSearchVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}`,
+          'pciReqSearchVizz'
+        ),
+        new PieChart(
+          'groupsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups`,
+          'groupsVizz'
+        ),
+        new PieChart(
+          'agentsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name`,
+          'agentsVizz'
+        ),
+        new ColumnChart(
+          'reqByAgentsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          'reqByAgentsVizz'
+        ),
+        new Table(
+          'alertsSummaryVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count`,
+          'alertsSummaryVizz'
+        )
+      ]
+    }
 
-      dropdownSearch = new SearchManager({
-        "id": "dropdownSearch" + epoch,
-        "status_buckets": 0,
-        "sample_ratio": null,
-        "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count`,
-        "earliest_time": "$when.earliest$",
-        "cancelOnUnload": true,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true })
+    $onInit() {
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+    }
+    
+    launchSearches() {
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.state.reload()
+    }
 
+    getAgentStatusClass(agentStatus) {
+      return agentStatus === 'Active' ? 'teal' : 'red'
+    }
 
-      new SearchEventHandler({
-        managerid: "dropdownSearch" + epoch,
-        event: "done",
-        conditions: [
-          {
-            attr: "any",
-            value: "*",
-            actions: [
-              { "type": "set", "token": "rulesToken", "value": "$result.rule.pcidss{}$" },
-            ]
-          }
-        ]
-      })
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
 
-      myResults = dropdownSearch.data("results")
-      myResults.on("data", () => {
-        if (myResults && myResults.data() && myResults.data().rows) {
-          const rulesTokenArray = myResults.data().rows
-          if (rulesTokenArray && rulesTokenArray.length > 0) {
-            vm.pciTabs = []
-            for (let rule of rulesTokenArray) {
-              const currentDescription = $rulesDescription.pciRules()[rule[0]]
-              if (currentDescription) {
-                vm.pciTabs.push({ 'rule': rule[0], 'description': currentDescription })
-              }
-            }
-            if (!$scope.$$phase) $scope.$digest()
-          }
-        } else {
-          vm.pciTabs = false
-          if (!$scope.$$phase) $scope.$digest()
-        }
-      })
-
-
-      pciReqSearch = new SearchManager({
-        "id": "pciReqSearch" + epoch,
-        "status_buckets": 0,
-        "sample_ratio": 1,
-        "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}`,
-        "earliest_time": "$when.earliest$",
-        "cancelOnUnload": true,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      groupsSearch = new SearchManager({
-        "id": "groupsSearch" + epoch,
-        "status_buckets": 0,
-        "sample_ratio": 1,
-        "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups`,
-        "earliest_time": "$when.earliest$",
-        "cancelOnUnload": true,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      agentsSearch = new SearchManager({
-        "id": "agentsSearch" + epoch,
-        "status_buckets": 0,
-        "sample_ratio": 1,
-        "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name`,
-        "earliest_time": "$when.earliest$",
-        "cancelOnUnload": true,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      requirementsByAgents = new SearchManager({
-        "id": "requirementsByAgents" + epoch,
-        "status_buckets": 0,
-        "sample_ratio": 1,
-        "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
-        "earliest_time": "$when.earliest$",
-        "cancelOnUnload": true,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-      alertsSummary = new SearchManager({
-        "id": "alertsSummary" + epoch,
-        "status_buckets": 0,
-        "sample_ratio": 1,
-        "latest_time": "$when.latest$",
-        "search": `${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count`,
-        "earliest_time": "$when.earliest$",
-        "cancelOnUnload": true,
-        "app": utils.getCurrentApp(),
-        "auto_cancel": 90,
-        "preview": true,
-        "tokenDependencies": {
-        },
-        "runWhenTimeIsUndefined": false
-      }, { tokens: true, tokenNamespace: "submitted" })
-
-
-      element1 = new ChartElement({
-        "id": "element1" + epoch,
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.legend.placement": "none",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.drilldown": "none",
-        "trellis.size": "medium",
-        "charting.axisY2.enabled": "0",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "trellis.enabled": "0",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.chart.stackMode": "default",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "-45",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.chart.style": "shiny",
-        "charting.axisX.scale": "linear",
-        "charting.axisTitleY.visibility": "collapsed",
-        "charting.axisY2.scale": "inherit",
-        "resizable": true,
-        "charting.chart.showDataLabels": "none",
-        "charting.chart": "column",
-        "charting.axisY.scale": "linear",
-        "trellis.scales.shared": "1",
-        "managerid": "pciReqSearch" + epoch,
-        "el": $('#element1')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element2 = new ChartElement({
-        "id": "element2" + epoch,
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.drilldown": "none",
-        "trellis.size": "medium",
-        "charting.axisY2.enabled": "0",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "trellis.enabled": "0",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.chart.stackMode": "default",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.chart.style": "shiny",
-        "charting.axisX.scale": "linear",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisY2.scale": "inherit",
-        "resizable": true,
-        "charting.chart.showDataLabels": "none",
-        "charting.chart": "pie",
-        "charting.axisY.scale": "linear",
-        "trellis.scales.shared": "1",
-        "managerid": "groupsSearch" + epoch,
-        "el": $('#element2')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element3 = new ChartElement({
-        "id": "element3" + epoch,
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.legend.placement": "right",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.drilldown": "none",
-        "trellis.size": "medium",
-        "charting.axisY2.enabled": "0",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "trellis.enabled": "0",
-        "charting.chart.nullValueMode": "gaps",
-        "charting.chart.stackMode": "default",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisTitleX.visibility": "visible",
-        "charting.chart.style": "shiny",
-        "charting.axisX.scale": "linear",
-        "charting.axisTitleY.visibility": "visible",
-        "charting.axisY2.scale": "inherit",
-        "resizable": true,
-        "charting.chart.showDataLabels": "none",
-        "charting.chart": "pie",
-        "charting.axisY.scale": "linear",
-        "trellis.scales.shared": "1",
-        "managerid": "agentsSearch" + epoch,
-        "el": $('#element3')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element4 = new ChartElement({
-        "id": "element4" + epoch,
-        "charting.axisTitleY2.visibility": "visible",
-        "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
-        "charting.legend.placement": "bottom",
-        "charting.chart.bubbleMaximumSize": "50",
-        "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
-        "charting.drilldown": "none",
-        "trellis.size": "medium",
-        "charting.axisY2.enabled": "0",
-        "charting.chart.bubbleSizeBy": "area",
-        "charting.layout.splitSeries.allowIndependentYRanges": "0",
-        "trellis.enabled": "0",
-        "charting.chart.nullValueMode": "connect",
-        "charting.chart.stackMode": "default",
-        "charting.chart.sliceCollapsingThreshold": "0.01",
-        "charting.axisLabelsX.majorLabelStyle.rotation": "0",
-        "charting.layout.splitSeries": "0",
-        "charting.chart.bubbleMinimumSize": "10",
-        "charting.axisTitleX.visibility": "collapsed",
-        "charting.chart.style": "shiny",
-        "charting.axisX.scale": "linear",
-        "charting.axisTitleY.visibility": "collapsed",
-        "charting.axisY2.scale": "inherit",
-        "resizable": true,
-        "charting.chart.showDataLabels": "none",
-        "charting.chart": "column",
-        "charting.axisY.scale": "log",
-        "trellis.scales.shared": "1",
-        "managerid": "requirementsByAgents" + epoch,
-        "el": $('#element4')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-
-      element5 = new TableElement({
-        "id": "element5" + epoch,
-        "dataOverlayMode": "heatmap",
-        "drilldown": "cell",
-        "percentagesRow": "false",
-        "rowNumbers": "true",
-        "totalsRow": "false",
-        "wrap": "false",
-        "managerid": "alertsSummary" + epoch,
-        "el": $('#element5')
-      }, { tokens: true, tokenNamespace: "submitted" }).render()
-
-      element5.on("click", function (e) {
-        if (e.field !== undefined) {
-          e.preventDefault()
-          const url = TokenUtils.replaceTokenNames(`${baseUrl}/app/SplunkAppForWazuh/search?q=${filters} sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count&earliest=$when.earliest$&latest=$when.latest$`, _.extend(submittedTokenModel.toJSON(), e.data), TokenUtils.getEscaper('url'), TokenUtils.getFilters(mvc.Components))
-          utils.redirect(url, false, "_blank")
-        }
-      })
-
-      //
-      // VIEWS: FORM INPUTS
-      //
-
-      input2 = new DropdownInput({
-        "id": "input2" + epoch,
-        "choices": [
-          { "label": "ALL", "value": "*" }
-        ],
-        "searchWhenChanged": true,
-        "valueField": "rule.pci_dss{}",
-        "showClearButton": true,
-        "initialValue": "*",
-        "default": "*",
-        "labelField": "rule.pci_dss{}",
-        "selectFirstChoice": false,
-        "value": "$form.pci$",
-        "managerid": "dropdownSearch" + epoch,
-        "el": $('#input2')
-      }, { tokens: true }).render()
-
-      input2.on("change", function (newValue) {
-        FormUtils.handleValueChange(input2)
-      })
-
-      input1 = new TimeRangeInput({
-        "id": "input1" + epoch,
-        "searchWhenChanged": true,
-        "default": { "latest_time": "now", "earliest_time": "-24h@h" },
-        "earliest_time": "$form.when.earliest$",
-        "latest_time": "$form.when.latest$",
-        "el": $('#input1')
-      }, { tokens: true }).render()
-
-      input1.on("change", (newValue) => {
-        if (newValue && input1)
-          FormUtils.handleValueChange(input1)
-      })
-
-      DashboardController.onReady(() => {
-        if (!submittedTokenModel.has('earliest') && !submittedTokenModel.has('latest')) {
-          submittedTokenModel.set({ earliest: '0', latest: '' })
-        }
-      })
-
-      // Initialize time tokens to default
-      if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
-        defaultTokenModel.set({ earliest: '0', latest: '' })
-      }
-
-      submitTokens()
-
-      DashboardController.ready()
-      pageLoading = false
-
-    })
-  })
+  }
+  app.controller('agentsPciCtrl', AgentsPCI)
+})

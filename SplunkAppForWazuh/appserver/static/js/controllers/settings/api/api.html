@@ -1,0 +1,118 @@
+<div flex layout="column" layout-align="start stretch">
+
+  <!-- Headline -->
+  <div layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> API configuration</span>
+    <span>Use Wazuh API settings to connect the Splunk app to your Wazuh manager or cluster</span>
+  </div>
+  <!-- End headline -->
+
+  <!-- API configuration card section -->
+  <div layout="row" layout-align="start start">
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <!-- API entries headings section -->
+        <div layout="row" class="wz-padding-bottom-14">
+          <p flex="15" class="wz-text-bold">Cluster</p>
+          <p flex="20" class="wz-text-bold">Manager</p>
+          <p flex="15" class="wz-text-bold">API URL</p>
+          <p flex="15" class="wz-text-bold">API Port</p>
+          <p flex="15" class="wz-text-bold">User</p>
+          <p flex="20" class="wz-text-bold">Actions</p>
+        </div>
+        <!-- End API entries headings section -->
+
+        <!-- API entries list section -->
+        <div ng-repeat="entry in apiList">
+          <!-- API entry -->
+          <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
+            <p flex="15">
+              <i ng-show="entry.selected" class="fa fa-star wz-color-orange"
+                aria-hidden="true"></i> {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
+                <md-tooltip md-direction="right" class="wz-tooltip">
+                  This is the default Manager
+                </md-tooltip>
+              </p>
+            <p flex="20">{{entry.managerName}}</p>
+            <p flex="15">{{entry.url}}</p>
+            <p flex="15">{{entry.portapi}}</p>
+            <p flex="15">{{entry.userapi}}</p>
+            <p flex="20">
+              <i ng-click="selectManager(entry.id)"  class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Set as default Manager
+                </md-tooltip>
+              </i>
+              <i ng-click="removeManager(entry)" class="fa fa-trash wz-margin-left-7 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  BacRemove managek
+                </md-tooltip>
+              </i>
+              <i ng-click="checkManager(entry)" class="fa fa-refresh wz-margin-left-7 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Check connection
+                </md-tooltip>
+              </i>
+              <i ng-click="editEntry(entry)" class="fa fa-pencil wz-margin-left-7 cursor-pointer" aria-hidden="true">
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Edit
+                </md-tooltip>
+              </i>
+            </p>
+          </div>
+          <!-- End edit API form -->
+        </div>
+        <!-- End API entries list section -->
+
+        <!-- Add API button section -->
+        <div layout="row" layout-align="center center" class="wz-padding-top-10">
+          <md-button ng-show='!edit' ng-click='addNewApiClick()' class="wz-button md-raised md-primary" aria-label="Add new API button">
+            <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new Wazuh API entry
+          </md-button>
+        </div>
+        <!-- End add API button section -->
+
+        <!-- Add API section-->
+        <div layout="row" ng-show='(showForm && !edit) || (!showForm && edit)'>
+          <!-- Add API form -->
+          <form flex ng-submit="saveSettings()" layout="column" layout-align="start stretch" class="margin-top-30">
+            <!-- Input section -->
+            <md-input-container class="wz-input-container">
+              <label>Username</label>
+              <input ng-model="user" type="text" placeholder="" aria-label="username" required/>
+            </md-input-container>
+            <md-input-container class="wz-input-container">
+              <label>Password</label>
+              <input ng-model="pass" type="password" placeholder="" aria-label="password" required/>
+            </md-input-container>
+            <md-input-container class="wz-input-container">
+              <label>URL</label>
+              <input ng-model="url" type="url" placeholder="http(s)://" aria-label="full url" required/>
+            </md-input-container>
+            <md-input-container class="wz-input-container">
+              <label>Port</label>
+              <input ng-model="port" type="text" placeholder="" aria-label="port" required/>
+            </md-input-container>
+            <!-- Button and errors section -->
+            <div layout="row" layout-align="center center">
+              <p class="color-f9">{{messageError}}</p>
+            </div>
+            <div layout="row" layout-align="center center">
+              <md-button ng-if='!edit' ng-click='submitApiForm()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save Wazuh API entry
+              </md-button>
+              <md-button ng-if='edit' ng-click='updateEntry()' type="submit" class="wz-button md-raised md-primary" aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update Wazuh API entry
+              </md-button>
+            </div>
+          </form>
+          <!-- End add API form -->
+        </div>
+        <!-- End add API section-->
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End API configuration card section -->
+
+</div>

@@ -1,8 +1,13 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
-  module.service('$currentDataService', function ($apiMgrService, $filterService, $navigationService, $apiIndexStorageService, $requestService) {
-
+  module.service('$currentDataService', function(
+    $apiMgrService,
+    $filterService,
+    $navigationService,
+    $apiIndexStorageService,
+    $requestService
+  ) {
     const getPollintState = () => {
       return $apiMgrService.getPollintState
     }
@@ -19,7 +24,7 @@ define(['../module'], function (module) {
       return $apiMgrService.getApiList()
     }
 
-    const checkRawConnection = (api) => {
+    const checkRawConnection = api => {
       return $apiMgrService.checkRawConnection(api)
     }
 
@@ -27,19 +32,19 @@ define(['../module'], function (module) {
       return $apiMgrService.checkSelectedApiConnection()
     }
 
-    const checkApiConnection = (id) => {
+    const checkApiConnection = id => {
       return $apiMgrService.checkApiConnection(id)
     }
 
-    const remove = (key) => {
+    const remove = key => {
       return $apiMgrService.remove(key)
     }
 
-    const insert = (record) => {
+    const insert = record => {
       return $apiMgrService.insert(record)
     }
 
-    const chose = (key) => {
+    const chose = key => {
       return $apiMgrService.chose(key)
     }
 
@@ -47,7 +52,7 @@ define(['../module'], function (module) {
       return $filterService.getFilters()
     }
 
-    const addFilter = (filter) => {
+    const addFilter = filter => {
       return $filterService.addFilter(filter)
     }
 
@@ -55,7 +60,7 @@ define(['../module'], function (module) {
       return $filterService.getSerializedFilters()
     }
 
-    const removeFilter = (filter) => {
+    const removeFilter = filter => {
       return $filterService.removeFilter(filter)
     }
 
@@ -63,7 +68,7 @@ define(['../module'], function (module) {
       return $filterService.cleanFilters()
     }
 
-    const update = (register) => {
+    const update = register => {
       return $apiMgrService.update(register)
     }
     const getClusterInfo = () => {
@@ -77,12 +82,20 @@ define(['../module'], function (module) {
       return $apiMgrService.getIndex()
     }
 
-    const setIndex = (index) => {
+    const setIndex = index => {
       return $apiMgrService.setIndex(index)
     }
 
-    const setApi = (api) => {
+    const setApi = api => {
       return $apiMgrService.setApi(api)
+    }
+
+    const getExtensions = id => {
+      return $apiIndexStorageService.getExtensions(id)
+    }
+
+    const setExtensions = (api, extensions) => {
+      return $apiIndexStorageService.setExtensions(api, extensions)
     }
 
     const removeCurrentApi = () => {
@@ -93,8 +106,30 @@ define(['../module'], function (module) {
       return $navigationService.getCurrentAgent()
     }
 
-    const setCurrentAgent = (id) => {
+    const setCurrentAgent = id => {
       return $navigationService.setCurrentAgent(id)
+    }
+
+    /**
+     * Gets extensions by ID
+     * @param {String} id 
+     */
+    const getExtensionsById = async id => {
+      try {
+        const currentExtensions = getExtensions(
+          id
+        )
+        const result = {}
+        if (currentExtensions) {
+          Object.assign(result, currentExtensions)
+        } else {
+          const ext = await $requestService.httpReq(`GET`, `/manager/extensions`)
+          Object.assign(result, ext.data)
+        }
+        return result
+      } catch (err) {
+        return Promise.reject(false)
+      }
     }
 
     return {
@@ -121,7 +156,10 @@ define(['../module'], function (module) {
       removeCurrentApi: removeCurrentApi,
       setApi: setApi,
       getCurrentAgent: getCurrentAgent,
-      setCurrentAgent: setCurrentAgent
+      setCurrentAgent: setCurrentAgent,
+      getExtensions: getExtensions,
+      setExtensions: setExtensions,
+      getExtensionsById: getExtensionsById
     }
   })
 })

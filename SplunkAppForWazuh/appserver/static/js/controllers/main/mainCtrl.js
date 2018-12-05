@@ -1,33 +1,64 @@
 define([
   '../module',
-  'splunkjs/mvc',
-  'splunkjs/mvc/layoutview'
-], function (
-  module,
-  mvc,
-  LayoutView
-) {
-    'use strict'
-    module.controller('mainCtrl', function ($scope, $transitions, $requestService) {
+  'splunkjs/mvc/layoutview',
+  'splunkjs/mvc/simplexml',
+  '../../services/visualizations/inputs/time-picker'
+], function(app, LayoutView, DashboardController, TimePicker) {
+  'use strict'
 
-      $scope.baseUrl = $requestService.getBaseUrl()
-      $scope.$on('loading', (event, data) => {
-        if (data.status)
-          $scope.loading = true
-        else
-          $scope.loading = false
-        if (!$scope.$$phase) $scope.$digest()
+  class MainCtrl {
+    constructor($scope, $urlTokenModel) {
+      this.timePicker = new TimePicker(
+        '#timePicker',
+        $urlTokenModel.handleValueChange
+      )
+      this.scope = $scope
+      this.dashboardController = DashboardController
+      this.urlTokenModel = $urlTokenModel
+      this.layoutView = new LayoutView({
+        hideFooter: false,
+        hideSplunkBar: false,
+        hideAppBar: true,
+        hideChrome: false
       })
-
-      // $transitions.onSuccess({}, async (trans) => {
-      //   $scope.loading = false
-      //   if (!$scope.$$phase) $scope.$digest()
-      // })
-
-      new LayoutView({ "hideFooter": false, "hideSplunkBar": false, "hideAppBar": true, "hideChrome": false })
         .render()
         .getContainerElement()
         .appendChild($('.empty-body-class')[0])
-    })
-  })
 
+      this.dashboardController.ready()
+    }
+
+    $onInit() {
+      this.scope.$on('loading', (event, data) => {
+        if (data.status) this.scope.loading = true
+        else this.scope.loading = false
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+
+      this.dashboardController.onReady(() => {
+        if (
+          !this.urlTokenModel.has('earliest') &&
+          !this.urlTokenModel.has('latest')
+        ) {
+          this.urlTokenModel.set({ earliest: '0', latest: '' })
+        }
+      })
+
+      // Initialize time tokens to default
+      if (
+        !this.urlTokenModel.has('earliest') &&
+        !this.urlTokenModel.has('latest')
+      ) {
+        this.urlTokenModel.set({ earliest: '0', latest: '' })
+      }
+
+      /**
+       * On controller destroy
+       */
+      this.scope.$on('$destroy', () => {
+        this.timePicker.destroy()
+      })
+    }
+  }
+  app.controller('mainCtrl', MainCtrl)
+})
