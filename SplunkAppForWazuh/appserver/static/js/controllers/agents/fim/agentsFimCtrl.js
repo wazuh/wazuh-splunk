@@ -38,6 +38,8 @@ define([
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
       this.scope = $scope
+      this.scope.buttonShowElements = 'Show files'
+      this.scope.showFiles = false
       this.urlTokenModel = $urlTokenModel
       if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
       this.filters = this.currentDataService.getSerializedFilters()
@@ -128,8 +130,14 @@ define([
       this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+      this.scope.show = () => this.show()
     }
 
+    show(){
+      this.scope.buttonShowElements = (this.showFiles) ?  'Show alerts' : 'Show files'
+      this.scope.showFiles = !this.scope.showFiles
+      if (!this.scope.$$phase) this.scope.$digest()
+    }
 
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
