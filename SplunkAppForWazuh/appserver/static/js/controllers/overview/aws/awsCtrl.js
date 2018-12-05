@@ -28,12 +28,12 @@ define([
          */
         new AreaChart(
           'eventsByIdOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId`,
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
           'eventsByIdOverTime'
         ),
         new ColumnChart(
           'eventsByRegionOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.awsRegion`,
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
           'eventsByRegionOverTime'
         ),
         new PieChart(
