@@ -17,14 +17,19 @@ define([], function () {
     $state,
     $navigationService,
     $currentDataService,
-    $scope
+    $scope,
+    state = null
   ) {
     if (instance.path === '/agents' || new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path)) {
       // Go to and store an agent details
       $currentDataService.setCurrentAgent(item.id)
       $currentDataService.addFilter(`{"agent.id":"${item.id}", "implicit":true}`)
       $navigationService.storeRoute('agents')
-      $state.go('agent-overview', { id: item.id })
+      if (!state) {
+        $state.go('agent-overview', { id: item.id })
+      } else {
+        $state.go(state, { id: item.id })
+      }
     } else if (instance.path === '/agents/groups') {
       $scope.$emit('wazuhShowGroup', { group: item })
     } else if (new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*\/files$/).test(instance.path)) {

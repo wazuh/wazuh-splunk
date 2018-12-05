@@ -87,8 +87,7 @@ define([
         /**
          * Common functions
          */
-        $scope.clickAction = (item) =>
-          clickAction(instance,item, $state, $navigationService,$currentDataService, $scope);
+        $scope.clickAction = (item,state=null) => clickAction(instance,item, $state, $navigationService,$currentDataService, $scope, state);
 
         const fetch = async (options = {}) => {
           try {
