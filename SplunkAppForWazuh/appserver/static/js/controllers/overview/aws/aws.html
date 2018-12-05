@@ -12,6 +12,62 @@
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
 
+  <!-- Metrics -->
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>
+          Enabled:
+          <span class="wz-text-bold">{{ awsMetrics.enabled }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          Scan interval:
+          <span class="wz-text-bold">{{ awsMetrics.scanInterval }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          Run on start:
+          <span class="wz-text-bold">{{ awsMetrics.runOnStart }}</span>
+        </div>
+        <div class="wz-text-truncatable" flex>
+          Skip on error:
+          <span class="wz-text-bold">{{ awsMetrics.skipOnError }}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>
+          Buckets:
+          <span class="wz-text-bold">{{ awsMetrics.buckets }}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>
+          Accounts in use:
+          <span class="wz-text-bold">{{ awsMetrics.accountInUse }}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-text-truncatable" flex>
+          Regions in use:
+          <span class="wz-text-bold">{{ awsMetrics.regionsInUse }}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End Metrics -->
+
+
   <!-- first row  -->
   <div id="row2" layout="row">
     <!-- first row - first vis -->
