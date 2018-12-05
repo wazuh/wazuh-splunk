@@ -7,13 +7,14 @@ define([
   '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function(app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown) {
+], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown) {
   'use strict'
 
   class AWS {
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, awsMetrics) {
       this.scope = $scope
       this.state = $state
+      this.awsMetrics = awsMetrics
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
       this.getFilters = this.currentDataService.getSerializedFilters
@@ -23,6 +24,39 @@ define([
         '#timePicker',
         $urlTokenModel.handleValueChange
       )
+
+      if (this.awsMetrics == false) {
+        this.scope.awsMetrics = {
+          enabled: "N/D",
+          scanInterval: "N/D",
+          runOnStart: "N/D",
+          skipOnError: "N/D",
+          buckets: "N/D",
+          accountInUse: "N/D",
+          regionsInUse: "N/D"
+        }
+      } else {
+        this.awsMetrics = this.awsMetrics[0]['aws-s3']
+        this.scope.awsMetrics = {
+          enabled: "",
+          scanInterval: this.awsMetrics.interval,
+          runOnStart: this.awsMetrics.run_on_start,
+          skipOnError: this.awsMetrics.skip_on_error,
+          buckets: "",
+          accountInUse: "",
+          regionsInUse: ""
+        }
+        if (this.awsMetrics.disabled == "no")
+          this.scope.awsMetrics.enabled = "yes"
+        else
+          this.scope.awsMetrics.enabled = "no"
+        this.awsMetrics.buckets.map(bucket => {
+          this.scope.awsMetrics.buckets = `${this.scope.awsMetrics.buckets} ${bucket.name}`
+        })
+        this.serializedAwsMetrics = this.serializedMetrics(this.awsMetrics.buckets)
+        this.scope.awsMetrics.regionsInUse = this.serializedAwsMetrics.regions
+        this.scope.awsMetrics.accountInUse = this.serializedAwsMetrics.accounts
+      }
 
       this.dropdown = new Dropdown(
         'dropDownInput',
@@ -74,7 +108,7 @@ define([
         new Map(
           'map',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh data.aws.source=$awsSource$ | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
           'map'
         ),
@@ -109,6 +143,18 @@ define([
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()
+    }
+
+    serializedMetrics(buckets) {
+      let regions = []
+      let accounts = []
+      buckets.map(bucket => {
+        if (!regions.includes(bucket.regions))
+          regions.push(bucket.regions)
+        if (!accounts.includes(bucket.aws_account_alias))
+          accounts.push(bucket.aws_account_alias)
+      })
+      return {"regions": regions.toString().replace(/,/g, " "), "accounts": accounts.toLocaleString().replace(/,/g, " ")}
     }
   }
   app.controller('awsCtrl', AWS)
