@@ -19,6 +19,7 @@ define([
       this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
+      this.implicitFilters = this.serializedImplicitFilters(this.currentDataService.getFilters().filter(item => item['implicit']))
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -60,7 +61,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${this.filters} sourcetype=wazuh data.aws.source=* | stats by data.aws.source | fields data.aws.source | sort data.aws.source ASC`,
+        `${this.implicitFilters} sourcetype=wazuh data.aws.source=* | stats by data.aws.source | fields data.aws.source | sort data.aws.source ASC`,
         'data.aws.source',
         '$form.awsSource$',
         'dropDownInput'
@@ -156,6 +157,17 @@ define([
       })
       return {"regions": regions.toString().replace(/,/g, " "), "accounts": accounts.toLocaleString().replace(/,/g, " ")}
     }
+
+    serializedImplicitFilters(filters) {
+      let implicitFilters = ""
+      let key = ""
+      filters.map( filter => {
+        key = Object.keys(filter)[0]
+        implicitFilters = `${implicitFilters} ${key}=${filter[key]}`
+      })
+      return implicitFilters
+    }
   }
+  
   app.controller('awsCtrl', AWS)
 })
