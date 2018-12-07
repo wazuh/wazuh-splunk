@@ -11,7 +11,8 @@ define([
   'use strict'
 
   class AWS {
-    constructor($urlTokenModel, $scope, $currentDataService, $state, awsMetrics) {
+    constructor($urlTokenModel, $rootScope, $scope, $currentDataService, $state, awsMetrics) {
+      this.rootScope = $rootScope
       this.scope = $scope
       this.state = $state
       this.awsMetrics = awsMetrics
@@ -67,25 +68,32 @@ define([
         'dropDownInput'
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         try {
-          this.awsSourceFilters = []
-          if (newValue && this.dropdownInstance) {
-            if (newValue == '*') {
-              window.localStorage.removeItem('awsSourceFilters')
+          newValue = `data.aws.source:${newValue}`
+          this.oldValue = window.localStorage.getItem('lastAwsFilter')
+          if (!this.oldValue || (this.oldValue && this.oldValue != newValue)) {
+            //Setting this.awsSourceFilters
+            if (window.localStorage.getItem('awsSourceFilters')) {
+              this.awsSourceFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
             } else {
-              if (window.localStorage.getItem('awsSourceFilters')) {
-                this.awsSourceFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
-                if (!(this.awsSourceFilters.includes(newValue))) {
-                  this.awsSourceFilters.push(newValue)
-                }
-              } else {
-                this.awsSourceFilters.push(newValue)
-              }
-              window.localStorage.setItem('awsSourceFilters', JSON.stringify(this.awsSourceFilters))
+              this.awsSourceFilters = []
             }
-            //this.state.reload()
+            //Checking newValue
+            if (newValue === 'data.aws.source:*') {
+              window.localStorage.removeItem('awsSourceFilters')
+              this.state.reload()
+              this.rootScope.$broadcast('applyFiltersAws')
+            } else {
+              if (!this.awsSourceFilters.includes(newValue)) {
+                this.awsSourceFilters.push(newValue)
+                window.localStorage.setItem('awsSourceFilters', JSON.stringify(this.awsSourceFilters)) //Setting awsSourceFilters in localStorage
+                this.rootScope.$broadcast('applyFiltersAws')
+                this.state.reload()
+              }
+            }
           }
+          window.localStorage.setItem('lastAwsFilter', newValue) //Saved lastAswFilter
         } catch (err) {
           console.error("error: ", err)
         }
