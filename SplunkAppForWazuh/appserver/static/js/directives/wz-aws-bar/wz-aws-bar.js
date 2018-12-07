@@ -1,0 +1,111 @@
+/*
+ * Wazuh app - Filter bar directive
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('wazuhAwsBar', function ($notificationService, BASE_URL) {
+    return {
+      restrict: 'E',
+      controller: function ($scope, $currentDataService) {
+        /**
+         * Prettifies filters for md-chips
+         * @returns {Array}
+         */
+        const getPrettyFilters = () => {
+          let prettyFilters = []
+          const uglyFilters = $currentDataService.getFilters()
+          if (uglyFilters && uglyFilters.length > 0) {
+            for (const filter of uglyFilters) {
+              const key = Object.keys(filter)[0]
+              prettyFilters.push(`${key}:${filter[key]}`)
+            }
+          }
+          const awsUglyFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+          if (awsUglyFilters) {
+            prettyFilters = prettyFilters.concat(awsUglyFilters)
+          }
+          return prettyFilters
+        }
+
+        $scope.filters = getPrettyFilters()
+
+        /**
+         * Returns if a string is static
+         * @param {String} filter
+         * @returns {Boolean}
+         */
+        $scope.filterStatic = filter => {
+          const key = filter.split(':')[0]
+          const staticTrue = $currentDataService
+            .getFilters()
+            .filter(item => !!item.implicit)
+          const isIncluded = staticTrue.filter(
+            item => typeof item[key] !== 'undefined'
+          )
+          return !!isIncluded.length
+        }
+
+        /**
+         * Removes a filter on click
+         * @param {String}: The filter to be removed
+         */
+        $scope.removeFilter = filter => {
+          let awsFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+          awsFilters.splice(awsFilters.indexOf(filter), 1)
+          window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsFilters))
+          $scope.filters = getPrettyFilters()
+          $scope.$emit('deletedFilter', {})
+        }
+
+        /**
+         * Applies the written filter to visualizations
+         * @param {Object | String} filter
+         */
+        $scope.applyFilters = customSearch => {
+          try {
+            console.log("customSearch: ", customSearch)
+            let awsSourceFilters = []
+            if (
+              !customSearch ||
+              customSearch.split(':').length !== 2 ||
+              customSearch.split(':')[1].length === 0
+            ) {
+              throw new Error('Incorrent format. Please use key:value syntax')
+            }
+            if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) { awsSourceFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters')) }
+            console.log("A-awsSourceFilter ", awsSourceFilters)
+            if (!awsSourceFilters.includes(customSearch)) {
+              console.log("no lo incluyes")
+              awsSourceFilters.push(customSearch)
+              window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsSourceFilters))
+              console.log("apendeado ", awsSourceFilters)
+              $scope.filters = getPrettyFilters()
+              $scope.$emit('barFilter', {})
+            }
+            if (!$scope.$$phase) $scope.$digest()
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
+          }
+        }
+
+        $scope.$on('applyFiltersAws', () => {
+          $scope.filters = getPrettyFilters()
+        })
+      },
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-aws-bar/wz-aws-bar.html'
+    }
+  })
+})
+
+
+
