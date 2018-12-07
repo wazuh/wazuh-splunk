@@ -128,6 +128,17 @@ define([
             $notificationService
           );
 
+        const query = async (query, search) =>
+          data.queryData(
+            query,
+            search,
+            instance,
+            $tableFilterService,
+            $scope,
+            fetch,
+            $notificationService
+          );
+
         const filter = async filter =>
           data.filterData(
             filter,
@@ -214,6 +225,10 @@ define([
 
         $scope.$on('wazuhRemoveFilter', (event, parameters) =>
           listeners.wazuhRemoveFilter(parameters, instance, $tableFilterService, init)
+        );
+
+        $scope.$on('wazuhQuery', (event, parameters) =>
+          listeners.wazuhQuery(parameters, query)
         );
 
         $scope.$on('wazuhPlayRealTime', () => {

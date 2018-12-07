@@ -56,7 +56,7 @@ define([
         item && item.data && item.data.data ? item.data.data : false
       )
 
-      const [
+      let [
         summary,
         lastAgent,
         platforms,
@@ -67,16 +67,27 @@ define([
 
       this.scope.agentsCountActive = summary.Active - 1
       this.scope.lastAgent = lastAgent.items[0]
-      this.scope.os = platforms.items
-      this.scope.versions = versions.items
-      this.scope.nodes = nodes && nodes.items ? nodes.items : false
-      this.scope.groups = groups.items
+      const os = platforms.items.map(item => item.os)
+      versions = versions.items.map(item => item.version)
+      nodes = nodes && nodes.items ? nodes.items.map(item => item['node_name']) : false
+      groups = groups.items.map(item => item.name)
       this.scope.agentsCountDisconnected = summary.Disconnected
       this.scope.agentsCountNeverConnected = summary['Never connected']
-      this.scope.agentsCountTotal = summary.Total - 1
-      this.scope.agentsCoverity = this.scope.agentsCountTotal
-        ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) * 100
+      const agentsCountTotal = summary.Total - 1
+      this.scope.agentsCoverity = agentsCountTotal
+        ? (this.scope.agentsCountActive / agentsCountTotal) * 100
         : 0
+
+      this.scope.searchBarModel = {
+        'status': ['Active', 'Disconnected', 'Never connected'],
+        'group': groups,
+        'node_name': nodes,
+        'version': versions,
+        'os.platform': os.map(x => x.platform),
+        'os.version': os.map(x => x.version),
+        'os.name': os.map(x => x.name)
+      }
+
       this.topAgent = new SearchHandler(
         'searchTopAgent',
         `index=wazuh ${this.filters} | top agent.name`,
@@ -95,8 +106,8 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.search = term => this.search(term)
-      this.scope.filter = filter => this.filter(filter)
+
+      this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
       this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
@@ -131,20 +142,8 @@ define([
       return
     }
 
-    /**
-     * Searches by a term
-     * @param {String} term
-     */
-    search(term) {
-      this.scope.$broadcast('wazuhSearch', { term })
-    }
-
-    /**
-     * Filters by a term
-     * @param {String} filter
-     */
-    filter(filter) {
-      this.scope.$broadcast('wazuhFilter', { filter })
+    query(query, search) {
+      this.scope.$broadcast('wazuhQuery', { query, search });
     }
 
     /**
