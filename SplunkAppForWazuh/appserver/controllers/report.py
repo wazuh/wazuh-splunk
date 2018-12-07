@@ -53,21 +53,24 @@ class report(controllers.BaseController):
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
             args = json.loads(json_acceptable_string)
-            self.logger.info("keys of kwargs "+ str(args.keys()))
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             self.header()
             self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(40, 10, 'Security events report')
+            self.pdf.set_auto_page_break(True, 2)
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             self.logger.error("Size of array: %s" % (len(args['array'])))
             i=0
             while i in range(0,len(args['array'])):
-                self.logger.info("Value of index: %s" % (i))
                 f = open(self.path+'sample'+str(i)+'.png', 'wb')
                 f.write(base64.decodestring(args['array'][i]['element'].split(',')[1].encode()))
                 f.close()
-                self.pdf.image(self.path+'sample'+str(i)+'.png',5,(i+5)*60,150,60)
+                if i==0:
+                    self.pdf.image(self.path+'sample'+str(i)+'.png',15,50,135,60)
+                else:
+                    self.pdf.image(self.path+'sample'+str(i)+'.png',15,i*120,135,60)
+
                 os.remove(self.path+'sample'+str(i)+'.png')
                 i+=1
 
@@ -82,7 +85,6 @@ class report(controllers.BaseController):
     @expose_page(must_login=False, methods=['GET'])
     def reports(self, **kwargs):
         try:
-            self.logger.info("Returning list of PDF files")
             #pdf_files = [f for f in os.listdir(self.path) if os.path.isfile(os.path.join(self.path, f))]
             pdf_files = []
             for f in os.listdir(self.path):
@@ -108,9 +110,9 @@ class report(controllers.BaseController):
         try:
             if not 'name' in kwargs:
                 raise Exception('Missing filename')
-            self.logger.info("Removing report %s" % kwargs['name'])
             filename = kwargs['name']
             os.remove(self.path+filename)
+            self.logger.info("Removed report %s" % kwargs['name'])
             parsed_data = json.dumps({"data": "Deleted file"})
         except Exception as e:
             self.logger.error("Error deleting PDF file: %s" % (e))
