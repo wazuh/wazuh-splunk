@@ -68,8 +68,27 @@ define([
       )
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
-        if (newValue && this.dropdownInstance)
-          $urlTokenModel.handleValueChange(this.dropdownInstance)
+        try {
+          this.awsSourceFilters = []
+          if (newValue && this.dropdownInstance) {
+            if (newValue == '*') {
+              window.localStorage.removeItem('awsSourceFilters')
+            } else {
+              if (window.localStorage.getItem('awsSourceFilters')) {
+                this.awsSourceFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+                if (!(this.awsSourceFilters.includes(newValue))) {
+                  this.awsSourceFilters.push(newValue)
+                }
+              } else {
+                this.awsSourceFilters.push(newValue)
+              }
+              window.localStorage.setItem('awsSourceFilters', JSON.stringify(this.awsSourceFilters))
+            }
+            //this.state.reload()
+          }
+        } catch (err) {
+          console.error("error: ", err)
+        }
       })
 
       this.vizz = [
@@ -78,49 +97,49 @@ define([
          */
         new AreaChart(
           'eventsByIdOverTime',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
           'eventsByIdOverTime'
         ),
         new ColumnChart(
           'eventsByRegionOverTime',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | timechart count by data.aws.awsRegion usenull=f`,
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
           'eventsByRegionOverTime'
         ),
         new PieChart(
           'topEventsByServiceName',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | stats count BY data.aws.source`,
+          `${this.filters} sourcetype=wazuh | stats count BY data.aws.source`,
           'topEventsByServiceName'
         ),
         new PieChart(
           'topEventsByInstanceId',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | top data.aws.resource.instanceDetails.instanceId limit=5`,
+          `${this.filters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
           'topEventsByInstanceId'
         ),
         new PieChart(
           'topEventsByResourceType',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | top data.aws.resource.resourceType limit=5`,
+          `${this.filters} sourcetype=wazuh | top data.aws.resource.resourceType limit=5`,
           'topEventsByResourceType'
         ),
         new PieChart(
           'topEventsByRegion',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | top data.aws.awsRegion limit=5`,
+          `${this.filters} sourcetype=wazuh | top data.aws.awsRegion limit=5`,
           'topEventsByRegion'
         ),
         new Map(
           'map',
           `${
           this.filters
-          } sourcetype=wazuh data.aws.source=$awsSource$ | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
+          } sourcetype=wazuh | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
           'map'
         ),
         new Table(
           'top5Buckets',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | top data.aws.source limit=5`,
+          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5`,
           'top5Buckets'
         ),
         new Table(
           'top5Rules',
-          `${this.filters} sourcetype=wazuh data.aws.source=$awsSource$ | top rule.id, rule.description limit=5`,
+          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
           'top5Rules'
         )
       ]
@@ -155,19 +174,19 @@ define([
         if (!accounts.includes(bucket.aws_account_alias))
           accounts.push(bucket.aws_account_alias)
       })
-      return {"regions": regions.toString().replace(/,/g, " "), "accounts": accounts.toLocaleString().replace(/,/g, " ")}
+      return { "regions": regions.toString().replace(/,/g, " "), "accounts": accounts.toLocaleString().replace(/,/g, " ") }
     }
 
     serializedImplicitFilters(filters) {
       let implicitFilters = ""
       let key = ""
-      filters.map( filter => {
+      filters.map(filter => {
         key = Object.keys(filter)[0]
         implicitFilters = `${implicitFilters} ${key}=${filter[key]}`
       })
       return implicitFilters
     }
   }
-  
+
   app.controller('awsCtrl', AWS)
 })
