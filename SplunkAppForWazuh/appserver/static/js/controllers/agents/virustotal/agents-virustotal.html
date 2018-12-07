@@ -5,7 +5,8 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
+      <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>VirusTotal</span>
     </div>
@@ -41,7 +42,7 @@
     <!-- second row - first vis -->
     <md-card flex="40" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">VirusToal alerts volume</span>
+        <span class="wz-headline-title">VirusTotal alerts volume</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsVolume'></div>
       </md-card-content>

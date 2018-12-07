@@ -16,8 +16,9 @@ import XMLBeautifier from './xml-beautifier'
 define([
   './query-config',
   './remove-hash-key',
-  '../services/xml-beautifier/xml-beautifier'
-], function(queryConfig, objectWithoutProperties, XMLBeautifier) {
+  '../services/xml-beautifier/xml-beautifier',
+  'js2xmlparser'
+], function(queryConfig, objectWithoutProperties, XMLBeautifier,js2xmlparser) {
   'use strict'
 
   return class ConfigurationHandler {
@@ -53,7 +54,8 @@ define([
         )
         if (sections[0].component === 'integrator') {
           this.buildIntegrations(
-            $scope.currentConfig['integrator-integration'].integration
+            $scope.currentConfig['integrator-integration'].integration,
+            $scope
           )
         } else {
           $scope.integrations = {}
@@ -155,7 +157,7 @@ define([
         try {
           const cleaned = objectWithoutProperties(config)
           $scope.XMLContent = XMLBeautifier(
-            js2xmlparser.parse('configuration', cleaned)
+            js2xmlparser(cleaned)
           )
         } catch (error) {
           $scope.XMLContent = false

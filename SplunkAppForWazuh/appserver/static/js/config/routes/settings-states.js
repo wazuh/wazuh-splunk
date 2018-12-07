@@ -38,20 +38,12 @@ define(['../module'], function(module) {
           resolve: {
             apiList: [
               '$currentDataService',
-              $currentDataService => {
-                return $currentDataService
-                  .getApiList()
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+              async ($currentDataService) => {
+                try {
+                  return await $currentDataService.getApiList()
+                } catch (error) {
+                  console.error('Could not fetch API list')
+                }
               }
             ]
           }
@@ -66,20 +58,17 @@ define(['../module'], function(module) {
           controller: 'extensionsCtrl',
           resolve: {
             extensions: [
-              '$requestService',
+              '$state',
               '$currentDataService',
-              async ($requestService, $currentDataService) => {
+              async ($state, $currentDataService) => {
                 try {
                   const id = $currentDataService.getApi().id
-                  const currentExtensions = $currentDataService.getExtensions(
+                  const currentExtensions = await $currentDataService.getExtensionsById(
                     id
                   )
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`)
-                  return await result
+                  return currentExtensions
                 } catch (err) {
-                  console.error('Error route: ', err)
+                  $state.go('settings.api')
                 }
               }
             ]
@@ -102,21 +91,13 @@ define(['../module'], function(module) {
           controller: 'logsCtrl',
           resolve: {
             logs: [
-              '$requestService',
-              $requestService => {
-                return $requestService
-                  .httpReq(`GET`, `/manager/get_log_lines`)
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+              '$requestService','$state',
+              async ($requestService, $state) => {
+                try {
+                  return await $requestService.httpReq(`GET`, `/manager/get_log_lines`)
+                } catch (error) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -128,7 +109,24 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('dev-tools')
           },
-          controller: 'devToolsCtrl'
+          controller: 'devToolsCtrl',
+          resolve: {
+            extensions: [
+              '$state',
+              '$currentDataService',
+              async ($state, $currentDataService) => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const currentExtensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return await currentExtensions
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
         .state('discover', {
           templateUrl:

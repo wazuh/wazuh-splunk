@@ -48,10 +48,10 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
         data && data.data && data.data.data && data.data.data.synced
-      this.$scope.agent = agent.data.data
     }
 
     $onInit() {
+      this.$scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = agentStatus => {
@@ -59,7 +59,7 @@ define(['../../module', '../../../utils/config-handler'], function(
           ? agentStatus
           : 'Never connected'
       }
-      // this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
+      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
       this.$scope.isString = item => typeof item === 'string'
       this.$scope.hasSize = obj =>

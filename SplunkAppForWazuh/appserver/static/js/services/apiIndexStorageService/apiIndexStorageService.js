@@ -111,9 +111,7 @@ define(['../module'], function(app) {
             JSON.stringify(newSet) || []
           )
         }
-      } catch (err) {
-        console.error('err ', err)
-      }
+      } catch (err) {}
     }
   }
   app.service('$apiIndexStorageService', ApiIndexStorageService)

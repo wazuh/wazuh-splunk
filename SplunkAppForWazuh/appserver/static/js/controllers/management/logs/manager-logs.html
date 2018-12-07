@@ -27,7 +27,7 @@
         <option value="debug">Debug</option>
       </select>
       
-      <select flex class="input input-dropdown wz-margin-left-10" id="categoryBox" ng-model="selectedNode" ng-change="changeNode(selectedNode)" aria-label="Logs category">
+      <select flex ng-show='nodeList && nodeList.length' class="input input-dropdown wz-margin-left-10" id="categoryBox" ng-model="selectedNode" ng-change="changeNode(selectedNode)" aria-label="Logs category">
         <option ng-repeat="node in nodeList" value="{{node}}">{{node}}</option>
       </select>
       

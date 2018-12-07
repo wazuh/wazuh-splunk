@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function(app, SearchHandler, FileSaver) {
+], function (app, SearchHandler, FileSaver) {
   'use strict'
 
   class Agents {
@@ -43,12 +43,13 @@ define([
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
-      this.api = $currentDataService.getApi()
+      this.currentDataService = $currentDataService
+      this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
       this.toast = $notificationService.showSimpleToast
-      this.currentClusterInfo = $currentDataService.getClusterInfo()
-      this.filters = $currentDataService.getSerializedFilters()
+      this.currentClusterInfo = this.currentDataService.getClusterInfo()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       const parsedResult = agentData.map(item =>
@@ -97,9 +98,7 @@ define([
       this.scope.search = term => this.search(term)
       this.scope.filter = filter => this.filter(filter)
       this.scope.showAgent = agent => this.showAgent(agent)
-      this.scope.isClusterEnabled =
-        this.clusterInfo && this.clusterInfo.status === 'enabled'
-      this.scope.loading = false
+      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'

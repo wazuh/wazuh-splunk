@@ -33,7 +33,7 @@ define([
         ),
         new ColumnChart(
           'whodataUsage',
-          `${this.filters} sourcetype=wazuh
+          `${this.filters} sourcetype=wazuh rule.groups=syscheck
           | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
           | stats count BY WHODATA
           | addcoltotals count labelfield=WHODATA label=Total
@@ -43,8 +43,8 @@ define([
         new PieChart(
           'alertsVolume',
           `${
-            this.filters
-          } sourcetype=wazuh | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
+            this.filters 
+          } sourcetype=wazuh rule.groups=syscheck | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
           | stats count BY SYSCHECK
           | addcoltotals count labelfield=SYSCHECK label=Total
           | where NOT SYSCHECK="NO"`,
@@ -66,14 +66,14 @@ define([
         ),
         new LinearChart(
           'eventsSummary',
-          `${this.filters} sourcetype=wazuh | timechart count`,
+          `${this.filters} sourcetype=wazuh rule.groups=syscheck | timechart count`,
           'eventsSummary'
         ),
         new Table(
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'topRules'
         ),
         new Table(

@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
-## Wazuh v3.7.0 - Splunk Enterprise v7.2.0 - Splunk app v3.7.0-rev-17
+
+## Wazuh v3.7.1 - Splunk Enterprise v7.2.1 - Splunk app v3.7.1-rev-18
+
+### Added
+
+- Added administrator mode for Dev Tools module ([#353](https://github.com/wazuh/wazuh-splunk/pull/353)).
+- Added extension management features ([#330](https://github.com/wazuh/wazuh-splunk/pull/330)).
+- Added native Angular.js md-tooltips ([#362](https://github.com/wazuh/wazuh-splunk/pull/362)).
+- Added export as CSV option for multiple tables ([#348](https://github.com/wazuh/wazuh-splunk/pull/348)).
+- Added VirusTotal integration ([#340](https://github.com/wazuh/wazuh-splunk/pull/340)).
+- Added CIS-CAT integration ([#342](https://github.com/wazuh/wazuh-splunk/pull/342)).
+- Added Discover section ([#331](https://github.com/wazuh/wazuh-splunk/pull/331)).
+
+### Changed
+
+- Increased number of rows for syscollector tables ([#358](https://github.com/wazuh/wazuh-splunk/pull/358)).
+- Refactored all the configuration sections ([#363](https://github.com/wazuh/wazuh-splunk/pull/363)).
+- Improved Overview dashboard cards ([#372](https://github.com/wazuh/wazuh-splunk/pull/372)).
+
+### Fixes
+
+- Fix a bug when using the Agent status monitoring alerts ([#361](https://github.com/wazuh/wazuh-splunk/pull/361)).
+- Added missing fields for syscollector network tables ([#359](https://github.com/wazuh/wazuh-splunk/pull/359)).
+- Fixed wrong value in a variable from the agents module ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
+
+## Wazuh v3.7.0 - Splunk Enterprise v7.2.0 / Splunk Enterprise v7.2.1 - Splunk app v3.7.0-rev-17
 ### Added
 - Osquery integration ([#252](https://github.com/wazuh/wazuh-splunk/pull/252)).
 - Cluster monitoring ([#246](https://github.com/wazuh/wazuh-splunk/pull/246)).

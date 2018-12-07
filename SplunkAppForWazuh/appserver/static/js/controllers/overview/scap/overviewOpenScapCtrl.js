@@ -25,7 +25,9 @@ define([
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(`{"rule.groups":"oscap", "implicit":true}`)
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.scope.$on('deletedFilter', () => {
@@ -36,8 +38,9 @@ define([
         this.launchSearches()
       })
 
-      this.scope.$on('$destroy', () => {
+      this.scope.$on('$destroy', () => {  
         this.timePicker.destroy()
+        this.dropdown.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
       this.timePicker = new TimePicker(

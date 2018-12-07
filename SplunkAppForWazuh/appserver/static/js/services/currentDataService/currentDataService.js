@@ -110,6 +110,28 @@ define(['../module'], function(module) {
       return $navigationService.setCurrentAgent(id)
     }
 
+    /**
+     * Gets extensions by ID
+     * @param {String} id 
+     */
+    const getExtensionsById = async id => {
+      try {
+        const currentExtensions = getExtensions(
+          id
+        )
+        const result = {}
+        if (currentExtensions) {
+          Object.assign(result, currentExtensions)
+        } else {
+          const ext = await $requestService.httpReq(`GET`, `/manager/extensions`)
+          Object.assign(result, ext.data)
+        }
+        return result
+      } catch (err) {
+        return Promise.reject(false)
+      }
+    }
+
     return {
       getPollintState: getPollintState,
       getBaseUrl: getBaseUrl,
@@ -136,7 +158,8 @@ define(['../module'], function(module) {
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
-      setExtensions: setExtensions
+      setExtensions: setExtensions,
+      getExtensionsById: getExtensionsById
     }
   })
 })

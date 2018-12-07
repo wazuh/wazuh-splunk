@@ -53,7 +53,7 @@ define(['../module'], function(module) {
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
         else if (method === 'DELETE')
-          Object.assign(data, await $http.delete(tmpUrl))
+          Object.assign(data, await $http.post(tmpUrl, payload))
         if (!data) {
           throw new Error(
             `Error doing a request to ${tmpUrl}, method: ${method}.`
@@ -73,11 +73,13 @@ define(['../module'], function(module) {
      * @param {String} endpoint
      * @param {Object} opts
      */
-    const apiReq = async (endpoint, opts) => {
+    const apiReq = async (endpoint, opts=null, method='GET') => {
       try {
+        $http.defaults.headers.post['Content-Type'] =
+        'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
         const id = currentApi && currentApi.id ? currentApi.id : opts.id
-        const payload = { id, endpoint }
+        const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }

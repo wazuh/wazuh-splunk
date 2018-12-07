@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -40,14 +40,14 @@ define(['../module'], function(module) {
                       select: 'version'
                     }),
                     responseStatus &&
-                    responseStatus.data &&
-                    responseStatus.data.data &&
-                    responseStatus.data.data.enabled === 'yes' &&
-                    responseStatus.data.data.running === 'yes'
+                      responseStatus.data &&
+                      responseStatus.data.data &&
+                      responseStatus.data.data.enabled === 'yes' &&
+                      responseStatus.data.data.running === 'yes'
                       ? $requestService.apiReq('/agents/stats/distinct', {
-                          fields: 'node_name',
-                          select: 'node_name'
-                        })
+                        fields: 'node_name',
+                        select: 'node_name'
+                      })
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
@@ -94,14 +94,7 @@ define(['../module'], function(module) {
                     $requestService.apiReq(`/syscollector/${id}/os`),
                     $requestService.apiReq(`/agents/${id}/group/is_sync`)
                   ])
-                  results.map(result => {
-                    if (
-                      !result.data ||
-                      !result.data.data ||
-                      (result.data.data.error && result.data.data.error != 0)
-                    )
-                      $state.go('agents')
-                  })
+
                   return results
                 } catch (err) {
                   $state.go('agents')
@@ -109,18 +102,12 @@ define(['../module'], function(module) {
               }
             ],
             extensions: [
-              '$requestService',
               '$currentDataService',
-              async ($requestService, $currentDataService) => {
+              async ($currentDataService) => {
                 try {
                   const id = $currentDataService.getApi().id
-                  const currentExtensions = $currentDataService.getExtensions(
-                    id
-                  )
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`)
-                  return await result
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
                 } catch (err) {
                   return false
                 }
@@ -168,14 +155,6 @@ define(['../module'], function(module) {
                     }),
                     $requestService.apiReq(`/agents/${id}`)
                   ])
-                  results.map(result => {
-                    if (
-                      !result.data ||
-                      !result.data.data ||
-                      (result.data.data.error && result.data.data.error != 0)
-                    )
-                      $state.go('agents')
-                  })
                   return results
                 } catch (err) {
                   $state.go('agents')
@@ -215,13 +194,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(
                     `/agents/${id}/config/wmodules/wmodules`
                   )
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
-                } catch (err) {
+                    } catch (err) {
                   $state.go('agents')
                 }
               }
@@ -243,12 +216,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -292,14 +259,6 @@ define(['../module'], function(module) {
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`)
                   ])
-                  results.map(result => {
-                    if (
-                      !result.data ||
-                      !result.data.data ||
-                      (result.data.data.error && result.data.data.error != 0)
-                    )
-                      $state.go('agents')
-                  })
                   return results
                 } catch (err) {
                   $state.go('agents')
@@ -337,12 +296,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -380,13 +333,7 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
-                  return result
+                     return result
                 } catch (err) {
                   $state.go('agents')
                 }
@@ -423,12 +370,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -466,12 +407,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -485,7 +420,7 @@ define(['../module'], function(module) {
         .state('ag-conf', {
           templateUrl:
             BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/configuration.html',
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('ag-conf')
           },
@@ -511,12 +446,6 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(
                     `/agents/${id}/group/is_sync`
                   )
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -540,12 +469,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -583,12 +506,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -626,12 +543,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -669,12 +580,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')
@@ -699,19 +604,18 @@ define(['../module'], function(module) {
               '$requestService',
               '$stateParams',
               '$currentDataService',
-              ($requestService, $stateParams, $currentDataService) => {
-                const id =
-                  $stateParams.id ||
-                  $currentDataService.getCurrentAgent() ||
-                  '000'
-                return $requestService.apiReq(`/agents/${id}`).then(
-                  function(response) {
-                    return response
-                  },
-                  function(response) {
-                    return response
-                  }
-                )
+              '$state',
+              async ($requestService, $stateParams, $currentDataService, $state) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    '000'
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -745,12 +649,6 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(`/agents/${id}`)
-                  if (
-                    !result.data ||
-                    !result.data.data ||
-                    (result.data.data.error && result.data.data.error != 0)
-                  )
-                    $state.go('agents')
                   return result
                 } catch (err) {
                   $state.go('agents')

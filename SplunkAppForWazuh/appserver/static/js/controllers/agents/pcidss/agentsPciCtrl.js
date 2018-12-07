@@ -11,12 +11,9 @@ define([
   class AgentsPCI {
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
+      this.currentDataService = $currentDataService
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -51,6 +48,8 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
       this.agent = agent
+      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.filters = this.currentDataService.getSerializedFilters()
       this.vizz = [
         /**
          * Visualizations
@@ -94,15 +93,26 @@ define([
     }
 
     $onInit() {
-      this.scope.agent = this.agent.data.data
-      this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
-          ? agentStatus
-          : 'Never connected'
-      }
+      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
     }
+    
+    launchSearches() {
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.state.reload()
+    }
+
+    getAgentStatusClass(agentStatus) {
+      return agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+
   }
   app.controller('agentsPciCtrl', AgentsPCI)
 })
