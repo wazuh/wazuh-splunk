@@ -68,6 +68,19 @@ define(['../module'], function (directives) {
           $scope.$emit('deletedFilter', {})
         }
 
+
+        const getAwsFiltersValue = () => {
+          let sourceValues = []
+          let awsCurrentFilters = []
+          if (JSON.parse(window.localStorage.getItem('awsSourceFilters')))
+            awsCurrentFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+          awsCurrentFilters = awsCurrentFilters.filter(item => item['data.aws.source'])
+          awsCurrentFilters.map(filter => {
+            sourceValues.push(filter['data.aws.source'])
+          })
+          return sourceValues
+        }
+
         /**
          * Applies the written filter to visualizations
          * @param {Object | String} filter
@@ -92,7 +105,16 @@ define(['../module'], function (directives) {
               awsSourceFilters = awsSourceFilters.filter(item => !item[newKey])
               awsSourceFilters.push(newFilter)
             }else{
-              awsSourceFilters.push(newFilter)
+              if (newKey === 'data.aws.source') {
+                const awsSourceValues = getAwsFiltersValue()
+                if (!awsSourceValues.includes(newValue)) {
+                  console.log("lo incluyo que no esta")
+                  awsSourceFilters.push(newFilter)
+                }else{
+                }
+              }else{
+                awsSourceFilters.push(newFilter)
+              }
             }
             window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsSourceFilters))
             $scope.filters = getPrettyFilters()
