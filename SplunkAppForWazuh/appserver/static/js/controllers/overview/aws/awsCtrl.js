@@ -20,6 +20,7 @@ define([
       this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
+      this.amazonFilters = this.buildAmazonFilter()
       this.implicitFilters = this.serializedImplicitFilters(this.currentDataService.getFilters().filter(item => item['implicit']))
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
@@ -107,49 +108,49 @@ define([
          */
         new AreaChart(
           'eventsByIdOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
+          `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
           'eventsByIdOverTime'
-        ),
+        )/*,
         new ColumnChart(
           'eventsByRegionOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
+          `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
           'eventsByRegionOverTime'
-        ),
+        )*/,
         new PieChart(
           'topEventsByServiceName',
-          `${this.filters} sourcetype=wazuh | stats count BY data.aws.source`,
+          `${this.amazonFilters} sourcetype=wazuh | stats count BY data.aws.source`,
           'topEventsByServiceName'
-        ),
+        )/
         new PieChart(
           'topEventsByInstanceId',
-          `${this.filters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
+          `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
           'topEventsByInstanceId'
         ),
         new PieChart(
           'topEventsByResourceType',
-          `${this.filters} sourcetype=wazuh | top data.aws.resource.resourceType limit=5`,
+          `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.resourceType limit=5`,
           'topEventsByResourceType'
         ),
         new PieChart(
           'topEventsByRegion',
-          `${this.filters} sourcetype=wazuh | top data.aws.awsRegion limit=5`,
+          `${this.amazonFilters} sourcetype=wazuh | top data.aws.awsRegion limit=5`,
           'topEventsByRegion'
         ),
         new Map(
           'map',
           `${
-          this.filters
+          this.amazonFilters
           } sourcetype=wazuh | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
           'map'
         ),
         new Table(
           'top5Buckets',
-          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5`,
+          `${this.amazonFilters} sourcetype=wazuh | top data.aws.source limit=5`,
           'top5Buckets'
         ),
         new Table(
           'top5Rules',
-          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
+          `${this.amazonFilters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
           'top5Rules'
         )
       ]
@@ -172,7 +173,7 @@ define([
     }
     launchSearches() {
       this.filters = this.getFilters()
-      this.state.reload()
+      this.state.reload() 
     }
 
     serializedMetrics(buckets) {
@@ -207,6 +208,39 @@ define([
         sourceValues.push(filter['data.aws.source'])
       })
       return sourceValues
+    }
+
+    serializedSourceAwsFilters(filters) {
+      let sourceFil = ""
+      filters.map(fil => {
+        sourceFil = `${sourceFil} data.aws.source=${fil['data.aws.source']} OR`
+      })
+      sourceFil = sourceFil.substring(0, sourceFil.length-2);
+      return sourceFil
+    }
+
+    serializedRestAwsFilters(filters) {
+      let restFil = ""
+      filters.map(fil => {
+        const key = Object.keys(fil)[0]
+        const value = fil[key]
+        const filter = `${key}=${value}`
+        restFil = `${restFil} ${filter}`
+      })
+      return restFil
+    }
+
+    buildAmazonFilter() { 
+      let filters = this.getFilters()
+      if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) {
+        const awsCurrentFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+        const sourceFilters = this.serializedSourceAwsFilters(awsCurrentFilters.filter(item => item['data.aws.source']))
+        const restFilters = this.serializedRestAwsFilters(awsCurrentFilters.filter(item => !item['data.aws.source']))
+        filters = `${filters} ${sourceFilters}`
+        filters = `${filters} ${restFilters}`
+        console.log("FILTERS BUILD: ", filters)
+      }
+      return filters
     }
   }
 
