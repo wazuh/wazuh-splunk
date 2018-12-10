@@ -27,11 +27,13 @@ define([
       $state,
       $notificationService,
       $requestService,
-      pollingState
+      pollingState,
+      $reportingService
     ) {
       this.currentDataService = $currentDataService
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
+      this.reportingService = $reportingService
       this.apiReq = $requestService.apiReq
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -188,6 +190,8 @@ define([
           )
         )
       }
+
+      this.scope.startVis2Png = () => this.reportingService.startVis2Png('overview-general',['alertLevEvoVizz','alertsVizz','top5AgentsVizz','alertsEvoTop5Agents','agentsSummaryVizz'])
 
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
