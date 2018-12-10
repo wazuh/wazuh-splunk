@@ -204,7 +204,7 @@ define(['../module'], function (module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('aws')
+            $navigationService.storeRoute('ow-aws')
           },
           controller: 'awsCtrl',
           resolve: {
