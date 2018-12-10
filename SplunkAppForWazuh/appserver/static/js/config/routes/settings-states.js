@@ -134,7 +134,8 @@ define(['../module'], function(module) {
             '/static/app/SplunkAppForWazuh/js/controllers/discover/discover.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('discover')
-          }
+          },
+          params: { id: null }
         })
     }
   ])
