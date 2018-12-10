@@ -29,8 +29,7 @@ require.config({
     FileSaver: 'js/libs/file-saver/file-saver',
 
     // JSON2XML
-    js2xmlparser: 'js/libs/json2xml/jsontoxml'
-  },
+    js2xmlparser: 'js/libs/json2xml/jsontoxml',
 
     // File saver
     FileSaver: 'js/libs/file-saver/file-saver',
