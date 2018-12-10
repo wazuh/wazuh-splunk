@@ -50,7 +50,7 @@ define(['../module'], function(module) {
           Object.assign(data, await $http.post(tmpUrl, payload))
         // POST METHOD
         else if (method === 'POST')
-          Object.assign(data, await $http.post(tmpUrl, payload))
+          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
         else if (method === 'DELETE')
           Object.assign(data, await $http.post(tmpUrl, payload))
