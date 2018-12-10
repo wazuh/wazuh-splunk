@@ -45,6 +45,7 @@ define(['../module'], function (module) {
             ]
           }
         })
+
         // Manager - rules
         .state('mg-logs', {
           templateUrl:

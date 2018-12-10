@@ -40,7 +40,7 @@ define(['../module'], function(app) {
         const payload = filterStr
           ? { path: path, id: id, filters: filterStr }
           : { path: path, id: id }
-        const output = await this.httpReq('POST', '/api/csv', $.param(payload))
+        const output = await this.httpReq('POST', '/api/csv', payload)
         if (output.data.error) {
           throw Error(output.data.error)
         }

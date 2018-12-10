@@ -30,7 +30,7 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap'
-], function (app,calcTableRows,parseValue,pagination,sort,listeners,data,clickAction,checkGap) {
+], function (app, calcTableRows, parseValue, pagination, sort, listeners, data, clickAction, checkGap) {
   'use strict';
 
   app.directive('wazuhTable', function (BASE_URL) {
@@ -74,12 +74,13 @@ define([
          */
         const rowSizes = $scope.rowSizes || [15, 13, 11];
         let doit;
+        let resizing = true;
         $window.onresize = () => {
           clearTimeout(doit);
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes);
             $scope.itemsPerPage = $scope.rowsPerPage;
-            init();
+            init().then(() => resizing = false).catch(() => resizing = false);
           }, 150);
         };
         $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes);
