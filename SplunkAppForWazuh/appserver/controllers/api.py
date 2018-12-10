@@ -97,7 +97,7 @@ class api(controllers.BaseController):
     # /custom/SplunkAppForWazuh/api/node
     # This will perform an HTTP request to Wazuh API
     # It will return the full API response with including its error codes
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=False, methods=['POST'])
     def request(self, **kwargs):
         try:
             if 'id' not in kwargs or 'endpoint' not in kwargs:
