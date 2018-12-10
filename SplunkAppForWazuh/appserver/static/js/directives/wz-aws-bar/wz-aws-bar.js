@@ -29,8 +29,11 @@ define(['../module'], function (directives) {
             }
           }
           const awsUglyFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
-          if (awsUglyFilters) {
-            prettyFilters = prettyFilters.concat(awsUglyFilters)
+          if (awsUglyFilters && awsUglyFilters.length > 0) {
+            for (const filter of awsUglyFilters) {
+              const key = Object.keys(filter)[0]
+              prettyFilters.push(`${key}:${filter[key]}`)
+            }
           }
           return prettyFilters
         }
@@ -71,8 +74,8 @@ define(['../module'], function (directives) {
          */
         $scope.applyFilters = customSearch => {
           try {
-            console.log("customSearch: ", customSearch)
             let awsSourceFilters = []
+            const newFilter = {}
             if (
               !customSearch ||
               customSearch.split(':').length !== 2 ||
@@ -81,15 +84,19 @@ define(['../module'], function (directives) {
               throw new Error('Incorrent format. Please use key:value syntax')
             }
             if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) { awsSourceFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters')) }
-            console.log("A-awsSourceFilter ", awsSourceFilters)
-            if (!awsSourceFilters.includes(customSearch)) {
-              console.log("no lo incluyes")
-              awsSourceFilters.push(customSearch)
-              window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsSourceFilters))
-              console.log("apendeado ", awsSourceFilters)
-              $scope.filters = getPrettyFilters()
-              $scope.$emit('barFilter', {})
+            const newKey = customSearch.split(':')[0]
+            const newValue = customSearch.split(':')[1]
+            newFilter[newKey] = newValue
+            const checkAwsKeys = awsSourceFilters.filter(item => item[newKey])
+            if (checkAwsKeys.length > 0 && newKey != 'data.aws.source') {
+              awsSourceFilters = awsSourceFilters.filter(item => !item[newKey])
+              awsSourceFilters.push(newFilter)
+            }else{
+              awsSourceFilters.push(newFilter)
             }
+            window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsSourceFilters))
+            $scope.filters = getPrettyFilters()
+            $scope.$emit('barFilter', {})
             if (!$scope.$$phase) $scope.$digest()
           } catch (err) {
             $notificationService.showSimpleToast(err.message || err)
