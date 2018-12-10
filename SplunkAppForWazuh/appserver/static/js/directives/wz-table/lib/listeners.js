@@ -22,6 +22,10 @@ define([], function () {
       return filter(parameters.filter)
     },
 
+    wazuhQuery: (parameters, query) => {
+      return query(parameters.query, parameters.search);
+    },
+    
     wazuhSearch: (parameters, instance, search) => {
       if (
         parameters &&

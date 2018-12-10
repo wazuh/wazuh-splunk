@@ -81,14 +81,53 @@ define([], function () {
         $scope.wazuhTableLoading = false
         $scope.error = `Error filtering by ${
           filter ? filter.value : 'undefined'
-        }. ${error.message || error}.`
+          }. ${error.message || error}.`
         $notificationService.showSimpleToast(
           `Error filtering by ${
-            filter ? filter.value : 'undefined'
+          filter ? filter.value : 'undefined'
           }. ${error.message || error}`
         )
       }
+      if (!$scope.$$phase) $scope.$digest()
+      return
+    },
+
+    queryData: async (
+      query,
+      term,
+      instance,
+      wzTableFilter,
+      $scope,
+      fetch,
+      errorHandler
+    ) => {
+      try {
+        $scope.error = false
+        $scope.wazuh_table_loading = true
+        instance.removeFilters()
+        if (term) {
+          instance.addFilter('search', term)
+        }
+        if (query) {
+          instance.addFilter('q', query)
+        }
+        wzTableFilter.set(instance.filters)
+        await fetch()
+        $scope.wazuh_table_loading = false
+      } catch (error) {
+        $scope.wazuh_table_loading = false
+        $scope.error = `Query error ${
+          query ? query.value : 'undefined'
+          } - ${error.message || error}.`
+        errorHandler.showSimpleToast(
+          `Query error ${
+          query ? query.value : 'undefined'
+          }. ${error.message || error}`
+        )
+      }
+      if (!$scope.$$phase) $scope.$digest()
       return
     }
+
   }
 })
