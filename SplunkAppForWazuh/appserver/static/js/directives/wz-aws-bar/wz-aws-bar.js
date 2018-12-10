@@ -61,13 +61,14 @@ define(['../module'], function (directives) {
          * @param {String}: The filter to be removed
          */
         $scope.removeFilter = filter => {
+          const index = $scope.filters.indexOf(filter) - 3 //subtract 3 positions to match the correct index
           let awsFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
-          awsFilters.splice(awsFilters.indexOf(filter), 1)
+          awsFilters.splice(index, 1)
           window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsFilters))
           $scope.filters = getPrettyFilters()
           $scope.$emit('deletedFilter', {})
         }
-
+        
 
         const getAwsFiltersValue = () => {
           let sourceValues = []
@@ -108,7 +109,6 @@ define(['../module'], function (directives) {
               if (newKey === 'data.aws.source') {
                 const awsSourceValues = getAwsFiltersValue()
                 if (!awsSourceValues.includes(newValue)) {
-                  console.log("lo incluyo que no esta")
                   awsSourceFilters.push(newFilter)
                 }else{
                 }

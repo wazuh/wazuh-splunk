@@ -110,17 +110,17 @@ define([
           'eventsByIdOverTime',
           `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
           'eventsByIdOverTime'
-        )/*,
+        ),
         new ColumnChart(
           'eventsByRegionOverTime',
           `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
           'eventsByRegionOverTime'
-        )*/,
+        ),
         new PieChart(
           'topEventsByServiceName',
           `${this.amazonFilters} sourcetype=wazuh | stats count BY data.aws.source`,
           'topEventsByServiceName'
-        )/
+        ),
         new PieChart(
           'topEventsByInstanceId',
           `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
@@ -238,7 +238,6 @@ define([
         const restFilters = this.serializedRestAwsFilters(awsCurrentFilters.filter(item => !item['data.aws.source']))
         filters = `${filters} ${sourceFilters}`
         filters = `${filters} ${restFilters}`
-        console.log("FILTERS BUILD: ", filters)
       }
       return filters
     }
