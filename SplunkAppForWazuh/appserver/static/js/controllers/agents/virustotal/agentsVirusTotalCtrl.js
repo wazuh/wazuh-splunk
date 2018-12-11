@@ -9,7 +9,7 @@ define([
 
   class AgentsVirusTotal {
     /**
-     * Class constructor
+     * Class Virus Total
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope

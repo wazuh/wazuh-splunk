@@ -110,6 +110,10 @@ define([
             state
           )
 
+        /**
+         * Fetchs data from API
+         * @param {Object} options 
+         */
         const fetch = async (options = {}) => {
           try {
             const result = await instance.fetch(options)
@@ -133,9 +137,14 @@ define([
           }
         }
 
-        $scope.sort = async field =>
+        $scope.sort = async (field) =>
           sort(field, $scope, instance, fetch, $notificationService)
 
+        /**
+         * Searches for a term
+         * @param {String} term 
+         * @param {Boolean} removeFilters 
+         */
         const search = async (term, removeFilters) =>
           data.searchData(
             term,
@@ -147,6 +156,11 @@ define([
             $notificationService
           )
 
+        /**
+         * Queries to the API
+         * @param {String} query 
+         * @param {String} search 
+         */
         const query = async (query, search) =>
           data.queryData(
             query,
@@ -158,6 +172,10 @@ define([
             $notificationService
           )
 
+        /**
+         * Filters API results
+         * @param {String} filter 
+         */
         const filter = async filter =>
           data.filterData(
             filter,
@@ -168,6 +186,10 @@ define([
             $notificationService
           )
 
+        /**
+         * Enables or disables the real time function.
+         * If enabled, requests to the API will be sended each second
+         */
         const realTimeFunction = async () => {
           try {
             $scope.error = false
@@ -196,6 +218,9 @@ define([
             instance.path
           )
 
+        /**
+         * Initializes table
+         */
         const init = async () => {
           try {
             $scope.error = false

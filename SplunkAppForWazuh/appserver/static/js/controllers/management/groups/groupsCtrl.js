@@ -2,7 +2,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
   class Groups {
     /**
-     * 
+     * Class Groups
      * @param {*} $scope 
      * @param {*} $tableFilterService 
      * @param {*} $csvRequestService 

@@ -8,7 +8,7 @@ define([
 
   class MainCtrl {
     /**
-     * 
+     * Main controller class
      * @param {*} $scope 
      * @param {*} $urlTokenModel 
      */

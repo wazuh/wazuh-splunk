@@ -3,7 +3,7 @@ define(['../../module'], function(controllers) {
 
   class Status {
     /**
-     * 
+     * Class Status
      * @param {*} $scope 
      * @param {*} $requestService 
      * @param {*} $notificationService 

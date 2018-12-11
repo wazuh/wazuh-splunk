@@ -33,7 +33,7 @@ define([
 
   class AgentsOpenScap {
     /**
-     * Class constructor
+     * Class Agents-OpenSCAP
      * @param {Object} $urlTokenModel
      * @param {Object} $scope
      * @param {Object} $currentDataService

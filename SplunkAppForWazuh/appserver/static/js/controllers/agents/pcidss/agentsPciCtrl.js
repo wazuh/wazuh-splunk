@@ -10,7 +10,7 @@ define([
 
   class AgentsPCI {
     /**
-     * 
+     * Class Agents PCI-DSS
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $state 

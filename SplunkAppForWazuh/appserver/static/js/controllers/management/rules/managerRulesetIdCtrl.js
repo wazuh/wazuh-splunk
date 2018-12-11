@@ -3,7 +3,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
   class RulesetId extends Ruleset {
     /**
-     * 
+     * Class Ruleset-id
      * @param {*} $scope 
      * @param {*} $sce 
      * @param {*} $notificationService 

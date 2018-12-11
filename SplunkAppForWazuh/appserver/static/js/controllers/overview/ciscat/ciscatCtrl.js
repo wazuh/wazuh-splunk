@@ -9,7 +9,7 @@ define([
   'use strict'
   class Ciscat {
     /**
-     * 
+     * Class CIS-CAT
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

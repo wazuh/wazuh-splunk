@@ -31,6 +31,10 @@ define(['../module'], function(app) {
         $scope.newTag = ''
         $scope.isAutocomplete = false
         $scope.dataModel = []
+
+        /**
+         * Adds a new tag
+         */
         $scope.addTag = (flag = false) => {
           try {
             const input = $document[0].getElementById(
@@ -80,6 +84,11 @@ define(['../module'], function(app) {
             $notificationService.showSimpleToast(error, 'Error adding filter')
           }
         }
+
+        /**
+         * Build a query from an array of groups
+         * @param {Array} groups 
+         */
         const buildQuery = groups => {
           try {
             let queryObj = {

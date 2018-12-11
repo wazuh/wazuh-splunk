@@ -3,7 +3,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
   class Logs {
     /**
-     * 
+     * Class logs
      * @param {*} $scope 
      * @param {*} $requestService 
      * @param {*} $tableFilterService 

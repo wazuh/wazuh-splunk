@@ -18,7 +18,7 @@ define([
   'use strict'
   class Audit {
     /**
-     * 
+     * Class Audit
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

@@ -21,7 +21,7 @@ define([
 
   class AgentsPM {
     /**
-     * Class constructor
+     * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
      * @param {Object} $scope
      * @param {Object} $state

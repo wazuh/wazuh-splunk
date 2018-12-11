@@ -183,7 +183,7 @@ define([
     }
     
     /**
-     * Returns a class depending of the agent state
+     * Returns a class depending on the agent state
      * @param {String} agentStatus 
      */
     getAgentStatusClass(agentStatus) {

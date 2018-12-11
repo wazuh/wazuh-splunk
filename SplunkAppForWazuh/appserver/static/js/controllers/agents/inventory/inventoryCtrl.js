@@ -14,7 +14,7 @@ define(['../../module'], function(module) {
   'use strict'
   class Inventory {
     /**
-     * 
+     * Class Inventory
      * @param {*} $requestService 
      * @param {*} syscollector 
      * @param {*} $rootScope 

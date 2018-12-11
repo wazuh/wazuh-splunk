@@ -10,7 +10,7 @@ define([
 
   class OverviewFIM {
     /**
-     * 
+     * Class File Integrity Monitoring (syscheck)
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

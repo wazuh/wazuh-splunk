@@ -15,7 +15,7 @@ define(['../../module'], function(app) {
 
   class AgentsOverview {
     /**
-     * 
+     * Class Agents Overview
      * @param {*} $stateParams 
      * @param {*} extensions 
      * @param {*} $scope 

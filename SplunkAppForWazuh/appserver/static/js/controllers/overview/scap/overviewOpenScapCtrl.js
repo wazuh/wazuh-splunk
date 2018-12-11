@@ -23,7 +23,7 @@ define([
 
   class OpenSCAP {
     /**
-     * 
+     * OpenSCAP class
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

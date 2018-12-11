@@ -10,7 +10,7 @@ define([
 
   class PCI {
     /**
-     * 
+     * Class PCI-DSS
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

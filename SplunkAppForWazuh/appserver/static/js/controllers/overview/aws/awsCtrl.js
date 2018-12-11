@@ -10,7 +10,7 @@ define([
 
   class AWS {
     /**
-     * 
+     * Class AWS
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

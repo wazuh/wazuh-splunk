@@ -8,7 +8,7 @@ define([
   'use strict'
   class OverviewGDPR {
     /**
-     * 
+     * Class GDPR
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

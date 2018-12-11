@@ -21,7 +21,7 @@ define([
 
   class OsqueryAgents {
     /**
-     * Class constructor
+     * Class Agents Osquery
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope

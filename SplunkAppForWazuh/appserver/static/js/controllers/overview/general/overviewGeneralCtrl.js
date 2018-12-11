@@ -21,7 +21,7 @@ define([
 
   class OverviewGeneral {
     /**
-     * 
+     * Class Overview General
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

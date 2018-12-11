@@ -3,7 +3,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
   class Ruleset {
     /**
-     * 
+     * Class Ruleset
      * @param {*} $scope 
      * @param {*} $sce 
      * @param {*} $notificationService 

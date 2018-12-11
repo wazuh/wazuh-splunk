@@ -3,7 +3,7 @@ define(['../../module'], function(controllers) {
 
   class OverviewWelcome {
     /**
-     * 
+     * Class Welcome
      * @param {*} $scope 
      * @param {Object} agentsInfo 
      * @param {Object} extensions 

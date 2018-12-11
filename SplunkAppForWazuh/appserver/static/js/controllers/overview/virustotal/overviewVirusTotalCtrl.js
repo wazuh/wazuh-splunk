@@ -12,7 +12,7 @@ define([
 
   class OverviewVirusTotal {
     /**
-     * 
+     * Class Overview Virus Total
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 

@@ -9,7 +9,7 @@ define([
 
   class Osquery {
     /**
-     * 
+     * Class Osquery
      * @param {*} $urlTokenModel 
      * @param {*} $scope 
      * @param {*} $currentDataService 
