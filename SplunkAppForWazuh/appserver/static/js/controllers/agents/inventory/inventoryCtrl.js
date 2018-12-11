@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (module) {
+define(['../../module'], function(module) {
   'use strict'
   class Inventory {
     constructor(
@@ -40,7 +40,14 @@ define(['../../module'], function (module) {
      * Initialize
      */
     $onInit() {
-      this.scope.agent = (this.data.length && this.data.length > 4 && typeof this.data[5] === 'object' && this.data[5].data && this.data[5].data.data) ? this.data[5].data.data : { error: true }
+      this.scope.agent =
+        this.data.length &&
+        this.data.length > 4 &&
+        typeof this.data[5] === 'object' &&
+        this.data[5].data &&
+        this.data[5].data.data
+          ? this.data[5].data.data
+          : { error: true }
       try {
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)

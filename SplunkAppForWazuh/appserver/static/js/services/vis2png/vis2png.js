@@ -10,10 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define([
-  '../module',
-  'domToImg'
-], function (app,domToImg) {
+define(['../module', 'domToImg'], function(app, domToImg) {
   'use strict'
   class Vis2PNG {
     constructor($rootScope) {
@@ -39,7 +36,9 @@ define([
                 height: tmpNode.height(),
                 id: currentValue
               })
-            } catch (error) { console.error('error converting ',error)} // eslint-disable-line
+            } catch (error) {
+              console.error('error converting ', error)
+            } // eslint-disable-line
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100

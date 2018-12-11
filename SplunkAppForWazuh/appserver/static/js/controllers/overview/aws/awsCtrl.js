@@ -13,7 +13,9 @@ define([
       this.scope = $scope
       this.state = $state
       this.currentDataService = $currentDataService
-      this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
+      this.currentDataService.addFilter(
+        `{"rule.groups":"amazon", "implicit":true}`
+      )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()

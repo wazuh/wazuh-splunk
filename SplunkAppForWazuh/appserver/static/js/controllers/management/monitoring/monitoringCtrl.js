@@ -81,8 +81,10 @@ define([
 
       this.running = status.running
       this.enabled = status.enabled
-      this.scope.isClusterEnabled = $stateParams.isClusterEnabled || (this.enabled === 'yes')
-      this.scope.isClusterRunning = $stateParams.isClusterRunning || (this.running === 'yes')
+      this.scope.isClusterEnabled =
+        $stateParams.isClusterEnabled || this.enabled === 'yes'
+      this.scope.isClusterRunning =
+        $stateParams.isClusterRunning || this.running === 'yes'
       this.nodes = nodes
       this.nodesCount = nodes.totalItems
       this.configuration = configuration
@@ -184,8 +186,6 @@ define([
         }
       })
 
-
-
       this.scope.nodesCount = this.nodesCount
 
       this.scope.configuration = this.configuration
@@ -195,7 +195,6 @@ define([
       this.scope.agentsCount = this.agents.totalItems - 1
 
       this.scope.healthCheck = this.health
-
 
       /**
        * When controller is destroyed
@@ -239,7 +238,7 @@ define([
         this.nodes.name = this.configuration.name
         this.nodes.master_node = this.configuration.node_name
       }
-      return (this.running === 'yes' && this.enabled === 'yes')
+      return this.running === 'yes' && this.enabled === 'yes'
     }
     /**
      * Sets the view conditions
@@ -272,7 +271,7 @@ define([
     launchSearches() {
       this.vizz[3].changeSearch(
         `${this.filters} cluster.node=${
-        this.scope.currentNode.name
+          this.scope.currentNode.name
         } sourcetype=wazuh | timechart span=2h count`
       )
     }

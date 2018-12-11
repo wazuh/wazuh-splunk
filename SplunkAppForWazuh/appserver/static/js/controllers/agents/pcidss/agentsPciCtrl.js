@@ -48,7 +48,15 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.vizz = [
         /**
@@ -93,11 +101,16 @@ define([
     }
 
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
     }
-    
+
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
@@ -112,7 +125,6 @@ define([
         ? agentStatus
         : 'Never connected'
     }
-
   }
   app.controller('agentsPciCtrl', AgentsPCI)
 })

@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function () {
+define([], function() {
   'use strict'
   return function calcTableRows(windowHeight, sizes) {
     if (windowHeight >= 950) return sizes[0]

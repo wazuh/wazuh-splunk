@@ -51,7 +51,10 @@ define(['../../module', '../../../utils/config-handler'], function(
     }
 
     $onInit() {
-      this.$scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.$scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = agentStatus => {

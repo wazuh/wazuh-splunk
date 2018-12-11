@@ -193,8 +193,8 @@ define(['../../module'], function(controllers) {
         this.scope.edit = false
         this.toast('Updated API')
       } catch (err) {
-        console.error('err ',err)
-        this.toast('Cannot update API:',err.message || err)
+        console.error('err ', err)
+        this.toast('Cannot update API:', err.message || err)
       }
       this.savingApi = false
     }
@@ -294,7 +294,7 @@ define(['../../module'], function(controllers) {
           this.savingApi = false
         }
       } catch (err) {
-        console.error('err ',err)
+        console.error('err ', err)
         this.toast(err.message)
         this.savingApi = false
       }

@@ -9,9 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([
-  '../../../utils/filter-handler'
-], function (FilterHandler) {
+define(['../../../utils/filter-handler'], function(FilterHandler) {
   'use strict'
 
   return async function initTable(
@@ -46,7 +44,7 @@ define([
             globalState.filters.push(ruleIdFilter)
             $window.location.href = '#/wazuh-discover'
           }
-        } catch (error) { } // eslint-disable-line
+        } catch (error) {} // eslint-disable-line
       }
       $scope.error = false
       $scope.wazuhTableLoading = true

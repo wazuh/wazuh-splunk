@@ -26,7 +26,9 @@ define([
       this.scope = $scope
       this.state = $state
       this.currentDataService = $currentDataService
-      this.currentDataService.addFilter(`{"rule.groups":"oscap", "implicit":true}`)
+      this.currentDataService.addFilter(
+        `{"rule.groups":"oscap", "implicit":true}`
+      )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -38,7 +40,7 @@ define([
         this.launchSearches()
       })
 
-      this.scope.$on('$destroy', () => {  
+      this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
         this.dropdown.destroy()
         this.vizz.map(vizz => vizz.destroy())

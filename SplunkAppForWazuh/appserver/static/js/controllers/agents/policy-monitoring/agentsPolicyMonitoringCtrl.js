@@ -16,7 +16,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function (app, PieChart, AreaChart, Table, TimePicker, l) {
+], function(app, PieChart, AreaChart, Table, TimePicker, l) {
   'use strict'
 
   class AgentsPM {
@@ -35,8 +35,18 @@ define([
       this.state = $state
       this.currentDataService = $currentDataService
       this.agent = agent
-      this.currentDataService.addFilter(`{"rule.groups":"rootcheck", "implicit":true}`)
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      this.currentDataService.addFilter(
+        `{"rule.groups":"rootcheck", "implicit":true}`
+      )
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -58,35 +68,33 @@ define([
         new AreaChart(
           'elementOverTime',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime'
         ),
         new PieChart(
           'cisRequirements',
-          `${
-          this.filters
-          } sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
+          `${this.filters} sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
           'cisRequirements'
         ),
         new PieChart(
           'topPciDss',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss'
         ),
         new AreaChart(
           'eventsPerAgent',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=2h count by agent.name`,
           'eventsPerAgent'
         ),
         new Table(
           'alertsSummary',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`,
           'alertsSummary'
         )
@@ -102,9 +110,14 @@ define([
     }
 
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
     }
 
     getAgentStatusClass(agentStatus) {
