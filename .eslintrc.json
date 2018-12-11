@@ -4,7 +4,8 @@
     "node": true,
     "es6": true,
     "mocha": true,
-    "amd": true
+    "amd": true,
+    "jquery" : true
   },
   "parserOptions": {
     "ecmaVersion": 7,
