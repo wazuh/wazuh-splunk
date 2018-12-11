@@ -8,6 +8,13 @@ define([
 ], function(app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler) {
   'use strict'
   class Ciscat {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
@@ -147,6 +154,10 @@ define([
         )
       ]
     }
+
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
 
@@ -159,6 +170,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

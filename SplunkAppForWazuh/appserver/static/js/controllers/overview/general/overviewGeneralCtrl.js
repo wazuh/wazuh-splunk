@@ -20,6 +20,17 @@ define([
   'use strict'
 
   class OverviewGeneral {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {*} $requestService 
+     * @param {Object} pollingState 
+     * @param {*} $reportingService 
+     */
     constructor(
       $urlTokenModel,
       $scope,
@@ -206,6 +217,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

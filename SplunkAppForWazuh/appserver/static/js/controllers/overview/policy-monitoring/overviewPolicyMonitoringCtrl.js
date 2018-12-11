@@ -7,6 +7,13 @@ define([
 ], function(app, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
   class PM {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
@@ -74,6 +81,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

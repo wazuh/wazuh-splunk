@@ -28,6 +28,16 @@ define([
 ) {
   'use strict'
   class DevToolsCtrl {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $window 
+     * @param {*} $document 
+     * @param {*} $navigationService 
+     * @param {*} $notificationService 
+     * @param {*} $requestService 
+     * @param {Object} extensions 
+     */
     constructor(
       $scope,
       $window,

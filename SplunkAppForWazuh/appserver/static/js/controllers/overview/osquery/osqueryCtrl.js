@@ -8,6 +8,15 @@ define([
   'use strict'
 
   class Osquery {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {*} osquery 
+     */
     constructor(
       $urlTokenModel,
       $scope,
@@ -83,6 +92,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       try {
         const wodles = this.osquery.data.data.wmodules
@@ -94,6 +106,9 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

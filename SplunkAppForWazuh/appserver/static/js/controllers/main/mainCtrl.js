@@ -7,6 +7,11 @@ define([
   'use strict'
 
   class MainCtrl {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $urlTokenModel 
+     */
     constructor($scope, $urlTokenModel) {
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -28,6 +33,9 @@ define([
       this.dashboardController.ready()
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.$on('loading', (event, data) => {
         if (data.status) this.scope.loading = true
