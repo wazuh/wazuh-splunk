@@ -106,7 +106,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, name)
+        saveAs(blob, name) // eslint-disable-line 
         return
       } catch (error) {
         this.toast('Error downloading CSV')

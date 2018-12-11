@@ -84,7 +84,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
 
       this.submittedTokenModel.on(
         `change:${this.token}`,
-        (model, loadedToken, options) => {
+        () => {
           const loadedTokenJS = this.submittedTokenModel.get(token)
           if (
             loadedTokenJS &&

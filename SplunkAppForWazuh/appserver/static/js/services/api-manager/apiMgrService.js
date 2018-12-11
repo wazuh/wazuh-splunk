@@ -287,7 +287,6 @@ define(['../module'], function(module) {
       remove: remove,
       update: update,
       checkRawConnection: checkRawConnection,
-      update: update,
       getClusterInfo: getClusterInfo,
       getFilter: getFilter,
       getIndex: getIndex,

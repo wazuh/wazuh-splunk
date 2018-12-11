@@ -16,7 +16,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, TimePicker, l) {
+], function(app, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
 
   class AgentsPM {
@@ -95,7 +95,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`,
+          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary'
         )
       ]

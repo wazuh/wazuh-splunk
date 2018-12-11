@@ -58,7 +58,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
-      this.scope.isArray = angular.isArray
+      this.scope.isArray = angular.isArray  // eslint-disable-line
       this.initialize()
     }
 
@@ -97,7 +97,7 @@ define(['../../module', 'FileSaver'], function(app) {
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, name)
+        saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
         this.toast('Error downloading CSV')

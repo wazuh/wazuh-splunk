@@ -81,7 +81,7 @@ define([
          */
         new PieChart(
           'top5AlertsVizz',
-          `${this.filters} sourcetype=wazuh | top \"rule.description\" limit=5`,
+          `${this.filters} sourcetype=wazuh | top "rule.description" limit=5`,
           'top5AlertsVizz'
         ),
         new PieChart(
@@ -110,7 +110,7 @@ define([
           'agentsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz'
         )
       ]

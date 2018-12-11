@@ -68,7 +68,7 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh  rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
+        } sourcetype=wazuh  rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
         '$form.profile$',
         'dropDownInput'
@@ -126,56 +126,56 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
           'agentsVizz'
         ),
         new PieChart(
           'profilesVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.scan.profile.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.profile.title`,
           'profilesVizz'
         ),
         new BarChart(
           'contentVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.scan.content`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.content`,
           'contentVizz'
         ),
         new PieChart(
           'severityVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.severity`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.check.severity`,
           'severityVizz'
         ),
         new AreaChart(
           'top5AgentsSHVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.scan.profile.title=\"$profile$\" oscap.check.severity=\"high\" | chart count by agent.name`,
+          } sourcetype=wazuh oscap.scan.profile.title="$profile$" oscap.check.severity="high" | chart count by agent.name`,
           'top5AgentsSHVizz'
         ),
         new PieChart(
           'top10AleertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
           'top10AleertsVizz'
         ),
         new PieChart(
           'top10HRAlertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
           'top10HRAlertsVizz'
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" oscap.scan.profile.title=\"$profile$\" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as \"Agent name\", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as \"Scan ID\", oscap.scan.content as Content`,
+          } sourcetype=wazuh oscap.check.result="fail" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content`,
           'alertsSummaryVizz'
         )
       ]

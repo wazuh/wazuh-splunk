@@ -204,6 +204,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(
                     `/agents/${id}/config/wmodules/wmodules`
                   )
+                  return result
                 } catch (err) {
                   $state.go('agents')
                 }

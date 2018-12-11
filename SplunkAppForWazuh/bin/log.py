@@ -45,8 +45,7 @@ class log():
                     backupCount=50
                 )
                 self.formatter = logging.Formatter(
-                    '{ "date": "%(asctime)s" , "level": "%(levelname)s" ,'
-                    ' "message": "%(message)s" }')
+                    '{ "date": "%(asctime)s" , "level": "%(levelname)s" , "message": "%(message)s" }')
                 self.file_handler.setFormatter(self.formatter)
                 self.logger.addHandler(self.file_handler)
                 loggers['splunk.appserver.%s.controllers.logs' %

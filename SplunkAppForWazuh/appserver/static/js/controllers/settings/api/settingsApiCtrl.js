@@ -53,7 +53,7 @@ define(['../../module'], function(controllers) {
               // setAPI
               currentApi = this.currentDataService.getApi()
               break
-            } catch (error) {}
+            } catch (error) { continue }
           }
         }
 
@@ -288,7 +288,7 @@ define(['../../module'], function(controllers) {
             .remove(id)
             .then(() => {})
             .catch(err => {
-              this.toast('Unexpected error')
+              this.toast(`Unexpected error: ${err}`)
             })
           this.toast('Unreachable API')
           this.savingApi = false

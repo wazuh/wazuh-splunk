@@ -21,14 +21,12 @@ define(['../module', 'jquery'], function(module, $) {
      * Converts an array of Splunk visualizations to PNG format
      * @param {String} tab
      * @param {Boolean} isAgents
-     * @param {Object} syscollectorFilters
      * @param {Array} vizz
      */
     async startVis2Png(
       tab,
       vizz = [],
       isAgents = false,
-      syscollectorFilters = null
     ) {
       try {
         if (this.vis2png.isWorking()) {

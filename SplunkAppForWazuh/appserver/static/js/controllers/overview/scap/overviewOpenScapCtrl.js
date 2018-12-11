@@ -53,7 +53,7 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
+        } sourcetype=wazuh  rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
         '$form.profile$',
         'dropDownInput'
@@ -103,7 +103,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
           'agentsVizz'
         ),
         new LinearChart(
@@ -134,14 +134,14 @@ define([
           'top10AlertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
           'top10AlertsVizz'
         ),
         new PieChart(
           'top10HRisk',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
           'top10HRisk'
         ),
         new Table(

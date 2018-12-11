@@ -25,13 +25,6 @@ define([
   module,
   $,
   CodeMirror,
-  jsonLint,
-  javascript,
-  braceFold,
-  foldcode,
-  foldgutter,
-  searchCursor,
-  markSeletion
 ) {
   'use strict'
   class DevToolsCtrl {
@@ -57,7 +50,7 @@ define([
     }
 
     unescapeBuffer(s, decodeSpaces) {
-      let out = new Buffer(s.length)
+      let out = Buffer.from(s.lenth)
       let state = 0
       let n, m, hexchar
 
@@ -118,14 +111,14 @@ define([
 
       // TODO support returning arbitrary buffers.
 
-      return out.slice(0, outIndex - 1)
+      return out.slice(0, outIndex - 1) // eslint-disable-line
     }
 
     decodeStr(s, decoder) {
       try {
         return decoder(s)
       } catch (e) {
-        return QueryString.unescape(s, true)
+        return QueryString.unescape(s, true) // eslint-disable-line
       }
     }
 
