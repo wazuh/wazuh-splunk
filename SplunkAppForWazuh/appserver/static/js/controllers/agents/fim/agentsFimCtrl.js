@@ -127,6 +127,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -142,12 +145,20 @@ define([
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
@@ -173,6 +184,9 @@ define([
       return
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

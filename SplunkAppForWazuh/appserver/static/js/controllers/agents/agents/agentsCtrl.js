@@ -145,6 +145,11 @@ define([
       return
     }
 
+    /**
+     * Launches the query
+     * @param {String} query 
+     * @param {String} search 
+     */
     query(query, search) {
       this.scope.$broadcast('wazuhQuery', { query, search })
     }

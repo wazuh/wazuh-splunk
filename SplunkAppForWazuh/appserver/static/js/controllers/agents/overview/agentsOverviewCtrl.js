@@ -14,6 +14,16 @@ define(['../../module'], function(app) {
   'use strict'
 
   class AgentsOverview {
+    /**
+     * 
+     * @param {*} $stateParams 
+     * @param {*} extensions 
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {Object} agent 
+     */
     constructor(
       $stateParams,
       extensions,
@@ -32,6 +42,9 @@ define(['../../module'], function(app) {
       this.extensions = extensions
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       if (
         this.agent.length &&
@@ -102,6 +115,10 @@ define(['../../module'], function(app) {
       }
     }
 
+    /**
+     * Go to a group
+     * @param {String} group 
+     */
     async goGroups(group) {
       try {
         this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
@@ -129,12 +146,20 @@ define(['../../module'], function(app) {
       }
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }

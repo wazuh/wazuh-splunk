@@ -13,6 +13,14 @@
 define(['../../module'], function(module) {
   'use strict'
   class Inventory {
+    /**
+     * 
+     * @param {*} $requestService 
+     * @param {*} syscollector 
+     * @param {*} $rootScope 
+     * @param {*} $notificationService 
+     * @param {*} $scope 
+     */
     constructor(
       $requestService,
       syscollector,
@@ -37,7 +45,7 @@ define(['../../module'], function(module) {
     }
 
     /**
-     * Initialize
+     * On controller loads
      */
     $onInit() {
       this.scope.agent =

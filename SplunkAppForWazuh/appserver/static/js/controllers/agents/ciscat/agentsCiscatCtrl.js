@@ -9,6 +9,14 @@ define([
   'use strict'
 
   class AgentsCiscat {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $state 
+     * @param {*} $currentDataService 
+     * @param {Object} agent 
+     */
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -152,6 +160,9 @@ define([
       ]
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -175,16 +186,27 @@ define([
       })
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Gets the filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

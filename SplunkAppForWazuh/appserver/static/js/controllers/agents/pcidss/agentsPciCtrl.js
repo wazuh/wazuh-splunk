@@ -9,6 +9,14 @@ define([
   'use strict'
 
   class AgentsPCI {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $state 
+     * @param {*} $currentDataService 
+     * @param {Object} agent 
+     */
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -100,6 +108,9 @@ define([
       ]
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -111,15 +122,26 @@ define([
         this.formatAgentStatus(agentStatus)
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
