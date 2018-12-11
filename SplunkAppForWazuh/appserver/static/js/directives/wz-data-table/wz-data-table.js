@@ -29,7 +29,7 @@ define([
         /**
          * Init variables
          */
-        $scope.keyEquivalence = $keyEquivalenceService.equivalences()
+        $scope.keyEquivalence = $keyEquivalenceService.equivalences()  // eslint-disable-line
         $scope.totalItems = 0
         $scope.wazuh_table_loading = true
         $scope.items = []

@@ -23,7 +23,7 @@ define([
       })
         .render()
         .getContainerElement()
-        .appendChild($('.empty-body-class')[0])
+        .appendChild($('.empty-body-class')[0]) // eslint-disable-line
 
       this.dashboardController.ready()
     }

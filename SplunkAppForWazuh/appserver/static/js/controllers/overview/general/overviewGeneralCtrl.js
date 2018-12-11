@@ -158,7 +158,7 @@ define([
             if (!this.scope.$$phase) this.scope.$digest()
           })
           .catch(error => {
-            this.toast('Cannot fetch agent status data')
+            this.toast(`Cannot fetch agent status data: ${error}`)
           })
       } else {
         this.scope.wzMonitoringEnabled = true

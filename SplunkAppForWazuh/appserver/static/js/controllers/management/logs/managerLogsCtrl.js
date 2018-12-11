@@ -54,7 +54,7 @@ define(['../../module', 'FileSaver'], function(app) {
         )
         if (output.length > 0) {
           const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-          saveAs(blob, 'logs.csv')
+          saveAs(blob, 'logs.csv') // eslint-disable-line
         } else {
           this.toast('Empty results.')
         }

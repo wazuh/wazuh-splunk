@@ -81,8 +81,9 @@ define([
          */
         const rowSizes = $scope.rowSizes || [15, 13, 11]
         let doit
-        let resizing = true
+        let resizing = false
         $window.onresize = () => {
+          if (resizing) return
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)

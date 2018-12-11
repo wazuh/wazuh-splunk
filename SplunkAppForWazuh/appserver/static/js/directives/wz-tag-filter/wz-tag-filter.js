@@ -25,9 +25,7 @@ define(['../module'], function(app) {
         $timeout,
         $document,
         $notificationService,
-        $dataService
       ) {
-        const instance = new $dataService($scope.path)
         $scope.tagList = []
         $scope.groupedTagList = []
         $scope.newTag = ''
@@ -89,7 +87,7 @@ define(['../module'], function(app) {
               search: ''
             }
             let first = true
-            groups.forEach(function(group, idx1) {
+            groups.forEach(function(group) {
               const search = group.find(function(x) {
                 return x.type === 'search'
               })
@@ -208,7 +206,7 @@ define(['../module'], function(app) {
             }
           }
         }
-        $scope.addSearchKey = e => {
+        $scope.addSearchKey = () => {
           if ($scope.autocompleteEnter) {
             $scope.autocompleteEnter = false
           }
@@ -234,7 +232,6 @@ define(['../module'], function(app) {
         }
         const load = async () => {
           try {
-            const result = await instance.fetch()
             Object.keys($scope.fieldsModel).forEach(key => {
               $scope.dataModel.push({ key: key, list: $scope.fieldsModel[key] })
             })

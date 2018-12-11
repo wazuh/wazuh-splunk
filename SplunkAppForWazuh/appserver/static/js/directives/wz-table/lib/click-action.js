@@ -22,7 +22,7 @@ define([], function() {
   ) {
     if (
       instance.path === '/agents' ||
-      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path)
+      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path) // eslint-disable-line
     ) {
       // Go to and store an agent details
       $currentDataService.setCurrentAgent(item.id)
@@ -38,7 +38,7 @@ define([], function() {
     } else if (instance.path === '/agents/groups') {
       $scope.$emit('wazuhShowGroup', { group: item })
     } else if (
-      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*\/files$/).test(
+      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*\/files$/).test( // eslint-disable-line
         instance.path
       )
     ) {

@@ -5,7 +5,7 @@ define(['../module'], function(module) {
      * Select an API by ID
      * @param {Object} id
      */
-    const getAllApis = async id => {
+    const getAllApis = async () => {
       try {
         const { data } = await $requestService.httpReq(
           `GET`,
