@@ -45,7 +45,7 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
+        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
         'dropDownInput'
@@ -76,35 +76,35 @@ define([
           'gdprRequirementsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
           'gdprRequirementsVizz'
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
           'groupsVizz'
         ),
         new PieChart(
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
           'agentsVizz'
         ),
         new ColumnChart(
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
           'requirementsByAgentVizz'
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz'
         )
       ]
