@@ -280,8 +280,6 @@ define([
           $tableFilterService.set([])
         })
 
-        init()
-
         $scope.isLookingGroup = () => {
           try {
             const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
@@ -317,6 +315,7 @@ define([
           );
         }
 
+        init()
 
       },
       templateUrl:
