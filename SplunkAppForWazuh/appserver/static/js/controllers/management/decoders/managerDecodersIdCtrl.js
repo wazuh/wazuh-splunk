@@ -2,6 +2,17 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $sce 
+     * @param {*} $notificationService 
+     * @param {*} $state 
+     * @param {Object} currentDecoder 
+     * @param {*} $currentDataService 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     */
     constructor(
       $scope,
       $sce,
@@ -31,6 +42,9 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.currentDecoder = currentDecoder.data.data.items[0]
     }
 
+    /**
+     * On controller load
+     */
     $onInit() {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>

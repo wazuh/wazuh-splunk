@@ -2,6 +2,14 @@ define(['../../module'], function(controllers) {
   'use strict'
 
   class Status {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $notificationService 
+     * @param {Array} statusData 
+     * @param {Object} agentInfo 
+     */
     constructor(
       $scope,
       $requestService,
@@ -38,6 +46,9 @@ define(['../../module'], function(controllers) {
       this.agentInfo = agentInfo.data.data
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name

@@ -78,6 +78,12 @@ define(['../../module'], function(app) {
       }
     }
 
+    /**
+     * Calculates the size of the table
+     * @param {Number} size 
+     * @param {Number} start 
+     * @param {Number} end 
+     */
     range(size, start, end) {
       const ret = []
 
@@ -92,12 +98,19 @@ define(['../../module'], function(app) {
       return ret
     }
 
+    /**
+     * Navigates to the previous page
+     */
     prevPage() {
       if (this.scope.currentPage > 0) {
         this.scope.currentPage--
       }
     }
 
+    /**
+     * Navigates to the next page
+     * @param {Number} n 
+     */
     nextPage(n) {
       if (
         !n &&
@@ -108,6 +121,10 @@ define(['../../module'], function(app) {
       }
     }
 
+    /**
+     * Sets page number
+     * @param {Number} n 
+     */
     setPage(n) {
       this.scope.currentPage = n
       this.nextPage(n)

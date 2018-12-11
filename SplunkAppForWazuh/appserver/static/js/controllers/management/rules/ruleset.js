@@ -2,6 +2,16 @@ define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Ruleset {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $sce 
+     * @param {*} $notificationService 
+     * @param {String} view 
+     * @param {*} $currentDataService 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     */
     constructor(
       $scope,
       $sce,
@@ -105,6 +115,10 @@ define(['../../module', 'FileSaver'], function(app) {
       return
     }
 
+    /**
+     * Returns the color
+     * @param {*} regex 
+     */
     colorRegex(regex) {
       regex = regex.toString()
       let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gim)
@@ -124,6 +138,10 @@ define(['../../module', 'FileSaver'], function(app) {
       return this.sce.trustAsHtml(coloredString)
     }
 
+    /**
+     * Returns the color
+     * @param {*} order 
+     */
     colorOrder(order) {
       order = order.toString()
       let valuesArray = order.split(',')

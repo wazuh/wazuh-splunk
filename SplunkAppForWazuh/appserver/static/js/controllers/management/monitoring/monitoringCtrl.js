@@ -223,6 +223,9 @@ define([
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    /**
+     * Checks status
+     */
     checkStatus() {
       if (this.enabled === 'no') {
         this.scope.isClusterEnabled = false

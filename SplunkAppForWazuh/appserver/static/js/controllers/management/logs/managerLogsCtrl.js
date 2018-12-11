@@ -2,6 +2,16 @@ define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Logs {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $tableFilterService 
+     * @param {*} $notificationService 
+     * @param {*} $currentDataService 
+     * @param {*} $csvRequestService 
+     * @param {Object} logs 
+     */
     constructor(
       $scope,
       $requestService,

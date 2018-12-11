@@ -2,6 +2,17 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class RulesetId extends Ruleset {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $sce 
+     * @param {*} $notificationService 
+     * @param {*} $state 
+     * @param {Object} ruleInfo 
+     * @param {*} $currentDataService 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     */
     constructor(
       $scope,
       $sce,
@@ -31,6 +42,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.ruleInfo = ruleInfo.data.data.items[0]
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>

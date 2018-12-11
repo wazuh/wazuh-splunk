@@ -2,6 +2,15 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class Decoders extends Ruleset {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $sce 
+     * @param {*} $notificationService 
+     * @param {*} $currentDataService 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     */
     constructor(
       $scope,
       $sce,
@@ -56,6 +65,10 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       })
     }
 
+    /**
+     * Cleans filters
+     * @param {String} typeFilter 
+     */
     onlyParents(typeFilter) {
       this.scope.appliedFilters = []
       if (window.localStorage.decoders) {
