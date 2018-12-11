@@ -128,21 +128,21 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | top data.cis.group`,
+          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
           'topCiscatGroups'
         ),
         new LinearChart(
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | timechart count by data.cis.result usenull=f`,
+          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution'
         ),
         new Table(
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary'
         )
       ]
