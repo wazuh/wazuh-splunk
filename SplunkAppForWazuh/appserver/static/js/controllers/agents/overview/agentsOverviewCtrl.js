@@ -21,7 +21,10 @@ define(['../../module'], function(app) {
       $requestService,
       $state,
       $notificationService,
-      agent
+      agent,
+      groups,
+      $mdDialog,
+      $groupHandler
     ) {
       this.stateParams = $stateParams
       this.scope = $scope
@@ -30,6 +33,10 @@ define(['../../module'], function(app) {
       this.notificationService = $notificationService
       this.agent = agent
       this.extensions = extensions
+      this.scope.editGroup = false
+      this.groups = groups
+      this.$mdDialog = $mdDialog
+      this.groupHandler = $groupHandler
     }
 
     $onInit() {
@@ -94,11 +101,41 @@ define(['../../module'], function(app) {
             : (this.scope[key] = null)
         )
 
+        this.scope.groups = this.groups.data.data.items.map(item => item.name).filter(item => this.scope.agent.group && !this.scope.agent.group.includes(item))
         this.scope.formatAgentStatus = agentStatus =>
           this.formatAgentStatus(agentStatus)
         this.scope.getAgentStatusClass = agentStatus =>
           this.getAgentStatusClass(agentStatus)
         this.scope.goGroups = group => this.goGroups(group)
+        this.scope.switchGroupEdit = () => this.switchGroupEdit()
+
+        this.scope.showConfirm = (ev, group) => {
+      
+          const confirm = this.$mdDialog
+            .confirm()
+            .title(`Add group "${group}" to agent "${this.scope.agent.id}"?`)
+            .targetEvent(ev)
+            .ok('Agree')
+            .cancel('Cancel')
+    
+            this.$mdDialog.show(confirm).then(
+            () => {
+              this.groupHandler.addAgentToGroup(group,this.scope.agent.id)
+              .then(() => this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
+              .then(agent => {
+                this.scope.agent.group = agent.data.data.group
+                this.scope.groups = this.scope.groups.filter(item => !agent.data.data.group.includes(item))
+                if(!this.scope.$$phase) this.scope.$digest()
+              })
+              .catch(error =>
+                this.$notificationService.showSimpleToast(
+                  error.message || error
+                )
+              )
+            },
+            () => {}
+          )
+        }
       }
     }
 
@@ -138,6 +175,12 @@ define(['../../module'], function(app) {
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
+
+    switchGroupEdit() {
+      this.scope.editGroup = !!!this.scope.editGroup
+      if(!this.scope.$$phase) this.scope.$digest()
+    }
+
   }
 
   app.controller('agentsOverviewCtrl', AgentsOverview)

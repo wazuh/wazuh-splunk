@@ -32,8 +32,7 @@ class report(controllers.BaseController):
         self.logger = log()
         try:
             self.pdf = FPDF('P', 'mm', 'A4')
-            self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/'
-            'appserver/static/'
+            self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))

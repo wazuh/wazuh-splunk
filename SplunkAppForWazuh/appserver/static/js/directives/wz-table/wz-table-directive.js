@@ -64,7 +64,9 @@ define([
         $currentDataService,
         $notificationService,
         $tableFilterService,
-        $window
+        $window,
+        $mdDialog,
+        $groupHandler
       ) {
         /**
          * Init variables
@@ -81,8 +83,9 @@ define([
          */
         const rowSizes = $scope.rowSizes || [15, 13, 11]
         let doit
-        let resizing = true
+        let resizing = false
         $window.onresize = () => {
+          if(resizing) { return }
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
@@ -278,6 +281,43 @@ define([
         })
 
         init()
+
+        $scope.isLookingGroup = () => {
+          try {
+            const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
+            return regexp.test(instance.path)
+          } catch (error) {
+            return false
+          }
+        }
+
+        $scope.showConfirm = function(ev, agent) {
+          const group = instance.path.split('/').pop()
+  
+          const confirm = $mdDialog
+            .confirm()
+            .title(`Delete agent "${agent.id}" from group "${group}"?`)
+            .targetEvent(ev)
+            .ok('Agree')
+            .cancel('Cancel');
+  
+          $mdDialog.show(confirm).then(
+            () => {
+              $groupHandler
+                .removeAgentFromGroup(group, agent.id)
+                .then(() => init())
+                .then(() => $scope.$emit('updateGroupInformation', { group }))
+                .catch(error =>
+                  $notificationService.showSimpleToast(
+                    error.message || error
+                  )
+                );
+            },
+            () => {}
+          );
+        }
+
+
       },
       templateUrl:
         BASE_URL +
