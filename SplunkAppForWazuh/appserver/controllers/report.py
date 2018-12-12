@@ -18,8 +18,16 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 import base64
-from fpdf import FPDF
+from fpdf import FPDF, HTMLMixin
 
+
+class ReportPDF(FPDF, HTMLMixin):
+    """Report PDF class.
+
+    For use in report class
+    """
+
+    pass
 
 class report(controllers.BaseController):
     """Report class.
@@ -30,25 +38,30 @@ class report(controllers.BaseController):
     def __init__(self):
         """Constructor."""
         self.logger = log()
+        self.images = {}
+        self.html = ""
         try:
-            self.pdf = FPDF('P', 'mm', 'A4')
+            self.pdf = ReportPDF()
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))
 
-    def header(self):
-        """Configure header of PDF."""
-        # Logo
-        self.pdf.image(self.path+'css/images/wazuh/png/logo.png')
-        # Arial bold 15
-        self.pdf.set_font('Arial', 'B', 15)
-        # Move to the right
-        self.pdf.cell(80)
-        # Title
-        self.pdf.cell(30, 10, 'Report', 1, 0, 'C')
-        # Line break
-        self.pdf.ln(20)
+    def save_images(self, images):
+        i = 0
+        while i in range(0, len(images['array'])):
+            f = open(self.path+'sample'+str(i)+'.png', 'wb')
+            title = str(images['array'][i]['title'])
+            path = str(self.path+'sample'+str(i)+'.png')
+            f.write(base64.decodestring(
+                images['array'][i]['element'].split(',')[1].encode()))
+            f.close()
+            self.images[title] = path
+            i += 1
+
+    def delete_images(self):
+        for title, path in self.images.iteritems():
+            os.remove(img)
 
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
@@ -63,33 +76,32 @@ class report(controllers.BaseController):
         try:
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
-            args = json.loads(json_acceptable_string)
-            self.pdf.alias_nb_pages()
+            images = json.loads(json_acceptable_string)
             self.pdf.add_page()
-            self.header()
-            self.pdf.set_font('Arial', '', 12)
-            self.pdf.cell(40, 10, 'Security events report')
-            self.pdf.set_auto_page_break(True, 2)
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            self.logger.error("Size of array: %s" % (len(args['array'])))
-            i = 0
-            while i in range(0, len(args['array'])):
-                f = open(self.path+'sample'+str(i)+'.png', 'wb')
-                f.write(base64.decodestring(
-                    args['array'][i]['element'].split(',')[1].encode()))
-                f.close()
-                if i == 0:
-                    self.pdf.image(self.path+'sample'+str(i) +
-                                   '.png', 15, 50, 135, 60)
-                else:
-                    self.pdf.image(self.path+'sample'+str(i) +
-                                   '.png', 15, i*120, 135, 60)
-
-                os.remove(self.path+'sample'+str(i)+'.png')
-                i += 1
-
-            self.pdf.output(self.path+'tuto1'+report_id+'.pdf', 'F')
+            self.logger.error("Size of array: %s" % (len(images['array'])))
+            #Save the images
+            self.save_images(images)
             parsed_data = json.dumps({'data': 'success'})
+            #Formating html
+            self.html = self.html + """
+            <center>
+	            <img src="%scss/images/wazuh/png/logo.png" width="160" height="40">
+            </center>
+            """ % (self.path,)
+            for title, image_path in self.images.iteritems():
+                self.html = self.html + """
+                <div>
+                    <span>%s</span>
+                    <center>
+                        <img src="%s" width="400" height="140">
+                    </center>
+                </div>
+                """ % (title, image_path,)
+            self.pdf.write_html(self.html)
+            self.pdf.output(self.path+'tuto1'+report_id+'.pdf', 'F')
+            #Delete the images
+            self.delete_images()
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
             return json.dumps({"error": str(e)})

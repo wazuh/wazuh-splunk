@@ -28,13 +28,17 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
+            console.log("currentValue: ", currentValue)
+            const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
+            console.log("tilte: ", title)
             try {
               const tmpResult = await domToImg.toPng(tmpNode[0])
               this.rawArray.push({
                 element: tmpResult,
                 width: tmpNode.width(),
                 height: tmpNode.height(),
-                id: currentValue
+                id: currentValue,
+                title: title
               })
             } catch (error) {
               console.error('error converting ', error)
@@ -46,9 +50,10 @@ define(['../module', 'domToImg'], function(app, domToImg) {
             if (!this.$rootScope.$$phase) this.$rootScope.$digest()
           })
         )
-
+        console.log("visualizaciones??? : ", this.htmlObject)
         this.working = false
         this.$rootScope.reportStatus = `Generating PDF document...`
+        console.log("rawArray(imagenes): ", this.rawArray)
         return this.rawArray
       } catch (error) {
         this.working = false
