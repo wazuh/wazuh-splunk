@@ -31,6 +31,7 @@ define(['../module', 'jquery'], function(module, $) {
       syscollectorFilters = null
     ) {
       try {
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
         if (this.vis2png.isWorking()) {
           this.errorHandler('Report in progress')
           return
@@ -77,10 +78,10 @@ define(['../module', 'jquery'], function(module, $) {
         this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.errorHandler('Success. Go to Management -> Reporting')
-
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        console.error('err ', error)
+        console.error('Reporting error ', error)
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
         this.errorHandler('Reporting error')
