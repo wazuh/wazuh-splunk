@@ -9,8 +9,8 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function () {
-  'use strict';
+define([], function() {
+  'use strict'
   return {
     searchData: async (
       term,
@@ -62,10 +62,7 @@ define([], function () {
               instance.addFilter(item.name, item.value)
             }
           })
-        } else if (
-          filter.name === 'platform' &&
-          instance.path === '/agents'
-        ) {
+        } else if (filter.name === 'platform' && instance.path === '/agents') {
           const platform = filter.value.split(' - ')[0]
           const version = filter.value.split(' - ')[1]
           instance.addFilter('os.platform', platform)
@@ -81,10 +78,10 @@ define([], function () {
         $scope.wazuhTableLoading = false
         $scope.error = `Error filtering by ${
           filter ? filter.value : 'undefined'
-          }. ${error.message || error}.`
+        }. ${error.message || error}.`
         $notificationService.showSimpleToast(
           `Error filtering by ${
-          filter ? filter.value : 'undefined'
+            filter ? filter.value : 'undefined'
           }. ${error.message || error}`
         )
       }
@@ -118,16 +115,14 @@ define([], function () {
         $scope.wazuh_table_loading = false
         $scope.error = `Query error ${
           query ? query.value : 'undefined'
-          } - ${error.message || error}.`
+        } - ${error.message || error}.`
         errorHandler.showSimpleToast(
-          `Query error ${
-          query ? query.value : 'undefined'
-          }. ${error.message || error}`
+          `Query error ${query ? query.value : 'undefined'}. ${error.message ||
+            error}`
         )
       }
       if (!$scope.$$phase) $scope.$digest()
       return
     }
-
   }
 })

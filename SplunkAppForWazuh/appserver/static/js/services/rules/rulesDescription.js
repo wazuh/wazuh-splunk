@@ -1,7 +1,7 @@
 define(['../module'], function(module) {
   'use strict'
 
-  module.service('$rulesDescription', function($state) {
+  module.service('$rulesDescription', function() {
     const service = {
       gdprRules: () => {
         return {
@@ -28,7 +28,7 @@ define(['../module'], function(module) {
             'Capabilities for identification, blocking and forensic investigation of data breaches by malicious actors, through compromised credentials, unauthorized network access, persistent threats and verification of the correct operation of all components.<br>Network perimeter and endpoint security tools to prevent unauthorized access to the network, prevent the entry of unwanted data types and malicious threats. Anti-malware and anti-ransomware to prevent malware and ransomware threats from entering your devices.<br>A behavioral analysis that uses machine intelligence to identify people who do anomalous things on the network, in order to give early visibility and alert employees who start to become corrupt.'
         }
       },
-      pciRules: params => {
+      pciRules: () => {
         return {
           '1.1.1':
             'A formal process for approving and testing all network connections and changes to the firewall and router configurations',

@@ -9,8 +9,16 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function () {
+define([], function() {
   'use strict'
+  /**
+   * Sorts table
+   * @param {String} field 
+   * @param {*} $scope 
+   * @param {String} instance 
+   * @param {Function} fetch 
+   * @param {Function} errorHandler 
+   */
   return async function sort(field, $scope, instance, fetch, errorHandler) {
     try {
       $scope.error = false
@@ -24,10 +32,10 @@ define([], function () {
       $scope.wazuhTableLoading = false
       $scope.error = `Error sorting table by ${
         field ? field.value : 'undefined'
-        } - ${error.message || error}.`
+      } - ${error.message || error}.`
       errorHandler.showSimpleToast(
         `Error sorting table by ${
-        field ? field.value : 'undefined'
+          field ? field.value : 'undefined'
         }. ${error.message || error}`
       )
     }

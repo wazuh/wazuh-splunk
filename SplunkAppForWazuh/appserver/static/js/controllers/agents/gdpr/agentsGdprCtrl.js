@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function (app, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
+], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
   'use strict'
 
   class AgentsGdpr {
@@ -23,7 +23,15 @@ define([
       this.state = $state
       this.currentDataService = $currentDataService
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       if (!$currentDataService.getCurrentAgent()) {
         this.state.go('overview')
@@ -36,8 +44,8 @@ define([
       this.dropdown = new Dropdown(
         'dropDownInput',
         `${
-        this.filters
-        } sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
+          this.filters
+        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
         'dropDownInput'
@@ -67,36 +75,36 @@ define([
         new ColumnChart(
           'gdprRequirementsVizz',
           `${
-          this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}`,
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
           'gdprRequirementsVizz'
         ),
         new PieChart(
           'groupsVizz',
           `${
-          this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups`,
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
           'groupsVizz'
         ),
         new PieChart(
           'agentsVizz',
           `${
-          this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name`,
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
           'agentsVizz'
         ),
         new ColumnChart(
           'requirementsByAgentVizz',
           `${
-          this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
           'requirementsByAgentVizz'
         ),
         new Table(
           'alertsSummaryVizz',
           `${
-          this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count`,
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz'
         )
       ]
@@ -111,22 +119,41 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

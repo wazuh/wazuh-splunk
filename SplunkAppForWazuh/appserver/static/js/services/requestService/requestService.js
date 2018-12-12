@@ -73,10 +73,10 @@ define(['../module'], function(module) {
      * @param {String} endpoint
      * @param {Object} opts
      */
-    const apiReq = async (endpoint, opts=null, method='GET') => {
+    const apiReq = async (endpoint, opts = null, method = 'GET') => {
       try {
         $http.defaults.headers.post['Content-Type'] =
-        'application/x-www-form-urlencoded'
+          'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
         const id = currentApi && currentApi.id ? currentApi.id : opts.id
         const payload = { id, endpoint, method }

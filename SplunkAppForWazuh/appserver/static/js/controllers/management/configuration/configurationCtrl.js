@@ -1,4 +1,4 @@
-define(['../../module', '../../../utils/config-handler'], function (
+define(['../../module', '../../../utils/config-handler'], function(
   controllers,
   ConfigHandler
 ) {
@@ -56,9 +56,7 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.updateSelectedItem = i => (this.$scope.selectedItem = i)
       this.$scope.getIntegration = list =>
         this.configurationHandler.getIntegration(list, this.$scope)
-
     }
-
   }
 
   controllers.controller('configurationCtrl', ConfigurationController)

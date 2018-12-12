@@ -30,10 +30,20 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap'
-], function (app, calcTableRows, parseValue, pagination, sort, listeners, data, clickAction, checkGap) {
-  'use strict';
+], function(
+  app,
+  calcTableRows,
+  parseValue,
+  pagination,
+  sort,
+  listeners,
+  data,
+  clickAction,
+  checkGap
+) {
+  'use strict'
 
-  app.directive('wazuhTable', function (BASE_URL) {
+  app.directive('wazuhTable', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -54,52 +64,66 @@ define([
         $currentDataService,
         $notificationService,
         $tableFilterService,
-        $window,
+        $window
       ) {
         /**
          * Init variables
          */
         let realTime = false
-        const instance = new $dataService(
-          $scope.path,
-          $scope.implicitFilter
-        )
+        const instance = new $dataService($scope.path, $scope.implicitFilter)
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
-        $scope.totalItems = 0;
-        $scope.wazuhTableLoading = true;
-        $scope.items = [];
+        $scope.totalItems = 0
+        $scope.wazuhTableLoading = true
+        $scope.items = []
 
         /**
          * Resizing. Calculate number of table rows depending on the screen height
          */
-        const rowSizes = $scope.rowSizes || [15, 13, 11];
-        let doit;
-        let resizing = true;
+        const rowSizes = $scope.rowSizes || [15, 13, 11]
+        let doit
+        let resizing = false
         $window.onresize = () => {
-          clearTimeout(doit);
+          if (resizing) return
+          resizing = true
+          clearTimeout(doit)
           doit = setTimeout(() => {
-            $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes);
-            $scope.itemsPerPage = $scope.rowsPerPage;
-            init().then(() => resizing = false).catch(() => resizing = false);
-          }, 150);
-        };
-        $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes);
+            $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
+            $scope.itemsPerPage = $scope.rowsPerPage
+            init()
+              .then(() => (resizing = false))
+              .catch(() => (resizing = false))
+          }, 150)
+        }
+        $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
 
         /**
          * Common functions
          */
-        $scope.clickAction = (item,state=null) => clickAction(instance,item, $state, $navigationService,$currentDataService, $scope, state);
+        $scope.clickAction = (item, state = null) =>
+          clickAction(
+            instance,
+            item,
+            $state,
+            $navigationService,
+            $currentDataService,
+            $scope,
+            state
+          )
 
+        /**
+         * Fetchs data from API
+         * @param {Object} options 
+         */
         const fetch = async (options = {}) => {
           try {
-            const result = await instance.fetch(options);
-            items = options.realTime ? result.items.slice(0, 10) : result.items;
-            $scope.time = result.time;
-            $scope.totalItems = items.length;
-            $scope.items = items;
-            checkGap($scope, items);
-            $scope.searchTable();
-            return;
+            const result = await instance.fetch(options)
+            items = options.realTime ? result.items.slice(0, 10) : result.items
+            $scope.time = result.time
+            $scope.totalItems = items.length
+            $scope.items = items
+            checkGap($scope, items)
+            $scope.searchTable()
+            return
           } catch (error) {
             if (
               error &&
@@ -107,15 +131,20 @@ define([
               error.status === -1 &&
               error.xhrStatus === 'abort'
             ) {
-              return Promise.reject('Request took too long, aborted');
+              return Promise.reject('Request took too long, aborted')
             }
-            return Promise.reject(error);
+            return Promise.reject(error)
           }
-        };
+        }
 
-        $scope.sort = async field =>
-          sort(field, $scope, instance, fetch, $notificationService);
+        $scope.sort = async (field) =>
+          sort(field, $scope, instance, fetch, $notificationService)
 
+        /**
+         * Searches for a term
+         * @param {String} term 
+         * @param {Boolean} removeFilters 
+         */
         const search = async (term, removeFilters) =>
           data.searchData(
             term,
@@ -125,8 +154,13 @@ define([
             fetch,
             $tableFilterService,
             $notificationService
-          );
+          )
 
+        /**
+         * Queries to the API
+         * @param {String} query 
+         * @param {String} search 
+         */
         const query = async (query, search) =>
           data.queryData(
             query,
@@ -136,8 +170,12 @@ define([
             $scope,
             fetch,
             $notificationService
-          );
+          )
 
+        /**
+         * Filters API results
+         * @param {String} filter 
+         */
         const filter = async filter =>
           data.filterData(
             filter,
@@ -146,33 +184,46 @@ define([
             $tableFilterService,
             fetch,
             $notificationService
-          );
+          )
 
+        /**
+         * Enables or disables the real time function.
+         * If enabled, requests to the API will be sended each second
+         */
         const realTimeFunction = async () => {
           try {
-            $scope.error = false;
+            $scope.error = false
             while (realTime) {
-              await fetch({ realTime: true, limit: 10 });
-              if (!$scope.$$phase) $scope.$digest();
-              await $timeout(1000);
+              await fetch({ realTime: true, limit: 10 })
+              if (!$scope.$$phase) $scope.$digest()
+              await $timeout(1000)
             }
           } catch (error) {
-            realTime = false;
+            realTime = false
             $scope.error = `Real time feature aborted - ${error.message ||
-              error}.`;
+              error}.`
             $notificationService.handle(
               `Real time feature aborted. ${error.message || error}`,
               'Data factory'
-            );
+            )
           }
-          return;
-        };
+          return
+        }
 
-        $scope.parseValue = (key, item) => parseValue($keyEquivalenceService.equivalences(), key, item, instance.path);
+        $scope.parseValue = (key, item) =>
+          parseValue(
+            $keyEquivalenceService.equivalences(),
+            key,
+            item,
+            instance.path
+          )
 
+        /**
+         * Initializes table
+         */
         const init = async () => {
           try {
-            $scope.error = false;
+            $scope.error = false
             $scope.wazuhTableLoading = true
             await fetch()
             $tableFilterService.set(instance.filters)
@@ -180,9 +231,11 @@ define([
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
           } catch (error) {
-            $scope.wazuhTableLoading = false;
+            $scope.wazuhTableLoading = false
             $scope.error = `Error while init table. ${error.message || error}.`
-            $notificationService.showSimpleToast(`Error while init table. ${error.message || error}`)
+            $notificationService.showSimpleToast(
+              `Error while init table. ${error.message || error}`
+            )
           }
           return
         }
@@ -190,65 +243,72 @@ define([
         /**
          * Pagination variables and functions
          */
-        $scope.itemsPerPage = $scope.rowsPerPage || 10;
-        $scope.pagedItems = [];
-        $scope.currentPage = 0;
-        let items = [];
-        $scope.gap = 0;
-        $scope.searchTable = () => pagination.searchTable($scope, items);
-        $scope.groupToPages = () => pagination.groupToPages($scope);
+        $scope.itemsPerPage = $scope.rowsPerPage || 10
+        $scope.pagedItems = []
+        $scope.currentPage = 0
+        let items = []
+        $scope.gap = 0
+        $scope.searchTable = () => pagination.searchTable($scope, items)
+        $scope.groupToPages = () => pagination.groupToPages($scope)
         $scope.range = (size, start, end) =>
-          pagination.range(size, start, end, $scope.gap);
-        $scope.prevPage = () => pagination.prevPage($scope);
+          pagination.range(size, start, end, $scope.gap)
+        $scope.prevPage = () => pagination.prevPage($scope)
         $scope.nextPage = async currentPage =>
-          pagination.nextPage(currentPage, $scope, $notificationService, fetch);
-        $scope.setPage = function () {
-          $scope.currentPage = this.n;
-          $scope.nextPage(this.n);
-        };
+          pagination.nextPage(currentPage, $scope, $notificationService, fetch)
+        $scope.setPage = function() {
+          $scope.currentPage = this.n
+          $scope.nextPage(this.n)
+        }
 
         /**
          * Event listeners
          */
         $scope.$on('wazuhUpdateInstancePath', (event, parameters) =>
           listeners.wazuhUpdateInstancePath(parameters, instance, init)
-        );
+        )
 
         $scope.$on('wazuhFilter', (event, parameters) =>
           listeners.wazuhFilter(parameters, filter)
-        );
+        )
 
         $scope.$on('wazuhSearch', (event, parameters) =>
           listeners.wazuhSearch(parameters, instance, search)
-        );
+        )
 
         $scope.$on('wazuhRemoveFilter', (event, parameters) =>
-          listeners.wazuhRemoveFilter(parameters, instance, $tableFilterService, init)
-        );
+          listeners.wazuhRemoveFilter(
+            parameters,
+            instance,
+            $tableFilterService,
+            init
+          )
+        )
 
         $scope.$on('wazuhQuery', (event, parameters) =>
           listeners.wazuhQuery(parameters, query)
-        );
+        )
 
         $scope.$on('wazuhPlayRealTime', () => {
-          realTime = true;
-          return realTimeFunction();
-        });
+          realTime = true
+          return realTimeFunction()
+        })
 
         $scope.$on('wazuhStopRealTime', () => {
-          realTime = false;
-          return init();
-        });
+          realTime = false
+          return init()
+        })
 
         $scope.$on('$destroy', () => {
-          $window.onresize = null;
-          realTime = null;
-          $tableFilterService.set([]);
-        });
+          $window.onresize = null
+          realTime = null
+          $tableFilterService.set([])
+        })
 
-        init();
+        init()
       },
-      templateUrl: BASE_URL + '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
-    };
-  });
-});
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
+    }
+  })
+})

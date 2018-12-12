@@ -36,7 +36,15 @@ define([
       this.currentDataService = $currentDataService
       this.state = $state
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
@@ -101,28 +109,28 @@ define([
         new AreaChart(
           'alertsSeverityOverTimeVizz',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsSeverityOverTimeVizz'
         ),
         new Table(
           'commonRules',
           `${
-          this.filters
+            this.filters
           } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
           'commonRules'
         ),
         new PieChart(
           'commonCves',
           `${
-          this.filters
+            this.filters
           } rule.groups="vulnerability-detector" | top data.vulnerability.cve limit=5`,
           'commonCves'
         ),
         new PieChart(
           'severityDistribution',
           `${
-          this.filters
+            this.filters
           } rule.groups="vulnerability-detector" | top data.vulnerability.severity limit=5`,
           'severityDistribution'
         ),
@@ -134,7 +142,7 @@ define([
         new Table(
           'alertsSummaryVizz',
           `${
-          this.filters
+            this.filters
           } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
           'alertsSummaryVizz'
         )
@@ -149,22 +157,42 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
     }
 
+
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
-
+    
+    /**
+     * Returns a class depending on the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
