@@ -1,16 +1,15 @@
 define([
   '../../module',
-  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
+], function(app, PieChart, Table, AreaChart, TimePicker) {
   'use strict'
 
   class AgentsVirusTotal {
     /**
-     * Class constructor
+     * Class Virus Total
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
@@ -20,24 +19,31 @@ define([
 
     constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
+      this.currentDataService = $currentDataService
       this.scope = $scope
       //Add filer for VirusTotal
-      $currentDataService.addFilter(
+      this.currentDataService.addFilter(
         `{"rule.groups":"virustotal", "implicit":true}`
       )
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.agent = agent
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
+
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
-      this.scope.agent = agent.data.data
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -95,7 +101,14 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
       this.scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
@@ -105,8 +118,11 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

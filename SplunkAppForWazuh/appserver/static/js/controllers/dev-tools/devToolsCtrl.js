@@ -25,16 +25,19 @@ define([
   module,
   $,
   CodeMirror,
-  jsonLint,
-  javascript,
-  braceFold,
-  foldcode,
-  foldgutter,
-  searchCursor,
-  markSeletion
 ) {
   'use strict'
   class DevToolsCtrl {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $window 
+     * @param {*} $document 
+     * @param {*} $navigationService 
+     * @param {*} $notificationService 
+     * @param {*} $requestService 
+     * @param {Object} extensions 
+     */
     constructor(
       $scope,
       $window,
@@ -44,20 +47,20 @@ define([
       $requestService,
       extensions
     ) {
-      this.$scope = $scope;
-      this.request = $requestService;
-      this.$window = $window;
-      this.appState = $navigationService;
-      this.errorHandler = $notificationService;
-      this.$document = $document;
-      this.groups = [];
-      this.linesWithClass = [];
-      this.widgets = [];
-      this.admin = ( extensions.data['admin'] === 'true') ? true : false;
+      this.$scope = $scope
+      this.request = $requestService
+      this.$window = $window
+      this.appState = $navigationService
+      this.errorHandler = $notificationService
+      this.$document = $document
+      this.groups = []
+      this.linesWithClass = []
+      this.widgets = []
+      this.admin = extensions['admin'] === 'true' ? true : false
     }
 
     unescapeBuffer(s, decodeSpaces) {
-      let out = new Buffer(s.length)
+      let out = Buffer.from(s.lenth)
       let state = 0
       let n, m, hexchar
 
@@ -118,14 +121,14 @@ define([
 
       // TODO support returning arbitrary buffers.
 
-      return out.slice(0, outIndex - 1)
+      return out.slice(0, outIndex - 1) // eslint-disable-line
     }
 
     decodeStr(s, decoder) {
       try {
         return decoder(s)
       } catch (e) {
-        return QueryString.unescape(s, true)
+        return QueryString.unescape(s, true) // eslint-disable-line
       }
     }
 
@@ -592,15 +595,15 @@ define([
 
           let method = ''
           if (this.admin) {
-          method = desiredGroup.requestText.startsWith('GET')
-            ? 'GET'
-            : desiredGroup.requestText.startsWith('POST')
+            method = desiredGroup.requestText.startsWith('GET')
+              ? 'GET'
+              : desiredGroup.requestText.startsWith('POST')
               ? 'POST'
               : desiredGroup.requestText.startsWith('PUT')
-                ? 'PUT'
-                : desiredGroup.requestText.startsWith('DELETE')
-                  ? 'DELETE'
-                  : 'GET';
+              ? 'PUT'
+              : desiredGroup.requestText.startsWith('DELETE')
+              ? 'DELETE'
+              : 'GET'
           } else {
             method = 'GET'
           }
@@ -636,7 +639,7 @@ define([
           const path = req.includes('?') ? req.split('?')[0] : req
 
           // if (typeof JSONraw === 'object') JSONraw.devTools = true
-          const output = await this.request.apiReq(path, JSONraw, method);
+          const output = await this.request.apiReq(path, JSONraw, method)
           const result =
             output.data && output.data.data && !output.data.error
               ? JSON.stringify(output.data.data, null, 2)

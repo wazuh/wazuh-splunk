@@ -36,35 +36,22 @@ define(['../module'], function(module) {
             agentsInfo: [
               '$requestService',
               '$state',
-              ($requestService, $state) => {
-                return $requestService
-                  .apiReq('/agents/summary')
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    $state.go('settings.api')
-                  })
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.apiReq('/agents/summary')
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ],
             extensions: [
-              '$requestService',
               '$currentDataService',
-              async ($requestService, $currentDataService) => {
+              async $currentDataService => {
                 try {
                   const id = $currentDataService.getApi().id
-                  const currentExtensions = $currentDataService.getExtensions(
-                    id
-                  )
-                  const result = currentExtensions
-                    ? currentExtensions
-                    : $requestService.httpReq(`GET`, `/manager/extensions`)
-                  return await result
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
                 } catch (err) {
                   return false
                 }
@@ -86,20 +73,16 @@ define(['../module'], function(module) {
             pollingState: [
               '$requestService',
               '$state',
-              ($requestService, $state) => {
-                return $requestService
-                  .httpReq(`GET`, `/manager/polling_state`)
-                  .then(
-                    response => {
-                      return response
-                    },
-                    response => {
-                      return response
-                    }
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.httpReq(
+                    `GET`,
+                    `/manager/polling_state`
                   )
-                  .catch(err => {
-                    $state.go('settings.api')
-                  })
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -137,20 +120,15 @@ define(['../module'], function(module) {
             osquery: [
               '$requestService',
               '$state',
-              ($requestService, $state) => {
-                return $requestService
-                  .apiReq(`/agents/000/config/wmodules/wmodules`)
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.apiReq(
+                    `/agents/000/config/wmodules/wmodules`
                   )
-                  .catch(err => {
-                    $state.go('settings.api')
-                  })
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }

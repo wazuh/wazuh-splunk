@@ -12,6 +12,15 @@
 define(['../module'], function(module) {
   'use strict'
   module.service('$beautifierJson', function() {
+
+    /**
+     * Replaces strings
+     * @param {String} match 
+     * @param {String} pIndent 
+     * @param {String} pKey 
+     * @param {String} pVal 
+     * @param {String} pEnd 
+     */
     const replacer = (match, pIndent, pKey, pVal, pEnd) => {
       let key = '<span class=json-key>'
       let val = '<span class=json-value>'
@@ -21,6 +30,11 @@ define(['../module'], function(module) {
       if (pVal) r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>'
       return r + (pEnd || '')
     }
+
+    /**
+     * Parses and formats a JSON Object
+     * @param {Object} obj 
+     */
     const prettyPrint = obj => {
       let jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/gm
       return JSON.stringify(obj, null, 3)

@@ -21,7 +21,7 @@ define([
 
   class OsqueryAgents {
     /**
-     * Class constructor
+     * Class Agents Osquery
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
@@ -42,38 +42,29 @@ define([
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
-
-      if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
-
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.notificationService = $notificationService
-      this.scope.agent = agent.data.data
       this.osquery = osquery
-
+      this.currentDataService.addFilter(
+        `{"rule.groups":"osquery", "implicit":true}`
+      )
+      this.agent = agent
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-
       this.scope.osqueryWodle = null
-
-      try {
-        this.currentDataService.addFilter(
-          `{"rule.groups":"osquery", "implicit":true}`
-        )
-        this.wodles = this.osquery.data.data.wmodules
-        this.scope.osqueryWodle = this.wodles.filter(
-          item => item.osquery
-        )[0].osquery
-      } catch (err) {
-        this.notificationService.showSimpleToast(
-          'Cannot load wodle configuration. Osquery not configured.'
-        )
-      }
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -129,7 +120,25 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      try {
+        this.wodles = this.osquery.data.data.wmodules
+        this.scope.osqueryWodle = this.wodles.filter(
+          item => item.osquery
+        )[0].osquery
+      } catch (err) {
+        this.notificationService.showSimpleToast(
+          'Cannot load wodle configuration. Osquery not configured.'
+        )
+      }
+
       this.scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
@@ -139,8 +148,11 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

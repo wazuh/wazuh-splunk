@@ -20,6 +20,17 @@ define([
   'use strict'
 
   class OverviewGeneral {
+    /**
+     * Class Overview General
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {*} $requestService 
+     * @param {Object} pollingState 
+     * @param {*} $reportingService 
+     */
     constructor(
       $urlTokenModel,
       $scope,
@@ -27,11 +38,13 @@ define([
       $state,
       $notificationService,
       $requestService,
-      pollingState
+      pollingState,
+      $reportingService
     ) {
       this.currentDataService = $currentDataService
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
+      this.reportingService = $reportingService
       this.apiReq = $requestService.apiReq
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -156,7 +169,7 @@ define([
             if (!this.scope.$$phase) this.scope.$digest()
           })
           .catch(error => {
-            this.toast('Cannot fetch agent status data')
+            this.toast(`Cannot fetch agent status data: ${error}`)
           })
       } else {
         this.scope.wzMonitoringEnabled = true
@@ -181,13 +194,22 @@ define([
         this.vizz.push(
           new LinearChart(
             `agentStatusHistory`,
-            `${
-              this.agentsStatusFilter
-            } status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
+            `${this.agentsStatusFilter} status=* | timechart span=${
+              this.spanTime
+            } cont=FALSE count by status usenull=f`,
             `agentStatus`
           )
         )
       }
+
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png('overview-general', [
+          'alertLevEvoVizz',
+          'alertsVizz',
+          'top5AgentsVizz',
+          'alertsEvoTop5Agents',
+          'agentsSummaryVizz'
+        ])
 
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
@@ -195,6 +217,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

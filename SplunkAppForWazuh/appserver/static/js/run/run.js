@@ -1,48 +1,67 @@
-define(['./module'], function (module) {
+define(['./module'], function(module) {
   'use strict'
   module.run([
-    '$rootScope', '$state', '$transitions', '$navigationService', '$currentDataService',
-    function ($rootScope, $state, $transitions, $navigationService, $currentDataService) {
-
+    '$rootScope',
+    '$state',
+    '$transitions',
+    '$navigationService',
+    '$currentDataService',
+    function(
+      $rootScope,
+      $state,
+      $transitions,
+      $navigationService,
+      $currentDataService
+    ) {
       //Go to last state at login
       $navigationService.goToLastState()
 
       async function checkBeforeTransition(state) {
         try {
-          const { api, selectedIndex } = await $currentDataService.checkSelectedApiConnection()
+          const {
+            api
+          } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
-          $currentDataService.cleanFilters()
-          $navigationService.storeRoute(state.label)
-          $currentDataService.addFilter(`{"${api.filterType}":"${api.filterName}", "implicit":true}`)
-          $currentDataService.addFilter(`{"index":"${$currentDataService.getIndex().index}", "implicit":true}`)
+          //$currentDataService.cleanFilters()
+          $navigationService.storeRoute(state)
+          $currentDataService.addFilter(
+            `{"${api.filterType}":"${api.filterName}", "implicit":true}`
+          )
+          $currentDataService.addFilter(
+            `{"index":"${
+              $currentDataService.getIndex().index
+            }", "implicit":true}`
+          )
         } catch (err) {
           $rootScope.$broadcast('loading', { status: false })
-          if (state.label != 'settings.api')
+          if (state != 'settings.api')
             $rootScope.$broadcast('stateChanged', 'settings')
           $state.go('settings.api')
         }
       }
 
-      $transitions.onBefore({}, async (trans) => {
-      })
-
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
-        //Primary states
-        if (to === 'dev-tools') { await checkBeforeTransition({ label: 'dev-tools', state: 'dev-tools' }) }
-        if (to === 'settings.api') { await checkBeforeTransition({ label: 'settings.api', state: 'settings' }) }
-        if (to === 'agents') { await checkBeforeTransition({ label: 'agents', state: 'agents' }) }
-        if (to === 'overview') { await checkBeforeTransition({ label: 'overview', state: 'overview' }) }
-        if (to === 'manager') { await checkBeforeTransition({ label: 'manager', state: 'manager' }) }
+        if (
+          to != 'settings.about' &&
+          to != 'settings.extensions' &&
+          to != 'settings.index' &&
+          to != 'settings.logs'
+        ) {
+          await checkBeforeTransition(to)
+        }
       })
 
-      $transitions.onSuccess({}, async (trans) => {
+      $transitions.onSuccess({}, async trans => {
         $rootScope.$broadcast('loading', { status: false })
         const to = trans.to().name
-        $rootScope.$broadcast('stateChanged', trans.to().name)
-        //Secondary states
-        if (to !== 'agents' && to.includes('agent') || to.includes('ag-')) {
+        //Select primary states
+        $rootScope.$broadcast('stateChanged', to)
+        //Select secondary states
+        if (to === 'overview' || to === 'agents' || to === 'agent-overview')
+          $currentDataService.cleanFilters()
+        if ((to !== 'agents' && to.includes('agent')) || to.includes('ag-')) {
           $rootScope.$broadcast('stateChanged', 'agents')
         } else if (to.includes('ow-')) {
           $rootScope.$broadcast('stateChanged', 'overview')
@@ -62,8 +81,6 @@ define(['./module'], function (module) {
           $state.reload()
         }
       })
-
     }
   ])
 })
-

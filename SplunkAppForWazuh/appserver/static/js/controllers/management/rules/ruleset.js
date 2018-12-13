@@ -2,6 +2,16 @@ define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Ruleset {
+    /**
+     * Class Ruleset
+     * @param {*} $scope 
+     * @param {*} $sce 
+     * @param {*} $notificationService 
+     * @param {String} view 
+     * @param {*} $currentDataService 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     */
     constructor(
       $scope,
       $sce,
@@ -58,7 +68,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
-      this.scope.isArray = angular.isArray
+      this.scope.isArray = angular.isArray  // eslint-disable-line
       this.initialize()
     }
 
@@ -97,15 +107,18 @@ define(['../../module', 'FileSaver'], function(app) {
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, name)
+        saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        console.error('error ', error)
         this.toast('Error downloading CSV')
       }
       return
     }
 
+    /**
+     * Returns the color
+     * @param {*} regex 
+     */
     colorRegex(regex) {
       regex = regex.toString()
       let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gim)
@@ -125,6 +138,10 @@ define(['../../module', 'FileSaver'], function(app) {
       return this.sce.trustAsHtml(coloredString)
     }
 
+    /**
+     * Returns the color
+     * @param {*} order 
+     */
     colorOrder(order) {
       order = order.toString()
       let valuesArray = order.split(',')

@@ -5,7 +5,7 @@ define(['../module'], function(module) {
      * Select an API by ID
      * @param {Object} id
      */
-    const getAllApis = async id => {
+    const getAllApis = async () => {
       try {
         const { data } = await $requestService.httpReq(
           `GET`,
@@ -43,9 +43,7 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `POST`,
           `manager/add_api`,
-          $.param(
-            payload
-          )
+          payload
         )
         return data
       } catch (err) {
@@ -62,9 +60,7 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
-          $.param(
-            id
-          )
+          id
         )
         if (data.error || data.status === 400) throw new Error(data.error)
         return data
@@ -83,9 +79,7 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `PUT`,
           `manager/update_api`,
-          $.param(
-            newRegister
-          )
+          newRegister
         )
         return data
       } catch (err) {

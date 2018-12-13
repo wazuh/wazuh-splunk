@@ -26,31 +26,26 @@ define(['../module'], function(module) {
           resolve: {
             monitoringInfo: [
               '$requestService',
-              '$stateParams',
-              ($requestService, $stateParams) => {
-                return Promise.all([
-                  $requestService.apiReq('/cluster/status'),
-                  $requestService.apiReq('/cluster/nodes'),
-                  $requestService.apiReq('/cluster/config'),
-                  $requestService.apiReq('/version'),
-                  $requestService.apiReq('/agents', { limit: 1 }),
-                  $requestService.apiReq('/cluster/healthcheck')
-                ])
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
-                  )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await Promise.all([
+                    $requestService.apiReq('/cluster/status'),
+                    $requestService.apiReq('/cluster/nodes'),
+                    $requestService.apiReq('/cluster/config'),
+                    $requestService.apiReq('/version'),
+                    $requestService.apiReq('/agents', { limit: 1 }),
+                    $requestService.apiReq('/cluster/healthcheck')
+                  ])
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
         })
+
         // Manager - rules
         .state('mg-logs', {
           templateUrl:
@@ -63,18 +58,16 @@ define(['../module'], function(module) {
           resolve: {
             logs: [
               '$requestService',
-              $requestService => {
-                return $requestService
-                  .apiReq('/manager/logs/summary')
-                  .then(
-                    response => {
-                      return response
-                    },
-                    response => {
-                      return response
-                    }
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.apiReq(
+                    '/manager/logs/summary'
                   )
-                  .catch(err => console.error('settings.api'))
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -104,20 +97,16 @@ define(['../module'], function(module) {
             ruleInfo: [
               '$requestService',
               '$stateParams',
-              ($requestService, $stateParams) => {
-                return $requestService
-                  .apiReq(`/rules/${$stateParams.id}`)
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
+              '$state',
+              async ($requestService, $stateParams, $state) => {
+                try {
+                  const result = await $requestService.apiReq(
+                    `/rules/${$stateParams.id}`
                   )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }
@@ -148,20 +137,16 @@ define(['../module'], function(module) {
             currentDecoder: [
               '$requestService',
               '$stateParams',
-              ($requestService, $stateParams) => {
-                return $requestService
-                  .apiReq(`/decoders/${$stateParams.name}`)
-                  .then(
-                    function(response) {
-                      return response
-                    },
-                    function(response) {
-                      return response
-                    }
+              '$state',
+              async ($requestService, $stateParams, $state) => {
+                try {
+                  const result = await $requestService.apiReq(
+                    `/decoders/${$stateParams.name}`
                   )
-                  .catch(err => {
-                    console.error('Error route: ', err)
-                  })
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
               }
             ]
           }

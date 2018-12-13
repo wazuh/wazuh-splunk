@@ -47,13 +47,13 @@ define(['../module'], function(module) {
           Object.assign(data, await $http.get(tmpUrl, { params: payload }))
         // PUT METHOD
         else if (method === 'PUT')
-          Object.assign(data, await $http.post(tmpUrl, payload))
+          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // POST METHOD
         else if (method === 'POST')
-          Object.assign(data, await $http.post(tmpUrl, payload))
+          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
         else if (method === 'DELETE')
-          Object.assign(data, await $http.post(tmpUrl, payload))
+          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         if (!data) {
           throw new Error(
             `Error doing a request to ${tmpUrl}, method: ${method}.`
@@ -73,17 +73,17 @@ define(['../module'], function(module) {
      * @param {String} endpoint
      * @param {Object} opts
      */
-    const apiReq = async (endpoint, opts=null, method='GET') => {
+    const apiReq = async (endpoint, opts = null, method = 'GET') => {
       try {
         $http.defaults.headers.post['Content-Type'] =
-        'application/x-www-form-urlencoded'
+          'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
         const id = currentApi && currentApi.id ? currentApi.id : opts.id
         const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
-        const result = await httpReq(`GET`, `/api/request`, payload)
+        const result = await httpReq(`POST`, `/api/request`, payload)
         return result
       } catch (err) {
         return Promise.reject(err)

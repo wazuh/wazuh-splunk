@@ -8,6 +8,15 @@ define([
   'use strict'
 
   class Osquery {
+    /**
+     * Class Osquery
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {*} osquery 
+     */
     constructor(
       $urlTokenModel,
       $scope,
@@ -19,7 +28,11 @@ define([
       this.scope = $scope
       this.osquery = osquery
       this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(
+        `{"rule.groups":"osquery", "implicit":true}`
+      )
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.scope.osqueryWodle = false
       this.scope.$on('deletedFilter', () => {
@@ -79,6 +92,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       try {
         const wodles = this.osquery.data.data.wmodules
@@ -90,6 +106,9 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

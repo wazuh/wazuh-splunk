@@ -8,12 +8,19 @@ define([
 ], function(app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler) {
   'use strict'
   class Ciscat {
+    /**
+     * Class CIS-CAT
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
       this.addFilter = $currentDataService.addFilter
       this.getFilters = $currentDataService.getSerializedFilters
-
+      this.currentDataService = $currentDataService
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
@@ -128,25 +135,29 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | top data.cis.group`,
+          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
           'topCiscatGroups'
         ),
         new LinearChart(
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | timechart count by data.cis.result usenull=f`,
+          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution'
         ),
         new Table(
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary'
         )
       ]
     }
+
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
 
@@ -159,8 +170,11 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

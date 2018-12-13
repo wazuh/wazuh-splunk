@@ -9,22 +9,38 @@ define([
   'use strict'
 
   class AgentsCiscat {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $state 
+     * @param {*} $currentDataService 
+     * @param {Object} agent 
+     */
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
+      this.currentDataService = $currentDataService
+      if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
       this.agent = agent
-
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
+      this.filters = this.currentDataService.getSerializedFilters()
       this.vizz = [
         /**
          * Metrics
@@ -124,36 +140,38 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | top data.cis.group`,
+          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
           'topCiscatGroups'
         ),
         new LinearChart(
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | timechart count by data.cis.result usenull=f`,
+          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution'
         ),
         new Table(
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary'
         )
       ]
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = this.agent.data.data
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
-          ? agentStatus
-          : 'Never connected'
-      }
-
+        this.getAgentStatusClass(agentStatus)
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -168,8 +186,29 @@ define([
       })
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    /**
+     * Gets the filters and launches the search
+     */
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

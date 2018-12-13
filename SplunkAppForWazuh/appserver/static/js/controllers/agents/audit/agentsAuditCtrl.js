@@ -43,20 +43,28 @@ define([
 
     constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
       this.state = $state
-      if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
+      this.currentDataService = $currentDataService
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
-      this.filters = $currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
-      this.scope.agent = agent.data.data
-
+      this.agent = agent
+      this.currentDataService.addFilter(
+        `{"rule.groups":"audit", "implicit":true}`
+      )
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
+      this.filters = this.currentDataService.getSerializedFilters()
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -71,9 +79,7 @@ define([
          */
         new SearchHandler(
           `filesAddedSearch`,
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | stats count`,
+          `${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,
           `filesAddedToken`,
           '$result.count$',
           'newFiles',
@@ -82,9 +88,7 @@ define([
         ),
         new SearchHandler(
           `readFilesSearch`,
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | stats count`,
+          `${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,
           `readFilesToken`,
           '$result.count$',
           'readFiles',
@@ -93,9 +97,7 @@ define([
         ),
         new SearchHandler(
           `modifiedFiles`,
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | stats count`,
+          `${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,
           `filesModifiedToken`,
           '$result.count$',
           'filesModifiedToken',
@@ -104,9 +106,7 @@ define([
         ),
         new SearchHandler(
           `deletedFiles`,
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | stats count`,
+          `${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,
           'filesDeletedToken',
           '$result.count$',
           'filesDeleted',
@@ -118,79 +118,73 @@ define([
          */
         new PieChart(
           'groupsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" | top rule.groups`,
+          `${this.filters} sourcetype=wazuh | top rule.groups`,
           'groupsVizz'
         ),
         new ColumnChart(
           'agentsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" agent.name=* | top agent.name`,
+          `${this.filters} sourcetype=wazuh agent.name=* | top agent.name`,
           'agentsVizz'
         ),
         new PieChart(
           'directoriesVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" audit.directory.name=* | top audit.directory.name`,
+          } sourcetype=wazuh audit.directory.name=* | top audit.directory.name`,
           'directoriesVizz'
         ),
         new PieChart(
           'filesVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" audit.file.name=* | top audit.file.name`,
+          } sourcetype=wazuh audit.file.name=* | top audit.file.name`,
           'filesVizz'
         ),
         new AreaChart(
           'alertsOverTimeVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" | timechart limit=10 count by rule.description`,
+          } sourcetype=wazuh | timechart limit=10 count by rule.description`,
           'alertsOverTimeVizz'
         ),
         new PieChart(
           'fileReadAccessVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80784 | top audit.file.name`,
+          } sourcetype=wazuh rule.id=80784 | top audit.file.name`,
           'fileReadAccessVizz'
         ),
         new PieChart(
           'fileWriteAccessVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80781 | top audit.file.name`,
+          } sourcetype=wazuh rule.id=80781 | top audit.file.name`,
           'fileWriteAccessVizz'
         ),
         new BarChart(
           'comandsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" | top audit.command`,
+          `${this.filters} sourcetype=wazuh | top audit.command`,
           'comandsVizz'
         ),
         new BarChart(
           'createdVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80790 | top audit.file.name`,
+          } sourcetype=wazuh rule.id=80790 | top audit.file.name`,
           'createdVizz'
         ),
         new PieChart(
           'removedFilesVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" rule.id=80791 | top audit.file.name`,
+          } sourcetype=wazuh rule.id=80791 | top audit.file.name`,
           'removedFilesVizz'
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"audit\" | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as \"Agent name\", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as \"Effective user id\"`,
+          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryVizz'
         )
       ]
@@ -204,8 +198,43 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
+    $onInit() {
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
+    }
+
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    /**
+     * Gets the filters and launches the search
+     */
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

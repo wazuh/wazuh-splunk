@@ -2,6 +2,16 @@ define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Logs {
+    /**
+     * Class logs
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $tableFilterService 
+     * @param {*} $notificationService 
+     * @param {*} $currentDataService 
+     * @param {*} $csvRequestService 
+     * @param {Object} logs 
+     */
     constructor(
       $scope,
       $requestService,
@@ -54,13 +64,12 @@ define(['../../module', 'FileSaver'], function(app) {
         )
         if (output.length > 0) {
           const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-          saveAs(blob, 'logs.csv')
+          saveAs(blob, 'logs.csv') // eslint-disable-line
         } else {
           this.toast('Empty results.')
         }
         return
       } catch (error) {
-        console.error('error ', error)
         this.toast('Error downloading CSV')
       }
       return
@@ -112,7 +121,6 @@ define(['../../module', 'FileSaver'], function(app) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (err) {
-        console.error('err ', err)
         this.toast('Error initializing data')
       }
       return

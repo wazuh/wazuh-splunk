@@ -36,12 +36,19 @@ define([
       this.currentDataService = $currentDataService
       this.state = $state
       this.agent = agent
-
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.filters = this.currentDataService.getSerializedFilters()
-
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -55,8 +62,6 @@ define([
       this.scope.$on('barFilter', () => {
         this.launchSearches()
       })
-
-      this.scope.agent = this.agent.data.data
 
       this.vizz = [
         /**
@@ -152,18 +157,44 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
-          ? agentStatus
-          : 'Never connected'
-      }
+        this.getAgentStatusClass(agentStatus)
     }
 
+
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+    
+    /**
+     * Returns a class depending on the agent state
+     * @param {String} agentStatus 
+     */
+    getAgentStatusClass(agentStatus) {
+      agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
-      this.filters = $currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
   }

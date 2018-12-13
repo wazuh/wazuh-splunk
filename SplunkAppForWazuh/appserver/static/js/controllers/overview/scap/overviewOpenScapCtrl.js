@@ -22,10 +22,21 @@ define([
   'use strict'
 
   class OpenSCAP {
+    /**
+     * OpenSCAP class
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
+      this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(
+        `{"rule.groups":"oscap", "implicit":true}`
+      )
+      this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.scope.$on('deletedFilter', () => {
@@ -38,6 +49,7 @@ define([
 
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
+        this.dropdown.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
       this.timePicker = new TimePicker(
@@ -48,7 +60,7 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
+        } sourcetype=wazuh  rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
         '$form.profile$',
         'dropDownInput'
@@ -98,7 +110,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
           'agentsVizz'
         ),
         new LinearChart(
@@ -129,14 +141,14 @@ define([
           'top10AlertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
           'top10AlertsVizz'
         ),
         new PieChart(
           'top10HRisk',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
           'top10HRisk'
         ),
         new Table(
@@ -153,6 +165,10 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
     }
+
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()
