@@ -52,7 +52,8 @@ class log():
                 raise e
 
     def error(self, msg):
-        self.logger.error(msg)
+        """Error log message."""
+        self.logger.error(msg, exc_info=True)
 
     def info(self, msg):
         self.logger.info(msg)
