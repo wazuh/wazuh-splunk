@@ -20,6 +20,9 @@ define(['../module'], function (directives) {
          * @returns {Array}
          */
 
+        /**
+         * Function to initialize
+         */
         const init = () => {
           try {
             $scope.filters = getPrettyFilters()
@@ -30,7 +33,10 @@ define(['../module'], function (directives) {
             $notificationService.showSimpleToast(err.message || err)
           }
         }
-        
+
+        /**
+         * Gets pretty filters
+         */
         const getPrettyFilters = () => {
           try {
             let prettyFilters = []

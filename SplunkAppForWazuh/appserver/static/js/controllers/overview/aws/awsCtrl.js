@@ -11,6 +11,16 @@ define([
   'use strict'
 
   class AWS {
+    /**
+     * Class constructor
+     * @param {*} $urlTokenModel 
+     * @param {*} $rootScope 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {Object} awsMetrics 
+     * @param {*} $notificationService 
+     */
     constructor($urlTokenModel, $rootScope, $scope, $currentDataService, $state, awsMetrics, $notificationService) {
       this.rootScope = $rootScope
       this.scope = $scope
@@ -180,11 +190,18 @@ define([
       }
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()
     }
 
+    /**
+     * Returns regions and accounts without duplicates
+     * @param {Objects} buckets 
+     */
     serializedMetrics(buckets) {
       let regions = []
       let accounts = []
@@ -197,6 +214,9 @@ define([
       return { "regions": regions, "accounts": accounts }
     }
 
+    /**
+     * Gets amazon filters
+     */
     getAwsFiltersValue() {
       try {
         let sourceValues = []
@@ -214,6 +234,10 @@ define([
       }
     }
 
+    /**
+     * Serializes data.aws.source filters adding OR between filters
+     * @param {Object} filters 
+     */
     serializedSourceAwsFilters(filters) {
       try {
         let sourceFil = ""
@@ -227,6 +251,10 @@ define([
       }
     }
 
+    /**
+     * Serializes the rest of amazon filters
+     * @param {Object} filters 
+     */
     serializedRestAwsFilters(filters) {
       try {
         let restFil = ""
@@ -242,6 +270,9 @@ define([
       }
     }
 
+    /**
+     * Gets and builds amazon filters
+     */
     buildAmazonFilter() {
       try {
         let filters = this.getFilters()
@@ -254,7 +285,7 @@ define([
         }
         return filters
       } catch (err) {
-        this.toast(`Error building amazon filters: ${err}`)
+        return Promise.reject(err)
       }
     }
   }
