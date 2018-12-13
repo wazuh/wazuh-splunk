@@ -7,30 +7,54 @@ define([
   '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown, HandlerError) {
+], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown) {
   'use strict'
 
   class AWS {
-    constructor($urlTokenModel, $rootScope, $scope, $currentDataService, $state, awsMetrics) {
+    constructor($urlTokenModel, $rootScope, $scope, $currentDataService, $state, awsMetrics, $notificationService) {
       this.rootScope = $rootScope
       this.scope = $scope
       this.state = $state
       this.awsMetrics = awsMetrics
+      this.toast = $notificationService.showSimpleToast
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
-      try {
-        this.getFilters = this.currentDataService.getSerializedFilters
-        this.filters = this.getFilters()
-        this.amazonFilters = this.buildAmazonFilter()
-      } catch (error) {
-        this.toast(`Unable fetch filters: ${error}`)
-      }
-      this.implicitFilters = this.serializedImplicitFilters(this.currentDataService.getFilters().filter(item => item['implicit']))
+      this.getFilters = this.currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
       )
+
+
+      this.scope.$on('deletedFilter', () => {
+        this.launchSearches()
+      })
+
+      this.scope.$on('barFilter', () => {
+        this.launchSearches()
+      })
+
+      /**
+       * On controller destroy
+       */
+      this.scope.$on('$destroy', () => {
+        this.timePicker.destroy()
+        this.dropdown.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
+    }
+
+    /**
+     * On controller loads
+     */
+    $onInit() {
+      try {
+        this.amazonFilters = this.buildAmazonFilter()
+      } catch (error) {
+        this.toast(`Unable to fetch amazon filters: ${error}`)
+      }
 
       if (!this.awsMetrics) {
         this.scope.awsMetrics = {
@@ -69,7 +93,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${this.implicitFilters} sourcetype=wazuh data.aws.source=* | stats by data.aws.source | fields data.aws.source | sort data.aws.source ASC`,
+        `${this.filters} sourcetype=wazuh data.aws.source=* | stats by data.aws.source | fields data.aws.source | sort data.aws.source ASC`,
         'data.aws.source',
         '$form.awsSource$',
         'dropDownInput'
@@ -104,7 +128,7 @@ define([
             }
           }
         } catch (err) {
-          console.error("error: ", err)
+          this.toast(`Error population amazon services: ${err}`)
         }
       })
 
@@ -160,26 +184,11 @@ define([
           'top5Rules'
         )
       ]
-      this.scope.$on('deletedFilter', () => {
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', () => {
-        this.launchSearches()
-      })
-
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.dropdown.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
+
     launchSearches() {
       this.filters = this.getFilters()
-      this.state.reload() 
+      this.state.reload()
     }
 
     serializedMetrics(buckets) {
@@ -191,17 +200,7 @@ define([
         if (!accounts.includes(bucket.aws_account_alias))
           accounts.push(bucket.aws_account_alias)
       })
-      return { "regions" : regions, "accounts" : accounts}
-    }
-
-    serializedImplicitFilters(filters) {
-      let implicitFilters = ""
-      let key = ""
-      filters.map(filter => {
-        key = Object.keys(filter)[0]
-        implicitFilters = `${implicitFilters} ${key}=${filter[key]}`
-      })
-      return implicitFilters
+      return { "regions": regions, "accounts": accounts }
     }
 
     getAwsFiltersValue() {
@@ -221,7 +220,7 @@ define([
       filters.map(fil => {
         sourceFil = `${sourceFil} data.aws.source=${fil['data.aws.source']} OR`
       })
-      sourceFil = sourceFil.substring(0, sourceFil.length-2);
+      sourceFil = sourceFil.substring(0, sourceFil.length - 2);
       return sourceFil
     }
 
@@ -236,7 +235,7 @@ define([
       return restFil
     }
 
-    buildAmazonFilter() { 
+    buildAmazonFilter() {
       let filters = this.getFilters()
       if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) {
         const awsCurrentFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
