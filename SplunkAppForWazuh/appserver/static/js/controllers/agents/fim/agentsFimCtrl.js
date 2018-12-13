@@ -148,7 +148,6 @@ define([
     }
 
     show() {
-      console.log('showing')
       this.scope.showFiles = !this.scope.showFiles
       if (!this.scope.$$phase) this.scope.$digest()
       return
