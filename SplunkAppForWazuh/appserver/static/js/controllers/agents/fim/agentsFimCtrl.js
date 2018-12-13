@@ -148,6 +148,9 @@ define([
       this.scope.show = () => this.show()
     }
 
+    /**
+     * Shows/Hides alerts section of the view
+     */
     show(){
       this.scope.buttonShowElements = (this.showFiles) ?  'Show alerts' : 'Show files'
       this.scope.showFiles = !this.scope.showFiles
