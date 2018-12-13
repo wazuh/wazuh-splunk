@@ -19,16 +19,28 @@ define(['../module'], function (directives) {
          * Prettifies filters for md-chips
          * @returns {Array}
          */
-        const getPrettyFilters = () => {
-          let prettyFilters = []
-          const uglyFilters = $currentDataService.getFilters()
-          if (uglyFilters && uglyFilters.length > 0) {
-            for (const filter of uglyFilters) {
-              const key = Object.keys(filter)[0]
-              prettyFilters.push(`${key}:${filter[key]}`)
-            }
-          }
+
+        const init = () => {
           try {
+            $scope.filters = getPrettyFilters()
+            $scope.$on('applyFiltersAws', () => {
+              $scope.filters = getPrettyFilters()
+            })
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
+          }
+        }
+        
+        const getPrettyFilters = () => {
+          try {
+            let prettyFilters = []
+            const uglyFilters = $currentDataService.getFilters()
+            if (uglyFilters && uglyFilters.length > 0) {
+              for (const filter of uglyFilters) {
+                const key = Object.keys(filter)[0]
+                prettyFilters.push(`${key}:${filter[key]}`)
+              }
+            }
             const awsFilter = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
             if (awsFilter && awsFilter.length > 0) {
               for (const filter of awsFilter) {
@@ -38,13 +50,10 @@ define(['../module'], function (directives) {
             }
             return prettyFilters
           } catch (err) {
-            $notificationService.showSimpleToast(err.message || err)
+            return Promise.reject(err)
           }
-
         }
-
-        $scope.filters = getPrettyFilters()
-
+    
         /**
          * Returns if a string is static
          * @param {String} filter
@@ -74,11 +83,11 @@ define(['../module'], function (directives) {
           $scope.$emit('deletedFilter', {})
         }
 
-
         const getAwsFiltersValue = () => {
-          let sourceValues = []
-          let awsCurrentFilters = []
           try {
+            let sourceValues = []
+            let awsCurrentFilters = []
+
             if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) {
               awsCurrentFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
             }
@@ -88,7 +97,7 @@ define(['../module'], function (directives) {
             })
             return sourceValues
           } catch (err) {
-            $notificationService.showSimpleToast(err.message || err)
+            return Promise.reject(err)
           }
         }
 
@@ -104,7 +113,8 @@ define(['../module'], function (directives) {
               !customSearch ||
               customSearch.split(':').length !== 2 ||
               customSearch.split(':')[1].length === 0
-            ) {
+            ) {        $scope.filters = getPrettyFilters()
+
               throw new Error('Incorrent format. Please use key:value syntax')
             }
             if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) { awsSourceFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters')) }
@@ -133,10 +143,9 @@ define(['../module'], function (directives) {
             $notificationService.showSimpleToast(err.message || err)
           }
         }
+        
+        init()
 
-        $scope.$on('applyFiltersAws', () => {
-          $scope.filters = getPrettyFilters()
-        })
       },
       templateUrl:
         BASE_URL +
