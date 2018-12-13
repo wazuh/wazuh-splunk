@@ -83,6 +83,7 @@
           class="wz-tooltip">
           Start time: {{ agentInfo.syscheck.start || 'Unknown'}}
           <br> End time: {{ agentInfo.syscheck.end || 'Unknown'}}
+          <br> Duration time: {{ agentInfo.syscheck.duration +' seconds' || 'Unknown'}}
         </md-tooltip>
       </div>
       <div class="wz-text-truncatable" flex ng-if="agentInfo.rootcheck.inProgress">Last rootcheck scan:
@@ -94,6 +95,7 @@
         class="wz-tooltip">
         Start time: {{ agentInfo.rootcheck.start || 'Unknown'}}
         <br> End time: {{ agentInfo.rootcheck.end || 'Unknown'}}
+        <br> Duration time: {{ agentInfo.rootcheck.duration +' seconds' || 'Unknown'}}
       </md-tooltip>
     </div>
   </md-card-content>

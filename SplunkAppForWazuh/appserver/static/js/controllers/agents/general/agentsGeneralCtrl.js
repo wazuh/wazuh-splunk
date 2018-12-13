@@ -132,10 +132,12 @@ define([
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
+        this.agentInfo.syscheck.duration = this.getDateDifferent(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end)
+        this.agentInfo.rootcheck.duration = this.getDateDifferent(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end)
 
-        this.scope.agentInfo = this.agent[0].data.data
-
+        this.scope.agentInfo = this.agentInfo
         this.scope.id = this.stateParams.id
+
       } catch (err) {
         this.agentInfo = {}
         this.agentInfo.id = (this.agent && this.agent.length && this.agent[0] && this.agent[0].data && this.agent[0].data.data) ? this.agent[0].data.data.id : null
@@ -183,6 +185,13 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    getDateDifferent(start, end){
+      start = new Date(start)
+      end = new Date(end)
+      const diff =  Math.abs(end.getTime() - start.getTime()) / 1000
+      return diff
     }
   }
 

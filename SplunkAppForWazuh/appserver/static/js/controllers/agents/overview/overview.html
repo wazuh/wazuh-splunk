@@ -84,6 +84,7 @@
           <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom" class="wz-tooltip">
             Start time: {{ syscheck.start || 'Unknown'}}
             <br> End time: {{ syscheck.end || 'Unknown'}}
+            <br> Duration time: {{ syscheck.duration +' seconds' || 'Unknown'}}
           </md-tooltip>
         </div>
         <div class="wz-text-truncatable" flex ng-if="rootcheck.inProgress">Last rootcheck scan:
@@ -94,6 +95,7 @@
           <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end" md-direction="bottom" class="wz-tooltip">
             Start time: {{ rootcheck.start || 'Unknown'}}
             <br> End time: {{ rootcheck.end || 'Unknown'}}
+            <br> Duration time: {{ rootcheck.duration +' sconds' || 'Unknown'}}
           </md-tooltip>
         </div>
       </md-card-content>

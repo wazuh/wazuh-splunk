@@ -60,10 +60,16 @@ define(['../../module'], function (app) {
             ? (this.scope[key] = key)
             : (this.scope[key] = null)
         )
-
         this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
         this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
         this.scope.goGroups = group => this.goGroups(group)
+
+        try {
+          this.scope.syscheck.duration = this.getDateDifferent(this.scope.syscheck.start, this.scope.syscheck.end)
+          this.scope.rootcheck.duration = this.getDateDifferent(this.scope.rootcheck.start, this.scope.rootcheck.end)
+        } catch (err) {
+          console.error(err)
+        }
       }
 
     }
@@ -97,6 +103,13 @@ define(['../../module'], function (app) {
 
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    getDateDifferent(start, end){
+      start = new Date(start)
+      end = new Date(end)
+      const diff =  Math.abs(end.getTime() - start.getTime()) / 1000
+      return diff
     }
   }
 
