@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
   'FileSaver'
-], function(app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
+], function (app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
   'use strict'
 
   class AgentsFim {
@@ -41,21 +41,13 @@ define([
       this.scope.buttonShowElements = 'Show files'
       this.scope.showFiles = false
       this.urlTokenModel = $urlTokenModel
-      if (
-        this.agent &&
-        this.agent.data &&
-        this.agent.data.data &&
-        this.agent.data.data.id
-      )
-        this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
-        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
+      this.scope.showFiles = true
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -72,49 +64,49 @@ define([
         new AreaChart(
           'eventsOverTimeElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh"  "rule.groups"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement'
         ),
         new ColumnChart(
           'topGroupOwnersElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
           'topGroupOwnersElement'
         ),
         new PieChart(
           'topUserOwnersElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
           'topUserOwnersElement'
         ),
         new PieChart(
           'topFileChangesElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
           'topFileChangesElement'
         ),
         new PieChart(
           'rootUserFileChangesElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
           'rootUserFileChangesElement'
         ),
         new PieChart(
           'wordWritableFilesElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh" rule.groups="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement'
         ),
         new Table(
           'eventsSummaryElement',
           `${
-            this.filters
+          this.filters
           } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement'
         )
@@ -133,6 +125,16 @@ define([
      * On controller loads
      */
     $onInit() {
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
+      this.scope.show = () => this.show()
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -157,6 +159,11 @@ define([
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    show() {
+      this.scope.showFiles = !this.scope.showFiles
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
+    }
     /**
      * Checks and returns agent status
      * @param {Array} agentStatus 
