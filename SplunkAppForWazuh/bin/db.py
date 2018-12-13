@@ -16,6 +16,7 @@ from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from tinydb import TinyDB, Query
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from log import log
+import threading
 
 
 class database():
@@ -24,33 +25,61 @@ class database():
         self.origin = TinyDB(os.path.dirname(os.path.abspath(__file__))+'/apilist.json')
         self.db = self.origin.table('apis',cache_size=0)
         self.Api = Query()
+        self.mutex = threading.Lock()
 
     def insert(self, obj):
-        try:
-            result = self.db.insert(obj)
-            parsed_result = json.dumps({'data': result})
-        except Exception as e:
-            self.logger.error("Error inserting in DB module: %s" % (e))
-            raise e
-        return parsed_result
+        """Insert a new API.
+
+        Parameters
+        ----------
+        obj : dict
+            The new API
+
+        """
+        with self.mutex:
+            try:
+                result = self.db.insert(obj)
+                parsed_result = json.dumps({'data': result})
+            except Exception as e:
+                self.logger.error("Error inserting in DB module: %s" % (e))
+                raise e
+            return parsed_result
 
     def update(self, obj):
-        try:
-            self.db.update(obj, self.Api.id == obj['id'])
-            parsed_result = json.dumps({'data': 'success'})
-        except Exception as e:
-            self.logger.error("Error updating in DB module: %s" % (e))
-            raise e
-        return parsed_result
+        """Update an already inserted API.
+
+        Parameters
+        ----------
+        obj : dict
+            The API to edit.
+
+        """
+        with self.mutex:
+            try:
+                self.db.update(obj, self.Api.id == obj['id'])
+                parsed_result = json.dumps({'data': 'success'})
+            except Exception as e:
+                self.logger.error("Error updating in DB module: %s" % (e))
+                raise e
+            return parsed_result
 
     def remove(self, id):
-        try:
-            self.db.remove(self.Api.id == id)
-            parsed_result = json.dumps({'data': 'success'})
-        except Exception as e:
-            self.logger.error("Error removing in DB module: %s" % (e))
-            raise e
-        return parsed_result
+        """Remove an API.
+
+        Parameters
+        ----------
+        obj : dict
+            The API to be removed.
+
+        """
+        with self.mutex:
+            try:
+                self.db.remove(self.Api.id == id)
+                parsed_result = json.dumps({'data': 'success'})
+            except Exception as e:
+                self.logger.error("Error removing in DB module: %s" % (e))
+                raise e
+            return parsed_result
 
     def all(self):
         try:
