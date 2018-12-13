@@ -28,14 +28,19 @@ define(['../module'], function (directives) {
               prettyFilters.push(`${key}:${filter[key]}`)
             }
           }
-          const awsUglyFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
-          if (awsUglyFilters && awsUglyFilters.length > 0) {
-            for (const filter of awsUglyFilters) {
-              const key = Object.keys(filter)[0]
-              prettyFilters.push(`${key}:${filter[key]}`)
+          try {
+            const awsFilter = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+            if (awsFilter && awsFilter.length > 0) {
+              for (const filter of awsFilter) {
+                const key = Object.keys(filter)[0]
+                prettyFilters.push(`${key}:${filter[key]}`)
+              }
             }
+            return prettyFilters
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
           }
-          return prettyFilters
+
         }
 
         $scope.filters = getPrettyFilters()
@@ -68,18 +73,23 @@ define(['../module'], function (directives) {
           $scope.filters = getPrettyFilters()
           $scope.$emit('deletedFilter', {})
         }
-        
+
 
         const getAwsFiltersValue = () => {
           let sourceValues = []
           let awsCurrentFilters = []
-          if (JSON.parse(window.localStorage.getItem('awsSourceFilters')))
-            awsCurrentFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
-          awsCurrentFilters = awsCurrentFilters.filter(item => item['data.aws.source'])
-          awsCurrentFilters.map(filter => {
-            sourceValues.push(filter['data.aws.source'])
-          })
-          return sourceValues
+          try {
+            if (JSON.parse(window.localStorage.getItem('awsSourceFilters'))) {
+              awsCurrentFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+            }
+            awsCurrentFilters = awsCurrentFilters.filter(item => item['data.aws.source'])
+            awsCurrentFilters.map(filter => {
+              sourceValues.push(filter['data.aws.source'])
+            })
+            return sourceValues
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
+          }
         }
 
         /**
@@ -105,14 +115,13 @@ define(['../module'], function (directives) {
             if (checkAwsKeys.length > 0 && newKey != 'data.aws.source') {
               awsSourceFilters = awsSourceFilters.filter(item => !item[newKey])
               awsSourceFilters.push(newFilter)
-            }else{
+            } else {
               if (newKey === 'data.aws.source') {
                 const awsSourceValues = getAwsFiltersValue()
                 if (!awsSourceValues.includes(newValue)) {
                   awsSourceFilters.push(newFilter)
-                }else{
                 }
-              }else{
+              } else {
                 awsSourceFilters.push(newFilter)
               }
             }
