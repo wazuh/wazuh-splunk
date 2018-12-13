@@ -38,7 +38,7 @@ define(['../module'], function(module) {
           resolve: {
             apiList: [
               '$currentDataService',
-              async ($currentDataService) => {
+              async $currentDataService => {
                 try {
                   return await $currentDataService.getApiList()
                 } catch (error) {
@@ -91,10 +91,14 @@ define(['../module'], function(module) {
           controller: 'logsCtrl',
           resolve: {
             logs: [
-              '$requestService','$state',
+              '$requestService',
+              '$state',
               async ($requestService, $state) => {
                 try {
-                  return await $requestService.httpReq(`GET`, `/manager/get_log_lines`)
+                  return await $requestService.httpReq(
+                    `GET`,
+                    `/manager/get_log_lines`
+                  )
                 } catch (error) {
                   $state.go('settings.api')
                 }
@@ -134,7 +138,8 @@ define(['../module'], function(module) {
             '/static/app/SplunkAppForWazuh/js/controllers/discover/discover.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('discover')
-          }
+          },
+          params: { id: null }
         })
     }
   ])

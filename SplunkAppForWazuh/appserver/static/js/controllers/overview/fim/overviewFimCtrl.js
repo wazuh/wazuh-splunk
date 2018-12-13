@@ -9,6 +9,13 @@ define([
   'use strict'
 
   class OverviewFIM {
+    /**
+     * Class File Integrity Monitoring (syscheck)
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
@@ -43,7 +50,7 @@ define([
         new PieChart(
           'alertsVolume',
           `${
-            this.filters 
+            this.filters
           } sourcetype=wazuh rule.groups=syscheck | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
           | stats count BY SYSCHECK
           | addcoltotals count labelfield=SYSCHECK label=Total
@@ -66,7 +73,9 @@ define([
         ),
         new LinearChart(
           'eventsSummary',
-          `${this.filters} sourcetype=wazuh rule.groups=syscheck | timechart count`,
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups=syscheck | timechart count`,
           'eventsSummary'
         ),
         new Table(
@@ -102,6 +111,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

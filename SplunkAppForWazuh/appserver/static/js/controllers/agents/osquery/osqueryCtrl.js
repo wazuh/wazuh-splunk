@@ -16,12 +16,12 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function (app, PieChart, AreaChart, Table, TimePicker) {
+], function(app, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
 
   class OsqueryAgents {
     /**
-     * Class constructor
+     * Class Agents Osquery
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
@@ -46,9 +46,19 @@ define([
       this.urlTokenModel = $urlTokenModel
       this.notificationService = $notificationService
       this.osquery = osquery
-      this.currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
+      this.currentDataService.addFilter(
+        `{"rule.groups":"osquery", "implicit":true}`
+      )
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -76,21 +86,21 @@ define([
         new AreaChart(
           'alertsPacksOverTime',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime'
         ),
         new PieChart(
           'mostCommonActions',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | top "data.osquery.action" limit=5`,
           'mostCommonActions'
         ),
         new Table(
           'topRules',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
           'topRules'
         ),
@@ -110,8 +120,14 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
       try {
         this.wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = this.wodles.filter(
@@ -132,6 +148,9 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

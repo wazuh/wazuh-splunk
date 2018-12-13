@@ -24,8 +24,8 @@ define([
       this.urlTokenModel.on('url:navigate', () => {
         this.defaultTokenModel.set(this.urlTokenModel.toJSON())
         if (
-          !_.isEmpty(this.urlTokenModel.toJSON()) &&
-          !_.all(this.urlTokenModel.toJSON(), _.isUndefined)
+          !_.isEmpty(this.urlTokenModel.toJSON()) && // eslint-disable-line
+          !_.all(this.urlTokenModel.toJSON(), _.isUndefined) // eslint-disable-line
         ) {
           this.submitTokens()
         } else {

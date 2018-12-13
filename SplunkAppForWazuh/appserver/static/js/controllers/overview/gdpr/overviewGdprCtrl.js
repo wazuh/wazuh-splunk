@@ -7,6 +7,13 @@ define([
 ], function(app, ColumnChart, PieChart, TimePicker, Dropdown) {
   'use strict'
   class OverviewGDPR {
+    /**
+     * Class GDPR
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.state = $state
@@ -28,7 +35,7 @@ define([
         'dropDownInputAgent',
         `${
           this.filters
-        } sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
+        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
         'dropDownInput'
@@ -49,35 +56,35 @@ define([
           'gdprRequirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
           'gdprRequirements'
         ),
         new PieChart(
           'groupsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
           'groupsViz'
         ),
         new PieChart(
           'agentsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
           'agentsViz'
         ),
         new ColumnChart(
           'requirementsByAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
           'requirementsByAgents'
         ),
         new ColumnChart(
           'alertsSummaryViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryViz'
         )
       ]
@@ -92,6 +99,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

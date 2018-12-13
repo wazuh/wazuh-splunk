@@ -1,10 +1,10 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function ($stateProvider, BASE_URL) {
+    function($stateProvider, BASE_URL) {
       $stateProvider
 
         // Manager
@@ -45,6 +45,7 @@ define(['../module'], function (module) {
             ]
           }
         })
+
         // Manager - rules
         .state('mg-logs', {
           templateUrl:
@@ -56,11 +57,13 @@ define(['../module'], function (module) {
           controller: 'managerLogsCtrl',
           resolve: {
             logs: [
-              '$requestService', '$state',
+              '$requestService',
+              '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await $requestService
-                    .apiReq('/manager/logs/summary')
+                  const result = await $requestService.apiReq(
+                    '/manager/logs/summary'
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -93,12 +96,13 @@ define(['../module'], function (module) {
           resolve: {
             ruleInfo: [
               '$requestService',
-              '$stateParams', 
+              '$stateParams',
               '$state',
               async ($requestService, $stateParams, $state) => {
                 try {
-                  const result = await $requestService
-                    .apiReq(`/rules/${$stateParams.id}`)
+                  const result = await $requestService.apiReq(
+                    `/rules/${$stateParams.id}`
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -136,8 +140,9 @@ define(['../module'], function (module) {
               '$state',
               async ($requestService, $stateParams, $state) => {
                 try {
-                  const result = await $requestService
-                    .apiReq(`/decoders/${$stateParams.name}`)
+                  const result = await $requestService.apiReq(
+                    `/decoders/${$stateParams.name}`
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
