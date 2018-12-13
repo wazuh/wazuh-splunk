@@ -64,7 +64,9 @@ define([
         $currentDataService,
         $notificationService,
         $tableFilterService,
-        $window
+        $window,
+        $mdDialog,
+        $groupHandler
       ) {
         /**
          * Init variables
@@ -304,7 +306,43 @@ define([
           $tableFilterService.set([])
         })
 
+        $scope.isLookingGroup = () => {
+          try {
+            const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
+            return regexp.test(instance.path)
+          } catch (error) {
+            return false
+          }
+        }
+
+        $scope.showConfirm = function(ev, agent) {
+          const group = instance.path.split('/').pop()
+  
+          const confirm = $mdDialog
+            .confirm()
+            .title(`Delete agent "${agent.id}" from group "${group}"?`)
+            .targetEvent(ev)
+            .ok('Agree')
+            .cancel('Cancel');
+  
+          $mdDialog.show(confirm).then(
+            () => {
+              $groupHandler
+                .removeAgentFromGroup(group, agent.id)
+                .then(() => init())
+                .then(() => $scope.$emit('updateGroupInformation', { group }))
+                .catch(error =>
+                  $notificationService.showSimpleToast(
+                    error.message || error
+                  )
+                );
+            },
+            () => {}
+          );
+        }
+
         init()
+
       },
       templateUrl:
         BASE_URL +

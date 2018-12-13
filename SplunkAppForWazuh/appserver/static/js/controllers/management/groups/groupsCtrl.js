@@ -60,6 +60,20 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
         return this.showFile(parameters.groupName, parameters.fileName)
       })
+
+      this.scope.$on('updateGroupInformation', async (event, parameters) => {
+        try {
+          const result = await this.apiReq(
+            `/agents/groups/${parameters.group}`,
+            { limit: 1 },
+          )
+          this.scope.currentGroup.count = result.data.data.totalItems
+        } catch(error) {
+          this.toast(error)
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+        return
+      })
     }
 
     /**

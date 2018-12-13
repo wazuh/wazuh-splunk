@@ -63,10 +63,31 @@
         <div class="wz-word-break" flex ng-if="agent.group">
           Groups: <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{
             group }}&nbsp;</span>
+          <span flex></span>
+          <span ng-if="!editGroup" class="wz-text-link" ng-click="switchGroupEdit()"><i class="fa fa-fw fa-plus"></i></span>
         </div>
       </md-card-content>
     </md-card>
   </div>
+
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="editGroup">
+    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-word-break" flex ng-if="groups && groups.length">
+          Available groups: <span ng-repeat="group in groups" class="wz-text-bold wz-text-link" ng-click="showConfirm($event,group)">{{
+            group }}&nbsp;</span>
+        </div>
+        <div class="wz-word-break" flex ng-if="!groups || !groups.length">
+          There are no more groups available.
+        </div>
+        <span flex></span>
+        <span class="wz-text-link" ng-click="switchGroupEdit()">Close</span>
+      </md-card-content>
+    </md-card>
+  </div>
+
+
+
   <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if='!agent.error'>
     <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
       <md-card-content layout="row" class="wz-padding-metric">
@@ -106,7 +127,8 @@
     <!-- No configuration card -->
     <md-card class="wz-md-card">
       <md-card-content class="wz-text-center">
-        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Unable to load agent data</span>
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Unable to load agent
+          data</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="column" class="wz-padding-top-10">
           <p>{{agent.error}}</p>
