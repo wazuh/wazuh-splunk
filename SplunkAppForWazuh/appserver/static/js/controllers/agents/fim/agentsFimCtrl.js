@@ -38,6 +38,8 @@ define([
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
       this.scope = $scope
+      this.scope.buttonShowElements = 'Show files'
+      this.scope.showFiles = false
       this.urlTokenModel = $urlTokenModel
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
@@ -145,6 +147,16 @@ define([
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+      this.scope.show = () => this.show()
+    }
+
+    /**
+     * Shows/Hides alerts section of the view
+     */
+    show(){
+      this.scope.buttonShowElements = (this.showFiles) ?  'Show alerts' : 'Show files'
+      this.scope.showFiles = !this.scope.showFiles
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     show() {
