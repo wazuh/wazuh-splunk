@@ -2,6 +2,15 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
+    /**
+     * Class rules
+     * @param {*} $scope 
+     * @param {*} $sce 
+     * @param {*} $notificationService 
+     * @param {*} $currentDataService 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     */
     constructor(
       $scope,
       $sce,

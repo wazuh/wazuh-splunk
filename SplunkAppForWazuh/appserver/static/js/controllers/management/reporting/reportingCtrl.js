@@ -1,16 +1,13 @@
-define([
-  '../../module',
-], function (app) {
+define(['../../module'], function(app) {
   'use strict'
 
   class Reporting {
-
     /**
      * This class handles generated PDF reports
-     * @param {Object} $scope 
-     * @param {Object} $notificationService 
-     * @param {Object} $requestService 
-     * @param {Array} reportsList 
+     * @param {Object} $scope
+     * @param {Object} $notificationService
+     * @param {Object} $requestService
+     * @param {Array} reportsList
      */
     constructor($scope, $notificationService, $requestService, reportsList) {
       this.scope = $scope
@@ -29,13 +26,12 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.setPage = (n) => this.setPage(n)
-      this.scope.nextPage = (n) => this.nextPage(n)
+      this.scope.setPage = n => this.setPage(n)
+      this.scope.nextPage = n => this.nextPage(n)
       this.scope.prevPage = () => this.prevPage()
       this.scope.load = () => this.load()
-      this.scope.deleteReport = (name) => this.deleteReport(name)
+      this.scope.deleteReport = name => this.deleteReport(name)
       this.load()
-
     }
 
     /**
@@ -49,16 +45,16 @@ define([
 
     /**
      * Deletes a PDF report by name
-     * @param {String} name 
+     * @param {String} name
      */
     async deleteReport(name) {
       try {
         this.loading = true
-        await this.genericReq('GET', '/report/remove', {name:name})
+        await this.genericReq('GET', '/report/remove', { name: name })
         await this.load()
         this.toast('Deleted report')
       } catch (error) {
-        console.error('err ',error)
+        console.error('err ', error)
         this.toast('Reporting error')
       }
     }
@@ -82,6 +78,12 @@ define([
       }
     }
 
+    /**
+     * Calculates the size of the table
+     * @param {Number} size 
+     * @param {Number} start 
+     * @param {Number} end 
+     */
     range(size, start, end) {
       const ret = []
 
@@ -96,18 +98,33 @@ define([
       return ret
     }
 
+    /**
+     * Navigates to the previous page
+     */
     prevPage() {
       if (this.scope.currentPage > 0) {
         this.scope.currentPage--
       }
     }
 
+    /**
+     * Navigates to the next page
+     * @param {Number} n 
+     */
     nextPage(n) {
-      if (!n && n !== 0 && this.scope.currentPage < this.scope.pagedItems.length - 1) {
+      if (
+        !n &&
+        n !== 0 &&
+        this.scope.currentPage < this.scope.pagedItems.length - 1
+      ) {
         this.scope.currentPage++
       }
     }
 
+    /**
+     * Sets page number
+     * @param {Number} n 
+     */
     setPage(n) {
       this.scope.currentPage = n
       this.nextPage(n)
@@ -125,7 +142,9 @@ define([
           gap - parseInt(this.items.length / 15) > 0
             ? gapInteger + 1
             : gapInteger
-        if (this.scope.gap > 5) { this.scope.gap = 5 }
+        if (this.scope.gap > 5) {
+          this.scope.gap = 5
+        }
         this.search()
         this.loading = false
         if (!this.scope.$$phase) this.scope.$digest()

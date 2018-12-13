@@ -112,18 +112,19 @@ define(['../module'], function(module) {
 
     /**
      * Gets extensions by ID
-     * @param {String} id 
+     * @param {String} id
      */
     const getExtensionsById = async id => {
       try {
-        const currentExtensions = getExtensions(
-          id
-        )
+        const currentExtensions = getExtensions(id)
         const result = {}
         if (currentExtensions) {
           Object.assign(result, currentExtensions)
         } else {
-          const ext = await $requestService.httpReq(`GET`, `/manager/extensions`)
+          const ext = await $requestService.httpReq(
+            `GET`,
+            `/manager/extensions`
+          )
           Object.assign(result, ext.data)
         }
         return result

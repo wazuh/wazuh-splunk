@@ -1,7 +1,7 @@
 define(['../module'], function(module) {
   'use strict'
 
-  module.service('$keyEquivalenceService', function($state) {
+  module.service('$keyEquivalenceService', function() {
     const service = {
       equivalences: () => {
         return {

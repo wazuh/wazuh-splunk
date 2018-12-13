@@ -9,7 +9,7 @@ define([
 
   class AgentsVirusTotal {
     /**
-     * Class constructor
+     * Class Virus Total
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
@@ -26,7 +26,15 @@ define([
         `{"rule.groups":"virustotal", "implicit":true}`
       )
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
 
       this.getFilters = this.currentDataService.getSerializedFilters
       this.urlTokenModel = $urlTokenModel
@@ -93,8 +101,14 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
       this.scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
@@ -104,6 +118,9 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

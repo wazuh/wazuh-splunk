@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function () {
+define([], function() {
   'use strict'
   return {
     wazuhUpdateInstancePath: (parameters, instance, init) => {
@@ -23,9 +23,9 @@ define([], function () {
     },
 
     wazuhQuery: (parameters, query) => {
-      return query(parameters.query, parameters.search);
+      return query(parameters.query, parameters.search)
     },
-    
+
     wazuhSearch: (parameters, instance, search) => {
       if (
         parameters &&
@@ -37,7 +37,7 @@ define([], function () {
       return search(parameters.term, parameters.removeFilters)
     },
 
-    wazuhRemoveFilter: (parameters, instance,  $tableFilterService, init) => {
+    wazuhRemoveFilter: (parameters, instance, $tableFilterService, init) => {
       instance.filters = instance.filters.filter(
         item => item.name !== parameters.filterName
       )

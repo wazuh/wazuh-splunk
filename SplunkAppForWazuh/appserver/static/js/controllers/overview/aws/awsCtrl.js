@@ -28,7 +28,9 @@ define([
       this.awsMetrics = awsMetrics
       this.toast = $notificationService.showSimpleToast
       this.currentDataService = $currentDataService
-      this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
+      this.currentDataService.addFilter(
+        `{"rule.groups":"amazon", "implicit":true}`
+      )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()

@@ -91,7 +91,7 @@ define([
         mvc.Components.revokeInstance(`${this.id}Search`)
         this.element = null
         this.search = null
-      } catch (err) {}
+      } catch (err) { return }
     }
   }
 })

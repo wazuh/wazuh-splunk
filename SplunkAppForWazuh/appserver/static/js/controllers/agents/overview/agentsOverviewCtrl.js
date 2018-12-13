@@ -10,10 +10,20 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (app) {
+define(['../../module'], function(app) {
   'use strict'
 
   class AgentsOverview {
+    /**
+     * Class Agents Overview
+     * @param {*} $stateParams 
+     * @param {*} extensions 
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {Object} agent 
+     */
     constructor(
       $stateParams,
       extensions,
@@ -32,27 +42,63 @@ define(['../../module'], function (app) {
       this.extensions = extensions
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      if (this.agent.length && typeof this.agent[0] === 'object' && this.agent[0].data && typeof this.agent[0].data.data === 'object') {
+      if (
+        this.agent.length &&
+        typeof this.agent[0] === 'object' &&
+        this.agent[0].data &&
+        typeof this.agent[0].data.data === 'object'
+      ) {
         this.scope.agent = this.agent[0].data.data
         if (this.scope.agent.status == 'Never connected') {
-          this.scope.agent.os = { name: 'Unknown', codename: 'Unknown', version: 'Unknown' }
+          this.scope.agent.os = {
+            name: 'Unknown',
+            codename: 'Unknown',
+            version: 'Unknown'
+          }
           this.scope.agent.group = null
           this.scope.agent.lastKeepAlive = 'Never connected'
         }
       } else {
-        this.scope.agent = { group: null, name: 'Unknown', id: null, status: null, ip: 'Unknown', os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' }, version: 'Unknown', dateAdd: 'Unknown', lastKeepAlive: 'Unknown' }
+        this.scope.agent = {
+          group: null,
+          name: 'Unknown',
+          id: null,
+          status: null,
+          ip: 'Unknown',
+          os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' },
+          version: 'Unknown',
+          dateAdd: 'Unknown',
+          lastKeepAlive: 'Unknown'
+        }
         if (this.agent[0].data.error) {
-          this.scope.agent.error = this.agent[0].data.message || this.agent[0].data.error
+          this.scope.agent.error =
+            this.agent[0].data.message || this.agent[0].data.error
         } else {
           this.scope.agent.error = 'Unable to load agent data from API'
         }
       }
 
-      this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope.agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
-      this.scope.syscheck = (this.agent.length > 0 && typeof this.agent[1] === 'object' && typeof this.agent[1].data === 'object' && !this.agent[1].data.error) ? this.agent[1].data.data : this.scope.syscheck = { start: 'Unknown', end: 'Unknown' }
+      this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope
+        .agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
+      this.scope.syscheck =
+        this.agent.length > 0 &&
+        typeof this.agent[1] === 'object' &&
+        typeof this.agent[1].data === 'object' &&
+        !this.agent[1].data.error
+          ? this.agent[1].data.data
+          : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
       this.scope.id = this.stateParams.id
-      this.scope.rootcheck = (this.agent.length > 1 && typeof this.agent[2] === 'object' && typeof this.agent[2].data === 'object' && !this.agent[2].data.error) ? this.agent[2].data.data : { start: 'Unknown', end: 'Unknown' }
+      this.scope.rootcheck =
+        this.agent.length > 1 &&
+        typeof this.agent[2] === 'object' &&
+        typeof this.agent[2].data === 'object' &&
+        !this.agent[2].data.error
+          ? this.agent[2].data.data
+          : { start: 'Unknown', end: 'Unknown' }
       if (!this.scope.agent.error) {
         const keys = Object.keys(this.extensions)
         keys.map(key =>
@@ -61,17 +107,25 @@ define(['../../module'], function (app) {
             : (this.scope[key] = null)
         )
 
-        this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
-        this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+        this.scope.formatAgentStatus = agentStatus =>
+          this.formatAgentStatus(agentStatus)
+        this.scope.getAgentStatusClass = agentStatus =>
+          this.getAgentStatusClass(agentStatus)
         this.scope.goGroups = group => this.goGroups(group)
       }
-
     }
 
+    /**
+     * Go to a group
+     * @param {String} group 
+     */
     async goGroups(group) {
       try {
         this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
-        if (typeof this.groupInfo.data === 'object' && typeof this.groupInfo.data.data === 'object') {
+        if (
+          typeof this.groupInfo.data === 'object' &&
+          typeof this.groupInfo.data.data === 'object'
+        ) {
           this.groupData = this.groupInfo.data.data.items.filter(
             item => item.name === group
           )
@@ -85,16 +139,27 @@ define(['../../module'], function (app) {
         }
         this.state.go(`mg-groups`, { group: this.groupData[0] })
       } catch (err) {
-        this.notificationService.showSimpleToast('Error fetching group data.', err.message || err)
+        this.notificationService.showSimpleToast(
+          'Error fetching group data.',
+          err.message || err
+        )
       }
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
