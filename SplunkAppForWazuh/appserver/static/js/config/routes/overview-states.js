@@ -215,10 +215,7 @@ define(['../module'], function (module) {
                 try {
                   const result = await $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
                   const awsConfig = result.data.data.wmodules.filter(item => item['aws-s3'])
-                  if (awsConfig.length > 0)
-                    return awsConfig
-                  else
-                    return false
+                  return awsConfig && awsConfig.length ? awsConfig : false
                 } catch (err) {
                   $state.go('settings.api')
                 }

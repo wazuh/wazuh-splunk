@@ -41,7 +41,7 @@
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>
           Buckets:
-          <span class="wz-text-bold">{{ awsMetrics.buckets }}</span>
+          <span class="wz-text-bold" ng-repeat="bucket in awsMetrics.buckets">{{ bucket.name }} </span>
         </div>
       </md-card-content>
     </md-card>
@@ -49,7 +49,7 @@
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>
           Accounts in use:
-          <span class="wz-text-bold">{{ awsMetrics.accountInUse }}</span>
+          <span class="wz-text-bold" ng-repeat="account in awsMetrics.accountInUse">{{ account }} </span>
         </div>
       </md-card-content>
     </md-card>
@@ -60,7 +60,7 @@
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>
           Regions in use:
-          <span class="wz-text-bold">{{ awsMetrics.regionsInUse }}</span>
+          <span class="wz-text-bold" ng-repeat="region in awsMetrics.regionsInUse">{{ region }} </span>
         </div>
       </md-card-content>
     </md-card>

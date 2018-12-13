@@ -7,7 +7,7 @@ define([
   '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown) {
+], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown, HandlerError) {
   'use strict'
 
   class AWS {
@@ -18,9 +18,13 @@ define([
       this.awsMetrics = awsMetrics
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(`{"rule.groups":"amazon", "implicit":true}`)
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
-      this.amazonFilters = this.buildAmazonFilter()
+      try {
+        this.getFilters = this.currentDataService.getSerializedFilters
+        this.filters = this.getFilters()
+        this.amazonFilters = this.buildAmazonFilter()
+      } catch (error) {
+        this.toast(`Unable fetch filters: ${error}`)
+      }
       this.implicitFilters = this.serializedImplicitFilters(this.currentDataService.getFilters().filter(item => item['implicit']))
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
@@ -28,7 +32,7 @@ define([
         $urlTokenModel.handleValueChange
       )
 
-      if (this.awsMetrics == false) {
+      if (!this.awsMetrics) {
         this.scope.awsMetrics = {
           enabled: "N/D",
           scanInterval: "N/D",
@@ -45,17 +49,19 @@ define([
           scanInterval: this.awsMetrics.interval,
           runOnStart: this.awsMetrics.run_on_start,
           skipOnError: this.awsMetrics.skip_on_error,
-          buckets: "",
-          accountInUse: "",
-          regionsInUse: ""
+          buckets: [],
+          accountInUse: [],
+          regionsInUse: []
         }
-        if (this.awsMetrics.disabled == "no")
+
+        if (this.awsMetrics.disabled == "no") {
           this.scope.awsMetrics.enabled = "yes"
-        else
+        } else {
           this.scope.awsMetrics.enabled = "no"
-        this.awsMetrics.buckets.map(bucket => {
-          this.scope.awsMetrics.buckets = `${this.scope.awsMetrics.buckets} ${bucket.name}`
-        })
+        }
+
+        this.scope.awsMetrics.buckets = this.awsMetrics.buckets
+
         this.serializedAwsMetrics = this.serializedMetrics(this.awsMetrics.buckets)
         this.scope.awsMetrics.regionsInUse = this.serializedAwsMetrics.regions
         this.scope.awsMetrics.accountInUse = this.serializedAwsMetrics.accounts
@@ -185,7 +191,7 @@ define([
         if (!accounts.includes(bucket.aws_account_alias))
           accounts.push(bucket.aws_account_alias)
       })
-      return { "regions": regions.toString().replace(/,/g, " "), "accounts": accounts.toLocaleString().replace(/,/g, " ") }
+      return { "regions" : regions, "accounts" : accounts}
     }
 
     serializedImplicitFilters(filters) {
