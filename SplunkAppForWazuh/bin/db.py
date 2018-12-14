@@ -44,8 +44,8 @@ class database():
         """
         with self.mutex:
             try:
-                result = self.db.insert(obj)
-                parsed_result = json.dumps({'data': result})
+                self.db.insert(obj)
+                parsed_result = json.dumps({'data': 'API successfully inserted.'})
             except Exception as e:
                 self.logger.error("Error inserting in DB module: %s" % (e))
                 raise e
