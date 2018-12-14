@@ -18,16 +18,30 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 import base64
-from fpdf import FPDF, HTMLMixin
+from fpdf import FPDF
 
 
-class ReportPDF(FPDF, HTMLMixin):
-    """Report PDF class.
+class PDF(FPDF):
+    def header(self):
+        # Logo
+        self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 40)
+        self.set_font('Times', '', 11)
+        self.set_text_color(58, 162, 242)
+        #Contact info
+        self.cell(150) #Move to the right
+        self.cell(0, 5, 'info@wazuh.com')
+        self.ln() #Break line
+        self.cell(150) #Move to the right
+        self.cell(0, 5, 'https://wazuh.com')
 
-    For use in report class
-    """
-
-    pass
+    # Page footer
+    def footer(self):
+        # Position at 1.5 cm from bottom
+        self.set_y(-15)
+        self.set_text_color(58, 162, 242)
+        self.set_font('Arial', 'IB', 8)
+        # Page number
+        self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
 
 class report(controllers.BaseController):
     """Report class.
@@ -41,7 +55,7 @@ class report(controllers.BaseController):
         self.images = {}
         self.html = ""
         try:
-            self.pdf = ReportPDF()
+            self.pdf = PDF('P', 'mm', 'A4')
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
@@ -61,7 +75,7 @@ class report(controllers.BaseController):
 
     def delete_images(self):
         for title, path in self.images.iteritems():
-            os.remove(img)
+            os.remove(path)
 
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
@@ -77,28 +91,50 @@ class report(controllers.BaseController):
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
             images = json.loads(json_acceptable_string)
-            self.pdf.add_page()
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            self.logger.error("Size of array: %s" % (len(images['array'])))
+            self.logger.info("Size of array: %s" % (len(images['array'])))
+            #Get filters 
+            self.filters = images['array'][0]['filters']
             #Save the images
             self.save_images(images)
             parsed_data = json.dumps({'data': 'success'})
-            #Formating html
-            self.html = self.html + """
-            <center>
-	            <img src="%scss/images/wazuh/png/logo.png" width="160" height="40">
-            </center>
-            """ % (self.path,)
+            #
+            #""" % (title, image_path,)
+
+            # Add title and filters 
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            self.pdf.ln(20)
+            #Color WazuhBlue
+            self.pdf.set_text_color(58, 162, 242)
+            #Arial Bold 20
+            self.pdf.set_font('Arial', 'I', 25)
+            self.pdf.cell(0,0, 'Security events report')
+            #Break line
+            self.pdf.ln(10)
+            self.pdf.set_font('Arial', '', 15)
+            self.pdf.cell(0,0, self.filters)
+            # Add visualizations
+            x = 30
+            y = 10
+            y_img = 80
+            w = 150
+            h = 75
+            count = 0
+            self.pdf.set_font('Times', 'IU', 12)
+            self.pdf.ln(20)
             for title, image_path in self.images.iteritems():
-                self.html = self.html + """
-                <div>
-                    <span>%s</span>
-                    <center>
-                        <img src="%s" width="400" height="140">
-                    </center>
-                </div>
-                """ % (title, image_path,)
-            self.pdf.write_html(self.html)
+                self.pdf.cell(x , y, title, 0, 1)
+                self.pdf.image(image_path, x, y_img, w, h)
+                self.pdf.ln(90)
+                y_img = y_img + 100
+                count = count + 1
+                if count == 2:
+                    self.pdf.add_page()
+                    self.pdf.ln(20)
+                    y_img = 50
+                    count = 0
+            #Save pdf
             self.pdf.output(self.path+'tuto1'+report_id+'.pdf', 'F')
             #Delete the images
             self.delete_images()

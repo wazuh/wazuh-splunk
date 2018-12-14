@@ -13,11 +13,14 @@
 define(['../module', 'domToImg'], function(app, domToImg) {
   'use strict'
   class Vis2PNG {
-    constructor($rootScope) {
+    constructor($rootScope, $currentDataService) {
       this.$rootScope = $rootScope
       this.rawArray = []
       this.htmlObject = {}
       this.working = false
+      this.currentDataService = $currentDataService
+      this.getFilters = this.currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
     }
 
     async checkArray(visArray) {
@@ -28,9 +31,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
-            console.log("currentValue: ", currentValue)
             const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
-            console.log("tilte: ", title)
             try {
               const tmpResult = await domToImg.toPng(tmpNode[0])
               this.rawArray.push({
@@ -38,7 +39,8 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 width: tmpNode.width(),
                 height: tmpNode.height(),
                 id: currentValue,
-                title: title
+                title: title,
+                filters: this.filters
               })
             } catch (error) {
               console.error('error converting ', error)
@@ -50,10 +52,8 @@ define(['../module', 'domToImg'], function(app, domToImg) {
             if (!this.$rootScope.$$phase) this.$rootScope.$digest()
           })
         )
-        console.log("visualizaciones??? : ", this.htmlObject)
         this.working = false
         this.$rootScope.reportStatus = `Generating PDF document...`
-        console.log("rawArray(imagenes): ", this.rawArray)
         return this.rawArray
       } catch (error) {
         this.working = false
