@@ -30,6 +30,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.logs = logs
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
+      this.path = '/manager/logs'
     }
 
     /**
@@ -57,8 +58,9 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         this.toast('Your download should begin automatically...')
         const currentApi = this.api.id
+        if (this.clusterEnabled) { this.path = `/cluster/${this.scope.selectedNode}/logs` }
         const output = await this.csvReq.fetch(
-          '/manager/logs',
+          this.path,
           currentApi,
           this.wzTableFilter.get()
         )
@@ -80,15 +82,14 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async initialize() {
       try {
-        const clusterStatus = await this.apiReq('/cluster/status')
-        const clusterEnabled =
-          clusterStatus &&
-          clusterStatus.data &&
-          clusterStatus.data.data &&
-          clusterStatus.data.data.running === 'yes' &&
-          clusterStatus.data.data.enabled === 'yes'
-
-        if (clusterEnabled) {
+        this.clusterStatus = await this.apiReq('/cluster/status')
+        this.clusterEnabled =
+          this.clusterStatus &&
+          this.clusterStatus.data &&
+          this.clusterStatus.data.data &&
+          this.clusterStatus.data.data.running === 'yes' &&
+          this.clusterStatus.data.data.enabled === 'yes'
+        if (this.clusterEnabled) {
           const nodeList = await this.apiReq('/cluster/nodes')
           if (
             nodeList &&
@@ -105,11 +106,11 @@ define(['../../module', 'FileSaver'], function(app) {
           }
         }
 
-        this.scope.logsPath = clusterEnabled
+        this.scope.logsPath = this.clusterEnabled
           ? `/cluster/${this.scope.selectedNode}/logs`
           : '/manager/logs'
 
-        const data = clusterEnabled
+        const data = this.clusterEnabled
           ? await this.apiReq(
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
