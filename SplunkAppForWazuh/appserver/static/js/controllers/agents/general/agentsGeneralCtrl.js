@@ -135,8 +135,11 @@ define([
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
-        this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end)
-        this.agentInfo.rootcheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end)
+        
+        this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end).duration
+        this.agentInfo.rootcheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end).duration
+        this.agentInfo.syscheck.inProgress = this.dateDiffService.getDateDiff(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end).inProgress
+        this.agentInfo.rootcheck.inProgress = this.dateDiffService.getDateDiff(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end).inProgress
 
         this.scope.agentInfo = this.agentInfo
         this.scope.id = this.stateParams.id

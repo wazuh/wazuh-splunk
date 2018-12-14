@@ -67,9 +67,11 @@ define(['../../module'], function (app) {
           this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
           this.scope.goGroups = group => this.goGroups(group)
 
-
-          this.scope.syscheck.duration = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end)
-          this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end)
+          
+          this.scope.syscheck.duration = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end).duration
+          this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).duration
+          this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end).inProgress
+          this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).inProgress
         }
       } catch (err) {
         this.notificationService.showSimpleToast(err.message || err)

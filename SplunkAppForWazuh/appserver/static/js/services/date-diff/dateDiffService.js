@@ -13,12 +13,20 @@ define(['../module'], function (module) {
     getDateDiff(start, end) {
       this.start = new Date(start)
       this.end = new Date(end)
-      let duration = 0
-
-      if (this.end && this.start) {
-        duration = Math.abs(this.end.getTime() - this.start.getTime()) / 1000
-        return duration
+      const result = {
+        duration: 'Unknown',
+        inProgress: false,
+        end: this.end || 'Unknown',
+        start: this.start || 'Unknown'
       }
+      if (this.end && this.start) {
+        result.duration = (this.end - this.start) / 1000 / 60;
+        result.duration = Math.round(result.duration * 100) / 100;
+        if (result.duration <= 0) {
+          result.inProgress = true;
+        }
+      }
+      return result
     }
   }
 
