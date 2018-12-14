@@ -19,8 +19,7 @@ define(['./module'], function(module) {
       async function checkBeforeTransition(state) {
         try {
           const {
-            api,
-            selectedIndex
+            api
           } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           //$currentDataService.cleanFilters()

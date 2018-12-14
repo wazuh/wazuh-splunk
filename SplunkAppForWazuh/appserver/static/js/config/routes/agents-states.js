@@ -112,6 +112,16 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            groups: [
+              '$requestService',
+              async ($requestService) => {
+                try {
+                  return await $requestService.apiReq('/agents/groups')
+                } catch (err) {
+                  return {error: 'Cannot fetch group from API'}
+                }
+              }
             ]
           }
         })
@@ -194,6 +204,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(
                     `/agents/${id}/config/wmodules/wmodules`
                   )
+                  return result
                 } catch (err) {
                   $state.go('agents')
                 }

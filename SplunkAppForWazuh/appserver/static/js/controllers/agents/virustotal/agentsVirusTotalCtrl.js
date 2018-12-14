@@ -9,7 +9,7 @@ define([
 
   class AgentsVirusTotal {
     /**
-     * Class constructor
+     * Class Virus Total
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
@@ -101,6 +101,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -115,6 +118,9 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

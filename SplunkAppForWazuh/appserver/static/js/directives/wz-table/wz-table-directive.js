@@ -64,7 +64,9 @@ define([
         $currentDataService,
         $notificationService,
         $tableFilterService,
-        $window
+        $window,
+        $mdDialog,
+        $groupHandler
       ) {
         /**
          * Init variables
@@ -81,8 +83,10 @@ define([
          */
         const rowSizes = $scope.rowSizes || [15, 13, 11]
         let doit
-        let resizing = true
+        let resizing = false
         $window.onresize = () => {
+          if (resizing) return
+          resizing = true
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
@@ -108,6 +112,10 @@ define([
             state
           )
 
+        /**
+         * Fetchs data from API
+         * @param {Object} options 
+         */
         const fetch = async (options = {}) => {
           try {
             const result = await instance.fetch(options)
@@ -131,9 +139,14 @@ define([
           }
         }
 
-        $scope.sort = async field =>
+        $scope.sort = async (field) =>
           sort(field, $scope, instance, fetch, $notificationService)
 
+        /**
+         * Searches for a term
+         * @param {String} term 
+         * @param {Boolean} removeFilters 
+         */
         const search = async (term, removeFilters) =>
           data.searchData(
             term,
@@ -145,6 +158,11 @@ define([
             $notificationService
           )
 
+        /**
+         * Queries to the API
+         * @param {String} query 
+         * @param {String} search 
+         */
         const query = async (query, search) =>
           data.queryData(
             query,
@@ -156,6 +174,10 @@ define([
             $notificationService
           )
 
+        /**
+         * Filters API results
+         * @param {String} filter 
+         */
         const filter = async filter =>
           data.filterData(
             filter,
@@ -166,6 +188,10 @@ define([
             $notificationService
           )
 
+        /**
+         * Enables or disables the real time function.
+         * If enabled, requests to the API will be sended each second
+         */
         const realTimeFunction = async () => {
           try {
             $scope.error = false
@@ -194,6 +220,9 @@ define([
             instance.path
           )
 
+        /**
+         * Initializes table
+         */
         const init = async () => {
           try {
             $scope.error = false
@@ -277,7 +306,43 @@ define([
           $tableFilterService.set([])
         })
 
+        $scope.isLookingGroup = () => {
+          try {
+            const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
+            return regexp.test(instance.path)
+          } catch (error) {
+            return false
+          }
+        }
+
+        $scope.showConfirm = function(ev, agent) {
+          const group = instance.path.split('/').pop()
+  
+          const confirm = $mdDialog
+            .confirm()
+            .title(`Delete agent "${agent.id}" from group "${group}"?`)
+            .targetEvent(ev)
+            .ok('Agree')
+            .cancel('Cancel');
+  
+          $mdDialog.show(confirm).then(
+            () => {
+              $groupHandler
+                .removeAgentFromGroup(group, agent.id)
+                .then(() => init())
+                .then(() => $scope.$emit('updateGroupInformation', { group }))
+                .catch(error =>
+                  $notificationService.showSimpleToast(
+                    error.message || error
+                  )
+                );
+            },
+            () => {}
+          );
+        }
+
         init()
+
       },
       templateUrl:
         BASE_URL +

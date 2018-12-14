@@ -14,6 +14,16 @@ define(['../../module'], function(app) {
   'use strict'
 
   class AgentsOverview {
+    /**
+     * Class Agents Overview
+     * @param {*} $stateParams 
+     * @param {*} extensions 
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {Object} agent 
+     */
     constructor(
       $stateParams,
       extensions,
@@ -21,7 +31,10 @@ define(['../../module'], function(app) {
       $requestService,
       $state,
       $notificationService,
-      agent
+      agent,
+      groups,
+      $mdDialog,
+      $groupHandler
     ) {
       this.stateParams = $stateParams
       this.scope = $scope
@@ -30,8 +43,15 @@ define(['../../module'], function(app) {
       this.notificationService = $notificationService
       this.agent = agent
       this.extensions = extensions
+      this.scope.editGroup = false
+      this.groups = groups
+      this.$mdDialog = $mdDialog
+      this.groupHandler = $groupHandler
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       if (
         this.agent.length &&
@@ -40,6 +60,10 @@ define(['../../module'], function(app) {
         typeof this.agent[0].data.data === 'object'
       ) {
         this.scope.agent = this.agent[0].data.data
+        //Check OS type
+        if (this.agent[0].data.data) {
+          this.scope.isLinux = this.agent[0].data.data.os.uname.includes("Linux")
+        }
         if (this.scope.agent.status == 'Never connected') {
           this.scope.agent.os = {
             name: 'Unknown',
@@ -94,14 +118,48 @@ define(['../../module'], function(app) {
             : (this.scope[key] = null)
         )
 
+        this.scope.groups = this.groups.data.data.items.map(item => item.name).filter(item => this.scope.agent.group && !this.scope.agent.group.includes(item))
         this.scope.formatAgentStatus = agentStatus =>
           this.formatAgentStatus(agentStatus)
         this.scope.getAgentStatusClass = agentStatus =>
           this.getAgentStatusClass(agentStatus)
         this.scope.goGroups = group => this.goGroups(group)
+        this.scope.switchGroupEdit = () => this.switchGroupEdit()
+
+        this.scope.showConfirm = (ev, group) => {
+      
+          const confirm = this.$mdDialog
+            .confirm()
+            .title(`Add group "${group}" to agent "${this.scope.agent.id}"?`)
+            .targetEvent(ev)
+            .ok('Agree')
+            .cancel('Cancel')
+    
+            this.$mdDialog.show(confirm).then(
+            () => {
+              this.groupHandler.addAgentToGroup(group,this.scope.agent.id)
+              .then(() => this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
+              .then(agent => {
+                this.scope.agent.group = agent.data.data.group
+                this.scope.groups = this.scope.groups.filter(item => !agent.data.data.group.includes(item))
+                if(!this.scope.$$phase) this.scope.$digest()
+              })
+              .catch(error =>
+                this.$notificationService.showSimpleToast(
+                  error.message || error
+                )
+              )
+            },
+            () => {}
+          )
+        }
       }
     }
 
+    /**
+     * Go to a group
+     * @param {String} group 
+     */
     async goGroups(group) {
       try {
         this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
@@ -129,15 +187,29 @@ define(['../../module'], function(app) {
       }
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
+
+    switchGroupEdit() {
+      this.scope.editGroup = !!!this.scope.editGroup
+      if(!this.scope.$$phase) this.scope.$digest()
+    }
+
   }
 
   app.controller('agentsOverviewCtrl', AgentsOverview)

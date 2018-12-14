@@ -11,6 +11,11 @@
  */
 define([], function() {
   'use strict'
+  /**
+   * Checks the gap of results
+   * @param {*} $scope 
+   * @param {Array} items 
+   */
   return function checkGap($scope, items) {
     const gap = items.length / $scope.itemsPerPage
     const gapInteger = parseInt(gap)

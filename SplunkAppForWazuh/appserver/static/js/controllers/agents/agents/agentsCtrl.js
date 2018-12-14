@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function(app, SearchHandler, FileSaver) {
+], function(app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -137,7 +137,7 @@ define([
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, 'agents.csv')
+        saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
         this.toast('Error downloading CSV')
@@ -145,6 +145,11 @@ define([
       return
     }
 
+    /**
+     * Launches the query
+     * @param {String} query 
+     * @param {String} search 
+     */
     query(query, search) {
       this.scope.$broadcast('wazuhQuery', { query, search })
     }

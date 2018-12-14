@@ -7,6 +7,13 @@ define([
 ], function(app, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
   class PM {
+    /**
+     * 
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     */
     constructor($urlTokenModel, $scope, $currentDataService, $state) {
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
@@ -25,35 +32,35 @@ define([
           'elementOverTime',
           `${
             this.filters
-          } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" rule.description=* | timechart span=1h count by rule.description`,
+          } sourcetype=wazuh "rule.groups"="rootcheck" rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime'
         ),
         new PieChart(
           'cisRequirements',
           `${
             this.filters
-          } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" rule.cis{}=* | top  rule.cis{}`,
+          } sourcetype=wazuh "rule.groups"="rootcheck" rule.cis{}=* | top  rule.cis{}`,
           'cisRequirements'
         ),
         new PieChart(
           'topPciDss',
           `${
             this.filters
-          } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" rule.pci_dss{}=* | top  rule.pci_dss{}`,
+          } sourcetype=wazuh "rule.groups"="rootcheck" rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss'
         ),
         new AreaChart(
           'eventsPerAgent',
           `${
             this.filters
-          } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" | timechart span=2h count by agent.name`,
+          } sourcetype=wazuh "rule.groups"="rootcheck" | timechart span=2h count by agent.name`,
           'eventsPerAgent'
         ),
         new Table(
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh \"rule.groups\"=\"rootcheck\" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`,
+          } sourcetype=wazuh "rule.groups"="rootcheck" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary'
         )
       ]
@@ -74,6 +81,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

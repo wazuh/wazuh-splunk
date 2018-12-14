@@ -45,7 +45,7 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
+        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
         'dropDownInput'
@@ -76,35 +76,35 @@ define([
           'gdprRequirementsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
           'gdprRequirementsVizz'
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
           'groupsVizz'
         ),
         new PieChart(
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
           'agentsVizz'
         ),
         new ColumnChart(
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
           'requirementsByAgentVizz'
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz'
         )
       ]
@@ -119,6 +119,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -130,16 +133,27 @@ define([
         this.formatAgentStatus(agentStatus)
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

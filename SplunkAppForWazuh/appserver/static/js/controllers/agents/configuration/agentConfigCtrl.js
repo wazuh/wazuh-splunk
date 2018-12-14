@@ -17,6 +17,18 @@ define(['../../module', '../../../utils/config-handler'], function(
   'use strict'
 
   class ConfigurationController {
+    /**
+     * 
+     * @param {*} $scope 
+     * @param {*} $requestService 
+     * @param {*} $state 
+     * @param {*} $stateParams 
+     * @param {*} $currentDataService 
+     * @param {*} $beautifierJson 
+     * @param {*} $notificationService 
+     * @param {Object} data 
+     * @param {Object} agent 
+     */
     constructor(
       $scope,
       $requestService,
@@ -50,6 +62,9 @@ define(['../../module', '../../../utils/config-handler'], function(
         data && data.data && data.data.data && data.data.data.synced
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data

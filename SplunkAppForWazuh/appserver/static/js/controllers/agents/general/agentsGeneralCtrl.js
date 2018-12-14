@@ -81,7 +81,7 @@ define([
          */
         new PieChart(
           'top5AlertsVizz',
-          `${this.filters} sourcetype=wazuh | top \"rule.description\" limit=5`,
+          `${this.filters} sourcetype=wazuh | top "rule.description" limit=5`,
           'top5AlertsVizz'
         ),
         new PieChart(
@@ -110,7 +110,7 @@ define([
           'agentsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz'
         )
       ]
@@ -124,6 +124,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       try {
         this.agentInfo = {
@@ -188,16 +191,27 @@ define([
       }
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

@@ -107,7 +107,7 @@ class api(controllers.BaseController):
     # /custom/SplunkAppForWazuh/api/node
     # This will perform an HTTP request to Wazuh API
     # It will return the full API response with including its error codes
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=False, methods=['POST'])
     def request(self, **kwargs):
         """Make requests to the Wazuh API as a proxy backend.
 

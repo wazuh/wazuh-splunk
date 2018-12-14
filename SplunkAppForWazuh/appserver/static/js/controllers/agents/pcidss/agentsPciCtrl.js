@@ -9,6 +9,14 @@ define([
   'use strict'
 
   class AgentsPCI {
+    /**
+     * Class Agents PCI-DSS
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $state 
+     * @param {*} $currentDataService 
+     * @param {Object} agent 
+     */
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -37,7 +45,7 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.pci_dss{}=\"*\"| stats count by \"rule.pci_dss{}\" | sort \"rule.pci_dss{}\" ASC | fields - count`,
+        } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
         'rule.pci_dss{}',
         '$form.pci$',
         'dropDownInput'
@@ -66,40 +74,43 @@ define([
           'pciReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\"  | stats count by rule.pci_dss{}`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
           'pciReqSearchVizz'
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups`,
           'groupsVizz'
         ),
         new PieChart(
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count by agent.name`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name`,
           'agentsVizz'
         ),
         new ColumnChart(
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
           'reqByAgentsVizz'
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}=\"$pci$\" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.pci_dss{} as Requirement, rule.description as \"Rule description\", count as Count`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz'
         )
       ]
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -111,15 +122,26 @@ define([
         this.formatAgentStatus(agentStatus)
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus

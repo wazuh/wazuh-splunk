@@ -29,7 +29,7 @@ define([
         /**
          * Init variables
          */
-        $scope.keyEquivalence = $keyEquivalenceService.equivalences()
+        $scope.keyEquivalence = $keyEquivalenceService.equivalences()  // eslint-disable-line
         $scope.totalItems = 0
         $scope.wazuh_table_loading = true
         $scope.items = []
@@ -39,6 +39,10 @@ define([
         const rowSizes = $scope.rowSizes || [15, 13, 11]
         let doit
         let resizing = false
+
+        /**
+         * On windows resize event
+         */
         $window.onresize = () => {
           if (resizing) return
           resizing = true
@@ -52,6 +56,9 @@ define([
           }, 150)
         }
         $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
+        /**
+         * Brings results
+         */
         const fetch = () => {
           try {
             $scope.filterTable()
@@ -84,6 +91,9 @@ define([
           checkGap($scope, items)
           $scope.searchTable()
         }
+        /**
+         * Initializes module
+         */
         const init = async () => {
           $scope.error = false
           $scope.wazuh_table_loading = true

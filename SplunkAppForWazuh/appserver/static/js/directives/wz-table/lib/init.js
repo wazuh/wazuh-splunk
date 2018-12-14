@@ -44,7 +44,7 @@ define(['../../../utils/filter-handler'], function(FilterHandler) {
             globalState.filters.push(ruleIdFilter)
             $window.location.href = '#/wazuh-discover'
           }
-        } catch (error) {} // eslint-disable-line
+        } catch (error) { return }
       }
       $scope.error = false
       $scope.wazuhTableLoading = true

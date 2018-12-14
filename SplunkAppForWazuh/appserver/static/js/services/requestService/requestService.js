@@ -83,7 +83,7 @@ define(['../module'], function(module) {
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
-        const result = await httpReq(`GET`, `/api/request`, payload)
+        const result = await httpReq(`POST`, `/api/request`, payload)
         return result
       } catch (err) {
         return Promise.reject(err)

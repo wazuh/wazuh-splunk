@@ -20,6 +20,17 @@ define([
   'use strict'
 
   class OverviewGeneral {
+    /**
+     * Class Overview General
+     * @param {*} $urlTokenModel 
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {*} $notificationService 
+     * @param {*} $requestService 
+     * @param {Object} pollingState 
+     * @param {*} $reportingService 
+     */
     constructor(
       $urlTokenModel,
       $scope,
@@ -158,7 +169,7 @@ define([
             if (!this.scope.$$phase) this.scope.$digest()
           })
           .catch(error => {
-            this.toast('Cannot fetch agent status data')
+            this.toast(`Cannot fetch agent status data: ${error}`)
           })
       } else {
         this.scope.wzMonitoringEnabled = true
@@ -211,6 +222,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

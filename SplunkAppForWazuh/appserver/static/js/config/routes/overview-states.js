@@ -209,9 +209,24 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('aws')
+            $navigationService.storeRoute('ow-aws')
           },
-          controller: 'awsCtrl'
+          controller: 'awsCtrl',
+          resolve: {
+            awsMetrics: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
+                  const awsConfig = result.data.data.wmodules.filter(item => item['aws-s3'])
+                  return awsConfig && awsConfig.length ? awsConfig : false
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
     }
   ])

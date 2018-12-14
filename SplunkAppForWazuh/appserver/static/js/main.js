@@ -26,7 +26,6 @@ require.config({
     jsonLint: 'js/utils/codemirror/json-lint',
     es6: 'js/libs/es6',
     babel: 'js/libs/babel',
-    FileSaver: 'js/libs/file-saver/file-saver',
 
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',

@@ -16,12 +16,12 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, TimePicker, l) {
+], function(app, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
 
   class AgentsPM {
     /**
-     * Class constructor
+     * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
      * @param {Object} $scope
      * @param {Object} $state
@@ -95,7 +95,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as \"Rule description\", agent.name as Agent, title as Control`,
+          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary'
         )
       ]
@@ -120,16 +120,28 @@ define([
         this.formatAgentStatus(agentStatus)
     }
 
+
+     /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
