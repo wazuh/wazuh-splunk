@@ -34,9 +34,8 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.stopRealtime = () => this.stopRealtime()
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
-        this.initialize().then( () => {
-          this.scope.downloadCsv = () => this.downloadCsv()
-        }).catch((err) => { throw err }) 
+        this.scope.downloadCsv = () => this.downloadCsv()
+        this.initialize()
       } catch (err) {
         this.toast('Cannot fetch logs data from server')
       }
