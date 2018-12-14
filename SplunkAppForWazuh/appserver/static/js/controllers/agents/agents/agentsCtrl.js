@@ -125,23 +125,24 @@ define([
       }
     })
 
-    const summary = data[0].data.data
-    const lastAgent = data[1].data.data.items[0]
+    const summary = (data.length && typeof data[0] === 'object' && data[0].data && data['0'].data.data) ? data[0].data.data : null
+    const lastAgent = (data.length > 0 && typeof data[1] === 'object' && data[1].data && data[1].data.data && data[1].data.data.items) ? data[1].data.data.items[0] : null
 
     // Building operating system filter
-    const rawPlatforms = data[2].data.data.items.map(agent => agent.os)
-    vm.osPlatforms = [... new Set(rawPlatforms.filter(one => !!one))]
+    const rawPlatforms = (data.length > 1 && typeof data[2] === 'object' && data[2].data && data[2].data.data && data[2].data.data.items) ? data[2].data.data.items.map(agent => agent.os) : null
+    vm.osPlatforms = (rawPlatforms) ? [... new Set(rawPlatforms.filter(one => !!one))] : null
     // Building version filter
-    const rawVersions = data[2].data.data.items.map(one => one.version);
-    vm.versions = [... new Set(rawVersions.filter(one => !!one))]
+    const rawVersions = (data.length > 1 && typeof data[2] === 'object' && data[2].data && data[2].data.data && data[2].data.data.items) ? data[2].data.data.items.map(one => one.version) : null
+    vm.versions = (rawVersions) ? [... new Set(rawVersions.filter(one => !!one))] : null
 
-    vm.lastAgent = lastAgent
-    vm.agentsCountActive = summary.Active - 1
-    vm.agentsCountDisconnected = summary.Disconnected
-    vm.agentsCountNeverConnected = summary['Never connected']
-    vm.agentsCountTotal = summary.Total - 1
-    vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
-
+    if (summary && lastAgent) {
+      vm.lastAgent = lastAgent
+      vm.agentsCountActive = summary.Active - 1
+      vm.agentsCountDisconnected = summary.Disconnected
+      vm.agentsCountNeverConnected = summary['Never connected']
+      vm.agentsCountTotal = summary.Total - 1
+      vm.agentsCoverity = vm.agentsCountTotal ? (vm.agentsCountActive / vm.agentsCountTotal) * 100 : 0
+    }
     vm.loading = false
     if (!$scope.$$phase) $scope.$digest()
 
