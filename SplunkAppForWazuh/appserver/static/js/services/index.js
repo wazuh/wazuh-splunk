@@ -17,5 +17,6 @@ define([
   './csv-request/csvRequestService',
   './xml-beautifier/xml-beautifier',
   './get-ids/getIdService',
-  './token-model/urlTokenModelService'
+  './token-model/urlTokenModelService',
+  './date-diff/dateDiffService'
 ], function() {})

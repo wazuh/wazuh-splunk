@@ -31,6 +31,7 @@ define([
      * @param {Object} $stateParams
      * @param {Object} $state
      * @param {Object} agent
+     * @param {Object} $dateDiffService
      */
 
     constructor(
@@ -41,7 +42,8 @@ define([
       $stateParams,
       $currentDataService,
       agent,
-      $state
+      $state,
+      $dateDiffService
     ) {
       this.state = $state
       this.urlTokenModel = $urlTokenModel
@@ -53,6 +55,7 @@ define([
       this.currentDataService = $currentDataService
       if (this.agent && this.agent.length && this.agent[0].data && this.agent[0].data.data && this.agent[0].data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`) 
       this.filters = this.currentDataService.getSerializedFilters()
+      this.dateDiffService = $dateDiffService
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -132,8 +135,8 @@ define([
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
-        this.agentInfo.syscheck.duration = this.getDateDifferent(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end)
-        this.agentInfo.rootcheck.duration = this.getDateDifferent(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end)
+        this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end)
+        this.agentInfo.rootcheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end)
 
         this.scope.agentInfo = this.agentInfo
         this.scope.id = this.stateParams.id
@@ -185,13 +188,6 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
-    }
-
-    getDateDifferent(start, end){
-      start = new Date(start)
-      end = new Date(end)
-      const diff =  Math.abs(end.getTime() - start.getTime()) / 1000
-      return diff
     }
   }
 
