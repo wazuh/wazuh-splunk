@@ -26,7 +26,6 @@ require.config({
     jsonLint: 'js/utils/codemirror/json-lint',
     es6: 'js/libs/es6',
     babel: 'js/libs/babel',
-    FileSaver: 'js/libs/file-saver/file-saver',
 
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
@@ -35,7 +34,7 @@ require.config({
     FileSaver: 'js/libs/file-saver/file-saver',
 
     // dom-to-image
-    'domToImg': 'js/libs/required-dom-to-image/src/dom-to-image'
+    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image'
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim

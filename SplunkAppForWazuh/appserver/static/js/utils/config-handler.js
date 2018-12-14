@@ -18,7 +18,7 @@ define([
   './remove-hash-key',
   '../services/xml-beautifier/xml-beautifier',
   'js2xmlparser'
-], function(queryConfig, objectWithoutProperties, XMLBeautifier,js2xmlparser) {
+], function(queryConfig, objectWithoutProperties, XMLBeautifier, js2xmlparser) {
   'use strict'
 
   return class ConfigurationHandler {
@@ -166,9 +166,7 @@ define([
       } else {
         try {
           const cleaned = objectWithoutProperties(config)
-          $scope.XMLContent = XMLBeautifier(
-            js2xmlparser(cleaned)
-          )
+          $scope.XMLContent = XMLBeautifier(js2xmlparser(cleaned))
         } catch (error) {
           $scope.XMLContent = false
         }

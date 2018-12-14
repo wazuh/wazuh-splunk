@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function (app, SearchHandler, FileSaver) {
+], function(app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -69,7 +69,10 @@ define([
       this.scope.lastAgent = lastAgent.items[0]
       const os = platforms.items.map(item => item.os)
       versions = versions.items.map(item => item.version)
-      nodes = nodes && nodes.items ? nodes.items.map(item => item['node_name']) : false
+      nodes =
+        nodes && nodes.items
+          ? nodes.items.map(item => item['node_name'])
+          : false
       groups = groups.items.map(item => item.name)
       this.scope.agentsCountDisconnected = summary.Disconnected
       this.scope.agentsCountNeverConnected = summary['Never connected']
@@ -79,10 +82,10 @@ define([
         : 0
 
       this.scope.searchBarModel = {
-        'status': ['Active', 'Disconnected', 'Never connected'],
-        'group': groups,
-        'node_name': nodes,
-        'version': versions,
+        status: ['Active', 'Disconnected', 'Never connected'],
+        group: groups,
+        node_name: nodes,
+        version: versions,
         'os.platform': os.map(x => x.platform),
         'os.version': os.map(x => x.version),
         'os.name': os.map(x => x.name)
@@ -106,10 +109,10 @@ define([
      * On controller loads
      */
     $onInit() {
-
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
-      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.isClusterEnabled =
+        this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'
@@ -134,7 +137,7 @@ define([
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, 'agents.csv')
+        saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
         this.toast('Error downloading CSV')
@@ -142,8 +145,13 @@ define([
       return
     }
 
+    /**
+     * Launches the query
+     * @param {String} query 
+     * @param {String} search 
+     */
     query(query, search) {
-      this.scope.$broadcast('wazuhQuery', { query, search });
+      this.scope.$broadcast('wazuhQuery', { query, search })
     }
 
     /**

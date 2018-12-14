@@ -111,7 +111,7 @@
       <!-- Group agents table -->
       <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup" class="md-padding">
         <wazuh-table flex path="'/agents/groups/' + currentGroup.name" keys="['id','name','ip','status','os.name','os.version','version']"
-          allow-click="true" rows-per-page="14">
+          allow-click="true" rrow-sizes="[14,12,10]">
         </wazuh-table>
       </div>
       <!-- End Group agents table -->

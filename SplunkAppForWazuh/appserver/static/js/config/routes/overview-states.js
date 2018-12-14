@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
@@ -10,7 +10,7 @@ define(['../module'], function (module) {
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function (
+    function(
       $mdIconProvider,
       $locationProvider,
       $stateProvider,
@@ -47,7 +47,7 @@ define(['../module'], function (module) {
             ],
             extensions: [
               '$currentDataService',
-              async ($currentDataService) => {
+              async $currentDataService => {
                 try {
                   const id = $currentDataService.getApi().id
                   const result = await $currentDataService.getExtensionsById(id)
@@ -75,7 +75,10 @@ define(['../module'], function (module) {
               '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await $requestService.httpReq(`GET`, `/manager/polling_state`)
+                  const result = await $requestService.httpReq(
+                    `GET`,
+                    `/manager/polling_state`
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -119,7 +122,9 @@ define(['../module'], function (module) {
               '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
+                  const result = await $requestService.apiReq(
+                    `/agents/000/config/wmodules/wmodules`
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -204,9 +209,24 @@ define(['../module'], function (module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/aws/aws.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('aws')
+            $navigationService.storeRoute('ow-aws')
           },
-          controller: 'awsCtrl'
+          controller: 'awsCtrl',
+          resolve: {
+            awsMetrics: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
+                  const awsConfig = result.data.data.wmodules.filter(item => item['aws-s3'])
+                  return awsConfig && awsConfig.length ? awsConfig : false
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
     }
   ])

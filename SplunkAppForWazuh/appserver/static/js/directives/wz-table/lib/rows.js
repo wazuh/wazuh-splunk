@@ -9,8 +9,13 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function () {
+define([], function() {
   'use strict'
+  /**
+   * Calculates the number of rows
+   * @param {Number} windowHeight 
+   * @param {Number} sizes 
+   */
   return function calcTableRows(windowHeight, sizes) {
     if (windowHeight >= 950) return sizes[0]
     if (windowHeight >= 850 && windowHeight < 950) return sizes[1]

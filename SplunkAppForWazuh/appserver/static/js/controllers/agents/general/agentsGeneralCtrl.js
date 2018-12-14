@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function (app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
+], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
   'use strict'
 
   class AgentsGeneral {
@@ -51,7 +51,16 @@ define([
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
-      if (this.agent && this.agent.length && this.agent[0].data && this.agent[0].data.data && this.agent[0].data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.length &&
+        this.agent[0].data &&
+        this.agent[0].data.data &&
+        this.agent[0].data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -72,7 +81,7 @@ define([
          */
         new PieChart(
           'top5AlertsVizz',
-          `${this.filters} sourcetype=wazuh | top \"rule.description\" limit=5`,
+          `${this.filters} sourcetype=wazuh | top "rule.description" limit=5`,
           'top5AlertsVizz'
         ),
         new PieChart(
@@ -88,7 +97,7 @@ define([
         new LinearChart(
           'alertLevelEvoVizz',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
           'alertLevelEvoVizz'
         ),
@@ -100,8 +109,8 @@ define([
         new Table(
           'agentsSummaryVizz',
           `${
-          this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as \"Rule ID\", rule.description as \"Description\", rule.level as Level, count as Count`,
+            this.filters
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz'
         )
       ]
@@ -115,6 +124,9 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       try {
         this.agentInfo = {
@@ -128,7 +140,7 @@ define([
           dateAdd: this.agent[0].data.data.dateAdd,
           agentOS: `${this.agent[0].data.data.os.name} ${
             this.agent[0].data.data.os.codename
-            } ${this.agent[0].data.data.os.version}`,
+          } ${this.agent[0].data.data.os.version}`,
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
@@ -138,17 +150,26 @@ define([
         this.scope.id = this.stateParams.id
       } catch (err) {
         this.agentInfo = {}
-        this.agentInfo.id = (this.agent && this.agent.length && this.agent[0] && this.agent[0].data && this.agent[0].data.data) ? this.agent[0].data.data.id : null
+        this.agentInfo.id =
+          this.agent &&
+          this.agent.length &&
+          this.agent[0] &&
+          this.agent[0].data &&
+          this.agent[0].data.data
+            ? this.agent[0].data.data.id
+            : null
         this.agentInfo.error = 'Unable to load agent data'
       }
 
       this.scope.goGroups = group => this.goGroups(group)
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
     }
     /**
      * Navigates to a group
-     * @param {String} group 
+     * @param {String} group
      */
     async goGroups(group) {
       try {
@@ -170,16 +191,27 @@ define([
       }
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus 
+     */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus 
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Gets filters and launches search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

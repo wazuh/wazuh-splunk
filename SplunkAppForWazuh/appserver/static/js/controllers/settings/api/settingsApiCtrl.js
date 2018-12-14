@@ -2,6 +2,13 @@ define(['../../module'], function (controllers) {
   'use strict'
 
   class SettingsApi {
+    /**
+     * Class settings API
+     * @param {*} $scope 
+     * @param {*} $currentDataService 
+     * @param {*} apiList 
+     * @param {*} $notificationService 
+     */
     constructor($scope, $currentDataService, apiList, $notificationService) {
       this.scope = $scope
       this.scope.addManagerContainer = false
@@ -22,6 +29,9 @@ define(['../../module'], function (controllers) {
       this.savingApi = false
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.init = () => this.init()
       this.scope.addNewApiClick = () => this.addNewApiClick()
@@ -34,6 +44,9 @@ define(['../../module'], function (controllers) {
       this.init()
     }
 
+    /**
+     * Initializes functions
+     */
     async init() {
       try {
         // If no API, then remove cookie
@@ -53,7 +66,7 @@ define(['../../module'], function (controllers) {
               // setAPI
               currentApi = this.currentDataService.getApi()
               break
-            } catch (error) { }
+            } catch (error) { continue }
           }
         }
 
@@ -283,7 +296,7 @@ define(['../../module'], function (controllers) {
             .remove(id)
             .then(() => { })
             .catch(err => {
-              this.toast('Unexpected error')
+              this.toast(`Unexpected error: ${err}`)
             })
           this.toast('Unreachable API')
           this.savingApi = false
