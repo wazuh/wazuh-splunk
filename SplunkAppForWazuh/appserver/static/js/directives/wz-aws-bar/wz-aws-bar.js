@@ -59,21 +59,25 @@ define(['../module'], function (directives) {
             return Promise.reject(err)
           }
         }
-    
+
         /**
          * Returns if a string is static
          * @param {String} filter
          * @returns {Boolean}
          */
         $scope.filterStatic = filter => {
-          const key = filter.split(':')[0]
-          const staticTrue = $currentDataService
-            .getFilters()
-            .filter(item => !!item.implicit)
-          const isIncluded = staticTrue.filter(
-            item => typeof item[key] !== 'undefined'
-          )
-          return !!isIncluded.length
+          try {
+            const key = filter.split(':')[0]
+            const staticTrue = $currentDataService
+              .getFilters()
+              .filter(item => !!item.implicit)
+            const isIncluded = staticTrue.filter(
+              item => typeof item[key] !== 'undefined'
+            )
+            return !!isIncluded.length
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
+          }
         }
 
         /**
@@ -81,12 +85,16 @@ define(['../module'], function (directives) {
          * @param {String}: The filter to be removed
          */
         $scope.removeFilter = filter => {
-          const index = $scope.filters.indexOf(filter) - 3 //subtract 3 positions to match the correct index
-          let awsFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
-          awsFilters.splice(index, 1)
-          window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsFilters))
-          $scope.filters = getPrettyFilters()
-          $scope.$emit('deletedFilter', {})
+          try {
+            const index = $scope.filters.indexOf(filter) - 3 //subtract 3 positions to match the correct index
+            let awsFilters = JSON.parse(window.localStorage.getItem('awsSourceFilters'))
+            awsFilters.splice(index, 1)
+            window.localStorage.setItem('awsSourceFilters', JSON.stringify(awsFilters))
+            $scope.filters = getPrettyFilters()
+            $scope.$emit('deletedFilter', {})
+          } catch (err) {
+            $notificationService.showSimpleToast(err.message || err)
+          }
         }
 
         const getAwsFiltersValue = () => {
@@ -119,7 +127,8 @@ define(['../module'], function (directives) {
               !customSearch ||
               customSearch.split(':').length !== 2 ||
               customSearch.split(':')[1].length === 0
-            ) {        $scope.filters = getPrettyFilters()
+            ) {
+            $scope.filters = getPrettyFilters()
 
               throw new Error('Incorrent format. Please use key:value syntax')
             }
@@ -149,7 +158,7 @@ define(['../module'], function (directives) {
             $notificationService.showSimpleToast(err.message || err)
           }
         }
-        
+
         init()
 
       },

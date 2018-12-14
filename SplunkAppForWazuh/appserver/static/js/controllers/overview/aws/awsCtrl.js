@@ -205,15 +205,20 @@ define([
      * @param {Objects} buckets 
      */
     serializedMetrics(buckets) {
-      let regions = []
-      let accounts = []
-      buckets.map(bucket => {
-        if (!regions.includes(bucket.regions))
-          regions.push(bucket.regions)
-        if (!accounts.includes(bucket.aws_account_alias))
-          accounts.push(bucket.aws_account_alias)
-      })
-      return { "regions": regions, "accounts": accounts }
+      try {
+        let regions = []
+        let accounts = []
+        buckets.map(bucket => {
+          if (!regions.includes(bucket.regions))
+            regions.push(bucket.regions)
+          if (!accounts.includes(bucket.aws_account_alias))
+            accounts.push(bucket.aws_account_alias)
+        })
+        return { "regions": regions, "accounts": accounts }
+      } catch (err) {
+        return Promise.reject(err)
+      }
+
     }
 
     /**
@@ -232,7 +237,7 @@ define([
         })
         return sourceValues
       } catch (err) {
-       this.toast(err.message || err)
+        this.toast(err.message || err)
       }
     }
 
@@ -249,7 +254,7 @@ define([
         sourceFil = sourceFil.substring(0, sourceFil.length - 2);
         return sourceFil
       } catch (err) {
-       return Promise.reject(err) 
+        return Promise.reject(err)
       }
     }
 
