@@ -56,7 +56,7 @@ class log():
 
     def error(self, msg):
         """Error log message."""
-        self.logger.error(msg)
+        self.logger.error(msg, exc_info=True)
 
     def info(self, msg):
         """Info log message."""
