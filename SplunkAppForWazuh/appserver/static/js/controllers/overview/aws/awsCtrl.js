@@ -216,7 +216,7 @@ define([
         })
         return { "regions": regions, "accounts": accounts }
       } catch (err) {
-        return Promise.reject(err)
+        throw new Error('Cannot gets metrics')
       }
 
     }
@@ -237,7 +237,7 @@ define([
         })
         return sourceValues
       } catch (err) {
-        this.toast(err.message || err)
+        throw new Error('Cannot get AWS filters')
       }
     }
 
@@ -254,7 +254,7 @@ define([
         sourceFil = sourceFil.substring(0, sourceFil.length - 2);
         return sourceFil
       } catch (err) {
-        return Promise.reject(err)
+        throw new Error('Cannot serialize AWS source filters')
       }
     }
 
@@ -273,7 +273,7 @@ define([
         })
         return restFil
       } catch (err) {
-        return Promise.reject(err)
+        throw new Error('Cannot serialize AWS filters')
       }
     }
 
@@ -292,7 +292,7 @@ define([
         }
         return filters
       } catch (err) {
-        return Promise.reject(err)
+        throw new Error('Cannot build AWS filters')
       }
     }
   }

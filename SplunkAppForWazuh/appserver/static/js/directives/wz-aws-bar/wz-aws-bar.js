@@ -56,7 +56,7 @@ define(['../module'], function (directives) {
             }
             return prettyFilters
           } catch (err) {
-            return Promise.reject(err)
+            throw new Error('Error getting AWS filters')
           }
         }
 
@@ -111,7 +111,7 @@ define(['../module'], function (directives) {
             })
             return sourceValues
           } catch (err) {
-            return Promise.reject(err)
+            throw new Error('Error getting AWS source filters')
           }
         }
 
