@@ -60,6 +60,10 @@ define(['../../module'], function(app) {
         typeof this.agent[0].data.data === 'object'
       ) {
         this.scope.agent = this.agent[0].data.data
+        //Check OS type
+        if (this.agent[0].data.data) {
+          this.scope.isLinux = this.agent[0].data.data.os.uname.includes("Linux")
+        }
         if (this.scope.agent.status == 'Never connected') {
           this.scope.agent.os = {
             name: 'Unknown',

@@ -519,3 +519,8 @@ kbn-vis .vis-container {
 .wz-word-break {
   word-break: break-all;
 }
+
+.wz-icon {
+  width: 35px !important;
+  height: 35px !important;
+}

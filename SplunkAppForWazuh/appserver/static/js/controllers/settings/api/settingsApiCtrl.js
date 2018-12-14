@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class SettingsApi {
@@ -52,7 +52,7 @@ define(['../../module'], function(controllers) {
         // If no API, then remove cookie
         if (Array.isArray(this.apiList) && this.apiList.length === 0) {
           this.currentDataService.removeCurrentApi()
-          this.scope.$emit('updatedAPI', () => {})
+          this.scope.$emit('updatedAPI', () => { })
         }
 
         this.scope.apiList = this.apiList
@@ -92,17 +92,13 @@ define(['../../module'], function(controllers) {
      */
     async removeManager(entry) {
       try {
-        const currentApi = this.currentDataService.getApi()
-        if (currentApi && currentApi.id === entry.id) {
-          this.toast('Cannot delete selected API')
-        } else {
-          const index = this.scope.apiList.indexOf(entry)
-          if (index > -1) {
-            this.scope.apiList.splice(index, 1)
-            await this.currentDataService.remove(entry)
-          }
-          this.toast('Manager was removed')
+        const index = this.scope.apiList.indexOf(entry)
+        if (index > -1) {
+          this.scope.apiList.splice(index, 1)
+          await this.currentDataService.remove(entry)
         }
+        this.toast('Manager was removed')
+
       } catch (err) {
         this.toast('Cannot remove API:', err.message || err)
       }
@@ -206,7 +202,6 @@ define(['../../module'], function(controllers) {
         this.scope.edit = false
         this.toast('Updated API')
       } catch (err) {
-        console.error('err ', err)
         this.toast('Cannot update API:', err.message || err)
       }
       this.savingApi = false
@@ -235,7 +230,7 @@ define(['../../module'], function(controllers) {
           }
         }
         this.toast('API selected')
-        this.scope.$emit('updatedAPI', () => {})
+        this.scope.$emit('updatedAPI', () => { })
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
         this.toast('Could not select manager')
@@ -299,7 +294,7 @@ define(['../../module'], function(controllers) {
         } catch (err) {
           this.currentDataService
             .remove(id)
-            .then(() => {})
+            .then(() => { })
             .catch(err => {
               this.toast(`Unexpected error: ${err}`)
             })
@@ -307,7 +302,6 @@ define(['../../module'], function(controllers) {
           this.savingApi = false
         }
       } catch (err) {
-        console.error('err ', err)
         this.toast(err.message)
         this.savingApi = false
       }
