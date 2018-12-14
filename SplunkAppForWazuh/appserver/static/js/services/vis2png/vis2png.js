@@ -13,11 +13,14 @@
 define(['../module', 'domToImg'], function(app, domToImg) {
   'use strict'
   class Vis2PNG {
-    constructor($rootScope) {
+    constructor($rootScope, $currentDataService) {
       this.$rootScope = $rootScope
       this.rawArray = []
       this.htmlObject = {}
       this.working = false
+      this.currentDataService = $currentDataService
+      this.getFilters = this.currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
     }
 
     async checkArray(visArray) {
@@ -28,13 +31,16 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
+            const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
             try {
               const tmpResult = await domToImg.toPng(tmpNode[0])
               this.rawArray.push({
                 element: tmpResult,
                 width: tmpNode.width(),
                 height: tmpNode.height(),
-                id: currentValue
+                id: currentValue,
+                title: title,
+                filters: this.filters
               })
             } catch (error) {
               console.error('error converting ', error)
@@ -46,7 +52,6 @@ define(['../module', 'domToImg'], function(app, domToImg) {
             if (!this.$rootScope.$$phase) this.$rootScope.$digest()
           })
         )
-
         this.working = false
         this.$rootScope.reportStatus = `Generating PDF document...`
         return this.rawArray

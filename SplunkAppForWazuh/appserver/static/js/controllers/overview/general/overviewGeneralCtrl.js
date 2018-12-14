@@ -215,6 +215,11 @@ define([
         this.timePicker.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        console.log('loadingReporting status : ', data)
+        this.scope.loadingReporting = data.status
+      })
     }
 
     /**

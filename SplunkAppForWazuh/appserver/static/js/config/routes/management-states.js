@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // Manager
@@ -298,6 +298,33 @@ define(['../module'], function(module) {
                     {}
                   )
                   return lastAgent
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
+        })
+        // Reporting
+        .state('mg-reporting', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/reporting/reporting.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-reporting')
+          },
+          controller: 'reportingCtrl',
+          resolve: {
+            reportsList: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.httpReq(
+                    'GET',
+                    '/report/reports'
+                  )
+                  return result
                 } catch (err) {
                   $state.go('settings.api')
                 }

@@ -118,6 +118,7 @@ class manager(controllers.BaseController):
             app = cli.getConfStanza(
                 'inputs',
                 'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
+
             disabled = app.get('disabled')
             polling_dict = {}
             polling_dict['disabled'] = disabled
