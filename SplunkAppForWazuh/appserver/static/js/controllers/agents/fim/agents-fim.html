@@ -22,10 +22,8 @@
   <!-- Filter bar -->
 
   <wazuh-bar></wazuh-bar>
-  <div style="width:100px; align-content: right;">
-    <md-button class="md-raised md-primary" ng-click='show()'>{{buttonShowElements}}</md-button>
-  </div>
   <div ng-show='!showFiles'>
+    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
     <!-- first row  -->
     <div id="row2" layout="row">
       <div flex="50">

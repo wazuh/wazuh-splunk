@@ -155,7 +155,6 @@ define([
      */
     show(){
       this.showFiles = !this.showFiles
-      this.scope.buttonShowElements = (this.showFiles) ?  'Show alerts' : 'Show files'
       this.scope.showFiles = this.showFiles
       if (!this.scope.$$phase) this.scope.$digest()
     }
