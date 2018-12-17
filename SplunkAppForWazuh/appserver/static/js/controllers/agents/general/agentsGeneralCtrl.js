@@ -158,7 +158,17 @@ define([
           this.agent[0].data.data
             ? this.agent[0].data.data.id
             : null
-        this.agentInfo.error = 'Unable to load agent data'
+        this.agentInfo.name = 
+          this.agent &&
+          this.agent.length &&
+          this.agent[0] &&
+          this.agent[0].data &&
+          this.agent[0].data.data
+            ? this.agent[0].data.data.name
+            : null
+        
+        this.scope.agentInfo = { id: this.agentInfo.id, name: this.agentInfo.name}
+        this.agentInfo.id && this.agentInfo.name ? this.agentInfo.error = false : this.agentInfo.error = 'Unable to load agent data'
       }
 
       this.scope.goGroups = group => this.goGroups(group)

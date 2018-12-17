@@ -5,8 +5,9 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ng-if="agentInfo.name && agentInfo.id && !agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}} ({{agentInfo.id}})</span>
-      <span ng-if="!agentInfo || agentInfo.error || !agentInfo.id">Unknown agent</span>
+      <span ng-if="!agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}}
+          ({{agentInfo.id}})</span>
+        <span ng-if="agentInfo.error">Unknown agent</span>
       <span> / </span>
       <span>General</span>
     </div>
