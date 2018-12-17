@@ -1,7 +1,18 @@
 define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
-
   class Groups {
+    /**
+     * Class Groups
+     * @param {*} $scope 
+     * @param {*} $tableFilterService 
+     * @param {*} $csvRequestService 
+     * @param {*} $currentDataService 
+     * @param {*} $state 
+     * @param {*} $stateParams 
+     * @param {*} $requestService 
+     * @param {*} $beautifierJson 
+     * @param {*} $notificationService 
+     */
     constructor(
       $scope,
       $tableFilterService,
@@ -49,8 +60,25 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
         return this.showFile(parameters.groupName, parameters.fileName)
       })
+
+      this.scope.$on('updateGroupInformation', async (event, parameters) => {
+        try {
+          const result = await this.apiReq(
+            `/agents/groups/${parameters.group}`,
+            { limit: 1 },
+          )
+          this.scope.currentGroup.count = result.data.data.totalItems
+        } catch(error) {
+          this.toast(error)
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+        return
+      })
     }
 
+    /**
+     * On controller load
+     */
     $onInit() {
       this.scope.search = term => {
         this.scope.$broadcast('wazuhSearch', { term })
@@ -92,7 +120,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, name)
+        saveAs(blob, name) // eslint-disable-line 
         return
       } catch (error) {
         this.toast('Error downloading CSV')
@@ -100,6 +128,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
       return
     }
 
+    /**
+     * @param {Object} group 
+     * @param {Boolean} firstLoad 
+     */
     async loadGroup(group, firstLoad) {
       try {
         if (!firstLoad) this.scope.lookingGroup = true
@@ -117,6 +149,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
       return
     }
 
+    /**
+     * Navigates to agents
+     */
     goBackToAgents() {
       this.scope.groupsSelectedTab = 'agents'
       this.scope.file = false
@@ -124,6 +159,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    /**
+     * Reloads the state
+     */
     reload() {
       if (
         this.stateParams &&
@@ -134,6 +172,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
       else this.state.reload()
     }
 
+    /**
+     * Navigates to files
+     */
     goBackFiles() {
       this.scope.groupsSelectedTab = 'files'
       this.scope.file = false
@@ -142,12 +183,20 @@ define(['../../module', 'FileSaver'], function(controllers) {
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    /**
+     * Navigates to groups
+     */
     goBackGroups() {
       this.scope.currentGroup = false
       this.scope.lookingGroup = false
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    /**
+     * 
+     * @param {String} groupName 
+     * @param {String} fileName 
+     */
     async showFile(groupName, fileName) {
       try {
         if (this.scope.filename) this.scope.filename = ''

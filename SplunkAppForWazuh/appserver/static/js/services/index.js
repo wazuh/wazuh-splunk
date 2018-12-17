@@ -18,5 +18,6 @@ define([
   './xml-beautifier/xml-beautifier',
   './get-ids/getIdService',
   './token-model/urlTokenModelService',
+  './group-handler/group-handler',
   './date-diff/dateDiffService'
 ], function() {})

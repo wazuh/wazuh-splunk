@@ -18,7 +18,7 @@ define([
   './remove-hash-key',
   '../services/xml-beautifier/xml-beautifier',
   'js2xmlparser'
-], function(queryConfig, objectWithoutProperties, XMLBeautifier,js2xmlparser) {
+], function(queryConfig, objectWithoutProperties, XMLBeautifier, js2xmlparser) {
   'use strict'
 
   return class ConfigurationHandler {
@@ -47,17 +47,27 @@ define([
         $scope.JSONContent = false
         $scope.configurationSubTab = false
         $scope.configurationTab = configurationTab
-        $scope.currentConfig = await queryConfig(
+        const currentConfigReq = await queryConfig(
           agentId || '000',
           sections,
           this.apiReq
         )
+        $scope.currentConfig = currentConfigReq
         if (sections[0].component === 'integrator') {
           this.buildIntegrations(
             $scope.currentConfig['integrator-integration'].integration,
             $scope
           )
-        } else {
+        } else if (sections[0].component === 'logcollector') {
+          const logcollector = currentConfigReq['logcollector-localfile'].localfile
+          logcollector.map( log => {
+            const keys = Object.keys(log)
+            if (!keys.includes('file') && !keys.includes('alias') && !keys.includes('command')) { 
+              log.file = `${log.logformat} - ${log.target[0]}` 
+            }
+          })
+          $scope.integrations = {}
+        }else {
           $scope.integrations = {}
         }
         $scope.load = false
@@ -156,9 +166,7 @@ define([
       } else {
         try {
           const cleaned = objectWithoutProperties(config)
-          $scope.XMLContent = XMLBeautifier(
-            js2xmlparser(cleaned)
-          )
+          $scope.XMLContent = XMLBeautifier(js2xmlparser(cleaned))
         } catch (error) {
           $scope.XMLContent = false
         }

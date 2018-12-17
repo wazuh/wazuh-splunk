@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function () {
+define([], function() {
   'use strict'
   return {
     nextPage: async (currentPage, $scope, errorHandler, fetch) => {
@@ -22,7 +22,9 @@ define([], function () {
         ) {
           $scope.currentPage++
         }
-        if ($scope.pagedItems[currentPage || $scope.currentPage].includes(null)) {
+        if (
+          $scope.pagedItems[currentPage || $scope.currentPage].includes(null)
+        ) {
           const copy = $scope.currentPage
           $scope.wazuhTableLoading = true
           const currentNonNull = $scope.items.filter(item => !!item)
@@ -48,12 +50,12 @@ define([], function () {
         start = size - gap
       }
       for (let i = start; i < end; i++) {
-        ret.push(i);
+        ret.push(i)
       }
       return ret
     },
 
-    groupToPages: ($scope) => {
+    groupToPages: $scope => {
       $scope.pagedItems = []
       for (let i = 0; i < $scope.filteredItems.length; i++) {
         if (i % $scope.itemsPerPage === 0) {
@@ -68,7 +70,7 @@ define([], function () {
       }
     },
 
-    prevPage: ($scope) => {
+    prevPage: $scope => {
       if ($scope.currentPage > 0) {
         $scope.currentPage--
       }

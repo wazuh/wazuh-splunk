@@ -10,17 +10,17 @@
  * Find more information about this on the LICENSE file.
  */
 
-define([
-  '../module',
-  'domToImg'
-], function (app,domToImg) {
+define(['../module', 'domToImg'], function(app, domToImg) {
   'use strict'
   class Vis2PNG {
-    constructor($rootScope) {
+    constructor($rootScope, $currentDataService) {
       this.$rootScope = $rootScope
       this.rawArray = []
       this.htmlObject = {}
       this.working = false
+      this.currentDataService = $currentDataService
+      this.getFilters = this.currentDataService.getSerializedFilters
+      this.filters = this.getFilters()
     }
 
     async checkArray(visArray) {
@@ -31,15 +31,20 @@ define([
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
+            const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
             try {
               const tmpResult = await domToImg.toPng(tmpNode[0])
               this.rawArray.push({
                 element: tmpResult,
                 width: tmpNode.width(),
                 height: tmpNode.height(),
-                id: currentValue
+                id: currentValue,
+                title: title,
+                filters: this.filters
               })
-            } catch (error) { console.error('error converting ',error)} // eslint-disable-line
+            } catch (error) {
+              console.error('error converting ', error)
+            } // eslint-disable-line
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100
@@ -47,7 +52,6 @@ define([
             if (!this.$rootScope.$$phase) this.$rootScope.$digest()
           })
         )
-
         this.working = false
         this.$rootScope.reportStatus = `Generating PDF document...`
         return this.rawArray

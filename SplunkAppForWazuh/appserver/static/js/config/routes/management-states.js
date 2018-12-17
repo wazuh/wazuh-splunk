@@ -57,11 +57,13 @@ define(['../module'], function (module) {
           controller: 'managerLogsCtrl',
           resolve: {
             logs: [
-              '$requestService', '$state',
+              '$requestService',
+              '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await $requestService
-                    .apiReq('/manager/logs/summary')
+                  const result = await $requestService.apiReq(
+                    '/manager/logs/summary'
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -94,12 +96,13 @@ define(['../module'], function (module) {
           resolve: {
             ruleInfo: [
               '$requestService',
-              '$stateParams', 
+              '$stateParams',
               '$state',
               async ($requestService, $stateParams, $state) => {
                 try {
-                  const result = await $requestService
-                    .apiReq(`/rules/${$stateParams.id}`)
+                  const result = await $requestService.apiReq(
+                    `/rules/${$stateParams.id}`
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -137,8 +140,9 @@ define(['../module'], function (module) {
               '$state',
               async ($requestService, $stateParams, $state) => {
                 try {
-                  const result = await $requestService
-                    .apiReq(`/decoders/${$stateParams.name}`)
+                  const result = await $requestService.apiReq(
+                    `/decoders/${$stateParams.name}`
+                  )
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -294,6 +298,33 @@ define(['../module'], function (module) {
                     {}
                   )
                   return lastAgent
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
+        })
+        // Reporting
+        .state('mg-reporting', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/reporting/reporting.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-reporting')
+          },
+          controller: 'reportingCtrl',
+          resolve: {
+            reportsList: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.httpReq(
+                    'GET',
+                    '/report/reports'
+                  )
+                  return result
                 } catch (err) {
                   $state.go('settings.api')
                 }
