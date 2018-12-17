@@ -1,29 +1,31 @@
 <md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
-  <div ng-show='!showFiles'>
 
-    <div layout="row" layout-padding>
-      <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-      <div>
-        <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
-        <span> / </span>
-        <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
-          ({{agent.id}})</span>
-        <span ng-if="agent.error">Unknown agent</span>
-        <span> / </span>
-        <span>File integrity monitoring</span>
-      </div>
-      <div ng-if="agent.status">
-        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
-      </div>
-      <div flex></div>
-      <div style="margin-right:7px;" id='timePicker'></div>
+
+  <div layout="row" layout-padding>
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
+        ({{agent.id}})</span>
+      <span ng-if="agent.error">Unknown agent</span>
+      <span> / </span>
+      <span>File integrity monitoring</span>
     </div>
-    <!-- Filter bar -->
+    <div ng-if="agent.status">
+      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+  <!-- Filter bar -->
 
-    <wazuh-bar></wazuh-bar>
-    <md-button ng-click='show()'>{{buttonShowElements}}</md-button>
-
+  <wazuh-bar></wazuh-bar>
+  <div style="width:100px; align-content: right;">
+    <md-button class="md-raised md-primary" ng-click='show()'>{{buttonShowElements}}</md-button>
+  </div>
+  <div ng-show='!showFiles'>
     <!-- first row  -->
     <div id="row2" layout="row">
       <div flex="50">
@@ -99,7 +101,7 @@
     </div>
   </div>
 
-  <div ng-show='!showFiles'>
+  <div ng-show='showFiles'>
     <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span>
     <!-- Fifth row  -->
     <div layout='row'>
@@ -128,7 +130,6 @@
     </div>
   </div>
 
-  -->
   <div ng-show='showFiles'>
     <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
       <md-card flex="" class="wz-md-card _md flex">

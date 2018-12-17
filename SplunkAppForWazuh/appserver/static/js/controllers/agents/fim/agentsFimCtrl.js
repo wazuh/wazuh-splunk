@@ -38,8 +38,8 @@ define([
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
       this.scope = $scope
-      this.scope.buttonShowElements = 'Show files'
-      this.scope.showFiles = false
+      this.showFiles = false
+      this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel
       if (
         this.agent &&
@@ -57,7 +57,6 @@ define([
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-      this.scope.showFiles = true
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -135,6 +134,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.show()
       this.scope.show = () => this.show()
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -148,23 +148,18 @@ define([
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.show = () => this.show()
     }
 
     /**
      * Shows/Hides alerts section of the view
      */
     show(){
+      this.showFiles = !this.showFiles
       this.scope.buttonShowElements = (this.showFiles) ?  'Show alerts' : 'Show files'
-      this.scope.showFiles = !this.scope.showFiles
+      this.scope.showFiles = this.showFiles
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
-    show() {
-      this.scope.showFiles = !this.scope.showFiles
-      if (!this.scope.$$phase) this.scope.$digest()
-      return
-    }
     /**
      * Checks and returns agent status
      * @param {Array} agentStatus 
