@@ -38,8 +38,8 @@ define([
      */
     $onInit() {
       this.scope.$on('loading', (event, data) => {
-        if (data.status) this.scope.loading = true
-        else this.scope.loading = false
+        if (data.status) $(document.body).css({'cursor' : 'wait'})
+        else $(document.body).css({'cursor' : 'default'})
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
