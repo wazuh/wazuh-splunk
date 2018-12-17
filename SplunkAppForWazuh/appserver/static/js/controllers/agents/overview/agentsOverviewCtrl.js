@@ -61,8 +61,9 @@ define(['../../module'], function(app) {
       ) {
         this.scope.agent = this.agent[0].data.data
         //Check OS type
-        if (this.agent[0].data.data) {
+        if (this.agent[0].data.data && this.agent[0].data.data.os && this.agent[0].data.data.os.uname) {
           this.scope.isLinux = this.agent[0].data.data.os.uname.includes("Linux")
+          console.log("is linux?: ", this.scope.isLinux)
         }
         if (this.scope.agent.status == 'Never connected') {
           this.scope.agent.os = {
