@@ -41,6 +41,16 @@ define([
       this.scope.buttonShowElements = 'Show files'
       this.scope.showFiles = false
       this.urlTokenModel = $urlTokenModel
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+       )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
+
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -125,15 +135,6 @@ define([
      * On controller loads
      */
     $onInit() {
-      if (
-        this.agent &&
-        this.agent.data &&
-        this.agent.data.data &&
-        this.agent.data.data.id
-      )
-        this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
-        )
       this.scope.show = () => this.show()
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
