@@ -67,7 +67,7 @@ define([
 
       this.scope.agentsCountActive = summary.Active - 1
       this.scope.lastAgent = lastAgent.items[0]
-      const os = platforms.items.map(item => item.os)
+      const os = platforms.items.map(item => item.os).filter(item => item != undefined)
       versions = versions.items.map(item => item.version)
       nodes =
         nodes && nodes.items
