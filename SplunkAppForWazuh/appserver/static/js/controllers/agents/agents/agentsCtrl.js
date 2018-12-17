@@ -55,7 +55,6 @@ define([
       const parsedResult = agentData.map(item =>
         item && item.data && item.data.data ? item.data.data : false
       )
-
       let [
         summary,
         lastAgent,
