@@ -12,12 +12,6 @@ require.config({
     ngMessages: 'js/libs/messages',
     ngMaterial: 'js/libs/material',
     ngRoute: 'js/libs/router',
-    // Dev tools dependencies
-    // codemirror: 'js/libs/codemirror-conv/lib/codemirror',
-    //querystring: 'js/libs/codemirror-conv/querystring-browser/bundle',
-
-    // dev-dependencies
-    // jsonLint: 'js/libs/codemirror-conv/json-lint',
 
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
