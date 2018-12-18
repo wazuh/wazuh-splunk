@@ -10,5 +10,6 @@ define([
   './wz-no-config/wz-no-config',
   './wz-config-item/wz-config-item',
   './wz-tag-filter/wz-tag-filter',
-  './wz-data-table/wz-data-table'
+  './wz-data-table/wz-data-table',
+  './wz-xml-file-editor/wz-xml-file-editor',
 ], function() {})
