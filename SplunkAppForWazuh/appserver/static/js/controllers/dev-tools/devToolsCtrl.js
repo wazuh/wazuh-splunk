@@ -151,7 +151,6 @@ define([
           this.appState.setCurrentDevTools(currentState)
 
           const tmpgroups = []
-          console.log('ANALYZE GROUPS')
           const splitted = currentState
             .split(/[\r\n]+(?=(?:GET|PUT|POST|DELETE)\b)/gm)
             .filter(item => item.replace(/\s/g, '').length)
@@ -314,7 +313,6 @@ define([
        * This set some required settings at init
        */
       init() {
-        console.log('on init')
         this.apiInputBox.setSize('auto', '100%')
         this.apiInputBox.model = []
         this.getAvailableMethods()
@@ -340,16 +338,12 @@ define([
         this.groups = this.analyzeGroups()
         const currentGroup = this.calculateWhichGroup()
         this.highlightGroup(currentGroup)
-        console.log('gonna register hint')
         // Register our custom Codemirror hint plugin.
         CodeMirror.registerHelper('hint', 'dictionaryHint', function (editor) {
-          console.log('registering hints')
           const model = editor.model
           function getDictionary(line, word) {
             let hints = []
-            console.log('line ', line)
             const exp = line.split(/\s+/g)
-            console.log('line.splitted ', exp)
             if (exp[0] && exp[0].match(/^(?:GET|PUT|POST|DELETE).*$/)) {
               let method = model.find(function (item) {
                 return item.method === exp[0]
@@ -449,11 +443,8 @@ define([
        */
       async send(firstTime) {
         try {
-          console.log('sending')
           this.groups = this.analyzeGroups()
-          console.log('groups ', this.groups)
           const desiredGroup = this.calculateWhichGroup(firstTime)
-          console.log('definition of desired group ', desiredGroup)
           if (desiredGroup) {
             if (firstTime) {
               const cords = this.apiInputBox.cursorCoords({
@@ -490,15 +481,11 @@ define([
             } else {
               method = 'GET'
             }
-
-            console.log('desired group ', desiredGroup)
             const requestCopy = desiredGroup.requestText.includes(method)
               ? desiredGroup.requestText.split(method)[1].trim()
               : desiredGroup.requestText
-            console.log('requestcopy ', requestCopy)
             // Checks for inline parameters
             const inlineSplit = requestCopy.split('?')
-            console.log('inlinesplit ', inlineSplit)
             const extra =
               inlineSplit && inlineSplit[1]
                 ? queryString.parse(inlineSplit[1])
@@ -522,12 +509,8 @@ define([
 
             // Assign inline parameters
             for (const key in extra) JSONraw[key] = extra[key]
-            console.log('req ', req)
             const path = req.includes('?') ? req.split('?')[0] : req
-
-            console.log('path ', path)
             //if (typeof JSONraw === 'object') JSONraw.devTools = true
-            console.log('REQUEST ')
             const output = await this.request.apiReq(path, JSONraw, method)
             const result =
               output.data && output.data.data && !output.data.error
