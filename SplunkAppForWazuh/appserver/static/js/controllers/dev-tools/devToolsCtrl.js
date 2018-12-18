@@ -300,13 +300,12 @@ define([
        * This loads all available paths of the API to show them in the autocomplete
        */
       async getAvailableMethods() {
-        // try {
-        //   const response = await this.request.httpReq('GET', '/api/routes', {})
-        //   this.apiInputBox.model = !response.error ? response.data : []
-        // } catch (error) {
-        //   this.apiInputBox.model = []
-        // }
-        this.apiInputBox.model = []
+        try {
+          const response = await this.request.httpReq('GET', '/api/autocomplete', {})
+          this.apiInputBox.model = !response.error ? response.data : []
+        } catch (error) {
+          this.apiInputBox.model = []
+        }
       }
 
       /**
@@ -341,10 +340,12 @@ define([
         // Register our custom Codemirror hint plugin.
         CodeMirror.registerHelper('hint', 'dictionaryHint', function (editor) {
           const model = editor.model
+          console.log('model ',model)
           function getDictionary(line, word) {
             let hints = []
             const exp = line.split(/\s+/g)
             if (exp[0] && exp[0].match(/^(?:GET|PUT|POST|DELETE).*$/)) {
+              console.log('model2 ',model)
               let method = model.find(function (item) {
                 return item.method === exp[0]
               })
