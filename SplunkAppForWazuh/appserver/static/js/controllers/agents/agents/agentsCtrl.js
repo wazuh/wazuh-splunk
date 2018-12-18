@@ -38,7 +38,9 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
-      agentData
+      agentData,
+      $mdDialog,
+      $groupHandler
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -52,6 +54,8 @@ define([
       this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
+      this.$mdDialog = $mdDialog
+      this.groupHandler = $groupHandler
       const parsedResult = agentData.map(item =>
         item && item.data && item.data.data ? item.data.data : false
       )

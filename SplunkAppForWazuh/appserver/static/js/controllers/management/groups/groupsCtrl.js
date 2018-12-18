@@ -15,6 +15,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      */
     constructor(
       $scope,
+      $rootScope,
       $tableFilterService,
       $csvRequestService,
       $currentDataService,
@@ -22,14 +23,17 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $stateParams,
       $requestService,
       $beautifierJson,
-      $notificationService
+      $notificationService,
+      $document,
+      $timeout
     ) {
       this.scope = $scope
       this.state = $state
       this.beautifier = $beautifierJson
       this.stateParams = $stateParams
       this.api = $currentDataService.getApi()
-
+      this.document = $document
+      this.timeout = $timeout
       this.csvReq = $csvRequestService
 
       this.wzTableFilter = $tableFilterService
@@ -50,6 +54,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$on('groupsIsReloaded', () => {
         this.scope.currentGroup = false
         this.scope.lookingGroup = false
+        this.scope.addingAgents = false;
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
