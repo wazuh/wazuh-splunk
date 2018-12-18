@@ -147,7 +147,6 @@ define([
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.show = () => this.show()
     }
 
     /**
@@ -159,11 +158,6 @@ define([
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
-    show() {
-      this.scope.showFiles = !this.scope.showFiles
-      if (!this.scope.$$phase) this.scope.$digest()
-      return
-    }
     /**
      * Checks and returns agent status
      * @param {Array} agentStatus 
