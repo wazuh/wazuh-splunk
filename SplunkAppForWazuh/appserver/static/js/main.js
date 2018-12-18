@@ -13,19 +13,11 @@ require.config({
     ngMaterial: 'js/libs/material',
     ngRoute: 'js/libs/router',
     // Dev tools dependencies
-    'brace-fold': 'js/utils/codemirror/brace-fold',
-    foldcode: 'js/utils/codemirror/foldcode',
-    foldgutter: 'js/utils/codemirror/foldgutter',
-    javascript: 'js/utils/codemirror/javascript',
-    'mark-selection': 'js/utils/codemirror/mark-selection',
-    'search-cursor': 'js/utils/codemirror/search-cursor',
-    codemirror: 'js/utils/codemirror/lib/codemirror',
-    querystring: 'js/utils/codemirror/querystring',
+    // codemirror: 'js/libs/codemirror-conv/lib/codemirror',
+    //querystring: 'js/libs/codemirror-conv/querystring-browser/bundle',
 
     // dev-dependencies
-    jsonLint: 'js/utils/codemirror/json-lint',
-    es6: 'js/libs/es6',
-    babel: 'js/libs/babel',
+    // jsonLint: 'js/libs/codemirror-conv/json-lint',
 
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
