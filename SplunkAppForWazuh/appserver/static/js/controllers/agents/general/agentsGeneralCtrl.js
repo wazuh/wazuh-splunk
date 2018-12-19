@@ -31,6 +31,7 @@ define([
      * @param {Object} $stateParams
      * @param {Object} $state
      * @param {Object} agent
+     * @param {*} $reportingService 
      */
 
     constructor(
@@ -41,7 +42,8 @@ define([
       $stateParams,
       $currentDataService,
       agent,
-      $state
+      $state,
+      $reportingService
     ) {
       this.state = $state
       this.urlTokenModel = $urlTokenModel
@@ -51,6 +53,7 @@ define([
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
+      this.reportingService = $reportingService
       if (
         this.agent &&
         this.agent.length &&
@@ -115,6 +118,23 @@ define([
         )
       ]
 
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-general', [
+        'top5AlertsVizz',
+        'top5GroupsVizz',
+        'top5PCIreqVizz',
+        'alertLevelEvoVizz',
+        'alertsVizz',
+        'agentsSummaryVizz'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+            
       /**
        * When controller is destroyed
        */
