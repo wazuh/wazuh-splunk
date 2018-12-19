@@ -16,10 +16,12 @@ define([
      * @param {*} $state 
      * @param {*} $currentDataService 
      * @param {Object} agent 
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
       this.state = $state
       this.currentDataService = $currentDataService
+      this.reportingService = $reportingService      
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
@@ -158,6 +160,21 @@ define([
           'alertsSummary'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-ciscat', [
+        'topCiscatGroups',
+        'scanResultEvolution',
+        'alertsSummary'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
     }
 
     /**
