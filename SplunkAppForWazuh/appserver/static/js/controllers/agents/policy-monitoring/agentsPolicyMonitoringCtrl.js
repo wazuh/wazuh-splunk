@@ -27,12 +27,14 @@ define([
      * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {*} $reportingService 
      */
 
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.currentDataService = $currentDataService
       this.agent = agent
       this.currentDataService.addFilter(
@@ -99,6 +101,22 @@ define([
           'alertsSummary'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-pm', [
+        'elementOverTime',
+        'cisRequirements',
+        'topPciDss',
+        'eventsPerAgent',
+        'alertsSummary'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })      
 
       /**
        * When controller is destroyed
