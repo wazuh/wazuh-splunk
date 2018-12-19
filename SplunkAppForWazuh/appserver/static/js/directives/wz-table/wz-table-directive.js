@@ -55,6 +55,7 @@ define([
         extraLimit: '=extraLimit'
       },
       controller(
+        $rootScope,
         $scope,
         $timeout,
         $dataService,
@@ -314,6 +315,10 @@ define([
             return false
           }
         }
+
+        $scope.editGroupAgentConfig = (ev, group) => {
+          $rootScope.$emit('editXmlFile', { 'target' : group });
+        };
 
         $scope.showConfirm = function(ev, agent) {
           const group = instance.path.split('/').pop()
