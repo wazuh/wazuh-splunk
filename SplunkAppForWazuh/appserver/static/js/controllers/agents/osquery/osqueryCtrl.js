@@ -29,6 +29,7 @@ define([
      * @param {Object} $notificationService
      * @param {Object} agent
      * @param {Object} osquery
+     * @param {*} $reportingService 
      */
 
     constructor(
@@ -38,13 +39,15 @@ define([
       $notificationService,
       $currentDataService,
       $state,
-      osquery
+      osquery,
+      $reportingService
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.notificationService = $notificationService
+      this.reportingService = $reportingService
       this.osquery = osquery
       this.currentDataService.addFilter(
         `{"rule.groups":"osquery", "implicit":true}`
@@ -110,6 +113,22 @@ define([
           'alertsOverTime'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('osquery', [
+        'mostCommonPacks',
+        'alertsPacksOverTime',
+        'mostCommonActions',
+        'topRules',
+        'alertsOverTime'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })      
 
       /*
        * When controller is destroyed
