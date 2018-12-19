@@ -141,7 +141,7 @@ define([
          * Generates report
          */
         this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png('aws', [
+        this.reportingService.startVis2Png('aws', 'Amazon web services', this.amazonFilters,[
           'eventsByIdOverTime',
           'eventsByRegionOverTime',
           'topEventsByServiceName',

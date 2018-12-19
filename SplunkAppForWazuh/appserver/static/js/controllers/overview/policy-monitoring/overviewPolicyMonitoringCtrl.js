@@ -86,7 +86,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-pm', [
+      this.reportingService.startVis2Png('overview-pm', 'Policity monitoring', this.filters, [
         'elementOverTime',
         'cisRequirements',
         'topPciDss',

@@ -94,7 +94,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-pci', [
+      this.reportingService.startVis2Png('overview-pci', 'PCI DSS', this.filters, [
         'pciReqVizz',
         'groupsVizz',
         'agentsVizz',

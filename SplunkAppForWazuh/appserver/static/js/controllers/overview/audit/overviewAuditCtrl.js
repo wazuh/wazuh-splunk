@@ -180,7 +180,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-audit', [
+      this.reportingService.startVis2Png('overview-audit', 'Audit', this.filters,[
         'groupsElement',
         'agentsElement',
         'directoriesElement',

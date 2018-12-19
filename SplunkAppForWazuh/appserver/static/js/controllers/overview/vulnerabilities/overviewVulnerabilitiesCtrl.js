@@ -136,7 +136,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-vulnerabilities', [
+      this.reportingService.startVis2Png('overview-vulnerabilities', 'Vulnerabilities', this.filters, [
         'affectedAgents',
         'alertsEvolution',
         'severityDist',

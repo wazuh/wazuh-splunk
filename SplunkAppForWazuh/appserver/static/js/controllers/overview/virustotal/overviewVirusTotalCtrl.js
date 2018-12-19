@@ -72,7 +72,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-vulnerabilities', [
+      this.reportingService.startVis2Png('overview-vulnerabilities', 'VirusTotal', this.filters, [
         'top5AgentsPositive',
         'eventsSummary',
         'top5AgentsNoPositive',
