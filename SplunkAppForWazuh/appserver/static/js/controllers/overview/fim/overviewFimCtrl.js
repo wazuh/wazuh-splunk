@@ -15,10 +15,12 @@ define([
      * @param {*} $scope 
      * @param {*} $currentDataService 
      * @param {*} $state 
+     * @param {*} $reportingService 
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -103,11 +105,30 @@ define([
       })
 
       /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-fim', [
+        'deletedFiles',
+        'newFiles',
+        'modifiedFiles',
+        'alertsVolume',
+        'eventsSummary',
+        'topRules',
+        'whodataUsage',
+        'topUsers'
+      ])
+
+      /**
        * On controller destroy
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
         this.vizz.map(vizz => vizz.destroy())
+      })
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
       })
     }
 
