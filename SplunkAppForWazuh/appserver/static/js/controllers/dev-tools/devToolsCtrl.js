@@ -340,12 +340,10 @@ define([
         // Register our custom Codemirror hint plugin.
         CodeMirror.registerHelper('hint', 'dictionaryHint', function (editor) {
           const model = editor.model
-          console.log('model ',model)
           function getDictionary(line, word) {
             let hints = []
             const exp = line.split(/\s+/g)
             if (exp[0] && exp[0].match(/^(?:GET|PUT|POST|DELETE).*$/)) {
-              console.log('model2 ',model)
               let method = model.find(function (item) {
                 return item.method === exp[0]
               })
@@ -522,7 +520,6 @@ define([
             this.apiOutputBox.setValue('Welcome!')
           }
         } catch (error) {
-          console.error('error ', error)
           const parsedError = this.toast(error)
           if (typeof parsedError === 'string') {
             return this.apiOutputBox.setValue(parsedError)
