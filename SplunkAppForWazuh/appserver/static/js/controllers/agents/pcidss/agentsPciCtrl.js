@@ -16,9 +16,11 @@ define([
      * @param {*} $state 
      * @param {*} $currentDataService 
      * @param {Object} agent 
+     * @param {*} $reportingService 
      */
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
       this.state = $state
+      this.reportingService = $reportingService
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
@@ -106,6 +108,23 @@ define([
           'alertsSummaryVizz'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-pci', [
+        'pciReqSearchVizz',
+        'groupsVizz',
+        'agentsVizz',
+        'reqByAgentsVizz',
+        'alertsSummaryVizz'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
     }
 
     /**
