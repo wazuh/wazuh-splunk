@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class AgentsOverview {
@@ -34,7 +34,8 @@ define(['../../module'], function(app) {
       agent,
       groups,
       $mdDialog,
-      $groupHandler
+      $groupHandler,
+      $dateDiffService
     ) {
       this.stateParams = $stateParams
       this.scope = $scope
@@ -43,6 +44,7 @@ define(['../../module'], function(app) {
       this.notificationService = $notificationService
       this.agent = agent
       this.extensions = extensions
+      this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
       this.groups = groups
       this.$mdDialog = $mdDialog
@@ -59,9 +61,76 @@ define(['../../module'], function(app) {
         this.agent[0].data &&
         typeof this.agent[0].data.data === 'object'
       ) {
-        this.scope.agent = this.agent[0].data.data
+        this.scope.agent = this.agent[0].data.data        
+        this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope
+          .agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
+        this.scope.syscheck =
+          this.agent.length > 0 &&
+            typeof this.agent[1] === 'object' &&
+            typeof this.agent[1].data === 'object' &&
+            !this.agent[1].data.error
+            ? this.agent[1].data.data
+            : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
+        this.scope.id = this.stateParams.id
+        this.scope.rootcheck =
+          this.agent.length > 1 &&
+            typeof this.agent[2] === 'object' &&
+            typeof this.agent[2].data === 'object' &&
+            !this.agent[2].data.error
+            ? this.agent[2].data.data
+            : { start: 'Unknown', end: 'Unknown' }
+        if (!this.scope.agent.error) {
+          const keys = Object.keys(this.extensions)
+          keys.map(key => {
+            this.extensions[key] === 'true'
+              ? (this.scope[key] = key)
+              : (this.scope[key] = null)
+          }
+          )
+
+          this.scope.groups = this.groups.data.data.items.map(item => item.name).filter(item => this.scope.agent.group && !this.scope.agent.group.includes(item))
+          this.scope.formatAgentStatus = agentStatus =>
+            this.formatAgentStatus(agentStatus)
+          this.scope.getAgentStatusClass = agentStatus =>
+            this.getAgentStatusClass(agentStatus)
+          this.scope.goGroups = group => this.goGroups(group)
+          this.scope.switchGroupEdit = () => this.switchGroupEdit()
+
+          this.scope.syscheck.duration = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end).duration
+          this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).duration
+          this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end).inProgress
+          this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).inProgress
+
+          this.scope.showConfirm = (ev, group) => {
+
+            const confirm = this.$mdDialog
+              .confirm()
+              .title(`Add group "${group}" to agent "${this.scope.agent.id}"?`)
+              .targetEvent(ev)
+              .ok('Agree')
+              .cancel('Cancel')
+
+            this.$mdDialog.show(confirm).then(
+              () => {
+                this.groupHandler.addAgentToGroup(group, this.scope.agent.id)
+                  .then(() => this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
+                  .then(agent => {
+                    this.scope.agent.group = agent.data.data.group
+                    this.scope.groups = this.scope.groups.filter(item => !agent.data.data.group.includes(item))
+                    if (!this.scope.$$phase) this.scope.$digest()
+                  })
+                  .catch(error =>
+                    this.$notificationService.showSimpleToast(
+                      error.message || error
+                    )
+                  )
+              },
+              () => { }
+            )
+          }
+        }
         //Check OS type
-        if (this.agent[0].data.data) {
+        if (this.agent[0].data.data && this.agent[0].data.data.os && this.agent[0].data.data.os.uname) {
           this.scope.isLinux = this.agent[0].data.data.os.uname.includes("Linux")
         }
         if (this.scope.agent.status == 'Never connected') {
@@ -89,69 +158,12 @@ define(['../../module'], function(app) {
           this.scope.agent.error =
             this.agent[0].data.message || this.agent[0].data.error
         } else {
-          this.scope.agent.error = 'Unable to load agent data from API'
-        }
-      }
-
-      this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope
-        .agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
-      this.scope.syscheck =
-        this.agent.length > 0 &&
-        typeof this.agent[1] === 'object' &&
-        typeof this.agent[1].data === 'object' &&
-        !this.agent[1].data.error
-          ? this.agent[1].data.data
-          : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
-      this.scope.id = this.stateParams.id
-      this.scope.rootcheck =
-        this.agent.length > 1 &&
-        typeof this.agent[2] === 'object' &&
-        typeof this.agent[2].data === 'object' &&
-        !this.agent[2].data.error
-          ? this.agent[2].data.data
-          : { start: 'Unknown', end: 'Unknown' }
-      if (!this.scope.agent.error) {
-        const keys = Object.keys(this.extensions)
-        keys.map(key =>
-          this.extensions[key] === 'true'
-            ? (this.scope[key] = key)
-            : (this.scope[key] = null)
-        )
-
-        this.scope.groups = this.groups.data.data.items.map(item => item.name).filter(item => this.scope.agent.group && !this.scope.agent.group.includes(item))
-        this.scope.formatAgentStatus = agentStatus =>
-          this.formatAgentStatus(agentStatus)
-        this.scope.getAgentStatusClass = agentStatus =>
-          this.getAgentStatusClass(agentStatus)
-        this.scope.goGroups = group => this.goGroups(group)
-        this.scope.switchGroupEdit = () => this.switchGroupEdit()
-
-        this.scope.showConfirm = (ev, group) => {
-      
-          const confirm = this.$mdDialog
-            .confirm()
-            .title(`Add group "${group}" to agent "${this.scope.agent.id}"?`)
-            .targetEvent(ev)
-            .ok('Agree')
-            .cancel('Cancel')
-    
-            this.$mdDialog.show(confirm).then(
-            () => {
-              this.groupHandler.addAgentToGroup(group,this.scope.agent.id)
-              .then(() => this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
-              .then(agent => {
-                this.scope.agent.group = agent.data.data.group
-                this.scope.groups = this.scope.groups.filter(item => !agent.data.data.group.includes(item))
-                if(!this.scope.$$phase) this.scope.$digest()
-              })
-              .catch(error =>
-                this.$notificationService.showSimpleToast(
-                  error.message || error
-                )
-              )
-            },
-            () => {}
-          )
+          this.scope.agent = { group: null, name: 'Unknown', id: null, status: null, ip: 'Unknown', os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' }, version: 'Unknown', dateAdd: 'Unknown', lastKeepAlive: 'Unknown' }
+          if (this.agent[0].data.error) {
+            this.scope.agent.error = this.agent[0].data.message || this.agent[0].data.error
+          } else {
+            this.scope.agent.error = 'Unable to load agent data from API'
+          }
         }
       }
     }
@@ -207,7 +219,7 @@ define(['../../module'], function(app) {
 
     switchGroupEdit() {
       this.scope.editGroup = !!!this.scope.editGroup
-      if(!this.scope.$$phase) this.scope.$digest()
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
   }

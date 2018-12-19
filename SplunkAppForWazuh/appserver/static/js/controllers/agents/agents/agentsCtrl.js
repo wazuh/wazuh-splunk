@@ -59,7 +59,6 @@ define([
       const parsedResult = agentData.map(item =>
         item && item.data && item.data.data ? item.data.data : false
       )
-
       let [
         summary,
         lastAgent,
@@ -70,14 +69,14 @@ define([
       ] = parsedResult
 
       this.scope.agentsCountActive = summary.Active - 1
-      this.scope.lastAgent = lastAgent.items[0]
-      const os = platforms.items.map(item => item.os)
-      versions = versions.items.map(item => item.version)
+      this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
+      const os = platforms ? platforms.items.map(item => item.os).filter(item => !!item) : false
+      versions = versions ? versions.items.map(item => item.version).filter(item => !!item) : false
       nodes =
         nodes && nodes.items
-          ? nodes.items.map(item => item['node_name'])
+          ? nodes.items.map(item => item['node_name']).filter(item => !!item)
           : false
-      groups = groups.items.map(item => item.name)
+      groups = groups ? groups.items.map(item => item.name).filter(item => !!item) : false
       this.scope.agentsCountDisconnected = summary.Disconnected
       this.scope.agentsCountNeverConnected = summary['Never connected']
       const agentsCountTotal = summary.Total - 1
@@ -87,12 +86,12 @@ define([
 
       this.scope.searchBarModel = {
         status: ['Active', 'Disconnected', 'Never connected'],
-        group: groups,
-        node_name: nodes,
-        version: versions,
-        'os.platform': os.map(x => x.platform),
-        'os.version': os.map(x => x.version),
-        'os.name': os.map(x => x.name)
+        group: groups ? groups : [],
+        node_name: nodes ? nodes : [],
+        version: versions ? versions : [],
+        'os.platform': os ? os.map(x => x.platform) : [],
+        'os.version': os ? os.map(x => x.version) : [],
+        'os.name': os ? os.map(x => x.name) : []
       }
 
       this.topAgent = new SearchHandler(
