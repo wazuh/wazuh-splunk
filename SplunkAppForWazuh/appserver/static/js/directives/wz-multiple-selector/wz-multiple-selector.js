@@ -78,7 +78,7 @@ define(['../module'], function (app) {
         }
       },
       templateUrl: BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selectors/wz-multiple-selectors.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html'
     };
   })
 })

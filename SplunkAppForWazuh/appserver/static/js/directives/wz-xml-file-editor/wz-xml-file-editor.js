@@ -2,9 +2,9 @@
   * Wazuh app - Wazuh XML file editor
   * Copyright (C) 2018 Wazuh, Inc.
   *
-  * This program is free software; you can redistribute it and/or modify
+  * This program is free software you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
+  * the Free Software Foundation either version 2 of the License, or
   * (at your option) any later version.
   *
   * Find more information about this on the LICENSE file.
@@ -24,7 +24,7 @@ define([
   app,
   CodeMirror
 ) {
-    'use strict';
+    'use strict'
     app.directive('wzXmlFileEditor', function (BASE_URL) {
       return {
         restrict: 'E',
@@ -37,9 +37,9 @@ define([
           $rootScope,
           $scope,
           $timeout,
-          apiReq,
+          $requestService,
           $document,
-          errorHandler
+          $notificationService
         ) {
           $(document).ready(function () {
             $scope.xmlCodeBox = CodeMirror.fromTextArea(
@@ -54,29 +54,30 @@ define([
                 styleSelectedText: true,
                 gutters: ['CodeMirror-foldgutter']
               }
-            );
-            $scope.xmlHasErrors = false;
+            )
+            $scope.xmlHasErrors = false
             $scope.xmlCodeBox.on('change', () => {
-              checkXmlParseError();
-            });
+              checkXmlParseError()
+            })
             const checkXmlParseError = () => {
               try {
-                var parser = new DOMParser();
-                var xml = $scope.xmlCodeBox.getValue();
-                var xmlDoc = parser.parseFromString(xml, "text/xml");
+                var parser = new DOMParser()
+                var xml = $scope.xmlCodeBox.getValue()
+                var xmlDoc = parser.parseFromString(xml, "text/xml")
                 $timeout(function () {
                   $scope.xmlHasErrors = xmlDoc.getElementsByTagName("parsererror").length > 0 ? true : false
-                }, 50);
+                }, 50)
               } catch (error) {
-                errorHandler.handle(error, 'Error validating XML');
+                console.error('error checkxmlparse ',error)
+                $notificationService.showSimpleToast(error)
               }
             }
-          });
+          })
 
           const autoFormat = () => {
-            var totalLines = $scope.xmlCodeBox.lineCount();
-            $scope.xmlCodeBox.autoFormatRange({ 'line': 0, 'ch': 0 }, { line: totalLines - 1 });
-            $scope.xmlCodeBox.setCursor(0);
+            var totalLines = $scope.xmlCodeBox.lineCount()
+            $scope.xmlCodeBox.autoFormatRange({ 'line': 0, 'ch': 0 }, { line: totalLines - 1 })
+            $scope.xmlCodeBox.setCursor(0)
           }
 
           const updateFile = async () => {
@@ -85,17 +86,17 @@ define([
                 'PUT',
                 $scope.updatePath,
                 {}
-              );*/
-              const response = "";
-              return response;
+              )*/
+              const response = ""
+              return response
             } catch (error) {
-              this.apiInputBox.model = [];
+              this.apiInputBox.model = []
             }
           }
 
           $scope.saveFile = async () => {
-            const response = await updateFile();
-            console.log(response);
+            const response = await updateFile()
+            console.log(response)
           }
 
           const fetchFile = async () => {
@@ -104,37 +105,40 @@ define([
                 'GET',
                 $scope.loadPath,
                 {}
-              );*/
+              )*/
               const xml = "<agent_config>" +
                 "\n" +
                 "<!-- Shared agent configuration here -->\n" +
                 "\n" +
-                "</agent_config>";
-              return xml;
+                "</agent_config>"
+              return xml
             } catch (error) {
-              errorHandler.handle(error, 'Fetch file error');
+              console.error('error fetchfile ',error)
+              $notificationService.showSimpleToast(error)
             }
           }
 
           $scope.editXmlFile = async (item, params) => {
-            $scope.editingFile = true;
-            $scope.loadingFile = true;
-            $scope.targetName = params.target.name;
+            $scope.editingFile = true
+            $scope.loadingFile = true
+            $scope.targetName = params.target.name
             try {
-              const xml = await fetchFile();
-              $scope.xmlCodeBox.setValue(xml);
-              autoFormat();
-              $scope.loadingFile = false;
-              $timeout(function () { $scope.xmlCodeBox.refresh() }, 100);
+              const xml = await fetchFile()
+              $scope.xmlCodeBox.setValue(xml)
+              autoFormat()
+              $scope.loadingFile = false
+              $timeout(function () { $scope.xmlCodeBox.refresh() }, 100)
             } catch (error) {
-              errorHandler.handle(error, 'Fetch file error');
+              console.error('error editXmlFile ',error)
+
+              $notificationService.showSimpleToast(error)
             }
-          };
-          $rootScope.$on('editXmlFile', (item, params) => $scope.editXmlFile(item, params));
-          $rootScope.$on('closeEditXmlFile', () => $scope.editingFile = false);
+          }
+          $rootScope.$on('editXmlFile', (item, params) => $scope.editXmlFile(item, params))
+          $rootScope.$on('closeEditXmlFile', () => $scope.editingFile = false)
         },
         templateUrl: BASE_URL +
           '/static/app/SplunkAppForWazuh/js/directives/wz-xml-file-editor/wz-xml-file-editor.html'
-      };
-    });
-  });
+      }
+    })
+  })

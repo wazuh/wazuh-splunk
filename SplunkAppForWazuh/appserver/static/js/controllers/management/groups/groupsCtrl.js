@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(controllers) {
+define(['../../module', 'FileSaver'], function (controllers) {
   'use strict'
   class Groups {
     /**
@@ -45,6 +45,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.loadingRing = false
 
       this.scope.$watch('lookingGroup', value => {
+        this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+        this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+        this.scope.addMultipleAgents(false)
+        $rootScope.$emit('closeEditXmlFile', {})
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -54,7 +58,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$on('groupsIsReloaded', () => {
         this.scope.currentGroup = false
         this.scope.lookingGroup = false
-        this.scope.addingAgents = false;
+        this.scope.addingAgents = false
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
@@ -73,7 +77,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
             { limit: 1 },
           )
           this.scope.currentGroup.count = result.data.data.totalItems
-        } catch(error) {
+          this.scope.currentGroup.agents = result.data.data.items
+        } catch (error) {
           this.toast(error)
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -109,6 +114,133 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.loadGroup(this.mainGroup)
         }
       }
+
+
+      this.scope.reload = async (element, searchTerm, addOffset, start) => {
+        if (element === 'left') {
+          if (!this.scope.availableAgents.loadedAll) {
+            this.scope.multipleSelectorLoading = true
+            if (start) {
+              this.scope.selectedAgents.offset = 0
+            } else {
+              this.scope.availableAgents.offset += addOffset + 1
+            }
+            await this.scope.loadAllAgents(searchTerm, start)
+          }
+        } else {
+          if (!this.scope.selectedAgents.loadedAll) {
+            this.scope.multipleSelectorLoading = true
+            this.scope.selectedAgents.offset += addOffset + 1
+            await this.scope.loadSelectedAgents(searchTerm)
+          }
+        }
+        this.timeout( () => {
+          this.scope.multipleSelectorLoading = false
+        }, 100)
+      }
+
+      this.scope.loadSelectedAgents = async (searchTerm) => {
+        try {
+          let params = { 'offset': !searchTerm ? this.scope.selectedAgents.offset : 0 }
+          if (searchTerm) {
+            params.search = searchTerm
+          }
+          const result = await this.apiReq(`/agents/groups/${this.scope.currentGroup.name}`,
+            params)
+          const mapped = result.data.data.items.map( (item) => {
+            return { 'key': item.id, 'value': item.name }
+          })
+          if (searchTerm) {
+            this.scope.selectedAgents.data = mapped
+            this.scope.selectedAgents.loadedAll = true
+          } else {
+            this.scope.selectedAgents.data = this.scope.selectedAgents.data.concat(mapped)
+          }
+          if (this.scope.selectedAgents.data.length === 0 || this.scope.selectedAgents.data.length < 500) {
+            this.scope.selectedAgents.loadedAll = true
+          }
+        } catch (error) {
+          this.toast(error.message || error)
+        }
+        this.scope.selectedAgents.loaded = true
+      }
+
+      this.scope.loadAllAgents = async (searchTerm, start) => {
+        try {
+          let params = { 'offset': !searchTerm ? this.scope.availableAgents.offset : 0 }
+          if (searchTerm) {
+            params.search = searchTerm
+            this.scope.availableAgents.offset = 0
+          }
+          const req = await this.apiReq('/agents/',params)
+          this.scope.totalAgents = req.data.data.totalItems
+          const mapped = req.data.data.items.filter( (item) => {
+            return this.scope.selectedAgents.data.filter( (selected) => {
+              return selected.key == item.id
+            }).length == 0 && item.id !== '000'
+          }).map( (item) => {
+            return { 'key': item.id, 'value': item.name }
+          })
+          if (searchTerm || start) {
+            this.scope.availableAgents.data = mapped
+          } else {
+            this.scope.availableAgents.data = this.scope.availableAgents.data.concat(mapped)
+          }
+          if (this.scope.availableAgents.data.length === 0 && !searchTerm) {
+            if (this.scope.availableAgents.offset >= this.scope.totalAgents) {
+              this.scope.availableAgents.loadedAll = true
+            }
+            if (!this.scope.availableAgents.loadedAll) {
+              this.scope.availableAgents.offset += 499
+              await this.scope.loadAllAgents()
+            }
+          }
+        } catch (error) {
+          this.toast(error.message || error)
+        }
+      }
+
+      this.scope.addMultipleAgents = async (toggle) => {
+        this.scope.addingAgents = toggle
+        if (toggle && !this.scope.availableAgents.loaded) {
+          this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+          this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+          this.scope.multipleSelectorLoading = true
+          while (!this.scope.selectedAgents.loadedAll) {
+            await this.scope.loadSelectedAgents()
+            this.scope.selectedAgents.offset += 499
+          }
+          this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
+          await this.scope.loadAllAgents()
+          this.timeout( () => {
+            this.scope.multipleSelectorLoading = false
+          }, 100)
+        }
+      }
+
+      this.scope.saveAddAgents = async (agents) => {
+        const original = this.scope.firstSelectedList
+        const modified = agents
+        this.scope.deletedAgents = []
+        this.scope.addedAgents = []
+
+        modified.forEach( (mod) => {
+          if (original.filter(e => e.key === mod.key).length === 0) {
+            this.scope.addedAgents.push(mod)
+          }
+        })
+        original.forEach( (orig) => {
+          if (modified.filter(e => e.key === orig.key).length === 0) {
+            this.scope.deletedAgents.push(orig)
+          }
+        })
+
+        console.log('Added: ' + this.scope.addedAgents.map(x => x.key) + " - Deleted: " + this.scope.deletedAgents.map(x => x.key))
+      }
+
+
+
+
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
