@@ -39,12 +39,14 @@ define([
      * @param {Object} $currentDataService
      * @param {Object} $state
      * @param {Object} agent
+     * @param {*} $reportingService
      */
 
-    constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, agent, $reportingService) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
+      this.reportingService = $reportingService
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -65,6 +67,7 @@ define([
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
       this.filters = this.currentDataService.getSerializedFilters()
+      console.log("FILTERS ", this.filters)
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -188,6 +191,28 @@ define([
           'alertsSummaryVizz'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-audit', [
+        'groupsVizz',
+        'agentsVizz',
+        'directoriesVizz',
+        'filesVizz',
+        'alertsOverTimeVizz',
+        'fileReadAccessVizz',
+        'fileWriteAccessVizz',
+        'comandsVizz',
+        'createdVizz',
+        'removedFilesVizz',
+        'alertsSummaryVizz'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
 
       /**
        * When controller is destroyed
