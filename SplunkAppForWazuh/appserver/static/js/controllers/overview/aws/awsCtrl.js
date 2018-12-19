@@ -20,11 +20,13 @@ define([
      * @param {*} $state 
      * @param {Object} awsMetrics 
      * @param {*} $notificationService 
+     * @param {*} $reportingService 
      */
-    constructor($urlTokenModel, $rootScope, $scope, $currentDataService, $state, awsMetrics, $notificationService) {
+    constructor($urlTokenModel, $rootScope, $scope, $currentDataService, $state, awsMetrics, $notificationService, $reportingService) {
       this.rootScope = $rootScope
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.awsMetrics = awsMetrics
       this.toast = $notificationService.showSimpleToast
       this.currentDataService = $currentDataService
@@ -133,6 +135,26 @@ define([
               }
             }
           }
+        })
+
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png('aws', [
+          'eventsByIdOverTime',
+          'eventsByRegionOverTime',
+          'topEventsByServiceName',
+          'topEventsByInstanceId',
+          'topEventsByResourceType',
+          'topEventsByRegion',
+          'map',
+          'top5Buckets',
+          'top5Rules'
+        ])
+
+        this.scope.$on('loadingReporting', (event, data) => {
+          this.scope.loadingReporting = data.status
         })
 
         this.vizz = [
