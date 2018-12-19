@@ -15,9 +15,10 @@ define([
      * @param {*} $currentDataService 
      * @param {*} $state 
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.addFilter = $currentDataService.addFilter
       this.getFilters = $currentDataService.getSerializedFilters
       this.currentDataService = $currentDataService
@@ -153,6 +154,20 @@ define([
           'alertsSummary'
         )
       ]
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-fim', [
+        'topCiscatGroups',
+        'scanResultEvolution',
+        'alertsSummary'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
     }
 
     /**
