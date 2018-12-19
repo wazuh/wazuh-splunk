@@ -1,5 +1,24 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+## Wazuh v3.8.0 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-20
+
+### Added
+
+- Auto-complete endpoints in Dev Tools section ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
+- XML editor for group configurations ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
+- Multi-selector for attaching agents to groups dynamically ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
+
+### Changed
+
+- Deleted blue loading ring ([#426](https://github.com/wazuh/wazuh-splunk/pull/426)).
+
+### Fixed
+
+- Minor fixes ([#425](https://github.com/wazuh/wazuh-splunk/pull/425)).
+- UX enhancements ([#433](https://github.com/wazuh/wazuh-splunk/pull/433)).
+
+## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
+There are no changes for Splunk app for Wazuh in this version.
 
 ## Wazuh v3.7.1 - Splunk Enterprise v7.2.1 - Splunk app v3.7.1-rev-18
 
@@ -24,6 +43,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fix a bug when using the Agent status monitoring alerts ([#361](https://github.com/wazuh/wazuh-splunk/pull/361)).
 - Added missing fields for syscollector network tables ([#359](https://github.com/wazuh/wazuh-splunk/pull/359)).
 - Fixed wrong value in a variable from the agents module ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
+- Updated searches for AWS section ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
 
 ## Wazuh v3.7.0 - Splunk Enterprise v7.2.0 / Splunk Enterprise v7.2.1 - Splunk app v3.7.0-rev-17
 ### Added
