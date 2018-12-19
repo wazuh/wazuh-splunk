@@ -5,9 +5,17 @@
       <span> / Policy monitoring </span>
     </div>
     <div flex></div>
+    <!-- Report button -->
+    <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" tooltip="Generate report" tooltip-placement="bottom"
+      ng-disabled="loading" ng-click="startVis2Png()" aria-label="Generate report button">
+      <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+    </md-button>
     <div style="margin-right:7px;" id='timePicker'></div>
   </div>
   <!-- Filter bar -->
+
+  <!-- Loading report-->
+  <div align='center' ng-if='loadingReporting'>Generating reporting<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
 
   <wazuh-bar></wazuh-bar>
   <!-- first row  -->

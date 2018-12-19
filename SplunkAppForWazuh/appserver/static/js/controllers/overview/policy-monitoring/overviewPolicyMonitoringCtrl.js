@@ -13,11 +13,13 @@ define([
      * @param {*} $scope 
      * @param {*} $currentDataService 
      * @param {*} $state 
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.state = $state
+      this.reportingService = $reportingService
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.timePicker = new TimePicker(
@@ -79,6 +81,23 @@ define([
         this.timePicker.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-pm', [
+        'elementOverTime',
+        'cisRequirements',
+        'topPciDss',
+        'eventsPerAgent',
+        'alertsSummary'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
     }
 
     /**
