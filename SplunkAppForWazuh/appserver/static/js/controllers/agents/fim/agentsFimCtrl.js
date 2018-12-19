@@ -18,6 +18,7 @@ define([
      * @param {Object} $currentDataService
      * @param {Object} agent
      * @param {Object} $notificationService
+     * @param {*} $reportingService
      */
 
     constructor(
@@ -28,7 +29,8 @@ define([
       agent,
       $tableFilterService,
       $csvRequestService,
-      $notificationService
+      $notificationService,
+      $reportingService
     ) {
       this.state = $state
       this.wzTableFilter = $tableFilterService
@@ -37,6 +39,7 @@ define([
       this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
+      this.reportingService = $reportingService
       this.scope = $scope
       this.scope.buttonShowElements = 'Show files'
       this.scope.showFiles = false
@@ -111,6 +114,24 @@ define([
           'eventsSummaryElement'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-fim', [
+        'eventsOverTimeElement',
+        'topGroupOwnersElement',
+        'topUserOwnersElement',
+        'topFileChangesElement',
+        'rootUserFileChangesElement',
+        'eventsSummaryElement'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
 
       /**
        * When controller is destroyed
