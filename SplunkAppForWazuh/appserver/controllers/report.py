@@ -112,7 +112,7 @@ class report(controllers.BaseController):
             self.pdf.cell(0,0, 'Security events report')
             #Break line
             self.pdf.ln(10)
-            self.pdf.set_font('Arial', '', 15)
+            self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(0,0, self.filters)
             # Add visualizations
             x = 30
@@ -121,6 +121,7 @@ class report(controllers.BaseController):
             w = 150
             h = 75
             count = 0
+            n_images = len(self.images)
             self.pdf.set_font('Times', 'IU', 12)
             self.pdf.ln(20)
             for title, image_path in self.images.iteritems():
@@ -129,7 +130,8 @@ class report(controllers.BaseController):
                 self.pdf.ln(90)
                 y_img = y_img + 100
                 count = count + 1
-                if count == 2:
+                n_images = n_images - 1
+                if count == 2 and n_images >= 1:
                     self.pdf.add_page()
                     self.pdf.ln(20)
                     y_img = 50
