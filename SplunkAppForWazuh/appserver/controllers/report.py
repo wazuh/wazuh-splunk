@@ -59,7 +59,6 @@ class report(controllers.BaseController):
         self.images = {}
         self.html = ""
         try:
-            self.pdf = PDF('P', 'mm', 'A4')
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
@@ -92,6 +91,7 @@ class report(controllers.BaseController):
 
         """
         try:
+            self.pdf = PDF('P', 'mm', 'A4')
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
             images = json.loads(json_acceptable_string)
