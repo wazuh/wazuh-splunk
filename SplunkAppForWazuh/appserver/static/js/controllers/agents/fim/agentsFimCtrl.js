@@ -119,7 +119,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-fim', [
+      this.reportingService.startVis2Png('agents-fim', 'File integrity monitoring', this.filters, [
         'eventsOverTimeElement',
         'topGroupOwnersElement',
         'topUserOwnersElement',

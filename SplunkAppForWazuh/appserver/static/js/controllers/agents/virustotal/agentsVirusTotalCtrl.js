@@ -98,7 +98,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-virustotal', [
+      this.reportingService.startVis2Png('agents-virustotal', 'VirusTotal', this.filters,  [
         'alertsVolume',
         'eventsSummaryElement',
         'eventsOverTimeElement',

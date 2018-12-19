@@ -108,7 +108,10 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-fim', [
+      this.reportingService.startVis2Png('overview-fim',
+      'File integrity monitoring',
+      this.filters,
+      [
         'deletedFiles',
         'newFiles',
         'modifiedFiles',

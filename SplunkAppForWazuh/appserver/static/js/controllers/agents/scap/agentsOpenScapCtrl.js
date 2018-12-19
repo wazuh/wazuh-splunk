@@ -186,7 +186,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-openscap', [
+      this.reportingService.startVis2Png('agents-openscap', 'Open SCAP', this.filters, [
         'agentsVizz',
         'profilesVizz',
         'contentVizz',

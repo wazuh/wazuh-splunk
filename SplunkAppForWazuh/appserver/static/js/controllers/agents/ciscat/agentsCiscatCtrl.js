@@ -165,7 +165,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-ciscat', [
+      this.reportingService.startVis2Png('agents-ciscat', 'CIS-CAT', this.filters, [
         'topCiscatGroups',
         'scanResultEvolution',
         'alertsSummary'

@@ -122,7 +122,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-general', [
+      this.reportingService.startVis2Png('agents-general', 'Security events report', this.filters, [
         'top5AlertsVizz',
         'top5GroupsVizz',
         'top5PCIreqVizz',

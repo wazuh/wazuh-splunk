@@ -118,7 +118,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('osquery', [
+      this.reportingService.startVis2Png('osquery', 'Osquery', this.filters, [
         'mostCommonPacks',
         'alertsPacksOverTime',
         'mostCommonActions',

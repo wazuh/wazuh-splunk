@@ -115,7 +115,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-gdpr', [
+      this.reportingService.startVis2Png('agents-gdpr', 'GDPR', this.filters, [
         'gdprRequirementsVizz',
         'groupsVizz',
         'agentsVizz',
