@@ -133,11 +133,13 @@ define(['../../module'], function(app) {
     /**
      * First load
      */
-    load() {
+    async load() {
       try {
         this.loading = true
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
+        const reports =  await this.genericReq('GET', '/report/reports')
+        this.items = reports.data.data
         this.scope.gap =
           gap - parseInt(this.items.length / 15) > 0
             ? gapInteger + 1
