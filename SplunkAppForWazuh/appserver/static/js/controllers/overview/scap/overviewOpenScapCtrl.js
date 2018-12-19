@@ -29,9 +29,10 @@ define([
      * @param {*} $currentDataService 
      * @param {*} $state 
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.groups":"oscap", "implicit":true}`
@@ -159,6 +160,26 @@ define([
           'alertsSummaryVizz'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-fim', [
+        'agentsVizz',
+        'profilesVizz',
+        'contentVizz',
+        'severityVizz',
+        'top5AgentsVizz',
+        'top10AlertsVizz',
+        'top10HRisk',
+        'alertsSummaryVizz'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance)
