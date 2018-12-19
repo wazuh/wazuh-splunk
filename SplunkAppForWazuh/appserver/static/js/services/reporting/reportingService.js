@@ -25,6 +25,8 @@ define(['../module', 'jquery'], function(module, $) {
      */
     async startVis2Png(
       tab,
+      sectionTitle,
+      filters,
       vizz = [],
       isAgents = false,
     ) {
@@ -50,7 +52,7 @@ define(['../module', 'jquery'], function(module, $) {
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const array = await this.vis2png.checkArray(idArray)
+        const array = await this.vis2png.checkArray(idArray, sectionTitle, filters)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`

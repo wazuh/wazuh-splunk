@@ -19,11 +19,9 @@ define(['../module', 'domToImg'], function(app, domToImg) {
       this.htmlObject = {}
       this.working = false
       this.currentDataService = $currentDataService
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
     }
 
-    async checkArray(visArray) {
+    async checkArray(visArray, sectionTitle, filters) {
       try {
         this.working = true
         const len = visArray.length
@@ -40,7 +38,8 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 height: tmpNode.height(),
                 id: currentValue,
                 title: title,
-                filters: this.filters
+                sectionTitle: sectionTitle,
+                filters: filters
               })
             } catch (error) {
               console.error('error converting ', error)

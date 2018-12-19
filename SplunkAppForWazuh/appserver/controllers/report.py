@@ -99,6 +99,7 @@ class report(controllers.BaseController):
             self.logger.info("Size of array: %s" % (len(images['array'])))
             #Get filters 
             self.filters = images['array'][0]['filters']
+            self.section_title = images['array'][0]['sectionTitle']
             #Save the images
             self.save_images(images)
             parsed_data = json.dumps({'data': 'success'})
@@ -113,7 +114,7 @@ class report(controllers.BaseController):
             self.pdf.set_text_color(93, 188, 210)
             #Arial Bold 20
             self.pdf.set_font('Arial', '', 25)
-            self.pdf.cell(0,0, 'Security events report')
+            self.pdf.cell(0,0, self.section_title + ' report')
             #Break line
             self.pdf.ln(10)
             self.pdf.set_font('Arial', '', 12)
