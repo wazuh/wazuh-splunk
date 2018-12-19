@@ -15,11 +15,13 @@ define([
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {*} $reportingService 
      */
 
-    constructor($urlTokenModel, $state, $scope, $currentDataService, agent) {
+    constructor($urlTokenModel, $state, $scope, $currentDataService, agent, $reportingService) {
       this.state = $state
       this.currentDataService = $currentDataService
+      this.reportingService = $reportingService
       this.scope = $scope
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
@@ -92,6 +94,21 @@ define([
         )
       ]
 
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-virustotal', [
+        'alertsVolume',
+        'eventsSummaryElement',
+        'eventsOverTimeElement',
+        'top5Rules',
+        'filesAffected'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
       /**
        * When controller is destroyed
        */
