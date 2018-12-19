@@ -13,11 +13,13 @@ define([
      * @param {*} $scope 
      * @param {*} $currentDataService 
      * @param {*} $state 
+     * @param {*} $reportingService 
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.state = $state
       this.getFilters = $currentDataService.getSerializedFilters
+      this.reportingService = $reportingService
       this.filters = this.getFilters()
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -88,6 +90,22 @@ define([
           'alertsSummaryViz'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-gdpr', [
+        'gdprRequirements',
+        'groupsViz',
+        'agentsViz',
+        'requirementsByAgents',
+        'alertsSummaryViz'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
 
       /**
        * When controller is destroyed
