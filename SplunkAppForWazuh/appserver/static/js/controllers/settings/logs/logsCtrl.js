@@ -54,12 +54,13 @@ define(['../../module'], function(module) {
               } catch (error) {
                 logs[i] = {
                   date: new Date(),
-                  level: 'error',
+                  level: 'parse_error',
                   message: 'Cannot parse this log message'
                 }
               }
             }
-            this.scope.logs = logs
+            const excludeParseError = logs.filter(log => log.level !== 'parse_error')
+            this.scope.logs = excludeParseError
           } else {
             this.scope.logs = [
               { date: new Date(), level: 'info', message: 'Empty logs' }
@@ -74,6 +75,7 @@ define(['../../module'], function(module) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (error) {
+        console.error("catch ", error)
         this.root.$broadcast('loading', { status: false })
         this.scope.logs = [
           {

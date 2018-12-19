@@ -15,13 +15,17 @@
 #wz-search-filter-bar {
   padding: 8px;
   margin-top: 15px;
-  overflow: auto;
+  /*overflow: auto;*/
 }
 #wz-search-filter-bar > .fa-search {
   padding: 8px 3px;
   float: left;
   opacity: .5;
   width: calc(0% + 25px);
+}
+.fa-search-margin { 
+  margin-left: 10px;
+  margin-top: 7px;
 }
 .wz-tags {
   height: 30px;

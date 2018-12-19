@@ -20,6 +20,7 @@ define([
     constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
       this.state = $state
       this.currentDataService = $currentDataService
+      this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
@@ -65,7 +66,7 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-      this.filters = this.currentDataService.getSerializedFilters()
+
       this.vizz = [
         /**
          * Visualizations
