@@ -75,7 +75,6 @@ define(['../../module'], function(module) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (error) {
-        console.error("catch ", error)
         this.root.$broadcast('loading', { status: false })
         this.scope.logs = [
           {

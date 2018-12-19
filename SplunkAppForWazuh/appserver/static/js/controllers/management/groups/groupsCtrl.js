@@ -234,13 +234,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
             this.scope.deletedAgents.push(orig)
           }
         })
-
-        console.log('Added: ' + this.scope.addedAgents.map(x => x.key) + " - Deleted: " + this.scope.deletedAgents.map(x => x.key))
       }
-
-
-
-
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
