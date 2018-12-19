@@ -20,6 +20,8 @@ define([
   '../../libs/codemirror-conv/foldgutter',
   '../../libs/codemirror-conv/search-cursor',
   '../../libs/codemirror-conv/mark-selection',
+  '../../libs/codemirror-conv/formatting',
+  '../../libs/codemirror-conv/xml',
 ], function (
   app,
   CodeMirror
@@ -41,7 +43,7 @@ define([
           $document,
           $notificationService
         ) {
-          $(document).ready(function () {
+          $(document).ready( () => {
             $scope.xmlCodeBox = CodeMirror.fromTextArea(
               $document[0].getElementById('xml_box'),
               {
@@ -64,11 +66,10 @@ define([
                 var parser = new DOMParser()
                 var xml = $scope.xmlCodeBox.getValue()
                 var xmlDoc = parser.parseFromString(xml, "text/xml")
-                $timeout(function () {
+                $timeout( () => {
                   $scope.xmlHasErrors = xmlDoc.getElementsByTagName("parsererror").length > 0 ? true : false
                 }, 50)
               } catch (error) {
-                console.error('error checkxmlparse ',error)
                 $notificationService.showSimpleToast(error)
               }
             }
@@ -96,7 +97,6 @@ define([
 
           $scope.saveFile = async () => {
             const response = await updateFile()
-            console.log(response)
           }
 
           const fetchFile = async () => {
@@ -113,7 +113,6 @@ define([
                 "</agent_config>"
               return xml
             } catch (error) {
-              console.error('error fetchfile ',error)
               $notificationService.showSimpleToast(error)
             }
           }
@@ -127,10 +126,8 @@ define([
               $scope.xmlCodeBox.setValue(xml)
               autoFormat()
               $scope.loadingFile = false
-              $timeout(function () { $scope.xmlCodeBox.refresh() }, 100)
+              $timeout( () => { $scope.xmlCodeBox.refresh() }, 100)
             } catch (error) {
-              console.error('error editXmlFile ',error)
-
               $notificationService.showSimpleToast(error)
             }
           }
