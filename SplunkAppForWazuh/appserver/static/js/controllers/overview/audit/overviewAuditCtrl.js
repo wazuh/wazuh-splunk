@@ -23,10 +23,12 @@ define([
      * @param {*} $scope 
      * @param {*} $currentDataService 
      * @param {*} $state 
+     * @param {*} $reportingService 
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.currentDataService = $currentDataService
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
@@ -173,6 +175,29 @@ define([
           'alertsSummaryElement'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-audit', [
+        'groupsElement',
+        'agentsElement',
+        'directoriesElement',
+        'filesElement',
+        'alertsOverTimeElement',
+        'fileReadAccessElement',
+        'fileWriteAccessElement',
+        'commandsElement',
+        'createdFilesElement',
+        'removedFilesElement',
+        'alertsSummaryElement'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
     }
 
     /**
