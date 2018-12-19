@@ -25,10 +25,12 @@ define([
      * @param {*} $scope 
      * @param {*} $currentDataService 
      * @param {*} $state 
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
@@ -129,6 +131,23 @@ define([
           'alertsSummary'
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('overview-vulnerabilities', [
+        'affectedAgents',
+        'alertsEvolution',
+        'severityDist',
+        'commonAffectedPackages',
+        'commonCves',
+        'alertsSummary'
+      ])
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
 
       /**
        * On controller destroy
