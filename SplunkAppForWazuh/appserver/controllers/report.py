@@ -26,7 +26,7 @@ class PDF(FPDF):
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 40)
         self.set_font('Times', '', 11)
-        self.set_text_color(58, 162, 242)
+        self.set_text_color(93, 188, 210)
         #Contact info
         self.cell(150) #Move to the right
         self.cell(0, 5, 'info@wazuh.com')
@@ -37,11 +37,15 @@ class PDF(FPDF):
     # Page footer
     def footer(self):
         # Position at 1.5 cm from bottom
+        self.copyright = unicode('Copyright © 2018 Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
-        self.set_text_color(58, 162, 242)
-        self.set_font('Arial', 'IB', 8)
+        self.set_text_color(93, 188, 210)
+        self.set_font('Arial', 'B', 8)
         # Page number
-        self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
+        self.cell(100, 10, self.copyright, 0, 0, 'L')
+        self.cell(0, 10, 'Page ' + str(self.page_no()) + ' of {nb}', 0, 0, 'R')
+        
+
 
 class report(controllers.BaseController):
     """Report class.
@@ -106,9 +110,9 @@ class report(controllers.BaseController):
             self.pdf.add_page()
             self.pdf.ln(20)
             #Color WazuhBlue
-            self.pdf.set_text_color(58, 162, 242)
+            self.pdf.set_text_color(93, 188, 210)
             #Arial Bold 20
-            self.pdf.set_font('Arial', 'I', 25)
+            self.pdf.set_font('Arial', '', 25)
             self.pdf.cell(0,0, 'Security events report')
             #Break line
             self.pdf.ln(10)
@@ -122,7 +126,7 @@ class report(controllers.BaseController):
             h = 75
             count = 0
             n_images = len(self.images)
-            self.pdf.set_font('Times', 'IU', 12)
+            self.pdf.set_font('Times', 'U', 12)
             self.pdf.ln(20)
             for title, image_path in self.images.iteritems():
                 self.pdf.cell(x , y, title, 0, 1)
