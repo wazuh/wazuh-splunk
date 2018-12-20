@@ -25,7 +25,7 @@ class PDF(FPDF):
     def header(self):
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 40)
-        self.set_font('Times', '', 11)
+        self.set_font('Arial', '', 11)
         self.set_text_color(93, 188, 210)
         #Contact info
         self.cell(150) #Move to the right
@@ -56,7 +56,7 @@ class report(controllers.BaseController):
     def __init__(self):
         """Constructor."""
         self.logger = log()
-        self.images = {}
+        self.images = []
         try:
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
@@ -66,19 +66,24 @@ class report(controllers.BaseController):
     def save_images(self, images):
         i = 0
         while i in range(0, len(images['array'])):
-            f = open(self.path+str(images['array'][i]['id'])+'.png', 'wb')
-            title = str(images['array'][i]['title'])
             path = str(self.path+str(images['array'][i]['id'])+'.png')
+            f = open(path, 'wb')
+            title = str(images['array'][i]['title'])
+            width = str(images['array'][i]['width'])
+            height = str(images['array'][i]['height'])
             f.write(base64.decodestring(
                 images['array'][i]['element'].split(',')[1].encode()))
             f.close()
-            self.images[title] = path
+            image = {'title': title, 'path': path, 'width': width, 'height': height}
+            self.images.append(image)
             i += 1
 
     def delete_images(self):
-        for title, path in self.images.iteritems():
-            os.remove(path)
-        self.images = {}
+        for img in self.images:
+            os.remove(img['path'])
+            self.logger.info("removed img: " + str(img['path']))
+            self.logger.info("h : "+ str(img['height']))
+        self.images = []
 
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
@@ -96,7 +101,7 @@ class report(controllers.BaseController):
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
             images = json.loads(json_acceptable_string)
-            today = datetime.datetime.now().strftime('%Y.%m.%d')
+            today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             self.logger.info("Size of array: %s" % (len(images['array'])))
             #Get filters and other information
@@ -154,19 +159,23 @@ class report(controllers.BaseController):
             y_img = 80
             w = 150
             h = 75
+            w = 120
+            h = 45
             count = 0
             n_images = len(self.images)
             self.pdf.set_text_color(93, 188, 210)
-            self.pdf.set_font('Times', 'U', 12)
+            self.pdf.set_font('Arial', '', 14)
             if self.metrics_exists:
                 pass
                 y_img = y_img + 10
                 self.pdf.ln(10)
             else:
                 self.pdf.ln(5)
-            for title, image_path in self.images.iteritems():
-                self.pdf.cell(x , y, title, 0, 1)
-                self.pdf.image(image_path, x, y_img, w, h)
+            #for title, image_path in self.images.iteritems():
+            for img in self.images:
+                self.pdf.cell(x , y, img['title'], 0, 1)
+                self.pdf.image(img['path'], x, y_img, w, h)
+                #self.pdf.image(img['path'], x, y_img)
                 self.pdf.ln(90)
                 y_img = y_img + 100
                 count = count + 1
