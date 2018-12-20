@@ -115,14 +115,17 @@ class report(controllers.BaseController):
             # Title Arial Bold 20
             self.pdf.set_font('Arial', '', 25)
             self.pdf.cell(0,0, self.section_title + ' report' , 0, 0, 'L')
-            #Date and search time range
-            self.pdf.set_font('Arial', '', 11)
+            #Date
+            self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(0,0, today , 0, 0, 'R')
-            self.pdf.ln(4)
-            self.pdf.cell(0,0, self.time_range , 0, 0, 'R')
-            #Filters
-            self.pdf.ln(10)
-            self.pdf.cell(0,0, self.filters)
+            #Filters and search time range
+            self.pdf.ln(7)
+            self.pdf.set_fill_color(93, 188, 210)
+            self.pdf.set_text_color(255,255,255)
+            self.pdf.set_font('Arial', '', 10)
+            self.pdf.cell(0, 5, ' Search time range: ' + self.time_range , 0, 0, 'L', 1)
+            self.pdf.ln(5)
+            self.pdf.cell(0, 5, ' Filters:' + self.filters , 0, 0, 'L', 1)
             # Add visualizations
             x = 30
             y = 10
@@ -131,6 +134,7 @@ class report(controllers.BaseController):
             h = 75
             count = 0
             n_images = len(self.images)
+            self.pdf.set_text_color(93, 188, 210)
             self.pdf.set_font('Times', 'U', 12)
             self.pdf.ln(20)
             for title, image_path in self.images.iteritems():
