@@ -92,6 +92,7 @@ class report(controllers.BaseController):
         """
         try:
             self.pdf = PDF('P', 'mm', 'A4')
+            self.metrics_exists = False
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
             images = json.loads(json_acceptable_string)
@@ -103,6 +104,8 @@ class report(controllers.BaseController):
             self.pdf_name = images['array'][0]['pdfName']
             self.time_range = images['array'][0]['timeRange']
             self.section_title = images['array'][0]['sectionTitle']
+            self.metrics = images['array'][0]['metrics']
+            self.metrics = json.loads(self.metrics)
             #Save the images
             self.save_images(images)
             parsed_data = json.dumps({'data': 'success'})
@@ -126,6 +129,25 @@ class report(controllers.BaseController):
             self.pdf.cell(0, 5, ' Search time range: ' + self.time_range , 0, 0, 'L', 1)
             self.pdf.ln(5)
             self.pdf.cell(0, 5, ' Filters:' + self.filters , 0, 0, 'L', 1)
+            #Check metrics and print if exist
+            if len(self.metrics) > 0:
+                self.metrics_exists = True
+                w = 5
+                line_width = 0
+                total_width = 190
+                self.pdf.ln(10)
+                self.pdf.set_font('Arial', '', 8)
+                for key in self.metrics.keys():
+                    text = (str(key) +': '+ str(self.metrics[key]))
+                    text_w = self.pdf.get_string_width(text) + w
+                    line_width = line_width + text_w
+                    if line_width >= total_width:
+                        self.pdf.cell((total_width - (line_width - text_w)), 4, '', 0, 0, 'L', 1)#Fill rest of the width
+                        self.pdf.ln(4)
+                        line_width = text_w
+                    self.pdf.cell(text_w, 4, text, 0, 0, 'L', 1)
+                if line_width < total_width:
+                    self.pdf.cell((total_width - line_width), 4, '', 0, 0, 'L', 1)#Fill rest of the width in the last row
             # Add visualizations
             x = 30
             y = 10
@@ -136,7 +158,12 @@ class report(controllers.BaseController):
             n_images = len(self.images)
             self.pdf.set_text_color(93, 188, 210)
             self.pdf.set_font('Times', 'U', 12)
-            self.pdf.ln(20)
+            if self.metrics_exists:
+                pass
+                y_img = y_img + 10
+                self.pdf.ln(10)
+            else:
+                self.pdf.ln(5)
             for title, image_path in self.images.iteritems():
                 self.pdf.cell(x , y, title, 0, 1)
                 self.pdf.image(image_path, x, y_img, w, h)
