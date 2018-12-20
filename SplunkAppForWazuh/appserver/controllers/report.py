@@ -57,7 +57,6 @@ class report(controllers.BaseController):
         """Constructor."""
         self.logger = log()
         self.images = {}
-        self.html = ""
         try:
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
@@ -67,9 +66,9 @@ class report(controllers.BaseController):
     def save_images(self, images):
         i = 0
         while i in range(0, len(images['array'])):
-            f = open(self.path+'sample'+str(i)+'.png', 'wb')
+            f = open(self.path+str(images['array'][i]['id'])+'.png', 'wb')
             title = str(images['array'][i]['title'])
-            path = str(self.path+'sample'+str(i)+'.png')
+            path = str(self.path+str(images['array'][i]['id'])+'.png')
             f.write(base64.decodestring(
                 images['array'][i]['element'].split(',')[1].encode()))
             f.close()
@@ -79,6 +78,7 @@ class report(controllers.BaseController):
     def delete_images(self):
         for title, path in self.images.iteritems():
             os.remove(path)
+        self.images = {}
 
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
@@ -103,9 +103,6 @@ class report(controllers.BaseController):
             #Save the images
             self.save_images(images)
             parsed_data = json.dumps({'data': 'success'})
-            #
-            #""" % (title, image_path,)
-
             # Add title and filters 
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
