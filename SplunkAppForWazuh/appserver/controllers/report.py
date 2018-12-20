@@ -95,10 +95,13 @@ class report(controllers.BaseController):
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
             images = json.loads(json_acceptable_string)
+            today = datetime.datetime.now().strftime('%Y.%m.%d')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             self.logger.info("Size of array: %s" % (len(images['array'])))
-            #Get filters 
+            #Get filters and other information
             self.filters = images['array'][0]['filters']
+            self.pdf_name = images['array'][0]['pdfName']
+            self.time_range = images['array'][0]['timeRange']
             self.section_title = images['array'][0]['sectionTitle']
             #Save the images
             self.save_images(images)
@@ -109,12 +112,16 @@ class report(controllers.BaseController):
             self.pdf.ln(20)
             #Color WazuhBlue
             self.pdf.set_text_color(93, 188, 210)
-            #Arial Bold 20
+            # Title Arial Bold 20
             self.pdf.set_font('Arial', '', 25)
-            self.pdf.cell(0,0, self.section_title + ' report')
-            #Break line
+            self.pdf.cell(0,0, self.section_title + ' report' , 0, 0, 'L')
+            #Date and search time range
+            self.pdf.set_font('Arial', '', 11)
+            self.pdf.cell(0,0, today , 0, 0, 'R')
+            self.pdf.ln(4)
+            self.pdf.cell(0,0, self.time_range , 0, 0, 'R')
+            #Filters
             self.pdf.ln(10)
-            self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(0,0, self.filters)
             # Add visualizations
             x = 30
@@ -139,7 +146,7 @@ class report(controllers.BaseController):
                     y_img = 50
                     count = 0
             #Save pdf
-            self.pdf.output(self.path+'tuto1'+report_id+'.pdf', 'F')
+            self.pdf.output(self.path+'wazuh-'+self.pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
             self.delete_images()
         except Exception as e:

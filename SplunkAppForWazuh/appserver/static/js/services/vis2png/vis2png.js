@@ -21,11 +21,12 @@ define(['../module', 'domToImg'], function(app, domToImg) {
       this.currentDataService = $currentDataService
     }
 
-    async checkArray(visArray, sectionTitle, filters) {
+    async checkArray(tab, visArray, sectionTitle, filters) {
       try {
         this.working = true
         const len = visArray.length
         let currentCompleted = 0
+        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
@@ -39,7 +40,9 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 id: currentValue,
                 title: title,
                 sectionTitle: sectionTitle,
-                filters: filters
+                filters: filters,
+                timeRange: timeRange,
+                pdfName: tab
               })
             } catch (error) {
               console.error('error converting ', error)

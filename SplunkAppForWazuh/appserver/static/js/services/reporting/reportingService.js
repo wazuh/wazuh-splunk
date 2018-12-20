@@ -52,7 +52,7 @@ define(['../module', 'jquery'], function(module, $) {
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const array = await this.vis2png.checkArray(idArray, sectionTitle, filters)
+        const array = await this.vis2png.checkArray(tab, idArray, sectionTitle, filters)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
