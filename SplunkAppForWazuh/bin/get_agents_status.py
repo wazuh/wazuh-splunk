@@ -45,7 +45,7 @@ def check_status():
             opt_username = api["userapi"]
             opt_base_url = api["url"]
             opt_base_port = api["portapi"]
-            final_obj = {}
+            agent_list = {}
             url = opt_base_url + ":" + opt_base_port
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
@@ -62,7 +62,7 @@ def check_status():
                 request_agents = requests.get(
                     agents_url, auth=auth, timeout=1, verify=verify).json()
 
-                final_obj = request_agents["data"]["items"]
+                agent_list = request_agents["data"]["items"]
                 final_url_cluster = url + '/cluster/status'
                 request_cluster_status = requests.get(
                     final_url_cluster,
@@ -76,12 +76,13 @@ def check_status():
                     timeout=1,
                     auth=auth,
                     verify=verify).json()
-                for item in final_obj:
+                for item in agent_list:
                     if cluster_status == "yes":
                         item["cluster"] = {}
-                        item["cluster"]["name"] = request_cluster_name
-                        ["data"]
-                        ["cluster"]
+                        item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
+                    manager_name = item["manager"]
+                    item["manager"] = {}
+                    item["manager"]["name"] = manager_name
                     item["timestamp"] = date
                     print(json.dumps(item))
             except Exception as e:
