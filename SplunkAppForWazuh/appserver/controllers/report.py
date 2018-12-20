@@ -12,6 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 import os
+import time
 import json
 import datetime
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -159,8 +160,6 @@ class report(controllers.BaseController):
             y_img = 80
             w = 150
             h = 75
-            w = 120
-            h = 45
             count = 0
             n_images = len(self.images)
             self.pdf.set_text_color(93, 188, 210)
@@ -171,11 +170,9 @@ class report(controllers.BaseController):
                 self.pdf.ln(10)
             else:
                 self.pdf.ln(5)
-            #for title, image_path in self.images.iteritems():
             for img in self.images:
                 self.pdf.cell(x , y, img['title'], 0, 1)
                 self.pdf.image(img['path'], x, y_img, w, h)
-                #self.pdf.image(img['path'], x, y_img)
                 self.pdf.ln(90)
                 y_img = y_img + 100
                 count = count + 1
@@ -214,7 +211,7 @@ class report(controllers.BaseController):
                         file = {}
                         file['size'] = os.path.getsize(self.path+f)
                         file['name'] = f
-                        file['date'] = os.path.getmtime(self.path+f)
+                        file['date'] = time.strftime('%Y.%m.%d %H:%M', time.gmtime(os.path.getmtime(self.path+f)))
                         pdf_files.append(file)
 
             parsed_data = json.dumps({'data': pdf_files})
