@@ -28,9 +28,11 @@ define(['../module', 'jquery'], function(module, $) {
       sectionTitle,
       filters,
       vizz = [],
-      isAgents = false,
+      metrics = {},
+      isAgents = false
     ) {
       try {
+        metrics = JSON.stringify(metrics)
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         if (this.vis2png.isWorking()) {
           this.errorHandler('Report in progress')
@@ -52,7 +54,7 @@ define(['../module', 'jquery'], function(module, $) {
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const array = await this.vis2png.checkArray(tab, idArray, sectionTitle, filters)
+        const array = await this.vis2png.checkArray(tab, idArray, sectionTitle, filters, metrics)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`

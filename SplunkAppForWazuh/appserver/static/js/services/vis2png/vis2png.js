@@ -21,7 +21,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
       this.currentDataService = $currentDataService
     }
 
-    async checkArray(tab, visArray, sectionTitle, filters) {
+    async checkArray(tab, visArray, sectionTitle, filters, metrics) {
       try {
         this.working = true
         const len = visArray.length
@@ -42,7 +42,8 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 sectionTitle: sectionTitle,
                 filters: filters,
                 timeRange: timeRange,
-                pdfName: tab
+                pdfName: tab,
+                metrics: metrics
               })
             } catch (error) {
               console.error('error converting ', error)
