@@ -140,6 +140,19 @@ define([
         /**
          * Generates report
          */
+        this.metricsBuckets = []
+        this.scope.awsMetrics.buckets.map( b => {
+          if (b.name) { this.metricsBuckets.push(b.name) }
+        })
+        this.reportMetrics = {
+          'Enabled': this.scope.awsMetrics.enabled,
+          'Scan interval': this.scope.awsMetrics.scanInterval,
+          'Run on start': this.scope.awsMetrics.runOnStart,
+          'Skip on error': this.scope.awsMetrics.skipOnError,
+          'Buckets': this.metricsBuckets.toString(),
+          'Accounts in use': this.scope.awsMetrics.accountInUse.toString(),
+          'Regions in use': this.scope.awsMetrics.regionsInUse.toString()
+        }
         this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png('aws', 'Amazon web services', this.amazonFilters,[
           'eventsByIdOverTime',
@@ -151,7 +164,8 @@ define([
           'map',
           'top5Buckets',
           'top5Rules'
-        ])
+        ]
+        ,this.reportMetrics)
 
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
