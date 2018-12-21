@@ -21,30 +21,29 @@ define(['../module', 'domToImg'], function(app, domToImg) {
       this.currentDataService = $currentDataService
     }
 
-    async checkArray(tab, visArray, sectionTitle, filters, metrics) {
+    async checkArray(visArray) {
+      //sectionTitle, filters, metrics
       try {
         this.working = true
         const len = visArray.length
         let currentCompleted = 0
-        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
             const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
+            const type = document.getElementById(currentValue).className.split(' ')[1]
             try {
-              const tmpResult = await domToImg.toPng(tmpNode[0])
-              this.rawArray.push({
-                element: tmpResult,
-                width: tmpNode.width(),
-                height: tmpNode.height(),
-                id: currentValue,
-                title: title,
-                sectionTitle: sectionTitle,
-                filters: filters,
-                timeRange: timeRange,
-                pdfName: tab,
-                metrics: metrics
-              })
+              if (type !== 'table'){
+                const tmpResult = await domToImg.toPng(tmpNode[0])
+                this.rawArray.push({
+                  element: tmpResult,
+                  width: tmpNode.width(),
+                  height: tmpNode.height(),
+                  id: currentValue,
+                  title: title,
+                  timeRange: timeRange,
+                })
+              }
             } catch (error) {
               console.error('error converting ', error)
             } // eslint-disable-line

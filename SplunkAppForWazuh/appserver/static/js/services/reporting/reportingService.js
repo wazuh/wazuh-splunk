@@ -26,9 +26,10 @@ define(['../module', 'jquery'], function(module, $) {
     async startVis2Png(
       tab,
       sectionTitle,
-      filters,
+      queryFilters,
       vizz = [],
       metrics = {},
+      tableResults = {},
       isAgents = false
     ) {
       try {
@@ -54,20 +55,28 @@ define(['../module', 'jquery'], function(module, $) {
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const array = await this.vis2png.checkArray(tab, idArray, sectionTitle, filters, metrics)
+        const images = await this.vis2png.checkArray(idArray)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+        
+        //Search time range
+        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML
 
         const data = {
-          array,
+          images,
+          tableResults,
+          sectionTitle,
+          timeRange,
+          queryFilters,
+          metrics,
           name,
           title: isAgents ? `Agents ${tab}` : `Overview ${tab}`,
           filters: appliedFilters.filters,
           time: appliedFilters.time,
           searchBar: appliedFilters.searchBar,
           tables: appliedFilters.tables,
-          tab,
+          pdfName: tab,
           section: isAgents ? 'agents' : 'overview',
           isAgents
         }

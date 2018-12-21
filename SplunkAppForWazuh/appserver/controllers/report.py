@@ -67,14 +67,14 @@ class report(controllers.BaseController):
 
     def save_images(self, images):
         i = 0
-        while i in range(0, len(images['array'])):
-            path = str(self.path+str(images['array'][i]['id'])+'.png')
+        while i in range(0, len(images['images'])):
+            path = str(self.path+str(images['images'][i]['id'])+'.png')
             f = open(path, 'wb')
-            title = str(images['array'][i]['title'])
-            width = images['array'][i]['width']
-            height = images['array'][i]['height']
+            title = str(images['images'][i]['title'])
+            width = images['images'][i]['width']
+            height = images['images'][i]['height']
             f.write(base64.decodestring(
-                images['array'][i]['element'].split(',')[1].encode()))
+                images['images'][i]['element'].split(',')[1].encode()))
             f.close()
             image = {'title': title, 'path': path, 'width': width, 'height': height}
             self.images.append(image)
@@ -100,19 +100,19 @@ class report(controllers.BaseController):
             self.metrics_exists = False
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data'].replace("'", "\"")
-            images = json.loads(json_acceptable_string)
+            data = json.loads(json_acceptable_string)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            self.logger.info("Size of array: %s" % (len(images['array'])))
+            self.logger.info("Size of array: %s" % (len(data['images'])))
             #Get filters and other information
-            self.filters = images['array'][0]['filters']
-            self.pdf_name = images['array'][0]['pdfName']
-            self.time_range = images['array'][0]['timeRange']
-            self.section_title = images['array'][0]['sectionTitle']
-            self.metrics = images['array'][0]['metrics']
+            self.filters = data['queryFilters']
+            self.pdf_name = data['pdfName']
+            self.time_range = data['timeRange']
+            self.section_title = data['sectionTitle']
+            self.metrics = data['metrics']
             self.metrics = json.loads(self.metrics)
             #Save the images
-            self.save_images(images)
+            self.save_images(data)
             parsed_data = json.dumps({'data': 'success'})
             # Add title and filters 
             self.pdf.alias_nb_pages()
