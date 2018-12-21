@@ -67,14 +67,14 @@ class report(controllers.BaseController):
 
     def save_images(self, images):
         i = 0
-        while i in range(0, len(images['images'])):
-            path = str(self.path+str(images['images'][i]['id'])+'.png')
+        while i in range(0, len(images)):
+            path = str(self.path+str(images[i]['id'])+'.png')
             f = open(path, 'wb')
-            title = str(images['images'][i]['title'])
-            width = images['images'][i]['width']
-            height = images['images'][i]['height']
+            title = str(images[i]['title'])
+            width = images[i]['width']
+            height = images[i]['height']
             f.write(base64.decodestring(
-                images['images'][i]['element'].split(',')[1].encode()))
+                images[i]['element'].split(',')[1].encode()))
             f.close()
             image = {'title': title, 'path': path, 'width': width, 'height': height}
             self.images.append(image)
@@ -110,9 +110,10 @@ class report(controllers.BaseController):
             self.time_range = data['timeRange']
             self.section_title = data['sectionTitle']
             self.metrics = data['metrics']
+            self.tables = data['tableResults']
             self.metrics = json.loads(self.metrics)
             #Save the images
-            self.save_images(data)
+            self.save_images(data['images'])
             parsed_data = json.dumps({'data': 'success'})
             # Add title and filters 
             self.pdf.alias_nb_pages()
@@ -183,6 +184,32 @@ class report(controllers.BaseController):
                     self.pdf.ln(20)
                     y_img = 50
                     count = 0
+            #Add tables
+            self.pdf.add_page()
+            self.pdf.ln(20)
+            self.pdf.set_font('Arial', '', 8)
+            for table in self.tables:
+                sizes_field = self.calculate_table_width(table)
+                sizes_rows = []
+                self.logger.info(str(sizes_field))
+                self.pdf.set_fill_color(93, 188, 210)
+                self.pdf.set_text_color(255,255,255)
+                for field in table['fields']:
+                    if field != 'sparkline':
+                        width = sizes_field[field]
+                        sizes_rows.append(width)
+                        self.pdf.cell(width, 4, field, 0, 0, 'L', 1)
+                self.pdf.ln()
+                self.logger.info(str(sizes_rows))
+                self.pdf.set_text_color(93, 188, 210)
+                for row in table['rows']:
+                    count = 0
+                    for value in row:
+                        if not isinstance(value, list):
+                            width = sizes_rows[count]
+                            self.pdf.cell(width, 4, value, 0, 0, 'L', 0)
+                            count = count + 1
+                    self.pdf.ln()
             #Save pdf
             self.pdf.output(self.path+'wazuh-'+self.pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
@@ -191,6 +218,28 @@ class report(controllers.BaseController):
             self.logger.error("Error generating report: %s" % (e))
             return json.dumps({"error": str(e)})
         return parsed_data
+
+    def calculate_table_width(self, table):
+        sizes = {}
+        for field in table['fields']:
+            if field != 'sparkline':
+                sizes[field] = 0
+        for field in table['fields']:
+            if field != 'sparkline':
+                width = self.pdf.get_string_width(field) + 1
+                sizes[field] = width
+        n_fields = len(table['fields'])
+        for row in table['rows']:
+            count = 0
+            for value in row:
+                if not isinstance(value, list):
+                    key = list(sizes.keys())[count]
+                    prev_width = sizes[key]
+                    width = self.pdf.get_string_width(value) + 1
+                    if width > prev_width:
+                        sizes[key] = width
+                    count = count + 1
+        return sizes
 
     # Returns a list with all PDF files in the bin directory
     @expose_page(must_login=False, methods=['GET'])
