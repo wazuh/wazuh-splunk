@@ -35,20 +35,19 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.document = $document
       this.timeout = $timeout
       this.csvReq = $csvRequestService
-
       this.wzTableFilter = $tableFilterService
-
       this.apiReq = $requestService.apiReq
       this.toast = $notificationService.showSimpleToast
       this.mainGroup = ''
       this.scope.lookingGroup = false
       this.scope.loadingRing = false
-
+      this.rootScope = $rootScope
       this.scope.$watch('lookingGroup', value => {
-        this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-        this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-        this.scope.addMultipleAgents(false)
-        $rootScope.$emit('closeEditXmlFile', {})
+      this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+      this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+      this.scope.addMultipleAgents(false)
+      this.rootScope.$emit('closeEditXmlFile', {})
+
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -134,7 +133,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
             await this.scope.loadSelectedAgents(searchTerm)
           }
         }
-        this.timeout( () => {
+        this.timeout(() => {
           this.scope.multipleSelectorLoading = false
         }, 100)
       }
@@ -147,7 +146,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           }
           const result = await this.apiReq(`/agents/groups/${this.scope.currentGroup.name}`,
             params)
-          const mapped = result.data.data.items.map( (item) => {
+          const mapped = result.data.data.items.map((item) => {
             return { 'key': item.id, 'value': item.name }
           })
           if (searchTerm) {
@@ -172,13 +171,13 @@ define(['../../module', 'FileSaver'], function (controllers) {
             params.search = searchTerm
             this.scope.availableAgents.offset = 0
           }
-          const req = await this.apiReq('/agents/',params)
+          const req = await this.apiReq('/agents/', params)
           this.scope.totalAgents = req.data.data.totalItems
-          const mapped = req.data.data.items.filter( (item) => {
-            return this.scope.selectedAgents.data.filter( (selected) => {
+          const mapped = req.data.data.items.filter((item) => {
+            return this.scope.selectedAgents.data.filter((selected) => {
               return selected.key == item.id
             }).length == 0 && item.id !== '000'
-          }).map( (item) => {
+          }).map((item) => {
             return { 'key': item.id, 'value': item.name }
           })
           if (searchTerm || start) {
@@ -212,7 +211,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           }
           this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
           await this.scope.loadAllAgents()
-          this.timeout( () => {
+          this.timeout(() => {
             this.scope.multipleSelectorLoading = false
           }, 100)
         }
@@ -224,18 +223,55 @@ define(['../../module', 'FileSaver'], function (controllers) {
         this.scope.deletedAgents = []
         this.scope.addedAgents = []
 
-        modified.forEach( (mod) => {
+        modified.forEach((mod) => {
           if (original.filter(e => e.key === mod.key).length === 0) {
             this.scope.addedAgents.push(mod)
           }
         })
-        original.forEach( (orig) => {
+
+        original.forEach((orig) => {
           if (modified.filter(e => e.key === orig.key).length === 0) {
             this.scope.deletedAgents.push(orig)
           }
         })
+        const addedIds = this.scope.addedAgents.map(x => x.key)
+        const deletedIds = this.scope.deletedAgents.map(x => x.key)
+        const failedIds = []
+        try {
+          this.scope.multipleSelectorLoading = true
+          if (addedIds.length) {
+            const addResponse = await this.apiReq(`/agents/group/${this.scope.currentGroup.name}`, { 'ids': this.scope.addedAgents.map(x => x.key) }, 'POST')
+            if (addResponse.data.data.failed_ids) {
+              failedIds.push(...addResponse.data.data.failed_ids)
+            }
+
+          }
+          if (deletedIds.length) {
+            const deleteResponse = await this.apiReq(`/agents/group/${this.scope.currentGroup.name}`, { 'ids': deletedIds }, 'DELETE')
+            if (deleteResponse.data.data.failed_ids) {
+              failedIds.push(...deleteResponse.data.data.failed_ids)
+            }
+          }
+          if (failedIds.length) {
+            this.toast(`Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`)
+          } else {
+            this.toast(
+              'Success. Group has been updated'
+            )
+          }
+          this.scope.addMultipleAgents(false)
+        } catch (err) {
+          this.toast(err, 'Error applying changes')
+        }
+        this.timeout(() => {
+          this.scope.multipleSelectorLoading = false
+        }, 100)
       }
       if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    editGroupAgentConfig(group) {
+      this.rootScope.$emit('editXmlFile', { 'target': group })
     }
 
     /**
@@ -308,6 +344,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
      */
     goBackFiles() {
       this.scope.groupsSelectedTab = 'files'
+      this.scope.addingAgents = false
       this.scope.file = false
       this.scope.filename = false
       this.scope.fileViewer = false

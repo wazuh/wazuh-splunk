@@ -43,7 +43,7 @@ define([
           $document,
           $notificationService
         ) {
-          $(document).ready( () => {
+          $($document[0]).ready( () => {
             $scope.xmlCodeBox = CodeMirror.fromTextArea(
               $document[0].getElementById('xml_box'),
               {
@@ -83,10 +83,10 @@ define([
 
           const updateFile = async () => {
             try {
-              /*const response = await this.apiReq.request(
-                'PUT',
+              /*const response = await $requestService(
                 $scope.updatePath,
-                {}
+                {},
+                'PUT'
               )*/
               const response = ""
               return response
@@ -96,7 +96,7 @@ define([
           }
 
           $scope.saveFile = async () => {
-            const response = await updateFile()
+            await updateFile()
           }
 
           const fetchFile = async () => {
