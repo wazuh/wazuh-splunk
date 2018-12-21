@@ -15,6 +15,7 @@ import os
 import time
 import json
 import datetime
+from operator import itemgetter
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
@@ -70,8 +71,8 @@ class report(controllers.BaseController):
             path = str(self.path+str(images['array'][i]['id'])+'.png')
             f = open(path, 'wb')
             title = str(images['array'][i]['title'])
-            width = str(images['array'][i]['width'])
-            height = str(images['array'][i]['height'])
+            width = images['array'][i]['width']
+            height = images['array'][i]['height']
             f.write(base64.decodestring(
                 images['array'][i]['element'].split(',')[1].encode()))
             f.close()
@@ -82,8 +83,6 @@ class report(controllers.BaseController):
     def delete_images(self):
         for img in self.images:
             os.remove(img['path'])
-            self.logger.info("removed img: " + str(img['path']))
-            self.logger.info("h : "+ str(img['height']))
         self.images = []
 
     @expose_page(must_login=False, methods=['POST'])
@@ -170,7 +169,9 @@ class report(controllers.BaseController):
                 self.pdf.ln(10)
             else:
                 self.pdf.ln(5)
-            for img in self.images:
+            #Sort images by width size
+            images = sorted(self.images, key=itemgetter('width'))
+            for img in images:
                 self.pdf.cell(x , y, img['title'], 0, 1)
                 self.pdf.image(img['path'], x, y_img, w, h)
                 self.pdf.ln(90)
