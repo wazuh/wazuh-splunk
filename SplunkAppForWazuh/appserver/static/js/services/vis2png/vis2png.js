@@ -41,7 +41,6 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                   height: tmpNode.height(),
                   id: currentValue,
                   title: title,
-                  timeRange: timeRange,
                 })
               }
             } catch (error) {
