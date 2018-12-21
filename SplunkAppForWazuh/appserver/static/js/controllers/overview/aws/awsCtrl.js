@@ -141,7 +141,7 @@ define([
            */
           new AreaChart(
             'eventsByIdOverTime',
-            `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
+            `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.responseElements.instancesSet.items.instanceId usenull=f`,
             'eventsByIdOverTime'
           ),
           new ColumnChart(
@@ -156,12 +156,12 @@ define([
           ),
           new PieChart(
             'topEventsByInstanceId',
-            `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
+            `${this.amazonFilters} sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId limit=5`,
             'topEventsByInstanceId'
           ),
           new PieChart(
             'topEventsByResourceType',
-            `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.resourceType limit=5`,
+            `${this.amazonFilters} sourcetype=wazuh | top data.aws.resourceType limit=5`,
             'topEventsByResourceType'
           ),
           new PieChart(
