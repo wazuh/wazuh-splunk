@@ -16,6 +16,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Minor fixes ([#425](https://github.com/wazuh/wazuh-splunk/pull/425)).
 - UX enhancements ([#433](https://github.com/wazuh/wazuh-splunk/pull/433)).
+- Fixed schema for `wazuh-monitoring-3x` index ([#436](https://github.com/wazuh/wazuh-splunk/pull/436)).
 
 ## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
 There are no changes for Splunk app for Wazuh in this version.

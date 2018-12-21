@@ -54,7 +54,6 @@ define(['../../module'], function(app) {
         await this.load()
         this.toast('Deleted report')
       } catch (error) {
-        console.error('err ', error)
         this.toast('Reporting error')
       }
     }
@@ -149,7 +148,6 @@ define(['../../module'], function(app) {
         this.loading = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        console.error('err', error)
         this.toast('Error loading reports')
       }
     }
