@@ -66,7 +66,7 @@
     <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
   </div>
   <div ng-if="!loading" layout="row" class="wz-margin-10">
-    <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version']"
+    <wazuh-table flex path="'/agents'" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', 'dateAdd', 'lastKeepAlive']"
       allow-click="true" rows-per-page="17"></wazuh-table>
   </div>
   <div layout="row" class="wz-margin-top-10">

@@ -43,10 +43,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.scope.loadingRing = false
       this.rootScope = $rootScope
       this.scope.$watch('lookingGroup', value => {
-        this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-        this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-        this.scope.addMultipleAgents(false)
-        this.rootScope.$emit('closeEditXmlFile', {})
+      this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+      this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+      this.scope.addMultipleAgents(false)
+      this.rootScope.$emit('closeEditXmlFile', {})
+
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -227,6 +228,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
             this.scope.addedAgents.push(mod)
           }
         })
+
         original.forEach((orig) => {
           if (modified.filter(e => e.key === orig.key).length === 0) {
             this.scope.deletedAgents.push(orig)
@@ -264,7 +266,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
         this.timeout(() => {
           this.scope.multipleSelectorLoading = false
         }, 100)
-        console.log('Added: ' + this.scope.addedAgents.map(x => x.key) + " - Deleted: " + this.scope.deletedAgents.map(x => x.key))
       }
       if (!this.scope.$$phase) this.scope.$digest()
     }

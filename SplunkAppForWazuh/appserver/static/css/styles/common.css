@@ -20,6 +20,11 @@
   outline-color: transparent !important;
 } */
 
+.wz-back-btn-absolute{
+  position: absolute!important;
+  top: 210px!important;
+}
+
 md-dialog-actions button {
   color: white !important;
   transition: none !important;
@@ -431,7 +436,44 @@ kbn-vis .vis-container {
 }
 
 .wz-play-dev-color {
-  color: #70ba56
+  color: #70ba56;
+  margin-right: 15px;
+}
+.wz-dev-column-separator{
+  width: 14px;
+  margin-top: 25px;
+  background: #dddddd;
+  float: left;
+  height: calc(100vh - 110px);
+  cursor: ew-resize;
+  text-align: center;
+  display:block!important;
+}
+
+.wz-dev-column-separator:hover {
+  background-color: #cce4ed;
+}
+
+.wz-dev-column-separator span {
+  height: calc(100vh - 110px);
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#wz-dev-left-column{
+  width: calc(30% - 7px);
+  min-width: calc(20% - 7px);
+  max-width: calc(80% - 7px);
+  float: left;
+  height: calc(100vh - 85px);
+}
+
+#wz-dev-right-column{
+  width: calc(70% - 7px);
+  min-width: calc(20% - 7px);
+  max-width: calc(80% - 7px);
+  float: left;
+  height: calc(100vh - 85px);
 }
 
 .wz-question-dev-color {
