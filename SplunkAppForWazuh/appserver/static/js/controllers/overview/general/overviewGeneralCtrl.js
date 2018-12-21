@@ -217,7 +217,6 @@ define([
       })
 
       this.scope.$on('loadingReporting', (event, data) => {
-        console.log('loadingReporting status : ', data)
         this.scope.loadingReporting = data.status
       })
     }
