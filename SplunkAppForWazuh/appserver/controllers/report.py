@@ -155,11 +155,17 @@ class report(controllers.BaseController):
                 if line_width < total_width:
                     self.pdf.cell((total_width - line_width), 4, '', 0, 0, 'L', 1)#Fill rest of the width in the last row
             # Add visualizations
+            # Default sizes and margins values
             x = 30
             y = 10
             y_img = 80
+            w = 100
+            h = 50
+            x_img = 50
+            # Count images for page break
             count = 0
             n_images = len(self.images)
+            # Set top margin checking if metrics exist
             self.pdf.set_text_color(93, 188, 210)
             self.pdf.set_font('Arial', '', 14)
             if self.metrics_exists:
@@ -169,6 +175,7 @@ class report(controllers.BaseController):
             images = sorted(self.images, key=itemgetter('width'))
             #Insert images
             for img in images:
+                self.logger.info(img['title'] + ' => ' + str(img['width']))
                 #Change width and heigh
                 if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
                     w = 100
@@ -178,7 +185,7 @@ class report(controllers.BaseController):
                     w = 140
                     h = 60
                     x_img = 23                   
-                elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100:
+                elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100 or img['width'] >= 1300 and img['width'] <= 1400:
                     w = 160
                     h = 70
                     x_img = 23
