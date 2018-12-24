@@ -34,7 +34,7 @@ define([
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
-        '#input1',
+        '#timePicker',
         $urlTokenModel.handleValueChange
       )
 
