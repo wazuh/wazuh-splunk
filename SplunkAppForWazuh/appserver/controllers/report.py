@@ -175,7 +175,6 @@ class report(controllers.BaseController):
             images = sorted(self.images, key=itemgetter('width'))
             #Insert images
             for img in images:
-                self.logger.info(img['title'] + ' => ' + str(img['width']))
                 #Change width and heigh
                 if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
                     w = 100
@@ -206,42 +205,43 @@ class report(controllers.BaseController):
                     y_img = 50
                     count = 0
             #Add tables
-            self.pdf.add_page()
-            self.pdf.ln(20)
-            rows_count = 0
-            for table in self.tables:
-                if rows_count >= 50:
-                    self.pdf.add_page()
-                    self.pdf.ln(20)
-                    rows_count = 0
-                rows_count = rows_count + len(table['rows']) + 5 
-                self.pdf.ln(10)
-                #Table title
-                self.pdf.set_text_color(93, 188, 210)
-                self.pdf.set_font('Arial', '', 14)
-                self.pdf.cell(0 , 5, table['title'], 0, 1, 'L')
-                self.pdf.ln()
-                #Table content
-                self.pdf.set_font('Arial', '', 8)
-                self.pdf.set_fill_color(93, 188, 210)
-                self.pdf.set_text_color(255,255,255)
-                sizes_field = self.calculate_table_width(table)
-                count = 0
-                for field in table['fields']:
-                    if field != 'sparkline':
-                        width = sizes_field[count]
-                        self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
-                        count = count + 1
-                self.pdf.ln()
-                self.pdf.set_text_color(93, 188, 210)
-                for row in table['rows']:
+            if self.tables:
+                self.pdf.add_page()
+                self.pdf.ln(20)
+                rows_count = 0
+                for table in self.tables:
+                    if rows_count >= 50:
+                        self.pdf.add_page()
+                        self.pdf.ln(20)
+                        rows_count = 0
+                    rows_count = rows_count + len(table['rows']) + 5 
+                    self.pdf.ln(10)
+                    #Table title
+                    self.pdf.set_text_color(93, 188, 210)
+                    self.pdf.set_font('Arial', '', 14)
+                    self.pdf.cell(0 , 5, table['title'], 0, 1, 'L')
+                    self.pdf.ln()
+                    #Table content
+                    self.pdf.set_font('Arial', '', 8)
+                    self.pdf.set_fill_color(93, 188, 210)
+                    self.pdf.set_text_color(255,255,255)
+                    sizes_field = self.calculate_table_width(table)
                     count = 0
-                    for value in row:
-                        if not isinstance(value, list):
+                    for field in table['fields']:
+                        if field != 'sparkline':
                             width = sizes_field[count]
-                            self.pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                            self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                             count = count + 1
                     self.pdf.ln()
+                    self.pdf.set_text_color(93, 188, 210)
+                    for row in table['rows']:
+                        count = 0
+                        for value in row:
+                            if not isinstance(value, list):
+                                width = sizes_field[count]
+                                self.pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                count = count + 1
+                        self.pdf.ln()
             #Save pdf
             self.pdf.output(self.path+'wazuh-'+self.pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
