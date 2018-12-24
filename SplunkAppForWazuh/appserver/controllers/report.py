@@ -184,12 +184,18 @@ class report(controllers.BaseController):
             #Add tables
             self.pdf.add_page()
             self.pdf.ln(20)
-            self.pdf.set_font('Arial', '', 8)
             for table in self.tables:
                 self.pdf.ln(10)
-                sizes_field = self.calculate_table_width(table)
+                #Table title
+                self.pdf.set_text_color(93, 188, 210)
+                self.pdf.set_font('Arial', '', 14)
+                self.pdf.cell(0 , 5, table['title'], 0, 1, 'L')
+                self.pdf.ln()
+                #Table content
+                self.pdf.set_font('Arial', '', 8)
                 self.pdf.set_fill_color(93, 188, 210)
                 self.pdf.set_text_color(255,255,255)
+                sizes_field = self.calculate_table_width(table)
                 count = 0
                 for field in table['fields']:
                     if field != 'sparkline':
