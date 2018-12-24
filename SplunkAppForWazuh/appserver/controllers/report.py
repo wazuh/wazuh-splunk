@@ -158,8 +158,6 @@ class report(controllers.BaseController):
             x = 30
             y = 10
             y_img = 80
-            w = 150
-            h = 75
             count = 0
             n_images = len(self.images)
             self.pdf.set_text_color(93, 188, 210)
@@ -169,9 +167,28 @@ class report(controllers.BaseController):
             self.pdf.ln(15)
             #Sort images by width size
             images = sorted(self.images, key=itemgetter('width'))
+            #Insert images
             for img in images:
+                #Change width and heigh
+                if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
+                    w = 100
+                    h = 50
+                    x_img = 50
+                elif img['width'] >= 705 and img['width'] <= 725:
+                    w = 140
+                    h = 60
+                    x_img = 23                   
+                elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100:
+                    w = 160
+                    h = 70
+                    x_img = 23
+                elif img['width'] >= 1800 and img['width'] <= 1900:
+                    w = 190
+                    h = 80
+                    x_img = 10     
+                #Insert image
                 self.pdf.cell(x , y, img['title'], 0, 1)
-                self.pdf.image(img['path'], x, y_img, w, h)
+                self.pdf.image(img['path'], x_img, y_img, w, h)
                 self.pdf.ln(90)
                 y_img = y_img + 100
                 count = count + 1
