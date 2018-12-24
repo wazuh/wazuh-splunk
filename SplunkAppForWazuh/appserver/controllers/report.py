@@ -165,11 +165,8 @@ class report(controllers.BaseController):
             self.pdf.set_text_color(93, 188, 210)
             self.pdf.set_font('Arial', '', 14)
             if self.metrics_exists:
-                pass
                 y_img = y_img + 10
-                self.pdf.ln(10)
-            else:
-                self.pdf.ln(5)
+            self.pdf.ln(15)
             #Sort images by width size
             images = sorted(self.images, key=itemgetter('width'))
             for img in images:
@@ -189,25 +186,24 @@ class report(controllers.BaseController):
             self.pdf.ln(20)
             self.pdf.set_font('Arial', '', 8)
             for table in self.tables:
+                self.pdf.ln(10)
                 sizes_field = self.calculate_table_width(table)
-                sizes_rows = []
-                self.logger.info(str(sizes_field))
                 self.pdf.set_fill_color(93, 188, 210)
                 self.pdf.set_text_color(255,255,255)
+                count = 0
                 for field in table['fields']:
                     if field != 'sparkline':
-                        width = sizes_field[field]
-                        sizes_rows.append(width)
-                        self.pdf.cell(width, 4, field, 0, 0, 'L', 1)
+                        width = sizes_field[count]
+                        self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
+                        count = count + 1
                 self.pdf.ln()
-                self.logger.info(str(sizes_rows))
                 self.pdf.set_text_color(93, 188, 210)
                 for row in table['rows']:
                     count = 0
                     for value in row:
                         if not isinstance(value, list):
-                            width = sizes_rows[count]
-                            self.pdf.cell(width, 4, value, 0, 0, 'L', 0)
+                            width = sizes_field[count]
+                            self.pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
                             count = count + 1
                     self.pdf.ln()
             #Save pdf
@@ -219,28 +215,35 @@ class report(controllers.BaseController):
             return json.dumps({"error": str(e)})
         return parsed_data
 
+    #Calculates the width of the fields
     def calculate_table_width(self, table):
         sizes = {}
-        for field in table['fields']:
-            if field != 'sparkline':
-                sizes[field] = 0
-        for field in table['fields']:
+        fields = table['fields']
+        for field in fields:
             if field != 'sparkline':
                 width = self.pdf.get_string_width(field) + 1
                 sizes[field] = width
-        n_fields = len(table['fields'])
+        n_fields = len(fields)
         for row in table['rows']:
             count = 0
             for value in row:
                 if not isinstance(value, list):
-                    key = list(sizes.keys())[count]
+                    key = fields[count]
                     prev_width = sizes[key]
                     width = self.pdf.get_string_width(value) + 1
                     if width > prev_width:
                         sizes[key] = width
-                    count = count + 1
-        return sizes
-
+                count = count + 1
+        return self.sort_table_sizes(table['fields'], sizes)
+    
+    #Sorts the width of the fields
+    def sort_table_sizes(self, fields, sizes):
+        sorted_sizes = []
+        for key in fields:
+            if key != 'sparkline':
+                sorted_sizes.append(sizes[key])
+        return sorted_sizes
+    
     # Returns a list with all PDF files in the bin directory
     @expose_page(must_login=False, methods=['GET'])
     def reports(self, **kwargs):
