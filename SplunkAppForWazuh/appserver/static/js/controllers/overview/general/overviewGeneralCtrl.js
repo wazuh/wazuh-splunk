@@ -6,7 +6,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/search/search-handler'
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService',
 ], function(
   app,
   LinearChart,
@@ -15,7 +16,8 @@ define([
   AreaChart,
   Table,
   TimePicker,
-  SearchHandler
+  SearchHandler,
+  rawTableDataService
 ) {
   'use strict'
 
@@ -39,13 +41,14 @@ define([
       $notificationService,
       $requestService,
       pollingState,
-      $reportingService
+      $reportingService,
     ) {
       this.currentDataService = $currentDataService
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
       this.reportingService = $reportingService
       this.apiReq = $requestService.apiReq
+      this.tableResults = {}
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
@@ -147,6 +150,22 @@ define([
           'agentsSummaryVizz'
         )
       ]
+
+      this.agentsSummaryTable = new rawTableDataService(
+        'agentsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'agentsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.agentsSummaryTable)
+
+      this.agentsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Agents Summary'] = result
+      })
     }
 
     /**
@@ -209,7 +228,10 @@ define([
           'top5AgentsVizz',
           'alertsEvoTop5Agents',
           'agentsSummaryVizz'
-        ])
+        ],
+        {}, //Metrics
+        this.tableResults
+        )
 
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
