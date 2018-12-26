@@ -209,32 +209,34 @@ class report(controllers.BaseController):
                 self.pdf.add_page()
                 self.pdf.ln(20)
                 rows_count = 0
-                for table in self.tables:
+                self.table_keys = self.tables.keys()
+                for key in self.table_keys:
+                    table_title = key
                     if rows_count >= 50:
                         self.pdf.add_page()
                         self.pdf.ln(20)
                         rows_count = 0
-                    rows_count = rows_count + len(table['rows']) + 5 
+                    rows_count = rows_count + len(self.tables[key]['rows']) + 5 
                     self.pdf.ln(10)
                     #Table title
                     self.pdf.set_text_color(93, 188, 210)
                     self.pdf.set_font('Arial', '', 14)
-                    self.pdf.cell(0 , 5, table['title'], 0, 1, 'L')
+                    self.pdf.cell(0 , 5, table_title, 0, 1, 'L')
                     self.pdf.ln()
                     #Table content
                     self.pdf.set_font('Arial', '', 8)
                     self.pdf.set_fill_color(93, 188, 210)
                     self.pdf.set_text_color(255,255,255)
-                    sizes_field = self.calculate_table_width(table)
+                    sizes_field = self.calculate_table_width(self.tables[key])
                     count = 0
-                    for field in table['fields']:
+                    for field in self.tables[key]['fields']:
                         if field != 'sparkline':
                             width = sizes_field[count]
                             self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                             count = count + 1
                     self.pdf.ln()
                     self.pdf.set_text_color(93, 188, 210)
-                    for row in table['rows']:
+                    for row in self.tables[key]['rows']:
                         count = 0
                         for value in row:
                             if not isinstance(value, list):
