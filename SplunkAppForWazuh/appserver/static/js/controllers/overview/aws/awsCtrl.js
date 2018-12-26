@@ -6,8 +6,9 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/inputs/dropdown-input'
-], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown) {
+  '../../../services/visualizations/inputs/dropdown-input',
+  '../../../services/rawTableData/rawTableDataService',
+], function (app, PieChart, AreaChart, ColumnChart, Table, Map, TimePicker, Dropdown, rawTableDataService) {
   'use strict'
 
   class AWS {
@@ -30,6 +31,7 @@ define([
       this.awsMetrics = awsMetrics
       this.toast = $notificationService.showSimpleToast
       this.currentDataService = $currentDataService
+      this.tableResults = {}
       this.currentDataService.addFilter(
         `{"rule.groups":"amazon", "implicit":true}`
       )
@@ -58,7 +60,7 @@ define([
         this.vizz.map(vizz => vizz.destroy())
       })
     }
-
+    
     /**
      * On controller loads
      */
@@ -153,6 +155,7 @@ define([
           'Accounts in use': this.scope.awsMetrics.accountInUse.toString(),
           'Regions in use': this.scope.awsMetrics.regionsInUse.toString()
         }
+
         this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png('aws', 'Amazon web services', this.amazonFilters,[
           'eventsByIdOverTime',
@@ -165,7 +168,9 @@ define([
           'top5Buckets',
           'top5Rules'
         ]
-        ,this.reportMetrics)
+        ,this.reportMetrics,
+        this.tableResults
+        )
 
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
@@ -223,6 +228,33 @@ define([
             'top5Rules'
           )
         ]
+
+          this.top5BucketsTable =  new rawTableDataService(
+            'top5BucketsTable',
+            `${this.amazonFilters} sourcetype=wazuh | top data.aws.source limit=5`,
+            'top5BucketsTableToken',
+            '$result$',
+            this.submittedTokenModel,
+            this.scope
+          )
+          this.vizz.push(this.top5BucketsTable)
+          this.top5BucketsTable.getSearch().on('result', (result) => {
+            this.tableResults['Top 5 buckets'] = result
+          })
+
+          this.top5RulesTable =  new rawTableDataService(
+            'top5RulesTable',
+            `${this.amazonFilters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
+            'top5RulesTableToken',
+            '$result$',
+            this.submittedTokenModel,
+            this.scope
+          )
+          this.vizz.push(this.top5RulesTable)
+          this.top5RulesTable.getSearch().on('result', (result) => {
+            this.tableResults['Top 5 rules'] = result
+          })
+
       } catch (err) {
         this.toast(err.message || err)
       }
