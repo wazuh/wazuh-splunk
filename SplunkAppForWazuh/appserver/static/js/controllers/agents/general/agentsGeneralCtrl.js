@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
+], function (app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
   'use strict'
 
   class AgentsGeneral {
@@ -100,7 +100,7 @@ define([
         new LinearChart(
           'alertLevelEvoVizz',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
           'alertLevelEvoVizz'
         ),
@@ -112,29 +112,16 @@ define([
         new Table(
           'agentsSummaryVizz',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz'
         )
       ]
 
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-general', 'Security events report', this.filters, [
-        'top5AlertsVizz',
-        'top5GroupsVizz',
-        'top5PCIreqVizz',
-        'alertLevelEvoVizz',
-        'alertsVizz',
-        'agentsSummaryVizz'
-      ])
-
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
-            
+
       /**
        * When controller is destroyed
        */
@@ -160,7 +147,7 @@ define([
           dateAdd: this.agent[0].data.data.dateAdd,
           agentOS: `${this.agent[0].data.data.os.name} ${
             this.agent[0].data.data.os.codename
-          } ${this.agent[0].data.data.os.version}`,
+            } ${this.agent[0].data.data.os.version}`,
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
@@ -168,14 +155,46 @@ define([
         this.scope.agentInfo = this.agent[0].data.data
 
         this.scope.id = this.stateParams.id
+
+        /**
+         * Generates report
+         */
+        this.agentMetricsGroup = []
+        this.agentInfo.group.map(g => this.agentMetricsGroup.push(g))
+        this.metrics = {
+          ID: this.agentInfo.id,
+          Name: this.agentInfo.name,
+          IP: this.agentInfo.ip,
+          Version: this.agentInfo.version,
+          OS: this.agentInfo.agentOS,
+          Groups: this.agentMetricsGroup.toString(),
+          'Last keep alive': this.agentInfo.lastKeepAlive,
+          'Registration date': this.agentInfo.dateAdd,
+          'Last syscheck scan': this.agentInfo.syscheck.end ? this.agentInfo.syscheck.end : 'Unknown',
+          'Last rootcheck scan': this.agentInfo.rootcheck.end ? this.agentInfo.rootcheck.end : 'Unknown'
+
+        }
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png('agents-general', 'Security events report', this.filters, [
+            'top5AlertsVizz',
+            'top5GroupsVizz',
+            'top5PCIreqVizz',
+            'alertLevelEvoVizz',
+            'alertsVizz',
+            'agentsSummaryVizz'
+          ],
+            this.metrics,//Metrics
+            []//Tables
+          )
+
       } catch (err) {
         this.agentInfo = {}
         this.agentInfo.id =
           this.agent &&
-          this.agent.length &&
-          this.agent[0] &&
-          this.agent[0].data &&
-          this.agent[0].data.data
+            this.agent.length &&
+            this.agent[0] &&
+            this.agent[0].data &&
+            this.agent[0].data.data
             ? this.agent[0].data.data.id
             : null
         this.agentInfo.error = 'Unable to load agent data'
