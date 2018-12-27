@@ -13,8 +13,9 @@ define([
      * @param {SearchManager} search
      */
 
-    constructor(element, id, search, earliestTime, latestTime) {
+    constructor(element, id, search, earliestTime, latestTime, $rootScope) {
       this.id = id
+      this.rootScope = $rootScope
       this.earliestTime = earliestTime ? earliestTime : '$when.earliest$'
       this.latestTime = latestTime ? latestTime : '$when.latest$'
       this.search = new SearchManager(
@@ -35,8 +36,26 @@ define([
         { tokens: true, tokenNamespace: 'submitted' }
       )
       this.element = element
+
+      this.finish = false
+      this.search.on('search:done', () => {
+        console.log(`Search ${id} finished`)
+        this.finish = true
+        checkVizzStatus();
+      })
+      this.search.on('search:start', () => {
+        console.log(`Search ${id} starting`)
+        this.finish = false
+        checkVizzStatus();
+      })
+
     }
 
+    checkVizzStatus(){
+      this.rootScope.$emit("checkReportingStatus", () => {
+      })
+    }
+    
     changeSearch(newSearch) {
       mvc.Components.revokeInstance(`${this.id}Search`)
       this.search = null

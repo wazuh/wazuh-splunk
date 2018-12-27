@@ -42,8 +42,10 @@ define([
       $requestService,
       pollingState,
       $reportingService,
+      $rootScope
     ) {
       this.currentDataService = $currentDataService
+      this.rootScope = $rootScope
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
       this.reportingService = $reportingService
@@ -240,6 +242,10 @@ define([
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
+      })
+
+      this.rootScope.$on("checkReportingStatus", () => {
+          //check vizz array and status of the elements
       })
     }
 
