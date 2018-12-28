@@ -61,14 +61,25 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
       })
 
       this.getSearch().on('search:done', () => {
+        this.getSearch().finish = false
         const tableResults = mvc.Components.getInstance(`${this.id}Search`)
         const tableData = tableResults.data("results", {
           output_mode: "json_rows",
           count: 20
         })
-        tableData.on("data", () => {
-          this.results = { 'fields': tableData._data.fields, 'rows': tableData._data.rows }  
-          this.getSearch().trigger('result', this.results)
+        tableData.on("data", (data) => {
+          try {
+            if (data._data) {
+              this.results = { 'fields': tableData._data.fields, 'rows': tableData._data.rows }
+              this.getSearch().trigger('result', this.results)
+              this.getSearch().finish = true
+            } else {
+              this.getSearch().finish = false
+            }
+          } catch (err) {
+            console.error("Error fetching table data ", err)
+          }
+
         })
         tableData.on("error", (err) => {
           console.error(err)
