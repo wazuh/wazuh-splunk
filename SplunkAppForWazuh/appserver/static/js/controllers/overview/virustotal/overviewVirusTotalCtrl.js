@@ -6,8 +6,9 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/chart/bar-chart'
-], function(app, PieChart, Table, LinearChart, TimePicker, BarChart) {
+  '../../../services/visualizations/chart/bar-chart',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, PieChart, Table, LinearChart, TimePicker, BarChart, rawTableDataService) {
   'use strict'
 
   class OverviewVirusTotal {
@@ -23,6 +24,7 @@ define([
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
+      this.tableResults = {}
       //Add filer for VirusTotal
       $currentDataService.addFilter(
         `{"rule.groups":"virustotal", "implicit":true}`
@@ -42,31 +44,52 @@ define([
         new PieChart(
           'top5AgentsPositive',
           `${this.filters} rule.id=87105 | top agent.name limit=5`,
-          'top5AgentsPositive'
+          'top5AgentsPositive',
+          this.scope
         ),
         new PieChart(
           'top5AgentsNoPositive',
           `${this.filters} rule.id=87104 | top agent.name limit=5`,
-          'top5AgentsNoPositive'
+          'top5AgentsNoPositive',
+          this.scope
         ),
         new Table(
           'top5Rules',
           `${
             this.filters
           } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5Rules'
+          'top5Rules',
+          this.scope
         ),
         new LinearChart(
           'eventsSummary',
           `${this.filters} | timechart count`,
-          'eventsSummary'
+          'eventsSummary',
+          this.scope
         ),
         new BarChart(
           'alertsPerAgent',
           `${this.filters} | top agent.name`,
-          'alertsPerAgent'
+          'alertsPerAgent',
+          this.scope
         )
       ]
+
+      this.top5RulesTable = new rawTableDataService(
+        'top5RulesTable',
+        `${
+          this.filters
+        } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'top5RulesTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.top5RulesTable)
+
+      this.top5RulesTable.getSearch().on('result', (result) => {
+        this.tableResults['Top 5 Rules'] = result
+      })
 
       /**
        * Generates report
@@ -78,11 +101,25 @@ define([
         'top5AgentsNoPositive',
         'alertsPerAgent',
         'top5Rules'
-      ])
+      ],
+      {},//Metrics
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+    })
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()

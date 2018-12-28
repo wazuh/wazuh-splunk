@@ -7,7 +7,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/visualizations/search/search-handler'
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   LinearChart,
@@ -17,7 +18,8 @@ define([
   Table,
   TimePicker,
   Dropdown,
-  SearchHandler
+  SearchHandler,
+  rawTableDataService
 ) {
   'use strict'
 
@@ -33,6 +35,7 @@ define([
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
+      this.tableResults = {}
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.groups":"oscap", "implicit":true}`
@@ -64,7 +67,8 @@ define([
         } sourcetype=wazuh  rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
         '$form.profile$',
-        'dropDownInput'
+        'dropDownInput',
+        this.scope
       )
       this.vizz = [
         /**
@@ -112,54 +116,78 @@ define([
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
-          'agentsVizz'
+          'agentsVizz',
+          this.scope
         ),
         new LinearChart(
           'profilesVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-          'profilesVizz'
+          'profilesVizz',
+          this.scope
         ),
         new ColumnChart(
           'contentVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'contentVizz'
+          'contentVizz',
+          this.scope
         ),
         new PieChart(
           'severityVizz',
           `${this.filters} sourcetype=wazuh | top agent.name`,
-          'severityVizz'
+          'severityVizz',
+          this.scope
         ),
         new AreaChart(
           'top5AgentsVizz',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'top5AgentsVizz'
+          'top5AgentsVizz',
+          this.scope
         ),
         new PieChart(
           'top10AlertsVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10AlertsVizz'
+          'top10AlertsVizz',
+          this.scope
         ),
         new PieChart(
           'top10HRisk',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10HRisk'
+          'top10HRisk',
+          this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'alertsSummaryVizz'
+          'alertsSummaryVizz',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
 
       /**
        * Generates report
@@ -174,11 +202,25 @@ define([
         'top10AlertsVizz',
         'top10HRisk',
         'alertsSummaryVizz'
-      ])
+      ],
+      {},//Metrics
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+    })
 
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {

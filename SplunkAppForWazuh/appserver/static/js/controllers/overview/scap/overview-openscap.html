@@ -5,18 +5,18 @@
       <span> / OpenSCAP </span>
     </div>
     <div flex></div>
-    <!-- Report button -->
     <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" tooltip="Generate report" tooltip-placement="bottom"
-      ng-disabled="loading" ng-click="startVis2Png()" aria-label="Generate report button">
+      ng-hide="loadingVizz" ng-click="startVis2Png()" aria-label="Generate report button">
       <i class="fa fa-fw fa-print" aria-hidden="true"></i>
     </md-button>
+    <div class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
     <div style="margin-right:7px;" id='timePicker'></div>
     <div style="margin-right:7px;" id='dropDownInput'></div>
+  </div>
 
   <!-- Loading report-->
   <div align='center' ng-if='loadingReporting'>Generating reporting<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
-    
-  </div>
+
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
   <div layout="row">

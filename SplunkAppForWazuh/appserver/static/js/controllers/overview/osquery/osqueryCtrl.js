@@ -3,8 +3,9 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
   'use strict'
 
   class Osquery {
@@ -32,6 +33,7 @@ define([
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
+      this.tableResults = {}
       this.currentDataService.addFilter(
         `{"rule.groups":"osquery", "implicit":true}`
       )
@@ -58,33 +60,69 @@ define([
         new AreaChart(
           'alertsOverTime',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertsOverTime'
+          'alertsOverTime',
+          this.scope
         ),
         new AreaChart(
           'alertsEvolution',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'alertsEvolution'
+          'alertsEvolution',
+          this.scope
         ),
         new PieChart(
           'mostCommonEvents',
           `${this.filters} sourcetype=wazuh  | top data.osquery.name limit=5`,
-          'mostCommonEvents'
+          'mostCommonEvents',
+          this.scope
         ),
         new Table(
           'topPacks',
           `${this.filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,
-          'topPacks'
+          'topPacks',
+          this.scope
         ),
         new Table(
           'topRules',
           `${
             this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
-          'topRules'
+          'topRules',
+          this.scope
         )
       ]
+
+      this.topRulesTable = new rawTableDataService(
+        'topRulesTable',
+        `${
+          this.filters
+        } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
+        'topRulesTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.topRulesTable)
+
+      this.topRulesTable.getSearch().on('result', (result) => {
+        this.tableResults['Top 5 Rules'] = result
+      })
+
+      this.topPacksTable = new rawTableDataService(
+        'topPacksTable',
+        `${this.filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,
+        'topPacksTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.topPacksTable)
+
+      this.topPacksTable.getSearch().on('result', (result) => {
+        this.tableResults['Top 5 Packs'] = result
+      })
+
 
       /**
        * Generates report
@@ -96,11 +134,25 @@ define([
         'alertsEvolution',
         'topPacks',
         'topRules'
-      ])
+      ],
+      {},//Metrics
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+    })
 
       /**
        * On controller destroy
