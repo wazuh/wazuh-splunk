@@ -107,7 +107,8 @@ define([
           `${this.filters} sourcetype=wazuh data.aws.source=* | stats by data.aws.source | fields data.aws.source | sort data.aws.source ASC`,
           'data.aws.source',
           '$form.awsSource$',
-          'dropDownInput'
+          'dropDownInput',
+          this.scope
         )
         this.dropdownInstance = this.dropdown.getElement()
         this.dropdownInstance.on('change', (newValue) => {
@@ -176,6 +177,18 @@ define([
           this.scope.loadingReporting = data.status
         })
 
+        this.scope.$on("checkReportingStatus", () => {
+          this.vizzReady = !this.vizz.filter( v => {
+            return v.finish === false
+          }).length
+          if (this.vizzReady) { 
+            this.scope.loadingVizz = false
+          } else { 
+            this.scope.loadingVizz = true
+          }
+          if (!this.scope.$$phase) this.scope.$digest()
+        })
+
         this.vizz = [
           /**
            * Visualizations
@@ -183,49 +196,58 @@ define([
           new AreaChart(
             'eventsByIdOverTime',
             `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.resource.instanceDetails.instanceId usenull=f`,
-            'eventsByIdOverTime'
+            'eventsByIdOverTime',
+            this.scope
           ),
           new ColumnChart(
             'eventsByRegionOverTime',
             `${this.amazonFilters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
-            'eventsByRegionOverTime'
+            'eventsByRegionOverTime',
+            this.scope
           ),
           new PieChart(
             'topEventsByServiceName',
             `${this.amazonFilters} sourcetype=wazuh | stats count BY data.aws.source`,
-            'topEventsByServiceName'
+            'topEventsByServiceName',
+            this.scope
           ),
           new PieChart(
             'topEventsByInstanceId',
             `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.instanceDetails.instanceId limit=5`,
-            'topEventsByInstanceId'
+            'topEventsByInstanceId',
+            this.scope
           ),
           new PieChart(
             'topEventsByResourceType',
             `${this.amazonFilters} sourcetype=wazuh | top data.aws.resource.resourceType limit=5`,
-            'topEventsByResourceType'
+            'topEventsByResourceType',
+            this.scope
           ),
           new PieChart(
             'topEventsByRegion',
             `${this.amazonFilters} sourcetype=wazuh | top data.aws.awsRegion limit=5`,
-            'topEventsByRegion'
+            'topEventsByRegion',
+            this.scope
           ),
           new Map(
             'map',
             `${
             this.amazonFilters
             } sourcetype=wazuh | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
-            'map'
+            'map',
+            this.scope
           ),
           new Table(
             'top5Buckets',
             `${this.amazonFilters} sourcetype=wazuh | top data.aws.source limit=5`,
-            'top5Buckets'
+            'top5Buckets',
+            this.scope
           ),
           new Table(
             'top5Rules',
             `${this.amazonFilters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
-            'top5Rules'
+            'top5Rules',
+            this.scope
           )
         ]
 
