@@ -10,8 +10,9 @@ define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function(
      * @param {String} id
      * @param {String} search
      * @param {String} attachedElement
+     * @param {scope} scope
      */
-    constructor(id, search, attachedElement) {
+    constructor(id, search, attachedElement, scope) {
       super(
         new MapElement(
           {
@@ -50,7 +51,8 @@ define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function(
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),
         id,
-        search
+        search,
+        scope
       )
     }
   }

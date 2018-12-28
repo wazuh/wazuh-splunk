@@ -11,11 +11,11 @@ define([
      * @param {Object} element
      * @param {String} id
      * @param {SearchManager} search
+     * @param {scope} scope
      */
 
-    constructor(element, id, search, earliestTime, latestTime, $rootScope) {
+    constructor(element, id, search, scope, earliestTime, latestTime) {
       this.id = id
-      this.rootScope = $rootScope
       this.earliestTime = earliestTime ? earliestTime : '$when.earliest$'
       this.latestTime = latestTime ? latestTime : '$when.latest$'
       this.search = new SearchManager(
@@ -36,23 +36,21 @@ define([
         { tokens: true, tokenNamespace: 'submitted' }
       )
       this.element = element
-
+      this.scope = scope
       this.finish = false
       this.search.on('search:done', () => {
-        console.log(`Search ${id} finished`)
         this.finish = true
-        checkVizzStatus();
+        this.checkVizzStatus();
       })
       this.search.on('search:start', () => {
-        console.log(`Search ${id} starting`)
         this.finish = false
-        checkVizzStatus();
+        this.checkVizzStatus();
       })
 
     }
 
     checkVizzStatus(){
-      this.rootScope.$emit("checkReportingStatus", () => {
+      this.scope.$broadcast("checkReportingStatus", () => {
       })
     }
     
