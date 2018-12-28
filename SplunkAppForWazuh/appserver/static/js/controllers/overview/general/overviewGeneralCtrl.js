@@ -32,6 +32,7 @@ define([
      * @param {*} $requestService 
      * @param {Object} pollingState 
      * @param {*} $reportingService 
+     * @param {*} $rootScope 
      */
     constructor(
       $urlTokenModel,
@@ -125,31 +126,36 @@ define([
           `${
             this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-          'alertLevEvoVizz'
+          'alertLevEvoVizz',
+          this.scope
         ),
         new ColumnChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'alertsVizz'
+          'alertsVizz',
+          this.scope
         ),
         new PieChart(
           'top5AgentsVizz',
           `${this.filters} sourcetype=wazuh | top agent.name`,
-          'top5AgentsVizz'
+          'top5AgentsVizz',
+          this.scope
         ),
         new AreaChart(
           'alertsEvoTop5Agents',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'alertsEvoTop5Agents'
+          'alertsEvoTop5Agents',
+          this.scope
         ),
         new Table(
           'agentsSummaryVizz',
           `${
             this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'agentsSummaryVizz'
+          'agentsSummaryVizz',
+          this.scope
         )
       ]
 
@@ -218,13 +224,15 @@ define([
             `${this.agentsStatusFilter} status=* | timechart span=${
               this.spanTime
             } cont=FALSE count by status usenull=f`,
-            `agentStatus`
+            `agentStatus`,
+            this.scope
           )
         )
       }
 
       this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png('overview-general', 'Security events report', this.filters, [
+        this.reportingService.startVis2Png('overview-general', 'Security events report', this.filters, 
+        [
           'alertLevEvoVizz',
           'alertsVizz',
           'top5AgentsVizz',
@@ -244,8 +252,16 @@ define([
         this.scope.loadingReporting = data.status
       })
 
-      this.rootScope.$on("checkReportingStatus", () => {
-          //check vizz array and status of the elements
+      this.scope.$on("checkReportingStatus", () => {
+          this.vizzReady = !this.vizz.filter( v => {
+            return v.finish === false
+          }).length
+          if (this.vizzReady) { 
+            this.scope.loadingVizz = false
+          } else { 
+            this.scope.loadingVizz = true
+          }
+          if (!this.scope.$$phase) this.scope.$digest()
       })
     }
 
