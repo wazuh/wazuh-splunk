@@ -18,7 +18,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/visualizations/search/search-handler'
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   PieChart,
@@ -27,7 +28,8 @@ define([
   Table,
   TimePicker,
   Dropdown,
-  SearchHandler
+  SearchHandler,
+  rawTableDataService
 ) {
   'use strict'
 
@@ -47,6 +49,7 @@ define([
       this.scope = $scope
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
+      this.tableResults = {}
       this.state = $state
       this.agent = agent
       this.currentDataService.addFilter(
@@ -73,7 +76,8 @@ define([
         } sourcetype=wazuh  rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
         '$form.profile$',
-        'dropDownInput'
+        'dropDownInput',
+        this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
@@ -129,58 +133,82 @@ define([
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
-          'agentsVizz'
+          'agentsVizz',
+          this.scope
         ),
         new PieChart(
           'profilesVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.profile.title`,
-          'profilesVizz'
+          'profilesVizz',
+          this.scope
         ),
         new BarChart(
           'contentVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.content`,
-          'contentVizz'
+          'contentVizz',
+          this.scope
         ),
         new PieChart(
           'severityVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.check.severity`,
-          'severityVizz'
+          'severityVizz',
+          this.scope
         ),
         new AreaChart(
           'top5AgentsSHVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.scan.profile.title="$profile$" oscap.check.severity="high" | chart count by agent.name`,
-          'top5AgentsSHVizz'
+          'top5AgentsSHVizz',
+          this.scope
         ),
         new PieChart(
           'top10AleertsVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10AleertsVizz'
+          'top10AleertsVizz',
+          this.scope
         ),
         new PieChart(
           'top10HRAlertsVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10HRAlertsVizz'
+          'top10HRAlertsVizz',
+          this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
           } sourcetype=wazuh oscap.check.result="fail" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content`,
-          'alertsSummaryVizz'
+          'alertsSummaryVizz',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh oscap.check.result="fail" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
 
       /**
        * Generates report
@@ -195,12 +223,26 @@ define([
         'top10AleertsVizz',
         'top10HRAlertsVizz',
         'alertsSummaryVizz'
-      ])
+      ],
+      {},//Metrics,
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+      
       /**
        * When controller is destroyed
        */

@@ -16,8 +16,9 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/search/search-handler'
-], function(app, PieChart, AreaChart, Table, TimePicker, SearchHandler) {
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, PieChart, AreaChart, Table, TimePicker, SearchHandler, rawTableDataService) {
   'use strict'
 
   class AgentsVulnerabilities {
@@ -36,6 +37,7 @@ define([
       this.scope = $scope
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
+      this.tableResults = {}
       this.state = $state
       this.agent = agent
       if (
@@ -113,42 +115,80 @@ define([
           `${
             this.filters
           } sourcetype=wazuh rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
-          'alertsSeverityOverTimeVizz'
+          'alertsSeverityOverTimeVizz',
+          this.scope
         ),
         new Table(
           'commonRules',
           `${
             this.filters
           } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
-          'commonRules'
+          'commonRules',
+          this.scope
         ),
         new PieChart(
           'commonCves',
           `${
             this.filters
           } rule.groups="vulnerability-detector" | top data.vulnerability.cve limit=5`,
-          'commonCves'
+          'commonCves',
+          this.scope
         ),
         new PieChart(
           'severityDistribution',
           `${
             this.filters
           } rule.groups="vulnerability-detector" | top data.vulnerability.severity limit=5`,
-          'severityDistribution'
+          'severityDistribution',
+          this.scope
         ),
         new PieChart(
           'commonlyAffectedPackVizz',
           `${this.filters} | top 5 data.vulnerability.package.name`,
-          'commonlyAffectedPackVizz'
+          'commonlyAffectedPackVizz',
+          this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
           } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
-          'alertsSummaryVizz'
+          'alertsSummaryVizz',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
+
+      this.commonRulesTable = new rawTableDataService(
+        'commonRulesTable',
+        `${
+          this.filters
+        } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
+        'commonRulesTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.commonRulesTable)
+
+      this.commonRulesTable.getSearch().on('result', (result) => {
+        this.tableResults['Common Rules'] = result
+      })
 
       /**
        * Generates report
@@ -161,10 +201,24 @@ define([
         'severityDistribution',
         'commonlyAffectedPackVizz',
         'alertsSummaryVizz'
-      ])
+      ],
+      {},//Metrics,
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
       })
 
       /**

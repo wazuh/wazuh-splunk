@@ -5,8 +5,9 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService',
   'FileSaver'
-], function (app, ColumnChart, PieChart, Table, AreaChart, TimePicker) {
+], function (app, ColumnChart, PieChart, Table, AreaChart, TimePicker, rawTableDataService) {
   'use strict'
 
   class AgentsFim {
@@ -40,6 +41,7 @@ define([
       this.csvReq = $csvRequestService
       this.toast = $notificationService.showSimpleToast
       this.reportingService = $reportingService
+      this.tableResults = {}
       this.scope = $scope
       this.scope.buttonShowElements = 'Show files'
       this.scope.showFiles = false
@@ -69,51 +71,74 @@ define([
           `${
           this.filters
           } sourcetype="wazuh"  "rule.groups"="syscheck" | timechart span=12h count by rule.description`,
-          'eventsOverTimeElement'
+          'eventsOverTimeElement',
+          this.scope
         ),
         new ColumnChart(
           'topGroupOwnersElement',
           `${
           this.filters
           } sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
-          'topGroupOwnersElement'
+          'topGroupOwnersElement',
+          this.scope
         ),
         new PieChart(
           'topUserOwnersElement',
           `${
           this.filters
           } sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
-          'topUserOwnersElement'
+          'topUserOwnersElement',
+          this.scope
         ),
         new PieChart(
           'topFileChangesElement',
           `${
           this.filters
           } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
-          'topFileChangesElement'
+          'topFileChangesElement',
+          this.scope
         ),
         new PieChart(
           'rootUserFileChangesElement',
           `${
           this.filters
           } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
-          'rootUserFileChangesElement'
+          'rootUserFileChangesElement',
+          this.scope
         ),
         new PieChart(
           'wordWritableFilesElement',
           `${
           this.filters
           } sourcetype="wazuh" rule.groups="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
-          'wordWritableFilesElement'
+          'wordWritableFilesElement',
+          this.scope
         ),
         new Table(
           'eventsSummaryElement',
           `${
           this.filters
           } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-          'eventsSummaryElement'
+          'eventsSummaryElement',
+          this.scope
         )
       ]
+
+      this.eventsSummaryTable = new rawTableDataService(
+        'eventsSummaryTable',
+        `${
+          this.filters
+          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+        'eventsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.eventsSummaryTable)
+
+      this.eventsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Events Summary'] = result
+      })
 
       /**
        * Generates report
@@ -126,12 +151,25 @@ define([
         'topFileChangesElement',
         'rootUserFileChangesElement',
         'eventsSummaryElement'
-      ])
+      ],
+      {},//Metrics,
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       /**
        * When controller is destroyed

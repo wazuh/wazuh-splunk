@@ -3,8 +3,9 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, Table, AreaChart, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, PieChart, Table, AreaChart, TimePicker, rawTableDataService) {
   'use strict'
 
   class AgentsVirusTotal {
@@ -22,6 +23,7 @@ define([
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
+      this.tableResults = {}
       this.scope = $scope
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
@@ -62,37 +64,90 @@ define([
         new AreaChart(
           'eventsOverTimeElement',
           `${this.filters}  | timechart span=12h count by rule.id`,
-          'eventsOverTimeElement'
+          'eventsOverTimeElement',
+          this.scope
         ),
         new Table(
           'eventsSummaryElement',
           `${
             this.filters
           } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-          'eventsSummaryElement'
+          'eventsSummaryElement',
+          this.scope
         ),
         new Table(
           'top5Rules',
           `${
             this.filters
           } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5Rules'
+          'top5Rules',
+          this.scope
         ),
         new PieChart(
           'alertsVolume',
           `${
             this.filters
           } | stats count by rule.description | rename "rule.description" as "Description"`,
-          'alertsVolume'
+          'alertsVolume',
+          this.scope
         ),
         new Table(
           'filesAffected',
           `${
             this.filters
           }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-          'filesAffected'
+          'filesAffected',
+          this.scope
         )
       ]
+
+      this.eventsSummaryTable = new rawTableDataService(
+        'eventsSummaryTable',
+        `${
+          this.filters
+        } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
+        'eventsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.eventsSummaryTable)
+
+      this.eventsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Events Summary'] = result
+      })
+
+      this.top5RulesTable = new rawTableDataService(
+        'top5RulesTable',
+        `${
+          this.filters
+        } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'top5RulesTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.top5RulesTable)
+
+      this.top5RulesTable.getSearch().on('result', (result) => {
+        this.tableResults['Top 5 Rules'] = result
+      })
+
+      this.filesAffectedTable = new rawTableDataService(
+        'filesAffectedTable',
+        `${
+          this.filters
+        }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
+        'filesAffectedTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.filesAffectedTable)
+
+      this.filesAffectedTable.getSearch().on('result', (result) => {
+        this.tableResults['Files Affected'] = result
+      })
 
       /**
        * Generates report
@@ -104,11 +159,26 @@ define([
         'eventsOverTimeElement',
         'top5Rules',
         'filesAffected'
-      ])
+      ],
+      {},//Metrics,
+      this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+
       /**
        * When controller is destroyed
        */

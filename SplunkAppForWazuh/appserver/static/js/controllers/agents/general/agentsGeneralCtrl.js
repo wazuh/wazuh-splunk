@@ -16,8 +16,9 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker'
-], function (app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
+], function (app, LinearChart, ColumnChart, PieChart, Table, TimePicker, rawTableDataService) {
   'use strict'
 
   class AgentsGeneral {
@@ -49,6 +50,7 @@ define([
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.requestService = $requestService
+      this.tableResults = {}
       this.notificationService = $notificationService
       this.stateParams = $stateParams
       this.agent = agent
@@ -85,41 +87,76 @@ define([
         new PieChart(
           'top5AlertsVizz',
           `${this.filters} sourcetype=wazuh | top "rule.description" limit=5`,
-          'top5AlertsVizz'
+          'top5AlertsVizz',
+          this.scope
         ),
         new PieChart(
           'top5GroupsVizz',
           `${this.filters} sourcetype=wazuh | top rule.groups limit=5`,
-          'top5GroupsVizz'
+          'top5GroupsVizz',
+          this.scope
         ),
         new PieChart(
           'top5PCIreqVizz',
           `${this.filters} sourcetype=wazuh | top rule.pci_dss{} limit=5`,
-          'top5PCIreqVizz'
+          'top5PCIreqVizz',
+          this.scope
         ),
         new LinearChart(
           'alertLevelEvoVizz',
           `${
           this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-          'alertLevelEvoVizz'
+          'alertLevelEvoVizz',
+          this.scope
         ),
         new ColumnChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'alertsVizz'
+          'alertsVizz',
+          this.scope
         ),
         new Table(
           'agentsSummaryVizz',
           `${
           this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'agentsSummaryVizz'
+          'agentsSummaryVizz',
+          this.scope
         )
       ]
 
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+        this.filters
+        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.submittedTokenModel,
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
+      
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
       })
 
       /**
@@ -184,7 +221,7 @@ define([
             'agentsSummaryVizz'
           ],
             this.metrics,//Metrics
-            []//Tables
+            this.tableResults
           )
 
       } catch (err) {
