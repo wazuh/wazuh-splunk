@@ -147,15 +147,6 @@ define([
         this.scope.awsMetrics.buckets.map( b => {
           if (b.name) { this.metricsBuckets.push(b.name) }
         })
-        this.reportMetrics = {
-          'Enabled': this.scope.awsMetrics.enabled,
-          'Scan interval': this.scope.awsMetrics.scanInterval,
-          'Run on start': this.scope.awsMetrics.runOnStart,
-          'Skip on error': this.scope.awsMetrics.skipOnError,
-          'Buckets': this.metricsBuckets.toString(),
-          'Accounts in use': this.scope.awsMetrics.accountInUse.toString(),
-          'Regions in use': this.scope.awsMetrics.regionsInUse.toString()
-        }
 
         this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png('aws', 'Amazon web services', this.amazonFilters,[
@@ -183,6 +174,7 @@ define([
           }).length
           if (this.vizzReady) { 
             this.scope.loadingVizz = false
+            this.setReportMetrics()
           } else { 
             this.scope.loadingVizz = true
           }
@@ -288,6 +280,21 @@ define([
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Enabled': this.scope.awsMetrics.enabled,
+        'Scan interval': this.scope.awsMetrics.scanInterval,
+        'Run on start': this.scope.awsMetrics.runOnStart,
+        'Skip on error': this.scope.awsMetrics.skipOnError,
+        'Buckets': this.metricsBuckets.toString(),
+        'Accounts in use': this.scope.awsMetrics.accountInUse.toString(),
+        'Regions in use': this.scope.awsMetrics.regionsInUse.toString()
+      }
     }
 
     /**

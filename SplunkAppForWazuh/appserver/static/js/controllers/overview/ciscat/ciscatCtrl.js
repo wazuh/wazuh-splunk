@@ -185,7 +185,7 @@ define([
         'scanResultEvolution',
         'alertsSummary'
       ],
-      {},//Metrics
+      this.reportMetrics,
       this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
@@ -198,6 +198,7 @@ define([
         }).length
         if (this.vizzReady) { 
           this.scope.loadingVizz = false
+          this.setReportMetrics()
         } else { 
           this.scope.loadingVizz = true
         }
@@ -219,6 +220,22 @@ define([
         this.timePicker.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Last not checked': this.scope.lastNotChecked,
+        'Last pass': this.scope.lastPass,
+        'Last scan score': this.scope.lastScanScore,
+        'Last scan date': this.scope.lastScanDate,
+        'Last errors': this.scope.lastErrors,
+        'Last fails': this.scope.lastFails,
+        'Last unknown': this.scope.lastUnknown,
+        'Last scan benchmark': this.scope.lastScanBenchmark
+      }
     }
 
     /**

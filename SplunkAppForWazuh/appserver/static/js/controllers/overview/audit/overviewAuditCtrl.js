@@ -205,6 +205,12 @@ define([
       this.alertsSummaryTable.getSearch().on('result', (result) => {
         this.tableResults['Alerts Summary'] = result
       })
+      this.reportMetrics = {
+        'New files': this.scope.newFiles,
+        'Read files': this.scope.readFiles,
+        'Modified files': this.scope.filesModifiedToken,
+        'Deleted files': this.scope.filesDeleted 
+      }
 
       /**
        * Generates report
@@ -223,7 +229,7 @@ define([
         'removedFilesElement',
         'alertsSummaryElement'
       ],
-      {},//Metrics,
+      this.reportMetrics,
       this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {

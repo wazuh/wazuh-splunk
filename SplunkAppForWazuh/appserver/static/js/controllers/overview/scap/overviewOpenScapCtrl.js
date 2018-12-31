@@ -203,7 +203,7 @@ define([
         'top10HRisk',
         'alertsSummaryVizz'
       ],
-      {},//Metrics
+      this.reportMetrics,
       this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
@@ -216,6 +216,7 @@ define([
         }).length
         if (this.vizzReady) { 
           this.scope.loadingVizz = false
+          this.setReportMetrics()
         } else { 
           this.scope.loadingVizz = true
         }
@@ -227,6 +228,17 @@ define([
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Last score': this.scope.scapLastScore,
+        'Highest score': this.scope.scapHighestScore,
+        'Lowest score': this.scope.scapLowestScore
+      }
     }
 
     /**

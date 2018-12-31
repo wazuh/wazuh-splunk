@@ -239,7 +239,7 @@ define([
           'alertsEvoTop5Agents',
           'agentsSummaryVizz'
         ],
-        {}, //Metrics
+        this.reportMetrics,
         this.tableResults
         )
 
@@ -258,6 +258,7 @@ define([
           }).length
           if (this.vizzReady) { 
             this.scope.loadingVizz = false
+            this.setReportMetrics()
           } else { 
             this.scope.loadingVizz = true
           }
@@ -271,6 +272,18 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Alerts': this.scope.totalAlerts,
+        'Level 12 or above alerts': this.scope.levelTwelve,
+        'Authentication failure': this.scope.authFailure,
+        'Authentication success': this.scope.authSuccess
+      }
     }
   }
 
