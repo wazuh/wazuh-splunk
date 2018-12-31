@@ -160,7 +160,7 @@ define([
         'top5Rules',
         'filesAffected'
       ],
-      {},//Metrics,
+      this.reportMetrics,
       this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
@@ -173,6 +173,7 @@ define([
         }).length
         if (this.vizzReady) { 
           this.scope.loadingVizz = false
+          this.setReportMetrics()
         } else { 
           this.scope.loadingVizz = true
         }
@@ -211,6 +212,17 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Files added': this.scope.filesAdded,
+        'Files modified': this.scope.filesModified,
+        'Files deleted': this.scope.filesDeleted
+      }
     }
   }
   app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)

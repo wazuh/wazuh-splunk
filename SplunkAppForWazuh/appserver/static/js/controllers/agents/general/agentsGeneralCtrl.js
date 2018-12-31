@@ -198,7 +198,7 @@ define([
          */
         this.agentMetricsGroup = []
         this.agentInfo.group.map(g => this.agentMetricsGroup.push(g))
-        this.metrics = {
+        this.reportMetrics = {
           ID: this.agentInfo.id,
           Name: this.agentInfo.name,
           IP: this.agentInfo.ip,
@@ -209,8 +209,8 @@ define([
           'Registration date': this.agentInfo.dateAdd,
           'Last syscheck scan': this.agentInfo.syscheck.end ? this.agentInfo.syscheck.end : 'Unknown',
           'Last rootcheck scan': this.agentInfo.rootcheck.end ? this.agentInfo.rootcheck.end : 'Unknown'
-
         }
+
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png('agents-general', 'Security events report', this.filters, [
             'top5AlertsVizz',
@@ -220,7 +220,7 @@ define([
             'alertsVizz',
             'agentsSummaryVizz'
           ],
-            this.metrics,//Metrics
+            this.reportMetrics,
             this.tableResults
           )
 

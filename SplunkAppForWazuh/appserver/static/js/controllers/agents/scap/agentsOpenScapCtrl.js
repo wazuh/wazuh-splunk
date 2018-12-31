@@ -224,7 +224,7 @@ define([
         'top10HRAlertsVizz',
         'alertsSummaryVizz'
       ],
-      {},//Metrics,
+      this.reportMetrics,
       this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
@@ -237,6 +237,7 @@ define([
         }).length
         if (this.vizzReady) { 
           this.scope.loadingVizz = false
+          this.setReportMetrics()
         } else { 
           this.scope.loadingVizz = true
         }
@@ -283,6 +284,17 @@ define([
      */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Last score': this.scope.scapLastScore,
+        'Highest score': this.scope.scapHighestScore,
+        'Lowest score': this.scope.scapLowestScore
+      }
     }
 
     /**

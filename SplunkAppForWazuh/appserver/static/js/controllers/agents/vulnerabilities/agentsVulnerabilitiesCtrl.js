@@ -202,7 +202,7 @@ define([
         'commonlyAffectedPackVizz',
         'alertsSummaryVizz'
       ],
-      {},//Metrics,
+      this.reportMetrics,
       this.tableResults)
 
       this.scope.$on('loadingReporting', (event, data) => {
@@ -215,6 +215,7 @@ define([
         }).length
         if (this.vizzReady) { 
           this.scope.loadingVizz = false
+          this.setReportMetrics()
         } else { 
           this.scope.loadingVizz = true
         }
@@ -269,6 +270,18 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Critical severity alerts': this.scope.criticalSeverity,
+        'High severity alerts': this.scope.highSeverity,
+        'Medium severity alerts': this.scope.mediumSeverity,
+        'Low severity alerts': this.scope.lowSeverity
+      }
     }
   }
 
