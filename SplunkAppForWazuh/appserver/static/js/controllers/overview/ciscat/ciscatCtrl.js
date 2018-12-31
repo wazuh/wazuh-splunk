@@ -180,7 +180,7 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-fim', 'CIS-CAT', this.filters, [
+      this.reportingService.startVis2Png('overview-ciscat', 'CIS-CAT', this.filters, [
         'topCiscatGroups',
         'scanResultEvolution',
         'alertsSummary'
