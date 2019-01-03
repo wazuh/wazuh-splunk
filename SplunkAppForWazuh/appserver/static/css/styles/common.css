@@ -625,6 +625,11 @@ kbn-vis .vis-container {
   word-break: break-all;
 }
 
+.small-text{
+  font-size: 12px;
+  padding: 10px;
+}
+
 .wz-icon {
   width: 35px !important;
   height: 35px !important;
