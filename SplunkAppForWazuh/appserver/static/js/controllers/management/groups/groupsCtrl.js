@@ -46,7 +46,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
         this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
         this.scope.addMultipleAgents(false)
-        this.rootScope.$emit('closeEditXmlFile', {})
+        this.rootScope.$broadcast('closeEditXmlFile', {})
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -139,12 +139,13 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
       this.scope.loadSelectedAgents = async (searchTerm) => {
         try {
-          let params = { 'offset': !searchTerm ? this.scope.selectedAgents.offset : 0 }
+          let params = { 'offset': !searchTerm ? this.scope.selectedAgents.offset : 0, 'select': ["id", "name"] }
           if (searchTerm) {
             params.search = searchTerm
           }
           const result = await this.apiReq(`/agents/groups/${this.scope.currentGroup.name}`,
             params)
+          this.scope.totalSelectedAgents = result.data.data.totalItems
           const mapped = result.data.data.items.map((item) => {
             return { 'key': item.id, 'value': item.name }
           })
@@ -154,7 +155,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           } else {
             this.scope.selectedAgents.data = this.scope.selectedAgents.data.concat(mapped)
           }
-          if (this.scope.selectedAgents.data.length === 0 || this.scope.selectedAgents.data.length < 500) {
+          if (this.scope.selectedAgents.data.length === 0 || this.scope.selectedAgents.data.length < 500 || this.scope.selectedAgents.offset >= this.scope.totalSelectedAgents) {
             this.scope.selectedAgents.loadedAll = true
           }
         } catch (error) {
@@ -165,7 +166,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
       this.scope.loadAllAgents = async (searchTerm, start) => {
         try {
-          let params = { 'offset': !searchTerm ? this.scope.availableAgents.offset : 0 }
+          let params = { 'offset': !searchTerm ? this.scope.availableAgents.offset : 0, 'select': ["id", "name"] }
           if (searchTerm) {
             params.search = searchTerm
             this.scope.availableAgents.offset = 0
@@ -216,61 +217,89 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
       }
 
-      this.scope.saveAddAgents = async (agents) => {
+      this.scope.getItemsToSave = () => {
         const original = this.scope.firstSelectedList
-        const modified = agents
+        const modified = this.scope.selectedAgents.data
         this.scope.deletedAgents = []
         this.scope.addedAgents = []
 
-        modified.forEach((mod) => {
+        modified.forEach(mod => {
           if (original.filter(e => e.key === mod.key).length === 0) {
             this.scope.addedAgents.push(mod)
           }
         })
-        original.forEach((orig) => {
+        original.forEach(orig => {
           if (modified.filter(e => e.key === orig.key).length === 0) {
             this.scope.deletedAgents.push(orig)
           }
         })
-        const addedIds = this.scope.addedAgents.map(x => x.key)
-        const deletedIds = this.scope.deletedAgents.map(x => x.key)
+
+        return {
+          addedIds: [...new Set(this.scope.addedAgents.map(x => x.key))],
+          deletedIds: [...new Set(this.scope.deletedAgents.map(x => x.key))]
+        }
+      }
+
+      this.scope.saveAddAgents = async () => {
+        const itemsToSave = this.scope.getItemsToSave()
         const failedIds = []
         try {
           this.scope.multipleSelectorLoading = true
-          if (addedIds.length) {
-            const addResponse = await this.apiReq(`/agents/group/${this.scope.currentGroup.name}`, { 'ids': this.scope.addedAgents.map(x => x.key) }, 'POST')
+          if (itemsToSave.addedIds.length) {
+            const addResponse = await this.apiReq(
+              `/agents/group/${this.scope.currentGroup.name}`,
+              { ids: itemsToSave.addedIds },
+              'POST'
+            )
             if (addResponse.data.data.failed_ids) {
               failedIds.push(...addResponse.data.data.failed_ids)
             }
-
           }
-          if (deletedIds.length) {
-            const deleteResponse = await this.apiReq(`/agents/group/${this.scope.currentGroup.name}`, { 'ids': deletedIds }, 'DELETE')
+          if (itemsToSave.deletedIds.length) {
+            const deleteResponse = await this.apiReq(
+              `/agents/group/${this.scope.currentGroup.name}`,
+              { ids: itemsToSave.deletedIds },
+              'DELETE'
+            )
             if (deleteResponse.data.data.failed_ids) {
               failedIds.push(...deleteResponse.data.data.failed_ids)
             }
           }
+
           if (failedIds.length) {
-            this.toast(`Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`)
-          } else {
             this.toast(
-              'Success. Group has been updated'
+              `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
             )
+          } else {
+            this.toast('Success. Group has been updated')
           }
           this.scope.addMultipleAgents(false)
         } catch (err) {
-          this.toast(err, 'Error applying changes')
+          this.toast('Error applying changes')
         }
         this.timeout(() => {
           this.scope.multipleSelectorLoading = false
+          this.scope.$emit('updateGroupInformation', {
+            group: this.scope.currentGroup.name
+          })
         }, 100)
-        console.log('Added: ' + this.scope.addedAgents.map(x => x.key) + " - Deleted: " + this.scope.deletedAgents.map(x => x.key))
       }
+
+      this.scope.checkLimit = () => {
+        if (this.scope.firstSelectedList) {
+          const itemsToSave = this.scope.getItemsToSave()
+          this.scope.currentAdding = itemsToSave.addedIds.length
+          this.scope.currentDeleting = itemsToSave.deletedIds.length
+          this.scope.moreThan1000 =
+            this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+        }
+      }
+
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
     editGroupAgentConfig(group) {
-      this.rootScope.$emit('editXmlFile', { 'target': group })
+      this.rootScope.$broadcast('editXmlFile', { 'target': group })
     }
 
     /**

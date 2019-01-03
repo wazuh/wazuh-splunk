@@ -61,7 +61,7 @@ define(['../../module'], function (app) {
         this.agent[0].data &&
         typeof this.agent[0].data.data === 'object'
       ) {
-        this.scope.agent = this.agent[0].data.data        
+        this.scope.agent = this.agent[0].data.data
         this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope
           .agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
         this.scope.syscheck =
@@ -112,8 +112,10 @@ define(['../../module'], function (app) {
 
             this.$mdDialog.show(confirm).then(
               () => {
-                this.groupHandler.addAgentToGroup(group, this.scope.agent.id)
-                  .then(() => this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
+                this.groupHandler
+                  .addAgentToGroup(group, this.scope.agent.id)
+                  .then(() =>
+                    this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
                   .then(agent => {
                     this.scope.agent.group = agent.data.data.group
                     this.scope.groups = this.scope.groups.filter(item => !agent.data.data.group.includes(item))
