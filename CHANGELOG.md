@@ -15,6 +15,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Fixed
 
 - Minor fixes ([#425](https://github.com/wazuh/wazuh-splunk/pull/425)).
+- UX enhancements ([#433](https://github.com/wazuh/wazuh-splunk/pull/433)).
+- Fixed schema for `wazuh-monitoring-3x` index ([#436](https://github.com/wazuh/wazuh-splunk/pull/436)).
 
 ## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
 There are no changes for Splunk app for Wazuh in this version.
@@ -42,6 +44,7 @@ There are no changes for Splunk app for Wazuh in this version.
 - Fix a bug when using the Agent status monitoring alerts ([#361](https://github.com/wazuh/wazuh-splunk/pull/361)).
 - Added missing fields for syscollector network tables ([#359](https://github.com/wazuh/wazuh-splunk/pull/359)).
 - Fixed wrong value in a variable from the agents module ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
+- Updated searches for AWS section ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
 
 ## Wazuh v3.7.0 - Splunk Enterprise v7.2.0 / Splunk Enterprise v7.2.1 - Splunk app v3.7.0-rev-17
 ### Added

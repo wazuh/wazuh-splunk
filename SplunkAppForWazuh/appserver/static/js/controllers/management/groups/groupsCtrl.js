@@ -228,7 +228,8 @@ define(['../../module', 'FileSaver'], function (controllers) {
             this.scope.addedAgents.push(mod)
           }
         })
-        original.forEach(orig => {
+
+        original.forEach((orig) => {
           if (modified.filter(e => e.key === orig.key).length === 0) {
             this.scope.deletedAgents.push(orig)
           }

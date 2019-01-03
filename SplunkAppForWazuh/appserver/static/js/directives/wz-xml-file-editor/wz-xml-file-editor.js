@@ -101,7 +101,8 @@ define([
 
           const fetchFile = async () => {
             try {
-              /*const xml = await this.apiReq.request(
+              /*const xml = = await this.apiReq.request(
+                'GET',
                 $scope.loadPath,
                 {}
               )*/
