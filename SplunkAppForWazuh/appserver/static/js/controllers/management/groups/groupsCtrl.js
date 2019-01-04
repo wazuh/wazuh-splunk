@@ -71,7 +71,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
             { limit: 1 },
           )
           this.scope.currentGroup.count = result.data.data.totalItems
-          this.scope.currentGroup.agents = result.data.data.items
         } catch (error) {
           this.toast(error)
         }
