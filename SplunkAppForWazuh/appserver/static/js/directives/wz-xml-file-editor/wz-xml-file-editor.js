@@ -102,6 +102,9 @@ define([
                 { content, origin: 'xmleditor' },
                 'POST'
               )
+              $scope.$emit('updateGroupInformation', {
+                group: $scope.targetName
+              })
               await $timeout(500)
             } catch (error) {
               $notificationService.showSimpleToast('Send file error.')
