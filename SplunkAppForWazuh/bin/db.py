@@ -89,12 +89,13 @@ class database():
 
     def all(self):
         """Obtain the full API list."""
-        try:
-            all = self.db.all()
-        except Exception as e:
-            self.logger.error("Error at get all documents DB module: %s" % (e))
-            raise e
-        return all
+        with self.mutex:
+            try:
+                all = self.db.all()
+            except Exception as e:
+                self.logger.error("Error at get all documents DB module: %s" % (e))
+                raise e
+            return all
 
     def get(self, id):
         """Get API by ID.
@@ -105,9 +106,10 @@ class database():
             The API ID
 
         """
-        try:
-            data = self.db.search(self.Api.id == id)
-        except Exception as e:
-            self.logger.error("Error at get document DB: %s" % (e))
-            raise e
-        return data
+        with self.mutex:
+            try:
+                data = self.db.search(self.Api.id == id)
+            except Exception as e:
+                self.logger.error("Error at get document DB: %s" % (e))
+                raise e
+            return data
