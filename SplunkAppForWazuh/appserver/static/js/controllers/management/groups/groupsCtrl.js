@@ -66,11 +66,29 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
       this.scope.$on('updateGroupInformation', async (event, parameters) => {
         try {
-          const result = await this.apiReq(
-            `/agents/groups/${parameters.group}`,
-            { limit: 1 },
-          )
-          this.scope.currentGroup.count = result.data.data.totalItems
+          if (this.scope.currentGroup) {
+            const result = await Promise.all([
+              await this.apiReq(`/agents/groups/${parameters.group}`, {
+                limit: 1
+              }),
+              await this.apiReq(`/agents/groups`, {
+                search: parameters.group
+              })
+            ])
+    
+            const [count, sums] = result.map(
+              item => ((item || {}).data || {}).data || false
+            )
+            const updatedGroup = ((sums || {}).items || []).find(
+              item => item.name === parameters.group
+            )
+    
+            this.scope.currentGroup.count = (count || {}).totalItems || 0
+            if (updatedGroup) {
+              this.scope.currentGroup.configSum = updatedGroup.configSum
+              this.scope.currentGroup.mergedSum = updatedGroup.mergedSum
+            }
+          }
         } catch (error) {
           this.toast(error)
         }
