@@ -22,7 +22,6 @@ define(['../module'], function (app) {
         titleSelectedItems: '@',
         titleAvailableItems: '@',
         totalSelectedItems: '=',
-        totalAvailableItems: '=',
         reloadScroll: '&'
       },
       controller(
