@@ -80,20 +80,6 @@ define([
             $scope.xmlCodeBox.setCursor(0)
           }
 
-          const updateFile = async () => {
-            try {
-              /*const response = await $requestService(
-                $scope.updatePath,
-                {},
-                'PUT'
-              )*/
-              const response = ""
-              return response
-            } catch (error) {
-              this.apiInputBox.model = []
-            }
-          }
-
           $scope.saveFile = async () => {
             try {
               const content = $scope.xmlCodeBox.getValue()

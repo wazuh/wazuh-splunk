@@ -127,7 +127,7 @@ class api(controllers.BaseController):
             else:
                 method = kwargs['method']
                 del kwargs['method']
-
+                
             the_id = kwargs['id']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
@@ -145,9 +145,14 @@ class api(controllers.BaseController):
                     url + opt_endpoint, params=kwargs, auth=auth,
                     verify=verify).json()
             if method == 'POST':
+                if 'origin' in kwargs and kwargs['origin'] == 'xmleditor':
+                    headers = {'Content-Type': 'application/xml'} 
+                    kwargs = str(kwargs['content'])
+                else:
+                    headers = {'Content-type': 'application/json'}
                 request = self.session.post(
                     url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify).json()
+                    verify=verify, headers=headers).json()
             if method == 'PUT':
                 request = self.session.put(
                     url + opt_endpoint, data=kwargs, auth=auth,
