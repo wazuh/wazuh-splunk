@@ -317,7 +317,7 @@ define([
         }
 
         $scope.editGroupAgentConfig = (ev, group) => {
-          $rootScope.$broadcast('editXmlFile', { 'target' : group });
+          $rootScope.$broadcast('editXmlFile', { target : group });
         };
 
         $scope.showConfirm = function(ev, agent) {

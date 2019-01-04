@@ -15,7 +15,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
      */
     constructor(
       $scope,
-      $rootScope,
       $tableFilterService,
       $csvRequestService,
       $currentDataService,
@@ -24,7 +23,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
       $requestService,
       $beautifierJson,
       $notificationService,
-      $document,
       $timeout
     ) {
       this.scope = $scope
@@ -32,7 +30,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.beautifier = $beautifierJson
       this.stateParams = $stateParams
       this.api = $currentDataService.getApi()
-      this.document = $document
       this.timeout = $timeout
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
@@ -41,12 +38,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.mainGroup = ''
       this.scope.lookingGroup = false
       this.scope.loadingRing = false
-      this.rootScope = $rootScope
       this.scope.$watch('lookingGroup', value => {
         this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
         this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
         this.scope.addMultipleAgents(false)
-        this.rootScope.$broadcast('closeEditXmlFile', {})
+        this.scope.$broadcast('closeEditXmlFile', {})
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -166,7 +162,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
       this.scope.loadAllAgents = async (searchTerm, start) => {
         try {
-          let params = { 'offset': !searchTerm ? this.scope.availableAgents.offset : 0, 'select': ["id", "name"] }
+          const params = {
+            q: 'id!=000',
+            offset: !searchTerm ? this.scope.availableAgents.offset : 0,
+            select: ["id", "name"]
+          }
           if (searchTerm) {
             params.search = searchTerm
             this.scope.availableAgents.offset = 0
@@ -200,21 +200,25 @@ define(['../../module', 'FileSaver'], function (controllers) {
       }
 
       this.scope.addMultipleAgents = async (toggle) => {
-        this.scope.addingAgents = toggle
-        if (toggle && !this.scope.availableAgents.loaded) {
-          this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-          this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-          this.scope.multipleSelectorLoading = true
-          while (!this.scope.selectedAgents.loadedAll) {
-            await this.scope.loadSelectedAgents()
-            this.scope.selectedAgents.offset += 499
-          }
-          this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
-          await this.scope.loadAllAgents()
-          this.timeout(() => {
+        try {
+          this.scope.addingAgents = toggle
+          if (toggle && !this.scope.availableAgents.loaded) {
+            this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+            this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+            this.scope.multipleSelectorLoading = true
+            while (!this.scope.selectedAgents.loadedAll) {
+              await this.scope.loadSelectedAgents()
+              this.scope.selectedAgents.offset += 499
+            }
+            this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
+            await this.scope.loadAllAgents()
             this.scope.multipleSelectorLoading = false
-          }, 100)
+          }
+        } catch (err) {
+          this.toast('Error adding agents.')
         }
+        if (!this.scope.$$phase) this.scope.$digest()
+        return
       }
 
       this.scope.getItemsToSave = () => {
@@ -300,7 +304,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
     }
 
     editGroupAgentConfig(group) {
-      this.rootScope.$broadcast('editXmlFile', { 'target': group })
+      this.scope.$broadcast('editXmlFile', { 'target': group })
     }
 
     /**

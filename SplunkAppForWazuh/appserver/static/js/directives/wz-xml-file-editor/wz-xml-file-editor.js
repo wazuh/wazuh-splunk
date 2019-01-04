@@ -31,8 +31,6 @@ define([
       return {
         restrict: 'E',
         scope: {
-          loadPath: '=loadPath',
-          updatePath: '=updatePath',
           fileName: '@fileName'
         },
         controller(
@@ -43,7 +41,8 @@ define([
           $document,
           $notificationService
         ) {
-          $($document[0]).ready( () => {
+          let fetchedXML = null
+          $($document[0]).ready(() => {
             $scope.xmlCodeBox = CodeMirror.fromTextArea(
               $document[0].getElementById('xml_box'),
               {
@@ -66,7 +65,7 @@ define([
                 var parser = new DOMParser()
                 var xml = $scope.xmlCodeBox.getValue()
                 var xmlDoc = parser.parseFromString(xml, "text/xml")
-                $timeout( () => {
+                $timeout(() => {
                   $scope.xmlHasErrors = xmlDoc.getElementsByTagName("parsererror").length > 0 ? true : false
                 }, 50)
               } catch (error) {
@@ -96,16 +95,28 @@ define([
           }
 
           $scope.saveFile = async () => {
-            await updateFile()
+            try {
+              const content = $scope.xmlCodeBox.getValue()
+              await $requestService.apiReq(
+                `/agents/groups/${$scope.targetName}/configuration`,
+                { content, origin: 'xmleditor' },
+                'POST'
+              )
+              await $timeout(500)
+            } catch (error) {
+              $notificationService.showSimpleToast('Send file error.')
+            }
+            $scope.editingFile = false
+            if (!$scope.$$phase) $scope.$digest()
+            return
           }
 
           const fetchFile = async () => {
             try {
-              /*const xml = = await this.apiReq.request(
-                'GET',
-                $scope.loadPath,
-                {}
-              )*/
+              // const xml = await this.apiReq.request(
+              // `/agents/groups/${$scope.targetName}/configuration`,
+              // {format: 'xml'}
+              // )
               const xml = "<agent_config>" +
                 "\n" +
                 "<!-- Shared agent configuration here -->\n" +
@@ -113,7 +124,7 @@ define([
                 "</agent_config>"
               return xml
             } catch (error) {
-              $notificationService.showSimpleToast(error)
+              return Promise.reject(error)
             }
           }
 
@@ -122,14 +133,14 @@ define([
             $scope.loadingFile = true
             $scope.targetName = params.target.name
             try {
-              const xml = await fetchFile()
-              $scope.xmlCodeBox.setValue(xml)
+              fetchedXML = await fetchFile()
+              $scope.xmlCodeBox.setValue(fetchedXML)
               autoFormat()
-              $scope.loadingFile = false
-              $timeout( () => { $scope.xmlCodeBox.refresh() }, 100)
+              $timeout(() => { $scope.xmlCodeBox.refresh() }, 100)
             } catch (error) {
               $notificationService.showSimpleToast(error)
             }
+            $scope.loadingFile = false
           }
           $rootScope.$on('editXmlFile', (item, params) => $scope.editXmlFile(item, params))
           $rootScope.$on('closeEditXmlFile', () => $scope.editingFile = false)
