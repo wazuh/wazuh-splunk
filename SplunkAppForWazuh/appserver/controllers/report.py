@@ -39,7 +39,8 @@ class PDF(FPDF):
     # Page footer
     def footer(self):
         # Position at 1.5 cm from bottom
-        self.copyright = unicode('Copyright © 2018 Wazuh, Inc.', 'utf-8')
+        self.year = datetime.datetime.now().strftime('%Y')
+        self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
         self.set_text_color(93, 188, 210)
         self.set_font('Arial', 'B', 8)
@@ -256,6 +257,7 @@ class report(controllers.BaseController):
     #Calculates the width of the fields
     def calculate_table_width(self, table):
         sizes = {}
+        total_width = 0
         fields = table['fields']
         for field in fields:
             if field != 'sparkline':
@@ -271,6 +273,15 @@ class report(controllers.BaseController):
                     if width > prev_width:
                         sizes[key] = width
                 count = count + 1
+        # This code block resize the table for fill all the width
+        for key in sizes.keys():
+            total_width = total_width + sizes[key]
+        if total_width < 190:
+            diff = 190 - total_width
+            keys_num = len(sizes.keys())
+            diff = diff / keys_num
+            for key in sizes.keys(): # Sum the proporcional width difference to the fields
+                sizes[key] = sizes[key] + diff
         return self.sort_table_sizes(table['fields'], sizes)
     
     #Sorts the width of the fields
