@@ -24,6 +24,24 @@ define(['../module'], function(module) {
             '/static/app/SplunkAppForWazuh/js/controllers/settings/about/about.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('settings.about')
+          },
+          controller: 'aboutCtrl',
+          resolve: {
+            appInfo: [
+              '$requestService',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.httpReq(
+                    'GET',
+                    '/manager/app_info'
+                  )
+                  return result.data
+                } catch (error) {
+                  console.error("Error fetching app info ", error)
+                  $state.go('settings.api')
+                }
+              }
+            ]
           }
         })
         // settings -> api
