@@ -205,7 +205,7 @@ define([
         this.clusOrMng = Object.keys(this.currentDataService.getFilters()[0])[0]
         if (this.clusOrMng == 'manager.name') {
           this.mngName = this.currentDataService.getFilters()[0]['manager.name']
-          this.agentsStatusFilter = `manager=${
+          this.agentsStatusFilter = `manager.name=${
             this.mngName
           } index=wazuh-monitoring-3x`
         } else {

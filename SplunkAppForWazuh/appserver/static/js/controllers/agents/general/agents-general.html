@@ -5,8 +5,9 @@
     <div>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
-      <span ng-if="agentInfo.name && agentInfo.id && !agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}} ({{agentInfo.id}})</span>
-      <span ng-if="!agentInfo || agentInfo.error || !agentInfo.id">Unknown agent</span>
+      <span ng-if="!agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}}
+          ({{agentInfo.id}})</span>
+        <span ng-if="agentInfo.error">Unknown agent</span>
       <span> / </span>
       <span>General</span>
     </div>
@@ -39,12 +40,12 @@
           Name:
           <span class="wz-text-bold">{{ agentInfo.name }}</span>
           <md-tooltip ng-if="agentInfo.name.length" md-direction="bottom" class="wz-tooltip">
-            Full name: {{ agentInfo.name }}
+            Full name: {{ agentInfo.name  || 'Unknown'}}
           </md-tooltip>
         </div>
         <div class="wz-text-truncatable" flex>
           IP:
-          <span class="wz-text-bold">{{ agentInfo.ip }}</span>
+          <span class="wz-text-bold">{{ agentInfo.ip  || 'Unknown'}}</span>
         </div>
         <!--  <div class="wz-text-truncatable" flex ng-if="agentInfo.group">
           Group:
@@ -52,13 +53,13 @@
         </div> -->
         <div class="wz-text-truncatable" flex ng-if="agentInfo.version">
           Version:
-          <span class="wz-text-bold">{{ agentInfo.version }}</span>
+          <span class="wz-text-bold">{{ agentInfo.version  || 'Unknown'}}</span>
         </div>
         <div class="wz-text-truncatable" flex>
           OS:
-          <span class="wz-text-bold">{{ agentInfo.agentOS }}</span>
+          <span class="wz-text-bold">{{ agentInfo.agentOS  || 'Unknown'}}</span>
           <md-tooltip ng-if="agentInfo.agentOS.length" md-direction="bottom" class="wz-tooltip">
-            Full OS name: {{ agentInfo.agentOS }}
+            Full OS name: {{ agentInfo.agentOS  || 'Unknown'}}
           </md-tooltip>
         </div>
       </md-card-content>
@@ -80,7 +81,7 @@
           <span class="wz-text-bold"> {{agentInfo.lastKeepAlive || 'Unknown' }}</span>
         </div>
         <div class="wz-text-truncatable" flex>Registration date:
-          <span class="wz-text-bold"> {{agentInfo.dateAdd}}</span>
+          <span class="wz-text-bold"> {{agentInfo.dateAdd || 'Unknown'}}</span>
         </div>
         <div class="wz-text-truncatable" flex ng-if="agentInfo.syscheck.inProgress">Last syscheck scan:
           <span class="wz-text-bold"> Scan in progress</span>

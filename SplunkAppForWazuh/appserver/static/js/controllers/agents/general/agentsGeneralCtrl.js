@@ -44,6 +44,7 @@ define([
       $currentDataService,
       agent,
       $state,
+      $dateDiffService,
       $reportingService
     ) {
       this.state = $state
@@ -67,6 +68,7 @@ define([
           `{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`
         )
       this.filters = this.currentDataService.getSerializedFilters()
+      this.dateDiffService = $dateDiffService
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
@@ -188,9 +190,13 @@ define([
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
+        
+        this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end).duration
+        this.agentInfo.rootcheck.duration = this.dateDiffService.getDateDiff(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end).duration
+        this.agentInfo.syscheck.inProgress = this.dateDiffService.getDateDiff(this.agentInfo.syscheck.start, this.agentInfo.syscheck.end).inProgress
+        this.agentInfo.rootcheck.inProgress = this.dateDiffService.getDateDiff(this.agentInfo.rootcheck.start, this.agentInfo.rootcheck.end).inProgress
 
-        this.scope.agentInfo = this.agent[0].data.data
-
+        this.scope.agentInfo = this.agentInfo
         this.scope.id = this.stateParams.id
 
         /**
@@ -234,7 +240,17 @@ define([
             this.agent[0].data.data
             ? this.agent[0].data.data.id
             : null
-        this.agentInfo.error = 'Unable to load agent data'
+        this.agentInfo.name = 
+          this.agent &&
+          this.agent.length &&
+          this.agent[0] &&
+          this.agent[0].data &&
+          this.agent[0].data.data
+            ? this.agent[0].data.data.name
+            : null
+        
+        this.scope.agentInfo = { id: this.agentInfo.id, name: this.agentInfo.name}
+        this.agentInfo.id && this.agentInfo.name ? this.agentInfo.error = false : this.agentInfo.error = 'Unable to load agent data'
       }
 
       this.scope.goGroups = group => this.goGroups(group)
