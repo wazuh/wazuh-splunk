@@ -66,7 +66,7 @@ define([
                 var xml = $scope.xmlCodeBox.getValue()
                 var xmlDoc = parser.parseFromString(xml, "text/xml")
                 $timeout(() => {
-                  $scope.xmlHasErrors = xmlDoc.getElementsByTagName("parsererror").length > 0 ? true : false
+                  $scope.xmlHasErrors = !!xmlDoc.getElementsByTagName('parsererror').length
                 }, 50)
               } catch (error) {
                 $notificationService.showSimpleToast(error)
@@ -82,7 +82,8 @@ define([
 
           $scope.saveFile = async () => {
             try {
-              const content = $scope.xmlCodeBox.getValue()
+              autoFormat()
+              const content = $scope.xmlCodeBox.getValue().trim()
               await $requestService.apiReq(
                 `/agents/groups/${$scope.targetName}/configuration`,
                 { content, origin: 'xmleditor' },
@@ -102,15 +103,17 @@ define([
 
           const fetchFile = async () => {
             try {
-              // const xml = await this.apiReq.request(
-              // `/agents/groups/${$scope.targetName}/configuration`,
-              // {format: 'xml'}
-              // )
-              const xml = "<agent_config>" +
-                "\n" +
-                "<!-- Shared agent configuration here -->\n" +
-                "\n" +
-                "</agent_config>"
+
+              const data = await apiReq.request(
+                'GET',
+                `/agents/groups/${$scope.targetName}/files/agent.conf`,
+                {format: 'xml'}
+              )
+
+              if(!xml) {
+                throw new Error('Could not fetch agent.conf file')
+              }
+              const xml = ((data || {}).data || {}).data || false
               return xml
             } catch (error) {
               return Promise.reject(error)
@@ -122,7 +125,7 @@ define([
             $scope.loadingFile = true
             $scope.targetName = params.target.name
             try {
-              fetchedXML = await fetchFile()
+              const fetchedXML = await fetchFile()
               $scope.xmlCodeBox.setValue(fetchedXML)
               autoFormat()
               $timeout(() => { $scope.xmlCodeBox.refresh() }, 100)
