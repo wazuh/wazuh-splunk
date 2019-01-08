@@ -31,7 +31,9 @@ define([
       return {
         restrict: 'E',
         scope: {
-          fileName: '@fileName'
+          fileName: '@fileName',
+          validFn: '&',
+          saveFn: '&'
         },
         controller(
           $rootScope,
@@ -56,7 +58,6 @@ define([
                 gutters: ['CodeMirror-foldgutter']
               }
             )
-            $scope.xmlHasErrors = false
             $scope.xmlCodeBox.on('change', () => {
               checkXmlParseError()
             })
@@ -66,7 +67,7 @@ define([
                 var xml = $scope.xmlCodeBox.getValue()
                 var xmlDoc = parser.parseFromString(xml, "text/xml")
                 $timeout(() => {
-                  $scope.xmlHasErrors = !!xmlDoc.getElementsByTagName('parsererror').length
+                  $scope.validFn({ valid: !!xmlDoc.getElementsByTagName('parsererror').length })
                 }, 50)
               } catch (error) {
                 $notificationService.showSimpleToast(error)
@@ -84,58 +85,23 @@ define([
             try {
               autoFormat()
               const content = $scope.xmlCodeBox.getValue().trim()
-              await $requestService.apiReq(
-                `/agents/groups/${$scope.targetName}/configuration`,
-                { content, origin: 'xmleditor' },
-                'POST'
-              )
-              $scope.$emit('updateGroupInformation', {
-                group: $scope.targetName
-              })
-              await $timeout(500)
+              $scope.saveFn({ content: content })
             } catch (error) {
               $notificationService.showSimpleToast('Send file error.')
             }
-            $scope.editingFile = false
             if (!$scope.$$phase) $scope.$digest()
             return
           }
 
-          const fetchFile = async () => {
-            try {
-
-              const data = await apiReq.request(
-                'GET',
-                `/agents/groups/${$scope.targetName}/files/agent.conf`,
-                {format: 'xml'}
-              )
-
-              if(!xml) {
-                throw new Error('Could not fetch agent.conf file')
-              }
-              const xml = ((data || {}).data || {}).data || false
-              return xml
-            } catch (error) {
-              return Promise.reject(error)
-            }
-          }
-
-          $scope.editXmlFile = async (item, params) => {
-            $scope.editingFile = true
-            $scope.loadingFile = true
+          const editXmlFile = async (item, params) => {
             $scope.targetName = params.target.name
-            try {
-              const fetchedXML = await fetchFile()
-              $scope.xmlCodeBox.setValue(fetchedXML)
-              autoFormat()
-              $timeout(() => { $scope.xmlCodeBox.refresh() }, 100)
-            } catch (error) {
-              $notificationService.showSimpleToast(error)
-            }
-            $scope.loadingFile = false
+            $scope.xmlCodeBox.setValue(params.data)
+            $scope.xmlCodeBox.refresh()
+            autoFormat()
+            if (!$scope.$$phase) $scope.$digest()
           }
-          $rootScope.$on('editXmlFile', (item, params) => $scope.editXmlFile(item, params))
-          $rootScope.$on('closeEditXmlFile', () => $scope.editingFile = false)
+          $rootScope.$on('editXmlFile', (item, params) => editXmlFile(item, params))
+          $scope.$on('saveXmlFile', () => saveFile())
         },
         templateUrl: BASE_URL +
           '/static/app/SplunkAppForWazuh/js/directives/wz-xml-file-editor/wz-xml-file-editor.html'

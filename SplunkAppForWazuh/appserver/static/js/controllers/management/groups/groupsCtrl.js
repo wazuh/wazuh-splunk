@@ -37,6 +37,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.toast = $notificationService.showSimpleToast
       this.mainGroup = ''
       this.scope.lookingGroup = false
+      this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.$watch('lookingGroup', value => {
         this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
@@ -75,14 +76,14 @@ define(['../../module', 'FileSaver'], function (controllers) {
                 search: parameters.group
               })
             ])
-    
+
             const [count, sums] = result.map(
               item => ((item || {}).data || {}).data || false
             )
             const updatedGroup = ((sums || {}).items || []).find(
               item => item.name === parameters.group
             )
-    
+
             this.scope.currentGroup.count = (count || {}).totalItems || 0
             if (updatedGroup) {
               this.scope.currentGroup.configSum = updatedGroup.configSum
@@ -127,201 +128,31 @@ define(['../../module', 'FileSaver'], function (controllers) {
       }
 
 
-      this.scope.reload = async (element, searchTerm, addOffset, start) => {
-        if (element === 'left') {
-          if (!this.scope.availableAgents.loadedAll) {
-            this.scope.multipleSelectorLoading = true
-            if (start) {
-              this.scope.selectedAgents.offset = 0
-            } else {
-              this.scope.availableAgents.offset += addOffset + 1
-            }
-            await this.scope.loadAllAgents(searchTerm, start)
-          }
-        } else {
-          if (!this.scope.selectedAgents.loadedAll) {
-            this.scope.multipleSelectorLoading = true
-            this.scope.selectedAgents.offset += addOffset + 1
-            await this.scope.loadSelectedAgents(searchTerm)
-          }
-        }
-        this.timeout(() => {
-          this.scope.multipleSelectorLoading = false
-        }, 100)
-      }
+      this.scope.reload = (element, searchTerm, addOffset, start) => this.reloadScope(element, searchTerm, addOffset, start)
 
-      this.scope.loadSelectedAgents = async (searchTerm) => {
-        try {
-          let params = { 'offset': !searchTerm ? this.scope.selectedAgents.offset : 0, 'select': ["id", "name"] }
-          if (searchTerm) {
-            params.search = searchTerm
-          }
-          const result = await this.apiReq(`/agents/groups/${this.scope.currentGroup.name}`,
-            params)
-          this.scope.totalSelectedAgents = result.data.data.totalItems
-          const mapped = result.data.data.items.map((item) => {
-            return { 'key': item.id, 'value': item.name }
-          })
-          if (searchTerm) {
-            this.scope.selectedAgents.data = mapped
-            this.scope.selectedAgents.loadedAll = true
-          } else {
-            this.scope.selectedAgents.data = this.scope.selectedAgents.data.concat(mapped)
-          }
-          if (this.scope.selectedAgents.data.length === 0 || this.scope.selectedAgents.data.length < 500 || this.scope.selectedAgents.offset >= this.scope.totalSelectedAgents) {
-            this.scope.selectedAgents.loadedAll = true
-          }
-        } catch (error) {
-          this.toast(error.message || error)
-        }
-        this.scope.selectedAgents.loaded = true
-      }
+      this.scope.loadSelectedAgents = (searchTerm) => this.loadSelectedAgents(searchTerm)
 
-      this.scope.loadAllAgents = async (searchTerm, start) => {
-        try {
-          const params = {
-            q: 'id!=000',
-            offset: !searchTerm ? this.scope.availableAgents.offset : 0,
-            select: ["id", "name"]
-          }
-          if (searchTerm) {
-            params.search = searchTerm
-            this.scope.availableAgents.offset = 0
-          }
-          const req = await this.apiReq('/agents/', params)
-          this.scope.totalAgents = req.data.data.totalItems
-          const mapped = req.data.data.items.filter((item) => {
-            return this.scope.selectedAgents.data.filter((selected) => {
-              return selected.key == item.id
-            }).length == 0 && item.id !== '000'
-          }).map((item) => {
-            return { 'key': item.id, 'value': item.name }
-          })
-          if (searchTerm || start) {
-            this.scope.availableAgents.data = mapped
-          } else {
-            this.scope.availableAgents.data = this.scope.availableAgents.data.concat(mapped)
-          }
-          if (this.scope.availableAgents.data.length === 0 && !searchTerm) {
-            if (this.scope.availableAgents.offset >= this.scope.totalAgents) {
-              this.scope.availableAgents.loadedAll = true
-            }
-            if (!this.scope.availableAgents.loadedAll) {
-              this.scope.availableAgents.offset += 499
-              await this.scope.loadAllAgents()
-            }
-          }
-        } catch (error) {
-          this.toast(error.message || error)
-        }
-      }
+      this.scope.loadAllAgents = (searchTerm, start) => this.loadAllAgents(searchTerm, start)
 
-      this.scope.addMultipleAgents = async (toggle) => {
-        try {
-          this.scope.addingAgents = toggle
-          if (toggle && !this.scope.availableAgents.loaded) {
-            this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-            this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-            this.scope.multipleSelectorLoading = true
-            while (!this.scope.selectedAgents.loadedAll) {
-              await this.scope.loadSelectedAgents()
-              this.scope.selectedAgents.offset += 499
-            }
-            this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
-            await this.scope.loadAllAgents()
-            this.scope.multipleSelectorLoading = false
-          }
-        } catch (err) {
-          this.toast('Error adding agents.')
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-        return
-      }
+      this.scope.addMultipleAgents = (toggle) => this.addMultipleAgents(toggle)
 
-      this.scope.getItemsToSave = () => {
-        const original = this.scope.firstSelectedList
-        const modified = this.scope.selectedAgents.data
-        this.scope.deletedAgents = []
-        this.scope.addedAgents = []
+      this.scope.getItemsToSave = () => this.getItemsToSave()
 
-        modified.forEach(mod => {
-          if (original.filter(e => e.key === mod.key).length === 0) {
-            this.scope.addedAgents.push(mod)
-          }
-        })
+      this.scope.saveAddAgents = () => this.saveAddAgents()
 
-        original.forEach((orig) => {
-          if (modified.filter(e => e.key === orig.key).length === 0) {
-            this.scope.deletedAgents.push(orig)
-          }
-        })
+      this.scope.checkLimit = () => this.checkLimit()
+      
+      this.scope.editGroupAgentConfig = (group) => this.editGroupAgentConfig(group)
 
-        return {
-          addedIds: [...new Set(this.scope.addedAgents.map(x => x.key))],
-          deletedIds: [...new Set(this.scope.deletedAgents.map(x => x.key))]
-        }
-      }
+      this.scope.closeEditingFile = () => this.closeEditingFile()
+    
+      this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
 
-      this.scope.saveAddAgents = async () => {
-        const itemsToSave = this.scope.getItemsToSave()
-        const failedIds = []
-        try {
-          this.scope.multipleSelectorLoading = true
-          if (itemsToSave.addedIds.length) {
-            const addResponse = await this.apiReq(
-              `/agents/group/${this.scope.currentGroup.name}`,
-              { ids: itemsToSave.addedIds },
-              'POST'
-            )
-            if (addResponse.data.data.failed_ids) {
-              failedIds.push(...addResponse.data.data.failed_ids)
-            }
-          }
-          if (itemsToSave.deletedIds.length) {
-            const deleteResponse = await this.apiReq(
-              `/agents/group/${this.scope.currentGroup.name}`,
-              { ids: itemsToSave.deletedIds },
-              'DELETE'
-            )
-            if (deleteResponse.data.data.failed_ids) {
-              failedIds.push(...deleteResponse.data.data.failed_ids)
-            }
-          }
+      this.scope.doSaveGroupAgentConfig = () => this.doSaveGroupAgentConfig()
 
-          if (failedIds.length) {
-            this.toast(
-              `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
-            )
-          } else {
-            this.toast('Success. Group has been updated')
-          }
-          this.scope.addMultipleAgents(false)
-        } catch (err) {
-          this.toast('Error applying changes')
-        }
-        this.timeout(() => {
-          this.scope.multipleSelectorLoading = false
-          this.scope.$emit('updateGroupInformation', {
-            group: this.scope.currentGroup.name
-          })
-        }, 100)
-      }
-
-      this.scope.checkLimit = () => {
-        if (this.scope.firstSelectedList) {
-          const itemsToSave = this.scope.getItemsToSave()
-          this.scope.currentAdding = itemsToSave.addedIds.length
-          this.scope.currentDeleting = itemsToSave.deletedIds.length
-          this.scope.moreThan1000 =
-            this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
-        }
-      }
+      this.scope.saveGroupAgentConfig = (content) => this.saveGroupAgentConfig(content)
 
       if (!this.scope.$$phase) this.scope.$digest()
-    }
-
-    editGroupAgentConfig(group) {
-      this.scope.$broadcast('editXmlFile', { 'target': group })
     }
 
     /**
@@ -366,6 +197,267 @@ define(['../../module', 'FileSaver'], function (controllers) {
       return
     }
 
+    async fetchFile() {
+      try {
+        const data = await this.apiReq.request(
+          'GET',
+          `/agents/groups/${this.scope.targetName}/files/agent.conf`,
+          { format: 'xml' }
+        )
+        const xml = ((data || {}).data || {}).data || false
+        if (!xml) {
+          throw new Error('Could not fetch agent.conf file')
+        }
+        return xml
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    async reloadScope(element, searchTerm, addOffset, start) {
+      try {
+        if (element === 'left') {
+          if (!this.scope.availableAgents.loadedAll) {
+            this.scope.multipleSelectorLoading = true
+            if (start) {
+              this.scope.selectedAgents.offset = 0
+            } else {
+              this.scope.availableAgents.offset += addOffset + 1
+            }
+            await this.scope.loadAllAgents(searchTerm, start)
+          }
+        } else {
+          if (!this.scope.selectedAgents.loadedAll) {
+            this.scope.multipleSelectorLoading = true
+            this.scope.selectedAgents.offset += addOffset + 1
+            await this.scope.loadSelectedAgents(searchTerm)
+          }
+        }
+        this.timeout(() => {
+          this.scope.multipleSelectorLoading = false
+        }, 100)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+
+    }
+
+    async loadSelectedAgents(searchTerm) {
+      try {
+        let params = { 'offset': !searchTerm ? this.scope.selectedAgents.offset : 0, 'select': ["id", "name"] }
+        if (searchTerm) {
+          params.search = searchTerm
+        }
+        const result = await this.apiReq(`/agents/groups/${this.scope.currentGroup.name}`,
+          params)
+        this.scope.totalSelectedAgents = result.data.data.totalItems
+        const mapped = result.data.data.items.map((item) => {
+          return { 'key': item.id, 'value': item.name }
+        })
+        if (searchTerm) {
+          this.scope.selectedAgents.data = mapped
+          this.scope.selectedAgents.loadedAll = true
+        } else {
+          this.scope.selectedAgents.data = this.scope.selectedAgents.data.concat(mapped)
+        }
+        if (this.scope.selectedAgents.data.length === 0 || this.scope.selectedAgents.data.length < 500 || this.scope.selectedAgents.offset >= this.scope.totalSelectedAgents) {
+          this.scope.selectedAgents.loadedAll = true
+        }
+      } catch (error) {
+        this.toast(error.message || error)
+      }
+      this.scope.selectedAgents.loaded = true
+    }
+
+    async loadAllAgents(searchTerm, start) {
+      try {
+        const params = {
+          q: 'id!=000',
+          offset: !searchTerm ? this.scope.availableAgents.offset : 0,
+          select: ["id", "name"]
+        }
+        if (searchTerm) {
+          params.search = searchTerm
+          this.scope.availableAgents.offset = 0
+        }
+        const req = await this.apiReq('/agents/', params)
+        this.scope.totalAgents = req.data.data.totalItems
+        const mapped = req.data.data.items.filter((item) => {
+          return this.scope.selectedAgents.data.filter((selected) => {
+            return selected.key == item.id
+          }).length == 0 && item.id !== '000'
+        }).map((item) => {
+          return { 'key': item.id, 'value': item.name }
+        })
+        if (searchTerm || start) {
+          this.scope.availableAgents.data = mapped
+        } else {
+          this.scope.availableAgents.data = this.scope.availableAgents.data.concat(mapped)
+        }
+        if (this.scope.availableAgents.data.length === 0 && !searchTerm) {
+          if (this.scope.availableAgents.offset >= this.scope.totalAgents) {
+            this.scope.availableAgents.loadedAll = true
+          }
+          if (!this.scope.availableAgents.loadedAll) {
+            this.scope.availableAgents.offset += 499
+            await this.scope.loadAllAgents()
+          }
+        }
+      } catch (error) {
+        this.toast(error.message || error)
+      }
+    }
+
+    async addMultipleAgents(toggle) {
+      try {
+        this.scope.addingAgents = toggle
+        if (toggle && !this.scope.availableAgents.loaded) {
+          this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+          this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+          this.scope.multipleSelectorLoading = true
+          while (!this.scope.selectedAgents.loadedAll) {
+            await this.scope.loadSelectedAgents()
+            this.scope.selectedAgents.offset += 499
+          }
+          this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
+          await this.scope.loadAllAgents()
+          this.scope.multipleSelectorLoading = false
+        }
+      } catch (err) {
+        this.toast('Error adding agents.')
+      }
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
+    }
+
+    async saveAddAgents() {
+      try {
+        const itemsToSave = this.scope.getItemsToSave()
+        const failedIds = []
+        this.scope.multipleSelectorLoading = true
+        if (itemsToSave.addedIds.length) {
+          const addResponse = await this.apiReq(
+            `/agents/group/${this.scope.currentGroup.name}`,
+            { ids: itemsToSave.addedIds },
+            'POST'
+          )
+          if (addResponse.data.data.failed_ids) {
+            failedIds.push(...addResponse.data.data.failed_ids)
+          }
+        }
+        if (itemsToSave.deletedIds.length) {
+          const deleteResponse = await this.apiReq(
+            `/agents/group/${this.scope.currentGroup.name}`,
+            { ids: itemsToSave.deletedIds },
+            'DELETE'
+          )
+          if (deleteResponse.data.data.failed_ids) {
+            failedIds.push(...deleteResponse.data.data.failed_ids)
+          }
+        }
+
+        if (failedIds.length) {
+          this.toast(
+            `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
+          )
+        } else {
+          this.toast('Success. Group has been updated')
+        }
+        this.scope.addMultipleAgents(false)
+      } catch (err) {
+        this.toast('Error applying changes')
+      }
+      this.timeout(() => {
+        this.scope.multipleSelectorLoading = false
+        this.scope.$emit('updateGroupInformation', {
+          group: this.scope.currentGroup.name
+        })
+      }, 100)
+    }
+
+    async editGroupAgentConfig(group) {
+      try {
+        this.scope.editingFile = true
+        this.scope.loadingFile = true
+        const fetchedXML = await fetchFile()
+        this.scope.$broadcast('editXmlFile', { target: group, data: fetchedXML })
+      } catch (error) {
+        errorHandler.handle(error, 'Fetch file error')
+      }
+      this.scope.loadingFile = false
+      if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    async saveGroupAgentConfig(content) {
+      try {
+        await this.apiReq.request(
+          'POST',
+          `/agents/groups/${this.scope.currentGroup.name}/configuration`,
+          { content, origin: 'xmleditor' }
+        )
+        this.scope.$emit('updateGroupInformation', {
+          group: this.scope.currentGroup.name
+        })
+        await $timeout(500)
+      } catch (error) {
+        errorHandler.handle(error, 'Send file error')
+      }
+      this.scope.editingFile = false;
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
+    }
+
+    getItemsToSave() {
+      try {
+        const original = this.scope.firstSelectedList
+        const modified = this.scope.selectedAgents.data
+        this.scope.deletedAgents = []
+        this.scope.addedAgents = []
+  
+        modified.forEach(mod => {
+          if (original.filter(e => e.key === mod.key).length === 0) {
+            this.scope.addedAgents.push(mod)
+          }
+        })
+  
+        original.forEach((orig) => {
+          if (modified.filter(e => e.key === orig.key).length === 0) {
+            this.scope.deletedAgents.push(orig)
+          }
+        })
+  
+        return {
+          addedIds: [...new Set(this.scope.addedAgents.map(x => x.key))],
+          deletedIds: [...new Set(this.scope.deletedAgents.map(x => x.key))]
+        }
+      } catch (error) {
+        throw new Error(error.message || error)
+      }
+
+    }
+
+    getCheckLimit() {
+      if (this.scope.firstSelectedList) {
+        const itemsToSave = this.scope.getItemsToSave()
+        this.scope.currentAdding = itemsToSave.addedIds.length
+        this.scope.currentDeleting = itemsToSave.deletedIds.length
+        this.scope.moreThan1000 =
+          this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+      }
+    }
+
+    closeEditingFile() {
+      this.scope.editingFile = false;
+      this.scope.$broadcast('closeEditXmlFile', {});
+    }
+  
+    xmlIsValid(valid) {
+      this.scope.xmlHasErrors = valid;
+    }
+  
+    doSaveGroupAgentConfig() {
+      this.scope.$broadcast('saveXmlFile', {});
+    }
     /**
      * Navigates to agents
      */
