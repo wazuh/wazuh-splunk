@@ -140,7 +140,6 @@ define([
           } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
         'eventsSummaryTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.eventsSummaryTable)

@@ -82,7 +82,6 @@ define([
         } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
         'top5RulesTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.top5RulesTable)

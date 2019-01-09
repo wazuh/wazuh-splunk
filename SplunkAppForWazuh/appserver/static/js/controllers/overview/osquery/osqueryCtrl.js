@@ -100,7 +100,6 @@ define([
         } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
         'topRulesTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.topRulesTable)
@@ -114,7 +113,6 @@ define([
         `${this.filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5`,
         'topPacksTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.topPacksTable)

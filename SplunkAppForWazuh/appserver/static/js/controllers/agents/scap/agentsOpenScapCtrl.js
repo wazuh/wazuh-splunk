@@ -201,7 +201,6 @@ define([
         } sourcetype=wazuh oscap.check.result="fail" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content`,
         'alertsSummaryTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.alertsSummaryTable)

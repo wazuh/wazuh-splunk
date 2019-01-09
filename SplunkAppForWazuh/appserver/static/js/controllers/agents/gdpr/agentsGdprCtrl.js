@@ -126,7 +126,6 @@ define([
         } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
         'alertsSummaryTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.alertsSummaryTable)

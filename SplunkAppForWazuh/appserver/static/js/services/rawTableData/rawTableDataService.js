@@ -12,7 +12,6 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
      * @param {String} search
      * @param {String} token
      * @param {String} value
-     * @param {UrlTokenModel} submittedTokenModel
      * @param {scope} scope
      */
     constructor(
@@ -20,7 +19,6 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
       search,
       token,
       value,
-      submittedTokenModel,
       scope
     ) {
       super(
@@ -41,7 +39,6 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
         scope
       )
       mvc.Components.revokeInstance(this.id)
-      this.submittedTokenModel = submittedTokenModel
       this.token = token
       this.results = {}
 
@@ -103,7 +100,6 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
       this.getSearch().off('search:failed')
       this.getSearch().off('search:start')
       this.getSearch().off('search:progress')
-      this.submittedTokenModel.off(`change:${this.token}`)
       super.destroy()
     }
   }

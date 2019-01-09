@@ -97,7 +97,6 @@ define([
         `${this.filters} sourcetype=wazuh | top data.aws.source limit=5`,
         'top5BucketsTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.top5BucketsTable)
@@ -111,7 +110,6 @@ define([
         `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
         'top5RulesTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.top5RulesTable)

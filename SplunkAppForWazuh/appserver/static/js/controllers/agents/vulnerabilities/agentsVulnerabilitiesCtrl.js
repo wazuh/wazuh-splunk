@@ -165,7 +165,6 @@ define([
         } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
         'alertsSummaryTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.alertsSummaryTable)
@@ -181,7 +180,6 @@ define([
         } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
         'commonRulesTableToken',
         '$result$',
-        this.submittedTokenModel,
         this.scope
       )
       this.vizz.push(this.commonRulesTable)
