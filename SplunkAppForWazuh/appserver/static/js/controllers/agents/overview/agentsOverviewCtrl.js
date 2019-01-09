@@ -61,9 +61,10 @@ define(['../../module'], function (app) {
         this.agent[0].data &&
         typeof this.agent[0].data.data === 'object'
       ) {
-        this.scope.agent = this.agent[0].data.data        
-        this.scope.agentOS = `${this.scope.agent.os.name || '-'} ${this.scope
-          .agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
+        this.scope.agent = this.agent[0].data.data
+        this.scope.agentOS = (this.scope.agent && this.scope.agent.os && this.scope.agent.os.name && this.scope.agent.os.codename && this.scope.agent.os.version)
+          ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
+          : 'Unknown'
         this.scope.syscheck =
           this.agent.length > 0 &&
             typeof this.agent[1] === 'object' &&
