@@ -141,11 +141,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.scope.saveAddAgents = () => this.saveAddAgents()
 
       this.scope.checkLimit = () => this.checkLimit()
-      
+
       this.scope.editGroupAgentConfig = (group) => this.editGroupAgentConfig(group)
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
-    
+
       this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
 
       this.scope.doSaveGroupAgentConfig = () => this.doSaveGroupAgentConfig()
@@ -237,7 +237,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           this.scope.multipleSelectorLoading = false
         }, 100)
       } catch (error) {
-        return Promise.reject(error)
+        this.toast(error.message || error)
       }
 
     }
@@ -379,13 +379,14 @@ define(['../../module', 'FileSaver'], function (controllers) {
       try {
         this.scope.editingFile = true
         this.scope.loadingFile = true
-        const fetchedXML = await fetchFile()
+        const fetchedXML = await this.fetchFile()
         this.scope.$broadcast('editXmlFile', { target: group, data: fetchedXML })
       } catch (error) {
-        errorHandler.handle(error, 'Fetch file error')
+        this.toast(error.message || error)
       }
       this.scope.loadingFile = false
       if (!this.scope.$$phase) this.scope.$digest()
+      return
     }
 
     async saveGroupAgentConfig(content) {
@@ -413,19 +414,19 @@ define(['../../module', 'FileSaver'], function (controllers) {
         const modified = this.scope.selectedAgents.data
         this.scope.deletedAgents = []
         this.scope.addedAgents = []
-  
+
         modified.forEach(mod => {
           if (original.filter(e => e.key === mod.key).length === 0) {
             this.scope.addedAgents.push(mod)
           }
         })
-  
+
         original.forEach((orig) => {
           if (modified.filter(e => e.key === orig.key).length === 0) {
             this.scope.deletedAgents.push(orig)
           }
         })
-  
+
         return {
           addedIds: [...new Set(this.scope.addedAgents.map(x => x.key))],
           deletedIds: [...new Set(this.scope.deletedAgents.map(x => x.key))]
@@ -450,11 +451,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.scope.editingFile = false;
       this.scope.$broadcast('closeEditXmlFile', {});
     }
-  
+
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid;
     }
-  
+
     doSaveGroupAgentConfig() {
       this.scope.$broadcast('saveXmlFile', {});
     }
