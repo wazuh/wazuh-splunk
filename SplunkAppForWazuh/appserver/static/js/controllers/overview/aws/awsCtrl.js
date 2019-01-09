@@ -35,47 +35,40 @@ define([
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-      
+//data.aws.log_info.s3bucket
       this.vizz = [
         /**
          * Visualizations
          */
         new AreaChart(
-          'eventsByIdOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.responseElements.instancesSet.items.instanceId usenull=f`,
-          'eventsByIdOverTime'
+          'eventsBySourceVizz',
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
+          'eventsBySourceVizz'
         ),
         new ColumnChart(
-          'eventsByRegionOverTime',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.awsRegion usenull=f`,
-          'eventsByRegionOverTime'
+          'eventsByS3BucketsVizz',
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
+          'eventsByS3BucketsVizz'
         ),
         new PieChart(
-          'topEventsByServiceName',
+          'sourcesVizz',
           `${this.filters} sourcetype=wazuh | stats count BY data.aws.source`,
-          'topEventsByServiceName'
+          'sourcesVizz'
         ),
         new PieChart(
-          'topEventsByInstanceId',
-          `${this.filters} sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId limit=5`,
-          'topEventsByInstanceId'
+          'accountsVizz',
+          `${this.filters} sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId`,
+          'accountsVizz'
         ),
         new PieChart(
-          'topEventsByResourceType',
-          `${this.filters} sourcetype=wazuh | top data.aws.resourceType limit=5`,
-          'topEventsByResourceType'
+          's3BucketsVizz',
+          `${this.filters} sourcetype=wazuh | stats count by data.aws.log_info.s3bucket`,
+          's3BucketsVizz'
         ),
         new PieChart(
-          'topEventsByRegion',
-          `${this.filters} sourcetype=wazuh | top data.aws.awsRegion limit=5`,
-          'topEventsByRegion'
-        ),
-        new Map(
-          'map',
-          `${
-          this.filters
-          } sourcetype=wazuh | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
-          'map'
+          'regionsVizz',
+          `${this.filters} sourcetype=wazuh | top data.aws.awsRegion`,
+          'regionsVizz'
         ),
         new Table(
           'top5Buckets',
