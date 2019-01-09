@@ -95,7 +95,6 @@ define([
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
-        this.dropdown.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
 
