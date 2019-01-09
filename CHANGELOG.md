@@ -4,6 +4,10 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ### Added
 
+- Added group management features such as:
+    - Edit the group configuration ([#441](https://github.com/wazuh/wazuh-kibana-app/pull/441)).
+    - Add/remove groups to/from an agent ([#441](https://github.com/wazuh/wazuh-kibana-app/pull/441)).
+    - Add/remove agents to/from a group ([#441](https://github.com/wazuh/wazuh-kibana-app/pull/441)).
 - Auto-complete endpoints in Dev Tools section ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
 - XML editor for group configurations ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
 - Multi-selector for attaching agents to groups dynamically ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
