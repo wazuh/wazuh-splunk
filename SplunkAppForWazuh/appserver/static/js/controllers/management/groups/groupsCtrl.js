@@ -337,34 +337,34 @@ define(['../../module', 'FileSaver'], function (controllers) {
             await this.apiReq(`/agents/groups`, {
               search: parameters.group
             })
-          ]);
+          ])
   
           const [count, sums] = result.map(
             item => ((item || {}).data || {}).data || false
-          );
+          )
           const updatedGroup = ((sums || {}).items || []).find(
             item => item.name === parameters.group
-          );
+          )
   
-          this.scope.currentGroup.count = (count || {}).totalItems || 0;
+          this.scope.currentGroup.count = (count || {}).totalItems || 0
           if (updatedGroup) {
-            this.scope.currentGroup.configSum = updatedGroup.configSum;
-            this.scope.currentGroup.mergedSum = updatedGroup.mergedSum;
+            this.scope.currentGroup.configSum = updatedGroup.configSum
+            this.scope.currentGroup.mergedSum = updatedGroup.mergedSum
           }
         }
       } catch (error) {
-        this.toast(error.message || error, 'Groups');
+        this.toast(error.message || error, 'Groups')
       }
-      if (!this.scope.$$phase) this.scope.$digest();
-      return;
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
     }
 
     async saveAddAgents() {
-      const itemsToSave = this.scope.getItemsToSave();
-      const failedIds = [];
+      const itemsToSave = this.scope.getItemsToSave()
+      const failedIds = []
 
       try {
-        this.scope.multipleSelectorLoading = true;
+        this.scope.multipleSelectorLoading = true
         if (itemsToSave.addedIds.length) {
           const addResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
@@ -382,7 +382,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
             'DELETE',
           )
           if (deleteResponse.data.data.failed_ids) {
-            failedIds.push(...deleteResponse.data.data.failed_ids);
+            failedIds.push(...deleteResponse.data.data.failed_ids)
           }
         }
 
@@ -391,21 +391,21 @@ define(['../../module', 'FileSaver'], function (controllers) {
             `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`,
             '',
             true
-          );
+          )
         } else {
-          this.toast('Success. Group has been updated', '');
+          this.toast('Success. Group has been updated', '')
         }
-        this.scope.addMultipleAgents(false);
-        this.scope.multipleSelectorLoading = false;
+        this.scope.addMultipleAgents(false)
+        this.scope.multipleSelectorLoading = false
         await this.updateGroupInformation(null, {
           group: this.scope.currentGroup.name
-        });
+        })
       } catch (err) {
-        this.scope.multipleSelectorLoading = false;
-        this.toast(err, 'Error applying changes');
+        this.scope.multipleSelectorLoading = false
+        this.toast(err, 'Error applying changes')
       }
-      if (!this.scope.$$phase) this.scope.$digest();
-      return;
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
     }
 
 
