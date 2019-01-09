@@ -6,67 +6,10 @@
     </div>
     <div flex></div>
     <div style="margin-right:7px;" id='timePicker'></div>
-    <div style="margin-right:7px;" id='dropDownInput'></div>
   </div>
 
   <!-- Filter bar -->
-  <wazuh-aws-bar></wazuh-aws-bar>
-
-  <!-- Metrics -->
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Enabled:
-          <span class="wz-text-bold">{{ awsMetrics.enabled }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          Scan interval:
-          <span class="wz-text-bold">{{ awsMetrics.scanInterval }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          Run on start:
-          <span class="wz-text-bold">{{ awsMetrics.runOnStart }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          Skip on error:
-          <span class="wz-text-bold">{{ awsMetrics.skipOnError }}</span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Buckets:
-          <span class="wz-text-bold" ng-repeat="bucket in awsMetrics.buckets">{{ bucket.name }} </span>
-        </div>
-      </md-card-content>
-    </md-card>
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Accounts in use:
-          <span class="wz-text-bold" ng-repeat="account in awsMetrics.accountInUse">{{ account }} </span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Regions in use:
-          <span class="wz-text-bold" ng-repeat="region in awsMetrics.regionsInUse">{{ region }} </span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <!-- End Metrics -->
-
+  <wazuh-bar></wazuh-bar>
 
   <!-- first row  -->
   <div id="row2" layout="row">
