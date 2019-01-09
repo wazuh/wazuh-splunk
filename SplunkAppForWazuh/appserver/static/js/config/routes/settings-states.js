@@ -37,7 +37,6 @@ define(['../module'], function(module) {
                   )
                   return result.data
                 } catch (error) {
-                  console.error("Error fetching app info ", error)
                   $state.go('settings.api')
                 }
               }
