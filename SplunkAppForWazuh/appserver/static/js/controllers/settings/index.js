@@ -3,5 +3,6 @@ define([
   './index/settingsIndexCtrl',
   './api/settingsApiCtrl',
   './extensions/extensionsCtrl',
-  './logs/logsCtrl'
+  './logs/logsCtrl',
+  './about/aboutCtrl'
 ], function() {})
