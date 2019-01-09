@@ -21,9 +21,12 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
+from splunk.clilib import cli_common as cli
+
 
 
 class api(controllers.BaseController):
+    
     """API class.
 
     Handle API methods
@@ -39,6 +42,16 @@ class api(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("Error in API module constructor: %s" % (e))
+
+    def getSelfAdminStanza(self):
+        """Get the configuration from a stanza.
+        """
+        try:
+            apikeyconf = cli.getConfStanza('config', 'extensions')
+            # parsed_data = json.dumps(apikeyconf)
+        except Exception as e:
+            raise e
+        return apikeyconf
 
     def clean_keys(self, response):
         """Hide sensible data from API response."""
@@ -125,9 +138,11 @@ class api(controllers.BaseController):
                 del kwargs['method']
                 method = 'GET'
             else:
+                if str(self.getSelfAdminStanza()['admin']) != 'true':
+                    self.logger.error('Admin mode is disabled.')
+                    return json.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
-                
             the_id = kwargs['id']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
@@ -152,7 +167,6 @@ class api(controllers.BaseController):
                 else:
                     if 'ids' in kwargs:
                         kwargs['ids'] = kwargs['ids'].split(',')
-                        self.logger.info(type(kwargs['ids'] ))
                     request = self.session.post(
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
@@ -167,7 +181,6 @@ class api(controllers.BaseController):
                     url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
             result = json.dumps(request)
-            # result = self.clean_keys(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})

@@ -90,7 +90,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
             }
           }
         } catch (error) {
-          this.toast(error)
+          this.toast(error.message || error)
         }
         if (!this.scope.$$phase) this.scope.$digest()
         return
@@ -371,6 +371,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
             { ids: itemsToSave.addedIds.toString() },
             'POST',
           )
+          if (addResponse.data.error !== 0) {
+            throw new Error(addResponse.data.error)
+          }
           if (addResponse.data.data.failed_ids) {
             failedIds.push(...addResponse.data.data.failed_ids)
           }
@@ -381,6 +384,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
             { ids: itemsToSave.deletedIds.toString() },
             'DELETE',
           )
+          if (deleteResponse.data.error !== 0) {
+            throw new Error(deleteResponse.data.error)
+          }
           if (deleteResponse.data.data.failed_ids) {
             failedIds.push(...deleteResponse.data.data.failed_ids)
           }
@@ -388,12 +394,10 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
         if (failedIds.length) {
           this.toast(
-            `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`,
-            '',
-            true
+            `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
           )
         } else {
-          this.toast('Success. Group has been updated', '')
+          this.toast('Success. Group has been updated')
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
@@ -402,7 +406,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         })
       } catch (err) {
         this.scope.multipleSelectorLoading = false
-        this.toast(err, 'Error applying changes')
+        this.toast(err.message || err, 'Error applying changes')
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return
@@ -437,7 +441,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         })
         await this.timeout(500)
       } catch (error) {
-        this.toast(error.message || error, 'Send file error')
+        this.toast(error.message || error)
       }
       this.scope.editingFile = false
       if (!this.scope.$$phase) this.scope.$digest()
@@ -504,6 +508,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
     }
 
     doSaveGroupAgentConfig() {
+      this.scope.editingFile = false
       this.scope.$broadcast('saveXmlFile', { group: this.scope.currentGroup.name })
     }
     /**
