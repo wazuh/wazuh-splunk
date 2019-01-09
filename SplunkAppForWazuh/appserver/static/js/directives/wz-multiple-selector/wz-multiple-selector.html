@@ -15,7 +15,7 @@
               <span class='fa fa-search' aria-hidden='true'></span>
             </button>
           </div>
-          <select size='10' multiple ng-model='availableItem' ng-change='selectedElement=null;doCheckLimit()' class='width-100'
+          <select size='10' multiple ng-model='availableItem' ng-change='selectedElement=null;doCheckLimit()' class='wz-width-100'
             ng-dblclick='moveItem(availableItem, availableItems, selectedItems);availableItem=null'>
             <option ng-repeat='item in availableItems | orderBy:sort' ng-style='{"background-color":(item.type === "a" ? "#c6ffc6": item.type === "r" ? "#ffe7e7" : "")}'
               ng-value="{{item}}">{{item.key + " - " + item.value}}</option>
@@ -26,7 +26,7 @@
     <div class='wzMultipleSelectorButtons'>
       <button ng-disabled='availableItems.length === 0' type='button' class='btn btn-primary' tooltip='Add all items'
         tooltip-placement='top' ng-click='moveAll(availableItems, selectedItems, "a");
-              availableItem=null;availableFilter="" ;doReload("left", availableFilter, true)'>
+                availableItem=null;availableFilter="" ;doReload("left", availableFilter, true)'>
         <span><i class='fa fa-forward'></i></span>
       </button>
       <button ng-disabled='!availableItem' type='button' class='btn btn-primary' tooltip='Add selected items'
@@ -48,7 +48,7 @@
         <div class='panel-body'>
           <input placeholder='Filter...' ng-model='selectedFilter' type='text' class='kuiLocalSearchInput' ng-change='selectedElement=null'
             style='padding: 8px 15px'>
-          <select size='10' multiple ng-model='selectedElement' ng-change='availableItem=null;doCheckLimit()' class='width-100'
+          <select size='10' multiple ng-model='selectedElement' ng-change='availableItem=null;doCheckLimit()' class='wz-width-100'
             ng-dblclick='moveItem(selectedElement, selectedItems, availableItems);selectedElement=null'>
             <option ng-repeat='item in selectedItems | filter: selectedFilter | orderBy:sort' ng-style='{"background-color":(item.type === "a" ? "#c6ffc6": item.type === "r" ? "#ffe7e7" : "")}'
               ng-value="{{item}}">{{item.key + " - " + item.value}}</option>
