@@ -417,11 +417,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
       try {
         this.scope.editingFile = true
         this.scope.fetchedXML = await this.fetchFile()
+        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
         this.toast(error.message || error)
       }
-      this.scope.loadingFile = false
       if (!this.scope.$$phase) this.scope.$digest()
       return
     }

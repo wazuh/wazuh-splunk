@@ -42,13 +42,14 @@ define([
           $notificationService,
           $groupHandler
         ) {
+          let firstTime = true
           const checkXmlParseError = () => {
             try {
               const parser = new DOMParser() // eslint-disable-line
               const xml = $scope.xmlCodeBox.getValue()
               const xmlDoc = parser.parseFromString('<file>' + xml + '</file>', 'text/xml')
               $scope.validFn({
-                valid: !!xmlDoc.getElementsByTagName('parsererror').length
+                valid: !!xmlDoc.getElementsByTagName('parsererror').length || !xml || !xml.length
               })
             } catch (error) {
               $notificationService.showSimpleToast(error, 'Error validating XML')
@@ -90,14 +91,27 @@ define([
               gutters: ['CodeMirror-foldgutter']
             }
           )
-          try {
-            $scope.xmlCodeBox.setValue($scope.data)
-            $scope.xmlCodeBox.refresh()
-            autoFormat()
-          } catch (error) {
-            $notificationService.showSimpleToast(error, 'Fetching original file')
+          
+          const init = (data = false) => {
+            try {
+              $scope.xmlCodeBox.setValue(data || $scope.data);
+              firstTime = false;
+              $scope.xmlCodeBox.refresh();
+              autoFormat();
+            } catch (error) {
+              $notificationService.showSimpleToast('Fetching original file');
+            }
           }
+
+
+          init()
     
+          $scope.$on('fetchedFile',(ev,params) => {
+            if(!firstTime) {
+              init(params.data);
+            }
+          })
+          
           $scope.xmlCodeBox.on('change', () => {
             checkXmlParseError()
           })
