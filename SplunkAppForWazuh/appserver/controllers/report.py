@@ -113,6 +113,7 @@ class report(controllers.BaseController):
             self.metrics = data['metrics']
             self.tables = data['tableResults']
             self.metrics = json.loads(self.metrics)
+            self.agent_data = data['isAgents']
             #Save the images
             self.save_images(data['images'])
             parsed_data = json.dumps({'data': 'success'})
@@ -136,8 +137,12 @@ class report(controllers.BaseController):
             self.pdf.cell(0, 5, ' Search time range: ' + self.time_range , 0, 0, 'L', 1)
             self.pdf.ln(5)
             self.pdf.cell(0, 5, ' Filters:' + self.filters , 0, 0, 'L', 1)
+            #Check if is agent, print agent info
+            if self.agent_data:
+                self.print_agent_info(self.agent_data, self.pdf)
             #Check metrics and print if exist
             if len(self.metrics) > 0:
+                self.pdf.set_text_color(255,255,255)
                 self.metrics_exists = True
                 w = 5
                 line_width = 0
@@ -171,33 +176,36 @@ class report(controllers.BaseController):
             self.pdf.set_font('Arial', '', 14)
             if self.metrics_exists:
                 y_img = y_img + 10
-            self.pdf.ln(15)
+            if self.agent_data:
+                y_img = y_img + 20
+            self.pdf.ln(10)
             #Sort images by width size
             images = sorted(self.images, key=itemgetter('width'))
             #Insert images
             for img in images:
                 #Change width and heigh
+                self.logger.info("width :" + str(img['width']))
                 if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
-                    w = 100
-                    h = 50
-                    x_img = 50
+                    w = 118
+                    h = 62
+                    x_img = 48
                 elif img['width'] >= 705 and img['width'] <= 725:
-                    w = 140
-                    h = 60
-                    x_img = 23                   
+                    w = 145
+                    h = 65
+                    x_img = 26                
                 elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100 or img['width'] >= 1300 and img['width'] <= 1400:
-                    w = 160
-                    h = 70
-                    x_img = 23
+                    w = 162
+                    h = 72
+                    x_img = 26
                 elif img['width'] >= 1800 and img['width'] <= 1900:
                     w = 190
-                    h = 80
+                    h = 90
                     x_img = 10     
                 #Insert image
                 self.pdf.cell(x , y, img['title'], 0, 1)
                 self.pdf.image(img['path'], x_img, y_img, w, h)
-                self.pdf.ln(90)
-                y_img = y_img + 100
+                self.pdf.ln(80)
+                y_img = y_img + 90
                 count = count + 1
                 n_images = n_images - 1
                 if count == 2 and n_images >= 1:
@@ -284,6 +292,48 @@ class report(controllers.BaseController):
                 sizes[key] = sizes[key] + diff
         return self.sort_table_sizes(table['fields'], sizes)
     
+    #Print agent info
+    def print_agent_info(self, agent_info, pdf):
+        pdf.ln(10)
+        sorted_fields = ('ID', 'Name', 'IP', 'Version', 'Manager', 'OS')
+        fields = {'ID':0, 'Name':0, 'IP':0, 'Version':0, 'Manager':0, 'OS':0}
+        total_width = 0
+        for key in fields.keys():
+            #Calculate width
+            width = pdf.get_string_width(agent_info[key])
+            if pdf.get_string_width(agent_info[key]) > width:
+                width = pdf.get_string_width(agent_info[key])
+            width = width + 2
+            total_width = total_width + width
+            fields[key] = width
+        #Calculate the rest of the width to fill the row
+        if total_width < 190:
+            diff = 190 - total_width
+            keys_num = len(fields.keys())
+            diff = diff / keys_num
+        for key in fields.keys():
+            fields[key] = fields[key] + diff
+        #Set color and print th
+        pdf.set_font('Arial', '', 8)
+        pdf.set_fill_color(93, 188, 210)
+        pdf.set_text_color(255,255,255)
+        for key in sorted_fields:
+            pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
+        pdf.ln()
+        #Change text color and print tr
+        self.pdf.set_text_color(93, 188, 210)
+        for key in sorted_fields:
+            pdf.cell(fields[key], 4, str(agent_info[key]), 0, 0, 'L', 0)
+        #Print the rest of the agent information
+        pdf.ln(5)
+        self.pdf.set_text_color(169, 169, 169)
+        pdf.cell(0,6, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,6, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,6, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
+        pdf.ln(2)
+
     #Sorts the width of the fields
     def sort_table_sizes(self, fields, sizes):
         sorted_sizes = []
