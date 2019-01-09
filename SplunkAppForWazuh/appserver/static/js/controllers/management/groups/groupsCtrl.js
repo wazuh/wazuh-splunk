@@ -53,7 +53,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.scope.$on('groupsIsReloaded', () => {
         this.scope.currentGroup = false
         this.scope.lookingGroup = false
-        this.scope.addingAgents = false
+        this.scope.editingFile = false
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
