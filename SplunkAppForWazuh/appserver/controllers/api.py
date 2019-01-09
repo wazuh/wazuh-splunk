@@ -148,18 +148,23 @@ class api(controllers.BaseController):
                 if 'origin' in kwargs and kwargs['origin'] == 'xmleditor':
                     headers = {'Content-Type': 'application/xml'} 
                     kwargs = str(kwargs['content'])
+                    request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
                 else:
-                    headers = {'Content-type': 'application/json'}
-                request = self.session.post(
-                    url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify, headers=headers).json()
+                    if 'ids' in kwargs:
+                        kwargs['ids'] = kwargs['ids'].split(',')
+                        self.logger.info(type(kwargs['ids'] ))
+                    request = self.session.post(
+                        url + opt_endpoint, data=kwargs, auth=auth,
+                        verify=verify).json()
             if method == 'PUT':
                 request = self.session.put(
                     url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
             if method == 'DELETE':
+                if 'ids' in kwargs:
+                    kwargs['ids'] = kwargs['ids'].split(',')
                 request = self.session.delete(
-                    url + opt_endpoint, params=kwargs, auth=auth,
+                    url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
             result = json.dumps(request)
             # result = self.clean_keys(request)
