@@ -43,6 +43,23 @@ define(['../module'], function (module) {
         return Promise.reject(error)
       }
     }
+
+    async sendConfiguration(group, content) {
+      try {
+        const result = await this.apiReq(
+          `/agents/groups/${group}/configuration`,
+          { content, origin: 'xmleditor' },
+          'POST',
+        )
+        if(!result || !result.data || !result.data.data || result.data.data.error !== 0) {
+          throw new Error('Cannot send file.')
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
   }
   module.service('$groupHandler', GroupHandler)
 
