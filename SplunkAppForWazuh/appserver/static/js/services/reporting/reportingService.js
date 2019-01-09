@@ -59,9 +59,11 @@ define(['../module', 'jquery'], function(module, $) {
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
-        
+
         //Search time range
-        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML
+        const timeRange = document
+          .getElementById('timePicker')
+          .getElementsByTagName('span')[1].innerHTML
 
         const data = {
           images,

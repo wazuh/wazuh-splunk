@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   ColumnChart,
@@ -21,13 +21,19 @@ define([
   class Audit {
     /**
      * Class Audit
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
       this.tableResults = {}
@@ -201,52 +207,56 @@ define([
       )
       this.vizz.push(this.alertsSummaryTable)
 
-      this.alertsSummaryTable.getSearch().on('result', (result) => {
+      this.alertsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Alerts Summary'] = result
       })
       this.reportMetrics = {
         'New files': this.scope.newFiles,
         'Read files': this.scope.readFiles,
         'Modified files': this.scope.filesModifiedToken,
-        'Deleted files': this.scope.filesDeleted 
+        'Deleted files': this.scope.filesDeleted
       }
 
       /**
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-audit', 'Audit', this.filters,[
-        'groupsElement',
-        'agentsElement',
-        'directoriesElement',
-        'filesElement',
-        'alertsOverTimeElement',
-        'fileReadAccessElement',
-        'fileWriteAccessElement',
-        'commandsElement',
-        'createdFilesElement',
-        'removedFilesElement',
-        'alertsSummaryElement'
-      ],
-      this.reportMetrics,
-      this.tableResults)
+        this.reportingService.startVis2Png(
+          'overview-audit',
+          'Audit',
+          this.filters,
+          [
+            'groupsElement',
+            'agentsElement',
+            'directoriesElement',
+            'filesElement',
+            'alertsOverTimeElement',
+            'fileReadAccessElement',
+            'fileWriteAccessElement',
+            'commandsElement',
+            'createdFilesElement',
+            'removedFilesElement',
+            'alertsSummaryElement'
+          ],
+          this.reportMetrics,
+          this.tableResults
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
-    })
-
+      })
     }
 
     /**

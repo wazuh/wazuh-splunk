@@ -38,7 +38,8 @@ define([], function() {
     } else if (instance.path === '/agents/groups') {
       $scope.$emit('wazuhShowGroup', { group: item })
     } else if (
-      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*\/files$/).test( // eslint-disable-line
+      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*\/files$/).test(
+        // eslint-disable-line
         instance.path
       )
     ) {

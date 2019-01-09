@@ -4,13 +4,13 @@ define(['../../module', 'FileSaver'], function(app) {
   class Ruleset {
     /**
      * Class Ruleset
-     * @param {*} $scope 
-     * @param {*} $sce 
-     * @param {*} $notificationService 
-     * @param {String} view 
-     * @param {*} $currentDataService 
-     * @param {*} $tableFilterService 
-     * @param {*} $csvRequestService 
+     * @param {*} $scope
+     * @param {*} $sce
+     * @param {*} $notificationService
+     * @param {String} view
+     * @param {*} $currentDataService
+     * @param {*} $tableFilterService
+     * @param {*} $csvRequestService
      */
     constructor(
       $scope,
@@ -68,7 +68,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
-      this.scope.isArray = angular.isArray  // eslint-disable-line
+      this.scope.isArray = angular.isArray // eslint-disable-line
       this.initialize()
     }
 
@@ -117,7 +117,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
     /**
      * Returns the color
-     * @param {*} regex 
+     * @param {*} regex
      */
     colorRegex(regex) {
       regex = regex.toString()
@@ -140,7 +140,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
     /**
      * Returns the color
-     * @param {*} order 
+     * @param {*} order
      */
     colorOrder(order) {
       order = order.toString()

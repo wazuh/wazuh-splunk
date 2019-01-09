@@ -4,11 +4,11 @@ define(['../../module'], function(controllers) {
   class Status {
     /**
      * Class Status
-     * @param {*} $scope 
-     * @param {*} $requestService 
-     * @param {*} $notificationService 
-     * @param {Array} statusData 
-     * @param {Object} agentInfo 
+     * @param {*} $scope
+     * @param {*} $requestService
+     * @param {*} $notificationService
+     * @param {Array} statusData
+     * @param {Object} agentInfo
      */
     constructor(
       $scope,

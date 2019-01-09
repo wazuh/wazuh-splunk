@@ -14,7 +14,7 @@ define([], function() {
   'use strict'
   /**
    * Splits an array in parts
-   * @param {Array} array 
+   * @param {Array} array
    */
   const splitArray = array => {
     if (Array.isArray(array)) {
@@ -29,7 +29,7 @@ define([], function() {
 
   /**
    * Checks if an item is already in the array
-   * @param {*} item 
+   * @param {*} item
    */
   const checkIfArray = item => {
     return typeof item === 'object' ? splitArray(item) : item == 0 ? '0' : item
@@ -37,10 +37,10 @@ define([], function() {
 
   /**
    * Parses value
-   * @param {Object} ProcessEquivalence 
-   * @param {String} key 
-   * @param {String} item 
-   * @param {String} instancePath 
+   * @param {Object} ProcessEquivalence
+   * @param {String} key
+   * @param {String} item
+   * @param {String} instancePath
    */
   return function parseValue(ProcessEquivalence, key, item, instancePath) {
     if (key === 'state' && instancePath.includes('processes')) {

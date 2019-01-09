@@ -1,13 +1,13 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class SettingsApi {
     /**
      * Class settings API
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} apiList 
-     * @param {*} $notificationService 
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} apiList
+     * @param {*} $notificationService
      */
     constructor($scope, $currentDataService, apiList, $notificationService) {
       this.scope = $scope
@@ -52,7 +52,7 @@ define(['../../module'], function (controllers) {
         // If no API, then remove cookie
         if (Array.isArray(this.apiList) && this.apiList.length === 0) {
           this.currentDataService.removeCurrentApi()
-          this.scope.$emit('updatedAPI', () => { })
+          this.scope.$emit('updatedAPI', () => {})
         }
 
         this.scope.apiList = this.apiList
@@ -66,7 +66,9 @@ define(['../../module'], function (controllers) {
               // setAPI
               currentApi = this.currentDataService.getApi()
               break
-            } catch (error) { continue }
+            } catch (error) {
+              continue
+            }
           }
         }
 
@@ -98,7 +100,6 @@ define(['../../module'], function (controllers) {
           await this.currentDataService.remove(entry)
         }
         this.toast('Manager was removed')
-
       } catch (err) {
         this.toast('Cannot remove API:', err.message || err)
       }
@@ -231,7 +232,7 @@ define(['../../module'], function (controllers) {
           }
         }
         this.toast('API selected')
-        this.scope.$emit('updatedAPI', () => { })
+        this.scope.$emit('updatedAPI', () => {})
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
         this.toast('Could not select manager')
@@ -295,7 +296,7 @@ define(['../../module'], function (controllers) {
         } catch (err) {
           this.currentDataService
             .remove(id)
-            .then(() => { })
+            .then(() => {})
             .catch(err => {
               this.toast(`Unexpected error: ${err}`)
             })

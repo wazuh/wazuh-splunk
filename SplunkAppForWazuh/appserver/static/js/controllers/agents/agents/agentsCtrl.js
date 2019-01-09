@@ -70,13 +70,19 @@ define([
 
       this.scope.agentsCountActive = summary.Active - 1
       this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
-      const os = platforms ? platforms.items.map(item => item.os).filter(item => !!item) : false
-      versions = versions ? versions.items.map(item => item.version).filter(item => !!item) : false
+      const os = platforms
+        ? platforms.items.map(item => item.os).filter(item => !!item)
+        : false
+      versions = versions
+        ? versions.items.map(item => item.version).filter(item => !!item)
+        : false
       nodes =
         nodes && nodes.items
           ? nodes.items.map(item => item['node_name']).filter(item => !!item)
           : false
-      groups = groups ? groups.items.map(item => item.name).filter(item => !!item) : false
+      groups = groups
+        ? groups.items.map(item => item.name).filter(item => !!item)
+        : false
       this.scope.agentsCountDisconnected = summary.Disconnected
       this.scope.agentsCountNeverConnected = summary['Never connected']
       const agentsCountTotal = summary.Total - 1
@@ -150,8 +156,8 @@ define([
 
     /**
      * Launches the query
-     * @param {String} query 
-     * @param {String} search 
+     * @param {String} query
+     * @param {String} search
      */
     query(query, search) {
       this.scope.$broadcast('wazuhQuery', { query, search })

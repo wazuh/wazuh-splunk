@@ -11,13 +11,13 @@ define([
   class Osquery {
     /**
      * Class Osquery
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $notificationService 
-     * @param {*} osquery 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {*} osquery
+     * @param {*} $reportingService
      */
     constructor(
       $urlTokenModel,
@@ -104,7 +104,7 @@ define([
       )
       this.vizz.push(this.topRulesTable)
 
-      this.topRulesTable.getSearch().on('result', (result) => {
+      this.topRulesTable.getSearch().on('result', result => {
         this.tableResults['Top 5 Rules'] = result
       })
 
@@ -117,40 +117,44 @@ define([
       )
       this.vizz.push(this.topPacksTable)
 
-      this.topPacksTable.getSearch().on('result', (result) => {
+      this.topPacksTable.getSearch().on('result', result => {
         this.tableResults['Top 5 Packs'] = result
       })
-
 
       /**
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('osquery', 'Osquery', this.filters, [
-        'alertsOverTime',
-        'mostCommonEvents',
-        'alertsEvolution',
-        'topPacks',
-        'topRules'
-      ],
-      {},//Metrics
-      this.tableResults)
+        this.reportingService.startVis2Png(
+          'osquery',
+          'Osquery',
+          this.filters,
+          [
+            'alertsOverTime',
+            'mostCommonEvents',
+            'alertsEvolution',
+            'topPacks',
+            'topRules'
+          ],
+          {}, //Metrics
+          this.tableResults
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
-    })
+      })
 
       /**
        * On controller destroy

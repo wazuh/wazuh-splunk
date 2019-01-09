@@ -19,6 +19,17 @@
     width: 100%;
 }
 
+.wzMultipleSelectorCounter{
+    position: absolute;
+    right: 15px;
+    padding: 15px;
+}
+
+.error-msg{
+    color: red;
+    padding: 8px;
+}
+
  .wzMultipleSelector .panel-primary{
     border: 1px solid #d9d9d9;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;

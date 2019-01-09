@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class DateDiffService {
@@ -20,10 +20,10 @@ define(['../module'], function (module) {
         start: this.start || 'Unknown'
       }
       if (this.end && this.start) {
-        result.duration = (this.end - this.start) / 1000 / 60;
-        result.duration = Math.round(result.duration * 100) / 100;
+        result.duration = (this.end - this.start) / 1000 / 60
+        result.duration = Math.round(result.duration * 100) / 100
         if (result.duration <= 0) {
-          result.inProgress = true;
+          result.inProgress = true
         }
       }
       return result

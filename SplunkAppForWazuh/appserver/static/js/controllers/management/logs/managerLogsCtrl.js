@@ -4,13 +4,13 @@ define(['../../module', 'FileSaver'], function(app) {
   class Logs {
     /**
      * Class logs
-     * @param {*} $scope 
-     * @param {*} $requestService 
-     * @param {*} $tableFilterService 
-     * @param {*} $notificationService 
-     * @param {*} $currentDataService 
-     * @param {*} $csvRequestService 
-     * @param {Object} logs 
+     * @param {*} $scope
+     * @param {*} $requestService
+     * @param {*} $tableFilterService
+     * @param {*} $notificationService
+     * @param {*} $currentDataService
+     * @param {*} $csvRequestService
+     * @param {Object} logs
      */
     constructor(
       $scope,
@@ -58,7 +58,9 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         this.toast('Your download should begin automatically...')
         const currentApi = this.api.id
-        if (this.clusterEnabled) { this.path = `/cluster/${this.scope.selectedNode}/logs` }
+        if (this.clusterEnabled) {
+          this.path = `/cluster/${this.scope.selectedNode}/logs`
+        }
         const output = await this.csvReq.fetch(
           this.path,
           currentApi,

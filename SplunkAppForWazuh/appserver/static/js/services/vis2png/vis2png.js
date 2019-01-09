@@ -30,17 +30,21 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
-            const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
-            const classes = document.getElementById(currentValue).className.split(' ')
+            const title = document
+              .getElementById(currentValue)
+              .parentElement.getElementsByTagName('span')[0].innerHTML
+            const classes = document
+              .getElementById(currentValue)
+              .className.split(' ')
             try {
-              if (!classes.includes('table')){
+              if (!classes.includes('table')) {
                 const tmpResult = await domToImg.toPng(tmpNode[0])
                 this.rawArray.push({
                   element: tmpResult,
                   width: tmpNode.width(),
                   height: tmpNode.height(),
                   id: currentValue,
-                  title: title,
+                  title: title
                 })
               }
             } catch (error) {

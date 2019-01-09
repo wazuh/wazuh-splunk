@@ -24,7 +24,7 @@ from db import database
 from log import log
 
 
-def getSelfConfStanza(stanza):
+def getSelfConfStanza(file,stanza):
     """Get the configuration from a stanza.
 
     Parameters
@@ -34,7 +34,7 @@ def getSelfConfStanza(stanza):
 
     """
     try:
-        apikeyconf = cli.getConfStanza('config', stanza)
+        apikeyconf = cli.getConfStanza(file, stanza)
         parsed_data = json.dumps(apikeyconf)
     except Exception as e:
         raise e
@@ -138,7 +138,7 @@ class manager(controllers.BaseController):
 
         """
         try:
-            stanza = getSelfConfStanza("extensions")
+            stanza = getSelfConfStanza("config","extensions")
             data_temp = stanza
         except Exception as e:
             return json.dumps({'error': str(e)})

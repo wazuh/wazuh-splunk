@@ -6,23 +6,38 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler, rawTableDataService) {
+], function(
+  app,
+  ColumnChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  SearchHandler,
+  rawTableDataService
+) {
   'use strict'
 
   class AgentsCiscat {
     /**
-     * 
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $state 
-     * @param {*} $currentDataService 
-     * @param {Object} agent 
+     *
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $state
+     * @param {*} $currentDataService
+     * @param {Object} agent
      * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $state,
+      $currentDataService,
+      agent,
+      $reportingService
+    ) {
       this.state = $state
       this.currentDataService = $currentDataService
-      this.reportingService = $reportingService      
+      this.reportingService = $reportingService
       this.tableResults = {}
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
@@ -177,7 +192,7 @@ define([
       )
       this.vizz.push(this.alertsSummaryTable)
 
-      this.alertsSummaryTable.getSearch().on('result', (result) => {
+      this.alertsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Alerts Summary'] = result
       })
 
@@ -202,28 +217,28 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-ciscat', 'CIS-CAT', this.filters, [
-        'topCiscatGroups',
-        'scanResultEvolution',
-        'alertsSummary'
-      ],
-      this.reportMetrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-ciscat',
+          'CIS-CAT',
+          this.filters,
+          ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
+          this.reportMetrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
           this.setReportMetrics()
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -258,7 +273,7 @@ define([
 
     /**
      * Checks and returns agent status
-     * @param {Array} agentStatus 
+     * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
@@ -268,7 +283,7 @@ define([
 
     /**
      * Returns a class depending of the agent state
-     * @param {String} agentStatus 
+     * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'

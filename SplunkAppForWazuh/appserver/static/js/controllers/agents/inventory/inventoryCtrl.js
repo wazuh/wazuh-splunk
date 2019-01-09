@@ -15,11 +15,11 @@ define(['../../module'], function(module) {
   class Inventory {
     /**
      * Class Inventory
-     * @param {*} $requestService 
-     * @param {*} syscollector 
-     * @param {*} $rootScope 
-     * @param {*} $notificationService 
-     * @param {*} $scope 
+     * @param {*} $requestService
+     * @param {*} syscollector
+     * @param {*} $rootScope
+     * @param {*} $notificationService
+     * @param {*} $scope
      */
     constructor(
       $requestService,

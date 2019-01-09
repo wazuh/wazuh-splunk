@@ -1,14 +1,14 @@
 /*
-  * Wazuh app - Wazuh XML file editor
-  * Copyright (C) 2018 Wazuh, Inc.
-  *
-  * This program is free software you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation either version 2 of the License, or
-  * (at your option) any later version.
-  *
-  * Find more information about this on the LICENSE file.
-  */
+ * Wazuh app - Wazuh XML file editor
+ * Copyright (C) 2018 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
 
 define([
   '../module',
@@ -21,121 +21,107 @@ define([
   '../../libs/codemirror-conv/search-cursor',
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
-  '../../libs/codemirror-conv/xml',
-], function (
-  app,
-  CodeMirror
-) {
-    'use strict'
-    app.directive('wzXmlFileEditor', function (BASE_URL) {
-      return {
-        restrict: 'E',
-        scope: {
-          loadPath: '=loadPath',
-          updatePath: '=updatePath',
-          fileName: '@fileName'
-        },
-        controller(
-          $rootScope,
-          $scope,
-          $timeout,
-          $requestService,
-          $document,
-          $notificationService
-        ) {
-          $($document[0]).ready( () => {
-            $scope.xmlCodeBox = CodeMirror.fromTextArea(
-              $document[0].getElementById('xml_box'),
-              {
-                lineNumbers: true,
-                matchClosing: true,
-                matchBrackets: true,
-                mode: 'text/xml',
-                theme: 'ttcn',
-                foldGutter: true,
-                styleSelectedText: true,
-                gutters: ['CodeMirror-foldgutter']
-              }
+  '../../libs/codemirror-conv/xml'
+], function(app, CodeMirror) {
+  'use strict'
+  app.directive('wzXmlFileEditor', function(BASE_URL) {
+    return {
+      restrict: 'E',
+      scope: {
+        fileName: '@fileName',
+        validFn: '&',
+        data: '=data',
+        targetName: '=targetName'
+      },
+      controller($scope, $document, $notificationService, $groupHandler) {
+        let firstTime = true
+        const checkXmlParseError = () => {
+          try {
+            const parser = new DOMParser() // eslint-disable-line
+            const xml = $scope.xmlCodeBox.getValue()
+            const xmlDoc = parser.parseFromString(
+              '<file>' + xml + '</file>',
+              'text/xml'
             )
-            $scope.xmlHasErrors = false
-            $scope.xmlCodeBox.on('change', () => {
-              checkXmlParseError()
+            $scope.validFn({
+              valid:
+                !!xmlDoc.getElementsByTagName('parsererror').length ||
+                !xml ||
+                !xml.length
             })
-            const checkXmlParseError = () => {
-              try {
-                var parser = new DOMParser()
-                var xml = $scope.xmlCodeBox.getValue()
-                var xmlDoc = parser.parseFromString(xml, "text/xml")
-                $timeout( () => {
-                  $scope.xmlHasErrors = xmlDoc.getElementsByTagName("parsererror").length > 0 ? true : false
-                }, 50)
-              } catch (error) {
-                $notificationService.showSimpleToast(error)
-              }
-            }
-          })
-
-          const autoFormat = () => {
-            var totalLines = $scope.xmlCodeBox.lineCount()
-            $scope.xmlCodeBox.autoFormatRange({ 'line': 0, 'ch': 0 }, { line: totalLines - 1 })
-            $scope.xmlCodeBox.setCursor(0)
+          } catch (error) {
+            $notificationService.showSimpleToast(error, 'Error validating XML')
           }
+          if (!$scope.$$phase) $scope.$digest()
+          return
+        }
 
-          const updateFile = async () => {
-            try {
-              /*const response = await $requestService(
-                $scope.updatePath,
-                {},
-                'PUT'
-              )*/
-              const response = ""
-              return response
-            } catch (error) {
-              this.apiInputBox.model = []
-            }
-          }
+        const autoFormat = () => {
+          const totalLines = $scope.xmlCodeBox.lineCount()
+          $scope.xmlCodeBox.autoFormatRange(
+            { line: 0, ch: 0 },
+            { line: totalLines - 1 }
+          )
+          $scope.xmlCodeBox.setCursor(0)
+        }
 
-          $scope.saveFile = async () => {
-            await updateFile()
+        const saveFile = async params => {
+          try {
+            const content = $scope.xmlCodeBox.getValue().trim()
+            await $groupHandler.sendConfiguration(params.group, content)
+            $notificationService.showSimpleToast(
+              'Success. Group has been updated'
+            )
+          } catch (error) {
+            $notificationService.showSimpleToast(
+              error.message || error,
+              'Send file error'
+            )
           }
+          return
+        }
+        $scope.xmlCodeBox = CodeMirror.fromTextArea(
+          $document[0].getElementById('xml_box'),
+          {
+            lineNumbers: true,
+            matchClosing: true,
+            matchBrackets: true,
+            mode: 'text/xml',
+            theme: 'ttcn',
+            foldGutter: true,
+            styleSelectedText: true,
+            gutters: ['CodeMirror-foldgutter']
+          }
+        )
 
-          const fetchFile = async () => {
-            try {
-              /*const xml = = await this.apiReq.request(
-                'GET',
-                $scope.loadPath,
-                {}
-              )*/
-              const xml = "<agent_config>" +
-                "\n" +
-                "<!-- Shared agent configuration here -->\n" +
-                "\n" +
-                "</agent_config>"
-              return xml
-            } catch (error) {
-              $notificationService.showSimpleToast(error)
-            }
+        const init = (data = false) => {
+          try {
+            $scope.xmlCodeBox.setValue(data || $scope.data)
+            firstTime = false
+            $scope.xmlCodeBox.refresh()
+            autoFormat()
+          } catch (error) {
+            $notificationService.showSimpleToast('Fetching original file')
           }
+        }
 
-          $scope.editXmlFile = async (item, params) => {
-            $scope.editingFile = true
-            $scope.loadingFile = true
-            $scope.targetName = params.target.name
-            try {
-              const xml = await fetchFile()
-              $scope.xmlCodeBox.setValue(xml)
-              autoFormat()
-              $scope.loadingFile = false
-              $timeout( () => { $scope.xmlCodeBox.refresh() }, 100)
-            } catch (error) {
-              $notificationService.showSimpleToast(error)
-            }
+        init()
+
+        $scope.$on('fetchedFile', (ev, params) => {
+          if (!firstTime) {
+            init(params.data)
           }
-          $rootScope.$on('editXmlFile', (item, params) => $scope.editXmlFile(item, params))
-          $rootScope.$on('closeEditXmlFile', () => $scope.editingFile = false)
-        },
-        templateUrl: BASE_URL +
-          '/static/app/SplunkAppForWazuh/js/directives/wz-xml-file-editor/wz-xml-file-editor.html'
-      }
-    })
+        })
+
+        $scope.xmlCodeBox.on('change', () => {
+          checkXmlParseError()
+        })
+
+        $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
+      },
+      templateUrl:
+        BASE_URL +
+        '/static/app/SplunkAppForWazuh/js/directives/wz-xml-file-editor/wz-xml-file-editor.html'
+    }
   })
+})

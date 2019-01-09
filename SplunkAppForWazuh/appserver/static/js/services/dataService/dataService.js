@@ -86,7 +86,7 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        */
       async fetch(options = {}) {
         try {
-          if(this.busy) return { items: this.items, time: 0 }
+          if (this.busy) return { items: this.items, time: 0 }
           this.busy = true
           const start = new Date()
 

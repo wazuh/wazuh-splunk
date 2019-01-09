@@ -1,8 +1,8 @@
-define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visualizations/viz/viz'], function (
-  mvc,
-  SearchEventHandler,
-  Viz
-) {
+define([
+  'splunkjs/mvc',
+  'splunkjs/mvc/simplexml/searcheventhandler',
+  '../visualizations/viz/viz'
+], function(mvc, SearchEventHandler, Viz) {
   'use strict'
 
   return class RawTableData extends Viz {
@@ -14,13 +14,7 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
      * @param {String} value
      * @param {scope} scope
      */
-    constructor(
-      id,
-      search,
-      token,
-      value,
-      scope
-    ) {
+    constructor(id, search, token, value, scope) {
       super(
         new SearchEventHandler({
           id: id,
@@ -54,31 +48,32 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simplexml/searcheventhandler', '../visuali
         console.error(error)
       })
 
-      this.getSearch().on('search:progress', () => {
-      })
+      this.getSearch().on('search:progress', () => {})
 
       this.getSearch().on('search:done', () => {
         this.getSearch().finish = false
         const tableResults = mvc.Components.getInstance(`${this.id}Search`)
-        const tableData = tableResults.data("results", {
-          output_mode: "json_rows",
+        const tableData = tableResults.data('results', {
+          output_mode: 'json_rows',
           count: 20
         })
-        tableData.on("data", (data) => {
+        tableData.on('data', data => {
           try {
             if (data._data) {
-              this.results = { 'fields': tableData._data.fields, 'rows': tableData._data.rows }
+              this.results = {
+                fields: tableData._data.fields,
+                rows: tableData._data.rows
+              }
               this.getSearch().trigger('result', this.results)
               this.getSearch().finish = true
             } else {
               this.getSearch().finish = false
             }
           } catch (err) {
-            console.error("Error fetching table data ", err)
+            console.error('Error fetching table data ', err)
           }
-
         })
-        tableData.on("error", (err) => {
+        tableData.on('error', err => {
           console.error(err)
         })
       })

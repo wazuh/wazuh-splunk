@@ -11,5 +11,5 @@ define([
   './wz-tag-filter/wz-tag-filter',
   './wz-data-table/wz-data-table',
   './wz-xml-file-editor/wz-xml-file-editor',
-  './wz-multiple-selector/wz-multiple-selector',
+  './wz-multiple-selector/wz-multiple-selector'
 ], function() {})

@@ -59,15 +59,20 @@ define([
             $scope
           )
         } else if (sections[0].component === 'logcollector') {
-          const logcollector = currentConfigReq['logcollector-localfile'].localfile
-          logcollector.map( log => {
+          const logcollector =
+            currentConfigReq['logcollector-localfile'].localfile
+          logcollector.map(log => {
             const keys = Object.keys(log)
-            if (!keys.includes('file') && !keys.includes('alias') && !keys.includes('command')) { 
-              log.file = `${log.logformat} - ${log.target[0]}` 
+            if (
+              !keys.includes('file') &&
+              !keys.includes('alias') &&
+              !keys.includes('command')
+            ) {
+              log.file = `${log.logformat} - ${log.target[0]}`
             }
           })
           $scope.integrations = {}
-        }else {
+        } else {
           $scope.integrations = {}
         }
         $scope.load = false

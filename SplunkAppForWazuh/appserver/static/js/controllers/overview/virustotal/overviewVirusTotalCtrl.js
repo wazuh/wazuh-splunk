@@ -8,19 +8,33 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/chart/bar-chart',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, Table, LinearChart, TimePicker, BarChart, rawTableDataService) {
+], function(
+  app,
+  PieChart,
+  Table,
+  LinearChart,
+  TimePicker,
+  BarChart,
+  rawTableDataService
+) {
   'use strict'
 
   class OverviewVirusTotal {
     /**
      * Class Overview Virus Total
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
@@ -86,7 +100,7 @@ define([
       )
       this.vizz.push(this.top5RulesTable)
 
-      this.top5RulesTable.getSearch().on('result', (result) => {
+      this.top5RulesTable.getSearch().on('result', result => {
         this.tableResults['Top 5 Rules'] = result
       })
 
@@ -94,31 +108,36 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-virustotal', 'VirusTotal', this.filters, [
-        'top5AgentsPositive',
-        'eventsSummary',
-        'top5AgentsNoPositive',
-        'alertsPerAgent',
-        'top5Rules'
-      ],
-      {},//Metrics
-      this.tableResults)
+        this.reportingService.startVis2Png(
+          'overview-virustotal',
+          'VirusTotal',
+          this.filters,
+          [
+            'top5AgentsPositive',
+            'eventsSummary',
+            'top5AgentsNoPositive',
+            'alertsPerAgent',
+            'top5Rules'
+          ],
+          {}, //Metrics
+          this.tableResults
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
-    })
+      })
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()

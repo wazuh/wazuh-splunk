@@ -13,11 +13,11 @@ define([], function() {
   'use strict'
   /**
    * Sorts table
-   * @param {String} field 
-   * @param {*} $scope 
-   * @param {String} instance 
-   * @param {Function} fetch 
-   * @param {Function} errorHandler 
+   * @param {String} field
+   * @param {*} $scope
+   * @param {String} instance
+   * @param {Function} fetch
+   * @param {Function} errorHandler
    */
   return async function sort(field, $scope, instance, fetch, errorHandler) {
     try {

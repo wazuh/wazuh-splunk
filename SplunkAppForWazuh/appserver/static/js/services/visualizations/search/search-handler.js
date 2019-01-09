@@ -83,23 +83,20 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
-      this.submittedTokenModel.on(
-        `change:${this.token}`,
-        () => {
-          const loadedTokenJS = this.submittedTokenModel.get(token)
-          if (
-            loadedTokenJS &&
-            loadedTokenJS !== value &&
-            typeof loadedTokenJS !== 'undefined' &&
-            loadedTokenJS !== 'undefined'
-          ) {
-            this.scope[bindedValue] = loadedTokenJS
-          } else {
-            this.scope[bindedValue] = '0'
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
+      this.submittedTokenModel.on(`change:${this.token}`, () => {
+        const loadedTokenJS = this.submittedTokenModel.get(token)
+        if (
+          loadedTokenJS &&
+          loadedTokenJS !== value &&
+          typeof loadedTokenJS !== 'undefined' &&
+          loadedTokenJS !== 'undefined'
+        ) {
+          this.scope[bindedValue] = loadedTokenJS
+        } else {
+          this.scope[bindedValue] = '0'
         }
-      )
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       this.initSearch()
     }

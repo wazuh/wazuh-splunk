@@ -16,10 +16,17 @@ define([
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} agent
-     * @param {*} $reportingService 
+     * @param {*} $reportingService
      */
 
-    constructor($urlTokenModel, $state, $scope, $currentDataService, agent, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $state,
+      $scope,
+      $currentDataService,
+      agent,
+      $reportingService
+    ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
@@ -112,7 +119,7 @@ define([
       )
       this.vizz.push(this.eventsSummaryTable)
 
-      this.eventsSummaryTable.getSearch().on('result', (result) => {
+      this.eventsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Events Summary'] = result
       })
 
@@ -127,7 +134,7 @@ define([
       )
       this.vizz.push(this.top5RulesTable)
 
-      this.top5RulesTable.getSearch().on('result', (result) => {
+      this.top5RulesTable.getSearch().on('result', result => {
         this.tableResults['Top 5 Rules'] = result
       })
 
@@ -142,7 +149,7 @@ define([
       )
       this.vizz.push(this.filesAffectedTable)
 
-      this.filesAffectedTable.getSearch().on('result', (result) => {
+      this.filesAffectedTable.getSearch().on('result', result => {
         this.tableResults['Files Affected'] = result
       })
 
@@ -167,30 +174,34 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-virustotal', 'VirusTotal', this.filters,  [
-        'alertsVolume',
-        'eventsSummaryElement',
-        'eventsOverTimeElement',
-        'top5Rules',
-        'filesAffected'
-      ],
-      this.reportMetrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-virustotal',
+          'VirusTotal',
+          this.filters,
+          [
+            'alertsVolume',
+            'eventsSummaryElement',
+            'eventsOverTimeElement',
+            'top5Rules',
+            'filesAffected'
+          ],
+          this.reportMetrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
           this.setReportMetrics()
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

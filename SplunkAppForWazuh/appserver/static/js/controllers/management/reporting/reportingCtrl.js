@@ -79,9 +79,9 @@ define(['../../module'], function(app) {
 
     /**
      * Calculates the size of the table
-     * @param {Number} size 
-     * @param {Number} start 
-     * @param {Number} end 
+     * @param {Number} size
+     * @param {Number} start
+     * @param {Number} end
      */
     range(size, start, end) {
       const ret = []
@@ -108,7 +108,7 @@ define(['../../module'], function(app) {
 
     /**
      * Navigates to the next page
-     * @param {Number} n 
+     * @param {Number} n
      */
     nextPage(n) {
       if (
@@ -122,7 +122,7 @@ define(['../../module'], function(app) {
 
     /**
      * Sets page number
-     * @param {Number} n 
+     * @param {Number} n
      */
     setPage(n) {
       this.scope.currentPage = n
@@ -137,7 +137,7 @@ define(['../../module'], function(app) {
         this.loading = true
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
-        const reports =  await this.genericReq('GET', '/report/reports')
+        const reports = await this.genericReq('GET', '/report/reports')
         this.items = reports.data.data
         this.scope.gap =
           gap - parseInt(this.items.length / 15) > 0
