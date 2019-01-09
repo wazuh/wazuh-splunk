@@ -33,7 +33,7 @@
       <md-card-content flex layout="column">
         <div layout="row" layout-align="start center">
           <div>
-            <span class="font-size-16">Logs and commands output</span>
+            <span class="font-size-16">Logs files and command monitoring</span>
             <div class="wz-margin-top-10">
               <span class="md-subheader small">List of log files that will be analyzed</span>
             </div>
@@ -52,8 +52,10 @@
           <div flex="30" layout="column">
 
             <md-list flex="auto" class="wz-item-list">
-              <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['logcollector-localfile'].localfile">{{
-                item.file || item.alias || item.command }}</md-list-item>
+              <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['logcollector-localfile'].localfile">
+                <span ng-if='item.file || item.alias || item.command'>{{ item.file || item.alias || item.command }}</span>
+                <span ng-if='!item.file && !item.alias && !item.command'>{{ item.logformat }} - {{ item.targetStr }}</span>
+              </md-list-item>
             </md-list>
 
           </div>
