@@ -149,6 +149,23 @@ define([
         this.tableResults['Events Summary'] = result
       })
 
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
+
       /**
        * Generates report
        */
@@ -162,7 +179,9 @@ define([
         'eventsSummaryElement'
       ],
       {},//Metrics,
-      this.tableResults)
+      this.tableResults,
+      this.agentReportData
+      )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status

@@ -202,17 +202,26 @@ define([
         /**
          * Generates report
          */
+
+      // Set agent info
+        try {
+          this.agentReportData = {
+            ID: this.agentInfo.id,
+            Name: this.agentInfo.name,
+            IP: this.agentInfo.ip,
+            Version: this.agentInfo.version,
+            Manager: this.agent[0].data.data.manager,
+            OS: this.agentInfo.agentOS,
+            dateAdd: this.agentInfo.dateAdd,
+            lastKeepAlive: this.agentInfo.lastKeepAlive,
+            group: this.agentInfo.group.toString()
+          }
+        } catch (error) {
+          this.agentReportData = false
+        }
         this.agentMetricsGroup = []
         this.agentInfo.group.map(g => this.agentMetricsGroup.push(g))
         this.reportMetrics = {
-          ID: this.agentInfo.id,
-          Name: this.agentInfo.name,
-          IP: this.agentInfo.ip,
-          Version: this.agentInfo.version,
-          OS: this.agentInfo.agentOS,
-          Groups: this.agentMetricsGroup.toString(),
-          'Last keep alive': this.agentInfo.lastKeepAlive,
-          'Registration date': this.agentInfo.dateAdd,
           'Last syscheck scan': this.agentInfo.syscheck.end ? this.agentInfo.syscheck.end : 'Unknown',
           'Last rootcheck scan': this.agentInfo.rootcheck.end ? this.agentInfo.rootcheck.end : 'Unknown'
         }
@@ -227,7 +236,8 @@ define([
             'agentsSummaryVizz'
           ],
             this.reportMetrics,
-            this.tableResults
+            this.tableResults,
+            this.agentReportData
           )
 
       } catch (err) {
