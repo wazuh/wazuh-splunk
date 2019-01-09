@@ -46,7 +46,7 @@ define([
             try {
               const parser = new DOMParser() // eslint-disable-line
               const xml = $scope.xmlCodeBox.getValue()
-              const xmlDoc = parser.parseFromString(xml, 'text/xml')
+              const xmlDoc = parser.parseFromString('<file>' + xml + '</file>', 'text/xml')
               $scope.validFn({
                 valid: !!xmlDoc.getElementsByTagName('parsererror').length
               })
