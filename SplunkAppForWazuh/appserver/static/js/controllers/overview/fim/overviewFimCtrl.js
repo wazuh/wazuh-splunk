@@ -6,19 +6,33 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, ColumnChart, PieChart, Table, LinearChart, TimePicker, rawTableDataService) {
+], function(
+  app,
+  ColumnChart,
+  PieChart,
+  Table,
+  LinearChart,
+  TimePicker,
+  rawTableDataService
+) {
   'use strict'
 
   class OverviewFIM {
     /**
      * Class File Integrity Monitoring (syscheck)
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
@@ -38,7 +52,7 @@ define([
         new PieChart(
           'deletedFiles',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh syscheck.event=deleted | top agent.name limit=5`,
           'deletedFiles',
           this.scope
@@ -56,7 +70,7 @@ define([
         new PieChart(
           'alertsVolume',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.groups=syscheck | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
           | stats count BY SYSCHECK
           | addcoltotals count labelfield=SYSCHECK label=Total
@@ -67,7 +81,7 @@ define([
         new PieChart(
           'newFiles',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,
           'newFiles',
           this.scope
@@ -75,7 +89,7 @@ define([
         new PieChart(
           'modifiedFiles',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,
           'modifiedFiles',
           this.scope
@@ -83,7 +97,7 @@ define([
         new LinearChart(
           'eventsSummary',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.groups=syscheck | timechart count`,
           'eventsSummary',
           this.scope
@@ -91,7 +105,7 @@ define([
         new Table(
           'topRules',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'topRules',
           this.scope
@@ -99,7 +113,7 @@ define([
         new Table(
           'topUsers',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,
           'topUsers',
           this.scope
@@ -109,7 +123,7 @@ define([
       this.topRulesTable = new rawTableDataService(
         'topRulesTable',
         `${
-        this.filters
+          this.filters
         } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
         'topRulesTableToken',
         '$result$',
@@ -117,14 +131,14 @@ define([
       )
       this.vizz.push(this.topRulesTable)
 
-      this.topRulesTable.getSearch().on('result', (result) => {
+      this.topRulesTable.getSearch().on('result', result => {
         this.tableResults['Top rules'] = result
       })
 
       this.topUsersTable = new rawTableDataService(
         'topUsersTable',
         `${
-        this.filters
+          this.filters
         } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,
         'topUsersTableToken',
         '$result$',
@@ -132,7 +146,7 @@ define([
       )
       this.vizz.push(this.topUsersTable)
 
-      this.topUsersTable.getSearch().on('result', (result) => {
+      this.topUsersTable.getSearch().on('result', result => {
         this.tableResults['Top users'] = result
       })
 
@@ -148,7 +162,8 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png('overview-fim',
+        this.reportingService.startVis2Png(
+          'overview-fim',
           'File integrity monitoring',
           this.filters,
           [
@@ -161,10 +176,11 @@ define([
             'whodataUsage',
             'topUsers'
           ],
-          {},//Metrics
-          this.tableResults)
+          {}, //Metrics
+          this.tableResults
+        )
 
-      this.scope.$on("checkReportingStatus", () => {
+      this.scope.$on('checkReportingStatus', () => {
         this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length

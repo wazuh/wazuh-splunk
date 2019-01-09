@@ -4,9 +4,9 @@ define(['../../module'], function(controllers) {
   class OverviewWelcome {
     /**
      * Class Welcome
-     * @param {*} $scope 
-     * @param {Object} agentsInfo 
-     * @param {Object} extensions 
+     * @param {*} $scope
+     * @param {Object} agentsInfo
+     * @param {Object} extensions
      */
     constructor($scope, agentsInfo, extensions) {
       this.scope = $scope

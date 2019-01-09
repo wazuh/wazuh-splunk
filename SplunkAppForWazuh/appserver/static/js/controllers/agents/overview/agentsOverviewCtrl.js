@@ -10,19 +10,19 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (app) {
+define(['../../module'], function(app) {
   'use strict'
 
   class AgentsOverview {
     /**
      * Class Agents Overview
-     * @param {*} $stateParams 
-     * @param {*} extensions 
-     * @param {*} $scope 
-     * @param {*} $requestService 
-     * @param {*} $state 
-     * @param {*} $notificationService 
-     * @param {Object} agent 
+     * @param {*} $stateParams
+     * @param {*} extensions
+     * @param {*} $scope
+     * @param {*} $requestService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {Object} agent
      */
     constructor(
       $stateParams,
@@ -63,23 +63,29 @@ define(['../../module'], function (app) {
       ) {
         this.scope.agent = this.agent[0].data.data
 
-        this.scope.agentOS = (this.scope.agent && this.scope.agent.os && this.scope.agent.os.name && this.scope.agent.os.codename && this.scope.agent.os.version)
-          ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os.codename || '-'} ${this.scope.agent.os.version || '-'}`
-          : 'Unknown'
+        this.scope.agentOS =
+          this.scope.agent &&
+          this.scope.agent.os &&
+          this.scope.agent.os.name &&
+          this.scope.agent.os.codename &&
+          this.scope.agent.os.version
+            ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
+                .codename || '-'} ${this.scope.agent.os.version || '-'}`
+            : 'Unknown'
 
         this.scope.syscheck =
           this.agent.length > 0 &&
-            typeof this.agent[1] === 'object' &&
-            typeof this.agent[1].data === 'object' &&
-            !this.agent[1].data.error
+          typeof this.agent[1] === 'object' &&
+          typeof this.agent[1].data === 'object' &&
+          !this.agent[1].data.error
             ? this.agent[1].data.data
             : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
         this.scope.id = this.stateParams.id
         this.scope.rootcheck =
           this.agent.length > 1 &&
-            typeof this.agent[2] === 'object' &&
-            typeof this.agent[2].data === 'object' &&
-            !this.agent[2].data.error
+          typeof this.agent[2] === 'object' &&
+          typeof this.agent[2].data === 'object' &&
+          !this.agent[2].data.error
             ? this.agent[2].data.data
             : { start: 'Unknown', end: 'Unknown' }
         if (!this.scope.agent.error) {
@@ -88,10 +94,14 @@ define(['../../module'], function (app) {
             this.extensions[key] === 'true'
               ? (this.scope[key] = key)
               : (this.scope[key] = null)
-          }
-          )
+          })
 
-          this.scope.groups = this.groups.data.data.items.map(item => item.name).filter(item => this.scope.agent.group && !this.scope.agent.group.includes(item))
+          this.scope.groups = this.groups.data.data.items
+            .map(item => item.name)
+            .filter(
+              item =>
+                this.scope.agent.group && !this.scope.agent.group.includes(item)
+            )
           this.scope.formatAgentStatus = agentStatus =>
             this.formatAgentStatus(agentStatus)
           this.scope.getAgentStatusClass = agentStatus =>
@@ -99,33 +109,55 @@ define(['../../module'], function (app) {
           this.scope.goGroups = group => this.goGroups(group)
           this.scope.switchGroupEdit = () => this.switchGroupEdit()
 
-          this.scope.syscheck.duration = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end).duration
-          this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).duration
-          this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(this.scope.syscheck.start, this.scope.syscheck.end).inProgress
-          this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).inProgress
+          this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
+            this.scope.syscheck.start,
+            this.scope.syscheck.end
+          ).duration
+          this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(
+            this.scope.rootcheck.start,
+            this.scope.rootcheck.end
+          ).duration
+          this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(
+            this.scope.syscheck.start,
+            this.scope.syscheck.end
+          ).inProgress
+          this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(
+            this.scope.rootcheck.start,
+            this.scope.rootcheck.end
+          ).inProgress
 
           this.scope.showConfirm = (ev, group) => {
             const confirm = this.$mdDialog.confirm({
-              controller: function ($scope, myScope, $mdDialog, $groupHandler, $requestService, $notificationService) {
-                $scope.myScope = myScope;
+              controller: function(
+                $scope,
+                myScope,
+                $mdDialog,
+                $groupHandler,
+                $requestService,
+                $notificationService
+              ) {
+                $scope.myScope = myScope
                 $scope.closeDialog = () => {
-                  $mdDialog.hide();
-                  $('body').removeClass('md-dialog-body');
-                };
+                  $mdDialog.hide()
+                  $('body').removeClass('md-dialog-body')
+                }
                 $scope.confirmDialog = () => {
                   $groupHandler
                     .addAgentToGroup(group, $scope.myScope.agent.id)
                     .then(() =>
-                      $requestService.apiReq(`/agents/${$scope.myScope.agent.id}`, {})
+                      $requestService.apiReq(
+                        `/agents/${$scope.myScope.agent.id}`,
+                        {}
+                      )
                     )
                     .then(agent => {
-                      $mdDialog.hide();
-                      $('body').removeClass('md-dialog-body');
-                      $scope.myScope.agent.group = agent.data.data.group;
+                      $mdDialog.hide()
+                      $('body').removeClass('md-dialog-body')
+                      $scope.myScope.agent.group = agent.data.data.group
                       $scope.myScope.groups = $scope.myScope.groups.filter(
                         item => !agent.data.data.group.includes(item)
-                      );
-                      if (!$scope.myScope.$$phase) $scope.myScope.$digest();
+                      )
+                      if (!$scope.myScope.$$phase) $scope.myScope.$digest()
                     })
                     .catch(error =>
                       $notificationService.showSimpleToast(
@@ -159,14 +191,20 @@ define(['../../module'], function (app) {
               locals: {
                 myScope: this.scope
               }
-            });
-            $('body').addClass('md-dialog-body');
-            this.$mdDialog.show(confirm);
-          };
+            })
+            $('body').addClass('md-dialog-body')
+            this.$mdDialog.show(confirm)
+          }
         }
         //Check OS type
-        if (this.agent[0].data.data && this.agent[0].data.data.os && this.agent[0].data.data.os.uname) {
-          this.scope.isLinux = this.agent[0].data.data.os.uname.includes("Linux")
+        if (
+          this.agent[0].data.data &&
+          this.agent[0].data.data.os &&
+          this.agent[0].data.data.os.uname
+        ) {
+          this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
+            'Linux'
+          )
         }
         if (this.scope.agent.status == 'Never connected') {
           this.scope.agent.os = {
@@ -193,9 +231,20 @@ define(['../../module'], function (app) {
           this.scope.agent.error =
             this.agent[0].data.message || this.agent[0].data.error
         } else {
-          this.scope.agent = { group: null, name: 'Unknown', id: null, status: null, ip: 'Unknown', os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' }, version: 'Unknown', dateAdd: 'Unknown', lastKeepAlive: 'Unknown' }
+          this.scope.agent = {
+            group: null,
+            name: 'Unknown',
+            id: null,
+            status: null,
+            ip: 'Unknown',
+            os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' },
+            version: 'Unknown',
+            dateAdd: 'Unknown',
+            lastKeepAlive: 'Unknown'
+          }
           if (this.agent[0].data.error) {
-            this.scope.agent.error = this.agent[0].data.message || this.agent[0].data.error
+            this.scope.agent.error =
+              this.agent[0].data.message || this.agent[0].data.error
           } else {
             this.scope.agent.error = 'Unable to load agent data from API'
           }
@@ -205,7 +254,7 @@ define(['../../module'], function (app) {
 
     /**
      * Go to a group
-     * @param {String} group 
+     * @param {String} group
      */
     async goGroups(group) {
       try {
@@ -236,7 +285,7 @@ define(['../../module'], function (app) {
 
     /**
      * Checks and returns agent status
-     * @param {Array} agentStatus 
+     * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
@@ -246,7 +295,7 @@ define(['../../module'], function (app) {
 
     /**
      * Returns a class depending of the agent state
-     * @param {String} agentStatus 
+     * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'
@@ -256,7 +305,6 @@ define(['../../module'], function (app) {
       this.scope.editGroup = !!!this.scope.editGroup
       if (!this.scope.$$phase) this.scope.$digest()
     }
-
   }
 
   app.controller('agentsOverviewCtrl', AgentsOverview)

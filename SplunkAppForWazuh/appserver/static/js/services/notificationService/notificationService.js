@@ -8,7 +8,7 @@ define(['../module'], function(module) {
       right: true
     }
 
-    let toastPosition = angular.extend({}, last)  // eslint-disable-line
+    let toastPosition = angular.extend({}, last) // eslint-disable-line
 
     let getToastPosition = () => {
       sanitizePosition()
@@ -28,7 +28,7 @@ define(['../module'], function(module) {
       if (current.right && last.left) current.left = false
       if (current.left && last.right) current.right = false
 
-      last = angular.extend({}, current)  // eslint-disable-line
+      last = angular.extend({}, current) // eslint-disable-line
     }
 
     let showSimpleToast = text => {

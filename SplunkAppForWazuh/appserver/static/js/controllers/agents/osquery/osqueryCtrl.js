@@ -30,7 +30,7 @@ define([
      * @param {Object} $notificationService
      * @param {Object} agent
      * @param {Object} osquery
-     * @param {*} $reportingService 
+     * @param {*} $reportingService
      */
 
     constructor(
@@ -132,7 +132,7 @@ define([
       )
       this.vizz.push(this.topRulesTable)
 
-      this.topRulesTable.getSearch().on('result', (result) => {
+      this.topRulesTable.getSearch().on('result', result => {
         this.tableResults['Top Rules'] = result
       })
 
@@ -157,28 +157,32 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-osquery', 'Osquery', this.filters, [
-        'mostCommonPacks',
-        'alertsPacksOverTime',
-        'mostCommonActions',
-        'topRules',
-        'alertsOverTime'
-      ],//Metrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-osquery',
+          'Osquery',
+          this.filters,
+          [
+            'mostCommonPacks',
+            'alertsPacksOverTime',
+            'mostCommonActions',
+            'topRules',
+            'alertsOverTime'
+          ], //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
-      })      
+      })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

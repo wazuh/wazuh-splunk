@@ -4,14 +4,14 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   class DecodersId extends Ruleset {
     /**
      * Class Decoders-ID
-     * @param {*} $scope 
-     * @param {*} $sce 
-     * @param {*} $notificationService 
-     * @param {*} $state 
-     * @param {Object} currentDecoder 
-     * @param {*} $currentDataService 
-     * @param {*} $tableFilterService 
-     * @param {*} $csvRequestService 
+     * @param {*} $scope
+     * @param {*} $sce
+     * @param {*} $notificationService
+     * @param {*} $state
+     * @param {Object} currentDecoder
+     * @param {*} $currentDataService
+     * @param {*} $tableFilterService
+     * @param {*} $csvRequestService
      */
     constructor(
       $scope,

@@ -18,7 +18,15 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, SearchHandler, rawTableDataService) {
+], function(
+  app,
+  PieChart,
+  AreaChart,
+  Table,
+  TimePicker,
+  SearchHandler,
+  rawTableDataService
+) {
   'use strict'
 
   class AgentsVulnerabilities {
@@ -32,7 +40,14 @@ define([
      * @param {*} $reportingService
      */
 
-    constructor($urlTokenModel, $scope, $currentDataService, $state, agent, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      agent,
+      $reportingService
+    ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.currentDataService = $currentDataService
@@ -169,7 +184,7 @@ define([
       )
       this.vizz.push(this.alertsSummaryTable)
 
-      this.alertsSummaryTable.getSearch().on('result', (result) => {
+      this.alertsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Alerts Summary'] = result
       })
 
@@ -184,7 +199,7 @@ define([
       )
       this.vizz.push(this.commonRulesTable)
 
-      this.commonRulesTable.getSearch().on('result', (result) => {
+      this.commonRulesTable.getSearch().on('result', result => {
         this.tableResults['Common Rules'] = result
       })
 
@@ -209,31 +224,35 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-vulnerabilities', 'Vulnerabilities', this.filters, [
-        'alertsSeverityOverTimeVizz',
-        'commonRules',
-        'commonCves',
-        'severityDistribution',
-        'commonlyAffectedPackVizz',
-        'alertsSummaryVizz'
-      ],
-      this.reportMetrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-vulnerabilities',
+          'Vulnerabilities',
+          this.filters,
+          [
+            'alertsSeverityOverTimeVizz',
+            'commonRules',
+            'commonCves',
+            'severityDistribution',
+            'commonlyAffectedPackVizz',
+            'alertsSummaryVizz'
+          ],
+          this.reportMetrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
           this.setReportMetrics()
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -262,20 +281,19 @@ define([
         this.getAgentStatusClass(agentStatus)
     }
 
-
     /**
      * Checks and returns agent status
-     * @param {Array} agentStatus 
+     * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
-    
+
     /**
      * Returns a class depending on the agent state
-     * @param {String} agentStatus 
+     * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'

@@ -40,20 +40,18 @@ define([
       this.finish = false
       this.search.on('search:done', () => {
         this.finish = true
-        this.checkVizzStatus();
+        this.checkVizzStatus()
       })
       this.search.on('search:start', () => {
         this.finish = false
-        this.checkVizzStatus();
-      })
-
-    }
-
-    checkVizzStatus(){
-      this.scope.$broadcast("checkReportingStatus", () => {
+        this.checkVizzStatus()
       })
     }
-    
+
+    checkVizzStatus() {
+      this.scope.$broadcast('checkReportingStatus', () => {})
+    }
+
     changeSearch(newSearch) {
       mvc.Components.revokeInstance(`${this.id}Search`)
       this.search = null
@@ -108,7 +106,9 @@ define([
         mvc.Components.revokeInstance(`${this.id}Search`)
         this.element = null
         this.search = null
-      } catch (err) { return }
+      } catch (err) {
+        return
+      }
     }
   }
 })

@@ -6,20 +6,35 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, PieChart, AreaChart, ColumnChart, Table, TimePicker, rawTableDataService) {
+], function(
+  app,
+  PieChart,
+  AreaChart,
+  ColumnChart,
+  Table,
+  TimePicker,
+  rawTableDataService
+) {
   'use strict'
 
   class AWS {
     /**
      * Class constructor
-     * @param {*} $rootScope 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $notificationService 
-     * @param {*} $reportingService 
+     * @param {*} $rootScope
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state, $notificationService, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $notificationService,
+      $reportingService
+    ) {
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.state = $state
@@ -44,13 +59,17 @@ define([
          */
         new AreaChart(
           'eventsBySourceVizz',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
+          `${
+            this.filters
+          } sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
           'eventsBySourceVizz',
           this.scope
         ),
         new ColumnChart(
           'eventsByS3BucketsVizz',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
+          `${
+            this.filters
+          } sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
           'eventsByS3BucketsVizz',
           this.scope
         ),
@@ -62,13 +81,17 @@ define([
         ),
         new PieChart(
           'accountsVizz',
-          `${this.filters} sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId`,
+          `${
+            this.filters
+          } sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId`,
           'accountsVizz',
           this.scope
         ),
         new PieChart(
           's3BucketsVizz',
-          `${this.filters} sourcetype=wazuh | stats count by data.aws.log_info.s3bucket`,
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count by data.aws.log_info.s3bucket`,
           's3BucketsVizz',
           this.scope
         ),
@@ -86,7 +109,9 @@ define([
         ),
         new Table(
           'top5Rules',
-          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
+          `${
+            this.filters
+          } sourcetype=wazuh | top rule.id, rule.description limit=5`,
           'top5Rules',
           this.scope
         )
@@ -101,20 +126,22 @@ define([
       )
       this.vizz.push(this.top5BucketsTable)
 
-      this.top5BucketsTable.getSearch().on('result', (result) => {
+      this.top5BucketsTable.getSearch().on('result', result => {
         this.tableResults['Top 5 buckets'] = result
       })
 
       this.top5RulesTable = new rawTableDataService(
         'top5RulesTable',
-        `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5`,
+        `${
+          this.filters
+        } sourcetype=wazuh | top rule.id, rule.description limit=5`,
         'top5RulesTableToken',
         '$result$',
         this.scope
       )
       this.vizz.push(this.top5RulesTable)
 
-      this.top5RulesTable.getSearch().on('result', (result) => {
+      this.top5RulesTable.getSearch().on('result', result => {
         this.tableResults['Top 5 rules'] = result
       })
 
@@ -127,7 +154,10 @@ define([
       })
 
       this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png('overview-aws', 'AWS', this.filters,
+        this.reportingService.startVis2Png(
+          'overview-aws',
+          'AWS',
+          this.filters,
           [
             'sourcesVizz',
             'accountsVizz',
@@ -138,7 +168,7 @@ define([
             'top5Buckets',
             'top5Rules'
           ],
-          {},//Metrics
+          {}, //Metrics
           this.tableResults
         )
 
@@ -154,7 +184,7 @@ define([
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
+      this.scope.$on('checkReportingStatus', () => {
         this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class GroupHandler {
@@ -20,7 +20,11 @@ define(['../module'], function (module) {
 
     async removeAgentFromGroup(group, agentId) {
       try {
-        const result = await this.apiReq(`/agents/${agentId}/group/${group}`, {}, 'DELETE')
+        const result = await this.apiReq(
+          `/agents/${agentId}/group/${group}`,
+          {},
+          'DELETE'
+        )
         return result
       } catch (error) {
         return Promise.reject(error)
@@ -29,7 +33,11 @@ define(['../module'], function (module) {
 
     async addAgentToGroup(group, agentId) {
       try {
-        const result = await this.apiReq(`/agents/${agentId}/group/${group}`, {}, 'PUT')
+        const result = await this.apiReq(
+          `/agents/${agentId}/group/${group}`,
+          {},
+          'PUT'
+        )
         return result
       } catch (error) {
         return Promise.reject(error)
@@ -49,9 +57,14 @@ define(['../module'], function (module) {
         const result = await this.apiReq(
           `/agents/groups/${group}/files/agent.conf`,
           { content, origin: 'xmleditor' },
-          'POST',
+          'POST'
         )
-        if(!result || !result.data || !result.data.data || result.data.data.error !== 0) {
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.data.error !== 0
+        ) {
           throw new Error('Cannot send file.')
         }
         return result
@@ -59,8 +72,6 @@ define(['../module'], function (module) {
         return Promise.reject(error)
       }
     }
-
   }
   module.service('$groupHandler', GroupHandler)
-
 })

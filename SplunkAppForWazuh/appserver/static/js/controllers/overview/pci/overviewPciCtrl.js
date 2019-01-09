@@ -6,19 +6,33 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown, rawTableDataService) {
+], function(
+  app,
+  ColumnChart,
+  PieChart,
+  Table,
+  TimePicker,
+  Dropdown,
+  rawTableDataService
+) {
   'use strict'
 
   class PCI {
     /**
      * Class PCI-DSS
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
@@ -109,7 +123,7 @@ define([
       )
       this.vizz.push(this.alertsSummaryTable)
 
-      this.alertsSummaryTable.getSearch().on('result', (result) => {
+      this.alertsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Alerts Summary'] = result
       })
 
@@ -117,31 +131,36 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-pci', 'PCI DSS', this.filters, [
-        'pciReqVizz',
-        'groupsVizz',
-        'agentsVizz',
-        'requirementsByAgentVizz',
-        'alertsSummaryViz'
-      ],
-      {},//Metrics
-      this.tableResults)
+        this.reportingService.startVis2Png(
+          'overview-pci',
+          'PCI DSS',
+          this.filters,
+          [
+            'pciReqVizz',
+            'groupsVizz',
+            'agentsVizz',
+            'requirementsByAgentVizz',
+            'alertsSummaryViz'
+          ],
+          {}, //Metrics
+          this.tableResults
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
-    })
+      })
 
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance)

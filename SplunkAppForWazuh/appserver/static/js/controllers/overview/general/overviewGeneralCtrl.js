@@ -7,7 +7,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   LinearChart,
@@ -24,15 +24,15 @@ define([
   class OverviewGeneral {
     /**
      * Class Overview General
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $notificationService 
-     * @param {*} $requestService 
-     * @param {Object} pollingState 
-     * @param {*} $reportingService 
-     * @param {*} $rootScope 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {*} $requestService
+     * @param {Object} pollingState
+     * @param {*} $reportingService
+     * @param {*} $rootScope
      */
     constructor(
       $urlTokenModel,
@@ -170,7 +170,7 @@ define([
       )
       this.vizz.push(this.agentsSummaryTable)
 
-      this.agentsSummaryTable.getSearch().on('result', (result) => {
+      this.agentsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Agents Summary'] = result
       })
     }
@@ -230,16 +230,19 @@ define([
       }
 
       this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png('overview-general', 'Security events', this.filters, 
-        [
-          'alertLevEvoVizz',
-          'alertsVizz',
-          'top5AgentsVizz',
-          'alertsEvoTop5Agents',
-          'agentsSummaryVizz'
-        ],
-        this.reportMetrics,
-        this.tableResults
+        this.reportingService.startVis2Png(
+          'overview-general',
+          'Security events',
+          this.filters,
+          [
+            'alertLevEvoVizz',
+            'alertsVizz',
+            'top5AgentsVizz',
+            'alertsEvoTop5Agents',
+            'agentsSummaryVizz'
+          ],
+          this.reportMetrics,
+          this.tableResults
         )
 
       this.scope.$on('$destroy', () => {
@@ -251,17 +254,17 @@ define([
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-          this.vizzReady = !this.vizz.filter( v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) { 
-            this.scope.loadingVizz = false
-            this.setReportMetrics()
-          } else { 
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+          this.setReportMetrics()
+        } else {
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
       })
     }
 
@@ -278,7 +281,7 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        'Alerts': this.scope.totalAlerts,
+        Alerts: this.scope.totalAlerts,
         'Level 12 or above alerts': this.scope.levelTwelve,
         'Authentication failure': this.scope.authFailure,
         'Authentication success': this.scope.authSuccess

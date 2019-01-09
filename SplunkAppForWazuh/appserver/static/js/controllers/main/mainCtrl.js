@@ -9,8 +9,8 @@ define([
   class MainCtrl {
     /**
      * Main controller class
-     * @param {*} $scope 
-     * @param {*} $urlTokenModel 
+     * @param {*} $scope
+     * @param {*} $urlTokenModel
      */
     constructor($scope, $urlTokenModel) {
       this.timePicker = new TimePicker(

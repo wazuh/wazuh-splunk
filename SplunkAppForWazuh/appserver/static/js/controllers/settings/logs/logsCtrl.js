@@ -59,7 +59,9 @@ define(['../../module'], function(module) {
                 }
               }
             }
-            const excludeParseError = logs.filter(log => log.level !== 'parse_error')
+            const excludeParseError = logs.filter(
+              log => log.level !== 'parse_error'
+            )
             this.scope.logs = excludeParseError
           } else {
             this.scope.logs = [

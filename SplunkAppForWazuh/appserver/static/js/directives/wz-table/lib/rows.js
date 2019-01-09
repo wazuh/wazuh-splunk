@@ -13,8 +13,8 @@ define([], function() {
   'use strict'
   /**
    * Calculates the number of rows
-   * @param {Number} windowHeight 
-   * @param {Number} sizes 
+   * @param {Number} windowHeight
+   * @param {Number} sizes
    */
   return function calcTableRows(windowHeight, sizes) {
     if (windowHeight >= 950) return sizes[0]

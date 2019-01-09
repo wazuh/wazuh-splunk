@@ -37,7 +37,9 @@ define(['../module'], function(app) {
     removeAPI() {
       try {
         delete this.sessionStorage.selectedAPI
-      } catch (err) { return }
+      } catch (err) {
+        return
+      }
     }
 
     /**
@@ -50,7 +52,9 @@ define(['../module'], function(app) {
         if (typeof API === 'object') {
           this.sessionStorage.selectedAPI = JSON.stringify(API)
         }
-      } catch (error) { return }
+      } catch (error) {
+        return
+      }
     }
 
     /**
@@ -111,7 +115,9 @@ define(['../module'], function(app) {
             JSON.stringify(newSet) || []
           )
         }
-      } catch (err) { return }
+      } catch (err) {
+        return
+      }
     }
   }
   app.service('$apiIndexStorageService', ApiIndexStorageService)

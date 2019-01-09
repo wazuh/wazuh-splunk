@@ -6,20 +6,35 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown, rawTableDataService) {
+], function(
+  app,
+  ColumnChart,
+  PieChart,
+  Table,
+  TimePicker,
+  Dropdown,
+  rawTableDataService
+) {
   'use strict'
 
   class AgentsPCI {
     /**
      * Class Agents PCI-DSS
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $state 
-     * @param {*} $currentDataService 
-     * @param {Object} agent 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $state
+     * @param {*} $currentDataService
+     * @param {Object} agent
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $state,
+      $currentDataService,
+      agent,
+      $reportingService
+    ) {
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
@@ -129,7 +144,7 @@ define([
       )
       this.vizz.push(this.alertsSummaryTable)
 
-      this.alertsSummaryTable.getSearch().on('result', (result) => {
+      this.alertsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Alerts Summary'] = result
       })
 
@@ -154,35 +169,37 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-pci', 'PCI DSS', this.filters,
-      [
-        'pciReqSearchVizz',
-        'groupsVizz',
-        'agentsVizz',
-        'reqByAgentsVizz',
-        'alertsSummaryVizz'
-      ],
-      {},//Metrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-pci',
+          'PCI DSS',
+          this.filters,
+          [
+            'pciReqSearchVizz',
+            'groupsVizz',
+            'agentsVizz',
+            'reqByAgentsVizz',
+            'alertsSummaryVizz'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
       })
-
     }
 
     /**
@@ -209,7 +226,7 @@ define([
 
     /**
      * Returns a class depending of the agent state
-     * @param {String} agentStatus 
+     * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
@@ -217,7 +234,7 @@ define([
 
     /**
      * Checks and returns agent status
-     * @param {Array} agentStatus 
+     * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)

@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class About {
@@ -10,7 +10,6 @@ define(['../../module'], function (controllers) {
     $onInit() {
       this.scope.appInfo = this.appInfo
     }
-    
   }
   controllers.controller('aboutCtrl', About)
 })

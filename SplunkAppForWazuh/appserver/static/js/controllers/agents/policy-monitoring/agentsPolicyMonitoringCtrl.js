@@ -28,10 +28,17 @@ define([
      * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
-     * @param {*} $reportingService 
+     * @param {*} $reportingService
      */
 
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $state,
+      $currentDataService,
+      agent,
+      $reportingService
+    ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.state = $state
@@ -120,7 +127,7 @@ define([
       )
       this.vizz.push(this.alertsSummaryTable)
 
-      this.alertsSummaryTable.getSearch().on('result', (result) => {
+      this.alertsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Alerts Summary'] = result
       })
 
@@ -145,34 +152,38 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-pm', 'Policity monitoring', this.filters, [
-        'elementOverTime',
-        'cisRequirements',
-        'topPciDss',
-        'eventsPerAgent',
-        'alertsSummary'
-      ],
-      {},//Metrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-pm',
+          'Policity monitoring',
+          this.filters,
+          [
+            'elementOverTime',
+            'cisRequirements',
+            'topPciDss',
+            'eventsPerAgent',
+            'alertsSummary'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
-      })      
+      })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
       })
-      
+
       /**
        * When controller is destroyed
        */
@@ -193,10 +204,9 @@ define([
         this.formatAgentStatus(agentStatus)
     }
 
-
-     /**
+    /**
      * Returns a class depending of the agent state
-     * @param {String} agentStatus 
+     * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
       return agentStatus === 'Active' ? 'teal' : 'red'
@@ -204,7 +214,7 @@ define([
 
     /**
      * Checks and returns agent status
-     * @param {Array} agentStatus 
+     * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)

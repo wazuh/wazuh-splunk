@@ -7,7 +7,15 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService',
   'FileSaver'
-], function (app, ColumnChart, PieChart, Table, AreaChart, TimePicker, rawTableDataService) {
+], function(
+  app,
+  ColumnChart,
+  PieChart,
+  Table,
+  AreaChart,
+  TimePicker,
+  rawTableDataService
+) {
   'use strict'
 
   class AgentsFim {
@@ -51,7 +59,7 @@ define([
         this.agent.data &&
         this.agent.data.data &&
         this.agent.data.data.id
-       )
+      )
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
@@ -78,7 +86,7 @@ define([
         new AreaChart(
           'eventsOverTimeElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh"  "rule.groups"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement',
           this.scope
@@ -86,7 +94,7 @@ define([
         new ColumnChart(
           'topGroupOwnersElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
           'topGroupOwnersElement',
           this.scope
@@ -94,7 +102,7 @@ define([
         new PieChart(
           'topUserOwnersElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
           'topUserOwnersElement',
           this.scope
@@ -102,7 +110,7 @@ define([
         new PieChart(
           'topFileChangesElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
           'topFileChangesElement',
           this.scope
@@ -110,7 +118,7 @@ define([
         new PieChart(
           'rootUserFileChangesElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
           'rootUserFileChangesElement',
           this.scope
@@ -118,7 +126,7 @@ define([
         new PieChart(
           'wordWritableFilesElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh" rule.groups="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement',
           this.scope
@@ -126,7 +134,7 @@ define([
         new Table(
           'eventsSummaryElement',
           `${
-          this.filters
+            this.filters
           } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement',
           this.scope
@@ -137,14 +145,14 @@ define([
         'eventsSummaryTable',
         `${
           this.filters
-          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+        } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
         'eventsSummaryTableToken',
         '$result$',
         this.scope
       )
       this.vizz.push(this.eventsSummaryTable)
 
-      this.eventsSummaryTable.getSearch().on('result', (result) => {
+      this.eventsSummaryTable.getSearch().on('result', result => {
         this.tableResults['Events Summary'] = result
       })
 
@@ -169,30 +177,34 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('agents-fim', 'File integrity monitoring', this.filters, [
-        'eventsOverTimeElement',
-        'topGroupOwnersElement',
-        'topUserOwnersElement',
-        'topFileChangesElement',
-        'rootUserFileChangesElement',
-        'eventsSummaryElement'
-      ],
-      {},//Metrics,
-      this.tableResults,
-      this.agentReportData
-      )
+        this.reportingService.startVis2Png(
+          'agents-fim',
+          'File integrity monitoring',
+          this.filters,
+          [
+            'eventsOverTimeElement',
+            'topGroupOwnersElement',
+            'topUserOwnersElement',
+            'topFileChangesElement',
+            'rootUserFileChangesElement',
+            'eventsSummaryElement'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -230,7 +242,7 @@ define([
     /**
      * Shows/Hides alerts section of the view
      */
-    show(){
+    show() {
       this.showFiles = !this.showFiles
       this.scope.showFiles = this.showFiles
       if (!this.scope.$$phase) this.scope.$digest()
@@ -238,7 +250,7 @@ define([
 
     /**
      * Checks and returns agent status
-     * @param {Array} agentStatus 
+     * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
@@ -248,7 +260,7 @@ define([
 
     /**
      * Returns a class depending of the agent state
-     * @param {String} agentStatus 
+     * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
       agentStatus === 'Active' ? 'teal' : 'red'

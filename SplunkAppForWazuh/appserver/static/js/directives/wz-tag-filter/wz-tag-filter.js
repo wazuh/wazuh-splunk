@@ -20,12 +20,7 @@ define(['../module'], function(app) {
         queryFn: '&',
         fieldsModel: '='
       },
-      controller(
-        $scope,
-        $timeout,
-        $document,
-        $notificationService,
-      ) {
+      controller($scope, $timeout, $document, $notificationService) {
         $scope.tagList = []
         $scope.groupedTagList = []
         $scope.newTag = ''
@@ -42,7 +37,10 @@ define(['../module'], function(app) {
             )
             input.blur()
             const term = $scope.newTag.split(':')
-            const obj = { name: term[0].trim(), value: term[1] ? term[1].trim() : '' }
+            const obj = {
+              name: term[0].trim(),
+              value: term[1] ? term[1].trim() : ''
+            }
             const isFilter = obj.value
             if (
               (isFilter &&
@@ -69,7 +67,8 @@ define(['../module'], function(app) {
                   return (
                     x.type === 'filter' &&
                     x.key === tag.key &&
-                    x.value.value.toUpperCase() === tag.value.value.toUpperCase()
+                    x.value.value.toUpperCase() ===
+                      tag.value.value.toUpperCase()
                   )
                 })
               ) {
@@ -87,7 +86,7 @@ define(['../module'], function(app) {
 
         /**
          * Build a query from an array of groups
-         * @param {Array} groups 
+         * @param {Array} groups
          */
         const buildQuery = groups => {
           try {
@@ -208,7 +207,9 @@ define(['../module'], function(app) {
               $scope.autocompleteContent.list = [
                 ...new Set(
                   model.list.filter(function(x) {
-                    return x.toUpperCase().includes(term[1].trim().toUpperCase())
+                    return x
+                      .toUpperCase()
+                      .includes(term[1].trim().toUpperCase())
                   })
                 )
               ]

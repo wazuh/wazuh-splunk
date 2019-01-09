@@ -1,17 +1,17 @@
-define(['../../module', 'FileSaver'], function (controllers) {
+define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
   class Groups {
     /**
      * Class Groups
-     * @param {*} $scope 
-     * @param {*} $tableFilterService 
-     * @param {*} $csvRequestService 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $stateParams 
-     * @param {*} $requestService 
-     * @param {*} $beautifierJson 
-     * @param {*} $notificationService 
+     * @param {*} $scope
+     * @param {*} $tableFilterService
+     * @param {*} $csvRequestService
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $stateParams
+     * @param {*} $requestService
+     * @param {*} $beautifierJson
+     * @param {*} $notificationService
      */
     constructor(
       $scope,
@@ -40,8 +40,18 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.$watch('lookingGroup', value => {
-        this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-        this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+        this.scope.availableAgents = {
+          loaded: false,
+          data: [],
+          offset: 0,
+          loadedAll: false
+        }
+        this.scope.selectedAgents = {
+          loaded: false,
+          data: [],
+          offset: 0,
+          loadedAll: false
+        }
         this.scope.addMultipleAgents(false)
         this.scope.$broadcast('closeEditXmlFile', {})
         if (!value) {
@@ -125,14 +135,16 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
       }
 
+      this.scope.reload = (element, searchTerm, addOffset, start) =>
+        this.reloadScope(element, searchTerm, addOffset, start)
 
-      this.scope.reload = (element, searchTerm, addOffset, start) => this.reloadScope(element, searchTerm, addOffset, start)
+      this.scope.loadSelectedAgents = searchTerm =>
+        this.loadSelectedAgents(searchTerm)
 
-      this.scope.loadSelectedAgents = (searchTerm) => this.loadSelectedAgents(searchTerm)
+      this.scope.loadAllAgents = (searchTerm, start) =>
+        this.loadAllAgents(searchTerm, start)
 
-      this.scope.loadAllAgents = (searchTerm, start) => this.loadAllAgents(searchTerm, start)
-
-      this.scope.addMultipleAgents = (toggle) => this.addMultipleAgents(toggle)
+      this.scope.addMultipleAgents = toggle => this.addMultipleAgents(toggle)
 
       this.scope.getItemsToSave = () => this.getItemsToSave()
 
@@ -140,15 +152,17 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
       this.scope.checkLimit = () => this.checkLimit()
 
-      this.scope.editGroupAgentConfig = (group) => this.editGroupAgentConfig(group)
+      this.scope.editGroupAgentConfig = group =>
+        this.editGroupAgentConfig(group)
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
 
-      this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
+      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
 
       this.scope.doSaveGroupAgentConfig = () => this.doSaveGroupAgentConfig()
 
-      this.scope.saveGroupAgentConfig = (content) => this.saveGroupAgentConfig(content)
+      this.scope.saveGroupAgentConfig = content =>
+        this.saveGroupAgentConfig(content)
 
       if (!this.scope.$$phase) this.scope.$digest()
     }
@@ -166,7 +180,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, name) // eslint-disable-line 
+        saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
         this.toast('Error downloading CSV')
@@ -175,8 +189,8 @@ define(['../../module', 'FileSaver'], function (controllers) {
     }
 
     /**
-     * @param {Object} group 
-     * @param {Boolean} firstLoad 
+     * @param {Object} group
+     * @param {Boolean} firstLoad
      */
     async loadGroup(group, firstLoad) {
       try {
@@ -236,28 +250,38 @@ define(['../../module', 'FileSaver'], function (controllers) {
       } catch (error) {
         this.toast(error.message || error)
       }
-
     }
 
     async loadSelectedAgents(searchTerm) {
       try {
-        let params = { 'offset': !searchTerm ? this.scope.selectedAgents.offset : 0, 'select': ["id", "name"] }
+        let params = {
+          offset: !searchTerm ? this.scope.selectedAgents.offset : 0,
+          select: ['id', 'name']
+        }
         if (searchTerm) {
           params.search = searchTerm
         }
-        const result = await this.apiReq(`/agents/groups/${this.scope.currentGroup.name}`,
-          params)
+        const result = await this.apiReq(
+          `/agents/groups/${this.scope.currentGroup.name}`,
+          params
+        )
         this.scope.totalSelectedAgents = result.data.data.totalItems
-        const mapped = result.data.data.items.map((item) => {
-          return { 'key': item.id, 'value': item.name }
+        const mapped = result.data.data.items.map(item => {
+          return { key: item.id, value: item.name }
         })
         if (searchTerm) {
           this.scope.selectedAgents.data = mapped
           this.scope.selectedAgents.loadedAll = true
         } else {
-          this.scope.selectedAgents.data = this.scope.selectedAgents.data.concat(mapped)
+          this.scope.selectedAgents.data = this.scope.selectedAgents.data.concat(
+            mapped
+          )
         }
-        if (this.scope.selectedAgents.data.length === 0 || this.scope.selectedAgents.data.length < 500 || this.scope.selectedAgents.offset >= this.scope.totalSelectedAgents) {
+        if (
+          this.scope.selectedAgents.data.length === 0 ||
+          this.scope.selectedAgents.data.length < 500 ||
+          this.scope.selectedAgents.offset >= this.scope.totalSelectedAgents
+        ) {
           this.scope.selectedAgents.loadedAll = true
         }
       } catch (error) {
@@ -271,7 +295,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         const params = {
           q: 'id!=000',
           offset: !searchTerm ? this.scope.availableAgents.offset : 0,
-          select: ["id", "name"]
+          select: ['id', 'name']
         }
         if (searchTerm) {
           params.search = searchTerm
@@ -279,17 +303,23 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
         const req = await this.apiReq('/agents/', params)
         this.scope.totalAgents = req.data.data.totalItems
-        const mapped = req.data.data.items.filter((item) => {
-          return this.scope.selectedAgents.data.filter((selected) => {
-            return selected.key == item.id
-          }).length == 0 && item.id !== '000'
-        }).map((item) => {
-          return { 'key': item.id, 'value': item.name }
-        })
+        const mapped = req.data.data.items
+          .filter(item => {
+            return (
+              this.scope.selectedAgents.data.filter(selected => {
+                return selected.key == item.id
+              }).length == 0 && item.id !== '000'
+            )
+          })
+          .map(item => {
+            return { key: item.id, value: item.name }
+          })
         if (searchTerm || start) {
           this.scope.availableAgents.data = mapped
         } else {
-          this.scope.availableAgents.data = this.scope.availableAgents.data.concat(mapped)
+          this.scope.availableAgents.data = this.scope.availableAgents.data.concat(
+            mapped
+          )
         }
         if (this.scope.availableAgents.data.length < 10 && !searchTerm) {
           if (this.scope.availableAgents.offset >= this.scope.totalAgents) {
@@ -309,8 +339,18 @@ define(['../../module', 'FileSaver'], function (controllers) {
       try {
         this.scope.addingAgents = toggle
         if (toggle && !this.scope.availableAgents.loaded) {
-          this.scope.availableAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
-          this.scope.selectedAgents = { 'loaded': false, 'data': [], 'offset': 0, 'loadedAll': false }
+          this.scope.availableAgents = {
+            loaded: false,
+            data: [],
+            offset: 0,
+            loadedAll: false
+          }
+          this.scope.selectedAgents = {
+            loaded: false,
+            data: [],
+            offset: 0,
+            loadedAll: false
+          }
           this.scope.multipleSelectorLoading = true
           while (!this.scope.selectedAgents.loadedAll) {
             await this.scope.loadSelectedAgents()
@@ -369,7 +409,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           const addResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
             { ids: itemsToSave.addedIds.toString() },
-            'POST',
+            'POST'
           )
           if (addResponse.data.error !== 0) {
             throw new Error(addResponse.data.error)
@@ -382,7 +422,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           const deleteResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
             { ids: itemsToSave.deletedIds.toString() },
-            'DELETE',
+            'DELETE'
           )
           if (deleteResponse.data.error !== 0) {
             throw new Error(deleteResponse.data.error)
@@ -412,7 +452,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
       return
     }
 
-
     async editGroupAgentConfig() {
       try {
         this.scope.editingFile = true
@@ -433,7 +472,12 @@ define(['../../module', 'FileSaver'], function (controllers) {
           `/agents/groups/${this.scope.currentGroup.name}/configuration`,
           { content, origin: 'xmleditor' }
         )
-        if (!result || !result.data || !result.data.data || result.data.data.error !== 0) {
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.data.error !== 0
+        ) {
           throw new Error('Error sending file.')
         }
         this.scope.$emit('updateGroupInformation', {
@@ -461,7 +505,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           }
         })
 
-        original.forEach((orig) => {
+        original.forEach(orig => {
           if (modified.filter(e => e.key === orig.key).length === 0) {
             this.scope.deletedAgents.push(orig)
           }
@@ -474,7 +518,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
       } catch (error) {
         throw new Error(error.message || error)
       }
-
     }
 
     checkLimit() {
@@ -509,7 +552,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
     doSaveGroupAgentConfig() {
       this.scope.editingFile = false
-      this.scope.$broadcast('saveXmlFile', { group: this.scope.currentGroup.name })
+      this.scope.$broadcast('saveXmlFile', {
+        group: this.scope.currentGroup.name
+      })
     }
     /**
      * Navigates to agents
@@ -557,9 +602,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
     }
 
     /**
-     * 
-     * @param {String} groupName 
-     * @param {String} fileName 
+     *
+     * @param {String} groupName
+     * @param {String} fileName
      */
     async showFile(groupName, fileName) {
       try {

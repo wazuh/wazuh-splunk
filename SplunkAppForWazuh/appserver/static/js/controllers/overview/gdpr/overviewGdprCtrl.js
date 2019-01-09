@@ -9,13 +9,19 @@ define([
   class OverviewGDPR {
     /**
      * Class GDPR
-     * @param {*} $urlTokenModel 
-     * @param {*} $scope 
-     * @param {*} $currentDataService 
-     * @param {*} $state 
-     * @param {*} $reportingService 
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
      */
-    constructor($urlTokenModel, $scope, $currentDataService, $state, $reportingService) {
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
       this.getFilters = $currentDataService.getSerializedFilters
@@ -102,31 +108,36 @@ define([
        * Generates report
        */
       this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png('overview-gdpr', 'GDPR', this.filters,[
-        'gdprRequirements',
-        'groupsViz',
-        'agentsViz',
-        'requirementsByAgents',
-        'alertsSummaryViz'
-      ],
-      {},//Metrics,
-      this.tableResults)
+        this.reportingService.startVis2Png(
+          'overview-gdpr',
+          'GDPR',
+          this.filters,
+          [
+            'gdprRequirements',
+            'groupsViz',
+            'agentsViz',
+            'requirementsByAgents',
+            'alertsSummaryViz'
+          ],
+          {}, //Metrics,
+          this.tableResults
+        )
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("checkReportingStatus", () => {
-        this.vizzReady = !this.vizz.filter( v => {
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
           return v.finish === false
         }).length
-        if (this.vizzReady) { 
+        if (this.vizzReady) {
           this.scope.loadingVizz = false
-        } else { 
+        } else {
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
-    })
+      })
 
       /**
        * When controller is destroyed

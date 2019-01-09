@@ -18,16 +18,16 @@ define(['../../module', '../../../utils/config-handler'], function(
 
   class ConfigurationController {
     /**
-     * 
-     * @param {*} $scope 
-     * @param {*} $requestService 
-     * @param {*} $state 
-     * @param {*} $stateParams 
-     * @param {*} $currentDataService 
-     * @param {*} $beautifierJson 
-     * @param {*} $notificationService 
-     * @param {Object} data 
-     * @param {Object} agent 
+     *
+     * @param {*} $scope
+     * @param {*} $requestService
+     * @param {*} $state
+     * @param {*} $stateParams
+     * @param {*} $currentDataService
+     * @param {*} $beautifierJson
+     * @param {*} $notificationService
+     * @param {Object} data
+     * @param {Object} agent
      */
     constructor(
       $scope,
