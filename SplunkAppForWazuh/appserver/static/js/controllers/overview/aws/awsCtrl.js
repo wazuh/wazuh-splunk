@@ -35,7 +35,7 @@ define([
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-//data.aws.log_info.s3bucket
+
       this.vizz = [
         /**
          * Visualizations
