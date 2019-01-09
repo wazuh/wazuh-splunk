@@ -490,6 +490,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     doSaveGroupAgentConfig() {
