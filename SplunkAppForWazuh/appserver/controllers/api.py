@@ -166,7 +166,8 @@ class api(controllers.BaseController):
                     request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
                 else:
                     if 'ids' in kwargs:
-                        kwargs['ids'] = kwargs['ids'].split(',')
+                        if type(kwargs['ids'] == 'list'):
+                            kwargs['ids'] = kwargs['ids'].split(',')
                     request = self.session.post(
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
@@ -176,7 +177,8 @@ class api(controllers.BaseController):
                     verify=verify).json()
             if method == 'DELETE':
                 if 'ids' in kwargs:
-                    kwargs['ids'] = kwargs['ids'].split(',')
+                    if type(kwargs['ids'] == 'list'):
+                        kwargs['ids'] = kwargs['ids'].split(',')
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
