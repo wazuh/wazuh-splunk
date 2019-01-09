@@ -231,7 +231,7 @@ define([
       }
 
       this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png('overview-general', 'Security events report', this.filters, 
+        this.reportingService.startVis2Png('overview-general', 'Security events', this.filters, 
         [
           'alertLevEvoVizz',
           'alertsVizz',
