@@ -47,7 +47,7 @@ define(['../module'], function (module) {
     async sendConfiguration(group, content) {
       try {
         const result = await this.apiReq(
-          `/agents/groups/${group}/configuration`,
+          `/agents/groups/${group}/files/agent.conf`,
           { content, origin: 'xmleditor' },
           'POST',
         )
