@@ -361,8 +361,10 @@ define([
                 '</md-dialog>',
               targetEvent: ev,
               hasBackdrop: false,
+              disableParentScroll: true,
               clickOutsideToClose: true
             });
+            $('body').addClass('md-dialog-body');
             $mdDialog.show(confirm);
           }
 

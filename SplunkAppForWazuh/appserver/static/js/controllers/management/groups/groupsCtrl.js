@@ -291,7 +291,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         } else {
           this.scope.availableAgents.data = this.scope.availableAgents.data.concat(mapped)
         }
-        if (this.scope.availableAgents.data.length === 0 && !searchTerm) {
+        if (this.scope.availableAgents.data.length < 10 && !searchTerm) {
           if (this.scope.availableAgents.offset >= this.scope.totalAgents) {
             this.scope.availableAgents.loadedAll = true
           }

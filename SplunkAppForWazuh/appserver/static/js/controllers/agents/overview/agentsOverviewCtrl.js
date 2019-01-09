@@ -102,34 +102,64 @@ define(['../../module'], function (app) {
           this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(this.scope.rootcheck.start, this.scope.rootcheck.end).inProgress
 
           this.scope.showConfirm = (ev, group) => {
-
-            const confirm = this.$mdDialog
-              .confirm()
-              .title(`Add group "${group}" to agent "${this.scope.agent.id}"?`)
-              .targetEvent(ev)
-              .ok('Agree')
-              .cancel('Cancel')
-
-            this.$mdDialog.show(confirm).then(
-              () => {
-                this.groupHandler
-                  .addAgentToGroup(group, this.scope.agent.id)
-                  .then(() =>
-                    this.requestService.apiReq(`/agents/${this.scope.agent.id}`))
-                  .then(agent => {
-                    this.scope.agent.group = agent.data.data.group
-                    this.scope.groups = this.scope.groups.filter(item => !agent.data.data.group.includes(item))
-                    if (!this.scope.$$phase) this.scope.$digest()
-                  })
-                  .catch(error =>
-                    this.$notificationService.showSimpleToast(
-                      error.message || error
+            const confirm = this.$mdDialog.confirm({
+              controller: function ($scope, myScope, $mdDialog, $groupHandler, $requestService, $notificationService) {
+                $scope.myScope = myScope;
+                $scope.closeDialog = () => {
+                  $mdDialog.hide();
+                  $('body').removeClass('md-dialog-body');
+                };
+                $scope.confirmDialog = () => {
+                  $groupHandler
+                    .addAgentToGroup(group, $scope.myScope.agent.id)
+                    .then(() =>
+                      $requestService.apiReq(`/agents/${$scope.myScope.agent.id}`, {})
                     )
-                  )
+                    .then(agent => {
+                      $mdDialog.hide();
+                      $('body').removeClass('md-dialog-body');
+                      $scope.myScope.agent.group = agent.data.data.group;
+                      $scope.myScope.groups = $scope.myScope.groups.filter(
+                        item => !agent.data.data.group.includes(item)
+                      );
+                      if (!$scope.myScope.$$phase) $scope.myScope.$digest();
+                    })
+                    .catch(error =>
+                      $notificationService.showSimpleToast(
+                        error.message || error,
+                        'Error adding group to agent'
+                      )
+                    )
+                }
               },
-              () => { }
-            )
-          }
+              template:
+                '<md-dialog class="modalTheme euiToast euiToast--danger euiGlobalToastListItem">' +
+                '<md-dialog-content>' +
+                '<div class="euiToastHeader">' +
+                '<i class="fa fa-exclamation-triangle"></i>' +
+                '<span class="euiToastHeader__title">Add group ' +
+                `${group}` +
+                ' to agent ' +
+                `${this.scope.agent.id}` +
+                '?</span>' +
+                '</div>' +
+                '</md-dialog-content>' +
+                '<md-dialog-actions>' +
+                '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">Cancel</button>' +
+                '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Agree</button>' +
+                '</md-dialog-actions>' +
+                '</md-dialog>',
+              targetEvent: ev,
+              hasBackdrop: false,
+              clickOutsideToClose: true,
+              disableParentScroll: true,
+              locals: {
+                myScope: this.scope
+              }
+            });
+            $('body').addClass('md-dialog-body');
+            this.$mdDialog.show(confirm);
+          };
         }
         //Check OS type
         if (this.agent[0].data.data && this.agent[0].data.data.os && this.agent[0].data.data.os.uname) {
