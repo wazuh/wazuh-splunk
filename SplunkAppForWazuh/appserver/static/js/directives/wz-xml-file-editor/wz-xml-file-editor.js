@@ -36,14 +36,12 @@ define([
           saveFn: '&'
         },
         controller(
-          $rootScope,
           $scope,
           $timeout,
           $requestService,
           $document,
           $notificationService
         ) {
-          let fetchedXML = null
           $($document[0]).ready(() => {
             $scope.xmlCodeBox = CodeMirror.fromTextArea(
               $document[0].getElementById('xml_box'),
@@ -81,7 +79,7 @@ define([
             $scope.xmlCodeBox.setCursor(0)
           }
 
-          $scope.saveFile = async () => {
+          const saveFile = () => {
             try {
               autoFormat()
               const content = $scope.xmlCodeBox.getValue().trim()
@@ -100,7 +98,7 @@ define([
             autoFormat()
             if (!$scope.$$phase) $scope.$digest()
           }
-          $rootScope.$on('editXmlFile', (item, params) => editXmlFile(item, params))
+          $scope.$on('editXmlFile', (item, params) => editXmlFile(item, params))
           $scope.$on('saveXmlFile', () => saveFile())
         },
         templateUrl: BASE_URL +
