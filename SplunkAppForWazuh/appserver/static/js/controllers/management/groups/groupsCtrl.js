@@ -327,7 +327,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
       return
     }
 
-    async updateGroupInformation(event, parameters){
+    async updateGroupInformation(event, parameters) {
       try {
         if (this.scope.currentGroup) {
           const result = await Promise.all([
@@ -338,14 +338,14 @@ define(['../../module', 'FileSaver'], function (controllers) {
               search: parameters.group
             })
           ])
-  
+
           const [count, sums] = result.map(
             item => ((item || {}).data || {}).data || false
           )
           const updatedGroup = ((sums || {}).items || []).find(
             item => item.name === parameters.group
           )
-  
+
           this.scope.currentGroup.count = (count || {}).totalItems || 0
           if (updatedGroup) {
             this.scope.currentGroup.configSum = updatedGroup.configSum
@@ -360,7 +360,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
     }
 
     async saveAddAgents() {
-      const itemsToSave = this.scope.getItemsToSave()
+      const itemsToSave = this.getItemsToSave()
       const failedIds = []
 
       try {
@@ -368,7 +368,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         if (itemsToSave.addedIds.length) {
           const addResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.addedIds },
+            { ids: itemsToSave.addedIds.toString() },
             'POST',
           )
           if (addResponse.data.data.failed_ids) {
@@ -378,7 +378,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         if (itemsToSave.deletedIds.length) {
           const deleteResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.deletedIds },
+            { ids: itemsToSave.deletedIds.toString() },
             'DELETE',
           )
           if (deleteResponse.data.data.failed_ids) {
@@ -473,9 +473,19 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
     }
 
+    checkLimit() {
+      if (this.scope.firstSelectedList) {
+        const itemsToSave = this.getItemsToSave()
+        this.scope.currentAdding = itemsToSave.addedIds.length
+        this.scope.currentDeleting = itemsToSave.deletedIds.length
+        this.scope.moreThan1000 =
+          this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+      }
+    }
+
     getCheckLimit() {
       if (this.scope.firstSelectedList) {
-        const itemsToSave = this.scope.getItemsToSave()
+        const itemsToSave = this.getItemsToSave()
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
         this.scope.moreThan1000 =
