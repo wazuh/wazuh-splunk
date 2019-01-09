@@ -11,6 +11,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
      * @param {String} search
      * @param {String} fieldName
      * @param {String} attachedElement
+     * @param {scope} scope
      */
     constructor(
       id,
@@ -18,6 +19,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
       fieldName,
       value,
       attachedElement,
+      scope,
       defaultValue,
       earliestTtime,
       latestTime
@@ -43,6 +45,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
         ).render(),
         id,
         search,
+        scope,
         earliestTtime,
         latestTime
       )

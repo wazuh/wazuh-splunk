@@ -11,6 +11,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Auto-complete endpoints in Dev Tools section ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
 - XML editor for group configurations ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
 - Multi-selector for attaching agents to groups dynamically ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
+- Who-data information in configuration ([#444](https://github.com/wazuh/wazuh-splunk/pull/444)).
 
 ### Changed
 

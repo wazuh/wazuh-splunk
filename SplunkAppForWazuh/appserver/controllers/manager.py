@@ -145,6 +145,30 @@ class manager(controllers.BaseController):
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
+    def app_info(self, **kwargs):
+        """Obtain app information from file.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            stanza = cli.getConfStanza(
+                'package',
+                'app')
+            data_temp = stanza
+            stanza = cli.getConfStanza(
+                'package',
+                'splunk')
+            data_temp['splunk_version'] = stanza['version']
+            parsed_data = json.dumps(data_temp)
+        except Exception as e:
+            return json.dumps({'error': str(e)})
+        return parsed_data
+
+    @expose_page(must_login=False, methods=['GET'])
     def get_api(self, **kwargs):
         """Obtain Wazuh API from DB.
 

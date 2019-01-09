@@ -5,85 +5,53 @@
       <span>/ Amazon Web Services </span>
     </div>
     <div flex></div>
+    <!-- Report button -->
+    <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" tooltip="Generate report" tooltip-placement="bottom"
+      ng-hide="loadingVizz" ng-click="startVis2Png()" aria-label="Generate report button">
+      <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+    </md-button>
+    <div class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
     <div style="margin-right:7px;" id='timePicker'></div>
-    <div style="margin-right:7px;" id='dropDownInput'></div>
   </div>
+
+  <!-- Loading report-->
+  <div align='center' ng-if='loadingReporting'>Generating reporting<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
 
   <!-- Filter bar -->
-  <wazuh-aws-bar></wazuh-aws-bar>
-
-  <!-- Metrics -->
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Enabled:
-          <span class="wz-text-bold">{{ awsMetrics.enabled }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          Scan interval:
-          <span class="wz-text-bold">{{ awsMetrics.scanInterval }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          Run on start:
-          <span class="wz-text-bold">{{ awsMetrics.runOnStart }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          Skip on error:
-          <span class="wz-text-bold">{{ awsMetrics.skipOnError }}</span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Buckets:
-          <span class="wz-text-bold" ng-repeat="bucket in awsMetrics.buckets">{{ bucket.name }} </span>
-        </div>
-      </md-card-content>
-    </md-card>
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Accounts in use:
-          <span class="wz-text-bold" ng-repeat="account in awsMetrics.accountInUse">{{ account }} </span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Regions in use:
-          <span class="wz-text-bold" ng-repeat="region in awsMetrics.regionsInUse">{{ region }} </span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <!-- End Metrics -->
-
+  <wazuh-bar></wazuh-bar>
 
   <!-- first row  -->
-  <div id="row2" layout="row">
+  <div id="row1" layout="row">
     <!-- first row - first vis -->
-    <md-card flex="50" class="wz-md-card">
+    <md-card flex="25" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Events by instance ID over time</span>
+        <span class="wz-headline-title">Sources</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='eventsByIdOverTime'></div>
+        <div id='sourcesVizz'></div>
       </md-card-content>
     </md-card>
     <!-- first row - second vis -->
-    <md-card flex="50" class="wz-md-card">
+    <md-card flex="25" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Events by region over time</span>
+        <span class="wz-headline-title">Accounts</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='eventsByRegionOverTime'></div>
+        <div id='accountsVizz'></div>
+      </md-card-content>
+    </md-card>
+    <!-- first row - third vis -->
+    <md-card flex="25" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">S3 buckets</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='s3BucketsVizz'></div>
+      </md-card-content>
+    </md-card>
+    <!-- first row - fourth vis -->
+    <md-card flex="25" class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Regions</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='regionsVizz'></div>
       </md-card-content>
     </md-card>
   </div>
@@ -91,35 +59,19 @@
   <!-- second row  -->
   <div id="row2" layout="row">
     <!-- second row - first vis -->
-    <md-card flex="25" class="wz-md-card">
+    <md-card flex="50" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top events by service name</span>
+        <span class="wz-headline-title">Events by source over time</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topEventsByServiceName'></div>
+        <div id='eventsBySourceVizz'></div>
       </md-card-content>
     </md-card>
     <!-- second row - second vis -->
-    <md-card flex="25" class="wz-md-card">
+    <md-card flex="50" class="wz-md-card">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top events by instance ID</span>
+        <span class="wz-headline-title">Events by S3 over time</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topEventsByInstanceId'></div>
-      </md-card-content>
-    </md-card>
-    <!-- second row - third vis -->
-    <md-card flex="25" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top events by resource type</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topEventsByResourceType'></div>
-      </md-card-content>
-    </md-card>
-    <!-- second row - fourth vis -->
-    <md-card flex="25" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top events by region</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topEventsByRegion'></div>
+        <div id='eventsByS3BucketsVizz'></div>
       </md-card-content>
     </md-card>
   </div>
@@ -127,18 +79,6 @@
   <!-- third row -->
   <div id="row3" layout="row">
     <!-- third row - first vis -->
-    <md-card flex="100" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Geolocation</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='map'></div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <!-- fourth row -->
-  <div id="row4" layout="row">
-    <!-- fourth row - first vis -->
     <md-card flex="50" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Top 5 buckets</span>
@@ -146,7 +86,7 @@
         <div id='top5Buckets'></div>
       </md-card-content>
     </md-card>
-    <!-- fourth row - second vis -->
+    <!-- third row - second vis -->
     <md-card flex="50" class="wz-md-card">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Top 5 rules</span>

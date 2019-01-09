@@ -15,8 +15,9 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, Table, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
   'use strict'
 
   class AgentsPM {
@@ -27,12 +28,15 @@ define([
      * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {*} $reportingService 
      */
 
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
+      this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
       this.currentDataService.addFilter(
@@ -70,36 +74,105 @@ define([
           `${
             this.filters
           } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
-          'elementOverTime'
+          'elementOverTime',
+          this.scope
         ),
         new PieChart(
           'cisRequirements',
           `${this.filters} sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
-          'cisRequirements'
+          'cisRequirements',
+          this.scope
         ),
         new PieChart(
           'topPciDss',
           `${
             this.filters
           } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
-          'topPciDss'
+          'topPciDss',
+          this.scope
         ),
         new AreaChart(
           'eventsPerAgent',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=2h count by agent.name`,
-          'eventsPerAgent'
+          'eventsPerAgent',
+          this.scope
         ),
         new Table(
           'alertsSummary',
           `${
             this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
-          'alertsSummary'
+          'alertsSummary',
+          this.scope
         )
       ]
 
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
+
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-pm', 'Policity monitoring', this.filters, [
+        'elementOverTime',
+        'cisRequirements',
+        'topPciDss',
+        'eventsPerAgent',
+        'alertsSummary'
+      ],
+      {},//Metrics,
+      this.tableResults,
+      this.agentReportData
+      )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })      
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+      
       /**
        * When controller is destroyed
        */

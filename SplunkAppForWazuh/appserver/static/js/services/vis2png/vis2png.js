@@ -19,11 +19,10 @@ define(['../module', 'domToImg'], function(app, domToImg) {
       this.htmlObject = {}
       this.working = false
       this.currentDataService = $currentDataService
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
     }
 
     async checkArray(visArray) {
+      //sectionTitle, filters, metrics
       try {
         this.working = true
         const len = visArray.length
@@ -32,16 +31,18 @@ define(['../module', 'domToImg'], function(app, domToImg) {
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
             const title = document.getElementById(currentValue).parentElement.getElementsByTagName('span')[0].innerHTML
+            const classes = document.getElementById(currentValue).className.split(' ')
             try {
-              const tmpResult = await domToImg.toPng(tmpNode[0])
-              this.rawArray.push({
-                element: tmpResult,
-                width: tmpNode.width(),
-                height: tmpNode.height(),
-                id: currentValue,
-                title: title,
-                filters: this.filters
-              })
+              if (!classes.includes('table')){
+                const tmpResult = await domToImg.toPng(tmpNode[0])
+                this.rawArray.push({
+                  element: tmpResult,
+                  width: tmpNode.width(),
+                  height: tmpNode.height(),
+                  id: currentValue,
+                  title: title,
+                })
+              }
             } catch (error) {
               console.error('error converting ', error)
             } // eslint-disable-line

@@ -211,22 +211,7 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-aws')
           },
-          controller: 'awsCtrl',
-          resolve: {
-            awsMetrics: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const result = await $requestService.apiReq(`/agents/000/config/wmodules/wmodules`)
-                  const awsConfig = result.data.data.wmodules.filter(item => item['aws-s3'])
-                  return awsConfig && awsConfig.length ? awsConfig : false
-                } catch (err) {
-                  $state.go('settings.api')
-                }
-              }
-            ]
-          }
+          controller: 'awsCtrl'
         })
     }
   ])
