@@ -399,11 +399,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
         this.scope.$emit('updateGroupInformation', {
           group: this.scope.currentGroup.name
         })
-        await $timeout(500)
+        await this.timeout(500)
       } catch (error) {
-        errorHandler.handle(error, 'Send file error')
+        this.toast(error.message || error , 'Send file error')
       }
-      this.scope.editingFile = false;
+      this.scope.editingFile = false
       if (!this.scope.$$phase) this.scope.$digest()
       return
     }
@@ -448,16 +448,16 @@ define(['../../module', 'FileSaver'], function (controllers) {
     }
 
     closeEditingFile() {
-      this.scope.editingFile = false;
-      this.scope.$broadcast('closeEditXmlFile', {});
+      this.scope.editingFile = false
+      this.scope.$broadcast('closeEditXmlFile', {})
     }
 
     xmlIsValid(valid) {
-      this.scope.xmlHasErrors = valid;
+      this.scope.xmlHasErrors = valid
     }
 
     doSaveGroupAgentConfig() {
-      this.scope.$broadcast('saveXmlFile', {});
+      this.scope.$broadcast('saveXmlFile', {})
     }
     /**
      * Navigates to agents
