@@ -25,10 +25,15 @@ define(['../module', 'jquery'], function(module, $) {
      */
     async startVis2Png(
       tab,
+      sectionTitle,
+      queryFilters,
       vizz = [],
-      isAgents = false,
+      metrics = {},
+      tableResults = {},
+      isAgents = false
     ) {
       try {
+        metrics = JSON.stringify(metrics)
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         if (this.vis2png.isWorking()) {
           this.errorHandler('Report in progress')
@@ -50,20 +55,28 @@ define(['../module', 'jquery'], function(module, $) {
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const array = await this.vis2png.checkArray(idArray)
+        const images = await this.vis2png.checkArray(idArray)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+        
+        //Search time range
+        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML
 
         const data = {
-          array,
+          images,
+          tableResults,
+          sectionTitle,
+          timeRange,
+          queryFilters,
+          metrics,
           name,
           title: isAgents ? `Agents ${tab}` : `Overview ${tab}`,
           filters: appliedFilters.filters,
           time: appliedFilters.time,
           searchBar: appliedFilters.searchBar,
           tables: appliedFilters.tables,
-          tab,
+          pdfName: tab,
           section: isAgents ? 'agents' : 'overview',
           isAgents
         }

@@ -4,8 +4,9 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/inputs/dropdown-input'
-], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
+  '../../../services/visualizations/inputs/dropdown-input',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, ColumnChart, PieChart, Table, TimePicker, Dropdown, rawTableDataService) {
   'use strict'
 
   class AgentsPCI {
@@ -16,9 +17,12 @@ define([
      * @param {*} $state 
      * @param {*} $currentDataService 
      * @param {Object} agent 
+     * @param {*} $reportingService 
      */
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+    constructor($urlTokenModel, $scope, $state, $currentDataService, agent, $reportingService) {
       this.state = $state
+      this.reportingService = $reportingService
+      this.tableResults = {}
       this.currentDataService = $currentDataService
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
@@ -49,7 +53,8 @@ define([
         } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
         'rule.pci_dss{}',
         '$form.pci$',
-        'dropDownInput'
+        'dropDownInput',
+        this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
@@ -76,37 +81,108 @@ define([
           `${
             this.filters
           } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
-          'pciReqSearchVizz'
+          'pciReqSearchVizz',
+          this.scope
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups`,
-          'groupsVizz'
+          'groupsVizz',
+          this.scope
         ),
         new PieChart(
           'agentsVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name`,
-          'agentsVizz'
+          'agentsVizz',
+          this.scope
         ),
         new ColumnChart(
           'reqByAgentsVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
-          'reqByAgentsVizz'
+          'reqByAgentsVizz',
+          this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizz'
+          'alertsSummaryVizz',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
+
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-pci', 'PCI DSS', this.filters,
+      [
+        'pciReqSearchVizz',
+        'groupsVizz',
+        'agentsVizz',
+        'reqByAgentsVizz',
+        'alertsSummaryVizz'
+      ],
+      {},//Metrics,
+      this.tableResults,
+      this.agentReportData
+      )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+
     }
 
     /**

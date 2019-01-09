@@ -18,7 +18,8 @@ define([
   '../../../services/visualizations/chart/bar-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/search/search-handler'
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   ColumnChart,
@@ -27,7 +28,8 @@ define([
   BarChart,
   Table,
   TimePicker,
-  SearchHandler
+  SearchHandler,
+  rawTableDataService
 ) {
   'use strict'
 
@@ -39,12 +41,15 @@ define([
      * @param {Object} $currentDataService
      * @param {Object} $state
      * @param {Object} agent
+     * @param {*} $reportingService
      */
 
-    constructor($urlTokenModel, $scope, $currentDataService, $state, agent) {
+    constructor($urlTokenModel, $scope, $currentDataService, $state, agent, $reportingService) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
+      this.reportingService = $reportingService
+      this.tableResults = {}
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -119,76 +124,161 @@ define([
         new PieChart(
           'groupsVizz',
           `${this.filters} sourcetype=wazuh | top rule.groups`,
-          'groupsVizz'
+          'groupsVizz',
+          this.scope
         ),
         new ColumnChart(
           'agentsVizz',
           `${this.filters} sourcetype=wazuh agent.name=* | top agent.name`,
-          'agentsVizz'
+          'agentsVizz',
+          this.scope
         ),
         new PieChart(
           'directoriesVizz',
           `${
             this.filters
           } sourcetype=wazuh audit.directory.name=* | top audit.directory.name`,
-          'directoriesVizz'
+          'directoriesVizz',
+          this.scope
         ),
         new PieChart(
           'filesVizz',
           `${
             this.filters
           } sourcetype=wazuh audit.file.name=* | top audit.file.name`,
-          'filesVizz'
+          'filesVizz',
+          this.scope
         ),
         new AreaChart(
           'alertsOverTimeVizz',
           `${
             this.filters
           } sourcetype=wazuh | timechart limit=10 count by rule.description`,
-          'alertsOverTimeVizz'
+          'alertsOverTimeVizz',
+          this.scope
         ),
         new PieChart(
           'fileReadAccessVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.id=80784 | top audit.file.name`,
-          'fileReadAccessVizz'
+          'fileReadAccessVizz',
+          this.scope
         ),
         new PieChart(
           'fileWriteAccessVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.id=80781 | top audit.file.name`,
-          'fileWriteAccessVizz'
+          'fileWriteAccessVizz',
+          this.scope
         ),
         new BarChart(
           'comandsVizz',
           `${this.filters} sourcetype=wazuh | top audit.command`,
-          'comandsVizz'
+          'comandsVizz',
+          this.scope
         ),
         new BarChart(
           'createdVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.id=80790 | top audit.file.name`,
-          'createdVizz'
+          'createdVizz',
+          this.scope
         ),
         new PieChart(
           'removedFilesVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.id=80791 | top audit.file.name`,
-          'removedFilesVizz'
+          'removedFilesVizz',
+          this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
           } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
-          'alertsSummaryVizz'
+          'alertsSummaryVizz',
+          this.scope
         )
       ]
 
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
+      
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png('agents-audit',
+      'Audit',
+      this.filters,
+      [
+        'groupsVizz',
+        'agentsVizz',
+        'directoriesVizz',
+        'filesVizz',
+        'alertsOverTimeVizz',
+        'fileReadAccessVizz',
+        'fileWriteAccessVizz',
+        'comandsVizz',
+        'createdVizz',
+        'removedFilesVizz',
+        'alertsSummaryVizz'
+      ],
+      this.reportMetrics,
+      this.tableResults,
+      this.agentReportData
+      )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+          this.setReportMetrics()
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+      
       /**
        * When controller is destroyed
        */
@@ -237,6 +327,19 @@ define([
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'New files': this.scope.newFiles,
+        'Read files': this.scope.readFiles,
+        'Modified files': this.scope.filesModifiedToken,
+        'Removed files': this.scope.filesDeleted
+      }
+    }
+
   }
   app.controller('agentsAuditCtrl', AgentsAudit)
 })

@@ -11,9 +11,10 @@ define([
      * @param {Object} element
      * @param {String} id
      * @param {SearchManager} search
+     * @param {scope} scope
      */
 
-    constructor(element, id, search, earliestTime, latestTime) {
+    constructor(element, id, search, scope, earliestTime, latestTime) {
       this.id = id
       this.earliestTime = earliestTime ? earliestTime : '$when.earliest$'
       this.latestTime = latestTime ? latestTime : '$when.latest$'
@@ -35,8 +36,24 @@ define([
         { tokens: true, tokenNamespace: 'submitted' }
       )
       this.element = element
+      this.scope = scope
+      this.finish = false
+      this.search.on('search:done', () => {
+        this.finish = true
+        this.checkVizzStatus();
+      })
+      this.search.on('search:start', () => {
+        this.finish = false
+        this.checkVizzStatus();
+      })
+
     }
 
+    checkVizzStatus(){
+      this.scope.$broadcast("checkReportingStatus", () => {
+      })
+    }
+    
     changeSearch(newSearch) {
       mvc.Components.revokeInstance(`${this.id}Search`)
       this.search = null

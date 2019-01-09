@@ -16,8 +16,9 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
+], function (app, LinearChart, ColumnChart, PieChart, Table, TimePicker, rawTableDataService) {
   'use strict'
 
   class AgentsGeneral {
@@ -31,7 +32,7 @@ define([
      * @param {Object} $stateParams
      * @param {Object} $state
      * @param {Object} agent
-     * @param {Object} $dateDiffService
+     * @param {*} $reportingService 
      */
 
     constructor(
@@ -43,16 +44,19 @@ define([
       $currentDataService,
       agent,
       $state,
-      $dateDiffService
+      $dateDiffService,
+      $reportingService
     ) {
       this.state = $state
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.requestService = $requestService
+      this.tableResults = {}
       this.notificationService = $notificationService
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
+      this.reportingService = $reportingService
       if (
         this.agent &&
         this.agent.length &&
@@ -85,38 +89,76 @@ define([
         new PieChart(
           'top5AlertsVizz',
           `${this.filters} sourcetype=wazuh | top "rule.description" limit=5`,
-          'top5AlertsVizz'
+          'top5AlertsVizz',
+          this.scope
         ),
         new PieChart(
           'top5GroupsVizz',
           `${this.filters} sourcetype=wazuh | top rule.groups limit=5`,
-          'top5GroupsVizz'
+          'top5GroupsVizz',
+          this.scope
         ),
         new PieChart(
           'top5PCIreqVizz',
           `${this.filters} sourcetype=wazuh | top rule.pci_dss{} limit=5`,
-          'top5PCIreqVizz'
+          'top5PCIreqVizz',
+          this.scope
         ),
         new LinearChart(
           'alertLevelEvoVizz',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-          'alertLevelEvoVizz'
+          'alertLevelEvoVizz',
+          this.scope
         ),
         new ColumnChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'alertsVizz'
+          'alertsVizz',
+          this.scope
         ),
         new Table(
           'agentsSummaryVizz',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'agentsSummaryVizz'
+          'agentsSummaryVizz',
+          this.scope
         )
       ]
+
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+        this.filters
+        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', (result) => {
+        this.tableResults['Alerts Summary'] = result
+      })
+      
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter( v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) { 
+          this.scope.loadingVizz = false
+        } else { 
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       /**
        * When controller is destroyed
@@ -143,7 +185,7 @@ define([
           dateAdd: this.agent[0].data.data.dateAdd,
           agentOS: `${this.agent[0].data.data.os.name} ${
             this.agent[0].data.data.os.codename
-          } ${this.agent[0].data.data.os.version}`,
+            } ${this.agent[0].data.data.os.version}`,
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }
@@ -156,14 +198,55 @@ define([
         this.scope.agentInfo = this.agentInfo
         this.scope.id = this.stateParams.id
 
+        /**
+         * Generates report
+         */
+
+      // Set agent info
+        try {
+          this.agentReportData = {
+            ID: this.agentInfo.id,
+            Name: this.agentInfo.name,
+            IP: this.agentInfo.ip,
+            Version: this.agentInfo.version,
+            Manager: this.agent[0].data.data.manager,
+            OS: this.agentInfo.agentOS,
+            dateAdd: this.agentInfo.dateAdd,
+            lastKeepAlive: this.agentInfo.lastKeepAlive,
+            group: this.agentInfo.group.toString()
+          }
+        } catch (error) {
+          this.agentReportData = false
+        }
+        this.agentMetricsGroup = []
+        this.agentInfo.group.map(g => this.agentMetricsGroup.push(g))
+        this.reportMetrics = {
+          'Last syscheck scan': this.agentInfo.syscheck.end ? this.agentInfo.syscheck.end : 'Unknown',
+          'Last rootcheck scan': this.agentInfo.rootcheck.end ? this.agentInfo.rootcheck.end : 'Unknown'
+        }
+
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png('agents-general', 'Security events', this.filters, [
+            'top5AlertsVizz',
+            'top5GroupsVizz',
+            'top5PCIreqVizz',
+            'alertLevelEvoVizz',
+            'alertsVizz',
+            'agentsSummaryVizz'
+          ],
+            this.reportMetrics,
+            this.tableResults,
+            this.agentReportData
+          )
+
       } catch (err) {
         this.agentInfo = {}
         this.agentInfo.id =
           this.agent &&
-          this.agent.length &&
-          this.agent[0] &&
-          this.agent[0].data &&
-          this.agent[0].data.data
+            this.agent.length &&
+            this.agent[0] &&
+            this.agent[0].data &&
+            this.agent[0].data.data
             ? this.agent[0].data.data.id
             : null
         this.agentInfo.name = 
