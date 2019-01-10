@@ -13,7 +13,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - XML editor for group configurations ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
 - Multi-selector for attaching agents to groups dynamically ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
 - Who-data information in configuration 
-- Generate PDF reports from dashboards ([#424](https://github.com/wazuh/wazuh-splunk/pull/424)).
+- Generate PDF reports from dashboards ([#446](https://github.com/wazuh/wazuh-splunk/pull/446)).
 - New directive for tables that don't need external data sources ([#400](https://github.com/wazuh/wazuh-splunk/pull/400)).
 - New search bar directive with interactive filters and suggestions ([#399](https://github.com/wazuh/wazuh-splunk/pull/399)).
 - Resizable columns by dragging in Dev-tools ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
