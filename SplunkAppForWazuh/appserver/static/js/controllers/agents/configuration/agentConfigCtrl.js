@@ -41,7 +41,8 @@ define(['../../module', '../../../utils/config-handler'], function(
       agent
     ) {
       this.$scope = $scope
-      this.$scope.currentAgent = agent.data.data
+      this.agent = agent
+      this.$scope.currentAgent = this.agent.data.data
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.state = $state
@@ -70,6 +71,16 @@ define(['../../module', '../../../utils/config-handler'], function(
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
           : { error: true }
+      if (
+        this.agent.data.data &&
+        this.agent.data.data.os &&
+        this.agent.data.data.os.uname
+      ) {
+        this.$scope.isLinux = this.agent.data.data.os.uname.includes(
+          'Linux'
+        )
+      }
+
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = agentStatus => {
