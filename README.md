@@ -35,6 +35,7 @@
 |      7.2.0     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.0.tar.gz> |
 |      7.2.1     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.1.tar.gz> |
 |      7.2.1     |       3.7.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.1_7.2.1.tar.gz> |
+|      7.2.3     |       3.8.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.0_7.2.3.tar.gz> |
 
 ## Upgrade
 
