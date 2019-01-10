@@ -56,7 +56,7 @@ def check_status():
                     auth=auth, timeout=1,
                     verify=verify).json()
                 total_items = request_agents["data"]["totalItems"]
-                limit = 1
+                limit = 1000
                 offset = 0
                 
                 while offset < total_items:
