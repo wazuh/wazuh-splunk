@@ -512,10 +512,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
         })
 
-        return {
-          addedIds: [...new Set(this.scope.addedAgents.map(x => x.key))],
-          deletedIds: [...new Set(this.scope.deletedAgents.map(x => x.key))]
-        }
+        const addedIds = [...new Set(this.scope.addedAgents.map(x => x.key))]
+        const deletedIds = [...new Set(this.scope.deletedAgents.map(x => x.key))]
+        return { addedIds, deletedIds }
       } catch (error) {
         throw new Error(error.message || error)
       }
@@ -526,7 +525,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         const itemsToSave = this.getItemsToSave()
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
-        this.scope.moreThan1000 =
+        this.scope.moreThan500 =
           this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
       }
     }
@@ -536,7 +535,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         const itemsToSave = this.getItemsToSave()
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
-        this.scope.moreThan1000 =
+        this.scope.moreThan500 =
           this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
       }
     }

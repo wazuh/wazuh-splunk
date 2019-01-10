@@ -25,6 +25,10 @@
   top: 210px!important;
 }
 
+.cursor-wait {
+  cursor: wait !important;
+} 
+
 md-dialog-actions button {
   color: white !important;
   transition: none !important;

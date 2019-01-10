@@ -1,4 +1,4 @@
-<div flex layout="column" class="mozilla-table-size-85 wz-white-background">
+<div flex layout="column" class="mozilla-table-size-85 wz-white-background"  ng-class="{'cursor-wait': multipleSelectorLoading}">
   <md-content flex layout="column" class="overflow-hidden wz-white-background">
     <div layout="row" class="layout-row layout-align-end wz-white-background">
       <div class='wz-margin-left-10 wz-margin-top-12'>
@@ -102,10 +102,10 @@
         <div layout="row" class="md-padding" ng-if="lookingGroup && currentGroup && addingAgents">
           <span ng-click='addMultipleAgents(false)' class='btn btn-info'>
             Cancel</span>
-          <span ng-hide='moreThan1000' ng-click='saveAddAgents()' class='btn btn-primary wz-margin-left-8 wz-margin-left-5'><i
+          <span ng-hide='moreThan500' ng-click='saveAddAgents()' class='btn btn-primary wz-margin-left-8 wz-margin-left-5'><i
               aria-hidden='true' class='fa fa-fw fa-save'></i>
             Apply changes</span>
-          <span class='error-msg' ng-show='moreThan1000'><i class="fa fa-exclamation-triangle"></i> It is not
+          <span class='error-msg' ng-show='moreThan500'><i class="fa fa-exclamation-triangle"></i> It is not
             possible to apply changes of more than 1000 additions or deletions</span>
         </div>
 
@@ -191,7 +191,7 @@
           <span ng-show='!multipleSelectorLoading' class="wzMultipleSelectorCounter"><span style='color:green'>+{{currentAdding}}</span>&nbsp;<span
               style='color:red'>-{{currentDeleting}}</span></span>
           <wz-multiple-selector class='wzMultipleSelector' available-items="availableAgents.data" selected-items="selectedAgents.data"
-            loading="multipleSelectorLoading" title-available-items="Available agents" title-selected-items="Current agents in the group"
+            title-available-items="Available agents" title-selected-items="Current agents in the group"
             total-selected-items="totalSelectedAgents" reload-scroll='reload(element, searchTerm, 499, start)' limit="checkLimit()">
           </wz-multiple-selector>
         </div>
