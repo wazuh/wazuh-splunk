@@ -63,7 +63,8 @@ define(['../module'], function(module) {
           !result ||
           !result.data ||
           !result.data.data ||
-          result.data.data.error !== 0
+          result.data.error !== 0 ||
+          result.data.data.error && result.data.data.error !== 0
         ) {
           throw new Error('Cannot send file.')
         }
