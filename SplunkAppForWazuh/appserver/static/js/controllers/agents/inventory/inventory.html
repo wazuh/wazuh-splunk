@@ -108,7 +108,7 @@
   </div>
 
 
-  <div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="syscollectorEnabled && hasSize(syscollector)">
+  <div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="!agent.error && syscollector">
     <md-card flex class="wz-md-card">
       <md-card-content class="wz-text-center wz-margin-bottom-40-inv" ng-if="syscollector.netaddr && !syscollector.netaddr.items.length">
         <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No network addresses
@@ -121,8 +121,8 @@
       <md-card-content class="wz-margin-bottom-40-inv" ng-if="syscollector.netaddr && syscollector.netaddr.items.length">
         <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network addresses</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <wz-table flex path="'/syscollector/' + agent.id + '/netaddr'" row-sizes="[4]" keys="['address', 'netmask', 'proto', 'broadcast']">
-        </wz-table>
+        <wazuh-table flex path="'/syscollector/' + agent.id + '/netaddr'" row-sizes="[4]" keys="['address', 'netmask', 'proto', 'broadcast']">
+        </wazuh-table>
       </md-card-content>
     </md-card>
   </div>
