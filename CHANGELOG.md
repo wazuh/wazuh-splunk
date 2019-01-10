@@ -24,6 +24,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ### Changed
 - Tiny AWS rework ([#450](https://github.com/wazuh/wazuh-splunk/pull/450)).
+- Added a new table (network addresses) for agent inventory tab ([#452](https://github.com/wazuh/wazuh-splunk/pull/452)).
 - Improved code quality: ESLint convention for JavaScript and pep257 / flake8 for Python ([#416](https://github.com/wazuh/wazuh-splunk/pull/416)).
 - Deleted blue loading ring ([#426](https://github.com/wazuh/wazuh-splunk/pull/426)).
 - Disabled several extensions by default ([#445](https://github.com/wazuh/wazuh-splunk/pull/445)).
