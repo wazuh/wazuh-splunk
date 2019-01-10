@@ -231,7 +231,9 @@ define(['../module'], function(app) {
             const input = $document[0].getElementById(
               'wz-search-filter-bar-input'
             )
-            autocomplete.style.left = input.offsetLeft - bar.scrollLeft + 'px'
+            if (autocomplete) {
+              autocomplete.style.left = input.offsetLeft - bar.scrollLeft + 'px'  
+            }
             if (flag) {
               input.focus()
             }
