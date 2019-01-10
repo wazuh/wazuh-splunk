@@ -163,7 +163,10 @@ define(['../module'], function(module) {
                       limit: 1,
                       select: 'scan_time'
                     }),
-                    $requestService.apiReq(`/agents/${id}`)
+                    $requestService.apiReq(`/agents/${id}`),
+                    $requestService.apiReq(`/syscollector/${id}/netaddr`, {
+                      limit: 1
+                    }),
                   ])
                   return results
                 } catch (err) {

@@ -54,6 +54,7 @@ define(['../module'], function(module) {
           iface: 'Interface',
           broadcast: 'Broadcast',
           proto: 'Protocol',
+          netmask: 'Netmask',
           address: 'Address',
           protocol: 'Protocol',
           'local.ip': 'Local IP',
