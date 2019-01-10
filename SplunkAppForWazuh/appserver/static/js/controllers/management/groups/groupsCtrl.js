@@ -408,7 +408,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (itemsToSave.addedIds.length) {
           const addResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.addedIds.toString() },
+            { ids: itemsToSave.addedIds },
             'POST'
           )
           if (addResponse.data.error !== 0) {
@@ -421,7 +421,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (itemsToSave.deletedIds.length) {
           const deleteResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.deletedIds.toString() },
+            { ids: itemsToSave.deletedIds },
             'DELETE'
           )
           if (deleteResponse.data.error !== 0) {
