@@ -236,7 +236,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             } else {
               this.scope.availableAgents.offset += addOffset + 1
             }
-            await this.scope.loadAllAgents(searchTerm, start)
+            await this.loadAllAgents(searchTerm, start)
           }
         } else {
           if (!this.scope.selectedAgents.loadedAll) {
@@ -245,9 +245,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
             await this.scope.loadSelectedAgents(searchTerm)
           }
         }
-        this.timeout(() => {
           this.scope.multipleSelectorLoading = false
-        }, 100)
+          if (!this.scope.$$phase) this.scope.$digest()
+
       } catch (error) {
         this.toast(error.message || error)
       }
@@ -294,7 +294,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
     async loadAllAgents(searchTerm, start) {
       try {
         const params = {
-          q: 'id!=000',
+          limit: 500,
           offset: !searchTerm ? this.scope.availableAgents.offset : 0,
           select: ['id', 'name']
         }
@@ -328,7 +328,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
           if (!this.scope.availableAgents.loadedAll) {
             this.scope.availableAgents.offset += 499
-            await this.scope.loadAllAgents()
+            await this.loadAllAgents()
           }
         }
       } catch (error) {
