@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module'], function (module) {
   'use strict'
   class Inventory {
     /**
@@ -48,15 +48,16 @@ define(['../../module'], function(module) {
      * On controller loads
      */
     $onInit() {
-      this.scope.agent =
-        this.data.length &&
-        this.data.length > 4 &&
-        typeof this.data[5] === 'object' &&
-        this.data[5].data &&
-        this.data[5].data.data
-          ? this.data[5].data.data
-          : { error: true }
       try {
+        this.scope.agent =
+          this.data.length &&
+            this.data.length > 4 &&
+            typeof this.data[5] === 'object' &&
+            this.data[5].data &&
+            this.data[5].data.data
+            ? this.data[5].data.data
+            : { error: true }
+
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
         }
@@ -84,17 +85,22 @@ define(['../../module'], function(module) {
           const netiface = {}
           const ports = {}
           const packagesDate = {}
+          const netaddrResponse = {}
+
           if (this.data[2] && this.data[2].data && this.data[2].data.data)
             Object.assign(netiface, this.data[2].data.data)
           if (this.data[3] && this.data[3].data && this.data[3].data.data)
             Object.assign(ports, this.data[3].data.data)
           if (this.data[4] && this.data[4].data && this.data[4].data.data)
             Object.assign(packagesDate, this.data[4].data.data)
+          if (this.data[6] && this.data[6].data && this.data[6].data.data)
+            Object.assign(netaddrResponse, this.data[6].data.data)
           this.scope.syscollector = {
             hardware: this.data[0].data.data,
             os: this.data[1].data.data,
             netiface: netiface,
             ports: ports,
+            netaddr:  netaddrResponse ? { ...netaddrResponse } : false,
             packagesDate:
               packagesDate && packagesDate.items && packagesDate.items.length
                 ? packagesDate.items[0].scan_time
