@@ -68,6 +68,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
+        this.goBackToAgents()
         return this.loadGroup(parameters.group)
       })
 

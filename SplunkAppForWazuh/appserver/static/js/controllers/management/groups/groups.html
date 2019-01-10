@@ -111,7 +111,7 @@
 
 
         <!-- Search bar -->
-        <div layout="row" class="md-padding" ng-if="!addingAgents">
+        <div layout="row" class="md-padding" ng-if="!addingAgents && !lookingGroup">
           <input placeholder="Filter groups..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
             aria-invalid="false" wz-enter="search(custom_search)">
           <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
