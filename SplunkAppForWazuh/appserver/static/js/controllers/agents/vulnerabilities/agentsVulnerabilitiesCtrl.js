@@ -296,7 +296,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
