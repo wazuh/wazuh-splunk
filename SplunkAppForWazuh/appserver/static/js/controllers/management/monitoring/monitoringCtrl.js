@@ -46,24 +46,28 @@ define([
         new LinearChart(
           'alertSummary',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertSummary'
+          'alertSummary',
+          this.scope
         ),
         new LinearChart(
           'alertNodeSummary',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=1h count by cluster.node`,
-          'alertNodeSummary'
+          'alertNodeSummary',
+          this.scope
         ),
         new PieChart(
           'topNodes',
           `${this.filters} sourcetype=wazuh | top cluster.node`,
-          'topNodes'
+          'topNodes',
+          this.scope
         ),
         new ColumChart(
           'overviewNode',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'overviewNode'
+          'overviewNode',
+          this.scope
         )
       ]
       const parsedResult = monitoringInfo.map(item =>

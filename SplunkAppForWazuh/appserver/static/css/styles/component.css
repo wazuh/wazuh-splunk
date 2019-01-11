@@ -477,6 +477,10 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   background: white;
 }
 
+:focus {
+  outline: none !important;
+}
+
 .CodeMirror-scroll {
   overflow: scroll !important; /* Things will break if this is overridden */
   /* 30px is the magic margin used to hide the element's real scrollbars */

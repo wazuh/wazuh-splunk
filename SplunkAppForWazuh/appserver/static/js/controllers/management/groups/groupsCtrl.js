@@ -68,6 +68,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
+        this.goBackToAgents()
         return this.loadGroup(parameters.group)
       })
 
@@ -235,7 +236,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             } else {
               this.scope.availableAgents.offset += addOffset + 1
             }
-            await this.scope.loadAllAgents(searchTerm, start)
+            await this.loadAllAgents(searchTerm, start)
           }
         } else {
           if (!this.scope.selectedAgents.loadedAll) {
@@ -244,9 +245,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
             await this.scope.loadSelectedAgents(searchTerm)
           }
         }
-        this.timeout(() => {
           this.scope.multipleSelectorLoading = false
-        }, 100)
+          if (!this.scope.$$phase) this.scope.$digest()
+
       } catch (error) {
         this.toast(error.message || error)
       }
@@ -293,7 +294,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
     async loadAllAgents(searchTerm, start) {
       try {
         const params = {
-          q: 'id!=000',
+          limit: 500,
           offset: !searchTerm ? this.scope.availableAgents.offset : 0,
           select: ['id', 'name']
         }
@@ -327,7 +328,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
           if (!this.scope.availableAgents.loadedAll) {
             this.scope.availableAgents.offset += 499
-            await this.scope.loadAllAgents()
+            await this.loadAllAgents()
           }
         }
       } catch (error) {
@@ -408,7 +409,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (itemsToSave.addedIds.length) {
           const addResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.addedIds.toString() },
+            { ids: itemsToSave.addedIds },
             'POST'
           )
           if (addResponse.data.error !== 0) {
@@ -421,7 +422,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (itemsToSave.deletedIds.length) {
           const deleteResponse = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.deletedIds.toString() },
+            { ids: itemsToSave.deletedIds },
             'DELETE'
           )
           if (deleteResponse.data.error !== 0) {
@@ -511,10 +512,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
         })
 
-        return {
-          addedIds: [...new Set(this.scope.addedAgents.map(x => x.key))],
-          deletedIds: [...new Set(this.scope.deletedAgents.map(x => x.key))]
-        }
+        const addedIds = [...new Set(this.scope.addedAgents.map(x => x.key))]
+        const deletedIds = [...new Set(this.scope.deletedAgents.map(x => x.key))]
+        return { addedIds, deletedIds }
       } catch (error) {
         throw new Error(error.message || error)
       }
@@ -525,8 +525,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
         const itemsToSave = this.getItemsToSave()
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
-        this.scope.moreThan1000 =
-          this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+        this.scope.moreThan500 =
+          this.scope.currentAdding > 500 || this.scope.currentDeleting > 500
       }
     }
 
@@ -535,8 +535,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
         const itemsToSave = this.getItemsToSave()
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
-        this.scope.moreThan1000 =
-          this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+        this.scope.moreThan500 =
+          this.scope.currentAdding > 500 || this.scope.currentDeleting > 500
       }
     }
 

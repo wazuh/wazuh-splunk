@@ -184,7 +184,6 @@ class report(controllers.BaseController):
             #Insert images
             for img in images:
                 #Change width and heigh
-                self.logger.info("width :" + str(img['width']))
                 if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
                     w = 118
                     h = 62

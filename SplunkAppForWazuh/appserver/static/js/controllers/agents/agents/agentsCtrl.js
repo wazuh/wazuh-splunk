@@ -93,11 +93,14 @@ define([
       this.scope.searchBarModel = {
         status: ['Active', 'Disconnected', 'Never connected'],
         group: groups ? groups : [],
-        node_name: nodes ? nodes : [],
         version: versions ? versions : [],
         'os.platform': os ? os.map(x => x.platform) : [],
         'os.version': os ? os.map(x => x.version) : [],
         'os.name': os ? os.map(x => x.name) : []
+      }
+
+      if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
+        this.scope.searchBarModel.node_name = nodes || []
       }
 
       this.topAgent = new SearchHandler(

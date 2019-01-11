@@ -100,7 +100,12 @@
           out += cur;
           atSol = false;
         }
-        if (!atSol && inner.mode.newlineAfterToken &&
+        let noBreak = false;
+        const trimed = out.trim();
+        if (trimed[trimed.length - 1] != '>') {
+          noBreak = true;
+        }
+        if (!noBreak && !atSol && inner.mode.newlineAfterToken &&
             inner.mode.newlineAfterToken(style, cur, stream.string.slice(stream.pos) || text[i+1] || "", inner.state))
           newline();
       }
