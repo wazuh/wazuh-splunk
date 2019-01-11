@@ -22,7 +22,8 @@
 .wzMultipleSelectorCounter{
     position: absolute;
     right: 15px;
-    padding: 15px;
+    padding: 20px 40px;
+    z-index: 1;
 }
 
 .error-msg{

@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class='wzMultipleSelectorButtons'>
-      <button ng-disabled='availableItems.length === 0  || availableItem.length > 500' type='button' class='btn btn-primary' tooltip='Add all items'
+      <button ng-disabled='availableItems.length === 0  || availableItems.length > 500' type='button' class='btn btn-primary' tooltip='Add all items'
         tooltip-placement='top' ng-click='moveAll(availableItems, selectedItems, "a");
                 availableItem=null;availableFilter="" ;doReload("left", availableFilter, true)'>
         <span><i class='fa fa-forward'></i></span>
@@ -37,7 +37,7 @@
         tooltip-placement='top' ng-click='moveItem(selectedElement, selectedItems, availableItems, "r");selectedFilter="";selectedElement=null'>
         <span><i class='fa fa-arrow-left'></i></span>
       </button>
-      <button ng-disabled='selectedItems.length === 0 || selectedElement.length > 500' type='button' class='btn btn-primary' tooltip='Remove all items'
+      <button ng-disabled='selectedItems.length === 0 || selectedItems.length > 500' type='button' class='btn btn-primary' tooltip='Remove all items'
         tooltip-placement='top' ng-click='moveAll(selectedItems, availableItems, "r");selectedElement=null;selectedFilter="";doReload("right")'>
         <span><i class='fa fa-backward'></i></span>
       </button>
