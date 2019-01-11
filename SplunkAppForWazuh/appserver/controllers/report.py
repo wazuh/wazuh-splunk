@@ -306,6 +306,7 @@ class report(controllers.BaseController):
             total_width = total_width + width
             fields[key] = width
         #Calculate the rest of the width to fill the row
+        diff = 0
         if total_width < 190:
             diff = 190 - total_width
             keys_num = len(fields.keys())
