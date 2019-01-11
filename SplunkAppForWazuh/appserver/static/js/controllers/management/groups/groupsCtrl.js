@@ -526,7 +526,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
         this.scope.moreThan500 =
-          this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+          this.scope.currentAdding > 500 || this.scope.currentDeleting > 500
       }
     }
 
@@ -536,7 +536,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.currentAdding = itemsToSave.addedIds.length
         this.scope.currentDeleting = itemsToSave.deletedIds.length
         this.scope.moreThan500 =
-          this.scope.currentAdding > 1000 || this.scope.currentDeleting > 1000
+          this.scope.currentAdding > 500 || this.scope.currentDeleting > 500
       }
     }
 
