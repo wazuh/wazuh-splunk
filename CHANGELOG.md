@@ -28,6 +28,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Deleted blue loading ring ([#426](https://github.com/wazuh/wazuh-splunk/pull/426)).
 - Disabled several extensions by default ([#445](https://github.com/wazuh/wazuh-splunk/pull/445)).
 - Updated localfile values in the configuration of an agent ([#451](https://github.com/wazuh/wazuh-splunk/pull/451)).
+- Dev tools is now showing the response as it is, like curl does ([#460](https://github.com/wazuh/wazuh-splunk/pull/460)).
 
 ### Fixed
 
