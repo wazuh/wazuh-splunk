@@ -145,38 +145,39 @@ class api(controllers.BaseController):
                 del kwargs['method']
             the_id = kwargs['id']
             api = self.db.get(the_id)
-            opt_username = api[0]["userapi"]
-            opt_password = api[0]["passapi"]
-            opt_base_url = api[0]["url"]
-            opt_base_port = api[0]["portapi"]
-            opt_endpoint = kwargs["endpoint"]
-            del kwargs['id']
-            del kwargs['endpoint']
-            url = opt_base_url + ":" + opt_base_port
-            auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            if method == 'GET':
-                request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
-                    verify=verify).json()
-            if method == 'POST':
-                if 'origin' in kwargs and kwargs['origin'] == 'xmleditor':
-                    headers = {'Content-Type': 'application/xml'} 
-                    kwargs = str(kwargs['content'])
-                    request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
-                else:
-                    request = self.session.post(
+            if api:
+                opt_username = api[0]["userapi"]
+                opt_password = api[0]["passapi"]
+                opt_base_url = api[0]["url"]
+                opt_base_port = api[0]["portapi"]
+                opt_endpoint = kwargs["endpoint"]
+                del kwargs['id']
+                del kwargs['endpoint']
+                url = opt_base_url + ":" + opt_base_port
+                auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+                verify = False
+                if method == 'GET':
+                    request = self.session.get(
+                        url + opt_endpoint, params=kwargs, auth=auth,
+                        verify=verify).json()
+                if method == 'POST':
+                    if 'origin' in kwargs and kwargs['origin'] == 'xmleditor':
+                        headers = {'Content-Type': 'application/xml'} 
+                        kwargs = str(kwargs['content'])
+                        request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
+                    else:
+                        request = self.session.post(
+                            url + opt_endpoint, data=kwargs, auth=auth,
+                            verify=verify).json()
+                if method == 'PUT':
+                    request = self.session.put(
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
-            if method == 'PUT':
-                request = self.session.put(
-                    url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify).json()
-            if method == 'DELETE':
-                request = self.session.delete(
-                    url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify).json()
-            result = json.dumps(request)
+                if method == 'DELETE':
+                    request = self.session.delete(
+                        url + opt_endpoint, data=kwargs, auth=auth,
+                        verify=verify).json()
+                result = json.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return json.dumps({'error': str(e)})

@@ -151,7 +151,7 @@ define([
         'alertsSummaryTable',
         `${
           this.filters
-        } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity, data.vulnerability.reference`,
+        } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity`,
         'alertsSummaryTableToken',
         '$result$',
         this.scope
