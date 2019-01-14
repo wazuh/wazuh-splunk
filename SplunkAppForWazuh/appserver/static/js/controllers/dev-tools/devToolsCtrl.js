@@ -545,8 +545,8 @@ define([
           //if (typeof JSONraw === 'object') JSONraw.devTools = true
           const output = await this.request.apiReq(path, JSONraw, method)
           const result =
-            output.data && output.data && !output.data.error
-              ? JSON.stringify(output.data.data, null, 2)
+            output.data && output.data.data && !output.data.error
+              ? JSON.stringify(output.data, null, 2)
               : output.data.message || 'Unkown error'
           this.apiOutputBox.setValue(result)
         } else {
@@ -555,9 +555,9 @@ define([
       } catch (error) {
         const parsedError = this.toast(error)
         if (typeof parsedError === 'string') {
-          return this.apiOutputBox.setValue(error)
+          return this.apiOutputBox.setValue(parsedError)
         } else if (error && error.data && typeof error.data === 'object') {
-          return this.apiOutputBox.setValue(JSON.stringify(error))
+          return this.apiOutputBox.setValue(JSON.stringify(error.data))
         } else {
           return this.apiOutputBox.setValue('Empty')
         }
