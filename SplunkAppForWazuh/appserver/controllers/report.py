@@ -100,8 +100,12 @@ class report(controllers.BaseController):
             self.pdf = PDF('P', 'mm', 'A4')
             self.metrics_exists = False
             self.logger.info("Start generating report ")
-            json_acceptable_string = kwargs['data'].replace("'", "\"")
+            json_acceptable_string = kwargs['data']
             data = json.loads(json_acceptable_string)
+            #Replace "'" in images
+            self.clean_images = json.dumps(data['images'])
+            self.clean_images.replace("'", "\"")
+            data['images'] = json.loads(self.clean_images)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             self.logger.info("Size of array: %s" % (len(data['images'])))

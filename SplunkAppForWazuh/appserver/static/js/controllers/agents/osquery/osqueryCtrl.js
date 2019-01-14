@@ -125,7 +125,7 @@ define([
         'topRulesTable',
         `${
           this.filters
-        } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+        } sourcetype=wazuh | top rule.id, rule.description limit=5`,
         'topRulesTableToken',
         '$result$',
         this.scope
@@ -167,7 +167,8 @@ define([
             'mostCommonActions',
             'topRules',
             'alertsOverTime'
-          ], //Metrics,
+          ], 
+          {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )

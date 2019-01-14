@@ -126,7 +126,7 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'osquery',
+          'ow-osquery',
           'Osquery',
           this.filters,
           [
