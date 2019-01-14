@@ -18,7 +18,8 @@ define([], function() {
     $navigationService,
     $currentDataService,
     $scope,
-    state = null
+    state = null,
+    BASE_URL
   ) {
     if (
       instance.path === '/agents' ||
@@ -48,7 +49,11 @@ define([], function() {
         fileName: item.filename
       })
     } else if (instance.path === '/rules') {
-      $state.go('mg-rules-id', { id: item.id })
+      $currentDataService.addFilter(`{"rule.id" : "${item.id}"}`)
+      const filters = $currentDataService.getSerializedFilters()
+      const url = `${BASE_URL}/app/search/search?q=${filters}`
+      localStorage.setItem('urlDiscover', url)
+      $state.go('discover')
     } else if (instance.path.includes('/decoders')) {
       $state.go('mg-decoders-id', { file: item.file, name: item.name })
     } else if (instance.path === '/cluster/nodes') {

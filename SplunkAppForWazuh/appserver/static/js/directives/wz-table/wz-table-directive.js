@@ -109,7 +109,8 @@ define([
             $navigationService,
             $currentDataService,
             $scope,
-            state
+            state,
+            BASE_URL
           )
 
         /**
