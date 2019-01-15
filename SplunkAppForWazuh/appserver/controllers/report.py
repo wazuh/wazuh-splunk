@@ -108,7 +108,6 @@ class report(controllers.BaseController):
             data['images'] = json.loads(self.clean_images)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            self.logger.info("Size of array: %s" % (len(data['images'])))
             #Get filters and other information
             self.filters = data['queryFilters']
             self.pdf_name = data['pdfName']
@@ -116,7 +115,8 @@ class report(controllers.BaseController):
             self.section_title = data['sectionTitle']
             self.metrics = data['metrics']
             self.tables = data['tableResults']
-            self.metrics = json.loads(self.metrics)
+            if self.metrics:
+                self.metrics = json.loads(self.metrics)
             self.agent_data = data['isAgents']
             #Save the images
             self.save_images(data['images'])
@@ -134,15 +134,16 @@ class report(controllers.BaseController):
             self.pdf.set_font('Arial', '', 12)
             self.pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
-            self.pdf.ln(7)
-            self.pdf.set_fill_color(93, 188, 210)
-            self.pdf.set_text_color(255,255,255)
-            self.pdf.set_font('Arial', '', 10)
-            self.pdf.cell(0, 5, ' Search time range: ' + self.time_range , 0, 0, 'L', 1)
-            self.pdf.ln(5)
-            self.pdf.cell(0, 5, ' Filters:' + self.filters , 0, 0, 'L', 1)
+            if self.pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
+                self.pdf.ln(7)
+                self.pdf.set_fill_color(93, 188, 210)
+                self.pdf.set_text_color(255,255,255)
+                self.pdf.set_font('Arial', '', 10)
+                self.pdf.cell(0, 5, ' Search time range: ' + self.time_range , 0, 0, 'L', 1)
+                self.pdf.ln(5)
+                self.pdf.cell(0, 5, ' Filters:' + self.filters , 0, 0, 'L', 1)
             #Check if is agent, print agent info
-            if self.agent_data:
+            if self.agent_data and self.agent_data != 'inventory':
                 self.print_agent_info(self.agent_data, self.pdf)
             #Check metrics and print if exist
             if len(self.metrics) > 0:
@@ -165,75 +166,77 @@ class report(controllers.BaseController):
                 if line_width < total_width:
                     self.pdf.cell((total_width - line_width), 4, '', 0, 0, 'L', 1)#Fill rest of the width in the last row
             # Add visualizations
-            # Default sizes and margins values
-            x = 30
-            y = 10
-            y_img = 80
-            w = 100
-            h = 50
-            x_img = 50
-            # Count images for page break
-            count = 0
-            n_images = len(self.images)
-            # Set top margin checking if metrics exist
-            self.pdf.set_text_color(93, 188, 210)
-            self.pdf.set_font('Arial', '', 14)
-            if self.metrics_exists:
-                y_img = y_img + 10
-            if self.agent_data:
-                y_img = y_img + 20
-            self.pdf.ln(10)
-            #Sort images by width size
-            images = sorted(self.images, key=itemgetter('width'))
-            #Insert images
-            for img in images:
-                #Change width and heigh
-                if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
-                    w = 118
-                    h = 62
-                    x_img = 48
-                elif img['width'] >= 705 and img['width'] <= 725:
-                    w = 145
-                    h = 65
-                    x_img = 26                
-                elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100 or img['width'] >= 1300 and img['width'] <= 1400:
-                    w = 162
-                    h = 72
-                    x_img = 26
-                elif img['width'] >= 1800 and img['width'] <= 1900:
-                    w = 190
-                    h = 90
-                    x_img = 10     
-                #Insert image
-                self.pdf.cell(x , y, img['title'], 0, 1)
-                self.pdf.image(img['path'], x_img, y_img, w, h)
-                self.pdf.ln(80)
-                y_img = y_img + 90
-                count = count + 1
-                n_images = n_images - 1
-                if count == 2 and n_images >= 1:
-                    self.pdf.add_page()
-                    self.pdf.ln(20)
-                    y_img = 50
-                    count = 0
+            if self.images:
+                # Default sizes and margins values
+                x = 30
+                y = 10
+                y_img = 80
+                w = 100
+                h = 50
+                x_img = 50
+                # Count images for page break
+                count = 0
+                n_images = len(self.images)
+                # Set top margin checking if metrics exist
+                self.pdf.set_text_color(93, 188, 210)
+                self.pdf.set_font('Arial', '', 14)
+                if self.metrics_exists:
+                    y_img = y_img + 10
+                if self.agent_data:
+                    y_img = y_img + 20
+                self.pdf.ln(10)
+                #Sort images by width size
+                images = sorted(self.images, key=itemgetter('width'))
+                #Insert images
+                for img in images:
+                    #Change width and heigh
+                    if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
+                        w = 118
+                        h = 62
+                        x_img = 48
+                    elif img['width'] >= 705 and img['width'] <= 725:
+                        w = 145
+                        h = 65
+                        x_img = 26                
+                    elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100 or img['width'] >= 1300 and img['width'] <= 1400:
+                        w = 162
+                        h = 72
+                        x_img = 26
+                    elif img['width'] >= 1800 and img['width'] <= 1900:
+                        w = 190
+                        h = 90
+                        x_img = 10     
+                    #Insert image
+                    self.pdf.cell(x , y, img['title'], 0, 1)
+                    self.pdf.image(img['path'], x_img, y_img, w, h)
+                    self.pdf.ln(80)
+                    y_img = y_img + 90
+                    count = count + 1
+                    n_images = n_images - 1
+                    if count == 2 and n_images >= 1:
+                        self.pdf.add_page()
+                        self.pdf.ln(20)
+                        y_img = 50
+                        count = 0
             #Add tables
             if self.tables:
-                self.pdf.add_page()
-                self.pdf.ln(20)
-                rows_count = 0
+                if self.pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
+                    self.pdf.add_page()
+                    self.pdf.ln(20)
+                rows_count = 12 # Set row_count with 12 for the agent information size
                 self.table_keys = self.tables.keys()
                 for key in self.table_keys:
                     table_title = key
-                    if rows_count >= 50:
-                        self.pdf.add_page()
-                        self.pdf.ln(20)
-                        rows_count = 0
-                    rows_count = rows_count + len(self.tables[key]['rows']) + 5 
                     self.pdf.ln(10)
                     #Table title
                     self.pdf.set_text_color(93, 188, 210)
                     self.pdf.set_font('Arial', '', 14)
+                    if rows_count > 60:
+                        self.pdf.add_page()
+                        self.pdf.ln(12)
+                        rows_count = 0
                     self.pdf.cell(0 , 5, table_title, 0, 1, 'L')
+                    rows_count = rows_count + 5
                     self.pdf.ln()
                     #Table content
                     self.pdf.set_font('Arial', '', 8)
@@ -242,6 +245,10 @@ class report(controllers.BaseController):
                     sizes_field = self.calculate_table_width(self.tables[key])
                     count = 0
                     for field in self.tables[key]['fields']:
+                        if rows_count > 60:
+                            self.pdf.add_page()
+                            self.pdf.ln(12)
+                            rows_count = 0
                         if field != 'sparkline':
                             width = sizes_field[count]
                             self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
@@ -250,6 +257,11 @@ class report(controllers.BaseController):
                     self.pdf.set_text_color(93, 188, 210)
                     for row in self.tables[key]['rows']:
                         count = 0
+                        if rows_count > 55:
+                            self.pdf.add_page()
+                            self.pdf.ln(12)
+                            rows_count = 0
+                        rows_count = rows_count + 1
                         for value in row:
                             if not isinstance(value, list):
                                 width = sizes_field[count]
@@ -280,13 +292,19 @@ class report(controllers.BaseController):
                 if not isinstance(value, list):
                     key = fields[count]
                     prev_width = sizes[key]
-                    width = self.pdf.get_string_width(value) + 1
+                    if value: # Check for possible undefined elements
+                        width = self.pdf.get_string_width(value) + 1
+                    else:
+                         width = 1
                     if width > prev_width:
                         sizes[key] = width
                 count = count + 1
         # This code block resize the table for fill all the width
         for key in sizes.keys():
-            total_width = total_width + sizes[key]
+            if sizes[key]: # Check for possible undefined elements
+                total_width = total_width + sizes[key]
+            else:
+                total_width = total_width + 0
         if total_width < 190:
             diff = 190 - total_width
             keys_num = len(sizes.keys())

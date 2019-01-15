@@ -63,7 +63,8 @@ define(['../module'], function(module) {
           'remote.port': 'Remote port',
           uname: 'User',
           gname: 'Group',
-          perm: 'Permissions'
+          perm: 'Permissions',
+          process: 'Process'
         }
       }
     }

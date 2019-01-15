@@ -21,7 +21,7 @@
 } */
 
 .groupContentViewer {
-  height: calc('~100vh - 410px');
+  height: calc('100vh - 550px');
   min-height: 300px;
 } 
 
