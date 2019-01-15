@@ -20,6 +20,24 @@
   outline-color: transparent !important;
 } */
 
+.groupContentViewer {
+  height: calc('100vh - 410px');
+  min-height: 300px;
+} 
+
+.wz-circle-back-button{
+  border: 1px solid #d9d9d9!important;
+  margin: 0px 15px 0px 0px!important;
+}
+
+.wz-padding-bottom-14 {
+  padding-bottom: 14px;
+} 
+
+.wz-padding-left-8 {
+  padding-left: 8px
+}
+
 .wz-back-btn-absolute{
   position: absolute!important;
   top: 210px!important;
