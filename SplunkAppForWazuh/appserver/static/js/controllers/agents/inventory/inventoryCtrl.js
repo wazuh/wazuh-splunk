@@ -101,16 +101,16 @@ define(['../../module'], function (module) {
             Object.assign(this.processesDate, this.data[5].data.data)
         }
         this.init()
-
+        
         this.scope.startVis2Png = () =>
           this.reportingService.reportInventoryData(
             'agents-inventory',
             'Inventory Data',
-            '',//this.filters,
+            '',//Filters,
             [],//Visualizations,
             {},//Metrics,
             {},//tableResults
-            'inventory',//isAgent?
+            'inventory',//isAgent
             this.scope.agent.id//agentId
           )
         
