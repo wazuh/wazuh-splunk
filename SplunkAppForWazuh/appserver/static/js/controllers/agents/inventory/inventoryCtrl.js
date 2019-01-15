@@ -20,13 +20,15 @@ define(['../../module'], function (module) {
      * @param {*} $rootScope
      * @param {*} $notificationService
      * @param {*} $scope
+     * @param {*} $reportingService
      */
     constructor(
       $requestService,
       syscollector,
       $rootScope,
       $notificationService,
-      $scope
+      $scope,
+      $reportingService
     ) {
       this.scope = $scope
       this.data = syscollector
@@ -39,6 +41,7 @@ define(['../../module'], function (module) {
       this.packagesDate = {}
       this.processesDate = {}
       this.netaddrResponse = false
+      this.reportingService = $reportingService
     }
 
     /**
@@ -98,6 +101,23 @@ define(['../../module'], function (module) {
             Object.assign(this.processesDate, this.data[5].data.data)
         }
         this.init()
+
+        this.scope.startVis2Png = () =>
+          this.reportingService.reportInventoryData(
+            'agents-inventory',
+            'Inventory Data',
+            '',//this.filters,
+            [],//Visualizations,
+            {},//Metrics,
+            {},//tableResults
+            'inventory',//isAgent?
+            this.scope.agent.id//agentId
+          )
+        
+        this.scope.$on('loadingReporting', (event, data) => {
+          this.scope.loadingReporting = data.status
+        })
+        
         return
       } catch (error) {
         this.toast(error.message || error)
