@@ -56,9 +56,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       })
 
       this.scope.$on('wazuhShowRule', (event, parameters) => {
-        if(!(Object.keys(((this.scope.currentRule || {}).details || {})) || []).length) {
-          this.scope.currentRule.details = false
-        }
         this.scope.viewingDetail = true
         if (!this.scope.$$phase) this.scope.$digest()
       })

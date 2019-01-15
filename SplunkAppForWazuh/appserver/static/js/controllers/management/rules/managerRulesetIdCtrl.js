@@ -40,6 +40,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       }
 
       this.scope.ruleInfo = ruleInfo.data.data.items[0]
+      if(!(Object.keys(((this.scope.ruleInfo || {}).details || {})) || []).length) {
+        this.scope.ruleInfo.details = false
+      }
     }
 
     /**
