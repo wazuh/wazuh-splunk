@@ -110,7 +110,6 @@ define([
             $currentDataService,
             $scope,
             state,
-            BASE_URL
           )
 
         /**

@@ -28,9 +28,11 @@
                 <td ng-repeat="key in keys" ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)">
                     <span ng-if="key === 'id'" class="wz-text-link" >
                         {{ item.id }}
+                        <!--
                         <md-tooltip ng-if="key === 'id'" md-direction="right" class="wz-tooltip">
                             Filter by rule ID in Discover
                         </md-tooltip>
+                        -->
                     </span>
 
                     <span ng-if="key !== 'id'">
