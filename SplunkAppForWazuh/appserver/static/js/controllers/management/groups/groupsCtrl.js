@@ -73,6 +73,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
+        if(((parameters || {}).fileName || '').includes('agent.conf')){
+          return this.scope.editGroupAgentConfig();
+        }
         return this.showFile(parameters.groupName, parameters.fileName)
       })
 
@@ -135,6 +138,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.loadGroup(this.mainGroup)
         }
       }
+
+      this.currentGroup = false;
+      this.scope.$on('setCurrentGroup',(ev,params) => {
+        this.currentGroup = (params || {}).currentGroup || false
+      })
+      this.scope.$on('removeCurrentGroup',() => {
+        this.currentGroup = false
+      })
 
       this.scope.reload = (element, searchTerm, addOffset, start) =>
         this.reloadScope(element, searchTerm, addOffset, start)
@@ -202,6 +213,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.totalFiles = count.data.data.totalItems
         this.scope.fileViewer = false
         this.scope.currentGroup = group
+        this.scope.$emit('setCurrentGroup',{currentGroup: this.scope.currentGroup})
         this.mainGroup = group
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
@@ -598,6 +610,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.currentGroup = false
       this.scope.lookingGroup = false
       this.scope.editingFile = false
+      this.scope.$emit('removeCurrentGroup')
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
