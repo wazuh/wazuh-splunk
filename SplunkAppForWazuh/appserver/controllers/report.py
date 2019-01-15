@@ -108,7 +108,6 @@ class report(controllers.BaseController):
             data['images'] = json.loads(self.clean_images)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            self.logger.info("Size of array: %s" % (len(data['images'])))
             #Get filters and other information
             self.filters = data['queryFilters']
             self.pdf_name = data['pdfName']
