@@ -155,11 +155,18 @@ define(['../module'], function(module) {
                   const results = await Promise.all([
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`),
-                    $requestService.apiReq(`/syscollector/${id}/netiface`),
-                    $requestService.apiReq(`/syscollector/${id}/ports`),
-                    $requestService.apiReq(`/syscollector/${id}/packages`),
+                    $requestService.apiReq(`/syscollector/${id}/ports`, {
+                      limit: 1
+                    }),
+                    $requestService.apiReq(`/syscollector/${id}/packages`, {
+                      limit: 1,
+                      select: 'scan_time'
+                    }),
                     $requestService.apiReq(`/agents/${id}`),
-                    $requestService.apiReq(`/syscollector/${id}/netaddr`),
+                    $requestService.apiReq(`/syscollector/${id}/processes`, {
+                      limit: 1,
+                      select: 'scan_time'
+                    })
                   ])
                   return results
                 } catch (err) {

@@ -56,7 +56,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       })
 
       this.scope.$on('wazuhShowRule', (event, parameters) => {
-        this.scope.currentRule = parameters.rule
         this.scope.viewingDetail = true
         if (!this.scope.$$phase) this.scope.$digest()
       })
