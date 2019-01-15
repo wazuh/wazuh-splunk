@@ -156,18 +156,12 @@ define(['../module'], function(module) {
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`),
                     $requestService.apiReq(`/syscollector/${id}/netiface`),
-                    $requestService.apiReq(`/syscollector/${id}/ports`, {
-                      limit: 1
-                    }),
-                    $requestService.apiReq(`/syscollector/${id}/packages`, {
-                      limit: 1,
-                      select: 'scan_time'
-                    }),
+                    $requestService.apiReq(`/syscollector/${id}/ports`),
+                    $requestService.apiReq(`/syscollector/${id}/packages`),
                     $requestService.apiReq(`/agents/${id}`),
-                    $requestService.apiReq(`/syscollector/${id}/netaddr`, {
-                      limit: 1
-                    }),
+                    $requestService.apiReq(`/syscollector/${id}/netaddr`),
                   ])
+                  console.log("results resolve: ", results)
                   return results
                 } catch (err) {
                   $state.go('agents')
