@@ -161,7 +161,6 @@ define(['../module'], function(module) {
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscollector/${id}/netaddr`),
                   ])
-                  console.log("results resolve: ", results)
                   return results
                 } catch (err) {
                   $state.go('agents')
