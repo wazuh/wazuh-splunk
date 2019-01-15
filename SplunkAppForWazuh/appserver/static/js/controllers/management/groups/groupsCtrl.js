@@ -73,6 +73,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
+        if(((parameters || {}).fileName || '').includes('agent.conf')){
+          return this.scope.editGroupAgentConfig();
+        }
         return this.showFile(parameters.groupName, parameters.fileName)
       })
 
