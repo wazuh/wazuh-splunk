@@ -7,7 +7,7 @@
 
  Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
-![](https://imgur.com/a/Ugwb5ZM)
+![](https://i.imgur.com/HkMjiwJ.png)
 ### Documentation
 
 -   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
