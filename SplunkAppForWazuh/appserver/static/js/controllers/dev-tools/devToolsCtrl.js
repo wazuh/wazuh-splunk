@@ -546,7 +546,7 @@ define([
           const output = await this.request.apiReq(path, JSONraw, method)
           const result =
             output.data && output.data.data && !output.data.error
-              ? JSON.stringify(output.data, null, 2)
+              ? JSON.stringify((output || {}).data, null, 2)
               : output.data.message || 'Unkown error'
           this.apiOutputBox.setValue(result)
         } else {
