@@ -82,7 +82,7 @@
             </wz-config-item>
             <wz-config-item ng-if="!agent || agent.id === '000'" label="Ignore files that change too many times" value="currentConfig['syscheck-syscheck'].syscheck.auto_ignore || 'no'">
             </wz-config-item>
-            <wz-config-item label="Alert when new files are created" value="currentConfig['syscheck-syscheck'].syscheck.alert_new_files || 'no'">
+            <wz-config-item ng-if="!agent || agent.id === '000'" label="Alert when new files are created" value="currentConfig['syscheck-syscheck'].syscheck.alert_new_files || 'no'">
             </wz-config-item>
             <wz-config-item label="Scan on start" value="currentConfig['syscheck-syscheck'].syscheck.scan_on_start">
             </wz-config-item>
