@@ -112,8 +112,8 @@ define(['../module', 'jquery'], function (module, $) {
       agentId
     ) {
       try {
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
         //Get agent info and formating tables
-
         try {
           const agent = await Promise.all([
             this.apiReq(`/agents/${agentId}`),

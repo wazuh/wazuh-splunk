@@ -137,7 +137,7 @@ define([
           'commonRules',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
+          } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
           'commonRules',
           this.scope
         ),
@@ -167,7 +167,7 @@ define([
           'alertsSummaryVizz',
           `${
             this.filters
-          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity `,
+          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
           'alertsSummaryVizz',
           this.scope
         )
@@ -177,7 +177,7 @@ define([
         'alertsSummaryTable',
         `${
           this.filters
-        } | stats count sparkline by data.vulnerability.title`,
+        } | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
         'alertsSummaryTableToken',
         '$result$',
         this.scope
@@ -192,7 +192,7 @@ define([
         'commonRulesTable',
         `${
           this.filters
-        } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5`,
+        } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
         'commonRulesTableToken',
         '$result$',
         this.scope

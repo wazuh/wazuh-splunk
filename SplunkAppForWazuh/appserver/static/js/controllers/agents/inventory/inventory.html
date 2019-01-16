@@ -181,54 +181,6 @@
     </md-card>
   </div>
 
-
-  <div layout="row" class="layout-padding wz-padding-bottom-0" ng-if="!agent.error && syscollector">
-    <md-card flex class="wz-md-card">
-      <md-card-content>
-        <span class="wz-headline-title"><i class="fa fa-fw fa-cubes"></i> Packages</span>
-        <span class="color-grey pull-right">Last scan: {{syscollector.packagesDate}}</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-margin-top-10">
-          <input flex placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-            aria-invalid="false" wz-enter="search(packageSearch,'packages')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(packageSearch,'packages')">
-            <span class="fa fa-search" aria-hidden="true"></span>
-          </button>
-        </div>
-
-        <div layout="row" ng-if="agent.id && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-          <wazuh-table flex path="'/syscollector/' + agent.id + '/packages'" row-sizes="[10,8,6]" extra-limit="true"
-            keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
-          </wazuh-table>
-        </div>
-
-      </md-card-content>
-    </md-card>
-  </div>
-
-
-  <div layout="row" class="layout-padding wz-padding-top-0" ng-if="!agent.error && syscollector">
-    <md-card flex class="wz-md-card">
-      <md-card-content>
-        <span class="wz-headline-title"><i class="fa fa-fw fa-terminal"></i> Processes</span>
-        <span class="color-grey pull-right">Last scan: {{syscollector.processesDate}}</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-margin-top-10">
-          <input flex placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-            aria-invalid="false" wz-enter="search(processSearch,'processes')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
-            <span class="fa fa-search" aria-hidden="true"></span>
-          </button>
-        </div>
-        <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-          <wazuh-table flex path="'/syscollector/' + agent.id + '/processes'" row-sizes="[10,8,6]" extra-limit="true"
-            keys="['name','user','nice','state']">
-          </wazuh-table>
-        </div>
-      </md-card-content>
-    </md-card>
-
-  </div>
   <div layout="row" class="layout-padding wz-padding-top-0" ng-if="!agent.error && syscollector">
     <md-card flex class="wz-md-card">
       <md-card-content class="wz-text-center" ng-if="!syscollector.netaddr || !syscollector.netaddr.items || !syscollector.netaddr.items.length">

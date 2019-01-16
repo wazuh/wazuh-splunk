@@ -219,55 +219,56 @@ class report(controllers.BaseController):
                         y_img = 50
                         count = 0
             #Add tables
-            if self.tables:
+            if self.tablesHaveInfo(self.tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
                 if self.pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
                     self.pdf.add_page()
                     self.pdf.ln(20)
                 rows_count = 12 # Set row_count with 12 for the agent information size
                 self.table_keys = self.tables.keys()
                 for key in self.table_keys:
-                    table_title = key
-                    self.pdf.ln(10)
-                    #Table title
-                    self.pdf.set_text_color(93, 188, 210)
-                    self.pdf.set_font('Arial', '', 14)
-                    if rows_count > 60:
-                        self.pdf.add_page()
-                        self.pdf.ln(12)
-                        rows_count = 0
-                    self.pdf.cell(0 , 5, table_title, 0, 1, 'L')
-                    rows_count = rows_count + 5
-                    self.pdf.ln()
-                    #Table content
-                    self.pdf.set_font('Arial', '', 8)
-                    self.pdf.set_fill_color(93, 188, 210)
-                    self.pdf.set_text_color(255,255,255)
-                    sizes_field = self.calculate_table_width(self.tables[key])
-                    count = 0
-                    for field in self.tables[key]['fields']:
+                    if self.tables[key]:#Check if this table has information, if it has, process it
+                        table_title = key
+                        self.pdf.ln(10)
+                        #Table title
+                        self.pdf.set_text_color(93, 188, 210)
+                        self.pdf.set_font('Arial', '', 14)
                         if rows_count > 60:
                             self.pdf.add_page()
                             self.pdf.ln(12)
                             rows_count = 0
-                        if field != 'sparkline':
-                            width = sizes_field[count]
-                            self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
-                            count = count + 1
-                    self.pdf.ln()
-                    self.pdf.set_text_color(93, 188, 210)
-                    for row in self.tables[key]['rows']:
+                        self.pdf.cell(0 , 5, table_title, 0, 1, 'L')
+                        rows_count = rows_count + 5
+                        self.pdf.ln()
+                        #Table content
+                        self.pdf.set_font('Arial', '', 8)
+                        self.pdf.set_fill_color(93, 188, 210)
+                        self.pdf.set_text_color(255,255,255)
+                        sizes_field = self.calculate_table_width(self.tables[key])
                         count = 0
-                        if rows_count > 55:
-                            self.pdf.add_page()
-                            self.pdf.ln(12)
-                            rows_count = 0
-                        rows_count = rows_count + 1
-                        for value in row:
-                            if not isinstance(value, list):
+                        for field in self.tables[key]['fields']:
+                            if rows_count > 60:
+                                self.pdf.add_page()
+                                self.pdf.ln(12)
+                                rows_count = 0
+                            if field != 'sparkline':
                                 width = sizes_field[count]
-                                self.pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                                 count = count + 1
                         self.pdf.ln()
+                        self.pdf.set_text_color(93, 188, 210)
+                        for row in self.tables[key]['rows']:
+                            count = 0
+                            if rows_count > 55:
+                                self.pdf.add_page()
+                                self.pdf.ln(12)
+                                rows_count = 0
+                            rows_count = rows_count + 1
+                            for value in row:
+                                if not isinstance(value, list):
+                                    width = sizes_field[count]
+                                    self.pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                    count = count + 1
+                            self.pdf.ln()
             #Save pdf
             self.pdf.output(self.path+'wazuh-'+self.pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
@@ -276,6 +277,13 @@ class report(controllers.BaseController):
             self.logger.error("Error generating report: %s" % (e))
             return json.dumps({"error": str(e)})
         return parsed_data
+
+    #Check if tables are not empties
+    def tablesHaveInfo(self, tables):
+        for key in tables.keys():
+            if tables[key]:
+                return True
+        return False
 
     #Calculates the width of the fields
     def calculate_table_width(self, table):
