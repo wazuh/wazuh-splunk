@@ -544,10 +544,54 @@ kbn-vis .vis-container {
   height: auto;
 }
 
-/* Class for define Wazuh logo width */
-.wz-logo-container {
-  width: 150px;
-  max-width: 150px;
+@supports not (-moz-appearance:none) {
+  @media (min-width: 1060px) {      
+      .wz-logo{        
+          content: url("../images/wazuh/png/wazuh_white_full.png");
+      } 
+      .wz-logo-container {
+          width: 150px;
+          max-width: 150px;
+      }
+  }
+  @media (max-width: 1059px) {    
+      .wz-logo{         
+         content: url("../images/wazuh/png/wazuh_white_iso.png");
+         max-height: 45px;
+         max-width: 28px;
+     } 
+     .wz-logo-container {
+          min-width: 20px!important;
+          max-width: 30px!important;
+          margin-right: 5px!important;
+      }
+  }
+}
+
+@supports (-moz-appearance:none) {
+  @media (min-width: 1060px) {      
+      .wz-logo::after{        
+          content: url("../images/wazuh/png/wazuh_white_full.png");
+          display: flex;
+      } 
+      .wz-logo-container {
+          width: 185px;
+          max-width: 185px;
+      }
+  }
+  @media (max-width: 1059px) {    
+      .wz-logo::after{         
+          content: url("../images/wazuh/png/wazuh_white_iso.png") ;
+          display: flex;
+          max-height: 45px;
+          max-width: 28px;
+      } 
+      .wz-logo-container {
+              min-width: 20px;
+              max-width: 30px;
+              margin-right: 5px;
+          }
+      }
 }
 
 /* Unclassified but important Wazuh app component styles */
