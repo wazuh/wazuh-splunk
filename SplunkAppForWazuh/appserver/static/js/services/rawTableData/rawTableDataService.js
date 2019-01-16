@@ -48,8 +48,13 @@ define([
         console.error(error)
       })
 
-      this.getSearch().on('search:progress', () => {})
+      this.getSearch().on('search:start', () => {
+        this.results = {}
+        this.getSearch().trigger('result', this.results)
+      })
 
+      this.getSearch().on('search:progress', () => {})
+      
       this.getSearch().on('search:done', () => {
         this.getSearch().finish = false
         const tableResults = mvc.Components.getInstance(`${this.id}Search`)
