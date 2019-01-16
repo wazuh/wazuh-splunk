@@ -49,6 +49,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * On controller loads
      */
     $onInit() {
+      this.scope.isObject = item => typeof item === 'object'
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>
         this.addDetailFilter(name, value)

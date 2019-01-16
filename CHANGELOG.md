@@ -18,7 +18,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Resizable columns by dragging in Dev-tools ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
 - Added `audit_key` (Who-data Audit keys) for configuration tab ([#444](https://github.com/wazuh/wazuh-splunk/pull/444)).
 - Added app info to settings about section 3.8 enhancement ([#448](https://github.com/wazuh/wazuh-splunk/pull/448)).
-- Added maild option to read data from ([#449](https://github.com/wazuh/wazuh-splunk/pull/449)).
+- Added maild option to read data from ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
 
 
 ### Changed
@@ -29,6 +29,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Disabled several extensions by default ([#445](https://github.com/wazuh/wazuh-splunk/pull/445)).
 - Updated localfile values in the configuration of an agent ([#451](https://github.com/wazuh/wazuh-splunk/pull/451)).
 - Dev tools is now showing the response as it is, like curl does ([#461](https://github.com/wazuh/wazuh-splunk/pull/461)).
+- Removed `unknown` as valid node name ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
 
 ### Fixed
 
@@ -40,6 +41,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed schema for `wazuh-monitoring-3x` index ([#436](https://github.com/wazuh/wazuh-splunk/pull/436)).
 - Fix overlapped play button in Dev-tools when the input box has a scrollbar ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
 - Fix Dev-tools behavior when parse json invalid blocks ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
+- Fix rule details for `list` and `info` parameters ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
 
 ## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
 There are no changes for Splunk app for Wazuh in this version.
