@@ -21,6 +21,9 @@
     <div class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
   </div>
 
+  <!-- Loading report-->
+  <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
+
   <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">
