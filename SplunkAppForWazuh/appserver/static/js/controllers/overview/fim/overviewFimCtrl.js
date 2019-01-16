@@ -114,7 +114,7 @@ define([
           'topUsers',
           `${
             this.filters
-          } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,
+          } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
           'topUsers',
           this.scope
         )
@@ -139,7 +139,7 @@ define([
         'topUsersTable',
         `${
           this.filters
-        } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5`,
+        } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
         'topUsersTableToken',
         '$result$',
         this.scope

@@ -103,7 +103,7 @@ define([
         ),
         new Table(
           'top5Buckets',
-          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5`,
+          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
           'top5Buckets',
           this.scope
         ),
@@ -111,7 +111,7 @@ define([
           'top5Rules',
           `${
             this.filters
-          } sourcetype=wazuh | top rule.id, rule.description limit=5`,
+          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'top5Rules',
           this.scope
         )
@@ -119,7 +119,7 @@ define([
 
       this.top5BucketsTable = new rawTableDataService(
         'top5BucketsTable',
-        `${this.filters} sourcetype=wazuh | top data.aws.source limit=5`,
+        `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
         'top5BucketsTableToken',
         '$result$',
         this.scope
@@ -134,7 +134,7 @@ define([
         'top5RulesTable',
         `${
           this.filters
-        } sourcetype=wazuh | top rule.id, rule.description limit=5`,
+        } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
         'top5RulesTableToken',
         '$result$',
         this.scope

@@ -109,7 +109,7 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
+          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
         ),
@@ -125,7 +125,7 @@ define([
         'topRulesTable',
         `${
           this.filters
-        } sourcetype=wazuh | top rule.id, rule.description limit=5`,
+        } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
         'topRulesTableToken',
         '$result$',
         this.scope
