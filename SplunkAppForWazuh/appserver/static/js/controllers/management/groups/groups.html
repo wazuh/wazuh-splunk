@@ -15,9 +15,21 @@
 
     <!-- Headline -->
     <div ng-show="!loadingRing" layout="column" layout-padding ng-if="!currentGroup || !currentGroup.name">
-      <span class="font-size-18">
-        <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups
-      </span>
+      <div layout="row">
+        <span class="font-size-18">
+          <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
+        <span class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i class="fa fa-fw fa-plus-circle"></i></span>
+      </div>
+      <div layout="row" ng-if="addingGroup">
+        <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton addGroupBtn height-20" ng-click="createGroup(groupToBeAdded)">
+          <span class="fa fa-save fa-fw" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div layout="row" ng-if="!addingGroup">
+        <span class="md-subheader">List and check your groups, its agents and files</span>
+      </div>
       <span>List and check your groups, its agents and files</span>
     </div>
     <!-- End headline -->
@@ -69,7 +81,8 @@
         <div layout="row" class="md-padding">
           <span ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
           <button ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn btn-primary pull-right wz-margin-left-8'>
-            <span ng-show='!xmlHasErrors'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save file</span>
+            <span ng-show='!xmlHasErrors'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+              file</span>
             <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
               XML format error</span>
           </button>
@@ -94,9 +107,9 @@
 
         <!-- Search bar -->
         <div layout="row" class="md-padding" ng-if="!addingAgents && !file">
-          <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : 'Filter agents...'}}" ng-model="custom_search"
-            type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-100" aria-invalid="false"
-            wz-enter="search(custom_search)">
+          <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
+            ng-model="custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-100"
+            aria-invalid="false" wz-enter="search(custom_search)">
           <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
             ng-click="search(custom_search)">
             <span class="fa fa-search" aria-hidden="true"></span>

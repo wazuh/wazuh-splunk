@@ -23,14 +23,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $requestService,
       $beautifierJson,
       $notificationService,
-      $timeout
+      $groupHandler
     ) {
       this.scope = $scope
       this.state = $state
       this.beautifier = $beautifierJson
       this.stateParams = $stateParams
       this.api = $currentDataService.getApi()
-      this.timeout = $timeout
+      this.groupHandler = $groupHandler
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.apiReq = $requestService.apiReq
@@ -60,7 +60,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
         }
       })
 
+      this.scope.addingGroup = false
       this.scope.$on('groupsIsReloaded', () => {
+        this.scope.groupsSelectedTab = false
         this.scope.currentGroup = false
         this.scope.lookingGroup = false
         this.scope.editingFile = false
@@ -118,6 +120,22 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.search = term => {
         this.scope.$broadcast('wazuhSearch', { term })
       }
+
+      this.scope.switchAddingGroup = () => {
+        this.scope.addingGroup = !this.scope.addingGroup
+      }
+    
+      this.scope.createGroup = async name => {
+        try {
+          this.scope.addingGroup = false
+          await this.groupHandler.createGroup(name)
+          this.toast(`Success. Group ${name} has been created`)
+        } catch (error) {
+          this.toast(`${error.message || error}`)
+        }
+        this.scope.$broadcast('wazuhSearch', {})
+      }
+
       this.scope.loadGroup = (group, firstLoad) =>
         this.loadGroup(group, firstLoad)
       this.scope.toggle = () => (this.scope.lookingGroup = true)
@@ -487,7 +505,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.$emit('updateGroupInformation', {
           group: this.scope.currentGroup.name
         })
-        await this.timeout(500)
       } catch (error) {
         this.toast(error.message || error)
       }

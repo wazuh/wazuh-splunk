@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class AgentsOverview {
@@ -46,6 +46,7 @@ define(['../../module'], function(app) {
       this.extensions = extensions
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
+      this.scope.addingGroupToAgent = false
       this.groups = groups
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
@@ -65,27 +66,27 @@ define(['../../module'], function(app) {
 
         this.scope.agentOS =
           this.scope.agent &&
-          this.scope.agent.os &&
-          this.scope.agent.os.name &&
-          this.scope.agent.os.codename &&
-          this.scope.agent.os.version
+            this.scope.agent.os &&
+            this.scope.agent.os.name &&
+            this.scope.agent.os.codename &&
+            this.scope.agent.os.version
             ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                .codename || '-'} ${this.scope.agent.os.version || '-'}`
+              .codename || '-'} ${this.scope.agent.os.version || '-'}`
             : 'Unknown'
 
         this.scope.syscheck =
           this.agent.length > 0 &&
-          typeof this.agent[1] === 'object' &&
-          typeof this.agent[1].data === 'object' &&
-          !this.agent[1].data.error
+            typeof this.agent[1] === 'object' &&
+            typeof this.agent[1].data === 'object' &&
+            !this.agent[1].data.error
             ? this.agent[1].data.data
             : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
         this.scope.id = this.stateParams.id
         this.scope.rootcheck =
           this.agent.length > 1 &&
-          typeof this.agent[2] === 'object' &&
-          typeof this.agent[2].data === 'object' &&
-          !this.agent[2].data.error
+            typeof this.agent[2] === 'object' &&
+            typeof this.agent[2].data === 'object' &&
+            !this.agent[2].data.error
             ? this.agent[2].data.data
             : { start: 'Unknown', end: 'Unknown' }
         if (!this.scope.agent.error) {
@@ -107,7 +108,6 @@ define(['../../module'], function(app) {
           this.scope.getAgentStatusClass = agentStatus =>
             this.getAgentStatusClass(agentStatus)
           this.scope.goGroups = group => this.goGroups(group)
-          this.scope.switchGroupEdit = () => this.switchGroupEdit()
 
           this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
             this.scope.syscheck.start,
@@ -126,74 +126,40 @@ define(['../../module'], function(app) {
             this.scope.rootcheck.end
           ).inProgress
 
-          this.scope.showConfirm = (ev, group) => {
-            const confirm = this.$mdDialog.confirm({
-              controller: function(
-                $scope,
-                myScope,
-                $mdDialog,
-                $groupHandler,
-                $requestService,
-                $notificationService
-              ) {
-                $scope.myScope = myScope
-                $scope.closeDialog = () => {
-                  $mdDialog.hide()
-                  $('body').removeClass('md-dialog-body')
-                }
-                $scope.confirmDialog = () => {
-                  $groupHandler
-                    .addAgentToGroup(group, $scope.myScope.agent.id)
-                    .then(() =>
-                      $requestService.apiReq(
-                        `/agents/${$scope.myScope.agent.id}`,
-                        {}
-                      )
-                    )
-                    .then(agent => {
-                      $mdDialog.hide()
-                      $('body').removeClass('md-dialog-body')
-                      $scope.myScope.agent.group = agent.data.data.group
-                      $scope.myScope.groups = $scope.myScope.groups.filter(
-                        item => !agent.data.data.group.includes(item)
-                      )
-                      if (!$scope.myScope.$$phase) $scope.myScope.$digest()
-                    })
-                    .catch(error =>
-                      $notificationService.showSimpleToast(
-                        error.message || error,
-                        'Error adding group to agent'
-                      )
-                    )
-                }
-              },
-              template:
-                '<md-dialog class="modalTheme euiToast euiToast--danger euiGlobalToastListItem">' +
-                '<md-dialog-content>' +
-                '<div class="euiToastHeader">' +
-                '<i class="fa fa-exclamation-triangle"></i>' +
-                '<span class="euiToastHeader__title">Add group ' +
-                `${group}` +
-                ' to agent ' +
-                `${this.scope.agent.id}` +
-                '?</span>' +
-                '</div>' +
-                '</md-dialog-content>' +
-                '<md-dialog-actions>' +
-                '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">Cancel</button>' +
-                '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Agree</button>' +
-                '</md-dialog-actions>' +
-                '</md-dialog>',
-              targetEvent: ev,
-              hasBackdrop: false,
-              clickOutsideToClose: true,
-              disableParentScroll: true,
-              locals: {
-                myScope: this.scope
-              }
-            })
-            $('body').addClass('md-dialog-body')
-            this.$mdDialog.show(confirm)
+          this.scope.switchGroupEdit = () => {
+            this.scope.addingGroupToAgent = false
+            this.switchGroupEdit()
+          }
+
+          this.scope.showConfirmAddGroup = group => {
+            this.scope.addingGroupToAgent = this.scope.addingGroupToAgent
+              ? false
+              : group
+          }
+
+          this.scope.cancelAddGroup = () => (this.scope.addingGroupToAgent = false)
+
+          this.scope.confirmAddGroup = group => {
+            this.groupHandler
+              .addAgentToGroup(group, this.scope.agent.id)
+              .then(() =>
+                this.requestService.request(`/agents/${this.scope.agent.id}`)
+              )
+              .then(agent => {
+                this.scope.agent.group = agent.data.data.group
+                this.scope.groups = this.scope.groups.filter(
+                  item => !agent.data.data.group.includes(item)
+                )
+                this.scope.addingGroupToAgent = false
+                this.notificationService.showSimpleToast(`Group ${group} has been added.`)
+                if (!this.scope.$$phase) this.scope.$digest()
+              })
+              .catch(error => {
+                this.scope.addingGroupToAgent = false
+                this.notificationService.showSimpleToast(
+                  error.message || error
+                )
+              })
           }
         }
         //Check OS type
