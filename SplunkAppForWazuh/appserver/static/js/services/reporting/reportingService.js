@@ -95,7 +95,6 @@ define(['../module', 'jquery'], function (module, $) {
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        console.error('Reporting error ', error)
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
         this.errorHandler('Reporting error')
@@ -137,7 +136,6 @@ define(['../module', 'jquery'], function (module, $) {
           }
         } catch (error) {
           isAgents = 'inventory'
-          console.error("Error fetching agent information ", error)
         }
 
         //Network interfaces
@@ -208,7 +206,6 @@ define(['../module', 'jquery'], function (module, $) {
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        console.error('Reporting error ', error)
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
         this.errorHandler('Reporting error')
