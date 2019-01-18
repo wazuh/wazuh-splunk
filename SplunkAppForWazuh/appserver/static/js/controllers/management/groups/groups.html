@@ -30,7 +30,6 @@
       <div layout="row" ng-if="!addingGroup">
         <span class="md-subheader">List and check your groups, its agents and files</span>
       </div>
-      <span>List and check your groups, its agents and files</span>
     </div>
     <!-- End headline -->
 
@@ -39,7 +38,9 @@
 
       <div layout="row" class="md-padding-h wz-width-100" ng-if="lookingGroup">
         <md-button class="md-icon-button wz-circle-back-button" ng-if="lookingGroup" aria-label="Back" ng-click="goBackGroups()"><i
-            class="fa fa-fw fa-arrow-left" aria-hidden="true"></i><md-tooltip md-direction="bottom" class="wz-tooltip">Go back</md-tooltip></md-button>
+            class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+          <md-tooltip md-direction="bottom" class="wz-tooltip">Go back</md-tooltip>
+        </md-button>
         <!-- Group MD5 sums section -->
         <md-card flex class="no-margin-left wz-md-card">
           <md-card-content>
@@ -79,11 +80,15 @@
       <!-- XML editor for group agents -->
       <div ng-show="editingFile">
         <div layout="row" class="md-padding">
-          <span ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-          <button ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn btn-primary pull-right wz-margin-left-8'>
-            <span ng-show='!xmlHasErrors'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+          <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+              aria-hidden="true"></i>
+            <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+          </button>
+          <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+            <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
               file</span>
-            <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
               XML format error</span>
           </button>
         </div>
@@ -131,8 +136,8 @@
         <!-- Groups table -->
 
         <div layout="row" ng-if="!lookingGroup" class="md-padding">
-          <wazuh-table admin-mode='adminMode' flex extra-limit="true" path="'/agents/groups'" keys="['name','count','mergedSum']" allow-click="true"
-            row-sizes="[14,12,10]">
+          <wazuh-table admin-mode='adminMode' flex extra-limit="true" path="'/agents/groups'" keys="['name','count','mergedSum']"
+            allow-click="true" row-sizes="[14,12,10]">
           </wazuh-table>
         </div>
         <!-- End groups table -->
@@ -164,8 +169,8 @@
           <!-- End CSV Download button section for group agents -->
           <!-- Group files table -->
           <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='files' && !fileViewer && currentGroup" class="md-padding">
-            <wazuh-table admin-mode='adminMode' extra-limit="true" flex path="'/agents/groups/' + currentGroup.name + '/files'" keys="[{value:'filename',size:2},{value:'hash',size:6}]"
-              allow-click="true" row-sizes="[10,8,6,4]">
+            <wazuh-table admin-mode='adminMode' extra-limit="true" flex path="'/agents/groups/' + currentGroup.name + '/files'"
+              keys="[{value:'filename',size:2},{value:'hash',size:6}]" allow-click="true" row-sizes="[10,8,6,4]">
             </wazuh-table>
           </div>
           <!-- End Group files table -->
@@ -183,10 +188,9 @@
           <div flex layout="column" class="md-padding" ng-if="lookingGroup && groupsSelectedTab==='files' && file">
             <div flex layout="column">
               <div layout="row" class="wz-padding-bottom-14">
-                <button class="md-icon-button" ng-if="lookingGroup" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
-                    aria-hidden="true"></i>
-                  <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
-                </button>
+                <span flex class="wz-headline-title">{{ filename }}</span>
+                <button class="md-icon-button" ng-if="lookingGroup" aria-label="Back" tooltip="Close file"
+                  tooltip-placement="left" ng-click="goBackFiles()"><i class="fa fa-fw fa-close" aria-hidden="true"></i></button>
                 <!--<span flex class="wz-text-right cursor-pointer color-grey" ng-click="goBackFiles()">close</span>-->
               </div>
               <div flex layout="column">

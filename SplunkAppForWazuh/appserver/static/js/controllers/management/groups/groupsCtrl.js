@@ -62,6 +62,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
       })
       this.extensions = extensions
       this.scope.addingGroup = false
+      this.scope.addingAgents = false
       this.scope.$on('groupsIsReloaded', () => {
         this.scope.groupsSelectedTab = false
         this.scope.currentGroup = false
@@ -76,7 +77,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
-        if (((parameters || {}).fileName || '').includes('agent.conf')) {
+        if (((parameters || {}).fileName || '').includes('agent.conf') && this.scope.adminMode) {
           return this.scope.editGroupAgentConfig();
         }
         return this.showFile(parameters.groupName, parameters.fileName)
@@ -189,10 +190,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
           this.saveGroupAgentConfig(content)
 
         this.scope.adminMode = this.extensions['admin'] === 'true'
-        
+
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.scope.adminMode = false
+        console.error('err ', err)
+        this.scope.adminMode = true
         this.toast('Error loading groups information')
       }
     }
@@ -613,9 +615,13 @@ define(['../../module', 'FileSaver'], function (controllers) {
     goBackFiles() {
       this.scope.groupsSelectedTab = 'files'
       this.scope.addingAgents = false
+      this.scope.editingAgents = false
       this.scope.file = false
       this.scope.filename = false
       this.scope.fileViewer = false
+      this.scope.editingFile = false
+      console.log('Go back: true,true,false,false')
+      console.log(!!this.scope.lookingGroup, !!this.scope.currentGroup, !!this.scope.addingAgents, !!this.scope.editingFile)
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
@@ -643,7 +649,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
         const data = await this.apiReq(tmpName)
         this.scope.file = this.beautifier.prettyPrint(data.data.data)
         this.scope.filename = fileName
-
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         this.toast('Error showing file ')
