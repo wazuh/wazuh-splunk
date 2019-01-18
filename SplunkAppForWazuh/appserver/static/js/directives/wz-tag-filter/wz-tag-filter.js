@@ -232,7 +232,7 @@ define(['../module'], function(app) {
               'wz-search-filter-bar-input'
             )
             if (autocomplete) {
-              autocomplete.style.left = input.offsetLeft - bar.scrollLeft + 'px'  
+              autocomplete.style.left = input.offsetLeft - bar.scrollLeft + 'px'
             }
             if (flag) {
               input.focus()

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class GroupHandler {
@@ -59,7 +59,7 @@ define(['../module'], function (module) {
           {},
           'DELETE'
         )
-        if(result.data.error != 0) {
+        if (result.data.error != 0) {
           throw new Error(result.data.message)
         }
         return result
@@ -70,12 +70,8 @@ define(['../module'], function (module) {
 
     async createGroup(name) {
       try {
-        const result = await this.apiReq(
-          `/agents/groups/${name}`,
-          {},
-          'PUT'
-        )
-        if(result.data.error != 0) {
+        const result = await this.apiReq(`/agents/groups/${name}`, {}, 'PUT')
+        if (result.data.error != 0) {
           throw new Error(result.data.message)
         }
         return result
@@ -96,7 +92,7 @@ define(['../module'], function (module) {
           !result.data ||
           !result.data.data ||
           result.data.error !== 0 ||
-          result.data.data.error && result.data.data.error !== 0
+          (result.data.data.error && result.data.data.error !== 0)
         ) {
           throw new Error('Cannot send file.')
         }

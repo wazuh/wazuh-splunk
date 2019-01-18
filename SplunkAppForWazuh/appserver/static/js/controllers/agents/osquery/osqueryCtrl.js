@@ -167,7 +167,7 @@ define([
             'mostCommonActions',
             'topRules',
             'alertsOverTime'
-          ], 
+          ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData

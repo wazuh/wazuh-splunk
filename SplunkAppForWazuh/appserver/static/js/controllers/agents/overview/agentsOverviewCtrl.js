@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (app) {
+define(['../../module'], function(app) {
   'use strict'
 
   class AgentsOverview {
@@ -67,27 +67,27 @@ define(['../../module'], function (app) {
 
           this.scope.agentOS =
             this.scope.agent &&
-              this.scope.agent.os &&
-              this.scope.agent.os.name &&
-              this.scope.agent.os.codename &&
-              this.scope.agent.os.version
+            this.scope.agent.os &&
+            this.scope.agent.os.name &&
+            this.scope.agent.os.codename &&
+            this.scope.agent.os.version
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                .codename || '-'} ${this.scope.agent.os.version || '-'}`
+                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
 
           this.scope.syscheck =
             this.agent.length > 0 &&
-              typeof this.agent[1] === 'object' &&
-              typeof this.agent[1].data === 'object' &&
-              !this.agent[1].data.error
+            typeof this.agent[1] === 'object' &&
+            typeof this.agent[1].data === 'object' &&
+            !this.agent[1].data.error
               ? this.agent[1].data.data
               : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
           this.scope.rootcheck =
             this.agent.length > 1 &&
-              typeof this.agent[2] === 'object' &&
-              typeof this.agent[2].data === 'object' &&
-              !this.agent[2].data.error
+            typeof this.agent[2] === 'object' &&
+            typeof this.agent[2].data === 'object' &&
+            !this.agent[2].data.error
               ? this.agent[2].data.data
               : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
@@ -102,7 +102,8 @@ define(['../../module'], function (app) {
               .map(item => item.name)
               .filter(
                 item =>
-                  this.scope.agent.group && !this.scope.agent.group.includes(item)
+                  this.scope.agent.group &&
+                  !this.scope.agent.group.includes(item)
               )
             this.scope.formatAgentStatus = agentStatus =>
               this.formatAgentStatus(agentStatus)
@@ -138,7 +139,8 @@ define(['../../module'], function (app) {
                 : group
             }
 
-            this.scope.cancelAddGroup = () => (this.scope.addingGroupToAgent = false)
+            this.scope.cancelAddGroup = () =>
+              (this.scope.addingGroupToAgent = false)
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -152,7 +154,9 @@ define(['../../module'], function (app) {
                     item => !agent.data.data.group.includes(item)
                   )
                   this.scope.addingGroupToAgent = false
-                  this.notificationService.showSimpleToast(`Group ${group} has been added.`)
+                  this.notificationService.showSimpleToast(
+                    `Group ${group} has been added.`
+                  )
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
                 .catch(error => {
@@ -219,7 +223,7 @@ define(['../../module'], function (app) {
         }
         this.scope.adminMode = this.extensions['admin'] === 'true'
       } catch (err) {
-        console.error('err ',err)
+        console.error('err ', err)
         this.scope.adminMode = false
         this.notificationService.showSimpleToast('Error loading agent data.')
       }

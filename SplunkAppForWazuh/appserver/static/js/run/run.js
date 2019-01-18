@@ -57,7 +57,12 @@ define(['./module'], function(module) {
         //Select primary states
         $rootScope.$broadcast('stateChanged', to)
         //Select secondary states
-        if (to === 'overview' || to === 'agents' || to === 'agent-overview' || to === 'manager')
+        if (
+          to === 'overview' ||
+          to === 'agents' ||
+          to === 'agent-overview' ||
+          to === 'manager'
+        )
           $currentDataService.cleanFilters()
         if ((to !== 'agents' && to.includes('agent')) || to.includes('ag-')) {
           $rootScope.$broadcast('stateChanged', 'agents')

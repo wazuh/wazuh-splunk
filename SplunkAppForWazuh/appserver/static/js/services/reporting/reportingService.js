@@ -1,4 +1,4 @@
-define(['../module', 'jquery'], function (module, $) {
+define(['../module', 'jquery'], function(module, $) {
   'use strict'
   class ReportingService {
     constructor(
@@ -59,7 +59,7 @@ define(['../module', 'jquery'], function (module, $) {
         const images = await this.vis2png.checkArray(idArray)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
-          }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+        }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
         //Search time range
         const timeRange = document
@@ -129,7 +129,7 @@ define(['../module', 'jquery'], function (module, $) {
             Manager: agent[0].data.data.manager,
             OS: `${agent[0].data.data.os.name} ${
               agent[0].data.data.os.codename
-              } ${agent[0].data.data.os.version}`,
+            } ${agent[0].data.data.os.version}`,
             dateAdd: agent[0].data.data.dateAdd,
             lastKeepAlive: agent[0].data.data.lastKeepAlive,
             group: agent[0].data.data.group.toString()
@@ -144,7 +144,10 @@ define(['../module', 'jquery'], function (module, $) {
         const networkInterfaceData = netiface.data.data.items.map(i => {
           return [i.name, i.mac, i.state, i.mtu.toString(), i.type]
         })
-        const networkInterfaceTable = { fields: networkInterfaceKeys, rows: networkInterfaceData }
+        const networkInterfaceTable = {
+          fields: networkInterfaceKeys,
+          rows: networkInterfaceData
+        }
         tableResults['Network interfaces'] = networkInterfaceTable
 
         //Network ports
@@ -153,20 +156,34 @@ define(['../module', 'jquery'], function (module, $) {
         const networkPortsData = ports.data.data.items.map(p => {
           return [p.local.ip, p.local.port.toString(), p.state, p.protocol]
         })
-        const networkPortsTable = { fields: networkPortsKeys, rows: networkPortsData }
+        const networkPortsTable = {
+          fields: networkPortsKeys,
+          rows: networkPortsData
+        }
         tableResults['Network ports'] = networkPortsTable
 
         //Network addresses
         const netaddr = await this.apiReq(`/syscollector/${agentId}/netaddr`)
-        const networkAdressessKeys = ['Interface', 'Address', 'Netmask', 'Protocol', 'Broadcast']
+        const networkAdressessKeys = [
+          'Interface',
+          'Address',
+          'Netmask',
+          'Protocol',
+          'Broadcast'
+        ]
         const networkAdressessData = netaddr.data.data.items.map(n => {
           return [n.iface, n.address, n.netmask, n.proto, n.broadcast]
         })
-        const networkAdressessTable = { fields: networkAdressessKeys, rows: networkAdressessData }
+        const networkAdressessTable = {
+          fields: networkAdressessKeys,
+          rows: networkAdressessData
+        }
         tableResults['Network addresses'] = networkAdressessTable
 
         //Processes
-        const processes = await this.apiReq(`/syscollector/${agentId}/processes`)
+        const processes = await this.apiReq(
+          `/syscollector/${agentId}/processes`
+        )
         const processesKeys = ['Name', 'Euser', 'Nice', 'State']
         const processesData = processes.data.data.items.map(n => {
           return [n.name, n.euser, n.nice.toString(), n.state]
@@ -210,7 +227,6 @@ define(['../module', 'jquery'], function (module, $) {
         this.$rootScope.reportStatus = false
         this.errorHandler('Reporting error')
       }
-
     }
   }
 

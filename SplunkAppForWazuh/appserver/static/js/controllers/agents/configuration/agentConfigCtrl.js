@@ -76,9 +76,7 @@ define(['../../module', '../../../utils/config-handler'], function(
         this.agent.data.data.os &&
         this.agent.data.data.os.uname
       ) {
-        this.$scope.isLinux = this.agent.data.data.os.uname.includes(
-          'Linux'
-        )
+        this.$scope.isLinux = this.agent.data.data.os.uname.includes('Linux')
       }
 
       this.$scope.getAgentStatusClass = agentStatus =>

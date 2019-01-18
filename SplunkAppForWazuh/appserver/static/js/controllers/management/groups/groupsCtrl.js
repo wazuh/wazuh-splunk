@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (controllers) {
+define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
   class Groups {
     /**
@@ -77,8 +77,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
-        if (((parameters || {}).fileName || '').includes('agent.conf') && this.scope.adminMode) {
-          return this.scope.editGroupAgentConfig();
+        if (
+          ((parameters || {}).fileName || '').includes('agent.conf') &&
+          this.scope.adminMode
+        ) {
+          return this.scope.editGroupAgentConfig()
         }
         return this.showFile(parameters.groupName, parameters.fileName)
       })
@@ -278,7 +281,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
         this.scope.multipleSelectorLoading = false
         if (!this.scope.$$phase) this.scope.$digest()
-
       } catch (error) {
         this.toast(error.message || error)
       }
@@ -543,7 +545,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
         })
 
         const addedIds = [...new Set(this.scope.addedAgents.map(x => x.key))]
-        const deletedIds = [...new Set(this.scope.deletedAgents.map(x => x.key))]
+        const deletedIds = [
+          ...new Set(this.scope.deletedAgents.map(x => x.key))
+        ]
         return { addedIds, deletedIds }
       } catch (error) {
         throw new Error(error.message || error)
