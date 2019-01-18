@@ -51,7 +51,8 @@ define([
           allowClick: '=allowClick',
           implicitFilter: '=implicitFilter',
           rowSizes: '=rowSizes',
-          extraLimit: '=extraLimit'
+          extraLimit: '=extraLimit',
+          adminMode: '=adminMode'
         },
         controller(
           $rootScope,

@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(controllers) {
+define(['../../module', 'FileSaver'], function (controllers) {
   'use strict'
   class Groups {
     /**
@@ -23,7 +23,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $requestService,
       $beautifierJson,
       $notificationService,
-      $groupHandler
+      $groupHandler,
+      extensions
     ) {
       this.scope = $scope
       this.state = $state
@@ -59,7 +60,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.scope.filename = false
         }
       })
-
+      this.extensions = extensions
       this.scope.addingGroup = false
       this.scope.$on('groupsIsReloaded', () => {
         this.scope.groupsSelectedTab = false
@@ -75,7 +76,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
-        if(((parameters || {}).fileName || '').includes('agent.conf')){
+        if (((parameters || {}).fileName || '').includes('agent.conf')) {
           return this.scope.editGroupAgentConfig();
         }
         return this.showFile(parameters.groupName, parameters.fileName)
@@ -117,76 +118,83 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * On controller load
      */
     $onInit() {
-      this.scope.search = term => {
-        this.scope.$broadcast('wazuhSearch', { term })
-      }
-
-      this.scope.switchAddingGroup = () => {
-        this.scope.addingGroup = !this.scope.addingGroup
-      }
-    
-      this.scope.createGroup = async name => {
-        try {
-          this.scope.addingGroup = false
-          await this.groupHandler.createGroup(name)
-          this.toast(`Success. Group ${name} has been created`)
-        } catch (error) {
-          this.toast(`${error.message || error}`)
+      try {
+        this.scope.search = term => {
+          this.scope.$broadcast('wazuhSearch', { term })
         }
-        this.scope.$broadcast('wazuhSearch', {})
-      }
 
-      this.scope.loadGroup = (group, firstLoad) =>
-        this.loadGroup(group, firstLoad)
-      this.scope.toggle = () => (this.scope.lookingGroup = true)
-      this.scope.goBackToAgents = () => this.goBackToAgents()
-      this.scope.goBackFiles = () => this.goBackFiles()
-      this.scope.goBackGroups = () => this.goBackGroups()
-      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-
-      this.scope.showFile = (groupName, fileName) =>
-        this.showFile(groupName, fileName)
-      if (this.stateParams.group) {
-        if (
-          this.stateParams &&
-          this.stateParams.group &&
-          typeof this.stateParams.group === 'object'
-        ) {
-          this.mainGroup = this.stateParams.group
-          this.loadGroup(this.mainGroup)
+        this.scope.switchAddingGroup = () => {
+          this.scope.addingGroup = !this.scope.addingGroup
         }
+
+        this.scope.createGroup = async name => {
+          try {
+            this.scope.addingGroup = false
+            await this.groupHandler.createGroup(name)
+            this.toast(`Success. Group ${name} has been created`)
+          } catch (error) {
+            this.toast(`${error.message || error}`)
+          }
+          this.scope.$broadcast('wazuhSearch', {})
+        }
+
+        this.scope.loadGroup = (group, firstLoad) =>
+          this.loadGroup(group, firstLoad)
+        this.scope.toggle = () => (this.scope.lookingGroup = true)
+        this.scope.goBackToAgents = () => this.goBackToAgents()
+        this.scope.goBackFiles = () => this.goBackFiles()
+        this.scope.goBackGroups = () => this.goBackGroups()
+        this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+
+        this.scope.showFile = (groupName, fileName) =>
+          this.showFile(groupName, fileName)
+        if (this.stateParams.group) {
+          if (
+            this.stateParams &&
+            this.stateParams.group &&
+            typeof this.stateParams.group === 'object'
+          ) {
+            this.mainGroup = this.stateParams.group
+            this.loadGroup(this.mainGroup)
+          }
+        }
+
+        this.scope.reload = (element, searchTerm, addOffset, start) =>
+          this.reloadScope(element, searchTerm, addOffset, start)
+
+        this.scope.loadSelectedAgents = searchTerm =>
+          this.loadSelectedAgents(searchTerm)
+
+        this.scope.loadAllAgents = (searchTerm, start) =>
+          this.loadAllAgents(searchTerm, start)
+
+        this.scope.addMultipleAgents = toggle => this.addMultipleAgents(toggle)
+
+        this.scope.getItemsToSave = () => this.getItemsToSave()
+
+        this.scope.saveAddAgents = () => this.saveAddAgents()
+
+        this.scope.checkLimit = () => this.checkLimit()
+
+        this.scope.editGroupAgentConfig = group =>
+          this.editGroupAgentConfig(group)
+
+        this.scope.closeEditingFile = () => this.closeEditingFile()
+
+        this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+
+        this.scope.doSaveGroupAgentConfig = () => this.doSaveGroupAgentConfig()
+
+        this.scope.saveGroupAgentConfig = content =>
+          this.saveGroupAgentConfig(content)
+
+        this.scope.adminMode = this.extensions['admin'] === 'true'
+        
+        if (!this.scope.$$phase) this.scope.$digest()
+      } catch (err) {
+        this.scope.adminMode = false
+        this.toast('Error loading groups information')
       }
-
-      this.scope.reload = (element, searchTerm, addOffset, start) =>
-        this.reloadScope(element, searchTerm, addOffset, start)
-
-      this.scope.loadSelectedAgents = searchTerm =>
-        this.loadSelectedAgents(searchTerm)
-
-      this.scope.loadAllAgents = (searchTerm, start) =>
-        this.loadAllAgents(searchTerm, start)
-
-      this.scope.addMultipleAgents = toggle => this.addMultipleAgents(toggle)
-
-      this.scope.getItemsToSave = () => this.getItemsToSave()
-
-      this.scope.saveAddAgents = () => this.saveAddAgents()
-
-      this.scope.checkLimit = () => this.checkLimit()
-
-      this.scope.editGroupAgentConfig = group =>
-        this.editGroupAgentConfig(group)
-
-      this.scope.closeEditingFile = () => this.closeEditingFile()
-
-      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
-
-      this.scope.doSaveGroupAgentConfig = () => this.doSaveGroupAgentConfig()
-
-      this.scope.saveGroupAgentConfig = content =>
-        this.saveGroupAgentConfig(content)
-
-      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     /**
@@ -266,8 +274,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
             await this.scope.loadSelectedAgents(searchTerm)
           }
         }
-          this.scope.multipleSelectorLoading = false
-          if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.multipleSelectorLoading = false
+        if (!this.scope.$$phase) this.scope.$digest()
 
       } catch (error) {
         this.toast(error.message || error)
