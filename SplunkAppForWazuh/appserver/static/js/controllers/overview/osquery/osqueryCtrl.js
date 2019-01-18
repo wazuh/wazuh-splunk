@@ -79,7 +79,9 @@ define([
         ),
         new Table(
           'topPacks',
-          `${this.filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
+          `${
+            this.filters
+          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
           'topPacks',
           this.scope
         ),
@@ -110,7 +112,9 @@ define([
 
       this.topPacksTable = new rawTableDataService(
         'topPacksTable',
-        `${this.filters} sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
+        `${
+          this.filters
+        } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
         'topPacksTableToken',
         '$result$',
         this.scope

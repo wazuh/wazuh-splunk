@@ -82,11 +82,11 @@ define([
         this.agent.data.data &&
         this.agent.data.data.id
       )
-      this.currentDataService.addFilter(
-        `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
-      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
-      
+
       this.vizz = [
         /**
          * Visualizations

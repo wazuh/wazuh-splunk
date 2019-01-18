@@ -103,7 +103,9 @@ define([
         ),
         new Table(
           'top5Buckets',
-          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+          `${
+            this.filters
+          } sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
           'top5Buckets',
           this.scope
         ),
@@ -119,7 +121,9 @@ define([
 
       this.top5BucketsTable = new rawTableDataService(
         'top5BucketsTable',
-        `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+        `${
+          this.filters
+        } sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
         'top5BucketsTableToken',
         '$result$',
         this.scope

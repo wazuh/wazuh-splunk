@@ -59,37 +59,41 @@
   </div>
   <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="!agent.error && agent.group">
     <md-card flex class="wz-metric-color wz-md-card">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-word-break" flex ng-if="agent.group">
-          Groups: <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{
+      <md-card-content class="wz-padding-metric">
+        <div class="layout-row wz-word-break">
+          <span class="wz-text-link" ng-if='adminMode' ng-click="switchGroupEdit()"><i class="fa fa-fw fa-plus-circle"></i>&nbsp;</span>Groups:&nbsp;
+          <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(agent,$index)">{{
             group }}&nbsp;</span>
-          <span ng-if="!editGroup" class="wz-text-link" ng-click="switchGroupEdit()"><i class="fa fa-fw fa-plus-circle"></i></span>
         </div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="editGroup">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="column" class="wz-padding-metric">
-      <div layout="row">
+        <div layout="row" class="wz-margin-top-10" ng-if="editGroup && !addingGroupToAgent">
           <div class="wz-word-break" flex ng-if="groups && groups.length">
-            Available groups: 
-
+            Available groups:
           </div>
-        <div class="wz-word-break" flex ng-if="!groups || !groups.length">
-          There are no more groups available.
+          <div class="wz-word-break" flex ng-if="!groups || !groups.length">
+            There are no more groups available.
+          </div>
+
         </div>
-        <span flex></span>
-        <span class="wz-text-link" ng-click="switchGroupEdit()">Close</span>
-      </div>
-      <div>
-        <span ng-repeat="group in groups" class="wz-text-bold wz-text-link" ng-click="showConfirm($event,group)">{{ group }}&nbsp;</span>
-      </div>
+        <div ng-if="editGroup && !addingGroupToAgent" class="wz-margin-top-4 wz-margin-left-10" ng-if="groups && groups.length">
+          <span ng-repeat="group in groups" class="wz-text-bold wz-text-link" ng-click="showConfirmAddGroup(group)">{{
+            group }}&nbsp;</span>
+        </div>
+
+        <div class="wz-margin-top-10" ng-if="editGroup && addingGroupToAgent">
+          <div layout="row">
+            <span class="euiToastHeader__title font-size-12">Group {{addingGroupToAgent}} will be added to agent
+              {{agent.id}}</span>
+          </div>
+          <div layout="row">
+            <md-button class="cancelBtnAgents" type="button" ng-click="cancelAddGroup()"><i aria-hidden='true' class='fa fa-fw fa-close'></i>
+              Cancel</md-button>
+            <md-button class="agreeBtnAgents" type="button" ng-click="confirmAddGroup(addingGroupToAgent)"><i
+                aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
+          </div>
+        </div>
       </md-card-content>
     </md-card>
   </div>
-
 
 
   <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if='!agent.error'>
@@ -166,11 +170,11 @@
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Configuration to ensure compliance with security policies, standards and hardening guides'"></wz-welcome-card>
-              <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-                title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
-                description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
-              <wz-welcome-card ng-if="oscap && isLinux" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
-                title="'Open SCAP'" ui-sref='ag-os({id:agent.id})' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+              title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
+              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
+            <wz-welcome-card ng-if="oscap && isLinux" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+              title="'Open SCAP'" ui-sref='ag-os({id:agent.id})' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
             <wz-welcome-card ng-if='ciscat' ui-sref='ag-ciscat({id:agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
           </div>

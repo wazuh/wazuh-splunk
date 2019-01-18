@@ -51,7 +51,8 @@ define([
         allowClick: '=allowClick',
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
-        extraLimit: '=extraLimit'
+        extraLimit: '=extraLimit',
+        adminMode: '=adminMode'
       },
       controller(
         $rootScope,
@@ -65,7 +66,6 @@ define([
         $notificationService,
         $tableFilterService,
         $window,
-        $mdDialog,
         $groupHandler
       ) {
         /**
@@ -109,7 +109,7 @@ define([
             $navigationService,
             $currentDataService,
             $scope,
-            state,
+            state
           )
 
         /**
@@ -323,54 +323,49 @@ define([
           $rootScope.$broadcast('editXmlFile', { target: group })
         }
 
-        $scope.showConfirm = function(ev, agent) {
-          const group = instance.path.split('/').pop()
+        $scope.showConfirmRemoveGroup = (ev, group) => {
+          $scope.removingGroup =
+            $scope.removingGroup === group.name ? null : group.name
+        }
 
-          const confirm = $mdDialog.confirm({
-            controller: function($scope, $mdDialog) {
-              $scope.closeDialog = function() {
-                $mdDialog.hide()
-              }
-              $scope.confirmDialog = function() {
-                $groupHandler
-                  .removeAgentFromGroup(group, agent.id)
-                  .then(() => {
-                    $mdDialog.hide()
-                    init()
-                  })
-                  .then(() => $scope.$emit('updateGroupInformation', { group }))
-                  .catch(error =>
-                    this.toast(
-                      error.message || error,
-                      'Error removing agent from group'
-                    )
-                  )
-              }
-            },
-            template:
-              '<md-dialog class="modalTheme euiToast euiToast--danger euiGlobalToastListItem">' +
-              '<md-dialog-content>' +
-              '<div class="euiToastHeader">' +
-              '<i class="fa fa-exclamation-triangle"></i>' +
-              '<span class="euiToastHeader__title">The agent ' +
-              `${agent.id}` +
-              ' will be removed from group ' +
-              `${group}` +
-              '.</span>' +
-              '</div>' +
-              '</md-dialog-content>' +
-              '<md-dialog-actions>' +
-              '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">Cancel</button>' +
-              '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Agree</button>' +
-              '</md-dialog-actions>' +
-              '</md-dialog>',
-            targetEvent: ev,
-            hasBackdrop: false,
-            disableParentScroll: true,
-            clickOutsideToClose: true
-          })
-          $('body').addClass('md-dialog-body')
-          $mdDialog.show(confirm)
+        $scope.showConfirmRemoveAgentFromGroup = (ev, agent) => {
+          $scope.removingAgent =
+            $scope.removingAgent === agent.id ? null : agent.id
+        }
+
+        $scope.cancelRemoveAgent = () => {
+          $scope.removingAgent = null
+        }
+
+        $scope.cancelRemoveGroup = () => {
+          $scope.removingGroup = null
+        }
+
+        $scope.confirmRemoveAgent = async agent => {
+          try {
+            const group = instance.path.split('/').pop()
+            await $groupHandler.removeAgentFromGroup(group, agent)
+            $notificationService.showSimpleToast(
+              `Success. Agent ${agent} has been removed from ${group}`
+            )
+          } catch (error) {
+            $notificationService.showSimpleToast(`${error.message || error}`)
+          }
+          $scope.removingAgent = null
+          return init()
+        }
+
+        $scope.confirmRemoveGroup = async group => {
+          try {
+            await $groupHandler.removeGroup(group)
+            $notificationService.showSimpleToast(
+              `Success. Group ${group} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showSimpleToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
         }
       },
       templateUrl:

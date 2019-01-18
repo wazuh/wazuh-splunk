@@ -46,6 +46,7 @@ define(['../../module'], function(app) {
       this.extensions = extensions
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
+      this.scope.addingGroupToAgent = false
       this.groups = groups
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
@@ -55,181 +56,136 @@ define(['../../module'], function(app) {
      * On controller loads
      */
     $onInit() {
-      if (
-        this.agent.length &&
-        typeof this.agent[0] === 'object' &&
-        this.agent[0].data &&
-        typeof this.agent[0].data.data === 'object'
-      ) {
-        this.scope.agent = this.agent[0].data.data
-
-        this.scope.agentOS =
-          this.scope.agent &&
-          this.scope.agent.os &&
-          this.scope.agent.os.name &&
-          this.scope.agent.os.codename &&
-          this.scope.agent.os.version
-            ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                .codename || '-'} ${this.scope.agent.os.version || '-'}`
-            : 'Unknown'
-
-        this.scope.syscheck =
-          this.agent.length > 0 &&
-          typeof this.agent[1] === 'object' &&
-          typeof this.agent[1].data === 'object' &&
-          !this.agent[1].data.error
-            ? this.agent[1].data.data
-            : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
-        this.scope.id = this.stateParams.id
-        this.scope.rootcheck =
-          this.agent.length > 1 &&
-          typeof this.agent[2] === 'object' &&
-          typeof this.agent[2].data === 'object' &&
-          !this.agent[2].data.error
-            ? this.agent[2].data.data
-            : { start: 'Unknown', end: 'Unknown' }
-        if (!this.scope.agent.error) {
-          const keys = Object.keys(this.extensions)
-          keys.map(key => {
-            this.extensions[key] === 'true'
-              ? (this.scope[key] = key)
-              : (this.scope[key] = null)
-          })
-
-          this.scope.groups = this.groups.data.data.items
-            .map(item => item.name)
-            .filter(
-              item =>
-                this.scope.agent.group && !this.scope.agent.group.includes(item)
-            )
-          this.scope.formatAgentStatus = agentStatus =>
-            this.formatAgentStatus(agentStatus)
-          this.scope.getAgentStatusClass = agentStatus =>
-            this.getAgentStatusClass(agentStatus)
-          this.scope.goGroups = group => this.goGroups(group)
-          this.scope.switchGroupEdit = () => this.switchGroupEdit()
-
-          this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
-            this.scope.syscheck.start,
-            this.scope.syscheck.end
-          ).duration
-          this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(
-            this.scope.rootcheck.start,
-            this.scope.rootcheck.end
-          ).duration
-          this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(
-            this.scope.syscheck.start,
-            this.scope.syscheck.end
-          ).inProgress
-          this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(
-            this.scope.rootcheck.start,
-            this.scope.rootcheck.end
-          ).inProgress
-
-          this.scope.showConfirm = (ev, group) => {
-            const confirm = this.$mdDialog.confirm({
-              controller: function(
-                $scope,
-                myScope,
-                $mdDialog,
-                $groupHandler,
-                $requestService,
-                $notificationService
-              ) {
-                $scope.myScope = myScope
-                $scope.closeDialog = () => {
-                  $mdDialog.hide()
-                  $('body').removeClass('md-dialog-body')
-                }
-                $scope.confirmDialog = () => {
-                  $groupHandler
-                    .addAgentToGroup(group, $scope.myScope.agent.id)
-                    .then(() =>
-                      $requestService.apiReq(
-                        `/agents/${$scope.myScope.agent.id}`,
-                        {}
-                      )
-                    )
-                    .then(agent => {
-                      $mdDialog.hide()
-                      $('body').removeClass('md-dialog-body')
-                      $scope.myScope.agent.group = agent.data.data.group
-                      $scope.myScope.groups = $scope.myScope.groups.filter(
-                        item => !agent.data.data.group.includes(item)
-                      )
-                      if (!$scope.myScope.$$phase) $scope.myScope.$digest()
-                    })
-                    .catch(error =>
-                      $notificationService.showSimpleToast(
-                        error.message || error,
-                        'Error adding group to agent'
-                      )
-                    )
-                }
-              },
-              template:
-                '<md-dialog class="modalTheme euiToast euiToast--danger euiGlobalToastListItem">' +
-                '<md-dialog-content>' +
-                '<div class="euiToastHeader">' +
-                '<i class="fa fa-exclamation-triangle"></i>' +
-                '<span class="euiToastHeader__title">Add group ' +
-                `${group}` +
-                ' to agent ' +
-                `${this.scope.agent.id}` +
-                '?</span>' +
-                '</div>' +
-                '</md-dialog-content>' +
-                '<md-dialog-actions>' +
-                '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">Cancel</button>' +
-                '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Agree</button>' +
-                '</md-dialog-actions>' +
-                '</md-dialog>',
-              targetEvent: ev,
-              hasBackdrop: false,
-              clickOutsideToClose: true,
-              disableParentScroll: true,
-              locals: {
-                myScope: this.scope
-              }
-            })
-            $('body').addClass('md-dialog-body')
-            this.$mdDialog.show(confirm)
-          }
-        }
-        //Check OS type
+      try {
         if (
-          this.agent[0].data.data &&
-          this.agent[0].data.data.os &&
-          this.agent[0].data.data.os.uname
+          this.agent.length &&
+          typeof this.agent[0] === 'object' &&
+          this.agent[0].data &&
+          typeof this.agent[0].data.data === 'object'
         ) {
-          this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
-            'Linux'
-          )
-        }
-        if (this.scope.agent.status == 'Never connected') {
-          this.scope.agent.os = {
-            name: 'Unknown',
-            codename: 'Unknown',
-            version: 'Unknown'
+          this.scope.agent = this.agent[0].data.data
+
+          this.scope.agentOS =
+            this.scope.agent &&
+            this.scope.agent.os &&
+            this.scope.agent.os.name &&
+            this.scope.agent.os.codename &&
+            this.scope.agent.os.version
+              ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
+                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
+              : 'Unknown'
+
+          this.scope.syscheck =
+            this.agent.length > 0 &&
+            typeof this.agent[1] === 'object' &&
+            typeof this.agent[1].data === 'object' &&
+            !this.agent[1].data.error
+              ? this.agent[1].data.data
+              : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
+          this.scope.id = this.stateParams.id
+          this.scope.rootcheck =
+            this.agent.length > 1 &&
+            typeof this.agent[2] === 'object' &&
+            typeof this.agent[2].data === 'object' &&
+            !this.agent[2].data.error
+              ? this.agent[2].data.data
+              : { start: 'Unknown', end: 'Unknown' }
+          if (!this.scope.agent.error) {
+            const keys = Object.keys(this.extensions)
+            keys.map(key => {
+              this.extensions[key] === 'true'
+                ? (this.scope[key] = key)
+                : (this.scope[key] = null)
+            })
+
+            this.scope.groups = this.groups.data.data.items
+              .map(item => item.name)
+              .filter(
+                item =>
+                  this.scope.agent.group &&
+                  !this.scope.agent.group.includes(item)
+              )
+            this.scope.formatAgentStatus = agentStatus =>
+              this.formatAgentStatus(agentStatus)
+            this.scope.getAgentStatusClass = agentStatus =>
+              this.getAgentStatusClass(agentStatus)
+            this.scope.goGroups = group => this.goGroups(group)
+
+            this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
+              this.scope.syscheck.start,
+              this.scope.syscheck.end
+            ).duration
+            this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(
+              this.scope.rootcheck.start,
+              this.scope.rootcheck.end
+            ).duration
+            this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(
+              this.scope.syscheck.start,
+              this.scope.syscheck.end
+            ).inProgress
+            this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(
+              this.scope.rootcheck.start,
+              this.scope.rootcheck.end
+            ).inProgress
+
+            this.scope.switchGroupEdit = () => {
+              this.scope.addingGroupToAgent = false
+              this.switchGroupEdit()
+            }
+
+            this.scope.showConfirmAddGroup = group => {
+              this.scope.addingGroupToAgent = this.scope.addingGroupToAgent
+                ? false
+                : group
+            }
+
+            this.scope.cancelAddGroup = () =>
+              (this.scope.addingGroupToAgent = false)
+
+            this.scope.confirmAddGroup = group => {
+              this.groupHandler
+                .addAgentToGroup(group, this.scope.agent.id)
+                .then(() =>
+                  this.requestService.apiReq(`/agents/${this.scope.agent.id}`)
+                )
+                .then(agent => {
+                  this.scope.agent.group = agent.data.data.group
+                  this.scope.groups = this.scope.groups.filter(
+                    item => !agent.data.data.group.includes(item)
+                  )
+                  this.scope.addingGroupToAgent = false
+                  this.notificationService.showSimpleToast(
+                    `Group ${group} has been added.`
+                  )
+                  if (!this.scope.$$phase) this.scope.$digest()
+                })
+                .catch(error => {
+                  this.scope.addingGroupToAgent = false
+                  this.notificationService.showSimpleToast(
+                    error.message || error
+                  )
+                })
+            }
           }
-          this.scope.agent.group = null
-          this.scope.agent.lastKeepAlive = 'Never connected'
-        }
-      } else {
-        this.scope.agent = {
-          group: null,
-          name: 'Unknown',
-          id: null,
-          status: null,
-          ip: 'Unknown',
-          os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' },
-          version: 'Unknown',
-          dateAdd: 'Unknown',
-          lastKeepAlive: 'Unknown'
-        }
-        if (this.agent[0].data.error) {
-          this.scope.agent.error =
-            this.agent[0].data.message || this.agent[0].data.error
+          //Check OS type
+          if (
+            this.agent[0].data.data &&
+            this.agent[0].data.data.os &&
+            this.agent[0].data.data.os.uname
+          ) {
+            this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
+              'Linux'
+            )
+          }
+          if (this.scope.agent.status == 'Never connected') {
+            this.scope.agent.os = {
+              name: 'Unknown',
+              codename: 'Unknown',
+              version: 'Unknown'
+            }
+            this.scope.agent.group = null
+            this.scope.agent.lastKeepAlive = 'Never connected'
+          }
         } else {
           this.scope.agent = {
             group: null,
@@ -246,9 +202,30 @@ define(['../../module'], function(app) {
             this.scope.agent.error =
               this.agent[0].data.message || this.agent[0].data.error
           } else {
-            this.scope.agent.error = 'Unable to load agent data from API'
+            this.scope.agent = {
+              group: null,
+              name: 'Unknown',
+              id: null,
+              status: null,
+              ip: 'Unknown',
+              os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' },
+              version: 'Unknown',
+              dateAdd: 'Unknown',
+              lastKeepAlive: 'Unknown'
+            }
+            if (this.agent[0].data.error) {
+              this.scope.agent.error =
+                this.agent[0].data.message || this.agent[0].data.error
+            } else {
+              this.scope.agent.error = 'Unable to load agent data from API'
+            }
           }
         }
+        this.scope.adminMode = this.extensions['admin'] === 'true'
+      } catch (err) {
+        console.error('err ', err)
+        this.scope.adminMode = false
+        this.notificationService.showSimpleToast('Error loading agent data.')
       }
     }
 

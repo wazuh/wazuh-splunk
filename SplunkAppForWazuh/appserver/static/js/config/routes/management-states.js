@@ -161,7 +161,21 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('mg-groups')
           },
           controller: 'groupsCtrl',
-          params: { group: null }
+          params: { group: null },
+          resolve: {
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
 
         // Manager - Groups

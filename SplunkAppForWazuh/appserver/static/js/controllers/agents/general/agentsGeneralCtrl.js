@@ -287,7 +287,7 @@ define([
         this.scope.agentInfo = {
           id: this.agentInfo.id,
           name: this.agentInfo.name,
-          status: "Never connected"
+          status: 'Never connected'
         }
         this.agentInfo.id && this.agentInfo.name
           ? (this.agentInfo.error = false)

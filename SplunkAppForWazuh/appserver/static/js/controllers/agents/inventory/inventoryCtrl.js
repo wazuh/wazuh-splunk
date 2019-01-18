@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (module) {
+define(['../../module'], function(module) {
   'use strict'
   class Inventory {
     /**
@@ -63,10 +63,10 @@ define(['../../module'], function (module) {
 
         this.scope.agent =
           this.data.length &&
-            this.data.length > 4 &&
-            typeof this.data[4] === 'object' &&
-            this.data[4].data &&
-            this.data[4].data.data
+          this.data.length > 4 &&
+          typeof this.data[4] === 'object' &&
+          this.data[4].data &&
+          this.data[4].data.data
             ? this.data[4].data.data
             : { error: true }
         this.scope.search = (term, specificPath) => {
@@ -101,23 +101,23 @@ define(['../../module'], function (module) {
             Object.assign(this.processesDate, this.data[5].data.data)
         }
         this.init()
-        
+
         this.scope.startVis2Png = () =>
           this.reportingService.reportInventoryData(
             'agents-inventory',
             'Inventory Data',
-            '',//Filters,
-            [],//Visualizations,
-            {},//Metrics,
-            {},//tableResults
-            'inventory',//isAgent
-            this.scope.agent.id//agentId
+            '', //Filters,
+            [], //Visualizations,
+            {}, //Metrics,
+            {}, //tableResults
+            'inventory', //isAgent
+            this.scope.agent.id //agentId
           )
-        
+
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
         })
-        
+
         return
       } catch (error) {
         this.toast(error.message || error)
@@ -134,8 +134,9 @@ define(['../../module'], function (module) {
             `/syscollector/${this.scope.agent.id}/netiface`,
             {}
           )
-          this.netifaceResponse = ((resultNetiface || {}).data || {}).data || false
-        } catch (error) { } // eslint-disable-line
+          this.netifaceResponse =
+            ((resultNetiface || {}).data || {}).data || false
+        } catch (error) {} // eslint-disable-line
 
         // This API call may fail so we put it out of Promise.all
         try {
@@ -145,7 +146,7 @@ define(['../../module'], function (module) {
           )
           this.netaddrResponse =
             ((resultNetaddrResponse || {}).data || {}).data || false
-        } catch (error) { } // eslint-disable-line
+        } catch (error) {} // eslint-disable-line
 
         this.scope.syscollector = {
           hardware: this.data[0].data.data,
@@ -154,12 +155,14 @@ define(['../../module'], function (module) {
           ports: this.ports,
           netaddr: this.netaddrResponse,
           packagesDate:
-            this.packagesDate && this.packagesDate.items && this.packagesDate.items.length
+            this.packagesDate &&
+            this.packagesDate.items &&
+            this.packagesDate.items.length
               ? this.packagesDate.items[0].scan_time
               : 'Unknown',
           processesDate: ((this.processesDate || {}).items || []).length
-          ? this.processesDate.items[0].scan_time
-          : 'Unknown'
+            ? this.processesDate.items[0].scan_time
+            : 'Unknown'
         }
         if (!this.scope.$$phase) this.scope.$digest()
         return
