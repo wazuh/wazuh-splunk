@@ -68,7 +68,11 @@ define([
       this.groups = []
       this.linesWithClass = []
       this.widgets = []
+      try{
       this.admin = extensions['admin'] === 'true' ? true : false
+      } catch(err) {
+        this.admin = false
+      }
     }
 
     /**

@@ -620,8 +620,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
       this.scope.filename = false
       this.scope.fileViewer = false
       this.scope.editingFile = false
-      console.log('Go back: true,true,false,false')
-      console.log(!!this.scope.lookingGroup, !!this.scope.currentGroup, !!this.scope.addingAgents, !!this.scope.editingFile)
       if (!this.scope.$$phase) this.scope.$digest()
     }
 

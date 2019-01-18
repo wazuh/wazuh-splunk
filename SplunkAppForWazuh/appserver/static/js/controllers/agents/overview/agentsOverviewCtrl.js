@@ -218,7 +218,6 @@ define(['../../module'], function (app) {
           }
         }
         this.scope.adminMode = this.extensions['admin'] === 'true'
-        console.log('adminmode ', this.extensions, this.scope.adminMode)
       } catch (err) {
         console.error('err ',err)
         this.scope.adminMode = false
