@@ -2,6 +2,15 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
+    /**
+     * Class rules
+     * @param {*} $scope
+     * @param {*} $sce
+     * @param {*} $notificationService
+     * @param {*} $currentDataService
+     * @param {*} $tableFilterService
+     * @param {*} $csvRequestService
+     */
     constructor(
       $scope,
       $sce,
@@ -46,8 +55,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
-      this.scope.$on('wazuhShowRule', (event, parameters) => {
-        this.scope.currentRule = parameters.rule
+      this.scope.$on('wazuhShowRule', () => {
         this.scope.viewingDetail = true
         if (!this.scope.$$phase) this.scope.$digest()
       })

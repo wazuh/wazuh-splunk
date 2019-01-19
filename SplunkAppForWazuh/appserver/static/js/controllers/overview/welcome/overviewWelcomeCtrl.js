@@ -2,6 +2,12 @@ define(['../../module'], function(controllers) {
   'use strict'
 
   class OverviewWelcome {
+    /**
+     * Class Welcome
+     * @param {*} $scope
+     * @param {Object} agentsInfo
+     * @param {Object} extensions
+     */
     constructor($scope, agentsInfo, extensions) {
       this.scope = $scope
       this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
@@ -12,6 +18,9 @@ define(['../../module'], function(controllers) {
       this.extensions = extensions
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       const keys = Object.keys(this.extensions)
       keys.map(key =>

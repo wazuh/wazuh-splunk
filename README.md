@@ -7,7 +7,7 @@
 
  Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
-![](https://i.imgur.com/JnpWDc5.png)
+![](https://i.imgur.com/HkMjiwJ.png)
 ### Documentation
 
 -   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
@@ -36,6 +36,7 @@
 |      7.2.1     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.1.tar.gz> |
 |      7.2.1     |       3.7.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.1_7.2.1.tar.gz> |
 |      7.2.1     |       3.7.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.2_7.2.1.tar.gz> |
+|      7.2.3     |       3.8.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.0_7.2.3.tar.gz> |
 
 ## Upgrade
 
@@ -53,7 +54,7 @@ If you want to contribute to our project please don't hesitate to send a pull re
 
 ## Copyright & License
 
-Copyright (C) 2018 Wazuh, Inc.
+Copyright (C) 2015-2019 Wazuh, Inc.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 

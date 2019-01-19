@@ -13,7 +13,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
      * @param {String} value
      * @param {Object} bindedValue
      * @param {UrlTokenModel} submittedTokenModel
-     * @param {$scope} $scope
+     * @param {scope} scope
      */
     constructor(
       id,
@@ -22,7 +22,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       value,
       bindedValue,
       submittedTokenModel,
-      $scope,
+      scope,
       loading,
       loadingBindedValue
     ) {
@@ -40,7 +40,8 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           ]
         }),
         id,
-        search
+        search,
+        scope
       )
       this.submittedTokenModel = submittedTokenModel
       this.token = token
@@ -60,13 +61,13 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
 
       this.getSearch().on('search:progress', () => {
         if (this.loading) {
-          $scope[this.loadingBindedValue] = true
+          this.scope[this.loadingBindedValue] = true
         }
       })
 
       this.getSearch().on('search:done', () => {
         if (this.loading) {
-          $scope[this.loadingBindedValue] = false
+          this.scope[this.loadingBindedValue] = false
         }
         const result = submittedTokenModel.get(this.token)
         if (
@@ -75,30 +76,27 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           typeof result !== 'undefined' &&
           result !== 'undefined'
         ) {
-          $scope[bindedValue] = result
+          this.scope[bindedValue] = result
         } else {
-          $scope[bindedValue] = '0'
+          this.scope[bindedValue] = '0'
         }
-        if (!$scope.$$phase) $scope.$digest()
+        if (!this.scope.$$phase) this.scope.$digest()
       })
 
-      this.submittedTokenModel.on(
-        `change:${this.token}`,
-        (model, loadedToken, options) => {
-          const loadedTokenJS = this.submittedTokenModel.get(token)
-          if (
-            loadedTokenJS &&
-            loadedTokenJS !== value &&
-            typeof loadedTokenJS !== 'undefined' &&
-            loadedTokenJS !== 'undefined'
-          ) {
-            $scope[bindedValue] = loadedTokenJS
-          } else {
-            $scope[bindedValue] = '0'
-          }
-          if (!$scope.$$phase) $scope.$digest()
+      this.submittedTokenModel.on(`change:${this.token}`, () => {
+        const loadedTokenJS = this.submittedTokenModel.get(token)
+        if (
+          loadedTokenJS &&
+          loadedTokenJS !== value &&
+          typeof loadedTokenJS !== 'undefined' &&
+          loadedTokenJS !== 'undefined'
+        ) {
+          this.scope[bindedValue] = loadedTokenJS
+        } else {
+          this.scope[bindedValue] = '0'
         }
-      )
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       this.initSearch()
     }

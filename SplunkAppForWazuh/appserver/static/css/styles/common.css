@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Commons stylesheet
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,192 @@
 
 /* Custom healthcheck and blank screen styles */
 
-* {
+/* * {
   outline-color: transparent !important;
+} */
+
+.addGroupInput {
+  max-height: 20px !important;
+  max-width: 181px !important;
+  padding-right: 0 !important;
+}
+
+.addGroupBtn {
+  background-color: #0079a5 !important
+}
+
+.agreeBtn {
+  min-height: 0px !important;
+  max-height: 25px !important;
+  line-height: inherit !important;
+  color: #ffffff !important;
+  background-color: #0079a5 !important;
+  border-color: #0079a5 !important;
+}
+
+.cancelBtn {
+  color: #000000 !important;
+  background-color: #d9d9d9 !important;
+  border-color: #d9d9d9 !important;
+  min-height: 0px !important;
+  max-height: 25px !important;
+  line-height: inherit !important;
+}
+
+.agreeBtnAgents {
+  color: #ffffff !important;
+  background-color: #0079a5 !important;
+  border-color: #0079a5 !important;
+}
+
+.cancelBtnAgents {
+  color: #000000 !important;
+  background-color: #d9d9d9 !important;
+  border-color: #d9d9d9 !important;
+}
+
+.groupContentViewer {
+  height: calc('100vh - 550px');
+  min-height: 300px;
+} 
+
+.wz-circle-back-button{
+  border: 1px solid #d9d9d9!important;
+  margin: 0px 15px 0px 0px!important;
+}
+
+.wz-padding-bottom-14 {
+  padding-bottom: 14px;
+} 
+
+.wz-padding-left-8 {
+  padding-left: 8px
+}
+
+.wz-back-btn-absolute{
+  position: absolute!important;
+  top: 210px!important;
+}
+
+.cursor-wait {
+  cursor: wait !important;
+} 
+
+md-dialog-actions button {
+  color: white !important;
+  transition: none !important;
+  background-color: rgb(0, 85, 113) !important;
+}
+
+md-backdrop.md-opaque {
+  opacity: 1!important;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+md-backdrop.md-opaque.ng-leave {
+  opacity: 0!important;
+  transition: none!important;
+  transform: none!important;
+}
+
+.md-dialog-body{
+  top: 0!important;
+  width: 100vw!important;
+}
+
+md-dialog.modalTheme {
+  animation: none!important;
+  transition: none!important;
+  transform: none!important;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  width: 350px;
+}
+
+md-dialog.modalTheme .md-button{
+  margin-bottom: 0;
+}
+
+md-dialog.md-transition-out {
+  transition: none!important;
+  transform: none!important;
+}
+
+.md-dialog-container{
+  z-index: 100!important;
+}
+
+md-dialog .md-dialog-content {
+  padding: 0px!important;
+}
+
+md-dialog{
+  animation: 350ms cubic-bezier(0.34, 1.61, 0.7, 1)!important;
+  border: 1px solid #D9D9D9;
+  border-color: #c4cace;
+  border-top-color: #e2e5e7;
+  border-bottom-color: #a7b0b6;
+  min-width: 400px;
+  max-width: 768px;
+  padding: 15px;
+  box-shadow: 0 40px 64px 0 rgba(59, 79, 93, 0.1), 
+  0 24px 32px 0 rgba(59, 79, 93, 0.1), 
+  0 16px 16px 0 rgba(59, 79, 93, 0.1), 
+  0 8px 8px 0 rgba(59, 79, 93, 0.1), 
+  0 4px 4px 0 rgba(59, 79, 93, 0.1), 
+  0 2px 2px 0 rgba(59, 79, 93, 0.1)!important;
+}
+
+.md-cancel-button{
+  background-color: #ffffff !important;
+  color: #005571!important;
+}
+
+.md-title {
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 2.5rem;
+}
+
+md-dialog md-dialog-content .md-dialog-content-body{
+  padding-top: 15px;
+  margin-bottom: 45px;
+}
+
+md-dialog .md-dialog-content {
+  padding: 25px 5px 35px 5px;
+  overflow: hidden!important;
+  height: auto!important;
+}
+
+md-dialog .md-actions, md-dialog md-dialog-actions{
+  border: none!important;
+}
+
+
+
+md-dialog .md-button.md-primary:not(.md-cancel-button){
+  color: #ffffff;
+  background-color: #0079a5!important;
+  border-color: #0079a5!important;
+  border-radius: 4px;
+}
+
+md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
+  background-color: #005472!important;
+  border-color: #004c68!important;
+} 
+
+.table-hover > tbody > tr:hover {
+  background-color: #f0f0f0;
+}
+
+.action-btn-td{
+  font-size: 18px;
+  padding: 2px!important;
+  color: #0079a5;
 }
 
 .error-notify {
@@ -326,7 +510,44 @@ kbn-vis .vis-container {
 }
 
 .wz-play-dev-color {
-  color: #70ba56
+  color: #70ba56;
+  margin-right: 15px;
+}
+.wz-dev-column-separator{
+  width: 14px;
+  margin-top: 25px;
+  background: #dddddd;
+  float: left;
+  height: calc(100vh - 110px);
+  cursor: ew-resize;
+  text-align: center;
+  display:block!important;
+}
+
+.wz-dev-column-separator:hover {
+  background-color: #cce4ed;
+}
+
+.wz-dev-column-separator span {
+  height: calc(100vh - 110px);
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#wz-dev-left-column{
+  width: calc(30% - 7px);
+  min-width: calc(20% - 7px);
+  max-width: calc(80% - 7px);
+  float: left;
+  height: calc(100vh - 85px);
+}
+
+#wz-dev-right-column{
+  width: calc(70% - 7px);
+  min-width: calc(20% - 7px);
+  max-width: calc(80% - 7px);
+  float: left;
+  height: calc(100vh - 85px);
 }
 
 .wz-question-dev-color {
@@ -363,10 +584,54 @@ kbn-vis .vis-container {
   height: auto;
 }
 
-/* Class for define Wazuh logo width */
-.wz-logo-container {
-  width: 150px;
-  max-width: 150px;
+@supports not (-moz-appearance:none) {
+  @media (min-width: 1060px) {      
+      .wz-logo{        
+          content: url("../images/wazuh/png/wazuh_white_full.png");
+      } 
+      .wz-logo-container {
+          width: 150px;
+          max-width: 150px;
+      }
+  }
+  @media (max-width: 1059px) {    
+      .wz-logo{         
+         content: url("../images/wazuh/png/wazuh_white_iso.png");
+         max-height: 45px;
+         max-width: 28px;
+     } 
+     .wz-logo-container {
+          min-width: 20px!important;
+          max-width: 30px!important;
+          margin-right: 5px!important;
+      }
+  }
+}
+
+@supports (-moz-appearance:none) {
+  @media (min-width: 1060px) {      
+      .wz-logo::after{        
+          content: url("../images/wazuh/png/wazuh_white_full.png");
+          display: flex;
+      } 
+      .wz-logo-container {
+          width: 185px;
+          max-width: 185px;
+      }
+  }
+  @media (max-width: 1059px) {    
+      .wz-logo::after{         
+          content: url("../images/wazuh/png/wazuh_white_iso.png") ;
+          display: flex;
+          max-height: 45px;
+          max-width: 28px;
+      } 
+      .wz-logo-container {
+              min-width: 20px;
+              max-width: 30px;
+              margin-right: 5px;
+          }
+      }
 }
 
 /* Unclassified but important Wazuh app component styles */
@@ -518,4 +783,92 @@ kbn-vis .vis-container {
 
 .wz-word-break {
   word-break: break-all;
+}
+
+.small-text{
+  font-size: 12px;
+  padding: 10px;
+}
+
+.wz-icon {
+  width: 35px !important;
+  height: 35px !important;
+}
+
+md-backdrop.md-opaque {
+  opacity: 1!important;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+md-backdrop.md-opaque.ng-leave {
+  opacity: 0!important;
+  transition: none!important;
+  transform: none!important;
+}
+
+md-dialog.md-transition-in {
+  transition: 150ms ease-in!important;
+  transform: none!important;
+  animation: 350ms cubic-bezier(0.34, 1.61, 0.7, 1);
+}
+
+
+md-dialog .md-dialog-content {
+  padding: 0px!important;
+}
+
+md-dialog{
+  animation: 350ms cubic-bezier(0.34, 1.61, 0.7, 1)!important;
+  border: 1px solid #D9D9D9;
+  border-color: #c4cace;
+  border-top-color: #e2e5e7;
+  border-bottom-color: #a7b0b6;
+  min-width: 400px;
+  max-width: 768px;
+  padding: 15px;
+  box-shadow: 0 40px 64px 0 rgba(59, 79, 93, 0.1), 
+  0 24px 32px 0 rgba(59, 79, 93, 0.1), 
+  0 16px 16px 0 rgba(59, 79, 93, 0.1), 
+  0 8px 8px 0 rgba(59, 79, 93, 0.1), 
+  0 4px 4px 0 rgba(59, 79, 93, 0.1), 
+  0 2px 2px 0 rgba(59, 79, 93, 0.1)!important;
+}
+
+.md-cancel-button{
+  background-color: #ffffff !important;
+  color: #005571!important;
+}
+
+.md-title {
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 2.5rem;
+}
+
+md-dialog md-dialog-content .md-dialog-content-body{
+  padding-top: 15px;
+  margin-bottom: 45px;
+}
+
+md-dialog .md-dialog-content {
+  padding: 25px 5px 35px 5px;
+  overflow: hidden!important;
+  height: auto!important;
+}
+
+md-dialog .md-actions, md-dialog md-dialog-actions{
+  border: none!important;
+}
+
+md-dialog .md-button.md-primary:not(.md-cancel-button){
+  color: #ffffff;
+  background-color: #0079a5!important;
+  border-color: #0079a5!important;
+  border-radius: 4px;
+}
+
+md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
+  background-color: #005472!important;
+  border-color: #004c68!important;
 }

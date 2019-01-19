@@ -15,4 +15,7 @@
 @import "animated.css";
 @import "../thirdPartyStyles/font-awesome/css/font-awesome.css";
 @import "../../js/directives/wz-menu/wz-menu.css";
+@import "../../js/directives/wz-tag-filter/wz-tag-filter.css";
 @import "wz_tooltips.css";
+@import "xml-editor.css";
+@import "wz-multiple-selector.css";

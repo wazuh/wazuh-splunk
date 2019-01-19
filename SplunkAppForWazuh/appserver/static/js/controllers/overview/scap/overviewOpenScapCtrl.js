@@ -7,7 +7,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/visualizations/search/search-handler'
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   LinearChart,
@@ -17,16 +18,34 @@ define([
   Table,
   TimePicker,
   Dropdown,
-  SearchHandler
+  SearchHandler,
+  rawTableDataService
 ) {
   'use strict'
 
   class OpenSCAP {
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    /**
+     * OpenSCAP class
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     */
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
+      this.tableResults = {}
       this.currentDataService = $currentDataService
-      this.currentDataService.addFilter(`{"rule.groups":"oscap", "implicit":true}`)
+      this.currentDataService.addFilter(
+        `{"rule.groups":"oscap", "implicit":true}`
+      )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -38,7 +57,7 @@ define([
         this.launchSearches()
       })
 
-      this.scope.$on('$destroy', () => {  
+      this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
         this.dropdown.destroy()
         this.vizz.map(vizz => vizz.destroy())
@@ -51,10 +70,11 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh  rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
+        } sourcetype=wazuh  rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
         'oscap.scan.profile.title',
         '$form.profile$',
-        'dropDownInput'
+        'dropDownInput',
+        this.scope
       )
       this.vizz = [
         /**
@@ -101,61 +121,139 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups!=\"syslog\" oscap.scan.profile.title=\"$profile$\" | top agent.name`,
-          'agentsVizz'
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
+          'agentsVizz',
+          this.scope
         ),
         new LinearChart(
           'profilesVizz',
           `${
             this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-          'profilesVizz'
+          'profilesVizz',
+          this.scope
         ),
         new ColumnChart(
           'contentVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'contentVizz'
+          'contentVizz',
+          this.scope
         ),
         new PieChart(
           'severityVizz',
           `${this.filters} sourcetype=wazuh | top agent.name`,
-          'severityVizz'
+          'severityVizz',
+          this.scope
         ),
         new AreaChart(
           'top5AgentsVizz',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'top5AgentsVizz'
+          'top5AgentsVizz',
+          this.scope
         ),
         new PieChart(
           'top10AlertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
-          'top10AlertsVizz'
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
+          'top10AlertsVizz',
+          this.scope
         ),
         new PieChart(
           'top10HRisk',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result=\"fail\" rule.groups=\"oscap\" rule.groups=\"oscap-result\"  oscap.check.severity=\"high\" oscap.scan.profile.title=\"$profile$\" | top oscap.check.title`,
-          'top10HRisk'
+          } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
+          'top10HRisk',
+          this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'alertsSummaryVizz'
+          'alertsSummaryVizz',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', result => {
+        this.tableResults['Alerts Summary'] = result
+      })
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'overview-oscap',
+          'Open SCAP',
+          this.filters,
+          [
+            'agentsVizz',
+            'profilesVizz',
+            'contentVizz',
+            'severityVizz',
+            'top5AgentsVizz',
+            'top10AlertsVizz',
+            'top10HRisk',
+            'alertsSummaryVizz'
+          ],
+          this.reportMetrics,
+          this.tableResults
+        )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+          this.setReportMetrics()
+        } else {
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
+
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
     }
+
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Last score': this.scope.scapLastScore,
+        'Highest score': this.scope.scapHighestScore,
+        'Lowest score': this.scope.scapLowestScore
+      }
+    }
+
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

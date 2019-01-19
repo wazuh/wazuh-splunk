@@ -21,6 +21,7 @@ define([
         'index',
         '$form.index$',
         'inputIndexes',
+        this.scope,
         'wazuh',
         '2017-03-14T10:0:0',
         'now'

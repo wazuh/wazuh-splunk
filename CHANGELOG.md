@@ -1,5 +1,50 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+## Wazuh v3.8.0 - Splunk Enterprise v7.2.3 - Splunk app v3.8.0-rev-20
+
+### Added
+
+- Added group management features such as:
+    - Edit the group configuration ([#441](https://github.com/wazuh/splunk/pull/441)).
+    - Add/remove groups to/from an agent ([#441](https://github.com/wazuh/splunk/pull/441)).
+    - Add/remove agents to/from a group ([#478](https://github.com/wazuh/splunk/pull/478)).
+- Add the selected agent to groups from the Agent dashboard ([#414](https://github.com/wazuh/splunk/pull/414)).
+- Auto-complete endpoints in Dev Tools section ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
+- XML editor for group configurations ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
+- Multi-selector for attaching agents to groups dynamically ([#432](https://github.com/wazuh/wazuh-splunk/pull/432)).
+- Generate PDF reports from dashboards ([#446](https://github.com/wazuh/wazuh-splunk/pull/446)).
+- New directive for tables that don't need external data sources ([#400](https://github.com/wazuh/wazuh-splunk/pull/400)).
+- New search bar directive with interactive filters and suggestions ([#399](https://github.com/wazuh/wazuh-splunk/pull/399)).
+- Resizable columns by dragging in Dev-tools ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
+- Added `audit_key` (Who-data Audit keys) for configuration tab ([#444](https://github.com/wazuh/wazuh-splunk/pull/444)).
+- Added app info to settings about section 3.8 enhancement ([#448](https://github.com/wazuh/wazuh-splunk/pull/448)).
+- Added maild option to read data from ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
+
+
+### Changed
+- Tiny AWS rework ([#450](https://github.com/wazuh/wazuh-splunk/pull/450)).
+- Added a new table (network addresses) for agent inventory tab ([#452](https://github.com/wazuh/wazuh-splunk/pull/452)).
+- Improved code quality: ESLint convention for JavaScript and pep257 / flake8 for Python ([#416](https://github.com/wazuh/wazuh-splunk/pull/416)).
+- Deleted blue loading ring ([#426](https://github.com/wazuh/wazuh-splunk/pull/426)).
+- Disabled several extensions by default ([#445](https://github.com/wazuh/wazuh-splunk/pull/445)).
+- Updated localfile values in the configuration of an agent ([#451](https://github.com/wazuh/wazuh-splunk/pull/451)).
+- Dev tools is now showing the response as it is, like curl does ([#461](https://github.com/wazuh/wazuh-splunk/pull/461)).
+- Removed `unknown` as valid node name ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
+
+### Fixed
+
+- Fixed for mutex methods in database modules ([#442](https://github.com/wazuh/wazuh-splunk/pull/442)).
+- UX improvements and fixes ([#434](https://github.com/wazuh/wazuh-splunk/pull/434)).
+- Fixed unhandled error with trim() method ([#427](https://github.com/wazuh/wazuh-splunk/pull/427)).
+- Fixed undefined error in the agents search bar ([#425](https://github.com/wazuh/wazuh-splunk/pull/425)).
+- UX enhancements ([#433](https://github.com/wazuh/wazuh-splunk/pull/433)).
+- Fixed schema for `wazuh-monitoring-3x` index ([#436](https://github.com/wazuh/wazuh-splunk/pull/436)).
+- Fix overlapped play button in Dev-tools when the input box has a scrollbar ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
+- Fix Dev-tools behavior when parse json invalid blocks ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
+- Fix rule details for `list` and `info` parameters ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
+
+## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
+There are no changes for Splunk app for Wazuh in this version.
 
 ## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
 There are no changes for Splunk app for Wazuh in this version.
@@ -27,6 +72,7 @@ There are no changes for Splunk app for Wazuh in this version.
 - Fix a bug when using the Agent status monitoring alerts ([#361](https://github.com/wazuh/wazuh-splunk/pull/361)).
 - Added missing fields for syscollector network tables ([#359](https://github.com/wazuh/wazuh-splunk/pull/359)).
 - Fixed wrong value in a variable from the agents module ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
+- Updated searches for AWS section ([#374](https://github.com/wazuh/wazuh-splunk/pull/374)).
 
 ## Wazuh v3.7.0 - Splunk Enterprise v7.2.0 / Splunk Enterprise v7.2.1 - Splunk app v3.7.0-rev-17
 ### Added

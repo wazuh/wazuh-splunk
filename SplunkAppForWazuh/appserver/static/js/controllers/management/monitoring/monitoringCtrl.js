@@ -46,24 +46,28 @@ define([
         new LinearChart(
           'alertSummary',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertSummary'
+          'alertSummary',
+          this.scope
         ),
         new LinearChart(
           'alertNodeSummary',
           `${
             this.filters
           } sourcetype=wazuh | timechart span=1h count by cluster.node`,
-          'alertNodeSummary'
+          'alertNodeSummary',
+          this.scope
         ),
         new PieChart(
           'topNodes',
           `${this.filters} sourcetype=wazuh | top cluster.node`,
-          'topNodes'
+          'topNodes',
+          this.scope
         ),
         new ColumChart(
           'overviewNode',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
-          'overviewNode'
+          'overviewNode',
+          this.scope
         )
       ]
       const parsedResult = monitoringInfo.map(item =>
@@ -81,8 +85,10 @@ define([
 
       this.running = status.running
       this.enabled = status.enabled
-      this.scope.isClusterEnabled = $stateParams.isClusterEnabled || (this.enabled === 'yes')
-      this.scope.isClusterRunning = $stateParams.isClusterRunning || (this.running === 'yes')
+      this.scope.isClusterEnabled =
+        $stateParams.isClusterEnabled || this.enabled === 'yes'
+      this.scope.isClusterRunning =
+        $stateParams.isClusterRunning || this.running === 'yes'
       this.nodes = nodes
       this.nodesCount = nodes.totalItems
       this.configuration = configuration
@@ -184,8 +190,6 @@ define([
         }
       })
 
-
-
       this.scope.nodesCount = this.nodesCount
 
       this.scope.configuration = this.configuration
@@ -195,7 +199,6 @@ define([
       this.scope.agentsCount = this.agents.totalItems - 1
 
       this.scope.healthCheck = this.health
-
 
       /**
        * When controller is destroyed
@@ -224,6 +227,9 @@ define([
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    /**
+     * Checks status
+     */
     checkStatus() {
       if (this.enabled === 'no') {
         this.scope.isClusterEnabled = false
@@ -239,7 +245,7 @@ define([
         this.nodes.name = this.configuration.name
         this.nodes.master_node = this.configuration.node_name
       }
-      return (this.running === 'yes' && this.enabled === 'yes')
+      return this.running === 'yes' && this.enabled === 'yes'
     }
     /**
      * Sets the view conditions
@@ -272,7 +278,7 @@ define([
     launchSearches() {
       this.vizz[3].changeSearch(
         `${this.filters} cluster.node=${
-        this.scope.currentNode.name
+          this.scope.currentNode.name
         } sourcetype=wazuh | timechart span=2h count`
       )
     }

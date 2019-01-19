@@ -4,14 +4,41 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/search/search-handler'
-], function (app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler) {
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
+], function(
+  app,
+  ColumnChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  SearchHandler,
+  rawTableDataService
+) {
   'use strict'
 
   class AgentsCiscat {
-    constructor($urlTokenModel, $scope, $state, $currentDataService, agent) {
+    /**
+     *
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $state
+     * @param {*} $currentDataService
+     * @param {Object} agent
+     * @param {*} $reportingService
+     */
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $state,
+      $currentDataService,
+      agent,
+      $reportingService
+    ) {
       this.state = $state
       this.currentDataService = $currentDataService
+      this.reportingService = $reportingService
+      this.tableResults = {}
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
@@ -23,7 +50,15 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.vizz = [
         /**
@@ -32,7 +67,7 @@ define([
         new SearchHandler(
           `lastNotChecked`,
           `${
-          this.filters
+            this.filters
           } | search data.cis.notchecked=* | table data.cis.notchecked | head 1`,
           `filesAddedToken`,
           '$result.data.cis.notchecked$',
@@ -43,7 +78,7 @@ define([
         new SearchHandler(
           `lastPass`,
           `${
-          this.filters
+            this.filters
           } | search data.cis.pass=* | table data.cis.pass | head 1`,
           `lastPass`,
           '$result.data.cis.pass$',
@@ -54,7 +89,7 @@ define([
         new SearchHandler(
           `lastScanScore`,
           `${
-          this.filters
+            this.filters
           } | search data.cis.score=* | table data.cis.score | head 1`,
           `lastScanScore`,
           '$result.data.cis.score$',
@@ -65,7 +100,7 @@ define([
         new SearchHandler(
           `lastScanDate`,
           `${
-          this.filters
+            this.filters
           }  | search data.cis.timestamp=* | table data.cis.timestamp | head 1`,
           'lastScanDate',
           '$result.data.cis.timestamp$',
@@ -76,7 +111,7 @@ define([
         new SearchHandler(
           `lastErrors`,
           `${
-          this.filters
+            this.filters
           } | search data.cis.error=* | table data.cis.error | head 1`,
           'lastErrors',
           '$result.data.cis.error$',
@@ -87,7 +122,7 @@ define([
         new SearchHandler(
           `lastFails`,
           `${
-          this.filters
+            this.filters
           } | search data.cis.fail=* | table data.cis.fail | head 1`,
           'lastFails',
           '$result.data.cis.fail$',
@@ -98,7 +133,7 @@ define([
         new SearchHandler(
           `lastUnknown`,
           `${
-          this.filters
+            this.filters
           } | search data.unknown.fail=* | table data.cis.unknown | head 1`,
           'lastUnknown',
           '$result.data.cis.unknown$',
@@ -109,7 +144,7 @@ define([
         new SearchHandler(
           `lastScanBenchmark`,
           `${
-          this.filters
+            this.filters
           } rule.groups=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
           'lastScanBenchmark',
           '$result.data.cis.benchmark$',
@@ -123,31 +158,105 @@ define([
         new ColumnChart(
           'topCiscatGroups',
           `${
-          this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | top data.cis.group`,
-          'topCiscatGroups'
+            this.filters
+          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
+          'topCiscatGroups',
+          this.scope
         ),
         new LinearChart(
           'scanResultEvolution',
           `${
-          this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | timechart count by data.cis.result usenull=f`,
-          'scanResultEvolution'
+            this.filters
+          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
+          'scanResultEvolution',
+          this.scope
         ),
         new Table(
           'alertsSummary',
           `${
-          this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
-          'alertsSummary'
+            this.filters
+          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          'alertsSummary',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', result => {
+        this.tableResults['Alerts Summary'] = result
+      })
+
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'agents-ciscat',
+          'CIS-CAT',
+          this.filters,
+          ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
+          this.reportMetrics,
+          this.tableResults,
+          this.agentReportData
+        )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+          this.setReportMetrics()
+        } else {
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -162,16 +271,43 @@ define([
       })
     }
 
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus
+     */
     formatAgentStatus(agentStatus) {
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
     }
 
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus
+     */
     getAgentStatusClass(agentStatus) {
-      agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Last not checked': this.scope.lastNotChecked,
+        'Last pass': this.scope.lastPass,
+        'Last scan score': this.scope.lastScanScore,
+        'Last scan date': this.scope.lastScanDate,
+        'Last errores': this.scope.lastErrors,
+        'Last fails': this.scope.lastFails,
+        'Last unknown': this.scope.lastUnknown,
+        'Last scan benchmark': this.scope.lastScanBenchmark
+      }
+    }
+
+    /**
+     * Gets the filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

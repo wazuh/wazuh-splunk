@@ -7,6 +7,11 @@ define([
   'use strict'
 
   class MainCtrl {
+    /**
+     * Main controller class
+     * @param {*} $scope
+     * @param {*} $urlTokenModel
+     */
     constructor($scope, $urlTokenModel) {
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -23,11 +28,14 @@ define([
       })
         .render()
         .getContainerElement()
-        .appendChild($('.empty-body-class')[0])
+        .appendChild($('.empty-body-class')[0]) // eslint-disable-line
 
       this.dashboardController.ready()
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.scope.$on('loading', (event, data) => {
         if (data.status) this.scope.loading = true

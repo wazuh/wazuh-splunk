@@ -7,10 +7,26 @@ define([
 ], function(app, ColumnChart, PieChart, TimePicker, Dropdown) {
   'use strict'
   class OverviewGDPR {
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    /**
+     * Class GDPR
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
+     */
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
       this.getFilters = $currentDataService.getSerializedFilters
+      this.reportingService = $reportingService
+      this.tableResults = {}
       this.filters = this.getFilters()
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -28,10 +44,11 @@ define([
         'dropDownInputAgent',
         `${
           this.filters
-        } sourcetype=wazuh rule.gdpr{}=\"*\"| stats count by \"rule.gdpr{}\" | spath \"rule.gdpr{}\" | fields - count`,
+        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
-        'dropDownInput'
+        'dropDownInput',
+        this.scope
       )
 
       this.dropdownInstance = this.dropdown.getElement()
@@ -49,38 +66,78 @@ define([
           'gdprRequirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\"  | stats count by rule.gdpr{}`,
-          'gdprRequirements'
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
+          'gdprRequirements',
+          this.scope
         ),
         new PieChart(
           'groupsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by rule.groups`,
-          'groupsViz'
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
+          'groupsViz',
+          this.scope
         ),
         new PieChart(
           'agentsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count by agent.name`,
-          'agentsViz'
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
+          'agentsViz',
+          this.scope
         ),
         new ColumnChart(
           'requirementsByAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
-          'requirementsByAgents'
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          'requirementsByAgents',
+          this.scope
         ),
         new ColumnChart(
           'alertsSummaryViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}=\"$gdpr$\" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as \"Agent Name\", rule.gdpr{} as Requirement, rule.description as \"Rule description\", count as Count`,
-          'alertsSummaryViz'
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryViz',
+          this.scope
         )
       ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'overview-gdpr',
+          'GDPR',
+          this.filters,
+          [
+            'gdprRequirements',
+            'groupsViz',
+            'agentsViz',
+            'requirementsByAgents',
+            'alertsSummaryViz'
+          ],
+          {}, //Metrics,
+          this.tableResults
+        )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+        } else {
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       /**
        * When controller is destroyed
@@ -92,6 +149,9 @@ define([
       })
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()

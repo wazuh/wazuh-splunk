@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Agents controller
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function (app, SearchHandler, FileSaver) {
+], function(app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -38,7 +38,9 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
-      agentData
+      agentData,
+      $mdDialog,
+      $groupHandler
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -52,11 +54,12 @@ define([
       this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
+      this.$mdDialog = $mdDialog
+      this.groupHandler = $groupHandler
       const parsedResult = agentData.map(item =>
         item && item.data && item.data.data ? item.data.data : false
       )
-
-      const [
+      let [
         summary,
         lastAgent,
         platforms,
@@ -66,17 +69,40 @@ define([
       ] = parsedResult
 
       this.scope.agentsCountActive = summary.Active - 1
-      this.scope.lastAgent = lastAgent.items[0]
-      this.scope.os = platforms.items
-      this.scope.versions = versions.items
-      this.scope.nodes = nodes && nodes.items ? nodes.items : false
-      this.scope.groups = groups.items
+      this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
+      const os = platforms
+        ? platforms.items.map(item => item.os).filter(item => !!item)
+        : false
+      versions = versions
+        ? versions.items.map(item => item.version).filter(item => !!item)
+        : false
+      nodes =
+        nodes && nodes.items
+          ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+          : false
+      groups = groups
+        ? groups.items.map(item => item.name).filter(item => !!item)
+        : false
       this.scope.agentsCountDisconnected = summary.Disconnected
       this.scope.agentsCountNeverConnected = summary['Never connected']
-      this.scope.agentsCountTotal = summary.Total - 1
-      this.scope.agentsCoverity = this.scope.agentsCountTotal
-        ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) * 100
+      const agentsCountTotal = summary.Total - 1
+      this.scope.agentsCoverity = agentsCountTotal
+        ? (this.scope.agentsCountActive / agentsCountTotal) * 100
         : 0
+
+      this.scope.searchBarModel = {
+        status: ['Active', 'Disconnected', 'Never connected'],
+        group: groups ? groups : [],
+        version: versions ? versions : [],
+        'os.platform': os ? os.map(x => x.platform) : [],
+        'os.version': os ? os.map(x => x.version) : [],
+        'os.name': os ? os.map(x => x.name) : []
+      }
+
+      if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
+        this.scope.searchBarModel.node_name = nodes || []
+      }
+
       this.topAgent = new SearchHandler(
         'searchTopAgent',
         `index=wazuh ${this.filters} | top agent.name`,
@@ -95,10 +121,10 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.search = term => this.search(term)
-      this.scope.filter = filter => this.filter(filter)
+      this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
-      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.isClusterEnabled =
+        this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'
@@ -123,7 +149,7 @@ define([
           this.wzTableFilter.get()
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, 'agents.csv')
+        saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
         this.toast('Error downloading CSV')
@@ -132,19 +158,12 @@ define([
     }
 
     /**
-     * Searches by a term
-     * @param {String} term
+     * Launches the query
+     * @param {String} query
+     * @param {String} search
      */
-    search(term) {
-      this.scope.$broadcast('wazuhSearch', { term })
-    }
-
-    /**
-     * Filters by a term
-     * @param {String} filter
-     */
-    filter(filter) {
-      this.scope.$broadcast('wazuhFilter', { filter })
+    query(query, search) {
+      this.scope.$broadcast('wazuhQuery', { query, search })
     }
 
     /**

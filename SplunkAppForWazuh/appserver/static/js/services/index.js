@@ -11,9 +11,13 @@ define([
   './key-equivalence/keyEquivalenceService',
   './currentDataService/currentDataService',
   './beautifier/beautifier-json',
+  './reporting/reportingService',
+  './vis2png/vis2png',
   './notificationService/notificationService',
   './csv-request/csvRequestService',
   './xml-beautifier/xml-beautifier',
   './get-ids/getIdService',
-  './token-model/urlTokenModelService'
+  './token-model/urlTokenModelService',
+  './group-handler/group-handler',
+  './date-diff/dateDiffService'
 ], function() {})

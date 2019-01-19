@@ -1,6 +1,6 @@
 /*
  * Wazuh app - API request service
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ define(['../module'], function(app) {
         const payload = filterStr
           ? { path: path, id: id, filters: filterStr }
           : { path: path, id: id }
-        const output = await this.httpReq('POST', '/api/csv', $.param(payload))
+        const output = await this.httpReq('POST', '/api/csv', payload)
         if (output.data.error) {
           throw Error(output.data.error)
         }

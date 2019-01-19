@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Agents controller
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,18 @@ define(['../../module', '../../../utils/config-handler'], function(
   'use strict'
 
   class ConfigurationController {
+    /**
+     *
+     * @param {*} $scope
+     * @param {*} $requestService
+     * @param {*} $state
+     * @param {*} $stateParams
+     * @param {*} $currentDataService
+     * @param {*} $beautifierJson
+     * @param {*} $notificationService
+     * @param {Object} data
+     * @param {Object} agent
+     */
     constructor(
       $scope,
       $requestService,
@@ -29,7 +41,8 @@ define(['../../module', '../../../utils/config-handler'], function(
       agent
     ) {
       this.$scope = $scope
-      this.$scope.currentAgent = agent.data.data
+      this.agent = agent
+      this.$scope.currentAgent = this.agent.data.data
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.state = $state
@@ -50,8 +63,22 @@ define(['../../module', '../../../utils/config-handler'], function(
         data && data.data && data.data.data && data.data.data.synced
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.$scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.$scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      if (
+        this.agent.data.data &&
+        this.agent.data.data.os &&
+        this.agent.data.data.os.uname
+      ) {
+        this.$scope.isLinux = this.agent.data.data.os.uname.includes('Linux')
+      }
+
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = agentStatus => {

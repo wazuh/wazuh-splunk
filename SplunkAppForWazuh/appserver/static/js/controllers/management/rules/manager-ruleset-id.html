@@ -77,8 +77,7 @@
               <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> Groups</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
-              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.groups"
-                ng-click="addDetailFilter('group', item)">
+              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.groups" ng-click="addDetailFilter('group', item)">
                 {{item}}
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Filter by this group
@@ -90,78 +89,16 @@
         <!-- End groups section -->
 
         <!-- Details section -->
-        <md-card flex class="wz-md-card">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">
-              <i class="fa fa-fw fa-info" aria-hidden="true"></i> Details</span>
+        <md-card flex class="wz-md-card" ng-if="ruleInfo.details">
+          <md-card-content>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-info" aria-hidden="true"></i> Details</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div ng-if="ruleInfo.details.status" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Status</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.status}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.category" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Category</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.category}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.noalert" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">No alert</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.noalert}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.regex && !isArray(ruleInfo.details.regex)" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Regex</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.regex}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.parent" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Parent</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.parent}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.frequency" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Frequency</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.frequency}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.ignore" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Ignore</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.ignore}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.info" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Info</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.info}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.timeframe" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Timeframe</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.timeframe}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.options" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Options</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.options}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.type" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Type</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.type}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.if_sid" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">If SID</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.if_sid}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.if_matched_sid" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">If matched SID</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.if_matched_sid}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.id" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">ID</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.id}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.match && !isArray(ruleInfo.details.match)" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Match</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.match}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.prematch && !isArray(ruleInfo.details.prematch)" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Prematch</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.prematch}}</span>
-            </div>
-            <div ng-if="ruleInfo.details.decoded_as" layout="row" layout-wrap class="wz-padding-top-10">
-              <span flex="20">Decoded as</span>
-              <span class="wz-text-right color-grey">{{ruleInfo.details.decoded_as}}</span>
+            <div layout="row" class="wz-padding-top-10" ng-repeat="(key, value) in ruleInfo.details" ng-if='!isArray(value)'>
+              <span flex="20">{{key}}</span>
+              <span ng-if="!isObject(value)" class="wz-text-right color-grey">{{value}}</span>
+              <span ng-if="isObject(value)" class="color-grey">
+                <span ng-repeat="(key, value) in value">{{key}}: {{value}} <span ng-if="!$last">|</span> </span>
+              </span>
             </div>
           </md-card-content>
         </md-card>
@@ -178,8 +115,7 @@
               <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> PCI</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
-              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.pci"
-                ng-click="addDetailFilter('pci', item)">
+              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.pci" ng-click="addDetailFilter('pci', item)">
                 {{item}}
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Filter by this requirement
@@ -197,8 +133,7 @@
               <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> GDPR</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" layout-align="start start" layout-wrap>
-              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.gdpr"
-                ng-click="addDetailFilter('gdpr', item)">
+              <md-button class="md-primary wz-text-link" ng-repeat="item in ruleInfo.gdpr" ng-click="addDetailFilter('gdpr', item)">
                 {{item}}
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Filter by this requirement

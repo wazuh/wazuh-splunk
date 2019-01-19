@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Module for JSON beautify
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,6 +12,14 @@
 define(['../module'], function(module) {
   'use strict'
   module.service('$beautifierJson', function() {
+    /**
+     * Replaces strings
+     * @param {String} match
+     * @param {String} pIndent
+     * @param {String} pKey
+     * @param {String} pVal
+     * @param {String} pEnd
+     */
     const replacer = (match, pIndent, pKey, pVal, pEnd) => {
       let key = '<span class=json-key>'
       let val = '<span class=json-value>'
@@ -21,6 +29,11 @@ define(['../module'], function(module) {
       if (pVal) r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>'
       return r + (pEnd || '')
     }
+
+    /**
+     * Parses and formats a JSON Object
+     * @param {Object} obj
+     */
     const prettyPrint = obj => {
       let jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/gm
       return JSON.stringify(obj, null, 3)

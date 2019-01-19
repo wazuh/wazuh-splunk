@@ -1,17 +1,18 @@
-#
-# Wazuh app - Database backend
-# Copyright (C) 2018 Wazuh, Inc.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# Find more information about this on the LICENSE file.
-#
+# -*- coding: utf-8 -*-
+"""
+Wazuh app - Logs management backend.
+
+Copyright (C) 2015-2019 Wazuh, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Find more information about this on the LICENSE file.
+"""
+
 import logging
-import sys
-import os
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 import tailer
@@ -22,11 +23,10 @@ loggers = {}
 
 
 class log():
-    def __init__(self):
-        """
-        Setup a logger for the REST handler.
-        """
+    """Handle Wazuh app logs."""
 
+    def __init__(self):
+        """Setup a logger for the REST handler."""
         global loggers
 
         if loggers.get('splunk.appserver.%s.controllers.logs' % _APPNAME):
@@ -36,11 +36,14 @@ class log():
             self.logger = logging.getLogger(
                 'splunk.appserver.%s.controllers.logs' % _APPNAME)
             try:
-                # Prevent the log messages from being duplicated in the python.log file
                 self.logger.propagate = False
                 self.logger.setLevel(logging.DEBUG)
-                self.file_handler = logging.handlers.RotatingFileHandler(make_splunkhome_path(
-                    ['var', 'log', 'splunk', 'SplunkAppForWazuh.log']), maxBytes=100000000, backupCount=50)
+                self.file_handler = logging.handlers.RotatingFileHandler(
+                    make_splunkhome_path(
+                        ['var', 'log', 'splunk', 'SplunkAppForWazuh.log']),
+                    maxBytes=100000000,
+                    backupCount=50
+                )
                 self.formatter = logging.Formatter(
                     '{ "date": "%(asctime)s" , "level": "%(levelname)s" , "message": "%(message)s" }')
                 self.file_handler.setFormatter(self.formatter)
@@ -56,9 +59,11 @@ class log():
         self.logger.error(msg, exc_info=True)
 
     def info(self, msg):
+        """Info log message."""
         self.logger.info(msg)
 
     def get_last_log_lines(self, lines):
+        """Return the last logs messages."""
         try:
             current_tail = tailer.tail(open(
                 "/opt/splunk/var/log/splunk/SplunkAppForWazuh.log"), lines)

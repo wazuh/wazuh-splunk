@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Top nav bar directive
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ define(['../module'], function(directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
         // Listens for changes in the selected API
-        $scope.$on('updatedAPI', event => {
+        $scope.$on('updatedAPI', () => {
           update()
         })
 

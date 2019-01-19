@@ -4,15 +4,39 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/search/search-handler'
-], function(app, ColumnChart, LinearChart, Table, TimePicker, SearchHandler) {
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService'
+], function(
+  app,
+  ColumnChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  SearchHandler,
+  rawTableDataService
+) {
   'use strict'
   class Ciscat {
-    constructor($urlTokenModel, $scope, $currentDataService, $state) {
+    /**
+     * Class CIS-CAT
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     */
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService
+    ) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.addFilter = $currentDataService.addFilter
       this.getFilters = $currentDataService.getSerializedFilters
+      this.tableResults = {}
       this.currentDataService = $currentDataService
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -128,25 +152,77 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | top data.cis.group`,
-          'topCiscatGroups'
+          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
+          'topCiscatGroups',
+          this.scope
         ),
         new LinearChart(
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | timechart count by data.cis.result usenull=f`,
-          'scanResultEvolution'
+          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
+          'scanResultEvolution',
+          this.scope
         ),
         new Table(
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=\"ciscat\" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
-          'alertsSummary'
+          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          'alertsSummary',
+          this.scope
         )
       ]
+
+      this.alertsSummaryTable = new rawTableDataService(
+        'alertsSummaryTable',
+        `${
+          this.filters
+        }  sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+        'alertsSummaryTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.alertsSummaryTable)
+
+      this.alertsSummaryTable.getSearch().on('result', result => {
+        this.tableResults['Alerts Summary'] = result
+      })
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'overview-ciscat',
+          'CIS-CAT',
+          this.filters,
+          ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
+          this.reportMetrics,
+          this.tableResults
+        )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+          this.setReportMetrics()
+        } else {
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
     }
+
+    /**
+     * On controller loads
+     */
     $onInit() {
       this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
 
@@ -159,6 +235,25 @@ define([
       })
     }
 
+    /**
+     * Set report metrics
+     */
+    setReportMetrics() {
+      this.reportMetrics = {
+        'Last not checked': this.scope.lastNotChecked,
+        'Last pass': this.scope.lastPass,
+        'Last scan score': this.scope.lastScanScore,
+        'Last scan date': this.scope.lastScanDate,
+        'Last errors': this.scope.lastErrors,
+        'Last fails': this.scope.lastFails,
+        'Last unknown': this.scope.lastUnknown,
+        'Last scan benchmark': this.scope.lastScanBenchmark
+      }
+    }
+
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()

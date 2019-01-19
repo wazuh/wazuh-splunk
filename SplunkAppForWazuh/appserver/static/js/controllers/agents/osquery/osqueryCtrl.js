@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Agents controller
- * Copyright (C) 2018 Wazuh, Inc.
+ * Copyright (C) 2015-2019 Wazuh, Inc.
  *
  * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,13 +15,14 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker'
-], function (app, PieChart, AreaChart, Table, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
+], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
   'use strict'
 
   class OsqueryAgents {
     /**
-     * Class constructor
+     * Class Agents Osquery
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
@@ -29,6 +30,7 @@ define([
      * @param {Object} $notificationService
      * @param {Object} agent
      * @param {Object} osquery
+     * @param {*} $reportingService
      */
 
     constructor(
@@ -38,17 +40,30 @@ define([
       $notificationService,
       $currentDataService,
       $state,
-      osquery
+      osquery,
+      $reportingService
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.notificationService = $notificationService
+      this.tableResults = {}
+      this.reportingService = $reportingService
       this.osquery = osquery
-      this.currentDataService.addFilter(`{"rule.groups":"osquery", "implicit":true}`)
+      this.currentDataService.addFilter(
+        `{"rule.groups":"osquery", "implicit":true}`
+      )
       this.agent = agent
-      if (this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.id) this.currentDataService.addFilter(`{"agent.id":"${this.agent.data.data.id}", "implicit":true}`) 
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -71,35 +86,108 @@ define([
         new PieChart(
           'mostCommonPacks',
           `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
-          'mostCommonPacks'
+          'mostCommonPacks',
+          this.scope
         ),
         new AreaChart(
           'alertsPacksOverTime',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
-          'alertsPacksOverTime'
+          'alertsPacksOverTime',
+          this.scope
         ),
         new PieChart(
           'mostCommonActions',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | top "data.osquery.action" limit=5`,
-          'mostCommonActions'
+          'mostCommonActions',
+          this.scope
         ),
         new Table(
           'topRules',
           `${
-          this.filters
-          } sourcetype=wazuh  | top rule.id, rule.description limit=5`,
-          'topRules'
+            this.filters
+          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'topRules',
+          this.scope
         ),
         new AreaChart(
           'alertsOverTime',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertsOverTime'
+          'alertsOverTime',
+          this.scope
         )
       ]
+
+      this.topRulesTable = new rawTableDataService(
+        'topRulesTable',
+        `${
+          this.filters
+        } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+        'topRulesTableToken',
+        '$result$',
+        this.scope
+      )
+      this.vizz.push(this.topRulesTable)
+
+      this.topRulesTable.getSearch().on('result', result => {
+        this.tableResults['Top Rules'] = result
+      })
+
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'agents-osquery',
+          'Osquery',
+          this.filters,
+          [
+            'mostCommonPacks',
+            'alertsPacksOverTime',
+            'mostCommonActions',
+            'topRules',
+            'alertsOverTime'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+        } else {
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       /*
        * When controller is destroyed
@@ -110,8 +198,14 @@ define([
       })
     }
 
+    /**
+     * On controller loads
+     */
     $onInit() {
-      this.scope.agent = (this.agent && this.agent.data && this.agent.data.data) ? this.agent.data.data : { error: true }
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
       try {
         this.wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = this.wodles.filter(
@@ -132,6 +226,9 @@ define([
       }
     }
 
+    /**
+     * Get filters and launches the search
+     */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
