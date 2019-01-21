@@ -52,7 +52,8 @@ define([
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
-        adminMode: '=adminMode'
+        adminMode: '=adminMode',
+        emptyResults: '=emptyResults'
       },
       controller(
         $rootScope,
@@ -77,7 +78,7 @@ define([
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
         $scope.items = []
-
+        $scope.customEmptyResults = ($scope.emptyResults && typeof $scope.emptyResults === 'string') ? $scope.emptyResults : 'No results match your search criteria.'
         /**
          * Resizing. Calculate number of table rows depending on the screen height
          */
