@@ -83,7 +83,6 @@ define(['../module', 'jquery'], function(module, $) {
           section: isAgents ? 'agents' : 'overview',
           isAgents
         }
-        console.log("images ", data.images)
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
