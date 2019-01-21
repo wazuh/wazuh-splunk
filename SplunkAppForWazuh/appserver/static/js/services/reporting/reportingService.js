@@ -83,7 +83,7 @@ define(['../module', 'jquery'], function(module, $) {
           section: isAgents ? 'agents' : 'overview',
           isAgents
         }
-
+        console.log("images ", data.images)
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
@@ -142,7 +142,8 @@ define(['../module', 'jquery'], function(module, $) {
         const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
         const networkInterfaceData = netiface.data.data.items.map(i => {
-          return [i.name, i.mac, i.state, i.mtu.toString(), i.type]
+          i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
+          return [i.name, i.mac, i.state, i.mtu, i.type]
         })
         const networkInterfaceTable = {
           fields: networkInterfaceKeys,
@@ -154,7 +155,8 @@ define(['../module', 'jquery'], function(module, $) {
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
         const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
         const networkPortsData = ports.data.data.items.map(p => {
-          return [p.local.ip, p.local.port.toString(), p.state, p.protocol]
+          p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
+          return [p.local.ip, p.local.port, p.state, p.protocol]
         })
         const networkPortsTable = {
           fields: networkPortsKeys,
@@ -186,7 +188,8 @@ define(['../module', 'jquery'], function(module, $) {
         )
         const processesKeys = ['Name', 'Euser', 'Nice', 'State']
         const processesData = processes.data.data.items.map(n => {
-          return [n.name, n.euser, n.nice.toString(), n.state]
+          n.nice = n.nice ? n.nice.toString() : 'undefined'
+          return [n.name, n.euser, n.nice, n.state]
         })
         const processesTable = { fields: processesKeys, rows: processesData }
         tableResults['Processes'] = processesTable
