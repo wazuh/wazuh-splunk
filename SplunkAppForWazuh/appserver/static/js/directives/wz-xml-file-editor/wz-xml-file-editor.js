@@ -35,10 +35,31 @@ define([
       },
       controller($scope, $document, $notificationService, $groupHandler) {
         let firstTime = true
+        const parser = new DOMParser();// eslint-disable-line
+
+        const replaceIllegarXML = (t) => {
+          const oDom = parser.parseFromString(t, 'text/html')
+          const lines = oDom.documentElement.textContent.split('\n')
+          lines.forEach(line => {
+            let replace = line
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '\&lt;')
+              .replace(/>/g, '\&gt;')
+              .replace(/"/g, '\&quot;')
+              .replace(/'/g, '\&apos;')
+            if (replace != line) {
+              replace = replace.trim()
+              const regex = new RegExp(line.trim())
+              t = t.replace(regex, replace)
+            }
+          })
+          return t
+        }
+
         const checkXmlParseError = () => {
           try {
-            const parser = new DOMParser() // eslint-disable-line
-            const xml = $scope.xmlCodeBox.getValue()
+            const text = $scope.xmlCodeBox.getValue()
+            const xml = replaceIllegarXML(text)
             const xmlDoc = parser.parseFromString(
               '<file>' + xml + '</file>',
               'text/xml'
