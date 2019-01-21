@@ -78,7 +78,10 @@ define([
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
         $scope.items = []
-        $scope.customEmptyResults = ($scope.emptyResults && typeof $scope.emptyResults === 'string') ? $scope.emptyResults : 'Empty results for this table.'
+        $scope.customEmptyResults =
+          $scope.emptyResults && typeof $scope.emptyResults === 'string'
+            ? $scope.emptyResults
+            : 'Empty results for this table.'
         /**
          * Resizing. Calculate number of table rows depending on the screen height
          */
