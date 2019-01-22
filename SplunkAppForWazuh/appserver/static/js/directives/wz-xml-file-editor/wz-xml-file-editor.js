@@ -34,26 +34,27 @@ define([
         targetName: '=targetName'
       },
       controller($scope, $document, $notificationService, $groupHandler) {
+        String.prototype.xmlReplace = function (str, newstr) {
+          return this.split(str).join(newstr)
+        }
+
         let firstTime = true
         const parser = new DOMParser();// eslint-disable-line
 
-        const replaceIllegarXML = (t) => {
-          const oDom = parser.parseFromString(t, 'text/html')
+        const replaceIllegarXML = text => {
+          const oDom = parser.parseFromString(text, 'text/html')
           const lines = oDom.documentElement.textContent.split('\n')
-          lines.forEach(line => {
-            let replace = line
+          for (const line of lines) {
+            const sanitized = line
+              .trim()
               .replace(/&/g, '&amp;')
               .replace(/</g, '\&lt;')
               .replace(/>/g, '\&gt;')
               .replace(/"/g, '\&quot;')
               .replace(/'/g, '\&apos;')
-            if (replace != line) {
-              replace = replace.trim()
-              const regex = new RegExp(line.trim())
-              t = t.replace(regex, replace)
-            }
-          })
-          return t
+            text = text.xmlReplace(line.trim(), sanitized)
+          }
+          return text
         }
 
         const checkXmlParseError = () => {
