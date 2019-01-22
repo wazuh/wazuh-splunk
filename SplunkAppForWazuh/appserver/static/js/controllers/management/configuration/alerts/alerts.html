@@ -1,5 +1,5 @@
 <div flex="auto" layout="column" ng-if="configurationTab === 'alerts'" ng-init="(!agent || agent.id === '000') ? switchConfigurationSubTab('general-alerts') : switchConfigurationSubTab('labels')">
-  
+
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
@@ -187,8 +187,7 @@
   <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'labels'">
 
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']"
-      ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'])"></wz-no-config>
+    <wz-no-config flex error="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']" ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'])"></wz-no-config>
     <wz-no-config flex error="'not-present'" ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && !isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']) && !hasSize(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels)"></wz-no-config>
     <!-- End no configuration section -->
 
@@ -430,5 +429,3 @@
   <!-- End main content and right sidenav section -->
 
 </div>
-
-

@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (app) {
+define(['../module'], function(app) {
   'use strict'
   class WzConfigViewer {
     /**
@@ -24,7 +24,8 @@ define(['../module'], function (app) {
         xmlcontent: '=xmlcontent'
       }
       this.replace = true
-      this.templateUrl = BASE_URL +
+      this.templateUrl =
+        BASE_URL +
         '/static/app/SplunkAppForWazuh/js/directives/wz-config-viewer/wz-config-viewer.html'
     }
 
@@ -36,5 +37,5 @@ define(['../module'], function (app) {
     }
   }
 
-  app.directive('wzConfigViewer', (BASE_URL) => new WzConfigViewer(BASE_URL))
+  app.directive('wzConfigViewer', BASE_URL => new WzConfigViewer(BASE_URL))
 })
