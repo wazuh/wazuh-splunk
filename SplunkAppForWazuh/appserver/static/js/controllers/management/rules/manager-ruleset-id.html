@@ -193,7 +193,7 @@
       <div layout="row" ng-if="ruleInfo">
         <h1 class="md-headline wz-headline">
           <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i> Related rules</h1>
-        <button ng-if="ruleInfo.file && ruleInfo.groups.includes('local') && adminMode" ng-click="editRule(ruleInfo.file)" class="btn btn-primary btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+        <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn btn-primary btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
           Edit rule
         </button>
       </div>
@@ -202,7 +202,7 @@
           allow-click="true">
         </wazuh-table>
       </div>
-      <!-- XML editor for group agents -->
+      <!-- XML editor for rules -->
       <div ng-show="editingFile">
         <div layout="row" class="md-padding">
           <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
