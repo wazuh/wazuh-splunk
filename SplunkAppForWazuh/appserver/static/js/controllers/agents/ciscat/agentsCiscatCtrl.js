@@ -13,7 +13,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -178,23 +178,18 @@ define([
           } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -239,6 +234,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

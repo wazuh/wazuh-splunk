@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
+], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class OsqueryAgents {
@@ -118,23 +118,18 @@ define([
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertsOverTime',
           this.scope
+        ),
+        new RawTableDataService(
+          'topRulesTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'topRulesTableToken',
+          '$result$',
+          this.scope,
+          'Top Rules'
         )
       ]
-
-      this.topRulesTable = new rawTableDataService(
-        'topRulesTable',
-        `${
-          this.filters
-        } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-        'topRulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.topRulesTable)
-
-      this.topRulesTable.getSearch().on('result', result => {
-        this.tableResults['Top Rules'] = result
-      })
 
       // Set agent info
       try {
@@ -184,6 +179,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

@@ -13,7 +13,7 @@ define([
   Table,
   TimePicker,
   Dropdown,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -130,23 +130,18 @@ define([
           } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -196,6 +191,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
