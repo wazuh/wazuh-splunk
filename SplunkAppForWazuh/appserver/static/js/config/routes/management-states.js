@@ -108,7 +108,20 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
             ]
+
           }
         })
         // Manager - Decoders
@@ -146,6 +159,18 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('settings.api')
+                }
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
                 }
               }
             ]
