@@ -1,0 +1,32 @@
+<div flex layout="column" layout-align="start stretch">
+  <div layout="row">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+      <span>/ Edition </span>
+    </div>
+    <div flex></div>
+    <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId" ng-change="changeNode(nodeId)" aria-label="Select node">
+      <option ng-repeat="node in nodes" value="{{node.name}}">{{node.name}}</option>
+    </select>
+</div>
+
+<!-- Headline -->
+<div ng-show="!load" layout="column" layout-padding>
+  <span class="font-size-18">
+    <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Edition</span>
+    <span class="md-subheader">Modify the configuration of your managers</span>
+  </div>
+  <!-- End headline -->
+  <!-- Loading ring -->
+  <div class='uil-ring-css' ng-show="load">
+    <div></div>
+  </div>
+
+  
+<div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
+  <wz-xml-editor></wz-xml-editor>
+</div>
+
+    <!-- End last registered agent section -->
+  
+</div>
