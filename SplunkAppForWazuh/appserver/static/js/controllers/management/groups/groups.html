@@ -145,7 +145,7 @@
         <!-- CSV Download button section for groups -->
         <div layout="row" class="md-padding" ng-if="!lookingGroup">
           <span flex></span>
-          <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups')">Formatted
+          <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups', groups.csv)">Formatted
             <i aria-hidden="true" class="fa fa-fw fa-download"></i>
           </a>
         </div>
@@ -155,14 +155,14 @@
           <!-- Group agents table -->
           <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup" class="md-padding">
             <wazuh-table admin-mode='adminMode' flex path="'/agents/groups/' + currentGroup.name" keys="['id','name','ip','status','os.name','os.version','version']"
-              allow-click="true" row-sizes="[14,12,10]" />
+              allow-click="true" row-sizes="[14,12,10]" empty-results="'No agents were added to this group.'"/>
           </div>
           <!-- End Group agents table -->
 
           <!-- CSV Download button section for group agents -->
           <div layout="row" class="md-padding" ng-if="lookingGroup && groupsSelectedTab==='agents'">
             <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name)">Formatted
+            <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name, groups.csv)">Formatted
               <i aria-hidden="true" class="fa fa-fw fa-download"></i>
             </a>
           </div>
@@ -178,7 +178,7 @@
           <!-- CSV Download button section for group files-->
           <div layout="row" class="md-padding" ng-if="lookingGroup && groupsSelectedTab==='files' && !file">
             <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files')">Formatted
+            <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files', groups.csv)">Formatted
               <i aria-hidden="true" class="fa fa-fw fa-download"></i>
             </a>
           </div>
