@@ -346,6 +346,33 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // ossec.conf edition
+        .state('mg-edition', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-edition')
+          },
+          controller: 'editionCtrl',
+          resolve: {
+            nodes: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.httpReq(
+                    'GET',
+                    '/cluster/nodes'
+                  )
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
+        })
     }
   ])
 })
