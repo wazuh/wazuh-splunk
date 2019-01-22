@@ -98,7 +98,9 @@ define([
           try {
             $scope.xmlCodeBox.setValue(data || $scope.data)
             firstTime = false
-            $scope.xmlCodeBox.refresh()
+            setTimeout( () => {
+              $scope.xmlCodeBox.refresh()
+            }, 1)
             autoFormat()
           } catch (error) {
             $notificationService.showSimpleToast('Fetching original file')
