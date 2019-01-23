@@ -67,7 +67,8 @@ define([
         $notificationService,
         $tableFilterService,
         $window,
-        $groupHandler
+        $groupHandler,
+        $sce
       ) {
         /**
          * Init variables
@@ -225,7 +226,8 @@ define([
             $keyEquivalenceService.equivalences(),
             key,
             item,
-            instance.path
+            instance.path,
+            $sce
           )
 
         /**
