@@ -177,6 +177,45 @@ define(['../module'], function(module) {
           }
         })
 
+        // Manager - CDB List
+        .state('mg-cdb', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-cdb')
+          },
+          controller: 'managerCdbCtrl',
+          params: { filters: null }
+        })
+
+        // Manager - CDB List/:id
+        .state('mg-cdb-id', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb-id.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-cdb')
+          },
+          controller: 'managerCdbCtrl',
+          params: { id: null, filters: null },
+          resolve: {
+            // TODO API call to get cdb list info
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+
+          }
+        })
         // Manager - Groups
         .state('mg-groups', {
           templateUrl:

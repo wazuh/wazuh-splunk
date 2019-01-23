@@ -8,5 +8,7 @@ define([
   './reporting/reportingCtrl',
   './rules/managerRulesetCtrl',
   './rules/managerRulesetIdCtrl',
+  './cdb/managerCdbCtrl',
+  './cdb/managerCdbIdCtrl',
   './status/statusCtrl'
 ], function() {})
