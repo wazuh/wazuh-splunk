@@ -112,12 +112,26 @@ define(['../module'], function(module) {
       }
     }
 
+    const getConfiguration = async (url) => {
+      try {
+        const result = await apiReq(
+          `${url}`         
+        )
+        if (!result) {
+          throw new Error("Cannot get file.")
+        }
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     const service = {
       getBaseUrl: getBaseUrl,
       getWellFormedUri: getWellFormedUri,
       apiReq: apiReq,
       httpReq: httpReq,
-      sendConfiguration: sendConfiguration
+      sendConfiguration: sendConfiguration,
+      getConfiguration: getConfiguration
     }
     return service
   })

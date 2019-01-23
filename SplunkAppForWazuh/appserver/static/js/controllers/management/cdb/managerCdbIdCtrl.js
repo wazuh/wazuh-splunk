@@ -20,7 +20,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      extensions
+      extensions,
+      $cdbEditor
     ) {
       super(
         $scope,
@@ -33,6 +34,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       )
       this.state = $state
       this.extensions = extensions
+      this.cdbEditor = $cdbEditor
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -76,8 +78,11 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
     fetchFile() {//Change to async
       // MISSING API CALL TO DO THIS
       try {
+        const result = this.cdbEditor.getConfiguration('audit-keys')
+        console.log(result)
         return { "audit-wazuh-a": "attribute", "audit-wazuh-x": "execute", "audit-wazuh-c": "command", "audit-wazuh-r": "read", "audit-wazuh-w": "write" }
       } catch (error) {
+        console.error(error)
         this.toast("Error fetching CDB list configuration")
       }
     }
