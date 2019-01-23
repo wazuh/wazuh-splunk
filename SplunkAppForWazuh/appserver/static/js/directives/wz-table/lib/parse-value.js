@@ -42,7 +42,34 @@ define([], function() {
    * @param {String} item
    * @param {String} instancePath
    */
-  return function parseValue(ProcessEquivalence, key, item, instancePath) {
+  return function parseValue(
+    ProcessEquivalence,
+    key,
+    item,
+    instancePath,
+    $sce = null
+  ) {
+    if (
+      (key === 'event' || (key.value && key.value === 'event')) &&
+      instancePath.includes('rootcheck') &&
+      $sce
+    ) {
+      if (typeof (item || {}).event === 'string') {
+        const urlRegex = new RegExp(
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
+          'g'
+        )
+
+        const matched = item.event.match(urlRegex)
+        if (matched) {
+          item.event = item.event.replace(
+            matched,
+            `<a href="${matched}">${matched}</a>`
+          )
+          item.event = $sce.trustAsHtml(item.event)
+        }
+      }
+    }
     if (key === 'state' && instancePath.includes('processes')) {
       return ProcessEquivalence[item.state] || 'Unknown'
     }
