@@ -20,7 +20,7 @@ define(['../module'], function(module) {
   
       async sendConfiguration(file, content) {
         try {
-          const result = $requestService.sendConfiguration(`/file/${file}`,content)
+          const result = this.sendConfig(`/file/${file}`,content)
           return result
         } catch (error) {
           return Promise.reject(error)
