@@ -113,12 +113,12 @@ define(['../../module'], function(app) {
             this.scope.goGroups = group => this.goGroups(group)
 
             this.scope.searchRootcheck = (term, specificFilter) =>
-              this.scope.$broadcast('wazuhSearch', { term, specificFilter })  
+              this.scope.$broadcast('wazuhSearch', { term, specificFilter })
 
             this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
             this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
-    
 
+            
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
               this.scope.syscheck.end
@@ -148,7 +148,7 @@ define(['../../module'], function(app) {
             }
 
             this.$scope.switchRootcheckScan = () => {
-              this.$scope.showRootcheckScan = !this.$scope.showRootcheckScan;
+              this.$scope.showRootcheckScan = !this.$scope.showRootcheckScan
               if (!this.$scope.showRootcheckScan) {
                 this.$rootScope.$emit('changeTabView', {
                   tabView: this.$scope.tabView
