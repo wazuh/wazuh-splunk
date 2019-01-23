@@ -34,7 +34,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
     controller($scope, $document) {
       const setJsonBox = () => {
         $scope.jsonCodeBox = CodeMirror.fromTextArea(
-          $document[0].getElementById('json_box'),
+          $document[0].getElementById('viewer_json_box'),
           {
             lineNumbers: true,
             matchClosing: true,
@@ -50,7 +50,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
       }
       const setXmlBox = () => {
         $scope.xmlCodeBox = CodeMirror.fromTextArea(
-          $document[0].getElementById('xml_box'),
+          $document[0].getElementById('viewer_xml_box'),
           {
             lineNumbers: true,
             matchClosing: true,
@@ -65,14 +65,13 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         )
       }
 
-      const init = () => {
-        setJsonBox()
-        setXmlBox()
-      }
+      const init = () => {}
 
       const refreshJsonBox = json => {
         $scope.jsoncontent = json
-        setJsonBox()
+        if(!$scope.jsonCodeBox){
+          setJsonBox()
+        }
         if ($scope.jsoncontent != false) {
           $scope.jsonCodeBox.setValue($scope.jsoncontent)
           setTimeout(function() {
@@ -83,7 +82,9 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const refreshXmlBox = xml => {
         $scope.xmlcontent = xml
-        setXmlBox()
+        if(!$scope.xmlCodeBox){
+          setXmlBox()
+        }
         if ($scope.xmlcontent != false) {
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
           setTimeout(function() {

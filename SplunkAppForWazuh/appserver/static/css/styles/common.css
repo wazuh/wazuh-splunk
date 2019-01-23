@@ -20,6 +20,11 @@
   outline-color: transparent !important;
 } */
 
+.wzJsonXmlEditorBody, .wzJsonXmlEditorBody .CodeMirror{
+  height: 100%;
+  min-height: 300px;
+}
+
 .addGroupInput {
   max-height: 20px !important;
   max-width: 181px !important;
