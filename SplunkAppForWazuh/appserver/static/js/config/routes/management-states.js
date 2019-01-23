@@ -197,7 +197,7 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-cdb')
           },
-          controller: 'managerCdbCtrl',
+          controller: 'managerCdbIdCtrl',
           params: { id: null, filters: null },
           resolve: {
             // TODO API call to get cdb list info
