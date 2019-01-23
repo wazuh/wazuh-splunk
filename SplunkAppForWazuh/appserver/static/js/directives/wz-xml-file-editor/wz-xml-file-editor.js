@@ -22,9 +22,9 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function(app, CodeMirror) {
+], function (app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function(BASE_URL) {
+  app.directive('wzXmlFileEditor', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -33,7 +33,7 @@ define([
         data: '=data',
         targetName: '=targetName'
       },
-      controller($scope, $document, $notificationService, $groupHandler) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
         let firstTime = true
         const checkXmlParseError = () => {
           try {
@@ -68,9 +68,13 @@ define([
         const saveFile = async params => {
           try {
             const content = $scope.xmlCodeBox.getValue().trim()
-            await $groupHandler.sendConfiguration(params.group, content)
+            if (params && params.group) {
+              await $groupHandler.sendConfiguration(params.group, content)
+            } else if (params && params.file) {
+              await $fileEditor.sendConfiguration(params.file, content)
+            }
             $notificationService.showSimpleToast(
-              'Success. Group has been updated'
+              'Success. Content has been updated'
             )
           } catch (error) {
             $notificationService.showSimpleToast(
