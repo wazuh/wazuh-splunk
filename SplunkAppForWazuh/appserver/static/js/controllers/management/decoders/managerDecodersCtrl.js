@@ -38,21 +38,10 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.$on('decodersIsReloaded', () => {
-        this.scope.viewingDetail = false
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
 
       this.scope.selectedNavTab = 'decoders'
       
-      this.scope.$on('wazuhShowDecoder', (event, parameters) => {
-        this.scope.currentDecoder = parameters.decoder
-        this.scope.viewingDetail = true
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.decoders) {

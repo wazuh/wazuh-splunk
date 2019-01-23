@@ -42,6 +42,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.ruleset) {
+            console.log("ruleset filters ", window.localStorage.ruleset)
             const parsedFilter = JSON.parse(window.localStorage.ruleset)
             this.scope.appliedFilters = parsedFilter
             if (this.filter.length > 0) {
@@ -51,16 +52,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         } catch (err) {
           this.toast('Error applying filter')
         }
-      })
-
-      this.scope.$on('rulesetIsReloaded', () => {
-        this.scope.viewingDetail = false
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      this.scope.$on('wazuhShowRule', () => {
-        this.scope.viewingDetail = true
-        if (!this.scope.$$phase) this.scope.$digest()
       })
     }
   }
