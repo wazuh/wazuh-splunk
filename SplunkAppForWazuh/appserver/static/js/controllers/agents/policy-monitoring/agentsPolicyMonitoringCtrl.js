@@ -16,7 +16,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/rawTableData/rawTableDataService'
+  '../../../services/rawTableData/rawTableDataService',
+  'FileSaver'
 ], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
   'use strict'
 
@@ -29,6 +30,9 @@ define([
      * @param {Object} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} $requestService
+     * @param {*} $notificationService
+     * @param {*} $csvRequestService
      */
 
     constructor(
@@ -37,15 +41,27 @@ define([
       $state,
       $currentDataService,
       agent,
-      $reportingService
+      $reportingService,
+      $requestService,
+      $notificationService,
+      $csvRequestService,
+      $tableFilterService,
     ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
+      this.apiReq = $requestService.apiReq
+      this.scope.showRootcheckScan = false
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
+      this.toast = $notificationService.showSimpleToast
+      this.api = $currentDataService.getApi()
+      this.csvReq = $csvRequestService,
+      this.wzTableFilter = $tableFilterService
+
+
       this.currentDataService.addFilter(
         `{"rule.groups":"rootcheck", "implicit":true}`
       )
@@ -194,6 +210,22 @@ define([
     }
 
     $onInit() {
+      this.scope.searchRootcheck = (term, specificFilter) =>
+      this.scope.$broadcast('wazuhSearch', { term, specificFilter })  
+      this.scope.downloadCsv = () => this.downloadCsv()
+      this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
+      this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+
+      this.scope.switchRootcheckScan = () => {
+        this.scope.showRootcheckScan = !this.scope.showRootcheckScan
+        if (!this.scope.showRootcheckScan) {
+          this.$rootScope.$emit('changeTabView', {
+            tabView: this.scope.tabView
+          })
+        }
+        if (!this.$scope.$$phase) this.$scope.$digest()
+      }
+
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -223,12 +255,54 @@ define([
     }
 
     /**
+     * Exports the table in CSV format
+     */
+    async downloadCsv() {
+      try {
+        this.toast('Your download should begin automatically...')
+        const currentApi = this.api.id
+        const output = await this.csvReq.fetch(
+          '/agents',
+          currentApi,
+          this.wzTableFilter.get()
+        )
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, 'agents.csv') // eslint-disable-line
+        return
+      } catch (error) {
+        this.toast('Error downloading CSV')
+      }
+      return
+    }
+
+    /**
      * Gets filters and launches search
      */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
+
+    async launchRootcheckScan() {
+      try {
+        await this.apiReq(`/rootcheck/${this.$scope.agent.id}`, {},'PUT')
+        this.toast(`Policy monitoring scan launched successfully on agent ${this.$scope.agent.id}`)
+      } catch (error) {
+        this.toast(error.message || error)
+      }
+      return
+    }
+  
+    async launchSyscheckScan() {
+      try {
+        await this.apiReq(`/syscheck/${this.$scope.agent.id}`, {},'PUT')
+        this.toast(`FIM scan launched successfully on agent ${this.$scope.agent.id}`)
+      } catch (error) {
+        this.toast(error.message || error)
+      }
+      return
+    }
+
   }
 
   app.controller('agentsPolicyMonitoringCtrl', AgentsPM)
