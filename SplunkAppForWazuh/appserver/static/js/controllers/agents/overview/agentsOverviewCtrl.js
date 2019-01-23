@@ -118,7 +118,6 @@ define(['../../module'], function(app) {
             this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
             this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
-            
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
               this.scope.syscheck.end
