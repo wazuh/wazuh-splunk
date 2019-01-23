@@ -46,6 +46,7 @@ define(['../../module'], function(app) {
       this.extensions = extensions
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
+      this.scope.showRootcheckScan = false
       this.scope.addingGroupToAgent = false
       this.groups = groups
       this.$mdDialog = $mdDialog
@@ -111,6 +112,13 @@ define(['../../module'], function(app) {
               this.getAgentStatusClass(agentStatus)
             this.scope.goGroups = group => this.goGroups(group)
 
+            this.scope.searchRootcheck = (term, specificFilter) =>
+              this.scope.$broadcast('wazuhSearch', { term, specificFilter })  
+
+            this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
+            this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+    
+
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
               this.scope.syscheck.end
@@ -137,6 +145,16 @@ define(['../../module'], function(app) {
               this.scope.addingGroupToAgent = this.scope.addingGroupToAgent
                 ? false
                 : group
+            }
+
+            this.$scope.switchRootcheckScan = () => {
+              this.$scope.showRootcheckScan = !this.$scope.showRootcheckScan;
+              if (!this.$scope.showRootcheckScan) {
+                this.$rootScope.$emit('changeTabView', {
+                  tabView: this.$scope.tabView
+                })
+              }
+              if (!this.$scope.$$phase) this.$scope.$digest()
             }
 
             this.scope.cancelAddGroup = () =>
