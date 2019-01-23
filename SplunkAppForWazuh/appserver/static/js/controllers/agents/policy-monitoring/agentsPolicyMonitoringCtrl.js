@@ -45,7 +45,7 @@ define([
       $requestService,
       $notificationService,
       $csvRequestService,
-      $tableFilterService,
+      $tableFilterService
     ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
@@ -58,10 +58,8 @@ define([
       this.agent = agent
       this.toast = $notificationService.showSimpleToast
       this.api = $currentDataService.getApi()
-      this.csvReq = $csvRequestService,
+      this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
-
-
       this.currentDataService.addFilter(
         `{"rule.groups":"rootcheck", "implicit":true}`
       )
@@ -211,7 +209,7 @@ define([
 
     $onInit() {
       this.scope.searchRootcheck = (term, specificFilter) =>
-      this.scope.$broadcast('wazuhSearch', { term, specificFilter })  
+        this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
       this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
       this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
@@ -285,24 +283,29 @@ define([
 
     async launchRootcheckScan() {
       try {
-        await this.apiReq(`/rootcheck/${this.$scope.agent.id}`, {},'PUT')
-        this.toast(`Policy monitoring scan launched successfully on agent ${this.$scope.agent.id}`)
-      } catch (error) {
-        this.toast(error.message || error)
-      }
-      return
-    }
-  
-    async launchSyscheckScan() {
-      try {
-        await this.apiReq(`/syscheck/${this.$scope.agent.id}`, {},'PUT')
-        this.toast(`FIM scan launched successfully on agent ${this.$scope.agent.id}`)
+        await this.apiReq(`/rootcheck/${this.$scope.agent.id}`, {}, 'PUT')
+        this.toast(
+          `Policy monitoring scan launched successfully on agent ${
+            this.$scope.agent.id
+          }`
+        )
       } catch (error) {
         this.toast(error.message || error)
       }
       return
     }
 
+    async launchSyscheckScan() {
+      try {
+        await this.apiReq(`/syscheck/${this.$scope.agent.id}`, {}, 'PUT')
+        this.toast(
+          `FIM scan launched successfully on agent ${this.$scope.agent.id}`
+        )
+      } catch (error) {
+        this.toast(error.message || error)
+      }
+      return
+    }
   }
 
   app.controller('agentsPolicyMonitoringCtrl', AgentsPM)
