@@ -41,7 +41,7 @@ define([
         let firstTime = true
         const parser = new DOMParser();// eslint-disable-line
 
-        const replaceIllegarXML = text => {
+        const replaceXML = text => {
           const oDom = parser.parseFromString(text, 'text/html')
           const lines = oDom.documentElement.textContent.split('\n')
           for (const line of lines) {
@@ -60,7 +60,7 @@ define([
         const checkXmlParseError = () => {
           try {
             const text = $scope.xmlCodeBox.getValue()
-            const xml = replaceIllegarXML(text)
+            const xml = replaceXML(text)
             const xmlDoc = parser.parseFromString(
               '<file>' + xml + '</file>',
               'text/xml'
