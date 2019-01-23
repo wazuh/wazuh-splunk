@@ -34,6 +34,7 @@
     <!-- Wazuh filters bar -->
     <wazuh-bar></wazuh-bar>
     <div ng-show='!showFiles'>
+
       <!-- <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span> -->
       <div layout="row" layout-padding class="wz-padding-top-0">
         <span flex></span>
@@ -41,6 +42,7 @@
         <span></span>
         <span ng-click="show()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-file-o"></i> Show files</span>
       </div>
+
       <!-- first row  -->
       <div id="row2" layout="row">
         <div flex="50">
@@ -115,9 +117,10 @@
     </div>
     
     <div ng-show='showFiles'>
-      <span flex></span>
+      
       <!-- <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span> -->
       <div layout="row" layout-padding class="wz-padding-top-0">
+        <span flex></span>
         <span ng-click="launchSyscheckScan()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-play"></i> Run scan</span>
         <span></span>
         <span ng-click="show()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-area-chart"></i> Show alerts</span>
