@@ -9,31 +9,101 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(app) {
+define(['../module','../../libs/codemirror-conv/lib/codemirror'], function(app,CodeMirror) {
   'use strict'
   class WzConfigViewer {
     /**
      * Class constructor
      */
-    constructor() {
+    constructor(BASE_URL) {
       this.restrict = 'E'
       this.scope = {
         getjson: '&',
         getxml: '&',
-        jsoncontent: '=jsoncontent',
-        xmlcontent: '=xmlcontent'
+        jsoncontent: '=',
+        xmlcontent: '='
       }
-      this.replace = true
       this.templateUrl =
         BASE_URL +
         '/static/app/SplunkAppForWazuh/js/directives/wz-config-viewer/wz-config-viewer.html'
     }
 
-    link(scope) {
-      scope.callgetjson = () => {
-        scope.getjson()
+    controller($scope, $document) {
+
+      const setJsonBox = () => {
+        $scope.jsonCodeBox = CodeMirror.fromTextArea(
+          $document[0].getElementById('json_box'),
+          {
+            lineNumbers: true,
+            matchClosing: true,
+            matchBrackets: true,
+            mode: { name: 'javascript', json: true },
+            readOnly: true,
+            theme: 'ttcn',
+            foldGutter: true,
+            styleSelectedText: true,
+            gutters: ['CodeMirror-foldgutter']
+          }
+        );
       }
-      scope.callgetxml = () => scope.getxml()
+      const setXmlBox = () => {
+        $scope.xmlCodeBox = CodeMirror.fromTextArea(
+          $document[0].getElementById('xml_box'),
+          {
+            lineNumbers: true,
+            matchClosing: true,
+            matchBrackets: true,
+            mode: 'text/xml',
+            readOnly: true,
+            theme: 'ttcn',
+            foldGutter: true,
+            styleSelectedText: true,
+            gutters: ['CodeMirror-foldgutter']
+          }
+        );
+      }
+  
+  
+      const init = () => {
+        setJsonBox();
+        setXmlBox();
+      }
+  
+      const refreshJsonBox = json => {
+        $scope.jsoncontent = json;
+        setJsonBox();
+        if ($scope.jsoncontent != false) {
+          $scope.jsonCodeBox.setValue($scope.jsoncontent);
+          setTimeout(function () {
+            $scope.jsonCodeBox.refresh();
+          }, 1);
+        }
+      }
+  
+      const refreshXmlBox = xml => {
+        $scope.xmlcontent = xml;
+        setXmlBox();
+        if ($scope.xmlcontent != false) {
+          $scope.xmlCodeBox.setValue($scope.xmlcontent);
+          setTimeout(function () {
+            $scope.xmlCodeBox.refresh();
+          }, 1);
+        }
+      }
+  
+      $scope.callgetjson = () => $scope.getjson();
+  
+      $scope.callgetxml = () => $scope.getxml();
+  
+      $scope.$on('JSONContentReady', (ev, params) => {
+        refreshJsonBox(params.data);
+      });
+  
+      $scope.$on('XMLContentReady', (ev, params) => {
+        refreshXmlBox(params.data);
+      });
+  
+      init();
     }
   }
 
