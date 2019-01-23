@@ -64,7 +64,12 @@ define(['../module'], function(module) {
           uname: 'User',
           gname: 'Group',
           perm: 'Permissions',
-          process: 'Process'
+          process: 'Process',
+          cis: 'CIS',
+          event: 'Event',
+          md5: 'MD5',
+          sha1: 'SHA1',
+          sha256: 'SHA256'
         }
       }
     }
