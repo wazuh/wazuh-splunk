@@ -45,6 +45,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
 
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
 
+      this.scope.selectedNavTab = 'decoders'
+      
       this.scope.$on('wazuhShowDecoder', (event, parameters) => {
         this.scope.currentDecoder = parameters.decoder
         this.scope.viewingDetail = true

@@ -15,6 +15,13 @@
   </div>
   <!-- End headline -->
 
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">CDB List</md-nav-item>
+  </md-nav-bar>
+
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
@@ -25,14 +32,6 @@
         </button>
       </div>
     </div>
-    <md-button class="active wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Rules section">
-      <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i>
-      Rules
-    </md-button>
-    <md-button ui-sref='mg-decoders' class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Decoders section">
-      <i class="fa fa-fw fa-search" aria-hidden="true"></i>
-      Decoders
-    </md-button>
   </div>
 
   <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">

@@ -36,6 +36,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     $onInit() {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
+
+      this.scope.selectedNavTab = 'rules'
+
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.ruleset) {
