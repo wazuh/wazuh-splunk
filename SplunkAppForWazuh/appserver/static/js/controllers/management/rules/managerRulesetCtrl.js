@@ -42,7 +42,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.ruleset) {
-            console.log("ruleset filters ", window.localStorage.ruleset)
             const parsedFilter = JSON.parse(window.localStorage.ruleset)
             this.scope.appliedFilters = parsedFilter
             if (this.filter.length > 0) {
