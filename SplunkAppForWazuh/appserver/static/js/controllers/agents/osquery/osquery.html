@@ -15,9 +15,11 @@
       </div>
       <div flex></div>
     <!-- Report button -->
-    <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" tooltip="Generate report" tooltip-placement="bottom"
-      ng-hide="loadingVizz" ng-click="startVis2Png()" aria-label="Generate report button">
+    <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" ng-hide="loadingVizz" ng-click="startVis2Png()" aria-label="Generate report button">
       <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+      <md-tooltip md-direction="left" class="wz-tooltip">
+        Generate report
+      </md-tooltip>      
     </md-button>
     <div class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
       <div style="margin-right:7px;" id='timePicker'></div>
