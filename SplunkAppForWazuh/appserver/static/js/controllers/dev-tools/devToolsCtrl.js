@@ -71,7 +71,7 @@ define([
       this.widgets = []
       this.multipleKeyPressed = []
       try {
-        this.admin = extensions['admin'] === 'true' ? true : false
+        this.admin = extensions['admin'] === 'true'
       } catch (err) {
         this.admin = false
       }
