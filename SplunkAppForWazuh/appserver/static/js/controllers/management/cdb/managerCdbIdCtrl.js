@@ -72,10 +72,14 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.adminMode = this.extensions['admin'] === 'true'
     }
 
-    //Change to async
-    fetchFile() {
+    
+    fetchFile() {//Change to async
       // MISSING API CALL TO DO THIS
-      return { "audit-wazuh-a": "attribute", "audit-wazuh-x": "execute", "audit-wazuh-c": "command", "audit-wazuh-r": "read", "audit-wazuh-w": "write" }
+      try {
+        return { "audit-wazuh-a": "attribute", "audit-wazuh-x": "execute", "audit-wazuh-c": "command", "audit-wazuh-r": "read", "audit-wazuh-w": "write" }
+      } catch (error) {
+        this.toast("Error fetching CDB list configuration")
+      }
     }
 
     addEntry(key, value) {

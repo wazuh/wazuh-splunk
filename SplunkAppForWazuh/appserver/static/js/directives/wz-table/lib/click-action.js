@@ -51,6 +51,8 @@ define([], function() {
       $state.go('mg-rules-id', { id: item.id })
     } else if (instance.path.includes('/decoders')) {
       $state.go('mg-decoders-id', { file: item.file, name: item.name })
+    } else if (instance.path === '/cdb') {
+      $state.go('mg-cdb-id', { id: item.id })
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
     }
