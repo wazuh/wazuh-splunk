@@ -11,7 +11,7 @@
   <div ng-show="!loading" layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Decoders</span>
-    <span>Review all your current rules and decoders</span>
+    <span>Review all your current rules, decoders and cdb lists</span>
   </div>
   <!-- End headline -->
 
@@ -19,7 +19,7 @@
   <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="decoders">Decoders</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">CDB List</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB List</md-nav-item>
   </md-nav-bar>
 
   <div flex layout="column" class="md-padding">
