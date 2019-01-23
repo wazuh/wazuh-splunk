@@ -136,7 +136,7 @@
         <!-- Groups table -->
 
         <div layout="row" ng-if="!lookingGroup" class="md-padding">
-          <wazuh-table admin-mode='adminMode' flex extra-limit="true" path="'/agents/groups'" keys="['name','count','mergedSum']"
+          <wazuh-table admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'" keys="['name','count','mergedSum']"
             allow-click="true" row-sizes="[14,12,10]">
           </wazuh-table>
         </div>
@@ -169,7 +169,7 @@
           <!-- End CSV Download button section for group agents -->
           <!-- Group files table -->
           <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='files' && !fileViewer && currentGroup" class="md-padding">
-            <wazuh-table admin-mode='adminMode' extra-limit="true" flex path="'/agents/groups/' + currentGroup.name + '/files'"
+            <wazuh-table admin-mode='adminMode' extra-limit="100" flex path="'/agents/groups/' + currentGroup.name + '/files'"
               keys="[{value:'filename',size:2},{value:'hash',size:6}]" allow-click="true" row-sizes="[10,8,6,4]">
             </wazuh-table>
           </div>
