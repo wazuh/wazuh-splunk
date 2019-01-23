@@ -147,16 +147,6 @@ define(['../../module'], function(app) {
                 : group
             }
 
-            this.$scope.switchRootcheckScan = () => {
-              this.$scope.showRootcheckScan = !this.$scope.showRootcheckScan
-              if (!this.$scope.showRootcheckScan) {
-                this.$rootScope.$emit('changeTabView', {
-                  tabView: this.$scope.tabView
-                })
-              }
-              if (!this.$scope.$$phase) this.$scope.$digest()
-            }
-
             this.scope.cancelAddGroup = () =>
               (this.scope.addingGroupToAgent = false)
 

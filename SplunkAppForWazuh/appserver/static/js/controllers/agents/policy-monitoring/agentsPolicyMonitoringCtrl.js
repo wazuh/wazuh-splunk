@@ -37,6 +37,7 @@ define([
 
     constructor(
       $urlTokenModel,
+      $rootScope,
       $scope,
       $state,
       $currentDataService,
@@ -48,6 +49,7 @@ define([
       $tableFilterService
     ) {
       this.urlTokenModel = $urlTokenModel
+      this.rootScope = $rootScope
       this.scope = $scope
       this.apiReq = $requestService.apiReq
       this.scope.showRootcheckScan = false
@@ -217,11 +219,11 @@ define([
       this.scope.switchRootcheckScan = () => {
         this.scope.showRootcheckScan = !this.scope.showRootcheckScan
         if (!this.scope.showRootcheckScan) {
-          this.$rootScope.$emit('changeTabView', {
+          this.rootScope.$emit('changeTabView', {
             tabView: this.scope.tabView
           })
         }
-        if (!this.$scope.$$phase) this.$scope.$digest()
+        if (!this.scope.$$phase) this.scope.$digest()
       }
 
       this.scope.agent =
@@ -283,10 +285,10 @@ define([
 
     async launchRootcheckScan() {
       try {
-        await this.apiReq(`/rootcheck/${this.$scope.agent.id}`, {}, 'PUT')
+        await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
         this.toast(
           `Policy monitoring scan launched successfully on agent ${
-            this.$scope.agent.id
+            this.scope.agent.id
           }`
         )
       } catch (error) {
@@ -297,9 +299,9 @@ define([
 
     async launchSyscheckScan() {
       try {
-        await this.apiReq(`/syscheck/${this.$scope.agent.id}`, {}, 'PUT')
+        await this.apiReq(`/syscheck/${this.scope.agent.id}`, {}, 'PUT')
         this.toast(
-          `FIM scan launched successfully on agent ${this.$scope.agent.id}`
+          `FIM scan launched successfully on agent ${this.scope.agent.id}`
         )
       } catch (error) {
         this.toast(error.message || error)
