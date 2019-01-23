@@ -9,7 +9,10 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module','../../libs/codemirror-conv/lib/codemirror'], function(app,CodeMirror) {
+define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
+  app,
+  CodeMirror
+) {
   'use strict'
   class WzConfigViewer {
     /**
@@ -29,7 +32,6 @@ define(['../module','../../libs/codemirror-conv/lib/codemirror'], function(app,C
     }
 
     controller($scope, $document) {
-
       const setJsonBox = () => {
         $scope.jsonCodeBox = CodeMirror.fromTextArea(
           $document[0].getElementById('json_box'),
@@ -44,7 +46,7 @@ define(['../module','../../libs/codemirror-conv/lib/codemirror'], function(app,C
             styleSelectedText: true,
             gutters: ['CodeMirror-foldgutter']
           }
-        );
+        )
       }
       const setXmlBox = () => {
         $scope.xmlCodeBox = CodeMirror.fromTextArea(
@@ -60,50 +62,49 @@ define(['../module','../../libs/codemirror-conv/lib/codemirror'], function(app,C
             styleSelectedText: true,
             gutters: ['CodeMirror-foldgutter']
           }
-        );
+        )
       }
-  
-  
+
       const init = () => {
-        setJsonBox();
-        setXmlBox();
+        setJsonBox()
+        setXmlBox()
       }
-  
+
       const refreshJsonBox = json => {
-        $scope.jsoncontent = json;
-        setJsonBox();
+        $scope.jsoncontent = json
+        setJsonBox()
         if ($scope.jsoncontent != false) {
-          $scope.jsonCodeBox.setValue($scope.jsoncontent);
-          setTimeout(function () {
-            $scope.jsonCodeBox.refresh();
-          }, 1);
+          $scope.jsonCodeBox.setValue($scope.jsoncontent)
+          setTimeout(function() {
+            $scope.jsonCodeBox.refresh()
+          }, 1)
         }
       }
-  
+
       const refreshXmlBox = xml => {
-        $scope.xmlcontent = xml;
-        setXmlBox();
+        $scope.xmlcontent = xml
+        setXmlBox()
         if ($scope.xmlcontent != false) {
-          $scope.xmlCodeBox.setValue($scope.xmlcontent);
-          setTimeout(function () {
-            $scope.xmlCodeBox.refresh();
-          }, 1);
+          $scope.xmlCodeBox.setValue($scope.xmlcontent)
+          setTimeout(function() {
+            $scope.xmlCodeBox.refresh()
+          }, 1)
         }
       }
-  
-      $scope.callgetjson = () => $scope.getjson();
-  
-      $scope.callgetxml = () => $scope.getxml();
-  
+
+      $scope.callgetjson = () => $scope.getjson()
+
+      $scope.callgetxml = () => $scope.getxml()
+
       $scope.$on('JSONContentReady', (ev, params) => {
-        refreshJsonBox(params.data);
-      });
-  
+        refreshJsonBox(params.data)
+      })
+
       $scope.$on('XMLContentReady', (ev, params) => {
-        refreshXmlBox(params.data);
-      });
-  
-      init();
+        refreshXmlBox(params.data)
+      })
+
+      init()
     }
   }
 
