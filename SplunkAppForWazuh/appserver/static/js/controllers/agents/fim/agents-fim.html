@@ -34,7 +34,10 @@
   <!-- Wazuh filters bar -->
   <wazuh-bar></wazuh-bar>
   <div ng-show='!showFiles'>
-    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
+    <!-- <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span> -->
+    <span ng-click="launchSyscheckScan()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-play"></i> Run scan</span>
+    <span></span>
+    <span ng-click="show()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-file-o"></i> Show files</span>
     <!-- first row  -->
     <div id="row2" layout="row">
       <div flex="50">
@@ -98,7 +101,6 @@
 
     <!-- third row  -->
     <div id="row5" layout='row'>
-
       <md-card flex="100" class="wz-md-card">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Events summary</span>
@@ -106,12 +108,14 @@
           <div id='eventsSummaryElement'></div>
         </md-card-content>
       </md-card>
-
     </div>
   </div>
 
   <div ng-show='showFiles'>
-    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span>
+    <!-- <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span> -->
+    <span ng-click="launchSyscheckScan()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-play"></i> Run scan</span>
+    <span></span>
+    <span ng-click="show()" class="btn pull-right btn-primary"><i class="fa fa-fw fa-area-chart"></i> Show alerts</span>
     <!-- Fifth row  -->
     <div layout='row'>
       <md-card flex class="wz-md-card">
@@ -154,7 +158,7 @@
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
             <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
-              row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
+              row-sizes="[6,6,6]" extra-limit="100" keys="['file','sha1','md5']">
             </wazuh-table>
           </div>
           <div layout="row" layout-padding>
@@ -180,7 +184,7 @@
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
             <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]" row-sizes="[6,6,6]"
-              extra-limit="true" keys="['file','size','uname','perm','sha1','sha256','uid','mtime','md5']">
+              extra-limit="100" keys="['file','size','uname','perm','sha1','sha256','uid','mtime','md5']">
             </wazuh-table>
           </div>
           <div layout="row" layout-padding>
@@ -205,7 +209,7 @@
             </button>
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" extra-limit="true" keys="['file','size','inode','gname','uname','perm','sha1','sha256','uid','gid','mtime','md5']">
+            <wazuh-table flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" extra-limit="100" keys="['file','size','inode','gname','uname','perm','sha1','sha256','uid','gid','mtime','md5']">
             </wazuh-table>
           </div>
           <div layout="row" layout-padding>
