@@ -361,13 +361,28 @@ define(['../module'], function(module) {
               '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await $requestService.httpReq(
+                  const result = await $requestService.apiReq(
                     'GET',
                     '/cluster/nodes'
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  $state.go('manager')
+                }
+              }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
                 }
               }
             ]
