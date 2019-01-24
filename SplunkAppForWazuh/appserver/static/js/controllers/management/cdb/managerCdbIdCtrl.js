@@ -87,7 +87,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     //Set this API call in the resolve
     async fetchFile() {
-      // MISSING API CALL TO DO THIS
+      // get specific file
       try {
         const result = await this.cdbEditor.getConfiguration('audit-keys')
         return result

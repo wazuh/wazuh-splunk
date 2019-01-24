@@ -21,7 +21,7 @@ define(['../module'], function(module) {
   
       async sendConfiguration(file, content) {
         try {
-          const result = this.sendConfig(`/manager/files/${file}`, content)
+          const result = await this.sendConfig(`/manager/files?path=/etc/lists/${file}`, content)
           return result
         } catch (error) {
           return Promise.reject(error)
@@ -30,9 +30,17 @@ define(['../module'], function(module) {
 
       async getConfiguration(file) {
         try {
-          const url = `/manager/files?path=/etc/lists/${file}`
-          const result = this.getConfig(url)
-          return result
+          const url = `/manager/files?path=/etc/lists/${file}&format=xml`
+          const result = await this.getConfig(url)
+          if (
+            !result ||
+            !result.data ||
+            !result.data.data ||
+            result.data.error != 0
+          ) {
+            throw new Error("Error fetching rule content")
+          }
+           return result.data.data
         } catch (error) {
           return Promise.reject(error)
         }
