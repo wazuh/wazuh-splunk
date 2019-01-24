@@ -42,8 +42,6 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
 
       this.scope.selectedNavTab = 'decoders'
-      this.scope.filterButtonTag = 'Local decoders'
-      this.scope.filterByLocal = () => this.filterByLocal()
 
       this.scope.$on('loadedTable', () => {
         try {
@@ -76,22 +74,6 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         })
     }
 
-    filterByLocal() {
-      if (this.localFilterEnabled) {
-        this.localFilterEnabled = false
-        this.scope.filterButtonTag = 'Local decoders'
-        this.scope.$broadcast('wazuhRemoveFilter', { filterName: 'path' })
-      } else {
-        this.localFilterEnabled = true
-        this.scope.filterButtonTag = 'All decoders'
-        this.scope.$broadcast('wazuhFilter', {
-          filter: {
-            name: 'path',
-            value: '/var/ossec/etc/decoders'
-          }
-        })
-      }
-    }
   }
   controllers.controller('managerDecodersCtrl', Decoders)
   return Decoders

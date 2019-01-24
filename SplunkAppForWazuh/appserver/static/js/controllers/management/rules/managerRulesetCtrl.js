@@ -39,8 +39,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
 
       this.scope.selectedNavTab = 'rules'
-      this.scope.filterButtonTag = 'Local rules'
-      this.scope.filterByLocal = () => this.filterByLocal()
 
       this.scope.$on('loadedTable', () => {
         try {
@@ -55,23 +53,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
           this.toast('Error applying filter')
         }
       })
-    }
-
-    filterByLocal() {
-      if (this.localFilterEnabled) {
-        this.localFilterEnabled = false
-        this.scope.filterButtonTag = 'Local rules'
-        this.scope.$broadcast('wazuhRemoveFilter', { filterName: 'path' })
-      } else {
-        this.localFilterEnabled = true
-        this.scope.filterButtonTag = 'All rules'
-        this.scope.$broadcast('wazuhFilter', {
-          filter: {
-            name: 'path',
-            value: '/var/ossec/etc/rules'
-          }
-        })
-      }
     }
   }
   controllers.controller('managerRulesetCtrl', Rules)
