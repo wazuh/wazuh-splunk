@@ -117,9 +117,16 @@ define(['../module'], function(module) {
         const result = await apiReq(
           `${url}`         
         )
-        if (!result) {
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
           throw new Error("Cannot get file.")
         }
+        return result
       } catch (error) {
         return Promise.reject(error)
       }

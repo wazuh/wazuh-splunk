@@ -16,6 +16,7 @@ define(['../module'], function(module) {
     class CDBEditor {
       constructor($requestService) {
         this.sendConfig = $requestService.sendConfiguration
+        this.getConfig = $requestService.getConfiguration
       }
   
       async sendConfiguration(file, content) {
@@ -29,14 +30,13 @@ define(['../module'], function(module) {
 
       async getConfiguration(file) {
         try {
-          const url = `/manager/files/?path=/etc/list/${file}`
-          const result = this.getConfiguration(url)
+          const url = `/manager/files?path=/etc/lists/${file}`
+          const result = this.getConfig(url)
           return result
         } catch (error) {
           return Promise.reject(error)
         }
       }
-
     }
     module.service('$cdbEditor', CDBEditor)
   })

@@ -46,41 +46,51 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
-      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.addDetailFilter = (name, value) =>
-        this.addDetailFilter(name, value)
+      try {
+        this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+        this.scope.addDetailFilter = (name, value) =>
+          this.addDetailFilter(name, value)
 
-      //Scope methods
-      this.scope.addEntry = (key, value) => this.addEntry(key, value)
-      this.scope.setEditingKey = (key, value) => this.setEditingKey(key, value)
-      this.scope.cancelEditingKey = () => this.cancelEditingKey()
-      this.scope.showConfirmRemoveEntry = (ev, key) => this.showConfirmRemoveEntry(ev, key)
-      this.scope.editKey = (key, value) => this.editKey(key, value)
-      this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-      this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
+        //Scope methods
+        this.scope.addEntry = (key, value) => this.addEntry(key, value)
+        this.scope.setEditingKey = (key, value) => this.setEditingKey(key, value)
+        this.scope.cancelEditingKey = () => this.cancelEditingKey()
+        this.scope.showConfirmRemoveEntry = (ev, key) => this.showConfirmRemoveEntry(ev, key)
+        this.scope.editKey = (key, value) => this.editKey(key, value)
+        this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
+        this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
 
-      //Remove static values
-      this.scope.currentList = {
-        details: {
-          file: 'audit-keys',
-          path: '/etc/lists'
+        // Edit cdb lists
+
+        //Remove static values
+        this.scope.currentList = {
+          details: {
+            file: 'audit-keys',
+            path: '/etc/lists'
+          }
         }
+
+        this.fetchFile().then((result) => {
+          this.scope.currentList.list = result.data.data
+          if (!this.scope.$$phase) this.scope.$digest()
+        }).catch((error) => {
+          throw new Error(error)
+        })
+
+        this.scope.adminMode = this.extensions['admin'] === 'true'
+      } catch (error) {
+        this.toast("Error fetching CDB list")
+        console.error("Error fetching CDB list ", error)
       }
 
-      // Edit cdb lists
-      //Remove when fetchFile() works, only for a example
-      this.currentList = this.fetchFile()
-      this.scope.currentList.list = this.currentList
-      this.scope.adminMode = this.extensions['admin'] === 'true'
     }
 
-    
-    fetchFile() {//Change to async
+    //Set this API call in the resolve
+    async fetchFile() {
       // MISSING API CALL TO DO THIS
       try {
-        const result = this.cdbEditor.getConfiguration('audit-keys')
-        console.log(result)
-        return { "audit-wazuh-a": "attribute", "audit-wazuh-x": "execute", "audit-wazuh-c": "command", "audit-wazuh-r": "read", "audit-wazuh-w": "write" }
+        const result = await this.cdbEditor.getConfiguration('audit-keys')
+        return result
       } catch (error) {
         console.error(error)
         this.toast("Error fetching CDB list configuration")
