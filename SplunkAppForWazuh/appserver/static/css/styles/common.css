@@ -30,6 +30,10 @@
   background-color: #0079a5 !important
 }
 
+.min-height-300 {
+  min-height: 300px;
+}
+
 .agreeBtn {
   min-height: 0px !important;
   max-height: 25px !important;
