@@ -11,22 +11,21 @@
  */
 
 define(['../module'], function(module) {
-    'use strict'
-  
-    class FileEditor {
-      constructor($requestService) {
-        this.sendConfig = $requestService.sendConfiguration
-      }
-  
-      async sendConfiguration(file, content) {
-        try {
-          const result = this.sendConfig(`/file/${file}`,content)
-          return result
-        } catch (error) {
-          return Promise.reject(error)
-        }
+  'use strict'
+
+  class FileEditor {
+    constructor($requestService) {
+      this.sendConfig = $requestService.sendConfiguration
+    }
+
+    async sendConfiguration(file, content) {
+      try {
+        const result = this.sendConfig(`/file/${file}`, content)
+        return result
+      } catch (error) {
+        return Promise.reject(error)
       }
     }
-    module.service('$fileEditor', FileEditor)
-  })
-  
+  }
+  module.service('$fileEditor', FileEditor)
+})
