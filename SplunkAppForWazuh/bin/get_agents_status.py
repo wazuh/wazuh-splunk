@@ -49,7 +49,7 @@ def check_status():
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            agents_url_total_items = url + '/agents?limit=1'
+            agents_url_total_items = url + '/agents?limit=1&q=id!=000'
             try:
                 request_agents = requestsbak.get(
                     agents_url_total_items,
@@ -58,6 +58,8 @@ def check_status():
                 total_items = request_agents["data"]["totalItems"]
                 limit = 500
                 offset = 0
+                params = {}
+                params['q'] = 'id!=000'
                 
                 while offset < total_items:
                     agents_url = url + \
