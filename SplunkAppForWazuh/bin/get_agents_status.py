@@ -49,7 +49,7 @@ def check_status():
             url = opt_base_url + ":" + opt_base_port
             auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            agents_url_total_items = url + '/agents?limit=1'
+            agents_url_total_items = url + '/agents?limit=1&q=id!=000'
             try:
                 request_agents = requests.get(
                     agents_url_total_items,
@@ -58,12 +58,14 @@ def check_status():
                 total_items = request_agents["data"]["totalItems"]
                 limit = 500
                 offset = 0
+                params = {}
+                params['q'] = 'id!=000'
                 
                 while offset < total_items:
                     agents_url = url + \
                         '/agents?select=id,ip,manager,status&offset='+str(offset)+'&limit='+str(limit)
                     request_agents = requests.get(
-                        agents_url, auth=auth, timeout=1, verify=verify).json()
+                        agents_url, params=params, auth=auth, timeout=1, verify=verify).json()
 
                     agent_list = request_agents["data"]["items"]
                     final_url_cluster = url + '/cluster/status'
@@ -81,15 +83,16 @@ def check_status():
                         verify=verify).json()
                     offset = offset + limit
                     for item in agent_list:
-                        if cluster_status == "yes":
-                            item["cluster"] = {}
-                            item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
-                        if 'manager' in item:
-                            manager_name = item["manager"]
-                            item["manager"] = {}
-                            item["manager"]["name"] = manager_name
-                        item["timestamp"] = date
-                        print(json.dumps(item))
+                        if item['agent']['id'] != '000':
+                            if cluster_status == "yes":
+                                item["cluster"] = {}
+                                item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
+                            if 'manager' in item:
+                                manager_name = item["manager"]
+                                item["manager"] = {}
+                                item["manager"]["name"] = manager_name
+                            item["timestamp"] = date
+                            print(json.dumps(item))
             except Exception as e:
                 logger.error("Error requesting agents status: %s" % str(e))
                 pass
