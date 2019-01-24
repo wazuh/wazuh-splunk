@@ -20,8 +20,8 @@
 
 ## Installation
 
-| Splunk version | Wazuh version | Installation                                                                                               |
-| :------------: | :---------------: | :--------------------------------------------------------------------------------------------------------- |
+| Splunk version | Wazuh version     | Installation                                                   |
+| :------------: | :---------------: | :--------------------------------------------------------------|
 |      7.0.3     |       3.2.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.1_7.0.3.tar.gz> |
 |      7.1.1     |       3.2.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.2_7.1.1.tar.gz> |
 |      7.1.1     |       3.2.3       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.3_7.1.1.tar.gz> |
