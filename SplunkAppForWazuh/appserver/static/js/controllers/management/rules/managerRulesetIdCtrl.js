@@ -61,7 +61,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.addDetailFilter = (name, value) => this.addDetailFilter(name, value)
       this.scope.adminMode = this.extensions['admin'] === 'true'    
       this.scope.isLocal = this.scope.ruleInfo.path === '/var/ossec/etc/rules' ? true : false
-      this.scope.saveRuleConfig = () => this.saveRuleConfig()
+      this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editRule = fileName => this.editRule(fileName)
@@ -93,12 +93,11 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
-    saveRuleConfig() {
+    saveRuleConfig(fileName) {
       this.scope.editingFile = false
-      /*this.scope.$broadcast('saveXmlFile', {
-        ruleFile: this.scope.ruleInfo.file
-      })*/
-      this.toast("Rule configuration saved")
+      this.scope.$broadcast('saveXmlFile', {
+        rule: fileName
+      })
     }
 
     async editRule(fileName) {

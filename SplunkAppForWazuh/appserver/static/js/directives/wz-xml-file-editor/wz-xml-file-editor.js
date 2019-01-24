@@ -33,7 +33,7 @@ define([
         data: '=data',
         targetName: '=targetName'
       },
-      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor, $rulesetEditor) {
         let firstTime = true
         const checkXmlParseError = () => {
           try {
@@ -72,6 +72,8 @@ define([
               await $groupHandler.sendConfiguration(params.group, content)
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, content)
+            } else if (params && params.rule) {
+              await $rulesetEditor.sendConfiguration(params.rule, content)
             }
             $notificationService.showSimpleToast(
               'Success. Content has been updated'

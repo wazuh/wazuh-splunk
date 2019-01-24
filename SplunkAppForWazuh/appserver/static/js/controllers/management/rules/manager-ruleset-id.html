@@ -210,7 +210,7 @@
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
           <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn btn-primary pull-right wz-margin-left-10'>
             <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
               file</span>
             <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
