@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class Decoders extends Ruleset {
@@ -35,7 +35,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
-      this.localFilterEnabled = false
+      this.scope.onlyParentDecoders
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
@@ -66,12 +66,15 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       if (window.localStorage.decoders) {
         delete window.localStorage.decoders
       }
-      if (typeFilter === 'all')
+      if (typeFilter === 'all') {
+        this.scope.onlyParentDecoders = false
         this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
-      else
+      } else {
+        this.scope.onlyParentDecoders = true
         this.scope.$broadcast('wazuhUpdateInstancePath', {
           path: '/decoders/parents'
         })
+      }
     }
 
   }
