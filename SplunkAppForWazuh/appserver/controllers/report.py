@@ -13,7 +13,7 @@ Find more information about this on the LICENSE file.
 """
 import os
 import time
-import json
+import jsonbak
 import datetime
 from operator import itemgetter
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -101,11 +101,11 @@ class report(controllers.BaseController):
             self.metrics_exists = False
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data']
-            data = json.loads(json_acceptable_string)
+            data = jsonbak.loads(json_acceptable_string)
             #Replace "'" in images
-            self.clean_images = json.dumps(data['images'])
+            self.clean_images = jsonbak.dumps(data['images'])
             self.clean_images.replace("'", "\"")
-            data['images'] = json.loads(self.clean_images)
+            data['images'] = jsonbak.loads(self.clean_images)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             #Get filters and other information
@@ -116,11 +116,11 @@ class report(controllers.BaseController):
             self.metrics = data['metrics']
             self.tables = data['tableResults']
             if self.metrics:
-                self.metrics = json.loads(self.metrics)
+                self.metrics = jsonbak.loads(self.metrics)
             self.agent_data = data['isAgents']
             #Save the images
             self.save_images(data['images'])
-            parsed_data = json.dumps({'data': 'success'})
+            parsed_data = jsonbak.dumps({'data': 'success'})
             # Add title and filters 
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
@@ -275,7 +275,7 @@ class report(controllers.BaseController):
             self.delete_images()
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
-            return json.dumps({"error": str(e)})
+            return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
     #Check if tables are not empties
@@ -395,10 +395,10 @@ class report(controllers.BaseController):
                         file['date'] = time.strftime('%Y.%m.%d %H:%M', time.gmtime(os.path.getmtime(self.path+f)))
                         pdf_files.append(file)
 
-            parsed_data = json.dumps({'data': pdf_files})
+            parsed_data = jsonbak.dumps({'data': pdf_files})
         except Exception as e:
             self.logger.error("Error getting PDF files: %s" % (e))
-            return json.dumps({"error": str(e)})
+            return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
     # Deletes a report from disk
@@ -418,8 +418,8 @@ class report(controllers.BaseController):
             filename = kwargs['name']
             os.remove(self.path+filename)
             self.logger.info("Removed report %s" % kwargs['name'])
-            parsed_data = json.dumps({"data": "Deleted file"})
+            parsed_data = jsonbak.dumps({"data": "Deleted file"})
         except Exception as e:
             self.logger.error("Error deleting PDF file: %s" % (e))
-            return json.dumps({"error": str(e)})
+            return jsonbak.dumps({"error": str(e)})
         return parsed_data
