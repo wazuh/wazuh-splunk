@@ -30,6 +30,12 @@
         <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
+        <md-button style='margin-top: 0' class="wz-button md-raised md-primary" aria-label="Filter by local rules" ng-click="filterByLocal()">
+          <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> {{filterButtonTag}}
+          <md-tooltip md-direction="bottom" class="wz-tooltip">
+            Filter by local rules
+          </md-tooltip>
+        </md-button>
       </div>
     </div>
   </div>

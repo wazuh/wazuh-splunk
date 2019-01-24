@@ -35,13 +35,16 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
+      this.localFilterEnabled = false
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
 
       this.scope.selectedNavTab = 'decoders'
-      
+      this.scope.filterButtonTag = 'Local rules'
+      this.scope.filterByLocal = () => this.filterByLocal()
+
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.decoders) {
@@ -71,6 +74,23 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         this.scope.$broadcast('wazuhUpdateInstancePath', {
           path: '/decoders/parents'
         })
+    }
+
+    filterByLocal() {
+      if (this.localFilterEnabled) {
+        this.localFilterEnabled = false
+        this.scope.filterButtonTag = 'Local decoders'
+        this.scope.$broadcast('wazuhRemoveFilter', { filterName: 'path' })
+      } else {
+        this.localFilterEnabled = true
+        this.scope.filterButtonTag = 'All decoders'
+        this.scope.$broadcast('wazuhFilter', {
+          filter: {
+            name: 'path',
+            value: '/var/ossec/etc/decoders'
+          }
+        })
+      }
     }
   }
   controllers.controller('managerDecodersCtrl', Decoders)
