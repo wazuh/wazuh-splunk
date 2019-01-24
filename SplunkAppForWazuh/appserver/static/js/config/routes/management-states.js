@@ -361,10 +361,7 @@ define(['../module'], function(module) {
               '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await $requestService.apiReq(
-                    'GET',
-                    '/cluster/nodes'
-                  )
+                  const result = await $requestService.apiReq('/cluster/nodes')
                   return result
                 } catch (err) {
                   $state.go('manager')
