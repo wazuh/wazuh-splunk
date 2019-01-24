@@ -1,6 +1,6 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
-## Wazuh v3.8.1 - Splunk Enterprise v7.2.3 - Splunk app v3.8.0-rev-21
+## Wazuh v3.8.1 - Splunk Enterprise v7.2.3 - Splunk app v3.8.1-rev-21
 
 ### Added
 
