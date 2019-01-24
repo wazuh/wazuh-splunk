@@ -19,9 +19,9 @@ define(['../module'], function (module) {
       this.getConfig = $requestService.getConfiguration
     }
 
-    async sendConfiguration(file, content) {
+    async sendConfiguration(file, dir, content) {
       try {
-        const result = await this.sendConfig(`/manager/files?path=/etc/rules/${file}`, content)
+        const result = await this.sendConfig(`/manager/files?path=/etc/${dir}/${file}`, content)
         if (
           !result ||
           !result.data ||
@@ -36,9 +36,9 @@ define(['../module'], function (module) {
       }
     }
 
-    async getConfiguration(file) {
+    async getConfiguration(file, dir) {
       try {
-        const url = `/manager/files?path=/etc/rules/${file}&format=xml`
+        const url = `/manager/files?path=/etc/${dir}/${file}&format=xml`
         const result = await this.getConfig(url)
         if (
           !result ||

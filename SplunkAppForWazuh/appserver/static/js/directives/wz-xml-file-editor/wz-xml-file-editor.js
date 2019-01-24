@@ -72,8 +72,8 @@ define([
               await $groupHandler.sendConfiguration(params.group, content)
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, content)
-            } else if (params && params.rule) {
-              await $rulesetEditor.sendConfiguration(params.rule, content)
+            } else if (params && params.ruleset && params.dir) {
+              await $rulesetEditor.sendConfiguration(params.ruleset, params.dir, content)
             }
             $notificationService.showSimpleToast(
               'Success. Content has been updated'

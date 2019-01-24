@@ -96,7 +96,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     saveRuleConfig(fileName) {
       this.scope.editingFile = false
       this.scope.$broadcast('saveXmlFile', {
-        rule: fileName
+        ruleset: fileName,
+        dir: 'rules'
       })
     }
 
@@ -115,7 +116,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
     async fetchFileContent(fileName){
       try {
-        const result = await this.rulesetEditor.getConfiguration(fileName)
+        const result = await this.rulesetEditor.getConfiguration(fileName, 'rules')
         return result
       } catch (error) {
         return Promise.reject(error)
