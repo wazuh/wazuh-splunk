@@ -22,9 +22,9 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function (app, CodeMirror) {
+], function(app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function (BASE_URL) {
+  app.directive('wzXmlFileEditor', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -33,7 +33,13 @@ define([
         data: '=data',
         targetName: '=targetName'
       },
-      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
+      controller(
+        $scope,
+        $document,
+        $notificationService,
+        $groupHandler,
+        $fileEditor
+      ) {
         let firstTime = true
         const checkXmlParseError = () => {
           try {
