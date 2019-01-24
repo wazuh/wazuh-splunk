@@ -5,15 +5,16 @@
       <span>/ Edition </span>
     </div>
     <div flex></div>
-    <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId" ng-change="changeNode(nodeId)" aria-label="Select node">
+    <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId"
+      ng-change="changeNode(nodeId)" aria-label="Select node">
       <option ng-repeat="node in nodes" value="{{node.name}}">{{node.name}}</option>
     </select>
-</div>
+  </div>
 
-<!-- Headline -->
-<div ng-show="!load" layout="column" layout-padding>
-  <span class="font-size-18">
-    <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Edition</span>
+  <!-- Headline -->
+  <div ng-show="!load" layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Edition</span>
     <span class="md-subheader">Modify the configuration of your managers</span>
   </div>
   <!-- End headline -->
@@ -22,11 +23,61 @@
     <div></div>
   </div>
 
-  
-<div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
-  <wz-xml-editor></wz-xml-editor>
-</div>
+  <!-- Table with cluster nodes -->
+  <div layout="column" layout-align="start">
+    <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch ng-if=" currentList">
+      <md-card flex class="wz-md-card">
+        <md-card-content>
+          <table class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+            <thead class="wz-text-bold">
+              <th class="wz-text-left">Name</th>
+              <th class="wz-text-left">IP</th>
+              <th class="wz-text-left">Type</th>
+              <th class="wz-text-left">Version</th>
+              <th class="wz-text-left">Edit</th>
+            </thead>
+            <tbody>
+              <tr class="wz-word-wrap" ng-repeat="node in nodes track by $index" ng-style="editingKey === key && {'background': '#e2f7ff'}">
+                <td>{{node.name}}</td>
+                <td>{{node.ip}}</td>
+                <td>{{node.type}}</td>
+                <td>{{node.version}}</td>
+                <td>
+                  <span ng-show="!editingNode || editingNode && editingNode !== node.name" ng-click="editNode(node.name)"
+                    class="fa fa-fw fa-pencil cursor-pointer"></span>
+                  <span ng-show="editingNode && editingNode === node.name" ng-click="cancelEditNode()" class="fa fa-fw fa-times cursor-pointer"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <!-- XML editor for ossec.conf -->
+    <div ng-show="editingNode">
+      <div layout="row" class="md-padding">
+        <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+            aria-hidden="true"></i>
+          <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+        </button>
+        <span ng-if="isAdmin" ng-click='cancelEditNode()' class='btn btn-info'>Cancel</span>
+        <button ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+          <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+            file</span>
+          <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+            XML format error</span>
+        </button>
+      </div>
+      <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
+        <wz-xml-file-editor file-name='nodeConfig' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
+        </wz-xml-file-editor>
+      </div>
+    </div>
+
+    <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
+    </div>
 
     <!-- End last registered agent section -->
-  
-</div>
+
+  </div>
