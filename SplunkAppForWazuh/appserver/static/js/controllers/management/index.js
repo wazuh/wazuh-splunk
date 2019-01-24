@@ -8,5 +8,6 @@ define([
   './reporting/reportingCtrl',
   './rules/managerRulesetCtrl',
   './rules/managerRulesetIdCtrl',
-  './status/statusCtrl'
+  './status/statusCtrl',
+  './edition/editionCtrl'
 ], function() {})
