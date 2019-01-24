@@ -21,5 +21,6 @@ define([
   './group-handler/group-handler',
   './date-diff/dateDiffService',
   './file-editor/file-editor',
-  './cdb-editor/cdb-editor'
+  './cdb-editor/cdb-editor',
+  './ruleset-editor/ruleset-editor'
 ], function() {})
