@@ -85,7 +85,7 @@ define(['../module'], function(module) {
                   )
                   return currentExtensions
                 } catch (err) {
-                  $state.go('settings.api')
+                  $state.reload()
                 }
               }
             ]

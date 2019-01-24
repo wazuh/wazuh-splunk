@@ -30,7 +30,6 @@
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-nodiff')" name="fim-nodiff">No
       diff</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-whodata')" ng-if="!agent || isLinux" name="fim-whodata">Who-data</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-windows')" ng-if="((agent || {}).os || {}).platform === 'windows'" name="fim-windows">Windows</md-nav-item>
   </md-nav-bar>
   <!-- End Integrity monitoring navigation bar -->
 
@@ -105,11 +104,12 @@
 
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.ignore"></wz-no-config>
+      <wz-no-config flex error="'not-present'" 
+      ng-if="((agent || {}).os || {}).platform !== 'windows' && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.ignore"></wz-no-config>
       <!-- End no configuration section -->
 
       <!-- Ignored card -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore">
+      <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform !== 'windows' && !JSONContent && !XMLContent && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore">
         <md-card-content>
           <div layout="row" layout-align="start center">
             <div>
@@ -146,15 +146,53 @@
       </md-card>
       <!-- End ignored card -->
 
-
+      <wz-no-config flex error="'not-present'" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore"></wz-no-config>
+      <!-- End no configuration section -->
+      
+      <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
+        <md-card-content>
+          <div layout="row" layout-align="start center">
+            <div>
+              <span class="font-size-16">Ignored</span>
+              <div class="wz-margin-top-10">
+                <span class="md-subheader small">A list of registry entries that will be ignored</span>
+              </div>
+            </div>
+            <span flex></span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          </div>
+          <md-divider class="wz-margin-top-10"></md-divider>
+      
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10">
+      
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Entry</th>
+                <th class="wz-text-left">Arch</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="registry in currentConfig['syscheck-syscheck'].syscheck.registry_ignore">
+                  <td>{{registry.entry}}</td>
+                  <td>{{registry.arch}}</td>
+                </tr>
+              </tbody>
+            </table>
+      
+          </div>
+          <!-- End configuration block -->
+        </md-card-content>
+      </md-card>
 
       <!-- No configuration section -->
       <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && !currentConfig['syscheck-syscheck'].syscheck.directories.length"></wz-no-config>
       <!-- End no configuration section -->
 
       <!-- Monitored card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && currentConfig['syscheck-syscheck'].syscheck.directories.length">
-        <md-card-content flex layout="column">
+      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && currentConfig['syscheck-syscheck'].syscheck.directories.length">
+        <md-card-content>
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Monitored directories</span>
@@ -170,7 +208,7 @@
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- The container for both list and detail -->
-          <div flex="auto" layout="row" class="wz-margin-top-10">
+          <div layout="row" class="wz-margin-top-10 min-height-300">
 
             <!-- List container -->
             <div flex="30" layout="column">
@@ -231,7 +269,48 @@
         </md-card-content>
       </md-card>
       <!-- End monitored card -->
+      <!-- No configuration section -->
+      <wz-no-config flex error="'not-present'" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore"></wz-no-config>
+      <!-- End no configuration section -->
 
+      <!-- Windows card -->
+      <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
+        <md-card-content>
+          <div layout="row" layout-align="start center">
+            <div>
+              <span class="font-size-16">Monitored</span>
+              <div class="wz-margin-top-10">
+                <span class="md-subheader small">A list of registry entries that will be monitored</span>
+              </div>
+            </div>
+            <span flex></span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          </div>
+          <md-divider class="wz-margin-top-10"></md-divider>
+
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10">
+
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Entry</th>
+                <th class="wz-text-left">Arch</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="registry in currentConfig['syscheck-syscheck'].syscheck.registry">
+                  <td>{{registry.entry}}</td>
+                  <td>{{registry.arch}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+          <!-- End configuration block -->
+        </md-card-content>
+      </md-card>
+      <!-- End Windows card -->
 
       <!-- No configuration section -->
       <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.nodiff"></wz-no-config>
@@ -273,78 +352,7 @@
         </md-card-content>
       </md-card>
       <!-- End no diff card -->
-
-
-      <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-windows' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore"></wz-no-config>
-      <!-- End no configuration section -->
-
-      <!-- Windows card -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-windows' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
-        <md-card-content>
-          <div layout="row" layout-align="start center">
-            <div>
-              <span class="font-size-16">Monitored</span>
-              <div class="wz-margin-top-10">
-                <span class="md-subheader small">A list of registry entries that will be monitored</span>
-              </div>
-            </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- Configuration block -->
-          <div class="wz-padding-top-10">
-
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
-              <thead class="wz-text-bold">
-                <th class="wz-text-left">Entry</th>
-                <th class="wz-text-left">Arch</th>
-              </thead>
-              <tbody class="wz-word-wrap">
-                <tr ng-repeat="registry in currentConfig['syscheck-syscheck'].syscheck.registry">
-                  <td>{{registry.entry}}</td>
-                  <td>{{registry.arch}}</td>
-                </tr>
-              </tbody>
-            </table>
-
-          </div>
-          <!-- End configuration block -->
-
-          <div class="wz-margin-top-10">
-            <span class="font-size-16">Ignored</span>
-            <div class="wz-margin-top-10">
-              <span class="md-subheader small">A list of registry entries that will be ignored</span>
-            </div>
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <!-- Configuration block -->
-          <div class="wz-padding-top-10">
-
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
-              <thead class="wz-text-bold">
-                <th class="wz-text-left">Entry</th>
-                <th class="wz-text-left">Arch</th>
-              </thead>
-              <tbody class="wz-word-wrap">
-                <tr ng-repeat="registry in currentConfig['syscheck-syscheck'].syscheck.registry_ignore">
-                  <td>{{registry.entry}}</td>
-                  <td>{{registry.arch}}</td>
-                </tr>
-              </tbody>
-            </table>
-
-          </div>
-          <!-- End configuration block -->
-        </md-card-content>
-      </md-card>
-      <!-- End Windows card -->
-
+      
       <!-- No configuration section -->
       <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-whodata' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.ignore"></wz-no-config>
       <!-- End no configuration section -->
