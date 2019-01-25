@@ -15,13 +15,27 @@ define(['../module'], function(module) {
   
     class CDBEditor {
       constructor($requestService) {
-        this.sendConfig = $requestService.sendConfiguration
         this.getConfig = $requestService.getConfiguration
+        this.apiReq = $requestService.apiReq
       }
   
       async sendConfiguration(file, content) {
         try {
-          const result = await this.sendConfig(`/manager/files?path=/etc/lists/${file}`, content)
+          content = JSON.stringify(content)
+          const result = await this.apiReq(
+            `/manager/files?path=etc/lists/${file}`,
+            { content, origin: 'json' },
+            'POST'
+          )
+          if (
+            !result ||
+            !result.data ||
+            !result.data.data ||
+            result.data.error !== 0 ||
+            (result.data.data.error && result.data.data.error !== 0)
+          ) {
+            throw new Error('Cannot send file.')
+          }
           return result
         } catch (error) {
           return Promise.reject(error)
@@ -30,7 +44,7 @@ define(['../module'], function(module) {
 
       async getConfiguration(file) {
         try {
-          const url = `/manager/files?path=/etc/lists/${file}&format=xml`
+          const url = `/manager/files?path=etc/lists/${file}&format=text`
           const result = await this.getConfig(url)
           if (
             !result ||
@@ -38,7 +52,7 @@ define(['../module'], function(module) {
             !result.data.data ||
             result.data.error != 0
           ) {
-            throw new Error("Error fetching rule content")
+            throw new Error("Error fetching cdb list content")
           }
            return result.data.data
         } catch (error) {

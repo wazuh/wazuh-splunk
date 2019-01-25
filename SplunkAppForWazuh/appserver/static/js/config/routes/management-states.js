@@ -198,9 +198,8 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('mg-cdb')
           },
           controller: 'managerCdbIdCtrl',
-          params: { id: null, filters: null },
+          params: { name: null },
           resolve: {
-            // TODO API call to get cdb list info
             extensions: [
               '$currentDataService',
               async $currentDataService => {
@@ -210,6 +209,19 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   return false
+                }
+              }
+            ],
+            cdbInfo: [
+              '$cdbEditor',
+              '$stateParams',
+              '$state',
+              async ($cdbEditor, $stateParams, $state) => {
+                try {
+                  const result = await $cdbEditor.getConfiguration($stateParams.name)
+                  return result
+                } catch (error) {
+                  $state.go('settings.api')
                 }
               }
             ]

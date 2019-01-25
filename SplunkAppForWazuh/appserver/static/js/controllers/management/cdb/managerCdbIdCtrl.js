@@ -21,7 +21,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       extensions,
-      $cdbEditor
+      $cdbEditor,
+      cdbInfo
     ) {
       super(
         $scope,
@@ -35,6 +36,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.state = $state
       this.extensions = extensions
       this.cdbEditor = $cdbEditor
+      this.cdbInfo = cdbInfo
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -65,47 +67,42 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         //Remove static values
         this.scope.currentList = {
           details: {
-            file: 'audit-keys',
+            file: 'new_list2',
             path: '/etc/lists'
           }
         }
-
-        this.fetchFile().then((result) => {
-          this.scope.currentList.list = result.data.data
-          if (!this.scope.$$phase) this.scope.$digest()
-        }).catch((error) => {
-          throw new Error(error)
-        })
+        this.scope.currentList.list = this.cdbInfo
 
         this.scope.adminMode = this.extensions['admin'] === 'true'
       } catch (error) {
-        this.toast("Error fetching CDB list")
-        console.error("Error fetching CDB list ", error)
+        this.toast("Error editing CDB list")
       }
 
     }
 
-    //Set this API call in the resolve
-    async fetchFile() {
-      // get specific file
+    async fetchFile(fileName) {
       try {
-        const result = await this.cdbEditor.getConfiguration('audit-keys')
+        const result = await this.cdbEditor.getConfiguration(fileName)
         return result
       } catch (error) {
-        console.error(error)
-        this.toast("Error fetching CDB list configuration")
+        return Promise.reject(error)
       }
     }
 
-    addEntry(key, value) {
-      if (!this.scope.currentList.list[key]) {
-        this.scope.currentList.list[key] = value
-        this.scope.newKey = ''
-        this.scope.newValue = ''
-        this.saveList()
-      } else {
-        this.toast("Error adding new entry, the key exists.")
+    async addEntry(key, value) {
+      try {
+        if (!this.scope.currentList.list[key]) {
+          this.scope.currentList.list[key] = value
+          this.scope.newKey = ''
+          this.scope.newValue = ''
+          await this.saveList()
+        } else {
+          this.toast("Error adding new entry, the key exists.")
+        }
+      } catch (error) {
+        this.toast("Error adding entry.")
       }
+
     }
 
     /**
@@ -129,24 +126,42 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.removingEntry = key
     }
 
-    editKey(key, newValue) {
-      this.scope.currentList.list[key] = newValue
-      this.cancelEditingKey()
-      this.saveList()
+    async editKey(key, newValue) {
+      try {
+        this.scope.currentList.list[key] = newValue
+        this.cancelEditingKey()
+        await this.saveList()
+      } catch (error) {
+        console.error(error)
+        this.toast("Error editing value.")
+      }
     }
 
     cancelRemoveEntry() {
       this.scope.removingEntry = false
     }
 
-    confirmRemoveEntry(key) {
-      delete this.scope.currentList.list[key]
-      this.scope.removingEntry = false
-      this.saveList()
+    async confirmRemoveEntry(key) {
+      try {
+        delete this.scope.currentList.list[key]
+        this.scope.removingEntry = false
+        await this.saveList()
+      } catch (error) {
+        console.error(error)
+        this.toast("Error deleting entry.")
+      }
+
     }
 
-    saveList() {
-      this.toast("CDB List saved")
+    async saveList() {
+      try {
+        const fileName = this.scope.currentList.details.file
+        const check = await this.cdbEditor.sendConfiguration(fileName, this.scope.currentList.list)
+        const cbdUpdated = await this.fetchFile(fileName)
+        this.scope.currentList.list = cbdUpdated
+      } catch (error) {
+        return Promise.reject(error)
+      }
     }
   }
   controllers.controller('managerCdbIdCtrl', CdbListId)

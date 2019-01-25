@@ -52,7 +52,8 @@ define([], function() {
     } else if (instance.path.includes('/decoders')) {
       $state.go('mg-decoders-id', { file: item.file, name: item.name })
     } else if (instance.path === '/cdb') {
-      $state.go('mg-cdb-id', { id: item.id })
+      const name = 'new_list2'//Change when the API returns the cdb lists, only for test
+      $state.go('mg-cdb-id', { name: name })
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
     }
