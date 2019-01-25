@@ -230,7 +230,7 @@ define([
             end
           })
         }
-
+        starts = [];
         return tmpgroups
       } catch (error) {
         return []
