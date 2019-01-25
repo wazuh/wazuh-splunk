@@ -5,10 +5,12 @@
       <span>/ Edition </span>
     </div>
     <div flex></div>
-    <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId"
+    <!--
+      <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId"
       ng-change="changeNode(nodeId)" aria-label="Select node">
       <option ng-repeat="node in nodes" value="{{node.name}}">{{node.name}}</option>
     </select>
+    -->
   </div>
 
   <!-- Headline -->
@@ -24,7 +26,7 @@
   </div>
 
   <!-- Table with cluster nodes -->
-  <div layout="column" layout-align="start">
+  <div ng-if="clusterEnabled" layout="column" layout-align="start">
     <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch ng-if=" currentList">
       <md-card flex class="wz-md-card">
         <md-card-content>
@@ -70,7 +72,7 @@
         </button>
       </div>
       <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-        <wz-xml-file-editor file-name='nodeConfig' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
+        <wz-xml-file-editor file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
         </wz-xml-file-editor>
       </div>
     </div>

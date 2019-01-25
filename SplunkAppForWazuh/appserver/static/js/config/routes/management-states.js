@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // Manager
@@ -432,18 +432,6 @@ define(['../module'], function(module) {
           },
           controller: 'editionCtrl',
           resolve: {
-            nodes: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const result = await $requestService.apiReq('/cluster/nodes')
-                  return result
-                } catch (err) {
-                  $state.go('manager')
-                }
-              }
-            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -456,6 +444,25 @@ define(['../module'], function(module) {
                 } catch (error) {
                   console.error('err : ', error)
                   return false
+                }
+              }
+            ],
+            clusterInfo: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const info = {}
+                  const clusterStatus = await $requestService.apiReq('/cluster/status')
+                  if (clusterStatus.data.data.running === 'yes') {
+                    const nodesList = await $requestService.apiReq('/cluster/nodes')
+                    Object.assign(info, { clusterEnabled: true, nodes: nodesList })
+                  } else {
+                    Object.assign(info, { clusterEnabled: false})
+                  }
+                  return info
+                } catch (error) {
+                  $state.go('manager')
                 }
               }
             ]

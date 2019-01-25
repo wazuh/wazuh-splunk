@@ -22,5 +22,6 @@ define([
   './date-diff/dateDiffService',
   './file-editor/file-editor',
   './cdb-editor/cdb-editor',
-  './ruleset-editor/ruleset-editor'
+  './ruleset-editor/ruleset-editor',
+  './ossec-editor/ossec-editor'
 ], function() {})
