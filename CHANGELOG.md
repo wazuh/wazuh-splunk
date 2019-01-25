@@ -1,5 +1,16 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+## Wazuh v3.8.1 - Splunk Enterprise v7.2.3 - Splunk app v3.8.1-rev-21
+
+### Added
+
+- Support for Wazuh v3.8.1
+
+### Changed
+
+- Moved monitored/ignored Windows registry entries to "FIM > Monitored" and "FIM > Ignored" to avoid user confusion ([#508](https://github.com/wazuh/wazuh-splunk/pull/508)).
+- Excluding manager from agent monitoring script ([#509](https://github.com/wazuh/wazuh-splunk/pull/509)).
+
 ## Wazuh v3.8.0 - Splunk Enterprise v7.2.3 - Splunk app v3.8.0-rev-20
 
 ### Added
