@@ -585,7 +585,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     doSaveGroupAgentConfig() {
-      this.scope.editingFile = false
       this.scope.$broadcast('saveXmlFile', {
         group: this.scope.currentGroup.name
       })
