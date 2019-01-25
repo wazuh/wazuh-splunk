@@ -14,7 +14,7 @@ define([
   Table,
   AreaChart,
   TimePicker,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -138,23 +138,18 @@ define([
           } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement',
           this.scope
+        ),
+        new RawTableDataService(
+          'eventsSummaryTable',
+          `${
+            this.filters
+          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          'eventsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Events Summary'
         )
       ]
-
-      this.eventsSummaryTable = new rawTableDataService(
-        'eventsSummaryTable',
-        `${
-          this.filters
-        } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-        'eventsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.eventsSummaryTable)
-
-      this.eventsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Events Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -205,6 +200,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

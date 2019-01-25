@@ -29,7 +29,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -209,23 +209,18 @@ define([
           } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryVizz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -282,6 +277,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

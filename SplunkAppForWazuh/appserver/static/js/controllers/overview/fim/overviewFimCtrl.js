@@ -13,7 +13,7 @@ define([
   Table,
   LinearChart,
   TimePicker,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -117,38 +117,28 @@ define([
           } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
           'topUsers',
           this.scope
+        ),
+        new RawTableDataService(
+          'topRulesTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'topRulesTableToken',
+          '$result$',
+          this.scope,
+          'Top rules'
+        ),
+        new RawTableDataService(
+          'topUsersTable',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
+          'topUsersTableToken',
+          '$result$',
+          this.scope,
+          'Top users'
         )
       ]
-
-      this.topRulesTable = new rawTableDataService(
-        'topRulesTable',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-        'topRulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.topRulesTable)
-
-      this.topRulesTable.getSearch().on('result', result => {
-        this.tableResults['Top rules'] = result
-      })
-
-      this.topUsersTable = new rawTableDataService(
-        'topUsersTable',
-        `${
-          this.filters
-        } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
-        'topUsersTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.topUsersTable)
-
-      this.topUsersTable.getSearch().on('result', result => {
-        this.tableResults['Top users'] = result
-      })
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -180,17 +170,22 @@ define([
           this.tableResults
         )
 
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
+        this.scope.$on('checkReportingStatus', () => {
+          this.vizzReady = !this.vizz.filter(v => {
+            return v.finish === false
+          }).length
+          if (this.vizzReady) {
+            this.scope.loadingVizz = false
+          } else {
+            this.vizz.map(v => {
+              if (v.constructor.name === 'RawTableData'){
+                this.tableResults[v.name] = v.results
+              }
+            })
+            this.scope.loadingVizz = true
+          }
+          if (!this.scope.$$phase) this.scope.$digest()
+        })
 
       /**
        * On controller destroy

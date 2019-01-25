@@ -103,16 +103,7 @@ define(['../../module'], function(module) {
         this.init()
 
         this.scope.startVis2Png = () =>
-          this.reportingService.reportInventoryData(
-            'agents-inventory',
-            'Inventory Data',
-            '', //Filters,
-            [], //Visualizations,
-            {}, //Metrics,
-            {}, //tableResults
-            'inventory', //isAgent
-            this.scope.agent.id //agentId
-          )
+          this.reportingService.reportInventoryData(this.scope.agent.id)
 
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
