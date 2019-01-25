@@ -59,7 +59,6 @@ class report(controllers.BaseController):
     def __init__(self):
         """Constructor."""
         self.logger = log()
-        self.images = []
         try:
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
@@ -68,6 +67,7 @@ class report(controllers.BaseController):
 
     def save_images(self, images):
         i = 0
+        images_saved = []
         while i in range(0, len(images)):
             path = str(self.path+str(images[i]['id'])+'.png')
             f = open(path, 'wb')
@@ -78,13 +78,13 @@ class report(controllers.BaseController):
                 images[i]['element'].split(',')[1].encode()))
             f.close()
             image = {'title': title, 'path': path, 'width': width, 'height': height}
-            self.images.append(image)
+            images_saved.append(image)
             i += 1
+        return images_saved
 
-    def delete_images(self):
-        for img in self.images:
+    def delete_images(self, images):
+        for img in images:
             os.remove(img['path'])
-        self.images = []
 
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
@@ -97,76 +97,76 @@ class report(controllers.BaseController):
 
         """
         try:
-            self.pdf = PDF('P', 'mm', 'A4')
-            self.metrics_exists = False
+            pdf = PDF('P', 'mm', 'A4')
+            metrics_exists = False
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data']
             data = json.loads(json_acceptable_string)
             #Replace "'" in images
-            self.clean_images = json.dumps(data['images'])
-            self.clean_images.replace("'", "\"")
-            data['images'] = json.loads(self.clean_images)
+            clean_images = json.dumps(data['images'])
+            clean_images.replace("'", "\"")
+            data['images'] = json.loads(clean_images)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             #Get filters and other information
-            self.filters = data['queryFilters']
-            self.pdf_name = data['pdfName']
-            self.time_range = data['timeRange']
-            self.section_title = data['sectionTitle']
-            self.metrics = data['metrics']
-            self.tables = data['tableResults']
-            if self.metrics:
-                self.metrics = json.loads(self.metrics)
-            self.agent_data = data['isAgents']
+            filters = data['queryFilters']
+            pdf_name = data['pdfName']
+            time_range = data['timeRange']
+            section_title = data['sectionTitle']
+            metrics = data['metrics']
+            tables = data['tableResults']
+            if metrics:
+                metrics = json.loads(metrics)
+            agent_data = data['isAgents']
             #Save the images
-            self.save_images(data['images'])
+            saved_images = self.save_images(data['images'])
             parsed_data = json.dumps({'data': 'success'})
             # Add title and filters 
-            self.pdf.alias_nb_pages()
-            self.pdf.add_page()
-            self.pdf.ln(20)
+            pdf.alias_nb_pages()
+            pdf.add_page()
+            pdf.ln(20)
             #Color WazuhBlue
-            self.pdf.set_text_color(93, 188, 210)
+            pdf.set_text_color(93, 188, 210)
             # Title Arial Bold 20
-            self.pdf.set_font('Arial', '', 25)
-            self.pdf.cell(0,0, self.section_title + ' report' , 0, 0, 'L')
+            pdf.set_font('Arial', '', 25)
+            pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            self.pdf.set_font('Arial', '', 12)
-            self.pdf.cell(0,0, today , 0, 0, 'R')
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
-            if self.pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
-                self.pdf.ln(7)
-                self.pdf.set_fill_color(93, 188, 210)
-                self.pdf.set_text_color(255,255,255)
-                self.pdf.set_font('Arial', '', 10)
-                self.pdf.cell(0, 5, ' Search time range: ' + self.time_range , 0, 0, 'L', 1)
-                self.pdf.ln(5)
-                self.pdf.cell(0, 5, ' Filters:' + self.filters , 0, 0, 'L', 1)
+            if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
+                pdf.ln(7)
+                pdf.set_fill_color(93, 188, 210)
+                pdf.set_text_color(255,255,255)
+                pdf.set_font('Arial', '', 10)
+                pdf.cell(0, 5, ' Search time range: ' + time_range , 0, 0, 'L', 1)
+                pdf.ln(5)
+                pdf.cell(0, 5, ' Filters:' + filters , 0, 0, 'L', 1)
             #Check if is agent, print agent info
-            if self.agent_data and self.agent_data != 'inventory':
-                self.print_agent_info(self.agent_data, self.pdf)
+            if agent_data and agent_data != 'inventory':
+                self.print_agent_info(agent_data, pdf)
             #Check metrics and print if exist
-            if len(self.metrics) > 0:
-                self.pdf.set_text_color(255,255,255)
-                self.metrics_exists = True
+            if len(metrics) > 0:
+                pdf.set_text_color(255,255,255)
+                metrics_exists = True
                 w = 5
                 line_width = 0
                 total_width = 190
-                self.pdf.ln(10)
-                self.pdf.set_font('Arial', '', 8)
-                for key in self.metrics.keys():
-                    text = (str(key) +': '+ str(self.metrics[key]))
-                    text_w = self.pdf.get_string_width(text) + w
+                pdf.ln(10)
+                pdf.set_font('Arial', '', 8)
+                for key in metrics.keys():
+                    text = (str(key) +': '+ str(metrics[key]))
+                    text_w = pdf.get_string_width(text) + w
                     line_width = line_width + text_w
                     if line_width >= total_width:
-                        self.pdf.cell((total_width - (line_width - text_w)), 4, '', 0, 0, 'L', 1)#Fill rest of the width
-                        self.pdf.ln(4)
+                        pdf.cell((total_width - (line_width - text_w)), 4, '', 0, 0, 'L', 1)#Fill rest of the width
+                        pdf.ln(4)
                         line_width = text_w
-                    self.pdf.cell(text_w, 4, text, 0, 0, 'L', 1)
+                    pdf.cell(text_w, 4, text, 0, 0, 'L', 1)
                 if line_width < total_width:
-                    self.pdf.cell((total_width - line_width), 4, '', 0, 0, 'L', 1)#Fill rest of the width in the last row
+                    pdf.cell((total_width - line_width), 4, '', 0, 0, 'L', 1)#Fill rest of the width in the last row
             # Add visualizations
-            if self.images:
+            if saved_images:
                 # Default sizes and margins values
                 x = 30
                 y = 10
@@ -176,17 +176,17 @@ class report(controllers.BaseController):
                 x_img = 50
                 # Count images for page break
                 count = 0
-                n_images = len(self.images)
+                n_images = len(saved_images)
                 # Set top margin checking if metrics exist
-                self.pdf.set_text_color(93, 188, 210)
-                self.pdf.set_font('Arial', '', 14)
-                if self.metrics_exists:
+                pdf.set_text_color(93, 188, 210)
+                pdf.set_font('Arial', '', 14)
+                if metrics_exists:
                     y_img = y_img + 10
-                if self.agent_data:
+                if agent_data:
                     y_img = y_img + 20
-                self.pdf.ln(10)
+                pdf.ln(10)
                 #Sort images by width size
-                images = sorted(self.images, key=itemgetter('width'))
+                images = sorted(saved_images, key=itemgetter('width'))
                 #Insert images
                 for img in images:
                     #Change width and heigh
@@ -207,72 +207,72 @@ class report(controllers.BaseController):
                         h = 90
                         x_img = 10     
                     #Insert image
-                    self.pdf.cell(x , y, img['title'], 0, 1)
-                    self.pdf.image(img['path'], x_img, y_img, w, h)
-                    self.pdf.ln(80)
+                    pdf.cell(x , y, img['title'], 0, 1)
+                    pdf.image(img['path'], x_img, y_img, w, h)
+                    pdf.ln(80)
                     y_img = y_img + 90
                     count = count + 1
                     n_images = n_images - 1
                     if count == 2 and n_images >= 1:
-                        self.pdf.add_page()
-                        self.pdf.ln(20)
+                        pdf.add_page()
+                        pdf.ln(20)
                         y_img = 50
                         count = 0
             #Add tables
-            if self.tablesHaveInfo(self.tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
-                if self.pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
-                    self.pdf.add_page()
-                    self.pdf.ln(20)
+            if self.tablesHaveInfo(tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
+                if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
+                    pdf.add_page()
+                    pdf.ln(20)
                 rows_count = 12 # Set row_count with 12 for the agent information size
-                self.table_keys = self.tables.keys()
-                for key in self.table_keys:
-                    if self.tables[key]:#Check if this table has information, if it has, process it
+                table_keys = tables.keys()
+                for key in table_keys:
+                    if tables[key]:#Check if this table has information, if it has, process it
                         table_title = key
-                        self.pdf.ln(10)
+                        pdf.ln(10)
                         #Table title
-                        self.pdf.set_text_color(93, 188, 210)
-                        self.pdf.set_font('Arial', '', 14)
+                        pdf.set_text_color(93, 188, 210)
+                        pdf.set_font('Arial', '', 14)
                         if rows_count > 60:
-                            self.pdf.add_page()
-                            self.pdf.ln(12)
+                            pdf.add_page()
+                            pdf.ln(12)
                             rows_count = 0
-                        self.pdf.cell(0 , 5, table_title, 0, 1, 'L')
+                        pdf.cell(0 , 5, table_title, 0, 1, 'L')
                         rows_count = rows_count + 5
-                        self.pdf.ln()
+                        pdf.ln()
                         #Table content
-                        self.pdf.set_font('Arial', '', 8)
-                        self.pdf.set_fill_color(93, 188, 210)
-                        self.pdf.set_text_color(255,255,255)
-                        sizes_field = self.calculate_table_width(self.tables[key])
+                        pdf.set_font('Arial', '', 8)
+                        pdf.set_fill_color(93, 188, 210)
+                        pdf.set_text_color(255,255,255)
+                        sizes_field = self.calculate_table_width(pdf, tables[key])
                         count = 0
-                        for field in self.tables[key]['fields']:
+                        for field in tables[key]['fields']:
                             if rows_count > 60:
-                                self.pdf.add_page()
-                                self.pdf.ln(12)
+                                pdf.add_page()
+                                pdf.ln(12)
                                 rows_count = 0
                             if field != 'sparkline':
                                 width = sizes_field[count]
-                                self.pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
+                                pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                                 count = count + 1
-                        self.pdf.ln()
-                        self.pdf.set_text_color(93, 188, 210)
-                        for row in self.tables[key]['rows']:
+                        pdf.ln()
+                        pdf.set_text_color(93, 188, 210)
+                        for row in tables[key]['rows']:
                             count = 0
                             if rows_count > 55:
-                                self.pdf.add_page()
-                                self.pdf.ln(12)
+                                pdf.add_page()
+                                pdf.ln(12)
                                 rows_count = 0
                             rows_count = rows_count + 1
                             for value in row:
                                 if not isinstance(value, list):
                                     width = sizes_field[count]
-                                    self.pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                    pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
                                     count = count + 1
-                            self.pdf.ln()
+                            pdf.ln()
             #Save pdf
-            self.pdf.output(self.path+'wazuh-'+self.pdf_name+'-'+report_id+'.pdf', 'F')
+            pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
-            self.delete_images()
+            self.delete_images(saved_images)
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
             return json.dumps({"error": str(e)})
@@ -286,13 +286,13 @@ class report(controllers.BaseController):
         return False
 
     #Calculates the width of the fields
-    def calculate_table_width(self, table):
+    def calculate_table_width(self, pdf, table):
         sizes = {}
         total_width = 0
         fields = table['fields']
         for field in fields:
             if field != 'sparkline':
-                width = self.pdf.get_string_width(field) + 1
+                width = pdf.get_string_width(field) + 1
                 sizes[field] = width
         for row in table['rows']:
             count = 0
@@ -301,7 +301,7 @@ class report(controllers.BaseController):
                     key = fields[count]
                     prev_width = sizes[key]
                     if value: # Check for possible undefined elements
-                        width = self.pdf.get_string_width(value) + 1
+                        width = pdf.get_string_width(value) + 1
                     else:
                          width = 1
                     if width > prev_width:
@@ -351,12 +351,12 @@ class report(controllers.BaseController):
             pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
         pdf.ln()
         #Change text color and print tr
-        self.pdf.set_text_color(93, 188, 210)
+        pdf.set_text_color(93, 188, 210)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(agent_info[key]), 0, 0, 'L', 0)
         #Print the rest of the agent information
         pdf.ln(5)
-        self.pdf.set_text_color(169, 169, 169)
+        pdf.set_text_color(169, 169, 169)
         pdf.cell(0,6, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
         pdf.ln()
         pdf.cell(0,6, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
