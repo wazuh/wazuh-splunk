@@ -12,7 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-import json
+import jsonbak
 import os
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from tinydb import TinyDB, Query
@@ -45,7 +45,7 @@ class database():
         with self.mutex:
             try:
                 result = self.db.insert(obj)
-                parsed_result = json.dumps({'data': result})
+                parsed_result = jsonbak.dumps({'data': result})
             except Exception as e:
                 self.logger.error("Error inserting in DB module: %s" % (e))
                 raise e
@@ -63,7 +63,7 @@ class database():
         with self.mutex:
             try:
                 self.db.update(obj, self.Api.id == obj['id'])
-                parsed_result = json.dumps({'data': 'success'})
+                parsed_result = jsonbak.dumps({'data': 'success'})
             except Exception as e:
                 self.logger.error("Error updating in DB module: %s" % (e))
                 raise e
@@ -81,7 +81,7 @@ class database():
         with self.mutex:
             try:
                 self.db.remove(self.Api.id == id)
-                parsed_result = json.dumps({'data': 'success'})
+                parsed_result = jsonbak.dumps({'data': 'success'})
             except Exception as e:
                 self.logger.error("Error removing in DB module: %s" % (e))
                 raise e

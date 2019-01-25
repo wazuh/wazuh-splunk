@@ -1,0 +1,80 @@
+<div ng-cloak flex layout="column" class='wz-white-background'>
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+      <span> / CDB List </span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
+  <!-- Headline -->
+  <div ng-show="!loading" layout="column" layout-padding>
+    <span class="font-size-18">
+      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> CDB lists</span>
+    <span>Review all your current rules, decoders and cdb lists</span>
+  </div>
+  <!-- End headline -->
+
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">CDB Lists</md-nav-item>
+  </md-nav-bar>
+
+  <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
+    <div flex class="height-40 wz-margin-right-15">
+      <div layout="row">
+        <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="search(customSearch)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(customSearch)">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
+    <md-chip class="wz-chip" ng-show="includesFilter('file')">
+      <span>File: {{getFilter('file')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="includesFilter('path')">
+      <span>Path: {{getFilter('path')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="includesFilter('level')">
+      <span>Level: {{getFilter('level')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('level')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="includesFilter('group')">
+      <span>Group: {{getFilter('group')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('group')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="includesFilter('pci')">
+      <span>PCI control: {{getFilter('pci')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('pci')"></i>
+      </span>
+    </md-chip>
+    <md-chip class="wz-chip" ng-show="includesFilter('gdpr')">
+      <span>GDPR: {{getFilter('gdpr')}}
+        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('gdpr')"></i>
+      </span>
+    </md-chip>
+  </md-chips>
+  <div layout="row" layout-padding>
+    <wazuh-table implicit-filter="appliedFilters" flex path="'/cdb'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+      allow-click="true" rows-per-page="14">
+    </wazuh-table>
+  </div>
+  <div layout="row" class="wz-margin-top-10">
+    <span flex></span>
+    <a class="small" id="btnDownload" ng-click="downloadCsv('/cdb','cdb.csv')">Formatted
+      <i aria-hidden="true" class="fa fa-download"></i>
+    </a>
+  </div>
+</div>

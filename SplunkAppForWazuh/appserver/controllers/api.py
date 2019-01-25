@@ -13,8 +13,8 @@ Find more information about this on the LICENSE file.
 """
 
 
-import json
-import requests
+import jsonbak
+import requestsbak
 import csv
 import cStringIO
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -38,7 +38,7 @@ class api(controllers.BaseController):
             self.logger = log()
             controllers.BaseController.__init__(self)
             self.db = database()
-            self.session = requests.Session()
+            self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("Error in API module constructor: %s" % (e))
@@ -48,7 +48,7 @@ class api(controllers.BaseController):
         """
         try:
             apikeyconf = cli.getConfStanza('config', 'extensions')
-            # parsed_data = json.dumps(apikeyconf)
+            # parsed_data = jsonbak.dumps(apikeyconf)
         except Exception as e:
             raise e
         return apikeyconf
@@ -82,7 +82,7 @@ class api(controllers.BaseController):
                 for integ in res["integration"]:
                     integ["api_key"] = hide
             response["data"] = res
-            return json.dumps(response)
+            return jsonbak.dumps(response)
         except Exception as e:
             raise e
 
@@ -100,7 +100,7 @@ class api(controllers.BaseController):
                     if isinstance(item, dict):
                         for key, value in item.iteritems():
                             if isinstance(value, dict):
-                                item[key] = json.dumps(value)
+                                item[key] = jsonbak.dumps(value)
                             elif isinstance(value, list):
                                 i = 0
                                 while i < len(value):
@@ -131,7 +131,7 @@ class api(controllers.BaseController):
         """
         try:
             if 'id' not in kwargs or 'endpoint' not in kwargs:
-                return json.dumps({'error': 'Missing ID or endpoint.'})
+                return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
             if 'method' not in kwargs:
                 method = 'GET'
             elif kwargs['method'] == 'GET':
@@ -140,7 +140,7 @@ class api(controllers.BaseController):
             else:
                 if str(self.getSelfAdminStanza()['admin']) != 'true':
                     self.logger.error('Admin mode is disabled.')
-                    return json.dumps({'error': 'Forbidden. Enable admin mode.'})
+                    return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
             the_id = kwargs['id']
@@ -154,15 +154,18 @@ class api(controllers.BaseController):
                 del kwargs['id']
                 del kwargs['endpoint']
                 url = opt_base_url + ":" + opt_base_port
-                auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+                auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
                 verify = False
                 if method == 'GET':
                     request = self.session.get(
                         url + opt_endpoint, params=kwargs, auth=auth,
                         verify=verify).json()
                 if method == 'POST':
-                    if 'origin' in kwargs and kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml'} 
+                    if 'origin' in kwargs:
+                        if kwargs['origin'] == 'xmleditor':
+                            headers = {'Content-Type': 'application/xml'} 
+                        elif kwargs['origin'] == 'json':
+                            headers = {'Content-Type':  'application/json'} 
                         kwargs = str(kwargs['content'])
                         request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
                     else:
@@ -177,19 +180,19 @@ class api(controllers.BaseController):
                     request = self.session.delete(
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
-                result = json.dumps(request)
+                result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
-            return json.dumps({'error': str(e)})
+            return jsonbak.dumps({'error': str(e)})
         return result
 
     @expose_page(must_login=False, methods=['GET'])
     def autocomplete(self, **kwargs):
         """Provisional method for returning the full list of Wazuh API endpoints."""
         try:
-            parsed_json = json.dumps([{"method":'PUT',"endpoints":[{"name":'/active-response/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/:agent_id/restart',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_custom',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/restart',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'DELETE',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/cache',"args":[]},{"name":'/cache',"args":[]},{"name":'/experimental/syscheck',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'GET',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/config/:component/:configuration',"args":[{"name":':agent_id'},{"name":':component'},{"name":':configuration'}]},{"name":'/agents/:agent_id/group/is_sync',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/key',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_result',"args":[{"name":':agent_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:filename',"args":[{"name":':group_id'},{"name":':filename'}]},{"name":'/agents/"name"/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/no_group',"args":[]},{"name":'/agents/outdated',"args":[]},{"name":'/agents/stats/distinct',"args":[]},{"name":'/agents/summary',"args":[]},{"name":'/agents/summary/os',"args":[]},{"name":'/cache',"args":[]},{"name":'/cache/config',"args":[]},{"name":'/ciscat/:agent_id/results',"args":[{"name":':agent_id'}]},{"name":'/cluster/:node_id/configuration',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/info',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs/summary',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/hourly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/weekly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/status',"args":[{"name":':node_id'}]},{"name":'/cluster/config',"args":[]},{"name":'/cluster/healthcheck',"args":[]},{"name":'/cluster/node',"args":[]},{"name":'/cluster/nodes',"args":[]},{"name":'/cluster/nodes/:node_name',"args":[{"name":':node_name'}]},{"name":'/cluster/status',"args":[]},{"name":'/decoders',"args":[]},{"name":'/decoders/:decoder_name',"args":[{"name":':decoder_name'}]},{"name":'/decoders/files',"args":[]},{"name":'/decoders/parents',"args":[]},{"name":'/experimental/ciscat/results',"args":[]},{"name":'/experimental/syscollector/hardware',"args":[]},{"name":'/experimental/syscollector/netaddr',"args":[]},{"name":'/experimental/syscollector/netiface',"args":[]},{"name":'/experimental/syscollector/netproto',"args":[]},{"name":'/experimental/syscollector/os',"args":[]},{"name":'/experimental/syscollector/packages',"args":[]},{"name":'/experimental/syscollector/ports',"args":[]},{"name":'/experimental/syscollector/processes',"args":[]},{"name":'/manager/configuration',"args":[]},{"name":'/manager/info',"args":[]},{"name":'/manager/logs',"args":[]},{"name":'/manager/logs/summary',"args":[]},{"name":'/manager/stats',"args":[]},{"name":'/manager/stats/analysisd',"args":[]},{"name":'/manager/stats/hourly',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/manager/stats/weekly',"args":[]},{"name":'/manager/status',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/cis',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/pci',"args":[{"name":':agent_id'}]},{"name":'/rules',"args":[]},{"name":'/rules/:rule_id',"args":[{"name":':rule_id'}]},{"name":'/rules/files',"args":[]},{"name":'/rules/gdpr',"args":[]},{"name":'/rules/groups',"args":[]},{"name":'/rules/pci',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/hardware',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netaddr',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netiface',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netproto',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/os',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/packages',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/ports',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/processes',"args":[{"name":':agent_id'}]}]},{"method":'POST',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/insert',"args":[]},{"name":'/agents/restart',"args":[]}]}])
+            parsed_json = jsonbak.dumps([{"method":'PUT',"endpoints":[{"name":'/active-response/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/:agent_id/restart',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_custom',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/restart',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'DELETE',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/cache',"args":[]},{"name":'/cache',"args":[]},{"name":'/experimental/syscheck',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'GET',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/config/:component/:configuration',"args":[{"name":':agent_id'},{"name":':component'},{"name":':configuration'}]},{"name":'/agents/:agent_id/group/is_sync',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/key',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_result',"args":[{"name":':agent_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:filename',"args":[{"name":':group_id'},{"name":':filename'}]},{"name":'/agents/"name"/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/no_group',"args":[]},{"name":'/agents/outdated',"args":[]},{"name":'/agents/stats/distinct',"args":[]},{"name":'/agents/summary',"args":[]},{"name":'/agents/summary/os',"args":[]},{"name":'/cache',"args":[]},{"name":'/cache/config',"args":[]},{"name":'/ciscat/:agent_id/results',"args":[{"name":':agent_id'}]},{"name":'/cluster/:node_id/configuration',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/info',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs/summary',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/hourly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/weekly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/status',"args":[{"name":':node_id'}]},{"name":'/cluster/config',"args":[]},{"name":'/cluster/healthcheck',"args":[]},{"name":'/cluster/node',"args":[]},{"name":'/cluster/nodes',"args":[]},{"name":'/cluster/nodes/:node_name',"args":[{"name":':node_name'}]},{"name":'/cluster/status',"args":[]},{"name":'/decoders',"args":[]},{"name":'/decoders/:decoder_name',"args":[{"name":':decoder_name'}]},{"name":'/decoders/files',"args":[]},{"name":'/decoders/parents',"args":[]},{"name":'/experimental/ciscat/results',"args":[]},{"name":'/experimental/syscollector/hardware',"args":[]},{"name":'/experimental/syscollector/netaddr',"args":[]},{"name":'/experimental/syscollector/netiface',"args":[]},{"name":'/experimental/syscollector/netproto',"args":[]},{"name":'/experimental/syscollector/os',"args":[]},{"name":'/experimental/syscollector/packages',"args":[]},{"name":'/experimental/syscollector/ports',"args":[]},{"name":'/experimental/syscollector/processes',"args":[]},{"name":'/manager/configuration',"args":[]},{"name":'/manager/info',"args":[]},{"name":'/manager/logs',"args":[]},{"name":'/manager/logs/summary',"args":[]},{"name":'/manager/stats',"args":[]},{"name":'/manager/stats/analysisd',"args":[]},{"name":'/manager/stats/hourly',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/manager/stats/weekly',"args":[]},{"name":'/manager/status',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/cis',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/pci',"args":[{"name":':agent_id'}]},{"name":'/rules',"args":[]},{"name":'/rules/:rule_id',"args":[{"name":':rule_id'}]},{"name":'/rules/files',"args":[]},{"name":'/rules/gdpr',"args":[]},{"name":'/rules/groups',"args":[]},{"name":'/rules/pci',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/hardware',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netaddr',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netiface',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netproto',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/os',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/packages',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/ports',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/processes',"args":[{"name":':agent_id'}]}]},{"method":'POST',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/insert',"args":[]},{"name":'/agents/restart',"args":[]}]}])
         except Exception as e:
-            return json.dumps({'error': str(e)})
+            return jsonbak.dumps({'error': str(e)})
         return parsed_json
     
     
@@ -211,7 +214,7 @@ class api(controllers.BaseController):
             filters['offset'] = 0
 
             if 'filters' in kwargs and kwargs['filters'] != '':
-                parsed_filters = json.loads(kwargs['filters'])
+                parsed_filters = jsonbak.loads(kwargs['filters'])
                 keys_to_delete = []
                 for key, value in parsed_filters.iteritems():
                     if parsed_filters[key] == "":
@@ -231,7 +234,7 @@ class api(controllers.BaseController):
             del kwargs['id']
             del kwargs['path']
             url = opt_base_url + ":" + opt_base_port
-            auth = requests.auth.HTTPBasicAuth(opt_username, opt_password)
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             # init csv writer
             output_file = cStringIO.StringIO()
@@ -282,5 +285,5 @@ class api(controllers.BaseController):
             output_file.close()
         except Exception as e:
             self.logger.error("Error in CSV generation!: %s" % (str(e)))
-            return json.dumps({"error": str(e)})
+            return jsonbak.dumps({"error": str(e)})
         return csv_result

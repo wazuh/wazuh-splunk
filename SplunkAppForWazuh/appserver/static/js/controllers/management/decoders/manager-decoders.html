@@ -11,9 +11,17 @@
   <div ng-show="!loading" layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Decoders</span>
-    <span>Review all your current rules and decoders</span>
+    <span>Review all your current rules, decoders and cdb lists</span>
   </div>
   <!-- End headline -->
+
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="decoders">Decoders</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+  </md-nav-bar>
+
   <div flex layout="column" class="md-padding">
     <div id="content" layout="row" layout-align="start start">
 
@@ -29,12 +37,11 @@
           <option value="parents">Parent decoders</option>
         </select>
       </div>
-
-      <md-button ui-sref='mg-rules' class="wz-button md-raised md-primary manager-ruleset-btn" aria-label="Ruleset rules button">
-        <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Rules
-      </md-button>
-      <md-button class="active wz-button md-raised md-primary manager-ruleset-btn" aria-label="Ruleset decoders button">
-        <i class="fa fa-fw fa-search" aria-hidden="true"></i> Decoders
+      <md-button ng-show="!onlyParentDecoders" style='margin-top: 0' class="wz-button md-raised md-primary" aria-label="Filter by local decoders" ng-click="search('path:/var/ossec/etc/decoders')">
+        <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Local decoders
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          Filter by local decoders
+        </md-tooltip>
       </md-button>
     </div>
 

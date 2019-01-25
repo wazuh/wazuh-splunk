@@ -71,6 +71,13 @@
   background-color: #0079a5 !important;
 }
 
+.btn-ruleset {
+  width: auto !important;
+  height: 30px !important;
+  margin-left: 10px !important;
+  margin-top: 10px !important;
+}
+
 /* Classes for custom widths */
 
 .wz-width-15 {

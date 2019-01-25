@@ -108,7 +108,20 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
             ]
+
           }
         })
         // Manager - Decoders
@@ -148,10 +161,73 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
 
+        // Manager - CDB List
+        .state('mg-cdb', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-cdb')
+          },
+          controller: 'managerCdbCtrl',
+          params: { filters: null }
+        })
+
+        // Manager - CDB List/:id
+        .state('mg-cdb-id', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb-id.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-cdb')
+          },
+          controller: 'managerCdbIdCtrl',
+          params: { name: null },
+          resolve: {
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            cdbInfo: [
+              '$cdbEditor',
+              '$stateParams',
+              '$state',
+              async ($cdbEditor, $stateParams, $state) => {
+                try {
+                  const result = await $cdbEditor.getConfiguration($stateParams.name)
+                  return result
+                } catch (error) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+
+          }
+        })
         // Manager - Groups
         .state('mg-groups', {
           templateUrl:

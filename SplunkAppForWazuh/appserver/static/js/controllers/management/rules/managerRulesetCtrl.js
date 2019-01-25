@@ -1,4 +1,4 @@
-define(['../../module', './ruleset'], function(controllers, Ruleset) {
+define(['../../module', './ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
@@ -34,8 +34,12 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
+      this.localFilterEnabled = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
+
+      this.scope.selectedNavTab = 'rules'
+
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.ruleset) {
@@ -48,16 +52,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         } catch (err) {
           this.toast('Error applying filter')
         }
-      })
-
-      this.scope.$on('rulesetIsReloaded', () => {
-        this.scope.viewingDetail = false
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      this.scope.$on('wazuhShowRule', () => {
-        this.scope.viewingDetail = true
-        if (!this.scope.$$phase) this.scope.$digest()
       })
     }
   }

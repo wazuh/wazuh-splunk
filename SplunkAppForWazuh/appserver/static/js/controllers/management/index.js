@@ -9,5 +9,8 @@ define([
   './rules/managerRulesetCtrl',
   './rules/managerRulesetIdCtrl',
   './status/statusCtrl',
-  './edition/editionCtrl'
+  './edition/editionCtrl',
+  './cdb/managerCdbCtrl',
+  './cdb/managerCdbIdCtrl',
+  './status/statusCtrl'
 ], function() {})

@@ -20,5 +20,7 @@ define([
   './token-model/urlTokenModelService',
   './group-handler/group-handler',
   './date-diff/dateDiffService',
-  './file-editor/file-editor'
+  './file-editor/file-editor',
+  './cdb-editor/cdb-editor',
+  './ruleset-editor/ruleset-editor'
 ], function() {})

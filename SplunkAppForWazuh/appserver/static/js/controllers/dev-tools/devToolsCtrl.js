@@ -22,7 +22,8 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/show-hint',
   '../../libs/codemirror-conv/querystring-browser/bundle',
-  '../../utils/excluded-devtools-autocomplete-keys'
+  '../../utils/excluded-devtools-autocomplete-keys',
+  'FileSaver'
 ], function(
   app,
   $,
@@ -68,6 +69,7 @@ define([
       this.groups = []
       this.linesWithClass = []
       this.widgets = []
+      this.multipleKeyPressed = []
       try {
         this.admin = extensions['admin'] === 'true'
       } catch (err) {
@@ -79,6 +81,24 @@ define([
      * When controller loads
      */
     $onInit() {
+      $(this.$document[0]).keydown(e => {
+        if (!this.multipleKeyPressed.includes(e.which)) {
+          this.multipleKeyPressed.push(e.which)
+        }
+        if (
+          this.multipleKeyPressed.includes(13) &&
+          this.multipleKeyPressed.includes(16) &&
+          this.multipleKeyPressed.length === 2
+        ) {
+          e.preventDefault()
+          return this.send()
+        }
+      })
+  
+      // eslint-disable-next-line
+      $(this.$document[0]).keyup(e => {
+        this.multipleKeyPressed = []
+      })
       this.apiInputBox = CodeMirror.fromTextArea(
         this.$document[0].getElementById('api_input'),
         {
@@ -144,6 +164,22 @@ define([
 
       this.init()
       this.$scope.send(true)
+      this.$scope.exportOutput = () => this.exportOutput()
+    }
+
+    /**
+     * Exports results in JSON format
+     */
+    exportOutput() {
+      try {
+        // eslint-disable-next-line
+        const blob = new Blob([this.apiOutputBox.getValue()], {
+          type: 'application/json'
+        }) 
+        FileSaver.saveAs(blob, 'export.json')
+      } catch (error) {
+        this.toast(error.message || error)
+      }
     }
 
     /**

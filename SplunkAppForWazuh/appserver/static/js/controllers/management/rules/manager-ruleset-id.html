@@ -7,12 +7,6 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
-  <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Ruleset</span>
-    <span>Review all your current rules and decoders</span>
-  </div>
   <!-- End headline -->
   <div flex layout="column">
 
@@ -199,14 +193,37 @@
       <div layout="row" ng-if="ruleInfo">
         <h1 class="md-headline wz-headline">
           <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i> Related rules</h1>
+        <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn btn-primary btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+          Edit rule
+        </button>
       </div>
-      <div layout="row" ng-if="ruleInfo" class="md-padding">
+      <div layout="row" ng-if="ruleInfo && !editingFile" class="md-padding">
         <wazuh-table flex path="'/rules'" implicit-filter="[{ name:'file',value: ruleInfo.file}]" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
           allow-click="true">
         </wazuh-table>
       </div>
+      <!-- XML editor for rules -->
+      <div ng-show="editingFile">
+        <div layout="row" class="md-padding">
+          <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+              aria-hidden="true"></i>
+            <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+          </button>
+          <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn btn-primary pull-right wz-margin-left-10'>
+            <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+              file</span>
+            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+              XML format error</span>
+          </button>
+        </div>
+        <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
+          <wz-xml-file-editor file-name='rules' data="fetchedXML" target-name="ruleInfo.file" valid-fn='xmlIsValid(valid)'>
+          </wz-xml-file-editor>
+        </div>
+      </div>
       <!-- End related rules section -->
-      <div layout="row" class="wz-margin-top-10">
+      <div ng-show="!editingFile" layout="row" class="wz-margin-top-10">
         <span flex></span>
         <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
           <i aria-hidden="true" class="fa fa-download"></i>

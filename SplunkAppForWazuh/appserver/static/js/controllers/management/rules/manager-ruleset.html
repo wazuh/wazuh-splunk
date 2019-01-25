@@ -11,9 +11,16 @@
   <div ng-show="!loading" layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Ruleset</span>
-    <span>Review all your current rules and decoders</span>
+    <span>Review all your current rules, decoders and cdb lists</span>
   </div>
   <!-- End headline -->
+
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+  </md-nav-bar>
 
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
@@ -23,16 +30,14 @@
         <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
+        <md-button style='margin-top: 0' class="wz-button md-raised md-primary" aria-label="Filter by local rules" ng-click="search('path:/var/ossec/etc/rules')">
+          <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Local Rules
+          <md-tooltip md-direction="bottom" class="wz-tooltip">
+            Filter by local rules
+          </md-tooltip>
+        </md-button>
       </div>
     </div>
-    <md-button class="active wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Rules section">
-      <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i>
-      Rules
-    </md-button>
-    <md-button ui-sref='mg-decoders' class="wz-button md-raised md-primary" style='margin-top:-4px;' aria-label="Change to Decoders section">
-      <i class="fa fa-fw fa-search" aria-hidden="true"></i>
-      Decoders
-    </md-button>
   </div>
 
   <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
