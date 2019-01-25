@@ -161,8 +161,11 @@ class api(controllers.BaseController):
                         url + opt_endpoint, params=kwargs, auth=auth,
                         verify=verify).json()
                 if method == 'POST':
-                    if 'origin' in kwargs and kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml'} 
+                    if 'origin' in kwargs:
+                        if kwargs['origin'] == 'xmleditor':
+                            headers = {'Content-Type': 'application/xml'} 
+                        elif kwargs['origin'] == 'json':
+                            headers = {'Content-Type':  'application/json'} 
                         kwargs = str(kwargs['content'])
                         request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
                     else:
