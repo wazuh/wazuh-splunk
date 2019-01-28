@@ -22,7 +22,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 from splunk.clilib import cli_common as cli
-
+from searches import CustomResultsTable
 
 
 class api(controllers.BaseController):
@@ -177,6 +177,8 @@ class api(controllers.BaseController):
                     request = self.session.delete(
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
+                query = CustomResultsTable()
+                query.generateResults('search index=wazuh | top agent.name limit=1')
                 result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
