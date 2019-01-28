@@ -253,14 +253,26 @@ define(['../module'], function (module) {
             ]
           }
         })
-
-        // Manager - Groups
+      
+        // Manager - Configuration
         .state('mg-conf', {
+          abstract: true,
+          templateUrl:
+            BASE_URL + 
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/breadcrumbs/breadcrumbs-mg.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-conf')
+          },
+          controller: 'navTabCtrl'
+        })
+
+        // Manager - Configuration - Overview
+        .state('mg-conf.overview', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf')
+            $navigationService.storeRoute('mg-conf.overview')
           },
           controller: 'configurationCtrl'
         })

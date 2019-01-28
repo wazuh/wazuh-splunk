@@ -12,5 +12,6 @@ define([
   './edition/editionCtrl',
   './cdb/managerCdbCtrl',
   './cdb/managerCdbIdCtrl',
-  './status/statusCtrl'
+  './status/statusCtrl',
+  './configuration/breadcrumbs/navTabCtrl'
 ], function() {})
