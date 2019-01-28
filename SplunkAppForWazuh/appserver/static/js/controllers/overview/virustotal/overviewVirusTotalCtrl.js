@@ -15,7 +15,7 @@ define([
   LinearChart,
   TimePicker,
   BarChart,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -86,23 +86,18 @@ define([
           `${this.filters} | top agent.name`,
           'alertsPerAgent',
           this.scope
+        ),
+        new RawTableDataService(
+          'top5RulesTable',
+          `${
+            this.filters
+          } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'top5RulesTableToken',
+          '$result$',
+          this.scope,
+          'Top 5 Rules'
         )
       ]
-
-      this.top5RulesTable = new rawTableDataService(
-        'top5RulesTable',
-        `${
-          this.filters
-        } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-        'top5RulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.top5RulesTable)
-
-      this.top5RulesTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 Rules'] = result
-      })
 
       /**
        * Generates report
@@ -134,6 +129,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

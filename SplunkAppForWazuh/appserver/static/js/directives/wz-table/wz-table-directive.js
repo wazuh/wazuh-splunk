@@ -78,6 +78,11 @@ define([
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
         $scope.items = []
+        $scope.customEmptyResults =
+          $scope.emptyResults && typeof $scope.emptyResults === 'string'
+            ? $scope.emptyResults
+            : 'Empty results for this table.'
+
         /**
          * Resizing. Calculate number of table rows depending on the screen height
          */
@@ -155,6 +160,11 @@ define([
          * @param {Boolean} removeFilters
          */
         const search = async (term, removeFilters) => {
+
+          if (term && typeof term === 'string') {
+            $scope.customEmptyResults = 'No results match your search criteria.'
+          }
+
           data.searchData(
             term,
             removeFilters,

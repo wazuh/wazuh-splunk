@@ -17,7 +17,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -156,23 +156,18 @@ define([
           } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
+        ),
+        this.agentsSummaryTable = new RawTableDataService(
+          'agentsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'agentsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Agents Summary'
         )
       ]
-
-      this.agentsSummaryTable = new rawTableDataService(
-        'agentsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-        'agentsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.agentsSummaryTable)
-
-      this.agentsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Agents Summary'] = result
-      })
     }
 
     /**
@@ -262,6 +257,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

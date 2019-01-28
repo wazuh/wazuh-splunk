@@ -25,7 +25,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -170,38 +170,28 @@ define([
           } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
           'alertsSummaryVizz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
+        ),
+        new RawTableDataService(
+          'commonRulesTable',
+          `${
+            this.filters
+          } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'commonRulesTableToken',
+          '$result$',
+          this.scope,
+          'Common Rules'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
-
-      this.commonRulesTable = new rawTableDataService(
-        'commonRulesTable',
-        `${
-          this.filters
-        } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-        'commonRulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.commonRulesTable)
-
-      this.commonRulesTable.getSearch().on('result', result => {
-        this.tableResults['Common Rules'] = result
-      })
 
       // Set agent info
       try {
@@ -253,6 +243,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
