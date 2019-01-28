@@ -163,7 +163,6 @@ define([
       }
 
       this.init()
-      this.$scope.send(true)
       this.$scope.exportOutput = () => this.exportOutput()
     }
 
