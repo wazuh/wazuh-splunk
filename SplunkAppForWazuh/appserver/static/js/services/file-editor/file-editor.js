@@ -11,21 +11,51 @@
  */
 
 define(['../module'], function(module) {
-  'use strict'
-
-  class FileEditor {
-    constructor($requestService) {
-      this.sendConfig = $requestService.sendConfiguration
-    }
-
-    async sendConfiguration(file, content) {
-      try {
-        const result = this.sendConfig(`/file/${file}`, content)
-        return result
-      } catch (error) {
-        return Promise.reject(error)
+    'use strict'
+  
+    class FileEditor {
+      constructor($requestService) {
+        this.sendConfig = $requestService.sendConfiguration
+        this.getConfig = $requestService.getConfiguration
+      }
+  
+      async sendConfiguration(file, dir = false, content) {
+        try {
+          const path = dir ? `${dir}/${file}` : file
+          const result = await this.sendConfig(`/manager/files?path=etc/${path}`, content)
+          if (
+            !result ||
+            !result.data ||
+            !result.data.data ||
+            result.data.error != 0
+          ) {
+            throw new Error(`Error updating ${file} content.`)
+          }
+           return result.data.data
+        } catch (error) {
+          return Promise.reject(error)
+        }
+      }
+  
+      async getConfiguration(file, dir) {
+        try {
+          const path = dir ? `${dir}/${file}` : file
+          const url = `/manager/files?path=etc/${path}`
+          const result = await this.getConfig(url)
+          if (
+            !result ||
+            !result.data ||
+            !result.data.data ||
+            result.data.error != 0
+          ) {
+            throw new Error(`Error fetching ${file} content.`)
+          }
+           return result.data.data
+        } catch (error) {
+          return Promise.reject(error)
+        }
       }
     }
-  }
+    
   module.service('$fileEditor', FileEditor)
 })

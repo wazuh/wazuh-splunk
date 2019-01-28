@@ -23,7 +23,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       extensions,
-      $rulesetEditor
+      $fileEditor
     ) {
       super(
         $scope,
@@ -36,7 +36,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       )
       this.state = $state
       this.extensions = extensions
-      this.rulesetEditor = $rulesetEditor
+      this.fileEditor = $fileEditor
       try {
         this.filters = JSON.parse(window.localStorage.decoders) || []
       } catch (err) {
@@ -89,7 +89,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
     saveDecoderConfig(fileName) {
       this.scope.editingFile = false
       this.scope.$broadcast('saveXmlFile', {
-        ruleset: fileName,
+        file: fileName,
         dir: 'decoders'
       })
     }
@@ -109,7 +109,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     async fetchFileContent(fileName) {
       try {
-        const result = await this.rulesetEditor.getConfiguration(fileName, 'decoders')
+        const result = await this.fileEditor.getConfiguration(fileName, 'decoders')
         return result
       } catch (error) {
         return Promise.reject(error)

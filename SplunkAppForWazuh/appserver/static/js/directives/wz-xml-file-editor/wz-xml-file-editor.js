@@ -172,16 +172,7 @@ define([
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
-              await $fileEditor.sendConfiguration(params.file, xml)
-            } else if (params && params.ruleset && params.dir) {
-              await $rulesetEditor.sendConfiguration(params.ruleset, params.dir, xml)
-            } else if (params && params.ossecConf) {
-              if (params.manager) {
-                await $ossecEditor.sendManagerConfiguration(xml)
-              } else {
-                console.log("Sending node config")
-                //await $ossecEditor.sendNodeConfiguration(xml)
-              }
+              await $fileEditor.sendConfiguration(params.file, params.dir, xml)
             }
             $notificationService.showSimpleToast(
               'Success. Content has been updated'
