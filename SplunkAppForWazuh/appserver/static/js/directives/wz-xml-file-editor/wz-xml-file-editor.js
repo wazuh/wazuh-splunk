@@ -33,7 +33,7 @@ define([
         data: '=data',
         targetName: '=targetName'
       },
-      controller($scope, $document, $notificationService, $groupHandler, $fileEditor, $rulesetEditor, $ossecEditor) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
         /**
          * Custom .replace method. Instead of using .replace which
          * evaluates regular expressions.
