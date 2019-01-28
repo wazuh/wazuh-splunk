@@ -15,8 +15,9 @@
         <div ng-if="configurationTab !== 'welcome'">
           <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
           <span> / </span>
-          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+          <span>Configuration</span>
           <span> / </span>
+          <span> {{sectionName}} </span>
           <span>{{ configurationTab }}</span>
         </div>
       </div>
@@ -43,8 +44,9 @@
         </div>
         <!-- First-level section -->
         <div ng-if="configurationTab !== 'welcome'">
-          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+          <span>Configuration</span>
           <span> / </span>
+          <span> {{sectionName}} </span>
           <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
         </div>
         <div flex></div>
@@ -65,10 +67,10 @@
   <!-- Nav bar tabs -->
   <div layout="row" layout-padding>
     <md-nav-bar style="width:100%" class="wz-nav-bar" md-selected-nav-item="tabName" nav-bar-aria-label="Ruleset navigation links">
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('overview')" name="overview">Overview</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editConfig')" name="editConfig">Edit configuration</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editRuleset')" name="editRuleset">Edit ruleset</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editGroups')" name="editGroups">Edit groups</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('overview')" ui-sref="mg-conf.overview" name="overview">Overview</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editConfig')" ui-sref="mg-conf.editConfig" name="editConfig">Edit configuration</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editRuleset')" ui-sref="mg-conf.editRuleset" name="editRuleset">Edit ruleset</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editGroups')" ui-sref="mg-conf.editGroups" name="editGroups">Edit groups</md-nav-item>
     </md-nav-bar>
   </div>
   <!-- End nav bar tabs -->
