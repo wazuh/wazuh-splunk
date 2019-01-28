@@ -55,31 +55,38 @@
         </md-card-content>
       </md-card>
     </div>
-
-    <!-- XML editor for ossec.conf -->
-    <div ng-show="editingNode">
-      <div layout="row" class="md-padding">
-        <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
-            aria-hidden="true"></i>
-          <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
-        </button>
-        <span ng-if="isAdmin" ng-click='cancelEditNode()' class='btn btn-info'>Cancel</span>
-        <button ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
-          <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
-            file</span>
-          <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-            XML format error</span>
-        </button>
-      </div>
-      <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-        <wz-xml-file-editor file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
-        </wz-xml-file-editor>
-      </div>
-    </div>
-
-    <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
-    </div>
-
-    <!-- End last registered agent section -->
-
   </div>
+  <div ng-if="!clusterEnabled">
+      <span class="font-size-18">
+        Edit manager configuration
+      </span>
+      <span ng-show="!editingNode" ng-click="editNode('manager')" class="fa fa-fw fa-pencil cursor-pointer"></span>
+  </div>
+  <!-- XML editor for ossec.conf -->
+  <div ng-show="editingNode">
+    <div layout="row" class="md-padding">
+      <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+          aria-hidden="true"></i>
+        <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+      </button>
+      <span ng-if="isAdmin" ng-click='cancelEditNode()' class='btn btn-info'>Cancel</span>
+      <button ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+          file</span>
+        <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+          XML format error</span>
+      </button>
+    </div>
+    <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
+      <wz-xml-file-editor file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
+      </wz-xml-file-editor>
+    </div>
+  </div>
+
+
+  <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
+  </div>
+
+  <!-- End last registered agent section -->
+
+</div>

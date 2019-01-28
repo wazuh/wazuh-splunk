@@ -32,10 +32,7 @@ define(['../../module'], function (controllers) {
           if (this.clusterInfo.clusterEnabled) {
             this.scope.nodes = this.clusterInfo.nodes.data.data.items
           }
-        } else {
-          console.log("cluster disabled")
         }
-
         this.scope.isAdmin = this.isAdmin
       } catch (error) {
         console.error(error)
@@ -44,15 +41,19 @@ define(['../../module'], function (controllers) {
 
     async editNode(nodeName) {
       try {
-        //const content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getNodeConfiguration('ossec.conf') : await this.ossecEditor.getManagerConfiguration('ossec.conf') 
-        const content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getManagerConfiguration('ossec.conf') : await this.ossecEditor.getManagerConfiguration('ossec.conf') 
+        let content
+        if (nodeName === 'manager' && !this.clusterInfo.clusterEnabled) {
+          content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getManagerConfiguration() : await this.ossecEditor.getManagerConfiguration()  
+        } else {
+          //content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getNodeConfiguration() : await this.ossecEditor.getManagerConfiguration() 
+          content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getManagerConfiguration() : await this.ossecEditor.getManagerConfiguration()
+        }
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         console.error("error editNode ", error)
       }
-
     }
 
     cancelEditNode() {
@@ -61,12 +62,19 @@ define(['../../module'], function (controllers) {
     }
 
     saveOssecConfig() {
+      console.log("saveOssecConfig executed")
+      if (!this.clusterInfo.clusterEnabled) {
+        this.scope.$broadcast('saveXmlFile', {
+          ossecConf: true,
+          manager: true
+        })
+      } else {
+        this.scope.$broadcast('saveXmlFile', {
+          ossecConf: true,
+          manager: false
+        })
+      }
       this.scope.editingNode = false
-      /*this.scope.$broadcast('saveXmlFile', {
-        ruleset: fileName,
-        dir: 'rules'
-      })*/
-      this.toast("Manager configuration saved.")
     }
 
     xmlIsValid(valid) {

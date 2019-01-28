@@ -15,44 +15,20 @@ define(['../module'], function(module) {
   
     class OssecEditor {
       constructor($requestService) {
+        this.sendConfig = $requestService.sendConfiguration
         this.getConfig = $requestService.getConfiguration
-        this.apiReq = $requestService.apiReq
       }
   
-      async sendConfiguration(file, content) {
+      async sendManagerConfiguration(content) {
         try {
-          content = JSON.stringify(content)
-          const result = await this.apiReq(
-            `/manager/files?path=etc/lists/${file}`,
-            { content, origin: 'json' },
-            'POST'
-          )
-          if (
-            !result ||
-            !result.data ||
-            !result.data.data ||
-            result.data.error !== 0 ||
-            (result.data.data.error && result.data.data.error !== 0)
-          ) {
-            throw new Error('Cannot send file.')
-          }
-          return result
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
-      async getManagerConfiguration(file) {
-        try {
-          const url = `/manager/files?path=etc/${file}&format=xml`
-          const result = await this.getConfig(url)
+          const result = await this.sendConfig(`/manager/files?path=etc/ossec.conf`, content)
           if (
             !result ||
             !result.data ||
             !result.data.data ||
             result.data.error != 0
           ) {
-            throw new Error("Error fetching cdb list content")
+            throw new Error("Error updating manager configuration.")
           }
            return result.data.data
         } catch (error) {
@@ -60,6 +36,25 @@ define(['../module'], function(module) {
         }
       }
 
+      async getManagerConfiguration() {
+        try {
+          const url = `/manager/files?path=etc/ossec.conf`
+          const result = await this.getConfig(url)
+          if (
+            !result ||
+            !result.data ||
+            !result.data.data ||
+            result.data.error != 0
+          ) {
+            throw new Error("Error fetching manager configuration.")
+          }
+           return result.data.data
+        } catch (error) {
+          return Promise.reject(error)
+        }
+      }
+
+      async sendNodeConfiguration(){}
       async getNodeConfiguration(){}
     }
     module.service('$ossecEditor', OssecEditor)
