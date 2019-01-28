@@ -172,9 +172,7 @@ define([
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
-              await $fileEditor.sendConfiguration(params.file, xml)
-            } else if (params && params.ruleset && params.dir) {
-              await $rulesetEditor.sendConfiguration(params.ruleset, params.dir, xml)
+              await $fileEditor.sendConfiguration(params.file, params.dir, xml)
             }
             $notificationService.showSimpleToast(
               'Success. Content has been updated'
