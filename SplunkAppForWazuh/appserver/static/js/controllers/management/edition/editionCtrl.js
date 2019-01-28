@@ -8,13 +8,13 @@ define(['../../module'], function (controllers) {
      * @param {Array} clusterInfo
      * @param {Boolean} isAdmin
      */
-    constructor($scope, isAdmin, $notificationService, clusterInfo, $ossecEditor) {
+    constructor($scope, isAdmin, $notificationService, clusterInfo, $fileEditor) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
       this.isAdmin = isAdmin
       this.toast = $notificationService.showSimpleToast
       this.clusterInfo = clusterInfo
-      this.ossecEditor = $ossecEditor
+      this.fileEditor = $fileEditor
     }
     /**
      * On controller loads
@@ -27,7 +27,7 @@ define(['../../module'], function (controllers) {
         this.scope.saveOssecConfig = () => this.saveOssecConfig()
         this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
 
-        if ( this.clusterInfo && this.clusterInfo.clusterEnabled ) {
+        if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
             this.scope.nodes = this.clusterInfo.nodes.data.data.items
@@ -43,10 +43,10 @@ define(['../../module'], function (controllers) {
       try {
         let content
         if (nodeName === 'manager' && !this.clusterInfo.clusterEnabled) {
-          content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getManagerConfiguration() : await this.ossecEditor.getManagerConfiguration()  
+          content = this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration('ossec.conf', false) : await this.fileEditor.getConfiguration('ossec.conf', false)
         } else {
-          //content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getNodeConfiguration() : await this.ossecEditor.getManagerConfiguration() 
-          content = this.clusterInfo.clusterEnabled ? await this.ossecEditor.getManagerConfiguration() : await this.ossecEditor.getManagerConfiguration()
+          //content = this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration() : await this.fileEditor.getConfiguration() 
+          content = this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration() : await this.fileEditor.getConfiguration()
         }
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
@@ -63,17 +63,10 @@ define(['../../module'], function (controllers) {
 
     saveOssecConfig() {
       console.log("saveOssecConfig executed")
-      if (!this.clusterInfo.clusterEnabled) {
-        this.scope.$broadcast('saveXmlFile', {
-          ossecConf: true,
-          manager: true
-        })
-      } else {
-        this.scope.$broadcast('saveXmlFile', {
-          ossecConf: true,
-          manager: false
-        })
-      }
+      this.scope.$broadcast('saveXmlFile', {
+        file: 'ossec.conf',
+        dir: false
+      })
       this.scope.editingNode = false
     }
 
