@@ -80,9 +80,9 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     }
 
-    async fetchFile(fileName) {
+    async fetchFile(fileName, path) {
       try {
-        const result = await this.cdbEditor.getConfiguration(fileName)
+        const result = await this.cdbEditor.getConfiguration(fileName, path)
         return result
       } catch (error) {
         return Promise.reject(error)
@@ -156,9 +156,12 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
     async saveList() {
       try {
         const fileName = this.scope.currentList.details.file
-        const check = await this.cdbEditor.sendConfiguration(fileName, this.scope.currentList.list)
-        const cbdUpdated = await this.fetchFile(fileName)
-        this.scope.currentList.list = cbdUpdated
+        const path = this.scope.currentList.details.path
+        const content = this.objToString(this.scope.currentList.list)
+        const check = await this.cdbEditor.sendConfiguration(fileName, path, content)
+        const cbdUpdated = await this.fetchFile(fileName, path)
+        this.scope.currentList.list = this.stringToObj(cbdUpdated)
+        if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         return Promise.reject(error)
       }
@@ -173,6 +176,14 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
           result[keyValue[0]] = keyValue[1]
       })
       return result
+    }
+
+    objToString(obj) {
+      let raw = '';
+      for (var key in obj) {
+        raw = raw.concat(`${key}:${obj[key]}\n`);
+      }
+      return raw
     }
 
   }

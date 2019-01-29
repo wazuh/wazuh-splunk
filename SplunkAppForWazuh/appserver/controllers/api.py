@@ -166,6 +166,8 @@ class api(controllers.BaseController):
                             headers = {'Content-Type': 'application/xml'} 
                         elif kwargs['origin'] == 'json':
                             headers = {'Content-Type':  'application/json'} 
+                        elif kwargs['origin'] == 'raw':
+                            headers = {'Content-Type':  'application/octet-stream'} 
                         kwargs = str(kwargs['content'])
                         request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
                     else:

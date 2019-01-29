@@ -35,6 +35,10 @@ define(['../../../module'], function (controllers) {
         this.editRule(data.item.file, 'decoders')
       })
 
+      this.scope.$on("quickCdbListEdit", (event, data) => {
+        console.log("quickCdbListEdit ", data)
+      })
+
     }
 
     search(term) {

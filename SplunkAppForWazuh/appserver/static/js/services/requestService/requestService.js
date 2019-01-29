@@ -114,9 +114,7 @@ define(['../module'], function(module) {
 
     const getConfiguration = async (url) => {
       try {
-        const result = await apiReq(
-          `${url}`         
-        )
+        const result = await apiReq(url)
         if (
           !result ||
           !result.data ||

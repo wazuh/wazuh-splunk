@@ -19,12 +19,13 @@ define(['../module'], function(module) {
         this.apiReq = $requestService.apiReq
       }
   
-      async sendConfiguration(file, content) {
+      async sendConfiguration(file, path, content) {
         try {
-          content = JSON.stringify(content)
+          //curl -u foo:bar -X POST -H "Content-type:application/octet-stream" --data-binary @/home/druizz/list.txt "http://localhost:55000/manager/files?path=etc/lists/new_list"
+          const url = `/manager/files?path=${path}/${file}`
           const result = await this.apiReq(
-            `/manager/files?path=etc/lists/${file}`,
-            { content, origin: 'json' },
+            `${url}`,
+            { content, origin: 'raw' },
             'POST'
           )
           if (
