@@ -296,7 +296,23 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf.editRuleset')
           },
-          controller: 'editRulesetCtrl'
+          controller: 'editRulesetCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
+                }
+              }
+            ]}
         }) 
         
         // Manager - Configuration - EditConfig

@@ -25,7 +25,8 @@
     </button>
   </div>
   <div layout="row">
-    <wazuh-table quick-edit="true" implicit-filter="[{ 'name': 'path', 'value': '/var/ossec/etc/rules' }]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table quick-edit="true" implicit-filter="[{ 'name': 'path', 'value': '/var/ossec/etc/rules' }]" flex path="'/rules'"
+      keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
   </div>
@@ -50,4 +51,22 @@
 
 <div ng-if="editionType === 'cdbLists'">
   EDITING CDB LISTS
+</div>
+
+
+<!-- XML editor for rules and decoders -->
+<div ng-show="editingFile">
+  <div layout="row" class="md-padding">
+    <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+    <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)' class='btn btn-primary pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+        file</span>
+      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+        XML format error</span>
+    </button>
+  </div>
+  <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
+    <wz-xml-file-editor file-name='rules' data="fetchedXML" target-name="editingFile.file" valid-fn='xmlIsValid(valid)'>
+    </wz-xml-file-editor>
+  </div>
 </div>

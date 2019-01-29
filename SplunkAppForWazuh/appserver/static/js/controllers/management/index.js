@@ -13,5 +13,6 @@ define([
   './cdb/managerCdbCtrl',
   './cdb/managerCdbIdCtrl',
   './status/statusCtrl',
-  './configuration/breadcrumbs/navTabCtrl'
+  './configuration/breadcrumbs/navTabCtrl',
+  './configuration/edit-configuration/editRulesetCtrl'
 ], function() {})
