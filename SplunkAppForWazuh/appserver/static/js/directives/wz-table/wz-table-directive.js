@@ -383,6 +383,11 @@ define([
           $scope.removingGroup = null
           return init()
         }
+
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList',{group})
+        }
+        
       },
       templateUrl:
         BASE_URL +
