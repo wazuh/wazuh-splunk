@@ -48,9 +48,17 @@ define([], function() {
         fileName: item.filename
       })
     } else if (instance.path === '/rules') {
-      $state.go('mg-rules-id', { id: item.id })
+      if ($scope.quickEdit) {
+        $scope.$emit("quickRuleEdit", { item: item })
+      } else {
+        $state.go('mg-rules-id', { id: item.id })
+      }
     } else if (instance.path.includes('/decoders')) {
-      $state.go('mg-decoders-id', { file: item.file, name: item.name })
+      if ($scope.quickEdit) {
+        $scope.$emit("quickDecoderEdit", { item: item }) 
+      } else {
+        $state.go('mg-decoders-id', { file: item.file, name: item.name })
+      }
     } else if (instance.path === '/cdb') {
       const name = 'new_list2'//Change when the API returns the cdb lists, only for test
       $state.go('mg-cdb-id', { name: name })

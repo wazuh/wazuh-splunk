@@ -53,7 +53,8 @@ define([
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
         adminMode: '=adminMode',
-        emptyResults: '=emptyResults'
+        emptyResults: '=emptyResults',
+        quickEdit: '=quickEdit'
       },
       controller(
         $rootScope,

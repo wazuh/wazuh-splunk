@@ -1,0 +1,53 @@
+<div layout="row" layout-padding="" class="layout-padding layout-row">
+  <span>
+    <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i>
+    Edit yours local rules, decoders and CDB lists
+  </span>
+</div>
+
+<!-- Nav bar tabs -->
+<div layout="row" layout-padding>
+  <md-nav-bar class="wz-nav-bar" md-selected-nav-item="subTabName" nav-bar-aria-label="Ruleset navigation links">
+    <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('rules')" name="rules">Rules</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('decoders')" name="decoders">Decoders</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('cdbLists')" name="cdbLists">CDB lists</md-nav-item>
+  </md-nav-bar>
+</div>
+<!-- End nav bar tabs -->
+
+<div ng-if="editionType === 'rules'">
+  <div layout="row">
+    <input flex placeholder="Filter rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+      aria-invalid="false" wz-enter="search(customSearch)">
+    <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
+      ng-click="search(customSearch)">
+      <span class="fa fa-search" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div layout="row">
+    <wazuh-table quick-edit="true" implicit-filter="[{ 'name': 'path', 'value': '/var/ossec/etc/rules' }]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+      allow-click="true" rows-per-page="14">
+    </wazuh-table>
+  </div>
+</div>
+
+<div ng-if="editionType === 'decoders'">
+  <div layout="row">
+    <input flex placeholder="Filter decoders..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+      aria-invalid="false" wz-enter="search(customSearch)">
+    <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
+      ng-click="search(customSearch)">
+      <span class="fa fa-search" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div layout="row">
+    <wazuh-table quick-edit="true" implicit-filter="[{ 'name': 'path', 'value': '/var/ossec/etc/decoders' }]" flex path="'/decoders'"
+      keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+      allow-click="true" rows-per-page="14">
+    </wazuh-table>
+  </div>
+</div>
+
+<div ng-if="editionType === 'cdbLists'">
+  EDITING CDB LISTS
+</div>
