@@ -22,9 +22,11 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
+import splunk
+from splunk import entity, rest
 
 
-def getSelfConfStanza(file,stanza):
+def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
 
     Parameters
@@ -76,7 +78,29 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
 
+    @expose_page(must_login=False, methods=['GET'])
+    def kvstore(self, **kwargs):
+        try:
+            self.logger.info('kvstore')
+            kvstoreUri = entity.buildEndpoint(
+                entityClass=["storage", "collections", "data"],
+                entityName="credentials",
+                owner="nobody",
+                namespace="SplunkAppForWazuh",
+                hostPath=rest.makeSplunkdUri().strip("/")
+            )
+            self.logger.info('kvstoreUri %s' % (kvstoreUri))
+
+            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(),"Content-Type": "application/json"},verify=False)
+            self.logger.info('result %s' % (result))
+            return result
+
+        except Exception as e:
+            self.logger.error('error!: %s ' % (e))
+            return jsonbak.dumps({"error": str(e)})
+
     # /custom/SplunkAppForWazuh/manager/node
+
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
         """Check API connection.
@@ -138,7 +162,7 @@ class manager(controllers.BaseController):
 
         """
         try:
-            stanza = getSelfConfStanza("config","extensions")
+            stanza = getSelfConfStanza("config", "extensions")
             data_temp = stanza
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
