@@ -36,7 +36,7 @@ define(['../../../module'], function (controllers) {
         this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
 
       } catch (error) {
-        console.error("error ", error)
+        this.toast(error)
       }
 
       this.scope.$on("quickRuleEdit", (event, data) => {
@@ -58,7 +58,6 @@ define(['../../../module'], function (controllers) {
             }
           const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
           this.scope.currentList.list = this.stringToObj(currentList)
-          console.log("sc cl ", this.scope.currentList)
           if (!this.scope.$$phase) this.scope.$digest()
         } catch (error) {
           return Promise.reject(error)
