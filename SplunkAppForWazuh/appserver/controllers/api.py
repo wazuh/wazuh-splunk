@@ -178,7 +178,7 @@ class api(controllers.BaseController):
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
                 query = CustomResultsTable()
-                query.generateResults('search index=wazuh | top agent.name limit=1')
+                query.generateResults('search index=wazuh | top agent.name limit=5')
                 result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))

@@ -54,7 +54,7 @@ class CustomResultsTable(module.ModuleHandler):
             offset_start = -count
         
         dataset = getattr(job, entity_name)[offset_start: offset+count]
-        
+        self.logger.info('RESULT %s ' % (dataset))
         for i, result in enumerate(dataset):
             for field in fieldNames:
                 output.append('<td')
@@ -62,6 +62,7 @@ class CustomResultsTable(module.ModuleHandler):
                 if fieldValues:
                     renderedValues = [cgi.escape(x.value) for x in fieldValues[:MAX_MULTI_VALUE_COUNT]]
                     output.append('>%s</td>' % "".join(renderedValues))
+                    self.logger.info('rendered value %s ' % (renderedValues))
                 else:
                     output.append('></td>')
                 
