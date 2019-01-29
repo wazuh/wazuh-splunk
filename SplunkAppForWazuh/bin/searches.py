@@ -5,6 +5,7 @@ import lib.i18n as i18n
 import math
 import cgi
 import time
+import kv_store
 from log import log
 
 MAX_MULTI_VALUE_COUNT = 50
