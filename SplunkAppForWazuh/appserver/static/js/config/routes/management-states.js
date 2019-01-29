@@ -253,12 +253,12 @@ define(['../module'], function (module) {
             ]
           }
         })
-      
+
         // Manager - Configuration
         .state('mg-conf', {
           abstract: true,
           templateUrl:
-            BASE_URL + 
+            BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/breadcrumbs/breadcrumbs-mg.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf')
@@ -276,6 +276,39 @@ define(['../module'], function (module) {
           },
           controller: 'configurationCtrl'
         })
+
+        // Manager - Configuration - EditConfig
+        .state('mg-conf.editConfig', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/edit-configuration/manager-edit-config.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-conf.editConfig')
+          },
+          controller: 'editConfigCtrl'
+        })
+
+        // Manager - Configuration - EditRuleset
+        .state('mg-conf.editRuleset', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/edit-configuration/manager-edit-rulesets.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-conf.editRuleset')
+          },
+          controller: 'editRulesetCtrl'
+        }) 
+        
+        // Manager - Configuration - EditConfig
+        .state('mg-conf.editGroups', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/edit-configuration/manager-edit-groups.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-conf.editGroups')
+          },
+          controller: 'editGroups'
+        })        
 
         // Manager - Status
         .state('mg-status', {
@@ -470,7 +503,7 @@ define(['../module'], function (module) {
                     const nodesList = await $requestService.apiReq('/cluster/nodes')
                     Object.assign(info, { clusterEnabled: true, nodes: nodesList })
                   } else {
-                    Object.assign(info, { clusterEnabled: false})
+                    Object.assign(info, { clusterEnabled: false })
                   }
                   return info
                 } catch (error) {
