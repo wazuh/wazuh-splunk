@@ -66,25 +66,25 @@
             </div>
             <div layout="row" class="wz-padding-top-10">
               <span flex="25">Last syscheck scan</span>
-              <span class="wz-text-right color-grey" ng-if="agent.syscheck.inProgress">Scan in progress</span>
-              <span class="wz-text-right color-grey" ng-if="!agent.syscheck.inProgress">{{agent.syscheck.end || '-'}}
-                <md-tooltip ng-if="!agent.syscheck.inProgress && agent.syscheck.start && agent.syscheck.end"
+              <span class="wz-text-right color-grey" ng-if="syscheck.inProgress">Scan in progress</span>
+              <span class="wz-text-right color-grey" ng-if="!syscheck.inProgress">{{syscheck.end || '-'}}
+                <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
                   md-direction="bottom" class="wz-tooltip">
-                  Start time: {{ agent.syscheck.start || '-'}} <br>
-                  End time: {{ agent.syscheck.end || '-'}} <br>
-                  Duration time: {{ agent.syscheck.duration +' minutes' || '-'}}
+                  Start time: {{ syscheck.start || '-'}} <br>
+                  End time: {{ syscheck.end || '-'}} <br>
+                  Duration time: {{ syscheck.duration +' minutes' || '-'}}
                 </md-tooltip></span>
 
             </div>
             <div layout="row" class="wz-padding-top-10">
               <span flex="25">Last rootcheck scan</span>
-              <span class="wz-text-right color-grey" ng-if="agent.rootcheck.inProgress">Scan in progress</span>
-              <span class="wz-text-right color-grey" ng-if="!agent.rootcheck.inProgress">{{agent.rootcheck.end || '-'}}
-                <md-tooltip ng-if="!agent.rootcheck.inProgress && agent.rootcheck.start && agent.rootcheck.end"
+              <span class="wz-text-right color-grey" ng-if="rootcheck.inProgress">Scan in progress</span>
+              <span class="wz-text-right color-grey" ng-if="!rootcheck.inProgress">{{rootcheck.end || '-'}}
+                <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end"
                   md-direction="bottom" class="wz-tooltip">
-                  Start time: {{ agent.rootcheck.start || '-'}} <br>
-                  End time: {{ agent.rootcheck.end || '-'}} <br>
-                  Duration time: {{ agent.rootcheck.duration +' minutes' || '-'}}
+                  Start time: {{ rootcheck.start || '-'}} <br>
+                  End time: {{ rootcheck.end || '-'}} <br>
+                  Duration time: {{ rootcheck.duration +' minutes' || '-'}}
                 </md-tooltip></span>
             </div>
           </div>
