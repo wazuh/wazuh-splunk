@@ -281,11 +281,47 @@ define(['../module'], function (module) {
         .state('mg-conf.editConfig', {
           templateUrl:
             BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/edit-configuration/manager-edit-config.html',
+            'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf.editConfig')
           },
-          controller: 'editConfigCtrl'
+          controller: 'editionCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
+                }
+              }
+            ],
+            clusterInfo: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const info = {}
+                  const clusterStatus = await $requestService.apiReq('/cluster/status')
+                  if (clusterStatus.data.data.running === 'yes') {
+                    const nodesList = await $requestService.apiReq('/cluster/nodes')
+                    Object.assign(info, { clusterEnabled: true, nodes: nodesList })
+                  } else {
+                    Object.assign(info, { clusterEnabled: false })
+                  }
+                  return info
+                } catch (error) {
+                  $state.go('manager')
+                }
+              }
+            ]
+          }
         })
 
         // Manager - Configuration - EditRuleset
@@ -484,7 +520,7 @@ define(['../module'], function (module) {
           }
         })
         // ossec.conf edition
-        .state('mg-edition', {
+        /*.state('mg-edition', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
@@ -528,7 +564,7 @@ define(['../module'], function (module) {
               }
             ]
           }
-        })
+        })*/
     }
   ])
 })
