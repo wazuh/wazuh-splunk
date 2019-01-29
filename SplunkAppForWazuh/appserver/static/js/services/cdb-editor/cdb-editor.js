@@ -42,9 +42,9 @@ define(['../module'], function(module) {
         }
       }
 
-      async getConfiguration(file) {
+      async getConfiguration(file, path) {
         try {
-          const url = `/manager/files?path=etc/lists/${file}&format=text`
+          const url = `/manager/files?path=${path}/${file}`
           const result = await this.getConfig(url)
           if (
             !result ||

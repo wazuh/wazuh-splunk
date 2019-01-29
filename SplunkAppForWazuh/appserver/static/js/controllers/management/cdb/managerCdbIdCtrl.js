@@ -63,15 +63,15 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
 
         // Edit cdb lists
-
-        //Remove static values
         this.scope.currentList = {
           details: {
-            file: 'new_list2',
-            path: '/etc/lists'
+            file: this.cdbInfo.file,
+            path: this.cdbInfo.path
           }
         }
-        this.scope.currentList.list = this.cdbInfo
+        this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)
+
+        this.scope.currentList.list = this.cdbInfo.content
 
         this.scope.adminMode = this.extensions['admin'] === 'true'
       } catch (error) {
@@ -163,6 +163,18 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         return Promise.reject(error)
       }
     }
+    
+    stringToObj(string) {
+      let result = {}
+      const splitted = string.split('\n')
+      splitted.forEach(function (element) {
+        const keyValue = element.split(':')
+        if (keyValue[0])
+          result[keyValue[0]] = keyValue[1]
+      })
+      return result
+    }
+
   }
   controllers.controller('managerCdbIdCtrl', CdbListId)
 })

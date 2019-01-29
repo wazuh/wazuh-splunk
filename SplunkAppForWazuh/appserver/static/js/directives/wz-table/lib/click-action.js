@@ -59,9 +59,12 @@ define([], function() {
       } else {
         $state.go('mg-decoders-id', { file: item.file, name: item.name })
       }
-    } else if (instance.path === '/cdb') {
-      const name = 'new_list2'//Change when the API returns the cdb lists, only for test
-      $state.go('mg-cdb-id', { name: name })
+    } else if (instance.path === '/lists/files') {
+      if ($scope.quickEdit) {
+        $scope.$emit("quickCdbListEdit", { item: item })
+      } else {
+        $state.go('mg-cdb-id', { name: item.name, path: item.path })
+      }
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
     }

@@ -67,13 +67,13 @@
     </md-chip>
   </md-chips>
   <div layout="row" layout-padding>
-    <wazuh-table implicit-filter="appliedFilters" flex path="'/cdb'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
   </div>
   <div layout="row" class="wz-margin-top-10">
     <span flex></span>
-    <a class="small" id="btnDownload" ng-click="downloadCsv('/cdb','cdb.csv')">Formatted
+    <a class="small" id="btnDownload" ng-click="downloadCsv('/lists','cdb_lists.csv')">Formatted
       <i aria-hidden="true" class="fa fa-download"></i>
     </a>
   </div>

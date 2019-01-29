@@ -62,7 +62,6 @@ define(['../../module'], function (controllers) {
     }
 
     saveOssecConfig() {
-      console.log("saveOssecConfig executed")
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false
