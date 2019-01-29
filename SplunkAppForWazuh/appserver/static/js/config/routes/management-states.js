@@ -351,7 +351,7 @@ define(['../module'], function (module) {
             ]}
         }) 
         
-        // Manager - Configuration - EditConfig
+        // Manager - Configuration - EditGroups
         .state('mg-conf.editGroups', {
           templateUrl:
             BASE_URL +
@@ -359,7 +359,36 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf.editGroups')
           },
-          controller: 'editGroups'
+          controller: 'editGroupsCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
+                }
+              }
+            ],
+            groups: [
+              '$requestService',
+              async $requestService => {
+                try {
+                  const result = $requestService.apiReq('/agents/groups')
+                  return result
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
+                }
+              }
+            ]
+          }
         })        
 
         // Manager - Status
