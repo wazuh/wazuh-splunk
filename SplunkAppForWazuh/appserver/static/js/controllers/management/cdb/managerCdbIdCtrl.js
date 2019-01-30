@@ -91,13 +91,17 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     async addEntry(key, value) {
       try {
-        if (!this.scope.currentList.list[key]) {
-          this.scope.currentList.list[key] = value
-          this.scope.newKey = ''
-          this.scope.newValue = ''
-          await this.saveList()
+        if (!key || !value) {
+          this.toast("Cannot send empty fields.")
         } else {
-          this.toast("Error adding new entry, the key exists.")
+          if (!this.scope.currentList.list[key]) {
+            this.scope.currentList.list[key] = value
+            this.scope.newKey = ''
+            this.scope.newValue = ''
+            await this.saveList()
+          } else {
+            this.toast("Error adding new entry, the key exists.")
+          }
         }
       } catch (error) {
         this.toast("Error adding entry.")

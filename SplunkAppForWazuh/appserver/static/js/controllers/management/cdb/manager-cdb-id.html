@@ -39,11 +39,29 @@
               <th class="wz-text-left">Actions</th>
             </thead>
             <tbody>
+              <!-- Add new key tr -->
+              <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
+                <td>
+                  <input placeholder="New key" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                    ng-model="newKey">
+                </td>
+                <td>
+                  <input placeholder="New value" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                    ng-model="newValue">
+                </td>
+                <td>
+                  <span ng-disabled="!newKey || !newValue" class="fa fa-fw fa-plus cursor-pointer" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Add new entry
+                    </md-tooltip>
+                  </span>
+                </td>
+              </tr>
+              <!-- End add new key tr -->
               <tr class="wz-word-wrap" ng-repeat="(key,value) in currentList.list track by $index" ng-style="editingKey === key && {'background': '#e2f7ff'}">
                 <td>{{key}}</td>
                 <td>
-                  <input ng-show="editingKey === key" type="text" class="wz-input-text"
-                    ng-model="editingNewValue">
+                  <input ng-show="editingKey === key" type="text" class="wz-input-text" ng-model="editingNewValue">
                   <span ng-show="!editingKey || editingKey !== key">{{value}}</span>
                 </td>
                 <td class="action-btn-td">
@@ -52,8 +70,8 @@
                       ng-click="setEditingKey(key, value)" class="fa fa-fw fa-pencil cursor-pointer"></span>
                     <span ng-show="editingKey === key" tooltip="Cancel" class="fa fa-fw fa-times cursor-pointer"
                       ng-click="cancelEditingKey()"></span>
-                    <span ng-show="editingKey === key && editingNewValue !== ''" tooltip="Apply"
-                      class="fa fa-fw fa-check cursor-pointer" ng-click="editKey(key, editingNewValue)"></span>
+                    <span ng-show="editingKey === key && editingNewValue !== ''" tooltip="Apply" class="fa fa-fw fa-check cursor-pointer"
+                      ng-click="editKey(key, editingNewValue)"></span>
                     <i ng-if="(!removingEntry || removingEntry !== key) && editingKey !== key" ng-click="showConfirmRemoveEntry($event, key); $event.stopPropagation()"
                       class="fa fa-fw fa-trash cursor-pointer" tooltip="Remove this entry" tooltip-placement="left"
                       aria-hidden="true"></i>
@@ -79,6 +97,7 @@
       </md-card>
     </div>
     <div layout="column" layout-align="start"></div>
+    <!--
     <div layout="row" class="wz-margin-top-10" ng-if="adminMode">
       <md-card flex class="wz-md-card _md flex md-margin-h">
         <md-card-content>
@@ -102,6 +121,7 @@
         </md-card-content>
       </md-card>
     </div>
+  -->
   </div>
 </div>
 <!-- End CDB List table-->
