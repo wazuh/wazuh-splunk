@@ -12,9 +12,7 @@
 import jsonbak
 import requestsbak
 import os
-# from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
-# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 from log import log
 import splunk
 from splunk import entity, rest
@@ -31,7 +29,6 @@ class database():
             namespace="SplunkAppForWazuh",
             hostPath=rest.makeSplunkdUri().strip("/")
         )
-        self.kvstoreUri = self.kvstoreUri+'?output_mode=json'
         self.sessionKey = splunk.getSessionKey()
         # self.headers = {"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}
 
@@ -45,13 +42,16 @@ class database():
 
         """
         try:
-            result = self.session.post(self.kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
-            self.logger.info('result %s' % (result))
-            parsed_result = jsonbak.dumps({'data': result})
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
+            result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            self.logger.info('------------------------------------------------ INSERT --------------- %s' % (result))
+            if not '_key' in result:
+                raise Exception('Format error when inserting object.')
+            key = result['_key']
+            return key
         except Exception as e:
             self.logger.error("Error inserting in DB module: %s" % (e))
             raise e
-        return parsed_result
 
     def update(self, obj):
         """Update an already inserted API.
@@ -67,7 +67,8 @@ class database():
                 raise Exception('Missing ID')
             id = obj['id']
             del obj['id']
-            result = self.session.post(self.kvstoreUri+'/'+id, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:
@@ -88,7 +89,8 @@ class database():
         try:
             if not id:
                 raise Exception('Missing ID')
-            result = self.session.delete(self.kvstoreUri+'/'+id,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            result = self.session.delete(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:
@@ -99,7 +101,8 @@ class database():
 
     def all(self):
         try:
-            result = self.session.get(self.kvstoreUri, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
+            result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             self.logger.info('result %s' % (result))
             return jsonbak.dumps(result)
         except Exception as e:
@@ -110,7 +113,8 @@ class database():
         try:
             if not id:
                 raise Exception('Missing ID')
-            result = self.session.get(self.kvstoreUri+'/'+id,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:

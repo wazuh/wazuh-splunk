@@ -13,7 +13,9 @@ define(['../module'], function(module) {
      */
     const select = async id => {
       try {
+        console.log('selecting api with this id ',id)
         const entry = await $splunkStoreService.getApiById(id)
+        console.log('entry; ',entry)
         return entry
       } catch (err) {
         return Promise.reject(err)
@@ -32,6 +34,7 @@ define(['../module'], function(module) {
         ) {
           $apiIndexStorageService.removeAPI()
         }
+        console.log('remove api ',api)
         await $splunkStoreService.delete({ id: api.id })
         return
       } catch (err) {
@@ -238,6 +241,7 @@ define(['../module'], function(module) {
     const checkApiConnection = async id => {
       try {
         const api = await select(id)
+        console.log('checking api with this ID ',api)
         const clusterData = await $requestService.apiReq(`/cluster/status`, {
           id: id
         })

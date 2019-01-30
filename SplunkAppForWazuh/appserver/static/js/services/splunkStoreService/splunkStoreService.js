@@ -2,7 +2,7 @@ define(['../module'], function(module) {
   'use strict'
   module.service('$splunkStoreService', function($requestService) {
     /**
-     * Select an API by ID
+     * Obtains all APIs
      * @param {Object} id
      */
     const getAllApis = async () => {
@@ -23,12 +23,14 @@ define(['../module'], function(module) {
      */
     const getApiById = async id => {
       try {
+        console.log('getting api with this id ',id)
         const { data } = await $requestService.httpReq(
           `GET`,
           `/manager/get_api`,
           { id: id }
         )
-        return data[0]
+        console.log('data parsed ',JSON.parse(data))
+        return JSON.parse(data)
       } catch (err) {
         return Promise.reject(err)
       }
@@ -57,6 +59,7 @@ define(['../module'], function(module) {
      */
     const deletes = async id => {
       try {
+        console.log('BORRANDO API CON ID ',id)
         const { data } = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
@@ -65,6 +68,7 @@ define(['../module'], function(module) {
         if (data.error || data.status === 400) throw new Error(data.error)
         return data
       } catch (err) {
+        console.log('error deletes data ',err)
         return Promise.reject(err)
       }
     }

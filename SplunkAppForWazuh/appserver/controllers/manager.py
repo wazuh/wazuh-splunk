@@ -222,15 +222,14 @@ class manager(controllers.BaseController):
             record = kwargs
             keys_list = ['url', 'portapi', 'userapi', 'passapi']
             if set(record.keys()) == set(keys_list):
-                record['id'] = str(uuid.uuid4())
-                self.db.insert(str(record))
-                parsed_data = jsonbak.dumps({'result': record['id']})
+                key = self.db.insert(jsonbak.dumps(record))
+                parsed_data = jsonbak.dumps({'result': key})
+                return parsed_data
             else:
-                return jsonbak.dumps({'error': 'Invalid number of arguments'})
+                raise Exception('Invalid number of arguments')
         except Exception as e:
-            self.logger.error({'error': str(e)})
+            self.logger.error({'manager - add_api': str(e)})
             return jsonbak.dumps({'error': str(e)})
-        return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):

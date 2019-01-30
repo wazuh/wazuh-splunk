@@ -278,7 +278,12 @@ define(['../../module'], function(controllers) {
 
         // Get the new API database ID
         const { result } = await this.currentDataService.insert(record)
+        console.log('result ',result)
+        if (!result || typeof result !== 'string' && typeof result === 'object' && result.error !== 0) {
+          throw new Error('Error inserting: ',result.error)
+        }
         const id = result
+        console.log('the id ',id)
         try {
           // Get the full API info
           const api = await this.currentDataService.checkApiConnection(id)
@@ -294,16 +299,19 @@ define(['../../module'], function(controllers) {
           if (!this.scope.$$phase) this.scope.$digest()
           this.toast('API was added')
         } catch (err) {
+          console.error('err ',err)
           this.currentDataService
             .remove(id)
             .then(() => {})
             .catch(err => {
+              console.error('err ',err)
               this.toast(`Unexpected error: ${err}`)
             })
           this.toast('Unreachable API')
           this.savingApi = false
         }
       } catch (err) {
+        console.error('err ',err)
         this.toast(err.message)
         this.savingApi = false
       }

@@ -143,12 +143,14 @@ class api(controllers.BaseController):
                 method = kwargs['method']
                 del kwargs['method']
             the_id = kwargs['id']
+            self.logger.info('REQUEST WITH THIS ID '+the_id)
             api = self.db.get(the_id)
+            self.logger.info('REQUEST TO THIS API '+api)
             if api:
-                opt_username = api[0]["userapi"]
-                opt_password = api[0]["passapi"]
-                opt_base_url = api[0]["url"]
-                opt_base_port = api[0]["portapi"]
+                opt_username = api['data']["userapi"]
+                opt_password = api['data']["passapi"]
+                opt_base_url = api['data']["url"]
+                opt_base_port = api['data']["portapi"]
                 opt_endpoint = kwargs["endpoint"]
                 del kwargs['id']
                 del kwargs['endpoint']
