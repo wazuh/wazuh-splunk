@@ -50,12 +50,12 @@ define(['../../../module'], function (controllers) {
       this.scope.$on("quickCdbListEdit", async (event, data) => {
         try {
           this.scope.currentList = {
-            details: 
-              {
-                file: data.item.name,
-                path: data.item.path
-              }
+            details:
+            {
+              file: data.item.name,
+              path: data.item.path
             }
+          }
           const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
           this.scope.currentList.list = this.stringToObj(currentList)
           if (!this.scope.$$phase) this.scope.$digest()
@@ -74,7 +74,7 @@ define(['../../../module'], function (controllers) {
 
     switchSubTab(subTabName) {
       this.closeEditingFile()
-      this.scope.editingCdbList = false
+      this.scope.currentList = false
       this.scope.subTabName = subTabName
       this.scope.editionType = subTabName
     }
@@ -136,13 +136,17 @@ define(['../../../module'], function (controllers) {
 
     async addEntry(key, value) {
       try {
-        if (!this.scope.currentList.list[key]) {
-          this.scope.currentList.list[key] = value
-          this.scope.newKey = ''
-          this.scope.newValue = ''
-          await this.saveList()
+        if (!key || !value) {
+          this.toast("Cannot send empty fields.")
         } else {
-          this.toast("Error adding new entry, the key exists.")
+          if (!this.scope.currentList.list[key]) {
+            this.scope.currentList.list[key] = value
+            this.scope.newKey = ''
+            this.scope.newValue = ''
+            await this.saveList()
+          } else {
+            this.toast("Error adding new entry, the key exists.")
+          }
         }
       } catch (error) {
         this.toast("Error adding entry.")
@@ -231,7 +235,7 @@ define(['../../../module'], function (controllers) {
       return raw
     }
 
-    cancelCdbListEdition(){
+    cancelCdbListEdition() {
       this.scope.currentList = false
     }
 

@@ -77,14 +77,17 @@
 </div>
 
 <!-- Table with CDB List info -->
-<div ng-show="currentList" layout="column" layout-align="start">
-  <span>
-    <span class="font-size-18"><i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i>Editing <b>{{currentList.details.file}}</b></span>
-    <md-button style='margin-left: 10' class="wz-button md-raised md-primary" ng-click="cancelCdbListEdition()">
-      Cancel
-    </md-button>
-  </span>
-  <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
+<div layout="column" layout-align="start" ng-if="currentList">
+  <div layout="row">
+    <span style='margin-left: 15px' class="font-size-15"><i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i>Editing
+      <b>{{currentList.details.file}}</b>
+      <md-button style='margin-left: 10; width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
+        class="wz-button md-raised md-primary" ng-click="cancelCdbListEdition()">
+        Cancel
+      </md-button>
+    </span>
+  </div>
+  <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch">
     <md-card flex class="wz-md-card">
       <md-card-content>
         <table class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
@@ -94,6 +97,25 @@
             <th class="wz-text-left">Actions</th>
           </thead>
           <tbody>
+            <!-- Add new key tr -->
+            <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
+              <td>
+                <input placeholder="New key" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                  ng-model="newKey">
+              </td>
+              <td>
+                <input placeholder="New value" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                  ng-model="newValue">
+              </td>
+              <td>
+                <span ng-click="addEntry(newKey, newValue); newKey=''; newValue=''" class="fa fa-fw fa-plus cursor-pointer action-btn-td">
+                  <md-tooltip md-direction="left" class="wz-tooltip">
+                    Add new entry
+                  </md-tooltip>
+                </span>
+              </td>
+            </tr>
+            <!-- End add new key tr -->
             <tr class="wz-word-wrap" ng-repeat="(key,value) in currentList.list track by $index" ng-style="editingKey === key && {'background': '#e2f7ff'}">
               <td>{{key}}</td>
               <td>
@@ -102,14 +124,29 @@
               </td>
               <td class="action-btn-td">
                 <div ng-hide="!adminMode">
-                  <span ng-show="(!editingKey || editingKey !== key) && removingEntry !== key" tooltip="Edit" ng-click="setEditingKey(key, value)"
-                    class="fa fa-fw fa-pencil cursor-pointer"></span>
-                  <span ng-show="editingKey === key" tooltip="Cancel" class="fa fa-fw fa-times cursor-pointer" ng-click="cancelEditingKey()"></span>
-                  <span ng-show="editingKey === key && editingNewValue !== ''" tooltip="Apply" class="fa fa-fw fa-check cursor-pointer"
-                    ng-click="editKey(key, editingNewValue)"></span>
+                  <span ng-show="(!editingKey || editingKey !== key) && removingEntry !== key" ng-click="setEditingKey(key, value)"
+                    class="fa fa-fw fa-pencil cursor-pointer">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Edit
+                    </md-tooltip>
+                  </span>
+                  <span ng-show="editingKey === key" class="fa fa-fw fa-times cursor-pointer" ng-click="cancelEditingKey()">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Cancel
+                    </md-tooltip>
+                  </span>
+                  <span ng-show="editingKey === key && editingNewValue !== ''" class="fa fa-fw fa-check cursor-pointer"
+                    ng-click="editKey(key, editingNewValue)">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Apply
+                    </md-tooltip>
+                  </span>
                   <i ng-if="(!removingEntry || removingEntry !== key) && editingKey !== key" ng-click="showConfirmRemoveEntry($event, key); $event.stopPropagation()"
-                    class="fa fa-fw fa-trash cursor-pointer" tooltip="Remove this entry" tooltip-placement="left"
-                    aria-hidden="true"></i>
+                    class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Remove this entry
+                    </md-tooltip>
+                  </i>
 
                   <div ng-if="removingEntry === key" class="confirmEmbedBubble">
                     <div layout="row">
@@ -132,27 +169,6 @@
     </md-card>
   </div>
   <div layout="column" layout-align="start"></div>
-  <div layout="row" class="wz-margin-top-10" ng-if="adminMode">
-    <md-card flex class="wz-md-card _md flex md-margin-h">
-      <md-card-content>
-        <span class="font-size-16 ng-scope">Add new entry</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" layout-align="start stretch" class="layout-align-start-stretch layout-row">
-          <div flex="" layout="column" layout-align="center" class="height-40 wz-margin-top-17 wz-margin-right-8 wz-select-input layout-align-center-stretch layout-column flex">
-            <input placeholder="Key" type="text" class="wz-input-text wz-border-none height-40" ng-model="newKey">
-          </div>
-          <div flex="" layout="column" layout-align="center" class="height-40 wz-margin-top-17 wz-margin-right-8 wz-select-input layout-align-center-stretch layout-column flex">
-            <input placeholder="Value" type="text" class="wz-input-text wz-border-none height-40" ng-model="newValue">
-          </div>
-          <div flex="" layout="column" layout-align="center" class="height-40 wz-margin-top-17 layout-align-center-stretch layout-column flex">
-            <div layout="row" class="">
-              <button class="btn btn-primary height-40" ng-disabled="!newKey || !newValue" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''"><i
-                  class="fa fa-fw fa-plus"></i>
-                Add</button>
-            </div>
-          </div>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
 </div>
+</div>
+<!-- End CDB List table-->
