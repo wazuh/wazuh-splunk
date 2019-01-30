@@ -50,7 +50,7 @@
                     ng-model="newValue">
                 </td>
                 <td>
-                  <span ng-disabled="!newKey || !newValue" class="fa fa-fw fa-plus cursor-pointer" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
+                  <span ng-click="addEntry(newKey, newValue); newKey=''; newValue=''" class="fa fa-fw fa-plus cursor-pointer action-btn-td">
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Add new entry
                     </md-tooltip>
@@ -109,31 +109,6 @@
       </md-card>
     </div>
     <div layout="column" layout-align="start"></div>
-    <!--
-    <div layout="row" class="wz-margin-top-10" ng-if="adminMode">
-      <md-card flex class="wz-md-card _md flex md-margin-h">
-        <md-card-content>
-          <span class="font-size-16 ng-scope">Add new entry</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" layout-align="start stretch" class="layout-align-start-stretch layout-row">
-            <div flex="" layout="column" layout-align="center" class="height-40 wz-margin-top-17 wz-margin-right-8 wz-select-input layout-align-center-stretch layout-column flex">
-              <input placeholder="Key" type="text" class="wz-input-text wz-border-none height-40" ng-model="newKey">
-            </div>
-            <div flex="" layout="column" layout-align="center" class="height-40 wz-margin-top-17 wz-margin-right-8 wz-select-input layout-align-center-stretch layout-column flex">
-              <input placeholder="Value" type="text" class="wz-input-text wz-border-none height-40" ng-model="newValue">
-            </div>
-            <div flex="" layout="column" layout-align="center" class="height-40 wz-margin-top-17 layout-align-center-stretch layout-column flex">
-              <div layout="row" class="">
-                <button class="btn btn-primary height-40" ng-disabled="!newKey || !newValue" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''"><i
-                    class="fa fa-fw fa-plus"></i>
-                  Add</button>
-              </div>
-            </div>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-  -->
   </div>
 </div>
 <!-- End CDB List table-->
