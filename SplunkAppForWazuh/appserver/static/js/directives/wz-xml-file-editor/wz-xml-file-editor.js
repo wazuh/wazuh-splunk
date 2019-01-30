@@ -167,6 +167,7 @@ define([
             $notificationService.showSimpleToast(
               'Success. Group has been updated'
             )
+            $scope.$emit('configurationSuccess')
           } catch (error) {
             $notificationService.showSimpleToast(
               error.message || error,
