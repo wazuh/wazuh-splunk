@@ -92,9 +92,9 @@ class manager(controllers.BaseController):
             kvstoreUri = kvstoreUri+'?output_mode=json'
             self.logger.info('kvstoreUri %s' % (kvstoreUri))
 
-            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(),"Content-Type": "application/json"},verify=False)
+            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(),"Content-Type": "application/json"},verify=False).json()
             self.logger.info('result %s' % (result))
-            return result
+            return jsonbak.dumps(result)
 
         except Exception as e:
             self.logger.error('error!: %s ' % (e))
