@@ -66,15 +66,27 @@
                 </td>
                 <td class="action-btn-td">
                   <div ng-hide="!adminMode">
-                    <span ng-show="(!editingKey || editingKey !== key) && removingEntry !== key" tooltip="Edit"
-                      ng-click="setEditingKey(key, value)" class="fa fa-fw fa-pencil cursor-pointer"></span>
-                    <span ng-show="editingKey === key" tooltip="Cancel" class="fa fa-fw fa-times cursor-pointer"
-                      ng-click="cancelEditingKey()"></span>
-                    <span ng-show="editingKey === key && editingNewValue !== ''" tooltip="Apply" class="fa fa-fw fa-check cursor-pointer"
-                      ng-click="editKey(key, editingNewValue)"></span>
+                    <span ng-show="(!editingKey || editingKey !== key) && removingEntry !== key" ng-click="setEditingKey(key, value)" class="fa fa-fw fa-pencil cursor-pointer">
+                      <md-tooltip md-direction="left" class="wz-tooltip">
+                          Edit
+                        </md-tooltip>
+                    </span>
+                    <span ng-show="editingKey === key" class="fa fa-fw fa-times cursor-pointer" ng-click="cancelEditingKey()">
+                      <md-tooltip md-direction="left" class="wz-tooltip">
+                        Cancel
+                      </md-tooltip>
+                    </span>
+                    <span ng-show="editingKey === key && editingNewValue !== ''" class="fa fa-fw fa-check cursor-pointer" ng-click="editKey(key, editingNewValue)">
+                      <md-tooltip md-direction="left" class="wz-tooltip">
+                        Apply
+                      </md-tooltip>
+                    </span>
                     <i ng-if="(!removingEntry || removingEntry !== key) && editingKey !== key" ng-click="showConfirmRemoveEntry($event, key); $event.stopPropagation()"
-                      class="fa fa-fw fa-trash cursor-pointer" tooltip="Remove this entry" tooltip-placement="left"
-                      aria-hidden="true"></i>
+                      class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
+                      <md-tooltip md-direction="left" class="wz-tooltip">
+                          Remove this entry
+                      </md-tooltip>
+                    </i>
 
                     <div ng-if="removingEntry === key" class="confirmEmbedBubble">
                       <div layout="row">
