@@ -89,6 +89,7 @@ class manager(controllers.BaseController):
                 namespace="SplunkAppForWazuh",
                 hostPath=rest.makeSplunkdUri().strip("/")
             )
+            kvstoreUri = kvstoreUri+'?output_mode=json'
             self.logger.info('kvstoreUri %s' % (kvstoreUri))
 
             result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(),"Content-Type": "application/json"},verify=False)
