@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<div ng-if="editionType === 'cdbLists'">
+<div ng-if="editionType === 'cdbLists' && !currentList">
   <div layout="row" layout-padding>
     <wazuh-table quick-edit="true" implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']"
       allow-click="true" rows-per-page="14">
@@ -71,7 +71,8 @@
     </button>
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 475px);" ng-if="fetchedXML">
-    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file" valid-fn='xmlIsValid(valid)'>
+    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+      valid-fn='xmlIsValid(valid)'>
     </wz-xml-file-editor>
   </div>
 </div>
@@ -81,7 +82,9 @@
   <div layout="row">
     <span style='margin-left: 15px' class="font-size-15"><i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i>Editing
       <b>{{currentList.details.file}}</b>
-      <md-button style='margin-left: 10; width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
+    </span>
+    <span style="margin-left: 10px;">
+      <md-button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
         class="wz-button md-raised md-primary" ng-click="cancelCdbListEdition()">
         Cancel
       </md-button>
