@@ -15,7 +15,7 @@
 </div>
 <!-- End nav bar tabs -->
 
-<div ng-if="editionType === 'rules'">
+<div ng-if="editionType === 'rules' && !editingFile">
   <div layout="row">
     <input flex placeholder="Filter local rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">
@@ -32,7 +32,7 @@
   </div>
 </div>
 
-<div ng-if="editionType === 'decoders'">
+<div ng-if="editionType === 'decoders' && !editingFile">
   <div layout="row">
     <input flex placeholder="Filter local decoders..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">
@@ -70,8 +70,8 @@
         XML format error</span>
     </button>
   </div>
-  <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-    <wz-xml-file-editor file-name='rules' data="fetchedXML" target-name="editingFile.file" valid-fn='xmlIsValid(valid)'>
+  <div class="wzXmlEditorDivContent" style="height: calc(100vh - 475px);" ng-if="fetchedXML">
+    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file" valid-fn='xmlIsValid(valid)'>
     </wz-xml-file-editor>
   </div>
 </div>

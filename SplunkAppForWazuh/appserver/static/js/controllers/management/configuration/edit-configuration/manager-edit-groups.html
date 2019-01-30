@@ -5,7 +5,7 @@
   </span>
 </div>
 <!-- Table with groups -->
-<div layout="column" layout-align="start">
+<div layout="column" layout-align="start" ng-show="!editingFile">
   <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch ng-if=" currentList">
     <md-card flex class="wz-md-card">
       <md-card-content>
@@ -44,8 +44,8 @@
         XML format error</span>
     </button>
   </div>
-  <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-    <wz-xml-file-editor file-name='agent.conf' data="fetchedXML" target-name="currentGroup.name + ' group'" valid-fn='xmlIsValid(valid)'>
+  <div class="wzXmlEditorDivContent" style="height: calc(100vh - 350px);" ng-if="fetchedXML">
+    <wz-xml-file-editor style="height: inherit;" file-name='agent.conf' data="fetchedXML" target-name="currentGroup.name" valid-fn='xmlIsValid(valid)'>
     </wz-xml-file-editor>
   </div>
 </div>
