@@ -45,17 +45,16 @@ define(['../../../module'], function (controllers) {
           } catch (error) {
             this.toast(`${error.message || error}`)
           }
-          const result = await this.apiReq('/agents/groups')
-          if (result &&
-            result.data &&
-            result.data.data &&
-            result.data.data.items) {
-              this.scope.groups = result.data.data.items
-          } else {
-            this.toast("Cannot refresh groups list.")
-          }  
-          if (!this.scope.$$phase) this.scope.$digest()
+          this.scope.$broadcast('wazuhSearch', {})
         }
+
+        //Edit groups
+        this.scope.$on('openGroupFromList',(ev,parameters) => {
+          const groupName = parameters.group.name
+          this.scope.editingFile = true;
+          this.scope.groupsSelectedTab = 'files';
+          this.editGroupAgentConfig(groupName)
+        })
       } catch (error) {
         console.error(error)
       }
@@ -120,6 +119,7 @@ define(['../../../module'], function (controllers) {
     }
     closeEditingFile() {
       this.scope.editingFile = false
+      this.scope.currentGroup = false
       this.scope.$broadcast('closeEditXmlFile', {})
     }
 

@@ -1,12 +1,9 @@
 <!-- Headline -->
-<div ng-show="!loadingRing" layout="column" layout-padding>
+<div layout="column" layout-padding >
   <div layout="row">
     <span class="font-size-18">
       <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-    <span ng-show='adminMode && !editingFile && !addingGroup' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i
-        class="fa fa-fw fa-plus-circle"></i>
-      <md-tooltip md-direction="right" class="wz-tooltip"> Add group </md-tooltip>
-    </span>
+    <span ng-show="!currentGroup || !currentGroup.name && adminMode" class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i class="fa fa-fw fa-plus-circle"></i></span>
   </div>
   <div layout="row" ng-if="addingGroup" ng-if='adminMode'>
     <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
@@ -20,59 +17,130 @@
   </div>
 </div>
 <!-- End headline -->
-<!-- Table with groups -->
-<div layout="column" layout-align="start" ng-show="!editingFile">
-  <md-card-content style="width: calc(100% - 30px);margin-left: auto; margin-right: auto;">
-    <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
-      <thead class="wz-text-bold">
-        <th class="wz-text-left">Name</th>
-        <th class="wz-text-left">Actions</th>
-      </thead>
-      <tbody>
-        <tr class="wz-word-wrap" ng-repeat="group in groups track by $index">
-          <td>{{group.name}}</td>
-          <td>
-            <span ng-show="!editingGroup || editingGroup && editingGroup !== group.name" ng-click="editGroupAgentConfig(group.name)"
-              class="fa fa-fw fa-pencil cursor-pointer">
-              <md-tooltip md-direction="left" class="wz-tooltip">Edit group</md-tooltip>
-            </span>
-            <span ng-show="editingGroup && editingGroup === group.name" ng-click="cancelEditGroup()" class="fa fa-fw fa-times cursor-pointer"></span>
-            <span ng-show="!editingGroup || editingGroup && editingGroup !== group.name && group.name !== 'default'"
-              ng-click="removeGroup(group.name)" class="fa fa-fw fa-trash cursor-pointer">
-              <md-tooltip md-direction="left" class="wz-tooltip">Remove group</md-tooltip>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </md-card-content>
-</div>
 
-<div ng-show="editingFile">
-  <div layout="row" class="md-padding">
-    <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
-        aria-hidden="true"></i>
-      <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
-    </button>
-    <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-    <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
-        file</span>
-      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-        XML format error</span>
-    </button>
+<div flex layout="column" layout-align="start stretch" ng-show="!load">
+  <!-- MD5 Sums and Details cards -->
+
+  <div layout="row" class="md-padding-h wz-width-100" ng-if="lookingGroup">
+    <md-button class="md-icon-button wz-circle-back-button" ng-if="lookingGroup" aria-label="Back" ng-click="goBackGroups()"><i
+        class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+      <md-tooltip md-direction="bottom" class="wz-tooltip">Go back</md-tooltip>
+    </md-button>
+    <!-- Group MD5 sums section -->
+    <md-card flex class="no-margin-left wz-md-card">
+      <md-card-content>
+        <div layout="row">
+          <span class="font-size-18">
+            <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> {{currentGroup.name}}</span>
+        </div>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="15">Agents</span>
+          <span class="wz-text-right color-grey">{{ currentGroup.count }}</span>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="15">Content</span>
+          <span class="wz-text-right color-grey">{{ totalFiles }} files</span>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="15">Configuration sum</span>
+          <span class="wz-text-right color-grey">{{ currentGroup.configSum }}</span>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="15">Merged sum</span>
+          <span class="wz-text-right color-grey">{{ currentGroup.mergedSum }}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+    <!-- End Group MD5 sums section -->
+
   </div>
-  <div class="wzXmlEditorDivContent" style="height: calc(100vh - 350px);" ng-if="fetchedXML">
-    <wz-xml-file-editor style="height: inherit;" file-name='agent.conf' data="fetchedXML" target-name="currentGroup.name"
-      valid-fn='xmlIsValid(valid)'>
-    </wz-xml-file-editor>
+
+  <md-nav-bar ng-if="lookingGroup && currentGroup && !addingAgents && !editingFile" class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"
+    md-selected-nav-item="groupsSelectedTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="goBackToAgents()" name="agents">Agents</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="goBackFiles()" name="files">Content</md-nav-item>
+  </md-nav-bar>
+  <!-- End group actions -->
+  <!-- XML editor for group agents -->
+  <div ng-show="editingFile">
+    <div layout="row" class="md-padding">
+      <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+          aria-hidden="true"></i>
+        <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+      </button>
+      <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+      <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+          file</span>
+        <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+          XML format error</span>
+      </button>
+    </div>
+    <div class="wzXmlEditorDivContent" style="height: calc(100vh - 400px);" ng-if="fetchedXML">
+      <wz-xml-file-editor style="height: inherit;" file-name='agent.conf' data="fetchedXML" target-name="currentGroup.name"
+        valid-fn='xmlIsValid(valid)'>
+      </wz-xml-file-editor>
+    </div>
+  </div>
+  <!-- XML editor for group agents -->
+
+  <div ng-if="!editingFile">
+    <div layout="row" class="md-padding" ng-if="lookingGroup && currentGroup && addingAgents">
+      <span ng-click='addMultipleAgents(false)' class='btn btn-info'>
+        Cancel</span>
+      <span ng-hide='moreThan500' ng-click='saveAddAgents()' class='btn btn-primary wz-margin-left-8 wz-margin-left-5'><i
+          aria-hidden='true' class='fa fa-fw fa-save'></i>
+        Apply changes</span>
+      <span class='error-msg' ng-show='moreThan500'><i class="fa fa-exclamation-triangle"></i> It is not
+        possible to apply changes of more than 500 additions or deletions</span>
+    </div>
+
+    <!-- Search bar -->
+    <div layout="row" class="md-padding" ng-if="!addingAgents && !file">
+      <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
+        ng-model="custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-100"
+        aria-invalid="false" wz-enter="search(custom_search)">
+      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
+        ng-click="search(custom_search)">
+        <span class="fa fa-search" aria-hidden="true"></span>
+      </button>
+    </div>
+    <!-- End search bar -->
+
+    <!-- Groups table -->
+    <div layout="row" ng-if="!lookingGroup" class="md-padding">
+      <wazuh-table admin-mode='adminMode' flex extra-limit="true" path="'/agents/groups'" keys="['name','count','mergedSum']"
+        allow-click="true" row-sizes="[14,12,10]">
+      </wazuh-table>
+    </div>
+    <!-- End groups table -->
+
+    <!-- File JSON viewer section -->
+    <div flex layout="column" class="md-padding" ng-if="lookingGroup && groupsSelectedTab==='files' && file">
+      <div flex layout="column">
+        <div layout="row" class="wz-padding-bottom-14">
+          <span flex class="wz-headline-title">{{ filename }}</span>
+          <button class="md-icon-button" ng-if="lookingGroup" aria-label="Back" tooltip="Close file" tooltip-placement="left"
+            ng-click="goBackFiles()"><i class="fa fa-fw fa-close" aria-hidden="true"></i></button>
+          <!--<span flex class="wz-text-right cursor-pointer color-grey" ng-click="goBackFiles()">close</span>-->
+        </div>
+        <div flex layout="column">
+          <pre flex class="wz-pre groupContentViewer wzXmlEditor wz-overflow-y-auto"><code wz-dynamic="file"></code></pre>
+        </div>
+      </div>
+    </div>
+    <!-- End File JSON viewer section -->
+  </div>
+  <div layout="row" class="md-padding" ng-if="addingAgents">
+    <span ng-show='!multipleSelectorLoading' class="wzMultipleSelectorCounter"><span style='color:green'>+{{currentAdding}}</span>&nbsp;<span
+        style='color:red'>-{{currentDeleting}}</span></span>
+    <wz-multiple-selector class='wzMultipleSelector' available-items="availableAgents.data" selected-items="selectedAgents.data"
+      title-available-items="Available agents" title-selected-items="Current agents in the group" total-selected-items="totalSelectedAgents"
+      reload-scroll='reload(element, searchTerm, 499, start)' limit="checkLimit()">
+    </wz-multiple-selector>
   </div>
 </div>
-
-
-<div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
 </div>
-
-<!-- End last registered agent section -->
-
+</md-content>
 </div>
