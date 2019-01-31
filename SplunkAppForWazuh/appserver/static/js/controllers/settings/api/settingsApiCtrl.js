@@ -62,7 +62,7 @@ define(['../../module'], function(controllers) {
         if (!currentApi && Array.isArray(this.scope.apiList)) {
           for (const apiEntry of this.scope.apiList) {
             try {
-              await this.selectManager(apiEntry.id)
+              await this.selectManager(apiEntry['_key'])
               // setAPI
               currentApi = this.currentDataService.getApi()
               break
@@ -144,7 +144,7 @@ define(['../../module'], function(controllers) {
       try {
         this.scope.edit = !this.scope.edit
         this.scope.showForm = false
-        this.scope.currentEntryKey = entry.id
+        this.scope.currentEntryKey = entry['_key']
         this.scope.url = entry.url
         this.scope.pass = entry.pass
         this.scope.port = entry.portapi
@@ -178,17 +178,17 @@ define(['../../module'], function(controllers) {
         this.scope.entry.filterType = this.scope.filterType
         this.scope.entry.filterName = this.scope.filterName
         this.scope.entry.managerName = this.scope.managerName
-        this.scope.entry.id = this.scope.currentEntryKey
+        this.scope.entry['_key'] = this.scope.currentEntryKey
 
         delete this.scope.entry['$$hashKey']
         await this.currentDataService.checkRawConnection(this.scope.entry)
         await this.currentDataService.update(this.scope.entry)
         const updatedApi = await this.currentDataService.checkApiConnection(
-          this.scope.entry.id
+          this.scope.entry['_key']
         )
 
         for (let i = 0; i < this.scope.apiList.length; i++) {
-          if (this.scope.apiList[i].id === updatedApi.id) {
+          if (this.scope.apiList[i]['_key'] === updatedApi['_key']) {
             this.scope.apiList[i] = updatedApi
           }
         }
@@ -196,9 +196,9 @@ define(['../../module'], function(controllers) {
 
         if (
           this.currentDataService.getApi() &&
-          this.currentDataService.getApi().id === this.scope.entry.id
+          this.currentDataService.getApi()['_key'] === this.scope.entry['_key']
         ) {
-          this.selectManager(updatedApi.id)
+          this.selectManager(updatedApi['_key'])
         }
 
         this.scope.edit = false
@@ -221,7 +221,7 @@ define(['../../module'], function(controllers) {
         await this.currentDataService.chose(entry)
         this.scope.apiList.map(api => (api.selected = false))
         for (let item of this.scope.apiList) {
-          if (item.id === entry) {
+          if (item['_key'] === entry) {
             if (connectionData.cluster) {
               item.cluster = connectionData.cluster
             } else {
@@ -278,12 +278,10 @@ define(['../../module'], function(controllers) {
 
         // Get the new API database ID
         const { result } = await this.currentDataService.insert(record)
-        console.log('result ',result)
         if (!result || typeof result !== 'string' && typeof result === 'object' && result.error !== 0) {
           throw new Error('Error inserting: ',result.error)
         }
         const id = result
-        console.log('the id ',id)
         try {
           // Get the full API info
           const api = await this.currentDataService.checkApiConnection(id)

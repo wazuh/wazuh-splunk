@@ -105,7 +105,7 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
+                  const id = $currentDataService.getApi()['_key']
                   const result = await $currentDataService.getExtensionsById(id)
                   return result
                 } catch (err) {

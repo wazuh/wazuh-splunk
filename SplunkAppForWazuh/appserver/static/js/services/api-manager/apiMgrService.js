@@ -1,6 +1,6 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$apiMgrService', function(
+  module.service('$apiMgrService', function (
     $requestService,
     $apiIndexStorageService,
     $splunkStoreService
@@ -13,9 +13,7 @@ define(['../module'], function(module) {
      */
     const select = async id => {
       try {
-        console.log('selecting api with this id ',id)
         const entry = await $splunkStoreService.getApiById(id)
-        console.log('entry; ',entry)
         return entry
       } catch (err) {
         return Promise.reject(err)
@@ -34,8 +32,7 @@ define(['../module'], function(module) {
         ) {
           $apiIndexStorageService.removeAPI()
         }
-        console.log('remove api ',api)
-        await $splunkStoreService.delete({ id: api.id })
+        await $splunkStoreService.delete({ id: api['_key'] })
         return
       } catch (err) {
         return Promise.reject(err)
@@ -157,7 +154,7 @@ define(['../module'], function(module) {
       try {
         const apiList = await getApiList()
         for (const api of apiList) {
-          if (api.id === id) {
+          if (api['_key'] === id) {
             $apiIndexStorageService.setApi(api)
           }
         }
@@ -177,7 +174,7 @@ define(['../module'], function(module) {
         if (!currentApi) {
           throw new Error('No selected API in sessionStorage.')
         }
-        const api = await checkApiConnection(currentApi.id)
+        const api = await checkApiConnection(currentapi['_key'])
         let selectedIndex = $apiIndexStorageService.getIndex()
         return { api, selectedIndex }
       } catch (err) {
@@ -217,13 +214,13 @@ define(['../module'], function(module) {
         ) {
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
+            }&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
           )
           if (result.data.status === 400 || result.data.error) {
-            throw new Error('Cannot connect to API.')
+            throw new Error('Unreachable API.')
           }
           return result
         }
@@ -235,46 +232,60 @@ define(['../module'], function(module) {
     }
 
     /**
-     * Check if connection with API was successful, also returns the full needed information about it
-     * @param {String} id
+     * Checks if the API has to change its filters
+     * @param {Object} api 
      */
-    const checkApiConnection = async id => {
+    const updateApiFilter = async (api) => {
       try {
-        const api = await select(id)
-        console.log('checking api with this ID ',api)
-        const clusterData = await $requestService.apiReq(`/cluster/status`, {
-          id: id
-        })
-        if (clusterData.data.error) {
-          throw new Error(clusterData.data.error)
-        }
-        // Get manager name. Necessary for both cases
-        const managerName = await $requestService.apiReq(`/agents/000`, {
-          id: id,
-          select: 'name'
-        })
-        if (
-          managerName &&
-          managerName.data &&
-          managerName.data.data &&
-          managerName.data.data.name
-        ) {
-          api.managerName = managerName.data.data.name
+        const results = await Promise.all([
+          $requestService.apiReq(`/cluster/status`, {
+            id: api['_key']
+          }),
+          $requestService.apiReq(`/agents/000`, {
+            id: api['_key'],
+            select: 'name'
+          })
+        ])
+
+        const parsedResult = results.map(item => item && item.data && item.data.data ? item.data.data : false)
+        const [
+          clusterData,
+          managerName
+        ] = parsedResult
+
+        if (managerName.name) {
+          api.managerName = managerName.name
         }
         // If cluster is disabled, then filter by manager.name
-        if (clusterData.data.data.enabled === 'yes') {
+        if (clusterData.enabled === 'yes') {
           api.filterType = 'cluster.name'
           const clusterName = await $requestService.apiReq(`/cluster/node`, {
-            id: id
+            id: api['_key']
           })
           api.filterName = clusterName.data.data.cluster
         } else {
           api.filterType = 'manager.name'
           api.filterName = api.managerName
         }
-        await $splunkStoreService.update(api)
-        delete api['passapi']
         return api
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Check if connection with API was successful, also returns the full needed information about it
+     * @param {String} id
+     */
+    const checkApiConnection = async id => {
+      try {
+        const api = await select(id)
+        const updatedApi = await updateApiFilter(api)
+        if (updatedApi !== api) {
+          await $splunkStoreService.update(updatedApi)
+        }
+        delete updatedApi['passapi']
+        return updatedApi
       } catch (err) {
         return Promise.reject(err)
       }

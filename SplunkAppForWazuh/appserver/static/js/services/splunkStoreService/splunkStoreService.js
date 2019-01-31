@@ -23,14 +23,16 @@ define(['../module'], function(module) {
      */
     const getApiById = async id => {
       try {
-        console.log('getting api with this id ',id)
         const { data } = await $requestService.httpReq(
           `GET`,
           `/manager/get_api`,
           { id: id }
         )
-        console.log('data parsed ',JSON.parse(data))
-        return JSON.parse(data)
+        const parsed = JSON.parse(data)
+        const parsedJson = JSON.parse(parsed)
+
+        const parsedData = parsedJson.data
+        return parsedData
       } catch (err) {
         return Promise.reject(err)
       }
@@ -59,7 +61,6 @@ define(['../module'], function(module) {
      */
     const deletes = async id => {
       try {
-        console.log('BORRANDO API CON ID ',id)
         const { data } = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
@@ -68,7 +69,6 @@ define(['../module'], function(module) {
         if (data.error || data.status === 400) throw new Error(data.error)
         return data
       } catch (err) {
-        console.log('error deletes data ',err)
         return Promise.reject(err)
       }
     }
