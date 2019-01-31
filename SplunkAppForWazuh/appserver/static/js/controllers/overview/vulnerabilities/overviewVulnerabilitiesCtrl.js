@@ -45,6 +45,9 @@ define([
         $urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+      $currentDataService.addFilter(
+        `{"rule.groups":"vulnerability-detector", "implicit":true, "onlyShow":true}`
+      )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
 

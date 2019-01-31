@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class FilterService {
@@ -61,18 +61,22 @@ define(['../module'], function(module) {
     getSerializedFilters() {
       try {
         let filterStr = ' '
-        if (window.localStorage.filters)
-          for (const filter of JSON.parse(window.localStorage.filters)) {
-            if (typeof filter === 'object') {
-              const key = Object.keys(filter)[0]
-              filterStr += key
-              filterStr += '='
-              filterStr += filter[key]
-              filterStr += ' '
-            } else {
-              filterStr += filter + ' '
-            }
+        let filters = []
+        if (window.localStorage.filters) {
+          filters = JSON.parse(window.localStorage.filters)
+          filters = filters.filter(fil => !fil.onlyShow)
+        }
+        for (const filter of filters) {
+          if (typeof filter === 'object') {
+            const key = Object.keys(filter)[0]
+            filterStr += key
+            filterStr += '='
+            filterStr += filter[key]
+            filterStr += ' '
+          } else {
+            filterStr += filter + ' '
           }
+        }
         return filterStr
       } catch (err) {
         this.$notificationService.showSimpleToast('Error when getting filters.')
