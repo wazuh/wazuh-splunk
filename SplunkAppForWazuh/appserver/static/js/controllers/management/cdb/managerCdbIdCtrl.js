@@ -1,6 +1,13 @@
-define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
-  'use strict'
-
+define([
+  '../../module', '../rules/ruleset',
+  '../../../directives/wz-table/lib/pagination',
+  '../../../directives/wz-table/lib/check-gap'],
+  function (
+    controllers,
+    Ruleset,
+    pagination,
+    checkGap) {
+    'use strict'
   class CdbListId extends Ruleset {
     /**
      * Class CdbList-ID
@@ -37,6 +44,9 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.extensions = extensions
       this.cdbEditor = $cdbEditor
       this.cdbInfo = cdbInfo
+      this.notificationService = $notificationService
+      this.pagination = pagination
+      this.checkGap = checkGap
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -72,9 +82,30 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)
 
         this.scope.currentList.list = this.cdbInfo.content
-
         this.scope.adminMode = this.extensions['admin'] === 'true'
+
+        /**
+         * Pagination variables and functions
+         */
+        this.scope.items = this.cdbToArr()
+        this.scope.totalItems = this.scope.items.length    
+        this.scope.itemsPerPage = 10
+        this.scope.pagedItems = []
+        this.scope.currentPage = 0
+        this.scope.gap = 0
+        this.scope.searchTable = () => this.pagination.searchTable(this.scope, this.scope.items)
+        this.scope.groupToPages = () => this.pagination.groupToPages(this.scope) 
+        this.initPagination()
+        this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
+        this.scope.prevPage = () => this.pagination.prevPage(this.scope)
+        this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notificationService, null)
+        this.scope.setPage = (n) => {
+          this.scope.currentPage = n
+          this.scope.nextPage(n)
+        }
+        
       } catch (error) {
+        console.error(error)
         this.toast("Error editing CDB list")
       }
 
@@ -136,7 +167,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.cancelEditingKey()
         await this.saveList()
       } catch (error) {
-        console.error(error)
         this.toast("Error editing value.")
       }
     }
@@ -151,7 +181,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.scope.removingEntry = false
         await this.saveList()
       } catch (error) {
-        console.error(error)
         this.toast("Error deleting entry.")
       }
 
@@ -163,18 +192,22 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
         const check = await this.cdbEditor.sendConfiguration(fileName, path, content)
-        const cbdUpdated = await this.fetchFile(fileName, path)
-        this.scope.currentList.list = this.stringToObj(cbdUpdated)
+        const cdbUpdated = await this.fetchFile(fileName, path)
+        this.scope.currentList.list = this.stringToObj(cdbUpdated)
+        // Re-init pagination
+        this.scope.items = this.cdbToArr()
+        this.initPagination()
+        this.toast("CDB list updated.")
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         return Promise.reject(error)
       }
     }
-    
+
     stringToObj(string) {
       let result = {}
       const splitted = string.split('\n')
-      splitted.forEach(function (element) {
+      splitted.forEach((element) => {
         const keyValue = element.split(':')
         if (keyValue[0])
           result[keyValue[0]] = keyValue[1]
@@ -188,6 +221,22 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         raw = raw.concat(`${key}:${obj[key]}\n`);
       }
       return raw
+    }
+    
+    cdbToArr(){
+      const obj = this.scope.currentList.list
+      let items = []
+      for (var property in obj) {
+        let o = [property, obj[property]]
+        items.push(o)
+      }
+      return items
+    }
+
+    initPagination(){
+      this.scope.totalItems = this.scope.items.length
+      this.checkGap(this.scope, this.scope.items)
+      this.scope.searchTable()      
     }
 
   }
