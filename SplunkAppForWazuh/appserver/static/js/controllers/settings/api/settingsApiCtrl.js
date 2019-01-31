@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class SettingsApi {
@@ -50,14 +50,14 @@ define(['../../module'], function(controllers) {
     async init() {
       try {
         // If no API, then remove cookie
-        if (Array.isArray(this.apiList) && this.apiList.length === 0) {
-          this.currentDataService.removeCurrentApi()
-          this.scope.$emit('updatedAPI', () => {})
-        }
+        // if (Array.isArray(this.apiList) && this.apiList.length === 0) {
+        //   this.currentDataService.removeCurrentApi()
+        //   this.scope.$emit('updatedAPI', () => { })
+        // }
+        let currentApi = this.currentDataService.getApi()
+        this.apiList.map(api => (api.url === currentApi.url) ? api.selected = true : api.selected = false)
 
         this.scope.apiList = this.apiList
-
-        let currentApi = this.currentDataService.getApi()
 
         if (!currentApi && Array.isArray(this.scope.apiList)) {
           for (const apiEntry of this.scope.apiList) {
@@ -72,17 +72,17 @@ define(['../../module'], function(controllers) {
           }
         }
 
-        this.scope.apiList.map(item => {
-          delete item.selected
-        })
+        // this.scope.apiList.map(item => {
+        //   delete item.selected
+        // })
 
-        if (currentApi) {
-          this.scope.apiList.map(item => {
-            if (item.id === currentApi.id) {
-              item.selected = true
-            }
-          })
-        }
+        // if (currentApi) {
+        //   this.scope.apiList.map(item => {
+        //     if (item.id === currentApi.id) {
+        //       item.selected = true
+        //     }
+        //   })
+        // }
       } catch (err) {
         this.toast('Error loading data')
       }
@@ -211,30 +211,34 @@ define(['../../module'], function(controllers) {
 
     /**
      * Select an API as the default one
-     * @param {Object} entry
+     * @param {String} key
      */
-    async selectManager(entry) {
+    async selectManager(key) {
       try {
+        // checking if the api is up
         const connectionData = await this.currentDataService.checkApiConnection(
-          entry
+          key
         )
-        await this.currentDataService.chose(entry)
-        this.scope.apiList.map(api => (api.selected = false))
-        for (let item of this.scope.apiList) {
-          if (item['_key'] === entry) {
-            if (connectionData.cluster) {
-              item.cluster = connectionData.cluster
-            } else {
-              item.cluster = 'Disabled'
-            }
-            item.managerName = connectionData.managerName
-            item.selected = true
-          }
-        }
+        // Selecting API
+
+        await this.currentDataService.chose(key)
+        // this.scope.apiList.map(api => (api.selected = false))
+        // for (let item of this.scope.apiList) {
+        //   if (item['_key'] === key) {
+        //     if (connectionData.cluster) {
+        //       item.cluster = connectionData.cluster
+        //     } else {
+        //       item.cluster = 'Disabled'
+        //     }
+        //     item.managerName = connectionData.managerName
+        //     item.selected = true
+        //   }
+        // }
         this.toast('API selected')
-        this.scope.$emit('updatedAPI', () => {})
+        this.scope.$emit('updatedAPI', () => { })
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
+        console.error('err ', err)
         this.toast('Could not select manager')
       }
     }
@@ -274,44 +278,28 @@ define(['../../module'], function(controllers) {
         }
 
         // If connected to the API then continue
-        await this.currentDataService.checkRawConnection(record)
-
+        //const api = await this.currentDataService.checkRawConnection(record)
+        const api = await this.currentDataService.addApi(record)
         // Get the new API database ID
-        const { result } = await this.currentDataService.insert(record)
-        if (!result || typeof result !== 'string' && typeof result === 'object' && result.error !== 0) {
-          throw new Error('Error inserting: ',result.error)
-        }
-        const id = result
-        try {
-          // Get the full API info
-          const api = await this.currentDataService.checkApiConnection(id)
-          // Empties the form fields
-          this.clearForm()
+        //const { result } = await this.currentDataService.insert(record)
+        //const id = result
+        // Get the full API info
+        //const api = await this.currentDataService.checkApiConnection(id)
+        // Empties the form fields
+        this.clearForm()
 
-          // If the only one API in the list, then try to select it
-          this.scope.apiList.push(api)
-          if (this.scope.apiList && this.scope.apiList.length === 1) {
-            await this.selectManager(id)
-          }
-          this.scope.showForm = false
-          if (!this.scope.$$phase) this.scope.$digest()
-          this.toast('API was added')
-        } catch (err) {
-          console.error('err ',err)
-          this.currentDataService
-            .remove(id)
-            .then(() => {})
-            .catch(err => {
-              console.error('err ',err)
-              this.toast(`Unexpected error: ${err}`)
-            })
-          this.toast('Unreachable API')
-          this.savingApi = false
-        }
+        // If the only one API in the list, then try to select it
+        this.scope.apiList.push(api)
+        // if (this.scope.apiList && this.scope.apiList.length === 1) {
+        //   await this.selectManager(id)
+        // }
+        this.scope.showForm = false
+        if (!this.scope.$$phase) this.scope.$digest()
+        this.toast('New API was added')
       } catch (err) {
-        console.error('err ',err)
+        console.error('err ', err)
         this.toast(err.message)
-        this.savingApi = false
+        //this.savingApi = false
       }
       this.savingApi = false
     }

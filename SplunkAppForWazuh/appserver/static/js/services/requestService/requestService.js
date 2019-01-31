@@ -78,7 +78,7 @@ define(['../module'], function(module) {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
-        const id = currentApi && currentapi['_key'] ? currentapi['_key'] : opts.id
+        const id = currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
         const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)

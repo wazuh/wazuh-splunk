@@ -53,6 +53,30 @@ define(['../module'], function (module) {
     }
 
     /**
+     * Adds a new API entry with all fields
+     * @param {Object} record
+     */
+    const addApi = async record => {
+      try {
+        // if the API is not connecting, then throw error
+        const resultRawConnection = await checkRawConnection(record)
+        record.managerName = resultRawConnection.data.managerName.name
+        if (resultRawConnection.data.clusterMode.enabled === 'yes') {
+          record.filterType = 'cluster.name'
+          record.filterName = resultRawConnection.data.clusterName.cluster
+        } else {
+          record.filterType = 'manager.name'
+          record.filterName = resultRawConnection.data.managerName.name
+        }
+        const key = await $splunkStoreService.insert(record)
+        record['_key'] = key
+        return record
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    /**
      * Updates an API
      * @param {Object} api
      */
@@ -76,19 +100,6 @@ define(['../module'], function (module) {
     const getApiList = async () => {
       try {
         const apiList = await $splunkStoreService.getAllApis()
-        const selectedApi = $apiIndexStorageService.getApi()
-        for (let i = 0; i < apiList.length; i++) {
-          if (
-            selectedApi &&
-            typeof selectedApi === 'string' &&
-            selectedApi !== 'undefined' &&
-            typeof JSON.parse(selectedApi) === 'object' &&
-            JSON.parse(selectedApi).url &&
-            apiList[i].url === JSON.parse(selectedApi).url
-          ) {
-            apiList[i].selected = true
-          }
-        }
         return apiList
       } catch (err) {
         return Promise.reject(err)
@@ -153,13 +164,14 @@ define(['../module'], function (module) {
     const chose = async id => {
       try {
         const apiList = await getApiList()
-        for (const api of apiList) {
-          if (api['_key'] === id) {
-            $apiIndexStorageService.setApi(api)
-          }
+        const api = apiList.filter( api => api['_key'] === id)[0]
+        console.log('selected api ',api)
+        if (api && typeof api === 'object') {
+          $apiIndexStorageService.setApi(api)
         }
         return
       } catch (err) {
+        console.error('err' ,err)
         return Promise.reject(err)
       }
     }
@@ -281,9 +293,9 @@ define(['../module'], function (module) {
       try {
         const api = await select(id)
         const updatedApi = await updateApiFilter(api)
-        if (updatedApi !== api) {
+        //if (updatedApi !== api) {
           await $splunkStoreService.update(updatedApi)
-        }
+        //}
         delete updatedApi['passapi']
         return updatedApi
       } catch (err) {
@@ -307,7 +319,8 @@ define(['../module'], function (module) {
       getIndex: getIndex,
       setIndex: setIndex,
       getApi: getApi,
-      setApi: setApi
+      setApi: setApi,
+      addApi: addApi
     }
   })
 })

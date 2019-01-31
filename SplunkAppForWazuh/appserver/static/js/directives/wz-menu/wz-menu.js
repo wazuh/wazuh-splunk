@@ -52,12 +52,14 @@ define(['../module'], function(directives) {
         }
 
         const update = () => {
-          $scope.currentIndex = !$currentDataService.getIndex()
+          const index = $currentDataService.getIndex()
+          const api = $currentDataService.getApi()
+          $scope.currentIndex = !index
             ? 'wazuh'
-            : $currentDataService.getIndex().index
-          $scope.currentAPI = !$currentDataService.getApi()
+            : index.index
+          $scope.currentAPI = !api
             ? '---'
-            : $currentDataService.getApi().managerName
+            : api.managerName
           $scope.theresAPI = $scope.currentAPI === '---' ? false : true
 
           if (checkLastState('ow-', 'overview')) {
@@ -78,6 +80,7 @@ define(['../module'], function(directives) {
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
+          console.log('update api event')
           update()
         })
 
