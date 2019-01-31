@@ -143,9 +143,8 @@ class api(controllers.BaseController):
                 method = kwargs['method']
                 del kwargs['method']
             the_id = kwargs['id']
-            self.logger.info('REQUEST WITH THIS ID '+the_id)
             api = self.db.get(the_id)
-            self.logger.info('REQUEST TO THIS API '+api)
+            api = jsonbak.loads(api)
             if api:
                 opt_username = api['data']["userapi"]
                 opt_password = api['data']["passapi"]
@@ -154,7 +153,7 @@ class api(controllers.BaseController):
                 opt_endpoint = kwargs["endpoint"]
                 del kwargs['id']
                 del kwargs['endpoint']
-                url = opt_base_url + ":" + opt_base_port
+                url = opt_base_url + ":" + str(opt_base_port)
                 auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
                 verify = False
                 if method == 'GET':
