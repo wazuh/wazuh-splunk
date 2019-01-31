@@ -1,13 +1,24 @@
-define(['../../../module'], function (controllers) {
+define([
+  '../../../module',
+  '../../../../directives/wz-table/lib/pagination',
+  '../../../../directives/wz-table/lib/check-gap'
+], function (
+    controllers,
+    pagination,
+    checkGap
+    ) {
   'use strict'
 
   class EditRulesetCtrl {
     constructor($scope, $notificationService, isAdmin, $fileEditor, $cdbEditor) {
       this.scope = $scope
-      this.toast = $notificationService.showSimpleToast
+      this.notificationService = $notificationService
+      this.toast = this.notificationService.showSimpleToast
       this.isAdmin = isAdmin
       this.fileEditor = $fileEditor
       this.cdbEditor = $cdbEditor
+      this.pagination = pagination
+      this.checkGap = checkGap
     }
 
     $onInit() {
@@ -58,6 +69,25 @@ define(['../../../module'], function (controllers) {
           }
           const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
           this.scope.currentList.list = this.stringToObj(currentList)
+          /**
+           * Pagination variables and functions (CDB lists)
+           */
+          this.scope.items = this.cdbToArr()
+          this.scope.totalItems = this.scope.items.length    
+          this.scope.itemsPerPage = 10
+          this.scope.pagedItems = []
+          this.scope.currentPage = 0
+          this.scope.gap = 0
+          this.scope.searchTable = () => this.pagination.searchTable(this.scope, this.scope.items)
+          this.scope.groupToPages = () => this.pagination.groupToPages(this.scope) 
+          this.initPagination()
+          this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
+          this.scope.prevPage = () => this.pagination.prevPage(this.scope)
+          this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notificationService, null)
+          this.scope.setPage = (n) => {
+            this.scope.currentPage = n
+            this.scope.nextPage(n)
+          }
           if (!this.scope.$$phase) this.scope.$digest()
         } catch (error) {
           return Promise.reject(error)
@@ -74,6 +104,7 @@ define(['../../../module'], function (controllers) {
 
     switchSubTab(subTabName) {
       this.closeEditingFile()
+      this.cancelEditingKey()
       this.scope.currentList = false
       this.scope.subTabName = subTabName
       this.scope.editionType = subTabName
@@ -208,8 +239,12 @@ define(['../../../module'], function (controllers) {
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
         const check = await this.cdbEditor.sendConfiguration(fileName, path, content)
-        const cbdUpdated = await this.fetchFile(fileName, path)
-        this.scope.currentList.list = this.stringToObj(cbdUpdated)
+        const cdbUpdated = await this.fetchFile(fileName, path)
+        this.scope.currentList.list = this.stringToObj(cdbUpdated)
+        // Re-init pagination
+        this.scope.items = this.cdbToArr()
+        this.initPagination()
+        this.toast("CDB list updated.")
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         return Promise.reject(error)
@@ -236,9 +271,25 @@ define(['../../../module'], function (controllers) {
     }
 
     cancelCdbListEdition() {
+      this.cancelEditingKey()
       this.scope.currentList = false
     }
 
+    cdbToArr(){
+      const obj = this.scope.currentList.list
+      let items = []
+      for (var property in obj) {
+        let o = [property, obj[property]]
+        items.push(o)
+      }
+      return items
+    }
+
+    initPagination(){
+      this.scope.totalItems = this.scope.items.length
+      this.checkGap(this.scope, this.scope.items)
+      this.scope.searchTable()      
+    }
   }
   controllers.controller('editRulesetCtrl', EditRulesetCtrl)
 })
