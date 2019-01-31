@@ -3,7 +3,10 @@
   <div layout="row">
     <span class="font-size-18">
       <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-    <span ng-show='adminMode && !editingFile && !addingGroup' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i class="fa fa-fw fa-plus-circle"></i></span>
+    <span ng-show='adminMode && !editingFile && !addingGroup' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i
+        class="fa fa-fw fa-plus-circle"></i>
+      <md-tooltip md-direction="right" class="wz-tooltip"> Add group </md-tooltip>
+    </span>
   </div>
   <div layout="row" ng-if="addingGroup" ng-if='adminMode'>
     <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
@@ -23,17 +26,21 @@
     <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
       <thead class="wz-text-bold">
         <th class="wz-text-left">Name</th>
-        <th class="wz-text-left">Edit/Remove</th>
+        <th class="wz-text-left">Actions</th>
       </thead>
       <tbody>
         <tr class="wz-word-wrap" ng-repeat="group in groups track by $index">
           <td>{{group.name}}</td>
           <td>
             <span ng-show="!editingGroup || editingGroup && editingGroup !== group.name" ng-click="editGroupAgentConfig(group.name)"
-              class="fa fa-fw fa-pencil cursor-pointer"></span>
+              class="fa fa-fw fa-pencil cursor-pointer">
+              <md-tooltip md-direction="left" class="wz-tooltip">Edit group</md-tooltip>
+            </span>
             <span ng-show="editingGroup && editingGroup === group.name" ng-click="cancelEditGroup()" class="fa fa-fw fa-times cursor-pointer"></span>
             <span ng-show="!editingGroup || editingGroup && editingGroup !== group.name && group.name !== 'default'"
-              ng-click="removeGroup(group.name)" class="fa fa-fw fa-trash cursor-pointer"></span>
+              ng-click="removeGroup(group.name)" class="fa fa-fw fa-trash cursor-pointer">
+              <md-tooltip md-direction="left" class="wz-tooltip">Remove group</md-tooltip>
+            </span>
           </td>
         </tr>
       </tbody>
