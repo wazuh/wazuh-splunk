@@ -116,6 +116,13 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       })
+
+      this.scope.$on('openGroupFromList',(ev,parameters) => {
+        this.scope.editingFile = true;
+        this.scope.groupsSelectedTab = 'files';
+        return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
+      })
+
     }
 
     /**

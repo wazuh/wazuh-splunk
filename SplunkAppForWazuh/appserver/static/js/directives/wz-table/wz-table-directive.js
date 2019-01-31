@@ -360,6 +360,10 @@ define([
           $scope.removingGroup = null
         }
 
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList',{group})
+        }
+
         $scope.confirmRemoveAgent = async agent => {
           try {
             const group = instance.path.split('/').pop()

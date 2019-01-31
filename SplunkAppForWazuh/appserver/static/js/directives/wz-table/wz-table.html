@@ -59,11 +59,20 @@
           <md-tooltip>Open Configuration for this agent"</md-tooltip>
         </td>
         <td ng-if="path === '/agents/groups' && adminMode" ng-click="$event.stopPropagation()" class="cursor-default action-btn-td">
-          <i ng-if="removingGroup !== item.name && item.name !== 'default'" ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
-            class="fa fa-fw fa-remove cursor-pointer" aria-hidden="true"></i>
-          <md-tooltip md-direction="bottom" class="wz-tooltip">
-            Remove this group
-          </md-tooltip>
+          <span>
+            <i ng-if="removingGroup !== item.name && item.name !== 'default'" ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
+              class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true"></i>
+            <md-tooltip md-direction="bottom" class="wz-tooltip">
+              Remove this group
+            </md-tooltip>
+          </span>
+          <span>
+            <i ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()" class="fa fa-fw fa-pencil cursor-pointer"
+              tooltip="Edit this group configuration" tooltip-placement="left" aria-hidden="true"></i>
+            <md-tooltip md-direction="bottom" class="wz-tooltip">
+              Edit this group
+            </md-tooltip>
+          </span>
           <span class="wz-padding-left-8" ng-if="removingGroup !== item.name && item.name === 'default'">-</span>
           <div ng-if="removingGroup === item.name && item.name !== 'default'">
             <div layout="row">
@@ -93,8 +102,8 @@
                 The agent {{item.id}} will be removed from this group</span>
             </div>
             <div layout="row">
-              <md-button class="cancelBtn" type="button" ng-click="cancelRemoveAgent()"><i aria-hidden='true'
-                  class='fa fa-fw fa-close'></i> Cancel</md-button>
+              <md-button class="cancelBtn" type="button" ng-click="cancelRemoveAgent()"><i aria-hidden='true' class='fa fa-fw fa-close'></i>
+                Cancel</md-button>
               <md-button class="agreeBtn" type="button" ng-click="confirmRemoveAgent(item.id)"><i aria-hidden='true'
                   class='fa fa-fw fa-check'></i> Confirm</md-button>
             </div>
