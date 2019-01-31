@@ -37,6 +37,10 @@ define([
         this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
         this.scope.editRule = (fileName, dir) => this.editRule(fileName, dir)
 
+        //Add new rules or decoders file
+        this.scope.addNewRulesetFile = type => this.addNewRulesetFile(type)
+        this.scope.closeAddingFile = () => this.closeAddingFile()
+
         //Edit cdb lists
         this.scope.addEntry = (key, value) => this.addEntry(key, value)
         this.scope.setEditingKey = (key, value) => this.setEditingKey(key, value)
@@ -111,21 +115,35 @@ define([
       this.scope.editionType = subTabName
       switch (subTabName) {
         case 'rules':
-          this.scope.editing = 'local rules.'
+          this.scope.editing = 'local rules'
           break
         case 'decoders':
-          this.scope.editing = 'local decoders.'
+          this.scope.editing = 'local decoders'
           break
         case 'cdbLists':
-          this.scope.editing = 'CDB lists.'
+          this.scope.editing = 'CDB lists'
           break
       }
       if (!this.scope.$$phase) this.scope.$digest()
     }
 
+    // Add new rules or decoders file functions
+    addNewRulesetFile(type){
+      this.scope.addingNewFile = true
+      this.scope.editingFile = {
+        file: `new file`,
+        dir: type
+      }
+      this.scope.addingNewFile = true
+      this.scope.fetchedXML = `<!-- Configure your local ${type} here -->`
+    }
+
     // Edit rules and decoders functions
     closeEditingFile() {
       this.scope.editingFile = false
+      this.scope.addingNewFile = false
+      this.scope.fetchedXML = ''
+      this.scope.newFileName = ''
       this.scope.$broadcast('closeEditXmlFile', {})
     }
 
@@ -135,11 +153,22 @@ define([
     }
 
     saveRuleConfig(fileName, dir) {
-      this.scope.editingFile = false
-      this.scope.$broadcast('saveXmlFile', {
-        file: fileName,
-        dir: dir
-      })
+      if (this.scope.addingNewFile) {
+        fileName = this.scope.newFileName
+        fileName = fileName.includes('.xml') ? fileName : `${fileName}.xml`
+      }
+      if (fileName !== '.xml') {
+        this.scope.editingFile = false
+        this.scope.addingNewFile = false
+        this.scope.fetchedXML = ''
+        this.scope.newFileName = ''
+        this.scope.$broadcast('saveXmlFile', {
+          file: fileName,
+          dir: dir
+        })
+      } else {
+        this.toast('Please set a valid name.')
+      }
       this.search('')
     }
 

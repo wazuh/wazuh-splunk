@@ -1,6 +1,21 @@
 <div layout="row" layout-padding="" class="layout-padding layout-row">
   <div layout="column" layout-padding>
-    <span class="font-size-18"><i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Edit the {{editing}}</span>
+    <div layout="row">
+      <span class="font-size-18">
+        <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Edit the {{editing}}</span>
+      <span ng-show="subTabName === 'rules' && adminMode && !editingFile" class="font-size-18 wz-text-link" ng-click="addNewRulesetFile('rules')"><i
+          class="fa fa-fw fa-plus-circle"></i>
+        <md-tooltip md-direction="right" class="wz-tooltip">
+          Add new local rules file
+        </md-tooltip>
+      </span>
+      <span ng-show="subTabName === 'decoders' && adminMode && !editingFile" class="font-size-18 wz-text-link" ng-click="addNewRulesetFile('decoders')"><i
+          class="fa fa-fw fa-plus-circle"></i>
+        <md-tooltip md-direction="right" class="wz-tooltip">
+          Add new local decoders file
+        </md-tooltip>
+      </span>
+    </div>
     <span>Edit your current local rules, decoders and CDB lists</span>
   </div>
 </div>
@@ -15,7 +30,7 @@
 </div>
 <!-- End nav bar tabs -->
 
-<div ng-if="editionType === 'rules' && !editingFile">
+<div ng-if="editionType === 'rules' && !editingFile && !addingNewFile">
   <div layout="row">
     <input flex placeholder="Filter local rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">
@@ -32,7 +47,7 @@
   </div>
 </div>
 
-<div ng-if="editionType === 'decoders' && !editingFile">
+<div ng-if="editionType === 'decoders' && !editingFile && !addingNewFile">
   <div layout="row">
     <input flex placeholder="Filter local decoders..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">
@@ -69,6 +84,7 @@
       <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
+    <input ng-show="addingNewFile" placeholder="New file name..." ng-model="newFileName" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex" style="margin-left: 10px;">
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 475px);" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
