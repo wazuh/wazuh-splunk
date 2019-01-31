@@ -37,12 +37,6 @@
           <option value="parents">Parent decoders</option>
         </select>
       </div>
-      <md-button ng-show="!onlyParentDecoders" style='margin-top: 0' class="wz-button md-raised md-primary" aria-label="Filter by local decoders" ng-click="search('path:/var/ossec/etc/decoders')">
-        <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Local decoders
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Filter by local decoders
-        </md-tooltip>
-      </md-button>
     </div>
 
     <md-chips class="wz-chips" readonly="true" ng-show="appliedFilters.length">
