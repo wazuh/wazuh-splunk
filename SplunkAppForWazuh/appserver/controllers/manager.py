@@ -95,10 +95,19 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
+            request_manager = self.session.get(
+                url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()
             request_cluster = self.session.get(
-                url + '/version', auth=auth, timeout=8, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
+            request_cluster_name = self.session.get(
+                url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()
+            output = {}
+            self.logger.info(' REQUEST CONTENIDOO %s' % (request_manager))
+            output['managerName'] = request_manager['data']
+            output['clusterMode'] = request_cluster['data']
+            output['clusterName'] = request_cluster_name['data']
             del kwargs['pass']
-            result = jsonbak.dumps(request_cluster)
+            result = jsonbak.dumps(output)
         except Exception as e:
             self.logger.error("Cannot connect to API : %s" % (e))
             return jsonbak.dumps({"status": "400", "error": str(e)})
@@ -220,7 +229,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.info('ADDING API')
             record = kwargs
-            keys_list = ['url', 'portapi', 'userapi', 'passapi']
+            keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName', 'filterType', 'filterName']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
                 parsed_data = jsonbak.dumps({'result': key})
