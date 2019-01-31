@@ -8,13 +8,14 @@ define(['../../../module'], function (controllers) {
      * @param {Array} groups
      * @param {Boolean} isAdmin
      */
-    constructor($scope, $notificationService, $fileEditor, isAdmin, groups, $requestService) {
+    constructor($scope, $notificationService, $fileEditor, isAdmin, groups, $requestService, $groupHandler) {
       this.scope = $scope
       this.isAdmin = isAdmin
       this.groups = groups
       this.toast = $notificationService.showSimpleToast
       this.fileEditor = $fileEditor
       this.apiReq = $requestService.apiReq
+      this.groupHandler = $groupHandler
     }
     /**
      * On controller loads
@@ -31,6 +32,30 @@ define(['../../../module'], function (controllers) {
 
         this.scope.groups = this.groups.data.data.items
         this.scope.adminMode = this.isAdmin
+
+        //Add groups
+        this.scope.switchAddingGroup = () => {
+          this.scope.addingGroup = !this.scope.addingGroup
+        }
+        this.scope.createGroup = async name => {
+          try {
+            this.scope.addingGroup = false
+            await this.groupHandler.createGroup(name)
+            this.toast(`Success. Group ${name} has been created`)
+          } catch (error) {
+            this.toast(`${error.message || error}`)
+          }
+          const result = await this.apiReq('/agents/groups')
+          if (result &&
+            result.data &&
+            result.data.data &&
+            result.data.data.items) {
+              this.scope.groups = result.data.data.items
+          } else {
+            this.toast("Cannot refresh groups list.")
+          }  
+          if (!this.scope.$$phase) this.scope.$digest()
+        }
       } catch (error) {
         console.error(error)
       }
