@@ -76,6 +76,11 @@ define(['../../module', 'FileSaver'], function(controllers) {
         return this.loadGroup(parameters.group)
       })
 
+      this.scope.$on('configurationSuccess',() => {
+        this.scope.editingFile = false
+        if(!this.scope.$$phase) this.scope.$digest()
+      })
+
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
         if (
           ((parameters || {}).fileName || '').includes('agent.conf') &&
