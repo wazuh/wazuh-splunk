@@ -26,6 +26,7 @@ define([
         this.scope.adminMode = this.isAdmin
         this.scope.editionType = 'rules'
         this.scope.subTabName = 'rules'
+        this.scope.editing = 'local rules.'
 
         this.scope.search = term => this.search(term)
         this.scope.switchSubTab = subTabName => this.switchSubTab(subTabName)
@@ -108,6 +109,18 @@ define([
       this.scope.currentList = false
       this.scope.subTabName = subTabName
       this.scope.editionType = subTabName
+      switch (subTabName) {
+        case 'rules':
+          this.scope.editing = 'local rules.'
+          break
+        case 'decoders':
+          this.scope.editing = 'local decoders.'
+          break
+        case 'cdbLists':
+          this.scope.editing = 'CDB lists.'
+          break
+      }
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     // Edit rules and decoders functions
