@@ -26,12 +26,15 @@ define(['../../module'], function (controllers) {
         this.scope.cancelEditNode = () => this.cancelEditNode()
         this.scope.saveOssecConfig = () => this.saveOssecConfig()
         this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
+        this.scope.changeNode = (node) => this.changeNode(node)
 
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
+            this.scope.selectedNode = this.clusterInfo.nodes.data.data.items[0].name
             this.scope.nodes = this.clusterInfo.nodes.data.data.items
           }
+          this.editNode(this.scope.selectedNode)
         } else {
           this.editNode()
         }
@@ -54,9 +57,8 @@ define(['../../module'], function (controllers) {
       }
     }
 
-    cancelEditNode() {
-      this.scope.editingNode = false
-      this.scope.$broadcast('closeEditXmlFile', {})
+    changeNode(node){
+      this.editNode(node)
     }
 
     saveOssecConfig() {
@@ -65,7 +67,6 @@ define(['../../module'], function (controllers) {
         file: 'ossec.conf',
         dir: false
       })
-      this.scope.editingNode = this.clusterInfo.clusterEnabled ? false : 'manager'
     }
 
     xmlIsValid(valid) {

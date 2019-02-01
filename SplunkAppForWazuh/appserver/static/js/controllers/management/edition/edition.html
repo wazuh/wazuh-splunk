@@ -3,37 +3,6 @@
   <span ng-if="!clusterEnabled" class="font-size-18"> Manager configuration</span>
   <span ng-if="clusterEnabled" class="font-size-18"> Cluster configuration</span>
 </div>
-<!-- Table with cluster nodes -->
-<div ng-if="clusterEnabled" layout="column" layout-align="start">
-  <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch ng-if=" currentList">
-    <md-card flex class="wz-md-card">
-      <md-card-content>
-        <table class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
-          <thead class="wz-text-bold">
-            <th class="wz-text-left">Name</th>
-            <th class="wz-text-left">IP</th>
-            <th class="wz-text-left">Type</th>
-            <th class="wz-text-left">Version</th>
-            <th class="wz-text-left">Edit</th>
-          </thead>
-          <tbody>
-            <tr class="wz-word-wrap" ng-repeat="node in nodes track by $index" ng-style="editingKey === key && {'background': '#e2f7ff'}">
-              <td>{{node.name}}</td>
-              <td>{{node.ip}}</td>
-              <td>{{node.type}}</td>
-              <td>{{node.version}}</td>
-              <td>
-                <span ng-show="!editingNode || editingNode && editingNode !== node.name" ng-click="editNode(node.name)"
-                  class="fa fa-fw fa-pencil cursor-pointer"></span>
-                <span ng-show="editingNode && editingNode === node.name" ng-click="cancelEditNode()" class="fa fa-fw fa-times cursor-pointer"></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </md-card-content>
-    </md-card>
-  </div>
-</div>
 <!-- XML editor for ossec.conf -->
 <div ng-show="editingNode">
   <div layout="row" class="md-padding">
@@ -41,13 +10,15 @@
         aria-hidden="true"></i>
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
-    <span ng-if="isAdmin && clusterEnabled" ng-click='cancelEditNode()' class='btn btn-info'>Cancel</span>
-    <button ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
         file</span>
       <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
+    
+    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
+
   </div>
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
     <wz-xml-file-editor file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
