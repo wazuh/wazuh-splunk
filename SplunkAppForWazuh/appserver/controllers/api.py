@@ -142,6 +142,7 @@ class api(controllers.BaseController):
                     return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
+            self.logger.info('KWARGSSSS API PYTHON %s ' % (kwargs))
             the_id = kwargs['id']
             api = self.db.get(the_id)
             api = jsonbak.loads(api)
@@ -221,14 +222,14 @@ class api(controllers.BaseController):
                         parsed_filters.pop(key, None)
                 filters.update(parsed_filters)
 
-            the_id = kwargs['id']
+            the_id = kwargs['_key']
             api = self.db.get(the_id)
             opt_username = api[0]["userapi"]
             opt_password = api[0]["passapi"]
             opt_base_url = api[0]["url"]
             opt_base_port = api[0]["portapi"]
             opt_endpoint = kwargs['path']
-            del kwargs['id']
+            del kwargs['_key']
             del kwargs['path']
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)

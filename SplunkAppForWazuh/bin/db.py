@@ -63,10 +63,10 @@ class database():
 
         """
         try:
-            if not 'id' in obj:
-                raise Exception('Missing ID')
-            id = obj['id']
-            del obj['id']
+            if not '_key' in obj:
+                raise Exception('Missing Key')
+            id = obj['_key']
+            del obj['_key']
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
             result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             self.logger.info('result %s' % (result))

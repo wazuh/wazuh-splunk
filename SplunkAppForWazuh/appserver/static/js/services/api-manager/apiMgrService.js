@@ -186,7 +186,7 @@ define(['../module'], function (module) {
         if (!currentApi) {
           throw new Error('No selected API in sessionStorage.')
         }
-        const api = await checkApiConnection(currentapi['_key'])
+        const api = await checkApiConnection(currentApi['_key'])
         let selectedIndex = $apiIndexStorageService.getIndex()
         return { api, selectedIndex }
       } catch (err) {
@@ -293,9 +293,16 @@ define(['../module'], function (module) {
       try {
         const api = await select(id)
         const updatedApi = await updateApiFilter(api)
-        //if (updatedApi !== api) {
+        console.log('current api ',api)
+        console.log('updated API ',updatedApi)
+        let equal = true
+        Object.keys(updatedApi).map((key) =>{ if (updatedApi[key] !== api[key]) equal=false })
+        if (!equal) {
+          console.log('UPDATING API')
           await $splunkStoreService.update(updatedApi)
-        //}
+        } else {
+          console.log('SAME API!! NO CHANGES')
+        }
         delete updatedApi['passapi']
         return updatedApi
       } catch (err) {

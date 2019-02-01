@@ -54,8 +54,12 @@ define(['../../module'], function (controllers) {
           this.currentDataService.removeCurrentApi()
           this.scope.$emit('updatedAPI', () => { })
         }
+        // Get the current selected API
         let currentApi = this.currentDataService.getApi()
-        this.apiList.map((api) => {console.log('api',api); (api['_key'] === currentApi['_key']) ? api.selected = true : api.selected = false})
+        // If there is API, then show it as selected
+        if (currentApi) {
+          this.apiList.map((api) => { (api['_key'] === currentApi['_key']) ? api.selected = true : api.selected = false })
+        }
         this.scope.apiList = this.apiList
         if (!currentApi && Array.isArray(this.scope.apiList)) {
           for (const apiEntry of this.scope.apiList) {
@@ -82,7 +86,7 @@ define(['../../module'], function (controllers) {
         //   })
         // }
       } catch (err) {
-        console.error('err ',err)
+        console.error('err ', err)
         this.toast('Error loading data')
       }
     }

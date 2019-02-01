@@ -18,6 +18,8 @@ define(['./module'], function(module) {
 
       async function checkBeforeTransition(state) {
         try {
+          console.log('check before transition')
+
           const { api } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           //$currentDataService.cleanFilters()
@@ -31,6 +33,7 @@ define(['./module'], function(module) {
             }", "implicit":true}`
           )
         } catch (err) {
+          console.error('err ',err)
           $rootScope.$broadcast('loading', { status: false })
           if (state != 'settings.api')
             $rootScope.$broadcast('stateChanged', 'settings')

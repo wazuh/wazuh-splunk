@@ -53,7 +53,7 @@ def diff_keys_dic_update_api(kwargs_dic):
     try:
         diff = []
         kwargs_dic_keys = kwargs_dic.keys()
-        dic_keys = ['id', 'url', 'portapi', 'userapi', 'passapi']
+        dic_keys = ['_key', 'url', 'portapi', 'userapi', 'passapi','filterName', 'filterType', 'managerName']
         for key in dic_keys:
             if key not in kwargs_dic_keys:
                 diff.append(key)
@@ -188,6 +188,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.info('KWARGSSSSSSSSS %s' % (kwargs))
             if 'id' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['id']
@@ -228,6 +229,7 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.info('ADDING API')
+
             record = kwargs
             keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName', 'filterType', 'filterName']
             if set(record.keys()) == set(keys_list):
@@ -252,7 +254,7 @@ class manager(controllers.BaseController):
         """
         try:
             api_id = kwargs
-            if 'id' not in api_id:
+            if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})
             self.db.remove(api_id['id'])
             parsed_data = jsonbak.dumps({'data': 'success'})
@@ -272,8 +274,12 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.info('------------------------------------------------------------------------------')
+            self.logger.info('KWARGS! %s' % (kwargs))
             entry = kwargs
-            keys_list = ['id', 'url', 'portapi', 'userapi',
+            if '_user' in kwargs:
+                del kwargs['_user']
+            keys_list = ['_key', 'url', 'portapi', 'userapi',
                          'passapi', 'filterName', 'filterType', 'managerName']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)
