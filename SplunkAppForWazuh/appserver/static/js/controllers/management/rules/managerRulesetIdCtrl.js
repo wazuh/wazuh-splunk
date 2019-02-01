@@ -85,7 +85,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
     closeEditingFile() {
       this.scope.editingFile = false
-      this.scope.$broadcast('closeEditXmlFile', {})
     }
 
     xmlIsValid(valid) {
@@ -94,7 +93,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     }
 
     saveRuleConfig(fileName) {
-      this.scope.editingFile = false
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
         dir: 'rules'

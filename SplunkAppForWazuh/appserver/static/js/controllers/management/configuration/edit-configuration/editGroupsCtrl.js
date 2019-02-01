@@ -101,8 +101,6 @@ define(['../../../module'], function (controllers) {
       } catch (error) {
         this.toast(error.message || error)
       }
-      this.scope.editingFile = false
-      if (!this.scope.$$phase) this.scope.$digest()
       return
     }
 
@@ -125,6 +123,7 @@ define(['../../../module'], function (controllers) {
     closeEditingFile() {
       this.scope.editingFile = false
       this.scope.currentGroup = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     xmlIsValid(valid) {

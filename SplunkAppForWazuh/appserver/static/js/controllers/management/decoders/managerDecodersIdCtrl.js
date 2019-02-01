@@ -86,7 +86,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
     }
 
     saveDecoderConfig(fileName) {
-      this.scope.editingFile = false
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
         dir: 'decoders'

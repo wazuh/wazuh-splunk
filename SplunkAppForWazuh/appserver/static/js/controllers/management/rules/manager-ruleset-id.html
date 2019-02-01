@@ -220,7 +220,7 @@
           </button>
         </div>
         <div class="wzXmlEditorDivContent" style="height: calc(100vh - 650px);" ng-if="fetchedXML">
-          <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="ruleInfo.file" valid-fn='xmlIsValid(valid)'>
+          <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="ruleInfo.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
           </wz-xml-file-editor>
         </div>
       </div>

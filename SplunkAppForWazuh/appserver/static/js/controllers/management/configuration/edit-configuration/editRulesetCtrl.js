@@ -142,6 +142,7 @@ define([
       this.scope.addingNewFile = false
       this.scope.fetchedXML = ''
       this.scope.newFileName = ''
+      this.search('')
     }
 
     xmlIsValid(valid) {
@@ -155,10 +156,6 @@ define([
         fileName = fileName.includes('.xml') ? fileName : `${fileName}.xml`
       }
       if (fileName !== '.xml') {
-        this.scope.editingFile = false
-        this.scope.addingNewFile = false
-        this.scope.fetchedXML = ''
-        this.scope.newFileName = ''
         this.scope.$broadcast('saveXmlFile', {
           file: fileName,
           dir: dir
@@ -166,7 +163,6 @@ define([
       } else {
         this.toast('Please set a valid name.')
       }
-      this.search('')
     }
 
     async editRule(fileName, dir) {

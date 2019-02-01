@@ -31,7 +31,8 @@ define([
         fileName: '@fileName',
         validFn: '&',
         data: '=data',
-        targetName: '=targetName'
+        targetName: '=targetName',
+        closeFn: '&'
       },
       controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
         /**
@@ -177,6 +178,7 @@ define([
             $notificationService.showSimpleToast(
               'Success. Content has been updated'
             )
+            $scope.closeFn()
           } catch (error) {
             $notificationService.showSimpleToast(
               error.message || error,

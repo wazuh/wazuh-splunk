@@ -526,8 +526,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (error) {
         this.toast(error.message || error)
       }
-      this.scope.editingFile = false
-      if (!this.scope.$$phase) this.scope.$digest()
       return
     }
 
@@ -582,6 +580,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     closeEditingFile() {
       this.scope.editingFile = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     xmlIsValid(valid) {
