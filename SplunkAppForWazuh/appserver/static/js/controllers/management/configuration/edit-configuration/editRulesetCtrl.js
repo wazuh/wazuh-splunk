@@ -142,7 +142,6 @@ define([
       this.scope.addingNewFile = false
       this.scope.fetchedXML = ''
       this.scope.newFileName = ''
-      this.scope.$broadcast('closeEditXmlFile', {})
     }
 
     xmlIsValid(valid) {

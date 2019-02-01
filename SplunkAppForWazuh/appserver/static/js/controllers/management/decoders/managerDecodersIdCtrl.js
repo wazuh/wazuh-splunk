@@ -78,7 +78,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     closeEditingFile() {
       this.scope.editingFile = false
-      this.scope.$broadcast('closeEditXmlFile', {})
     }
 
     xmlIsValid(valid) {

@@ -54,7 +54,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
           loadedAll: false
         }
         this.scope.addMultipleAgents(false)
-        this.scope.$broadcast('closeEditXmlFile', {})
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -583,7 +582,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     closeEditingFile() {
       this.scope.editingFile = false
-      this.scope.$broadcast('closeEditXmlFile', {})
     }
 
     xmlIsValid(valid) {

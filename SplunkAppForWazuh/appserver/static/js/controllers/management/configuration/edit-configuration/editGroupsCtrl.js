@@ -125,7 +125,6 @@ define(['../../../module'], function (controllers) {
     closeEditingFile() {
       this.scope.editingFile = false
       this.scope.currentGroup = false
-      this.scope.$broadcast('closeEditXmlFile', {})
     }
 
     xmlIsValid(valid) {
