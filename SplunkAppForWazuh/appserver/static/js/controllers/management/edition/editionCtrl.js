@@ -32,6 +32,8 @@ define(['../../module'], function (controllers) {
           if (this.clusterInfo.clusterEnabled) {
             this.scope.nodes = this.clusterInfo.nodes.data.data.items
           }
+        } else {
+          this.editNode()
         }
         this.scope.isAdmin = this.isAdmin
       } catch (error) {
@@ -39,20 +41,16 @@ define(['../../module'], function (controllers) {
       }
     }
 
-    async editNode(nodeName) {
+    async editNode(nodeName = 'manager') {
       try {
-        let content
-        if (nodeName === 'manager' && !this.clusterInfo.clusterEnabled) {
-          content = this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration('ossec.conf', false) : await this.fileEditor.getConfiguration('ossec.conf', false)
-        } else {
-          //content = this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration() : await this.fileEditor.getConfiguration() 
-          content = this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration() : await this.fileEditor.getConfiguration()
-        }
+        const file = 'ossec.conf'
+        const dir = false
+        const content = !this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration(file, dir) : await this.fileEditor.getConfiguration(file, dir) //Change when Node configuration be avalaible
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        console.error("error editNode ", error)
+        return Promise.reject(error)
       }
     }
 
@@ -62,11 +60,12 @@ define(['../../module'], function (controllers) {
     }
 
     saveOssecConfig() {
+      //Needs to add check if the cluster is enabled to save the node configuration(pending API)
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false
       })
-      this.scope.editingNode = false
+      this.scope.editingNode = this.clusterInfo.clusterEnabled ? false : 'manager'
     }
 
     xmlIsValid(valid) {
