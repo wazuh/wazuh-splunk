@@ -50,15 +50,13 @@ define(['../../module'], function (controllers) {
     async init() {
       try {
         // If no API, then remove cookie
-        // if (Array.isArray(this.apiList) && this.apiList.length === 0) {
-        //   this.currentDataService.removeCurrentApi()
-        //   this.scope.$emit('updatedAPI', () => { })
-        // }
+        if (Array.isArray(this.apiList) && this.apiList.length === 0) {
+          this.currentDataService.removeCurrentApi()
+          this.scope.$emit('updatedAPI', () => { })
+        }
         let currentApi = this.currentDataService.getApi()
-        this.apiList.map(api => (api.url === currentApi.url) ? api.selected = true : api.selected = false)
-
+        this.apiList.map((api) => {console.log('api',api); (api['_key'] === currentApi['_key']) ? api.selected = true : api.selected = false})
         this.scope.apiList = this.apiList
-
         if (!currentApi && Array.isArray(this.scope.apiList)) {
           for (const apiEntry of this.scope.apiList) {
             try {
@@ -84,6 +82,7 @@ define(['../../module'], function (controllers) {
         //   })
         // }
       } catch (err) {
+        console.error('err ',err)
         this.toast('Error loading data')
       }
     }
