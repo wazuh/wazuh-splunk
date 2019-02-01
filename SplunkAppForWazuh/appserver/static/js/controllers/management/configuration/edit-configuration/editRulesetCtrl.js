@@ -50,55 +50,53 @@ define([
         this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
         this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
         this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
-
+        this.scope.$on("quickRuleEdit", (event, data) => {
+          this.editRule(data.item.file, 'rules')
+        })
+  
+        this.scope.$on("quickDecoderEdit", (event, data) => {
+          this.editRule(data.item.file, 'decoders')
+        })
+  
+        this.scope.$on("quickCdbListEdit", async (event, data) => {
+          try {
+            this.scope.currentList = {
+              details:
+              {
+                file: data.item.name,
+                path: data.item.path
+              }
+            }
+            const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
+            this.scope.currentList.list = this.stringToObj(currentList)
+            /**
+             * Pagination variables and functions (CDB lists)
+             */
+            this.scope.items = this.cdbToArr()
+            this.scope.totalItems = this.scope.items.length    
+            this.scope.itemsPerPage = 10
+            this.scope.pagedItems = []
+            this.scope.currentPage = 0
+            this.scope.gap = 0
+            this.scope.searchTable = () => this.pagination.searchTable(this.scope, this.scope.items)
+            this.scope.groupToPages = () => this.pagination.groupToPages(this.scope) 
+            this.initPagination()
+            this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
+            this.scope.prevPage = () => this.pagination.prevPage(this.scope)
+            this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notificationService, null)
+            this.scope.setPage = (n) => {
+              this.scope.currentPage = n
+              this.scope.nextPage(n)
+            }
+            if (!this.scope.$$phase) this.scope.$digest()
+          } catch (error) {
+            this.switchSubTab('cdbLists')
+            this.toast(error)
+          }
+        })
       } catch (error) {
         this.toast(error)
       }
-
-      this.scope.$on("quickRuleEdit", (event, data) => {
-        this.editRule(data.item.file, 'rules')
-      })
-
-      this.scope.$on("quickDecoderEdit", (event, data) => {
-        this.editRule(data.item.file, 'decoders')
-      })
-
-      this.scope.$on("quickCdbListEdit", async (event, data) => {
-        try {
-          this.scope.currentList = {
-            details:
-            {
-              file: data.item.name,
-              path: data.item.path
-            }
-          }
-          const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
-          this.scope.currentList.list = this.stringToObj(currentList)
-          /**
-           * Pagination variables and functions (CDB lists)
-           */
-          this.scope.items = this.cdbToArr()
-          this.scope.totalItems = this.scope.items.length    
-          this.scope.itemsPerPage = 10
-          this.scope.pagedItems = []
-          this.scope.currentPage = 0
-          this.scope.gap = 0
-          this.scope.searchTable = () => this.pagination.searchTable(this.scope, this.scope.items)
-          this.scope.groupToPages = () => this.pagination.groupToPages(this.scope) 
-          this.initPagination()
-          this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
-          this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-          this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notificationService, null)
-          this.scope.setPage = (n) => {
-            this.scope.currentPage = n
-            this.scope.nextPage(n)
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        } catch (error) {
-          return Promise.reject(error)
-        }
-
-      })
 
     }
 
