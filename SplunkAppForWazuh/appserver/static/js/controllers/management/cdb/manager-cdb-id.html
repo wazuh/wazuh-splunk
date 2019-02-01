@@ -32,6 +32,10 @@
 
   <!-- Table with CDB List info -->
   <div layout="column" layout-align="start">
+    <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;">
+      <input placeholder="Filter cdb content..." type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        aria-invalid="false" ng-model="cdbContent" ng-change="filterContent(cdbContent)">
+    </div>
     <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
       <md-card flex class="wz-md-card">
         <md-card-content>

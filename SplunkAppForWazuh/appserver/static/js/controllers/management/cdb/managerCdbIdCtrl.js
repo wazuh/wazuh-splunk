@@ -29,7 +29,8 @@ define([
       $csvRequestService,
       extensions,
       $cdbEditor,
-      cdbInfo
+      cdbInfo,
+      $filter
     ) {
       super(
         $scope,
@@ -47,6 +48,7 @@ define([
       this.notificationService = $notificationService
       this.pagination = pagination
       this.checkGap = checkGap
+      this.filter = $filter
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -88,6 +90,7 @@ define([
          * Pagination variables and functions
          */
         this.scope.items = this.cdbToArr()
+        this.contentToFilter = this.scope.items
         this.scope.totalItems = this.scope.items.length    
         this.scope.itemsPerPage = 10
         this.scope.pagedItems = []
@@ -103,12 +106,18 @@ define([
           this.scope.currentPage = n
           this.scope.nextPage(n)
         }
+        this.scope.filterContent = (filter) => this.filterContent(filter)
         
       } catch (error) {
         console.error(error)
         this.toast("Error editing CDB list")
       }
 
+    }
+
+    async filterContent(filter) {
+      this.scope.items = this.filter('filter')(this.contentToFilter, filter)
+      this.initPagination()
     }
 
     async fetchFile(fileName, path) {
@@ -196,6 +205,7 @@ define([
         this.scope.currentList.list = this.stringToObj(cdbUpdated)
         // Re-init pagination
         this.scope.items = this.cdbToArr()
+        this.contentToFilter = this.scope.items
         this.initPagination()
         this.toast("CDB list updated.")
         if (!this.scope.$$phase) this.scope.$digest()
