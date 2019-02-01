@@ -12,5 +12,5 @@ define([
   './ciscat/ciscatCtrl',
   './policy-monitoring/overviewPolicyMonitoringCtrl',
   './vulnerabilities/overviewVulnerabilitiesCtrl',
-  './owhl/overviewOwhlCtrl'
+  './owlh/overviewOwlhCtrl'
 ], function() {})
