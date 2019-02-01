@@ -148,7 +148,7 @@
               </td>
             </tr>
             <!-- End add new key tr -->
-            <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] track by $index | filter: filterContent"
+            <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] track by $index"
               ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
               <td>{{item[0]}}</td>
               <td>

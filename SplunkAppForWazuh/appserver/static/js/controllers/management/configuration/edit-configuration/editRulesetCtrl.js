@@ -10,7 +10,7 @@ define([
   'use strict'
 
   class EditRulesetCtrl {
-    constructor($scope, $notificationService, isAdmin, $fileEditor, $cdbEditor) {
+    constructor($scope, $notificationService, isAdmin, $fileEditor, $cdbEditor, $filter) {
       this.scope = $scope
       this.notificationService = $notificationService
       this.toast = this.notificationService.showSimpleToast
@@ -19,6 +19,7 @@ define([
       this.cdbEditor = $cdbEditor
       this.pagination = pagination
       this.checkGap = checkGap
+      this.filter = $filter
     }
 
     $onInit() {
