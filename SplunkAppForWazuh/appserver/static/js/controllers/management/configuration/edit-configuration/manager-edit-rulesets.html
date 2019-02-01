@@ -65,6 +65,14 @@
 </div>
 
 <div ng-if="editionType === 'cdbLists' && !currentList">
+  <div layout="row">
+    <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+      aria-invalid="false" wz-enter="search(customSearch)">
+    <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
+      ng-click="search(customSearch)">
+      <span class="fa fa-search" aria-hidden="true"></span>
+    </button>
+  </div>
   <div layout="row" layout-padding>
     <wazuh-table quick-edit="true" implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']"
       allow-click="true" rows-per-page="14">
@@ -84,7 +92,8 @@
       <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
-    <input ng-show="addingNewFile" placeholder="New file name..." ng-model="newFileName" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex" style="margin-left: 10px;">
+    <input ng-show="addingNewFile" placeholder="New file name..." ng-model="newFileName" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
+      style="margin-left: 10px;">
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 475px);" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
