@@ -30,7 +30,7 @@
 </div>
 <!-- End nav bar tabs -->
 
-<div ng-if="editionType === 'rules' && !editingFile && !addingNewFile">
+<div ng-if="editionType === 'rules' && !editingFile && !addingNewFile" style="width: calc(100% - 30px); margin-right: auto; margin-left: auto;">
   <div layout="row">
     <input flex placeholder="Filter local rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">
@@ -47,7 +47,7 @@
   </div>
 </div>
 
-<div ng-if="editionType === 'decoders' && !editingFile && !addingNewFile">
+<div ng-if="editionType === 'decoders' && !editingFile && !addingNewFile" style="width: calc(100% - 30px); margin-right: auto; margin-left: auto;">
   <div layout="row">
     <input flex placeholder="Filter local decoders..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">
@@ -64,7 +64,7 @@
   </div>
 </div>
 
-<div ng-if="editionType === 'cdbLists' && !currentList">
+<div ng-if="editionType === 'cdbLists' && !currentList" style="width: calc(100% - 30px); margin-right: auto; margin-left: auto;">
   <div layout="row">
     <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
       aria-invalid="false" wz-enter="search(customSearch)">

@@ -26,7 +26,7 @@ define([
         this.scope.adminMode = this.isAdmin
         this.scope.editionType = 'rules'
         this.scope.subTabName = 'rules'
-        this.scope.editing = 'local rules.'
+        this.scope.editing = 'local rules'
 
         this.scope.search = term => this.search(term)
         this.scope.switchSubTab = subTabName => this.switchSubTab(subTabName)

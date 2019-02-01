@@ -1,7 +1,7 @@
 <div layout="row" layout-padding="" class="layout-padding layout-row">
-  <span class="fa fa-fw fa-file-text-o"></span>
-  <span ng-if="!clusterEnabled" class="font-size-18"> Edit manager configuration</span>
-  <span ng-if="clusterEnabled" class="font-size-18"> Edit cluster nodes configuration</span>
+  <span class="fa fa-fw fa-pencil-square-o"></span>
+  <span ng-if="!clusterEnabled" class="font-size-18"> Manager configuration</span>
+  <span ng-if="clusterEnabled" class="font-size-18"> Cluster configuration</span>
 </div>
 <!-- Table with cluster nodes -->
 <div ng-if="clusterEnabled" layout="column" layout-align="start">
