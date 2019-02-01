@@ -54,6 +54,7 @@ define([
         this.scope.$on("quickRuleEdit", (event, data) => {
           this.editRule(data.item.file, 'rules')
         })
+        this.scope.addNewCdbListFile = () => this.addNewCdbListFile()
   
         this.scope.$on("quickDecoderEdit", (event, data) => {
           this.editRule(data.item.file, 'decoders')
@@ -111,7 +112,7 @@ define([
     switchSubTab(subTabName) {
       this.closeEditingFile()
       this.cancelEditingKey()
-      this.scope.currentList = false
+      this.scope.currentList = null
       this.scope.subTabName = subTabName
       this.scope.editionType = subTabName
       switch (subTabName) {
@@ -194,6 +195,23 @@ define([
     }
 
     // Edit CDB Lists functions
+    addNewCdbListFile() {
+      try {
+        this.scope.newCdbFile = true
+        this.scope.currentList = {
+          list: {},
+          details:
+          {
+            file: 'new CDB list file',
+            path: 'etc/lists'
+          }
+        }
+      } catch (error) {
+        this.switchSubTab('cdbLists')
+        this.toast("Cannot add new CDB list file.")
+      }
+
+    }
 
     async filterContent(filter) {
       this.scope.items = this.filter('filter')(this.contentToFilter, filter)
@@ -256,7 +274,6 @@ define([
         this.cancelEditingKey()
         await this.saveList()
       } catch (error) {
-        console.error(error)
         this.toast("Error editing value.")
       }
     }
@@ -271,7 +288,6 @@ define([
         this.scope.removingEntry = false
         await this.saveList()
       } catch (error) {
-        console.error(error)
         this.toast("Error deleting entry.")
       }
 
@@ -279,17 +295,23 @@ define([
 
     async saveList() {
       try {
-        const fileName = this.scope.currentList.details.file
+        const fileName = this.scope.newCdbFile ? this.scope.currentList.newName : this.scope.currentList.details.file // Check if it's a new CDB list file to change the name before save it
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
+        if (!fileName) { 
+          this.toast('Cannot create a new CDB list with a empty name.') 
+          return
+        }
         const check = await this.cdbEditor.sendConfiguration(fileName, path, content)
         const cdbUpdated = await this.fetchFile(fileName, path)
+        this.scope.currentList.details.file = fileName
         this.scope.currentList.list = this.stringToObj(cdbUpdated)
+        this.scope.newCdbFile = false
         // Re-init pagination
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
         this.initPagination()
-        this.toast("CDB list updated.")
+        this.toast("CDB list saved.")
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         return Promise.reject(error)
@@ -316,8 +338,14 @@ define([
     }
 
     cancelCdbListEdition() {
-      this.cancelEditingKey()
       this.scope.currentList = false
+      this.scope.newCdbFile = false
+      this.scope.items = null
+      this.scope.totalItems = null    
+      this.scope.pagedItems = null
+      this.scope.currentPage = 0
+      this.scope.gap = 0
+      this.cancelEditingKey()
     }
 
     cdbToArr(){
