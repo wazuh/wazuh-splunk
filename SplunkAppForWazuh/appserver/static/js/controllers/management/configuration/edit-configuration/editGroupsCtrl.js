@@ -48,6 +48,11 @@ define(['../../../module'], function (controllers) {
           this.scope.$broadcast('wazuhSearch', {})
         }
 
+        //Search for a group
+        this.scope.search = term => {
+          this.scope.$broadcast('wazuhSearch', { term })
+        }
+
         //Edit groups
         this.scope.$on('openGroupFromList',(ev,parameters) => {
           const groupName = parameters.group.name
