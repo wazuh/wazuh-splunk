@@ -173,6 +173,17 @@ define(['../module'], function(module) {
           },
           controller: 'overviewGdprCtrl'
         })
+        // Overview Owhl
+        .state('ow-owhl', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/owhl/overview-owhl.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-owhl')
+          },
+          controller: 'OverviewOwhlCtrl'
+        })
+
         // Overview - Vulnerabilities
         .state('ow-vul', {
           templateUrl:
