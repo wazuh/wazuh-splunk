@@ -33,7 +33,7 @@ define(['../module'], function(directives) {
           $scope.$broadcast('stateChanged', 'discover')
           if (!$scope.$$phase) $scope.$digest()
           //Generate url
-          let url = `${BASE_URL}/app/search/search`
+          let url = `${BASE_URL}/app/search/search?q=index=wazuh`
           localStorage.setItem('urlDiscover', url)
           $state.go('discover')
         }
