@@ -1,11 +1,20 @@
-<div ng-show="fromDashboard" style="margin-bottom: -5px;text-align: right; background-color:rgb(242, 244, 245); padding-right: 53px; cursor: pointer;">
-  <span ng-click="backToDashboard()" aria-label="Dashboard">
-    <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
-    <md-tooltip md-direction="left" class="wz-tooltip">
-      Back to the dashboard.
-    </md-tooltip>
-  </span>
+<div layout="row" ng-show="fromDashboard" class="div-cont">
+  <!--Print breadcumbs-->
+  <div class="div-bread">
+    <span class="wz-text-link cursor-pointer" ui-sref='{{breadcrumbs.ref}}'>{{breadcrumbs.section}}</span>
+    <span>/ {{breadcrumbs.subSection}} </span>
+  </div>
+  <!--Back to dashboard-->
+  <div class="div-dash">
+    <span ng-click="backToDashboard()" aria-label="Dashboard">
+      <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
+      <md-tooltip md-direction="left" class="wz-tooltip">
+        Back to the dashboard.
+      </md-tooltip>
+    </span>
+  </div>
 </div>
+
 
 <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
 
@@ -16,5 +25,27 @@
     height: 87vh;
     position: absolute;
     overflow: scroll;
+  }
+
+  .div-cont {
+    background-color: rgb(242, 244, 245);
+    display: flow-root;
+    margin-bottom: px;
+    height: 40px;
+  }
+
+  .div-bread {
+    padding-top: 10px;
+    padding-left: 20px;
+    float: left;
+  }
+
+  .div-dash {
+    padding-top: 10px;
+    margin-bottom: -6px;
+    text-align: right;
+    padding-right: 53px;
+    cursor: pointer;
+    float: right;
   }
 </style>
