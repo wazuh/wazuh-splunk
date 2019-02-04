@@ -15,12 +15,12 @@ define(['../module'], function(module) {
 
   class GroupHandler {
     constructor($requestService) {
-      this.apiReq = $requestService.apiReq
+      this.req = $requestService
     }
 
     async removeAgentFromGroup(group, agentId) {
       try {
-        const result = await this.apiReq(
+        const result = await this.req.apiReq(
           `/agents/${agentId}/group/${group}`,
           {},
           'DELETE'
@@ -33,7 +33,7 @@ define(['../module'], function(module) {
 
     async addAgentToGroup(group, agentId) {
       try {
-        const result = await this.apiReq(
+        const result = await this.req.apiReq(
           `/agents/${agentId}/group/${group}`,
           {},
           'PUT'
@@ -54,7 +54,7 @@ define(['../module'], function(module) {
 
     async removeGroup(group) {
       try {
-        const result = await this.apiReq(
+        const result = await this.req.apiReq(
           `/agents/groups/${group}`,
           {},
           'DELETE'
@@ -70,7 +70,11 @@ define(['../module'], function(module) {
 
     async createGroup(name) {
       try {
-        const result = await this.apiReq(`/agents/groups/${name}`, {}, 'PUT')
+        const result = await this.req.apiReq(
+          `/agents/groups/${name}`,
+          {},
+          'PUT'
+        )
         if (result.data.error != 0) {
           throw new Error(result.data.message)
         }
@@ -82,20 +86,10 @@ define(['../module'], function(module) {
 
     async sendConfiguration(group, content) {
       try {
-        const result = await this.apiReq(
+        const result = this.req.sendConfiguration(
           `/agents/groups/${group}/files/agent.conf`,
-          { content, origin: 'xmleditor' },
-          'POST'
+          content
         )
-        if (
-          !result ||
-          !result.data ||
-          !result.data.data ||
-          result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
-        ) {
-          throw new Error('Cannot send file.')
-        }
         return result
       } catch (error) {
         return Promise.reject(error)

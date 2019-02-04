@@ -67,6 +67,7 @@ define(['../../module', '../../../utils/config-handler'], function(
      * On controller loads
      */
     $onInit() {
+      this.$scope.breadCrumbs = true
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
