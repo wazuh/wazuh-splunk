@@ -35,7 +35,7 @@ define([
         try {
           this.scope.fromDashboard = this.stateParams.fromDashboard
           this.loadIframeContent()
-          this.scope.backToDashboard = (state) => this.backToDashboard(state)
+          this.scope.backToDashboard = () => this.backToDashboard()
 
         } catch (error) {
           this.toast("Cannot load discover.")
@@ -60,8 +60,8 @@ define([
         }
       }
 
-      backToDashboard(state) {
-        this.state.go(state)
+      backToDashboard() {
+        this.state.go(this.stateParams.previousState)
       }
     }
     app.controller('discoverCtrl', Discover)

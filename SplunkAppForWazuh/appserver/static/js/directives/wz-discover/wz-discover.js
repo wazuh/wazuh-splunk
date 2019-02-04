@@ -17,13 +17,15 @@ define(['../module'], function (directives) {
       restrict: 'E',
       scope: {
       },
-      controller($scope, $currentDataService, $notificationService, $state) {
+      controller($scope, $currentDataService, $notificationService, $state, $navigationService) {
         $scope.discoverSection = () => {
           try {
             const filters = $currentDataService.getSerializedFilters()
             const url = `${BASE_URL}/app/search/search?q=${filters}`
             localStorage.setItem('urlDiscover', url)
-            $state.go('discover', { fromDashboard: true })
+            const lastState = $navigationService.getLastState()
+            const fromDashboard = lastState ? true : false// Check if cannot get the lastState, then, cannot back to previous dashboard
+            $state.go('discover', { fromDashboard: fromDashboard, previousState: lastState})
           } catch (error) {
             console.error(error)
             $notificationService.showSimpleToast("Cannot open discover over this section.")
