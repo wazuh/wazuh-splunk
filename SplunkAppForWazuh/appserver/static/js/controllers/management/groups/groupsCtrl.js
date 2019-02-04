@@ -70,6 +70,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
+      // Come from the pencil icon on the groups table
+      this.scope.$on('openGroupFromList',(ev,parameters) => {
+        this.scope.editingFile = true;
+        this.scope.groupsSelectedTab = 'files';
+        return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
+      })
+
+
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
         this.goBackToAgents()
         return this.loadGroup(parameters.group)

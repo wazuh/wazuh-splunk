@@ -37,6 +37,9 @@ define([
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(
+        `{"rule.groups":"ciscat", "implicit":true, "onlyShow":true}`
+      )
       this.reportingService = $reportingService
       this.tableResults = {}
       if (!this.currentDataService.getCurrentAgent()) {

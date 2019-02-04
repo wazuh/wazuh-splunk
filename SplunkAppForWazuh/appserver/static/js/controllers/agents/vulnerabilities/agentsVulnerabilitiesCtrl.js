@@ -51,6 +51,9 @@ define([
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
       this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(
+        `{"rule.groups":"vulnerability-detector", "implicit":true, "onlyShow":true}`
+      )
       this.reportingService = $reportingService
       this.tableResults = {}
       this.state = $state
