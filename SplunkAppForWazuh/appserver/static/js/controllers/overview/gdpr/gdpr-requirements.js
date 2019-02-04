@@ -13,7 +13,7 @@ define(
   [],
   function () {
     'use strict';
-    return gdprRequirementsFile = {
+    return {
       'II_5.1.f':
         'Ensure the ongoing confidentiality, integrity, availability and resilience of processing systems and services, verifying its modifications, accesses, locations and guarantee the safety of them.<br>File sharing protection and file sharing technologies that meet the requirements of data protection.',
       'III_14.2.c': ' Restrict the processing of personal data temporarily.',
