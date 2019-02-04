@@ -23,7 +23,6 @@ define(['../../module'], function(controllers) {
      */
     $onInit() {
       const keys = Object.keys(this.extensions)
-      console.log('keys ',keys)
       keys.map(key =>
         this.extensions[key] === 'true'
           ? (this.scope[key] = key)
