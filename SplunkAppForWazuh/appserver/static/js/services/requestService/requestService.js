@@ -90,11 +90,53 @@ define(['../module'], function(module) {
       }
     }
 
+    const sendConfiguration = async (url, content) => {
+      try {
+        const result = await apiReq(
+          `${url}`,
+          { content, origin: 'xmleditor' },
+          'POST'
+        )
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          throw new Error('Cannot send file.')
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    const getConfiguration = async (url) => {
+      try {
+        const result = await apiReq(url)
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          throw new Error("Cannot get file.")
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     const service = {
       getBaseUrl: getBaseUrl,
       getWellFormedUri: getWellFormedUri,
       apiReq: apiReq,
-      httpReq: httpReq
+      httpReq: httpReq,
+      sendConfiguration: sendConfiguration,
+      getConfiguration: getConfiguration
     }
     return service
   })

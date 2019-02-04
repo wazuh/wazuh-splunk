@@ -31,9 +31,10 @@ define([
         fileName: '@fileName',
         validFn: '&',
         data: '=data',
-        targetName: '=targetName'
+        targetName: '=targetName',
+        closeFn: '&'
       },
-      controller($scope, $document, $notificationService, $groupHandler) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
         /**
          * Custom .replace method. Instead of using .replace which
          * evaluates regular expressions.
@@ -169,10 +170,15 @@ define([
           try {
             const text = $scope.xmlCodeBox.getValue()
             const xml = replaceIllegalXML(text)
-            await $groupHandler.sendConfiguration(params.group, xml)
+            if (params && params.group) {
+              await $groupHandler.sendConfiguration(params.group, xml)
+            } else if (params && params.file) {
+              await $fileEditor.sendConfiguration(params.file, params.dir, xml)
+            }
             $notificationService.showSimpleToast(
-              'Success. Group has been updated'
+              'Success. Content has been updated'
             )
+            $scope.closeFn()
           } catch (error) {
             $notificationService.showSimpleToast(
               error.message || error,
@@ -199,7 +205,10 @@ define([
           try {
             $scope.xmlCodeBox.setValue(autoFormat(data || $scope.data))
             firstTime = false
-            $scope.xmlCodeBox.refresh()
+            setTimeout( () => {
+              $scope.xmlCodeBox.refresh()
+            }, 1)
+            autoFormat()
           } catch (error) {
             $notificationService.showSimpleToast('Fetching original file')
           }
