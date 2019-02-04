@@ -21,8 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 from splunk.clilib import cli_common as cli
-# from requirements import pci_requirements,gdpr_requirements
-
+from requirements import pci_requirements,gdpr_requirements
 
 class api(controllers.BaseController):
     
@@ -294,20 +293,74 @@ class api(controllers.BaseController):
             return jsonbak.dumps({"error": str(e)})
         return csv_result
 
-    # @expose_page(must_login=False, methods=['GET'])
-    # def pci(self, **kwargs):
-    #     try:
-    #         if not 'requirement' in kwargs:
-    #             raise Exception('Missing requirement.')
-            # if not 'id' in kwargs:
-            #     raise Exception('Missing ID.')
-            # the_id = kwargs['id']
-            # pci_description = ''
-            # if kwargs['requirement'] == 'all':
-            #     return jsonbak.dumps(pci_requirements)
-            # url,auth,verify = self.get_credentials(1).values()
+    @expose_page(must_login=False, methods=['GET'])
+    def pci(self, **kwargs):
+        try:
+            if not 'requirement' in kwargs:
+                raise Exception('Missing requirement.')
+            pci_description = ''
+            requirement = kwargs['requirement']
+            if requirement == 'all':
+                if not 'id' in kwargs:
+                    return jsonbak.dumps(pci_requirements.pci)
+                the_id = kwargs['id']
+                url,auth,verify = self.get_credentials(the_id)
+                opt_endpoint = '/rules/pci'
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+                if request['error'] != 0:
+                    return jsonbak.dumps({'error':request['error']})
+                data = request['data']['items']
+                result = {}
+                for item in data:
+                    result[item] = pci_requirements.pci[item]
+                return jsonbak.dumps(result)
+            else:
+                if not requirement in pci_requirements.pci:
+                    return jsonbak.dumps({'error':'Requirement not found.'})
+                pci_description = pci_requirements.pci[requirement]
+                result = {}
+                result['pci'] = {}
+                result['pci']['requirement'] = requirement
+                result['pci']['description'] = pci_description
+                return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})
 
-
-        # except Exception as e:
-        #     self.logger.error("Error returning PCI-DSS requirements: %s" % (str(e)))
-        #     return jsonbak.dumps({"error": str(e)})
+    @expose_page(must_login=False, methods=['GET'])
+    def gdpr(self, **kwargs):
+        try:
+            if not 'requirement' in kwargs:
+                raise Exception('Missing requirement.')
+            pci_description = ''
+            requirement = kwargs['requirement']
+            if requirement == 'all':
+                if not 'id' in kwargs:
+                    return jsonbak.dumps(gdpr_requirements.gdpr)
+                the_id = kwargs['id']
+                url,auth,verify = self.get_credentials(the_id)
+                opt_endpoint = '/rules/gdpr'
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+                if request['error'] != 0:
+                    return jsonbak.dumps({'error':request['error']})
+                data = request['data']['items']
+                result = {}
+                for item in data:
+                    result[item] = gdpr_requirements.gdpr[item]
+                return jsonbak.dumps(result)
+            else:
+                if not requirement in gdpr_requirements.gdpr:
+                    return jsonbak.dumps({'error':'Requirement not found.'})
+                pci_description = gdpr_requirements.gdpr[requirement]
+                result = {}
+                result['gdpr'] = {}
+                result['gdpr']['requirement'] = requirement
+                result['gdpr']['description'] = pci_description
+                return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})

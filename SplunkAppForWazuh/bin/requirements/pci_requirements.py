@@ -12,7 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-pci_requirements = {
+pci = {
     '1.1.1':
     'A formal process for approving and testing all network connections and changes to the firewall and router configurations',
     '1.3.4':
@@ -84,4 +84,3 @@ pci_requirements = {
     '11.5':
     'Deploy a change detection mechanism (for example, file integrity monitoring tools) to alert personnel to unauthorizeumodification of critical system files, configuration files, or content files; and configure the software to perform critical file comparisons at least weekly.'
 }
-
