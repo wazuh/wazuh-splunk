@@ -1,10 +1,19 @@
+<div ng-show="fromDashboard" style="margin-bottom: -5px;text-align: right; background-color:rgb(242, 244, 245); padding-right: 53px; cursor: pointer;">
+  <span ng-click="backToDashboard()" aria-label="Dashboard">
+    <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
+    <md-tooltip md-direction="left" class="wz-tooltip">
+      Back to the dashboard.
+    </md-tooltip>
+  </span>
+</div>
+
 <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
 
 
 <style>
   .iframeSr {
     width: calc(100% - 5px);
-    height: 90vh;
+    height: 87vh;
     position: absolute;
     overflow: scroll;
   }

@@ -23,7 +23,7 @@ define(['../module'], function (directives) {
             const filters = $currentDataService.getSerializedFilters()
             const url = `${BASE_URL}/app/search/search?q=${filters}`
             localStorage.setItem('urlDiscover', url)
-            $state.go('discover')
+            $state.go('discover', { fromDashboard: true })
           } catch (error) {
             console.error(error)
             $notificationService.showSimpleToast("Cannot open discover over this section.")

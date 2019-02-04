@@ -15,6 +15,7 @@ define([
         $scope,
         $currentDataService,
         $state,
+        $stateParams,
         $document,
         $notificationService
       ) {
@@ -22,6 +23,8 @@ define([
         this.filters = this.currentDataService.getSerializedFilters()
         this.scope = $scope
         this.toast = $notificationService.showSimpleToast
+        this.state = $state
+        this.stateParams = $stateParams
         this.iframe = $($document[0]).find('#searchAndReporting')
       }
 
@@ -30,9 +33,10 @@ define([
        */
       $onInit() {
         try {
-          //Loads search & report app and hide de search bar
+          this.scope.fromDashboard = this.stateParams.fromDashboard
           this.loadIframeContent()
-          this.scope.backToDashboard = () => this.backToDashboard()
+          this.scope.backToDashboard = (state) => this.backToDashboard(state)
+
         } catch (error) {
           this.toast("Cannot load discover.")
         }
@@ -54,6 +58,10 @@ define([
         } catch (error) {
           throw new Error(error)
         }
+      }
+
+      backToDashboard(state) {
+        this.state.go(state)
       }
     }
     app.controller('discoverCtrl', Discover)

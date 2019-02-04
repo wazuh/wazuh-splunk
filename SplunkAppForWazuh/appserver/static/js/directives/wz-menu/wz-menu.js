@@ -35,7 +35,7 @@ define(['../module'], function(directives) {
           //Generate url
           let url = `${BASE_URL}/app/search/search?q=index=wazuh`
           localStorage.setItem('urlDiscover', url)
-          $state.go('discover')
+          $state.go('discover', { fromDashboard: false })
         }
 
         const checkLastState = (prefix, state) => {
