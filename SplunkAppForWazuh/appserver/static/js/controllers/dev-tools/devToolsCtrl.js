@@ -176,7 +176,7 @@ define([
           const blob = new Blob([this.apiOutputBox.getValue()], {
             type: 'application/json'
           })
-          FileSaver.saveAs(blob, 'export.json')
+          saveAs(blob, 'export.json') // eslint-disable-line
         } catch (error) {
           this.toast(error.message || error)
         }

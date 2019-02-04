@@ -6,7 +6,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, BarChart, Table, TimePicker, RawTableDataService) {
+], function(app, PieChart, AreaChart, BarChart, Table, TimePicker) {
   'use strict'
 
   class Osquery {
