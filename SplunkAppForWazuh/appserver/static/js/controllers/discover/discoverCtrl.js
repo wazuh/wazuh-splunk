@@ -34,6 +34,7 @@ define([
       $onInit() {
         try {
           this.scope.fromDashboard = this.stateParams.fromDashboard
+          this.scope.breadcrumbs = this.stateParams.breadcrumbs
           this.loadIframeContent()
           this.scope.backToDashboard = () => this.backToDashboard()
 
