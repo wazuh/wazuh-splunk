@@ -55,12 +55,12 @@ define([
 
           for (const line of lines) {
             const sanitized = line
-            .trim()
-            .xmlReplace('&', '&amp;')
-            .xmlReplace(/</g, '&lt;')
-            .xmlReplace(/>/g, '&gt;')
-            .xmlReplace(/"/g, '&quot;')
-            .xmlReplace(/'/g, '&apos;')
+              .trim()
+              .xmlReplace('&', '&amp;')
+              .xmlReplace(/</g, '&lt;')
+              .xmlReplace(/>/g, '&gt;')
+              .xmlReplace(/"/g, '&quot;')
+              .xmlReplace(/'/g, '&apos;')
             /**
              * Do not remove this condition. We don't want to replace
              * non-sanitized lines.

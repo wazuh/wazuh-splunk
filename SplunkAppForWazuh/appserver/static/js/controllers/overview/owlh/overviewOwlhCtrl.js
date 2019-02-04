@@ -10,7 +10,6 @@ define([
   'use strict'
 
   class Osquery {
-    
     /**
      * Class Osquery
      * @param {*} $urlTokenModel
@@ -102,8 +101,7 @@ define([
           `index=wazuh rule.groups{}=ids  | top data.vlan limit=6`,
           'Wazuh-App-Overview-Owlh-NIDS-node',
           this.scope
-        ),
-        
+        )
       ]
 
       /**
@@ -137,7 +135,7 @@ define([
           this.scope.loadingVizz = false
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })

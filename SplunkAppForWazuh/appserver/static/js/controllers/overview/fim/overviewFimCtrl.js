@@ -173,22 +173,22 @@ define([
           this.tableResults
         )
 
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData'){
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+        } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
 
       /**
        * On controller destroy

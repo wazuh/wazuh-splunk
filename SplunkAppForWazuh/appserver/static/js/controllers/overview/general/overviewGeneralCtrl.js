@@ -157,7 +157,7 @@ define([
           'agentsSummaryVizz',
           this.scope
         ),
-        this.agentsSummaryTable = new RawTableDataService(
+        (this.agentsSummaryTable = new RawTableDataService(
           'agentsSummaryTable',
           `${
             this.filters
@@ -166,7 +166,7 @@ define([
           '$result$',
           this.scope,
           'Agents Summary'
-        )
+        ))
       ]
     }
 
@@ -258,7 +258,7 @@ define([
           this.setReportMetrics()
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })

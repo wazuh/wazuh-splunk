@@ -69,7 +69,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const refreshJsonBox = json => {
         $scope.jsoncontent = json
-        if(!$scope.jsonCodeBox){
+        if (!$scope.jsonCodeBox) {
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
@@ -82,7 +82,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const refreshXmlBox = xml => {
         $scope.xmlcontent = xml
-        if(!$scope.xmlCodeBox){
+        if (!$scope.xmlCodeBox) {
           setXmlBox()
         }
         if ($scope.xmlcontent != false) {

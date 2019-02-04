@@ -51,9 +51,7 @@ define([
         ),
         new PieChart(
           'cisRequirements',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
+          `${this.filters} sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
           'cisRequirements',
           this.scope
         ),
@@ -139,7 +137,7 @@ define([
           this.scope.loadingVizz = false
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })

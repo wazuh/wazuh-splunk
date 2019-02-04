@@ -161,8 +161,8 @@ define(['../../module'], function(app) {
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
                 .catch(error => {
-                  if(!this.$scope.agent) {
-                    if ( (error || {}).status === -1 ) {
+                  if (!this.$scope.agent) {
+                    if ((error || {}).status === -1) {
                       this.scope.emptyAgent = 'Wazuh API timeout.'
                     }
                   }
@@ -234,7 +234,6 @@ define(['../../module'], function(app) {
         this.scope.adminMode = false
         this.notificationService.showSimpleToast('Error loading agent data.')
         if (!this.$scope.$$phase) this.$scope.$digest()
-
       }
     }
 
