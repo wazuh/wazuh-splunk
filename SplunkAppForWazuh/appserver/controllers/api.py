@@ -12,7 +12,6 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-
 import jsonbak
 import requestsbak
 import csv
@@ -22,7 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 from splunk.clilib import cli_common as cli
-
+# from requirements import pci_requirements,gdpr_requirements
 
 
 class api(controllers.BaseController):
@@ -42,6 +41,23 @@ class api(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("Error in API module constructor: %s" % (e))
+
+    def get_credentials(self,the_id):
+        try:
+            api = self.db.get(the_id)
+            if api:
+                opt_username = api[0]["userapi"]
+                opt_password = api[0]["passapi"]
+                opt_base_url = api[0]["url"]
+                opt_base_port = api[0]["portapi"]
+                url = opt_base_url + ":" + opt_base_port
+                auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+                verify = False
+                return url, auth, verify
+            else:
+                raise Exception('API not found')
+        except Exception as e:
+            raise e
 
     def getSelfAdminStanza(self):
         """Get the configuration from a stanza.
@@ -117,9 +133,6 @@ class api(controllers.BaseController):
         except Exception as e:
             raise e
 
-    # /custom/SplunkAppForWazuh/api/node
-    # This will perform an HTTP request to Wazuh API
-    # It will return the full API response with including its error codes
     @expose_page(must_login=False, methods=['POST'])
     def request(self, **kwargs):
         """Make requests to the Wazuh API as a proxy backend.
@@ -144,45 +157,37 @@ class api(controllers.BaseController):
                 method = kwargs['method']
                 del kwargs['method']
             the_id = kwargs['id']
-            api = self.db.get(the_id)
-            if api:
-                opt_username = api[0]["userapi"]
-                opt_password = api[0]["passapi"]
-                opt_base_url = api[0]["url"]
-                opt_base_port = api[0]["portapi"]
-                opt_endpoint = kwargs["endpoint"]
-                del kwargs['id']
-                del kwargs['endpoint']
-                url = opt_base_url + ":" + opt_base_port
-                auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-                verify = False
-                if method == 'GET':
-                    request = self.session.get(
-                        url + opt_endpoint, params=kwargs, auth=auth,
-                        verify=verify).json()
-                if method == 'POST':
-                    if 'origin' in kwargs:
-                        if kwargs['origin'] == 'xmleditor':
-                            headers = {'Content-Type': 'application/xml'} 
-                        elif kwargs['origin'] == 'json':
-                            headers = {'Content-Type':  'application/json'} 
-                        elif kwargs['origin'] == 'raw':
-                            headers = {'Content-Type':  'application/octet-stream'} 
-                        kwargs = str(kwargs['content'])
-                        request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
-                    else:
-                        request = self.session.post(
-                            url + opt_endpoint, data=kwargs, auth=auth,
-                            verify=verify).json()
-                if method == 'PUT':
-                    request = self.session.put(
+            url,auth,verify = self.get_credentials(the_id)
+            opt_endpoint = kwargs["endpoint"]
+            del kwargs['id']
+            del kwargs['endpoint']
+            if method == 'GET':
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+            if method == 'POST':
+                if 'origin' in kwargs:
+                    if kwargs['origin'] == 'xmleditor':
+                        headers = {'Content-Type': 'application/xml'} 
+                    elif kwargs['origin'] == 'json':
+                        headers = {'Content-Type':  'application/json'} 
+                    elif kwargs['origin'] == 'raw':
+                        headers = {'Content-Type':  'application/octet-stream'} 
+                    kwargs = str(kwargs['content'])
+                    request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
+                else:
+                    request = self.session.post(
                         url + opt_endpoint, data=kwargs, auth=auth,
                         verify=verify).json()
-                if method == 'DELETE':
-                    request = self.session.delete(
-                        url + opt_endpoint, data=kwargs, auth=auth,
-                        verify=verify).json()
-                result = jsonbak.dumps(request)
+            if method == 'PUT':
+                request = self.session.put(
+                    url + opt_endpoint, data=kwargs, auth=auth,
+                    verify=verify).json()
+            if method == 'DELETE':
+                request = self.session.delete(
+                    url + opt_endpoint, data=kwargs, auth=auth,
+                    verify=verify).json()
+            result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
@@ -196,7 +201,6 @@ class api(controllers.BaseController):
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
         return parsed_json
-    
     
     # POST /api/csv : Generates a CSV file with the returned data from API
     @expose_page(must_login=False, methods=['POST'])
@@ -289,3 +293,21 @@ class api(controllers.BaseController):
             self.logger.error("Error in CSV generation!: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
         return csv_result
+
+    # @expose_page(must_login=False, methods=['GET'])
+    # def pci(self, **kwargs):
+    #     try:
+    #         if not 'requirement' in kwargs:
+    #             raise Exception('Missing requirement.')
+            # if not 'id' in kwargs:
+            #     raise Exception('Missing ID.')
+            # the_id = kwargs['id']
+            # pci_description = ''
+            # if kwargs['requirement'] == 'all':
+            #     return jsonbak.dumps(pci_requirements)
+            # url,auth,verify = self.get_credentials(1).values()
+
+
+        # except Exception as e:
+        #     self.logger.error("Error returning PCI-DSS requirements: %s" % (str(e)))
+        #     return jsonbak.dumps({"error": str(e)})
