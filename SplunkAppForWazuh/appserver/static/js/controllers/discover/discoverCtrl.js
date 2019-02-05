@@ -13,16 +13,11 @@ define([
        */
       constructor(
         $scope,
-        $currentDataService,
         $state,
         $stateParams,
-        $document,
-        $notificationService
+        $document
       ) {
-        this.currentDataService = $currentDataService
-        this.filters = this.currentDataService.getSerializedFilters()
         this.scope = $scope
-        this.toast = $notificationService.showSimpleToast
         this.state = $state
         this.stateParams = $stateParams
         this.iframe = $($document[0]).find('#searchAndReporting')

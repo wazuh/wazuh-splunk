@@ -56,8 +56,8 @@ define(['../module'], function(module) {
       return $filterService.addFilter(filter)
     }
 
-    const getSerializedFilters = () => {
-      return $filterService.getSerializedFilters()
+    const getSerializedFilters = (hideOnlyShowFilters) => {
+      return $filterService.getSerializedFilters(hideOnlyShowFilters)
     }
 
     const removeFilter = filter => {

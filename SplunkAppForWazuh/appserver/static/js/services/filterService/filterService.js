@@ -58,13 +58,13 @@ define(['../module'], function (module) {
      * Returns the filters in a way that visualizations can handle
      * @returns {String} The serialized filters
      */
-    getSerializedFilters() {
+    getSerializedFilters(hideOnlyShowFilters = true) {
       try {
         let filterStr = ' '
         let filters = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          filters = filters.filter(fil => !fil.onlyShow)
+          filters = hideOnlyShowFilters ? filters.filter(fil => !fil.onlyShow) : filters
         }
         for (const filter of filters) {
           if (typeof filter === 'object') {
