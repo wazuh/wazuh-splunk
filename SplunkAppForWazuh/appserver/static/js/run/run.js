@@ -1,4 +1,4 @@
-define(['./module'], function(module) {
+define(['./module'], function (module) {
   'use strict'
   module.run([
     '$rootScope',
@@ -6,7 +6,7 @@ define(['./module'], function(module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
-    function(
+    function (
       $rootScope,
       $state,
       $transitions,
@@ -27,7 +27,7 @@ define(['./module'], function(module) {
           )
           $currentDataService.addFilter(
             `{"index":"${
-              $currentDataService.getIndex().index
+            $currentDataService.getIndex().index
             }", "implicit":true}`
           )
         } catch (err) {
@@ -54,8 +54,19 @@ define(['./module'], function(module) {
       $transitions.onSuccess({}, async trans => {
         $rootScope.$broadcast('loading', { status: false })
         const to = trans.to().name
+        const from = trans.from().name
         //Select primary states
-        $rootScope.$broadcast('stateChanged', to)
+        if (to === 'discover' &&
+          from === 'overview' ||
+          from === 'manager' ||
+          from === 'settings' ||
+          from === 'agents' ||
+          from === 'dev-tools'
+        ) {
+          $rootScope.$broadcast('stateChanged', to)
+        } else if (to !== 'discover') {
+          $rootScope.$broadcast('stateChanged', to)
+        }
         //Select secondary states
         if (
           to === 'overview' ||
