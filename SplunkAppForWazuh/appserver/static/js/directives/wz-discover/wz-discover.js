@@ -28,7 +28,6 @@ define(['../module'], function (directives) {
             const lastState = $navigationService.getLastState()
             const fromDashboard = lastState ? true : false// Check if cannot get the lastState, then, cannot back to previous dashboard
             const breadcrumbs = lastState && $scope.breadcrumbs ? $scope.breadcrumbs : {}
-            console.log("bread ", breadcrumbs)
             $state.go('discover', { fromDashboard: fromDashboard, previousState: lastState, breadcrumbs: breadcrumbs})
           } catch (error) {
             $notificationService.showSimpleToast("Cannot open discover over this section.")
