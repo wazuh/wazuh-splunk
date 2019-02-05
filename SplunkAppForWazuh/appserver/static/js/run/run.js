@@ -76,6 +76,8 @@ define(['./module'], function (module) {
         )
           $currentDataService.cleanFilters()
         if ((to !== 'agents' && to.includes('agent')) || to.includes('ag-')) {
+          const cleanAgentsPinedFilters = true
+          $currentDataService.cleanFilters(cleanAgentsPinedFilters)
           $rootScope.$broadcast('stateChanged', 'agents')
         } else if (to.includes('ow-')) {
           $rootScope.$broadcast('stateChanged', 'overview')

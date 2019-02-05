@@ -135,17 +135,19 @@ define(['../module'], function (module) {
     /**
      * Sets the filters empty
      */
-    cleanFilters() {
+    cleanFilters(cleanAgentsPinedFilters = false) {
       try {
         let filters = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
           filters = filters.filter(fil => fil.pined)
-          filters = JSON.stringify(filters)
         }
+        if (cleanAgentsPinedFilters){
+          filters = filters.filter(fil => !Object.keys(fil)[0].startsWith('agent.'))
+        } 
+        filters = JSON.stringify(filters)
         window.localStorage.setItem('filters', filters)
       } catch (err) {
-        console.error("error cleaning filters ", err)
         delete window.localStorage.filters// In case of error, delete all filters
       }
     }
