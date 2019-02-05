@@ -108,11 +108,46 @@ define(['../module'], function (module) {
       }
     }
 
+      /**
+   * Pins a filter
+   * @param {Object}: The filter to be pined
+   */
+    pinFilter(filter) {
+      try {
+        filter = JSON.parse(filter)
+        const key = Object.keys(filter)[0]
+        const value = filter[key]
+        const pined = filter.pined
+        let filters = JSON.parse(window.localStorage.filters)
+        filters = filters.filter(fil => Object.keys(fil)[0] != key)
+        if (pined){
+          filter = JSON.parse(`{"${key}":"${value}"}`)
+        } else {
+          filter = JSON.parse(`{"${key}":"${value}", "pined":"true"}`)
+        }
+        filters.push(filter)
+        window.localStorage.setItem('filters', JSON.stringify(filters))
+      } catch (err) {
+        this.$notificationService.showSimpleToast('Error pinning filter.')
+      }
+    }
+
     /**
      * Sets the filters empty
      */
     cleanFilters() {
-      delete window.localStorage.filters
+      try {
+        let filters = []
+        if (window.localStorage.filters) {
+          filters = JSON.parse(window.localStorage.filters)
+          filters = filters.filter(fil => fil.pined)
+          filters = JSON.stringify(filters)
+        }
+        window.localStorage.setItem('filters', filters)
+      } catch (err) {
+        console.error("error cleaning filters ", err)
+        delete window.localStorage.filters// In case of error, delete all filters
+      }
     }
   }
   module.service('$filterService', FilterService)

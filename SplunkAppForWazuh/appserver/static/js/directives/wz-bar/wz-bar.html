@@ -19,6 +19,11 @@
           Remove filter
         </md-tooltip>
       </i>
+      <i class="fa fa-fw fa-times fa-thumb-tack cursor-pointer" ng-class="{'fa-rotate-270' : filterPined($chip)}" aria-hidden="true" ng-click="pinFilter($chip)">
+        <md-tooltip md-direction="top" class="wz-tooltip">
+          Pin/Unpin filter
+        </md-tooltip>
+      </i>
     </span>
   </md-chip-template>
 </md-chips>

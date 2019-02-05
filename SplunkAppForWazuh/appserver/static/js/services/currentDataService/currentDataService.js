@@ -64,6 +64,10 @@ define(['../module'], function(module) {
       return $filterService.removeFilter(filter)
     }
 
+    const pinFilter = filter => {
+      return $filterService.pinFilter(filter)
+    }
+
     const cleanFilters = () => {
       return $filterService.cleanFilters()
     }
@@ -146,6 +150,7 @@ define(['../module'], function(module) {
       addFilter: addFilter,
       getSerializedFilters: getSerializedFilters,
       removeFilter: removeFilter,
+      pinFilter: pinFilter,
       cleanFilters: cleanFilters,
       getFilters: getFilters,
       update: update,
