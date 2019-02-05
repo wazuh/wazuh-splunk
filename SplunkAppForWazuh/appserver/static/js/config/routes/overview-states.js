@@ -161,7 +161,26 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-pci')
           },
-          controller: 'overviewPciCtrl'
+          controller: 'overviewPciCtrl',
+          resolve: {
+            pciTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const pciTabs = []
+                  const data = await $requestService.httpReq('GET','/api/pci?requirement=all')
+                  if (!data) return []
+                  for (const key in data.data) {
+                    pciTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return pciTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
         // Overview - GDPR
         .state('ow-gdpr', {
