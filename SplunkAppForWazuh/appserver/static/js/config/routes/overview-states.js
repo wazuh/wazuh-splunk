@@ -171,8 +171,28 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-gdpr')
           },
-          controller: 'overviewGdprCtrl'
+          controller: 'overviewGdprCtrl',
+          resolve: {
+            gdprTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const gdprTabs = []
+                  const data = await $requestService.httpReq('GET','/api/gdpr?requirement=all')
+                  if (!data) return []
+                  for (const key in data.data) {
+                    gdprTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return gdprTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
+
         // Overview - Vulnerabilities
         .state('ow-vul', {
           templateUrl:
