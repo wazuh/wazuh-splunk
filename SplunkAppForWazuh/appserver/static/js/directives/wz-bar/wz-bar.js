@@ -38,7 +38,7 @@ define(['../module'], function(directives) {
          * @param {String} filter
          * @returns {Boolean}
          */
-        $scope.filterStatic = filter => {
+        function filterStatic(filter) {
           const key = filter.split(':')[0]
           const staticTrue = $currentDataService
             .getFilters()
@@ -87,6 +87,25 @@ define(['../module'], function(directives) {
             $notificationService.showSimpleToast(err.message || err)
           }
         }
+
+         /**
+         * Change chip showing pin and trash icons
+         * @param {Object | String} chip
+         */
+        $scope.editChip = (chip) => {
+          const chipIsStatic = filterStatic(chip)
+          if (!chipIsStatic) {
+            $scope.editingChip = chip
+          }
+        }
+
+         /**
+         * Cancel edition mode
+         * @param {Object | String} chip
+         */
+        $scope.finishChipEdition = () => {
+          $scope.editingChip = false
+        }   
       },
       templateUrl:
         BASE_URL +

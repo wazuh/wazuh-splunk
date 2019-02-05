@@ -7,9 +7,18 @@
   </div>
 </div>
 <md-chips class="wz-chips" layout="row" readonly="true" ng-model='filters'>
-  <md-chip-template class="wz-chip">
-    <span> {{ $chip }}
-      <i ng-if="!filterStatic($chip)" class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter($chip)"></i>
+  <md-chip-template class="wz-chip" ng-mouseover="editChip($chip)" ng-mouseleave="finishChipEdition()">
+    <span ng-show="editingChip !== $chip">
+      {{ $chip }}
+      <i ng-show="filterPined($chip)" class="fa fa-fw fa-times fa-thumb-tack cursor-pointer" aria-hidden="true"></i>
+    </span>
+    <span ng-show="editingChip === $chip">
+      {{ $chip }}
+      <i class="fa fa-fw fa-times fa-trash cursor-pointer" aria-hidden="true" ng-click="removeFilter($chip)">
+        <md-tooltip md-direction="top" class="wz-tooltip">
+          Remove filter
+        </md-tooltip>
+      </i>
     </span>
   </md-chip-template>
 </md-chips>
