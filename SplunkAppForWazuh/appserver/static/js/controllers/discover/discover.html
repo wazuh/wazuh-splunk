@@ -8,7 +8,9 @@
     <!--Print breadcumbs-->
     <div class="div-bread">
       <span class="wz-text-link cursor-pointer" ui-sref='{{breadcrumbs.ref}}'>{{breadcrumbs.section}}</span>
-      <span>/ {{breadcrumbs.subSection}} </span>
+      <span class="wz-text-link cursor-pointer" ng-if="breadcrumbs.agentName" ui-sref='{{breadcrumbs.agentRef}}'>/ {{breadcrumbs.agentName}} ({{breadcrumbs.agentId}})</span>
+      <span ng-if="breadcrumbs.agentName">/ {{breadcrumbs.subSection}} </span>
+      <span ng-if="!breadcrumbs.agentName">/ {{breadcrumbs.subSection}} </span>
     </div>
     <!--Back to dashboard-->
     <div class="div-dash">
