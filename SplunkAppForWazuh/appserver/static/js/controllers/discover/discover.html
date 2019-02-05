@@ -1,23 +1,28 @@
-<div layout="row" ng-show="fromDashboard" class="div-cont">
-  <!--Print breadcumbs-->
-  <div class="div-bread">
-    <span class="wz-text-link cursor-pointer" ui-sref='{{breadcrumbs.ref}}'>{{breadcrumbs.section}}</span>
-    <span>/ {{breadcrumbs.subSection}} </span>
-  </div>
-  <!--Back to dashboard-->
-  <div class="div-dash">
-    <span ng-click="backToDashboard()" aria-label="Dashboard">
-      <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
-      <md-tooltip md-direction="left" class="wz-tooltip">
-        Back to the dashboard.
-      </md-tooltip>
-    </span>
-  </div>
+<!-- Loading ring -->
+<div class='uil-ring-css' ng-show='loadingRing'>
+  <div></div>
 </div>
 
+<div ng-show='!loadingRing'>
+  <div layout="row" ng-show="fromDashboard" class="div-cont">
+    <!--Print breadcumbs-->
+    <div class="div-bread">
+      <span class="wz-text-link cursor-pointer" ui-sref='{{breadcrumbs.ref}}'>{{breadcrumbs.section}}</span>
+      <span>/ {{breadcrumbs.subSection}} </span>
+    </div>
+    <!--Back to dashboard-->
+    <div class="div-dash">
+      <span ng-click="backToDashboard()" aria-label="Dashboard">
+        <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Back to the dashboard.
+        </md-tooltip>
+      </span>
+    </div>
+  </div>
 
-<iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
-
+  <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
+</div>
 
 <style>
   .iframeSr {

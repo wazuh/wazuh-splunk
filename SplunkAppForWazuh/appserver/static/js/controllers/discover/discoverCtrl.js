@@ -26,6 +26,7 @@ define([
         this.state = $state
         this.stateParams = $stateParams
         this.iframe = $($document[0]).find('#searchAndReporting')
+        this.scope.loadingRing = true
       }
 
       /**
@@ -37,6 +38,13 @@ define([
           this.scope.breadcrumbs = this.stateParams.breadcrumbs
           this.loadIframeContent()
           this.scope.backToDashboard = () => this.backToDashboard()
+
+          this.scope.$on('loading', (event, data) => {
+            if (data.status === true) {
+              this.scope.loadingRing = true
+              if (!this.scope.$$phase) this.scope.$digest()
+            }
+          })
 
         } catch (error) {
           this.toast("Cannot load discover.")
@@ -53,6 +61,8 @@ define([
               header.hide()
               if (header.is(':hidden')) {
                 clearInterval(interval)
+                this.scope.loadingRing = false
+                if (!this.scope.$$phase) this.scope.$digest()
               }
             }
           }, 500)
