@@ -59,12 +59,13 @@ define(['../module'], function(module) {
      * DELETE method
      * @param {String} url
      */
-    const deletes = async id => {
+    const deletes = async api => {
       try {
+        const _key = api['_key']
         const { data } = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
-          id
+          _key
         )
         if (data.error || data.status === 400) throw new Error(data.error)
         return data

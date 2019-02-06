@@ -32,7 +32,7 @@ define(['../module'], function (module) {
         ) {
           $apiIndexStorageService.removeAPI()
         }
-        await $splunkStoreService.delete({ id: api['_key'] })
+        await $splunkStoreService.delete({ _key: api['_key'] })
         return
       } catch (err) {
         return Promise.reject(err)
@@ -296,7 +296,7 @@ define(['../module'], function (module) {
         console.log('current api ',api)
         console.log('updated API ',updatedApi)
         let equal = true
-        Object.keys(updatedApi).map((key) =>{ if (updatedApi[key] !== api[key]) equal=false })
+        Object.keys(updatedApi).forEach((key) =>{ if (updatedApi[key] !== api[key]) equal=false })
         if (!equal) {
           console.log('UPDATING API')
           await $splunkStoreService.update(updatedApi)

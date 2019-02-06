@@ -256,7 +256,7 @@ class manager(controllers.BaseController):
             api_id = kwargs
             if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})
-            self.db.remove(api_id['id'])
+            self.db.remove(api_id['_key'])
             parsed_data = jsonbak.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error in remove_api endpoint: %s" % (e))

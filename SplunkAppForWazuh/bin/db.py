@@ -77,7 +77,7 @@ class database():
         return parsed_result
 
 
-    def remove(self, id):
+    def remove(self, _key):
         """Remove an API.
 
         Parameters
@@ -87,9 +87,9 @@ class database():
 
         """
         try:
-            if not id:
-                raise Exception('Missing ID')
-            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            if not _key:
+                raise Exception('Missing ID in remove DB module')
+            kvstoreUri = self.kvstoreUri+'/'+_key+'?output_mode=json'
             result = self.session.delete(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
