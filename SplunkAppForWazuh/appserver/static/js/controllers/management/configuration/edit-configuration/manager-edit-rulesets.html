@@ -121,9 +121,13 @@
       <b>{{currentList.details.file}}</b>
     </span>
     <span style="margin-left: 10px;">
-      <md-button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
-        class="wz-button md-raised md-primary" ng-click="cancelCdbListEdition()">
+      <md-button style='background-color: gainsboro; width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
+        class="btn btn-info" ng-click="cancelCdbListEdition()">
         Cancel
+      </md-button>
+      <md-button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
+        class="wz-button md-raised md-primary" ng-click="saveList()">
+        Save
       </md-button>
     </span>
   </div>

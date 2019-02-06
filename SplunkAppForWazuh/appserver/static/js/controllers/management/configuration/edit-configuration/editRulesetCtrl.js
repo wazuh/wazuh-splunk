@@ -92,6 +92,7 @@ define([
               this.scope.nextPage(n)
             }
             this.scope.filterContent = (filter) => this.filterContent(filter)
+            this.scope.saveList = () => this.saveList()
             if (!this.scope.$$phase) this.scope.$digest()
           } catch (error) {
             this.switchSubTab('cdbLists')
@@ -236,7 +237,7 @@ define([
             this.scope.currentList.list[key] = value
             this.scope.newKey = ''
             this.scope.newValue = ''
-            await this.saveList()
+            this.refreshCdbList()
           } else {
             this.toast("Error adding new entry, the key exists.")
           }
@@ -272,7 +273,7 @@ define([
       try {
         this.scope.currentList.list[key] = newValue
         this.cancelEditingKey()
-        await this.saveList()
+        this.refreshCdbList()
       } catch (error) {
         this.toast("Error editing value.")
       }
@@ -286,11 +287,17 @@ define([
       try {
         delete this.scope.currentList.list[key]
         this.scope.removingEntry = false
-        await this.saveList()
+        this.refreshCdbList()
       } catch (error) {
         this.toast("Error deleting entry.")
       }
 
+    }
+
+    async refreshCdbList() {
+      this.scope.items = this.cdbToArr()
+      this.initPagination()
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     async saveList() {
