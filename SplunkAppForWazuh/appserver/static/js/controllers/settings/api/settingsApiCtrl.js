@@ -65,7 +65,7 @@ define(['../../module'], function (controllers) {
           for (const apiEntry of this.scope.apiList) {
             try {
               await this.selectManager(apiEntry['_key'])
-              // setAPI
+              // Set API
               currentApi = this.currentDataService.getApi()
               break
             } catch (error) {
@@ -73,20 +73,7 @@ define(['../../module'], function (controllers) {
             }
           }
         }
-
-        // this.scope.apiList.map(item => {
-        //   delete item.selected
-        // })
-
-        // if (currentApi) {
-        //   this.scope.apiList.map(item => {
-        //     if (item.id === currentApi.id) {
-        //       item.selected = true
-        //     }
-        //   })
-        // }
       } catch (err) {
-        console.error('err ', err)
         this.toast('Error loading data')
       }
     }
@@ -115,7 +102,7 @@ define(['../../module'], function (controllers) {
     async checkManager(entry) {
       try {
         const connectionData = await this.currentDataService.checkApiConnection(
-          entry.id
+          entry._key
         )
         for (let i = 0; i < this.scope.apiList.length; i++) {
           if (this.scope.apiList[i].id === entry.id) {
@@ -223,25 +210,11 @@ define(['../../module'], function (controllers) {
           key
         )
         // Selecting API
-
         await this.currentDataService.chose(key)
-        // this.scope.apiList.map(api => (api.selected = false))
-        // for (let item of this.scope.apiList) {
-        //   if (item['_key'] === key) {
-        //     if (connectionData.cluster) {
-        //       item.cluster = connectionData.cluster
-        //     } else {
-        //       item.cluster = 'Disabled'
-        //     }
-        //     item.managerName = connectionData.managerName
-        //     item.selected = true
-        //   }
-        // }
         this.toast('API selected')
         this.scope.$emit('updatedAPI', () => { })
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        console.error('err ', err)
         this.toast('Could not select manager')
       }
     }
@@ -256,6 +229,7 @@ define(['../../module'], function (controllers) {
           return
         }
         this.savingApi = true
+
         // When the Submit button is clicked, get all the form fields by accessing to the input values
         const form_url = this.scope.url
         const form_apiport = this.scope.port
@@ -281,28 +255,19 @@ define(['../../module'], function (controllers) {
         }
 
         // If connected to the API then continue
-        //const api = await this.currentDataService.checkRawConnection(record)
         const api = await this.currentDataService.addApi(record)
-        // Get the new API database ID
-        //const { result } = await this.currentDataService.insert(record)
-        //const id = result
-        // Get the full API info
-        //const api = await this.currentDataService.checkApiConnection(id)
+
         // Empties the form fields
         this.clearForm()
 
         // If the only one API in the list, then try to select it
         this.scope.apiList.push(api)
-        // if (this.scope.apiList && this.scope.apiList.length === 1) {
-        //   await this.selectManager(id)
-        // }
+
         this.scope.showForm = false
         if (!this.scope.$$phase) this.scope.$digest()
         this.toast('New API was added')
       } catch (err) {
-        console.error('err ', err)
         this.toast(err.message)
-        //this.savingApi = false
       }
       this.savingApi = false
     }
