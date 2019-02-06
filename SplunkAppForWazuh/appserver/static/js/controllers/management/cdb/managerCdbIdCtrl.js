@@ -132,10 +132,11 @@ define([
 
     async addEntry(key, value) {
       try {
-        if (!key || !value) {
+        if (!key) {
           this.toast("Cannot send empty fields.")
         } else {
           if (!this.scope.currentList.list[key]) {
+            value = value ? value : ''
             this.scope.currentList.list[key] = value
             this.scope.newKey = ''
             this.scope.newValue = ''
@@ -217,7 +218,7 @@ define([
         this.toast("CDB list updated.")
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        return Promise.reject(error)
+        this.toast(error)
       }
     }
 

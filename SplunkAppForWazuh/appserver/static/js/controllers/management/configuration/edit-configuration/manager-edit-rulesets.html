@@ -126,7 +126,8 @@
         Cancel
       </md-button>
       <button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
-        class="btn btn-info md-button md-ink-ripple wz-button md-raised md-primary" ng-click="saveList()" ng-disabled="items.length === 0 || !items" ng-if="adminMode">
+        class="btn btn-info md-button md-ink-ripple wz-button md-raised md-primary" ng-click="saveList()" ng-disabled="items.length === 0 || !items"
+        ng-if="adminMode">
         Save
       </button>
     </span>
@@ -152,11 +153,12 @@
                   ng-model="newValue">
               </td>
               <td>
-                <span ng-click="addEntry(newKey, newValue); newKey=''; newValue=''" class="fa fa-fw fa-plus cursor-pointer action-btn-td">
+                <button class="btn btn-as-i" ng-disabled="!newKey" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
+                  <i class="fa fa-fw fa-plus action-btn-td"></i>
                   <md-tooltip md-direction="left" class="wz-tooltip">
                     Add new entry
                   </md-tooltip>
-                </span>
+                </button>
               </td>
             </tr>
             <!-- End add new key tr -->
