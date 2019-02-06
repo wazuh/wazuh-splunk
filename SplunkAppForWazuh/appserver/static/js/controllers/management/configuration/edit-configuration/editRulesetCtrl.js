@@ -62,15 +62,17 @@ define([
   
         this.scope.$on("quickCdbListEdit", async (event, data) => {
           try {
-            this.scope.currentList = {
-              details:
-              {
-                file: data.item.name,
-                path: data.item.path
+            if (!this.scope.newCdbFile){
+              this.scope.currentList = {
+                details:
+                {
+                  file: data.item.name,
+                  path: data.item.path
+                }
               }
+              const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
+              this.scope.currentList.list = this.stringToObj(currentList)
             }
-            const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
-            this.scope.currentList.list = this.stringToObj(currentList)
             /**
              * Pagination variables and functions (CDB lists)
              */
@@ -207,6 +209,7 @@ define([
             path: 'etc/lists'
           }
         }
+        this.scope.$emit("quickCdbListEdit")
       } catch (error) {
         this.switchSubTab('cdbLists')
         this.toast("Cannot add new CDB list file.")
