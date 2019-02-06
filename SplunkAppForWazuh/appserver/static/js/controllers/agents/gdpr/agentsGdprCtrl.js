@@ -34,7 +34,8 @@ define([
       $scope,
       $state,
       agent,
-      $reportingService
+      $reportingService,
+      gdprTabs
     ) {
       this.scope = $scope
       this.state = $state
@@ -77,9 +78,7 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
       })
-
-      this.scope.gdprTabs = false
-
+      this.scope.gdprTabs = (gdprTabs) ? gdprTabs : false
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -104,7 +103,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
