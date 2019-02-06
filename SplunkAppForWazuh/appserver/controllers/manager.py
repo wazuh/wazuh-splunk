@@ -188,7 +188,7 @@ class manager(controllers.BaseController):
 
         """
         try:
-            self.logger.info('KWARGSSSSSSSSS %s' % (kwargs))
+            self.logger.info('Manager get_api KWARGS:  %s' % (kwargs))
             if 'id' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['id']
@@ -253,6 +253,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.info("removing api kwargs "+str(kwargs))
             api_id = kwargs
             if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})

@@ -87,10 +87,12 @@ class database():
 
         """
         try:
+            self.logger.info("db remove key: "+str(_key))
             if not _key:
                 raise Exception('Missing ID in remove DB module')
-            kvstoreUri = self.kvstoreUri+'/'+_key+'?output_mode=json'
-            result = self.session.delete(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
+            self.logger.info("kvstoreUri: "+str(kvstoreUri))
+            result = self.session.delete(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False)
             self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:

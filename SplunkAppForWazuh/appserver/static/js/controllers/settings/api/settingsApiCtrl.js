@@ -86,12 +86,12 @@ define(['../../module'], function (controllers) {
       try {
         const index = this.scope.apiList.indexOf(entry)
         if (index > -1) {
-          this.scope.apiList.splice(index, 1)
           await this.currentDataService.remove(entry)
+          this.scope.apiList.splice(index, 1)
+          this.toast('Manager was removed')
         }
-        this.toast('Manager was removed')
       } catch (err) {
-        this.toast('Cannot remove API:', err.message || err)
+        this.toast(`Cannot remove API: ${err.message || err}`)
       }
     }
 

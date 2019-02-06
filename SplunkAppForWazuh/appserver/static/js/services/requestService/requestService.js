@@ -33,6 +33,7 @@ define(['../module'], function(module) {
      */
     const httpReq = async (method, endpoint, payload = {}) => {
       try {
+        console.log("request payload ", payload)
         if (!method || !endpoint) {
           throw new Error('Missing parameters')
         }
@@ -52,8 +53,11 @@ define(['../module'], function(module) {
         else if (method === 'POST')
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
-        else if (method === 'DELETE')
+        else if (method === 'DELETE'){
+          console.log("requestService get DELETE order")
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+          console.log(data)
+        }
         if (!data) {
           throw new Error(
             `Error doing a request to ${tmpUrl}, method: ${method}.`
@@ -64,6 +68,7 @@ define(['../module'], function(module) {
         }
         return $q.resolve(data)
       } catch (error) {
+        console.error("errore in request ", error)
         return $q.reject(error)
       }
     }
