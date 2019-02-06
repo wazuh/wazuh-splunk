@@ -27,7 +27,7 @@
     </md-button>
     <span>Editing&nbsp; </span>
     <span class="wz-text-bold">{{currentList.details.file}}</span>
-    <button ng-if="adminMode" ng-click='saveList()' class='btn btn-primary pull-right wz-margin-left-10'>
+    <button ng-if="adminMode" ng-click='saveList()'  ng-disable="items.length === 0 || !items" class='btn btn-primary pull-right wz-margin-left-10'>
       <span><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save</span>
     </button>
   </div>

@@ -125,10 +125,10 @@
         class="btn btn-info" ng-click="cancelCdbListEdition()">
         Cancel
       </md-button>
-      <md-button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
-        class="wz-button md-raised md-primary" ng-click="saveList()">
+      <button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
+        class="btn btn-info md-button md-ink-ripple wz-button md-raised md-primary" ng-click="saveList()" ng-disabled="items.length === 0 || !items" ng-if="adminMode">
         Save
-      </md-button>
+      </button>
     </span>
   </div>
   <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
