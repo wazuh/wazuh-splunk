@@ -15,13 +15,15 @@ define([
         $scope,
         $state,
         $stateParams,
-        $document
+        $document,
+        $currentDataService
       ) {
         this.scope = $scope
         this.state = $state
         this.stateParams = $stateParams
         this.iframe = $($document[0]).find('#searchAndReporting')
         this.scope.loadingRing = true
+        this.currentDataService = $currentDataService
       }
 
       /**
@@ -67,7 +69,29 @@ define([
       }
 
       backToDashboard() {
+        //Get the filters
+        const filters = this.fetchWrittenFilters()
+        //Add the filters
+        filters.map(fil => this.currentDataService.addFilter(fil))
+        //Back to the dashboard
         this.state.go(this.stateParams.previousState)
+      }
+
+      fetchWrittenFilters() {
+        let filtersFormatted = []
+        //Delete the last div of the input, this div contains a hidden string that is not needed
+        const divX = this.iframe.contents().find('.search-field-wrapper pre div:last')
+        divX.remove()
+        //Get the filters
+        let filtersStr = this.iframe.contents().find('.search-field-wrapper').text()
+        filtersStr = filtersStr.split("|", 1).toString().trim()
+        const filtersArr = filtersStr.split(" ")
+        //Format the filters
+        filtersArr.map(fil => {
+          const f = fil.split("=")
+          filtersFormatted.push(`{"${f[0]}":"${f[1]}"}`)
+        })
+        return filtersFormatted
       }
     }
     app.controller('discoverCtrl', Discover)
