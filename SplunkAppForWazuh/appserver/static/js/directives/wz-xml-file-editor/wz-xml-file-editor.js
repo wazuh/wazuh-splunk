@@ -287,7 +287,6 @@ define([
             disableParentScroll: true,
             locals: {
               myScope: $scope,
-              //myError: errorHandler
             }
           });
           $('body').addClass('md-dialog-body');
