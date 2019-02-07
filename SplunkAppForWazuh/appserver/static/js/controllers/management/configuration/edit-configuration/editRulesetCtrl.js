@@ -298,7 +298,7 @@ define([
 
     }
 
-    async refreshCdbList() {
+    refreshCdbList() {
       this.scope.items = this.cdbToArr()
       this.initPagination()
       if (!this.scope.$$phase) this.scope.$digest()
