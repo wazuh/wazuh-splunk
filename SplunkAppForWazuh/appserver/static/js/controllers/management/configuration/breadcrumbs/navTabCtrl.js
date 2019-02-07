@@ -8,7 +8,7 @@ define(['../../../module'], function (controllers) {
       this.scope.tabName = ''
       this.isAdmin = isAdmin
       this.clusterEnabled = clusterEnabled
-      this.restart = $restartService.restartManager
+      this.restartService = $restartService
       this.toast = $notificationService.showSimpleToast
     }
 
@@ -67,17 +67,16 @@ define(['../../../module'], function (controllers) {
       return sectionName
     }
 
-    async restartManager(nodeName = false) {
+    async restartManager(node = false) {
       try {
-        let url = ''
-        if (this.clusterEnabled && nodeName) {
-          url = `/cluster/${nodeName}/restart`
-        } else if (this.clusterEnabled && !nodeName) {
-          url = `/cluster/restart`
+        let result = ''
+        if (this.clusterEnabled && node) {
+          result = await this.restartService.restartNode(node)
+        } else if (this.clusterEnabled && !node) {
+          result = await this.restartService.restartCluster()
         } else {
-          url = `/manager/restart`
+          result = await this.restartService.restartManager()
         }
-        const result = await this.restart(url)
         this.toast(result)
       } catch (error) {
         this.toast(error)
