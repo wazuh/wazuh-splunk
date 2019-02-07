@@ -16,8 +16,16 @@
       <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
-    
-    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
+
+    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)"
+      style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
+
+    <button class="btn btn-as-i" ng-disabled="!isAdmin" ng-click="restartManager(editingNode)" style="margin-bottom: 5px; margin-left: 5px;">
+      <i class="fa fa-fw fa-refresh action-btn-td"></i>
+      <md-tooltip md-direction="right" class="wz-tooltip">
+        Restart {{editingNode}}
+      </md-tooltip>
+    </button>
 
   </div>
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML">

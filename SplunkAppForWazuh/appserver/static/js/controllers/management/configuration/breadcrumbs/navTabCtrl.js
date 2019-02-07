@@ -67,10 +67,17 @@ define(['../../../module'], function (controllers) {
       return sectionName
     }
 
-    async restartManager() {
+    async restartManager(nodeName = false) {
       try {
-        const node = this.clusterEnabled ? 'cluster' : 'manager'
-        const result = await this.apiReq(`/${node}/restart`, {}, `PUT`)
+        let url = ''
+        if (this.clusterEnabled && nodeName) {
+          url = `/cluster/${nodeName}/restart`
+        } else if (this.clusterEnabled && !nodeName){
+          url = `/cluster/restart`
+        } else {
+          url = `/manager/restart`
+        }
+        const result = await this.apiReq(url, {}, `PUT`)
         if (
           result &&
           result.data &&
