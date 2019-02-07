@@ -175,8 +175,9 @@ define([
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, params.dir, xml)
             }
+            const msg = params.node ? `Success. Cluster node (${params.node}) content has been updated` : `Success. Content has been updated`
             $notificationService.showSimpleToast(
-              'Success. Content has been updated'
+              msg
             )
             $scope.closeFn()
           } catch (error) {

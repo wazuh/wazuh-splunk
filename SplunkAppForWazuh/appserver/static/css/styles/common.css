@@ -821,6 +821,16 @@ kbn-vis .vis-container {
   height: 35px !important;
 }
 
+.btn-as-i {
+  background: transparent !important;
+  border: 0;
+  padding: 0!important;
+  margin: 0;
+  font-size: 18px;
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
+}
+
 md-backdrop.md-opaque {
   opacity: 1!important;
   background-color: rgba(255, 255, 255, 0.8);

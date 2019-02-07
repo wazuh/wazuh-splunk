@@ -65,7 +65,8 @@ define(['../../module'], function (controllers) {
       //Needs to add check if the cluster is enabled to save the node configuration(pending API)
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
-        dir: false
+        dir: false,
+        node: this.scope.editingNode
       })
     }
 

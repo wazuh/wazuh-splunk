@@ -62,15 +62,17 @@ define([
   
         this.scope.$on("quickCdbListEdit", async (event, data) => {
           try {
-            this.scope.currentList = {
-              details:
-              {
-                file: data.item.name,
-                path: data.item.path
+            if (!this.scope.newCdbFile){
+              this.scope.currentList = {
+                details:
+                {
+                  file: data.item.name,
+                  path: data.item.path
+                }
               }
+              const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
+              this.scope.currentList.list = this.stringToObj(currentList)
             }
-            const currentList = await this.cdbEditor.getConfiguration(data.item.name, data.item.path)
-            this.scope.currentList.list = this.stringToObj(currentList)
             /**
              * Pagination variables and functions (CDB lists)
              */
@@ -92,6 +94,7 @@ define([
               this.scope.nextPage(n)
             }
             this.scope.filterContent = (filter) => this.filterContent(filter)
+            this.scope.saveList = () => this.saveList()
             if (!this.scope.$$phase) this.scope.$digest()
           } catch (error) {
             this.switchSubTab('cdbLists')
@@ -206,6 +209,7 @@ define([
             path: 'etc/lists'
           }
         }
+        this.scope.$emit("quickCdbListEdit")
       } catch (error) {
         this.switchSubTab('cdbLists')
         this.toast("Cannot add new CDB list file.")
@@ -229,14 +233,15 @@ define([
 
     async addEntry(key, value) {
       try {
-        if (!key || !value) {
+        if (!key) {
           this.toast("Cannot send empty fields.")
         } else {
           if (!this.scope.currentList.list[key]) {
+            value = value ? value : ''
             this.scope.currentList.list[key] = value
             this.scope.newKey = ''
             this.scope.newValue = ''
-            await this.saveList()
+            this.refreshCdbList()
           } else {
             this.toast("Error adding new entry, the key exists.")
           }
@@ -272,7 +277,7 @@ define([
       try {
         this.scope.currentList.list[key] = newValue
         this.cancelEditingKey()
-        await this.saveList()
+        this.refreshCdbList()
       } catch (error) {
         this.toast("Error editing value.")
       }
@@ -286,11 +291,17 @@ define([
       try {
         delete this.scope.currentList.list[key]
         this.scope.removingEntry = false
-        await this.saveList()
+        this.refreshCdbList()
       } catch (error) {
         this.toast("Error deleting entry.")
       }
 
+    }
+
+    refreshCdbList() {
+      this.scope.items = this.cdbToArr()
+      this.initPagination()
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     async saveList() {
@@ -314,7 +325,7 @@ define([
         this.toast("CDB list saved.")
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        return Promise.reject(error)
+        this.toast(error)
       }
     }
 
