@@ -2,13 +2,13 @@ define(['../../../module'], function (controllers) {
   'use strict'
 
   class NavTabCtrl {
-    constructor($scope, $navigationService, $requestService, $notificationService, isAdmin, clusterEnabled) {
+    constructor($scope, $navigationService, $restartService, $notificationService, isAdmin, clusterEnabled) {
       this.navigationService = $navigationService
       this.scope = $scope
       this.scope.tabName = ''
       this.isAdmin = isAdmin
       this.clusterEnabled = clusterEnabled
-      this.apiReq = $requestService.apiReq
+      this.restart = $restartService.restartManager
       this.toast = $notificationService.showSimpleToast
     }
 
@@ -72,21 +72,13 @@ define(['../../../module'], function (controllers) {
         let url = ''
         if (this.clusterEnabled && nodeName) {
           url = `/cluster/${nodeName}/restart`
-        } else if (this.clusterEnabled && !nodeName){
+        } else if (this.clusterEnabled && !nodeName) {
           url = `/cluster/restart`
         } else {
           url = `/manager/restart`
         }
-        const result = await this.apiReq(url, {}, `PUT`)
-        if (
-          result &&
-          result.data &&
-          result.data.error === 0
-        ) {
-          this.toast('Restart signal sended successfully.')
-        } else {
-          throw new Error('Cannot send restart signal.')
-        }
+        const result = await this.restart(url)
+        this.toast(result)
       } catch (error) {
         this.toast(error)
       }
