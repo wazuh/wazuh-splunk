@@ -173,7 +173,7 @@ define([
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
-              await $fileEditor.sendConfiguration(params.file, params.dir, xml)
+              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
             }
             const msg = params.node ? `Success. Cluster node (${params.node}) content has been updated` : `Success. Content has been updated`
             $notificationService.showSimpleToast(
