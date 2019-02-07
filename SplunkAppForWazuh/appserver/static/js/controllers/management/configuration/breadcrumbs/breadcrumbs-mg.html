@@ -55,6 +55,13 @@
     <span flex></span>
     <!-- End separator -->
 
+    <!-- Restart button -->
+    <button ng-if="isAdmin" ng-click="restartManager()" class="btn btn-primary pull-right ng-scope">
+      <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+        Restart {{node}}
+      </span>
+    </button>
+
     <!-- Help button -->
     <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ui-sref="settings.about"
       aria-label="Link to open app about section">
@@ -67,9 +74,12 @@
   <div layout="row" layout-padding>
     <md-nav-bar style="width:100%" class="wz-nav-bar" md-selected-nav-item="tabName" nav-bar-aria-label="Ruleset navigation links">
       <md-nav-item class="wz-nav-item" md-nav-click="switchTab('overview')" ui-sref="mg-conf.overview" name="overview">Overview</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editConfig')" ui-sref="mg-conf.editConfig" name="editConfig">Edit configuration</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editRuleset')" ui-sref="mg-conf.editRuleset" name="editRuleset">Edit ruleset</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editGroups')" ui-sref="mg-conf.editGroups" name="editGroups">Edit groups</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editConfig')" ui-sref="mg-conf.editConfig" name="editConfig">Edit
+        configuration</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editRuleset')" ui-sref="mg-conf.editRuleset" name="editRuleset">Edit
+        ruleset</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editGroups')" ui-sref="mg-conf.editGroups" name="editGroups">Edit
+        groups</md-nav-item>
     </md-nav-bar>
   </div>
   <!-- End nav bar tabs -->

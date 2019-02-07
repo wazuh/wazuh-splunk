@@ -263,7 +263,36 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf')
           },
-          controller: 'navTabCtrl'
+          controller: 'navTabCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
+                }
+              }
+            ],
+            clusterEnabled: [
+              '$requestService',
+              async $requestService => {
+                try {
+                  const result = await $requestService.apiReq('/cluster/status') 
+                  const clusterStatus = result.data.data.enabled === 'yes' ? true : false
+                  return clusterStatus
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
 
         // Manager - Configuration - Overview
@@ -309,7 +338,7 @@ define(['../module'], function (module) {
                 try {
                   const info = {}
                   const clusterStatus = await $requestService.apiReq('/cluster/status')
-                  if (clusterStatus.data.data.running === 'yes') {
+                  if (clusterStatus.data.data.enabled === 'yes') {
                     const nodesList = await $requestService.apiReq('/cluster/nodes')
                     Object.assign(info, { clusterEnabled: true, nodes: nodesList })
                   } else {

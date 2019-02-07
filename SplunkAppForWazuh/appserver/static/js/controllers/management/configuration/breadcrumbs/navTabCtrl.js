@@ -2,13 +2,20 @@ define(['../../../module'], function (controllers) {
   'use strict'
 
   class NavTabCtrl {
-    constructor($scope, $navigationService) {
+    constructor($scope, $navigationService, $requestService, $notificationService, isAdmin, clusterEnabled) {
       this.navigationService = $navigationService
       this.scope = $scope
       this.scope.tabName = ''
+      this.isAdmin = isAdmin
+      this.clusterEnabled = clusterEnabled
+      this.apiReq = $requestService.apiReq
+      this.toast = $notificationService.showSimpleToast
     }
 
     $onInit() {
+      this.scope.isAdmin = this.isAdmin
+      this.scope.node = this.clusterEnabled ? 'cluster' : 'manager'
+
       const lastState = this.navigationService.getLastState()
       switch (lastState) {
         case 'mg-conf.overview':
@@ -37,6 +44,8 @@ define(['../../../module'], function (controllers) {
         this.scope.tabName = name
         if (!this.scope.$$phase) this.scope.$digest()
       }
+
+      this.scope.restartManager = (node) => this.restartManager(node)
     }
 
     getSectionName(name) {
@@ -57,6 +66,25 @@ define(['../../../module'], function (controllers) {
       }
       return sectionName
     }
+
+    async restartManager() {
+      try {
+        const node = this.clusterEnabled ? 'cluster' : 'manager'
+        const result = await this.apiReq(`/${node}/restart`, {}, `PUT`)
+        if (
+          result &&
+          result.data &&
+          result.data.error === 0
+        ) {
+          this.toast('Restart signal sended successfully.')
+        } else {
+          throw new Error('Cannot send restart signal.')
+        }
+      } catch (error) {
+        this.toast(error)
+      }
+    }
+
   }
   controllers.controller('navTabCtrl', NavTabCtrl)
 })
