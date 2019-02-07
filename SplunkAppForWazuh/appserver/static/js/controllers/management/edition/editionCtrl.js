@@ -40,7 +40,7 @@ define(['../../module'], function (controllers) {
         }
         this.scope.isAdmin = this.isAdmin
       } catch (error) {
-        console.error(error)
+        this.toast(error)
       }
     }
 
@@ -48,12 +48,13 @@ define(['../../module'], function (controllers) {
       try {
         const file = 'ossec.conf'
         const dir = false
-        const content = !this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration(file, dir) : await this.fileEditor.getConfiguration(file, dir) //Change when Node configuration be avalaible
+        const content = !this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration(file, dir) : await this.fileEditor.getConfiguration(file, dir, nodeName)
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
+        this.scope.$broadcast('fetchedFile', {data: content})
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        return Promise.reject(error)
+        this.toast(`Error editing node: ${error}`)
       }
     }
 
@@ -62,11 +63,11 @@ define(['../../module'], function (controllers) {
     }
 
     saveOssecConfig() {
-      //Needs to add check if the cluster is enabled to save the node configuration(pending API)
+      const node = this.scope.editingNode === 'manager' ? false : this.scope.editingNode
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false,
-        node: this.scope.editingNode
+        node: node
       })
     }
 

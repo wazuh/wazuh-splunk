@@ -19,10 +19,12 @@ define(['../module'], function(module) {
         this.getConfig = $requestService.getConfiguration
       }
   
-      async sendConfiguration(file, dir = false, content) {
+      async sendConfiguration(file, dir, node, content) {
         try {
           const path = dir ? `${dir}/${file}` : file
-          const result = await this.sendConfig(`/manager/files?path=etc/${path}`, content)
+          node = node ? `cluster/${node}` : 'manager'
+          const url =  `/${node}/files?path=etc/${path}`
+          const result = await this.sendConfig(url, content)
           if (
             !result ||
             !result.data ||
@@ -37,10 +39,11 @@ define(['../module'], function(module) {
         }
       }
   
-      async getConfiguration(file, dir) {
+      async getConfiguration(file, dir, node) {
         try {
           const path = dir ? `${dir}/${file}` : file
-          const url = `/manager/files?path=etc/${path}`
+          node = node ? `cluster/${node}` : 'manager'
+          const url = `/${node}/files?path=etc/${path}`
           const result = await this.getConfig(url)
           if (
             !result ||
