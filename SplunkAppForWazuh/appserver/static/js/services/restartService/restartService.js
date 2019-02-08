@@ -2,37 +2,24 @@ define(['../module'], function (module) {
   'use strict'
   module.service('$restartService', function ($requestService) {
 
-    const restartManager = async () => {
+    const restart = async () => {
       try {
-        const result = await $requestService.apiReq('/manager/restart', {}, `PUT`)
+        const clusterStatus = await $requestService.apiReq('/cluster/status')
+        const instance = clusterStatus.data.data.enabled === 'yes' &&
+          clusterStatus.data.data.running === 'yes' &&
+          clusterStatus.data.data.running === 'yes' ? 'cluster' : 'manager'
+        const result = await $requestService.apiReq(`/${instance}/restart`, {}, `PUT`)
         if (
           result &&
           result.data &&
           result.data.error === 0
         ) {
-          return 'Restart signal sended successfully to the cluster manager.'
+          return `Restart signal sended successfully to the ${instance}.`
         } else {
-          throw new Error('Cannot send restart signal to the cluster manager.')
+          throw new Error(`Cannot send restart signal to the ${instance}.`)
         }
       } catch (error) {
-        throw new Error(error)
-      }
-    }
 
-    const restartCluster = async () => {
-      try {
-        const result = await $requestService.apiReq('/cluster/restart', {}, `PUT`)
-        if (
-          result &&
-          result.data &&
-          result.data.error === 0
-        ) {
-          return 'Restart signal sended successfully to the cluster nodes.'
-        } else {
-          throw new Error('Cannot send restart signal to the cluster nodes.')
-        }
-      } catch (error) {
-        throw new Error(error)
       }
     }
 
@@ -54,8 +41,7 @@ define(['../module'], function (module) {
     }
 
     return {
-      restartManager: restartManager,
-      restartCluster: restartCluster,
+      restart: restart,
       restartNode: restartNode
     }
   })

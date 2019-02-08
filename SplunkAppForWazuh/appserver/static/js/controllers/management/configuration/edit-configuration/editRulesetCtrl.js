@@ -323,7 +323,7 @@ define([
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
         this.initPagination()
-        await this.showRestartDialog('CDB list updated.', 'manager')
+        await this.showRestartDialog('CDB list updated')
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         this.toast(error)
@@ -376,7 +376,7 @@ define([
       this.scope.searchTable()      
     }
 
-    async showRestartDialog(msg, target) {
+    async showRestartDialog(msg) {
       const confirm = this.mdDialog.confirm({
         controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
           $scope.myScope = myScope;
@@ -386,34 +386,14 @@ define([
           };
           $scope.confirmDialog = () => {
             $mdDialog.hide();
-            if (target === 'manager') {
-              $restartService.restartManager()
-                .then(data => {
-                  $('body').removeClass('md-dialog-body');
-                  $notificationService.showSimpleToast(data);
-                  $scope.myScope.$applyAsync();
-                })
-                .catch(error =>
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
-            } else if (target === 'cluster') {
-              $restartService.restartCluster()
-                .then(data => {
-                  $('body').removeClass('md-dialog-body');
-                  $notificationService.showSimpleToast(data);
-                  $scope.myScope.$applyAsync();
-                })
-                .catch(error =>
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting cluster'));
-            } else {
-              $restartService.restartNode(target)
-                .then(data => {
-                  $('body').removeClass('md-dialog-body');
-                  $notificationService.showSimpleToast(data);
-                  $scope.myScope.$applyAsync();
-                })
-                .catch(error =>
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting node'));
-            }
+            $restartService.restart()
+              .then(data => {
+                $('body').removeClass('md-dialog-body');
+                $notificationService.showSimpleToast(data);
+                $scope.myScope.$applyAsync();
+              })
+              .catch(error =>
+                $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
           }
         },
         template:
@@ -423,7 +403,7 @@ define([
           '<i class="fa fa-check"></i>' +
           '<span class="euiToastHeader__title">' +
           `${msg}` +
-          `. Do you want to restart the ${target} now?` +
+          `. Do you want to restart now?` +
           '</span>' +
           '</div>' +
           '</md-dialog-content>' +

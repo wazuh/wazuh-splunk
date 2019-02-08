@@ -175,7 +175,7 @@ define([
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
             }
-            showRestartDialog(`${params.file || params.group} updated`, `${params.node || 'manager'}`)
+            showRestartDialog(`${params.file || params.group} updated`, params.node)
             $scope.closeFn()
           } catch (error) {
             $notificationService.showSimpleToast(
@@ -229,40 +229,31 @@ define([
         const showRestartDialog = async (msg, target) => {
           const confirm = $mdDialog.confirm({
             controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
-              $scope.myScope = myScope;
+              $scope.myScope = myScope
               $scope.closeDialog = () => {
-                $mdDialog.hide();
-                $('body').removeClass('md-dialog-body');
-              };
+                $mdDialog.hide()
+                $('body').removeClass('md-dialog-body')
+              }
               $scope.confirmDialog = () => {
-                $mdDialog.hide();
-                if (target === 'manager') {
-                  $restartService.restartManager()
-                    .then(data => {
-                      $('body').removeClass('md-dialog-body');
-                      $notificationService.showSimpleToast(data);
-                      $scope.myScope.$applyAsync();
-                    })
-                    .catch(error =>
-                      $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
-                } else if (target === 'cluster') {
-                  $restartService.restartCluster()
-                    .then(data => {
-                      $('body').removeClass('md-dialog-body');
-                      $notificationService.showSimpleToast(data);
-                      $scope.myScope.$applyAsync();
-                    })
-                    .catch(error =>
-                      $notificationService.showSimpleToast(error.message || error, 'Error restarting cluster'));
-                } else {
+                $mdDialog.hide()
+                if (target) {
                   $restartService.restartNode(target)
-                    .then(data => {
-                      $('body').removeClass('md-dialog-body');
-                      $notificationService.showSimpleToast(data);
-                      $scope.myScope.$applyAsync();
-                    })
-                    .catch(error =>
-                      $notificationService.showSimpleToast(error.message || error, 'Error restarting node'));
+                  .then(data => {
+                    $('body').removeClass('md-dialog-body')
+                    $notificationService.showSimpleToast(data)
+                    $scope.myScope.$applyAsync()
+                  })
+                  .catch(error =>
+                    $notificationService.showSimpleToast(error.message || error, 'Error restarting node'))
+                } else {
+                  $restartService.restart()
+                  .then(data => {
+                    $('body').removeClass('md-dialog-body')
+                    $notificationService.showSimpleToast(data)
+                    $scope.myScope.$applyAsync()
+                  })
+                  .catch(error =>
+                    $notificationService.showSimpleToast(error.message || error, 'Error restarting'))
                 }
               }
             },
@@ -273,7 +264,7 @@ define([
               '<i class="fa fa-check"></i>' +
               '<span class="euiToastHeader__title">' +
               `${msg}` +
-              `. Do you want to restart the ${target} now?` +
+              `. Do you want to restart now?` +
               '</span>' +
               '</div>' +
               '</md-dialog-content>' +
@@ -288,9 +279,9 @@ define([
             locals: {
               myScope: $scope,
             }
-          });
-          $('body').addClass('md-dialog-body');
-          $mdDialog.show(confirm);
+          })
+          $('body').addClass('md-dialog-body')
+          $mdDialog.show(confirm)
         }
 
       },

@@ -20,7 +20,13 @@
     <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)"
       style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
 
-    <button class="btn btn-as-i" ng-disabled="!isAdmin" ng-click="restartManager(editingNode)" style="margin-bottom: 5px; margin-left: 5px;">
+    <button ng-show="clusterEnabled" class="btn btn-as-i" ng-disabled="!isAdmin" ng-click="restart(editingNode)" style="margin-bottom: 5px; margin-left: 5px;">
+      <i class="fa fa-fw fa-refresh action-btn-td"></i>
+      <md-tooltip md-direction="right" class="wz-tooltip">
+        Restart {{editingNode}}
+      </md-tooltip>
+    </button>
+    <button ng-show="!clusterEnabled" class="btn btn-as-i" ng-disabled="!isAdmin" ng-click="restart()" style="margin-bottom: 5px; margin-left: 5px;">
       <i class="fa fa-fw fa-refresh action-btn-td"></i>
       <md-tooltip md-direction="right" class="wz-tooltip">
         Restart {{editingNode}}
