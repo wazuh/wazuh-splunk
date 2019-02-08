@@ -30,7 +30,7 @@ define(['../module'], function (module) {
 
     const restartNode = async (node) => {
       try {
-        const checkConfig = await $requestService.apiReq(`/${instance}/configuration/validation`)
+        const checkConfig = await $requestService.apiReq(`/cluster/${node}/configuration/validation`)
         if (checkConfig.data.data === 'Configuration is OK') {
           const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
           if (
