@@ -194,7 +194,7 @@ define(['../../module'], function (controllers) {
         this.scope.edit = false
         this.toast('Updated API')
       } catch (err) {
-        this.toast('Cannot update API:', err.message || err)
+        this.toast('Cannot update API')
       }
       this.savingApi = false
     }
@@ -211,6 +211,7 @@ define(['../../module'], function (controllers) {
         )
         // Selecting API
         await this.currentDataService.chose(key)
+        this.setYellowStar(key)
         this.toast('API selected')
         this.scope.$emit('updatedAPI', () => { })
         if (!this.scope.$$phase) this.scope.$digest()
@@ -312,6 +313,10 @@ define(['../../module'], function (controllers) {
       this.scope.port = ''
       this.scope.user = ''
       this.scope.pass = ''
+    }
+
+    setYellowStar(key) {
+      this.apiList.map((api) => { (api['_key'] === key) ? api.selected = true : api.selected = false })
     }
   }
   controllers.controller('settingsApiCtrl', SettingsApi)
