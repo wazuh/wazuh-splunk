@@ -33,7 +33,6 @@ define(['../module'], function(module) {
      */
     const httpReq = async (method, endpoint, payload = {}) => {
       try {
-        console.log("request payload ", payload)
         if (!method || !endpoint) {
           throw new Error('Missing parameters')
         }
@@ -54,9 +53,7 @@ define(['../module'], function(module) {
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
         else if (method === 'DELETE'){
-          console.log("requestService get DELETE order")
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
-          console.log(data)
         }
         if (!data) {
           throw new Error(
@@ -83,14 +80,12 @@ define(['../module'], function(module) {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
-        console.log('request with this API ',currentApi)
         const id = currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
         const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
         const result = await httpReq(`POST`, `/api/request`, payload)
-        console.log('result ',result)
         return result
       } catch (err) {
         return Promise.reject(err)

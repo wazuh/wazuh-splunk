@@ -75,12 +75,10 @@ define(['../module'], function(directives) {
           } else if (checkLastState('discover', 'discover')) {
             $scope.menuNavItem = 'discover'
           }
-          //else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('dev-tools')) { $scope.menuNavItem = 'dev-tools'  }
           if (!$scope.$$phase) $scope.$digest()
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
-          console.log('update api event')
           update()
         })
 

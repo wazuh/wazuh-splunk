@@ -36,7 +36,6 @@ define(['../module'], function(app) {
      */
     removeAPI() {
       try {
-        console.log("apiIndexStorageService removeApi")
         delete this.sessionStorage.selectedAPI
       } catch (err) {
         return
@@ -64,9 +63,7 @@ define(['../module'], function(app) {
      */
     getApi() {
       try {
-        console.log("apiIndexStorgeService getApi")
         if (this.sessionStorage.selectedAPI) {
-          console.log("apiIndexStorageService selected api ", JSON.parse(this.sessionStorage.selectedAPI))
           return JSON.parse(this.sessionStorage.selectedAPI)
         }
       } catch (err) {

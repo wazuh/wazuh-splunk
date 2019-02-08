@@ -23,7 +23,6 @@ define(['../module'], function(module) {
      */
     const getApiById = async id => {
       try {
-        console.log("splunkStorageService getApiById id:", id)
         const { data } = await $requestService.httpReq(
           `GET`,
           `/manager/get_api`,
@@ -33,7 +32,6 @@ define(['../module'], function(module) {
         const parsedJson = JSON.parse(parsed)
 
         const parsedData = parsedJson.data
-        console.log("splunkStorageService getApiById parsedData:", parsedData)
         return parsedData
       } catch (err) {
         return Promise.reject(err)
@@ -63,13 +61,11 @@ define(['../module'], function(module) {
      */
     const deletes = async key => {
       try {
-        console.log("splunk trying delete ", key)
         const { data } = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
           {_key: key}
         )
-        console.log("response data ", data)
         if (data.error || data.status === 400) throw new Error(data.error)
         return data
       } catch (err) {
