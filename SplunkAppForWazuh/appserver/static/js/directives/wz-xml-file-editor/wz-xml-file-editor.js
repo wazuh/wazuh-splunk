@@ -22,9 +22,9 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function(app, CodeMirror) {
+], function (app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function(BASE_URL) {
+  app.directive('wzXmlFileEditor', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -34,13 +34,13 @@ define([
         targetName: '=targetName',
         closeFn: '&'
       },
-      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor, $mdDialog, $restartService) {
         /**
          * Custom .replace method. Instead of using .replace which
          * evaluates regular expressions.
          * Alternative using split + join, same result.
          */
-        String.prototype.xmlReplace = function(str, newstr) {
+        String.prototype.xmlReplace = function (str, newstr) {
           return this.split(str).join(newstr)
         }
         let firstTime = true
@@ -56,12 +56,12 @@ define([
 
           for (const line of lines) {
             const sanitized = line
-            .trim()
-            .xmlReplace('&', '&amp;')
-            .xmlReplace(/</g, '\&lt;')
-            .xmlReplace(/>/g, '\&gt;')
-            .xmlReplace(/"/g, '\&quot;')
-            .xmlReplace(/'/g, '\&apos;')
+              .trim()
+              .xmlReplace('&', '&amp;')
+              .xmlReplace(/</g, '\&lt;')
+              .xmlReplace(/>/g, '\&gt;')
+              .xmlReplace(/"/g, '\&quot;')
+              .xmlReplace(/'/g, '\&apos;')
             /**
              * Do not remove this condition. We don't want to replace
              * non-sanitized lines.
@@ -146,10 +146,10 @@ define([
             var type = single
               ? 'single'
               : closing
-              ? 'closing'
-              : opening
-              ? 'opening'
-              : 'other'
+                ? 'closing'
+                : opening
+                  ? 'opening'
+                  : 'other'
             var fromTo = lastType + '->' + type
             lastType = type
             var padding = ''
@@ -175,10 +175,7 @@ define([
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
             }
-            const msg = params.node ? `Success. Cluster node (${params.node}) content has been updated` : `Success. Content has been updated`
-            $notificationService.showSimpleToast(
-              msg
-            )
+            showRestartDialog(`${params.file || params.group} updated`, params.node)
             $scope.closeFn()
           } catch (error) {
             $notificationService.showSimpleToast(
@@ -206,7 +203,7 @@ define([
           try {
             $scope.xmlCodeBox.setValue(autoFormat(data || $scope.data))
             firstTime = false
-            setTimeout( () => {
+            setTimeout(() => {
               $scope.xmlCodeBox.refresh()
             }, 1)
             autoFormat()
@@ -228,6 +225,65 @@ define([
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
+
+        const showRestartDialog = async (msg, target) => {
+          const confirm = $mdDialog.confirm({
+            controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
+              $scope.myScope = myScope
+              $scope.closeDialog = () => {
+                $mdDialog.hide()
+                $('body').removeClass('md-dialog-body')
+              }
+              $scope.confirmDialog = () => {
+                $mdDialog.hide()
+                if (target) {
+                  $restartService.restartNode(target)
+                  .then(data => {
+                    $('body').removeClass('md-dialog-body')
+                    $notificationService.showSimpleToast(data)
+                    $scope.myScope.$applyAsync()
+                  })
+                  .catch(error =>
+                    $notificationService.showSimpleToast(error.message || error, 'Error restarting node'))
+                } else {
+                  $restartService.restart()
+                  .then(data => {
+                    $('body').removeClass('md-dialog-body')
+                    $notificationService.showSimpleToast(data)
+                    $scope.myScope.$applyAsync()
+                  })
+                  .catch(error =>
+                    $notificationService.showSimpleToast(error.message || error, 'Error restarting'))
+                }
+              }
+            },
+            template:
+              '<md-dialog class="modalTheme euiToast euiToast--success euiGlobalToastListItem">' +
+              '<md-dialog-content>' +
+              '<div class="euiToastHeader">' +
+              '<i class="fa fa-check"></i>' +
+              '<span class="euiToastHeader__title">' +
+              `${msg}` +
+              `. Do you want to restart now?` +
+              '</span>' +
+              '</div>' +
+              '</md-dialog-content>' +
+              '<md-dialog-actions>' +
+              '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">I will do it later</button>' +
+              '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Restart</button>' +
+              '</md-dialog-actions>' +
+              '</md-dialog>',
+            hasBackdrop: false,
+            clickOutsideToClose: true,
+            disableParentScroll: true,
+            locals: {
+              myScope: $scope,
+            }
+          })
+          $('body').addClass('md-dialog-body')
+          $mdDialog.show(confirm)
+        }
+
       },
       templateUrl:
         BASE_URL +

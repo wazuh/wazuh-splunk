@@ -2,13 +2,21 @@ define(['../../../module'], function (controllers) {
   'use strict'
 
   class NavTabCtrl {
-    constructor($scope, $navigationService) {
+    constructor($scope, $navigationService, $restartService, $notificationService, $requestService, isAdmin, clusterEnabled) {
       this.navigationService = $navigationService
       this.scope = $scope
       this.scope.tabName = ''
+      this.isAdmin = isAdmin
+      this.clusterEnabled = clusterEnabled
+      this.restartService = $restartService
+      this.toast = $notificationService.showSimpleToast
+      this.apiReq = $requestService.apiReq
     }
 
     $onInit() {
+      this.scope.isAdmin = this.isAdmin
+      this.scope.node = this.clusterEnabled ? 'cluster' : 'manager'
+
       const lastState = this.navigationService.getLastState()
       switch (lastState) {
         case 'mg-conf.overview':
@@ -35,8 +43,11 @@ define(['../../../module'], function (controllers) {
       this.scope.switchTab = name => {
         this.scope.sectionName = this.getSectionName(name)
         this.scope.tabName = name
+        this.refreshClusterStatus()
         if (!this.scope.$$phase) this.scope.$digest()
       }
+
+      this.scope.restart = (node) => this.restart(node)
     }
 
     getSectionName(name) {
@@ -57,6 +68,33 @@ define(['../../../module'], function (controllers) {
       }
       return sectionName
     }
+
+    async restart(node = false) {
+      try {
+        let result = ''
+        if (this.clusterEnabled && node) {
+          result = await this.restartService.restartNode(node)
+        } else {
+          result = await this.restartService.restart()
+        }
+        this.toast(result)
+        this.refreshClusterStatus()
+      } catch (error) {
+        this.toast(error)
+      }
+    }
+
+    async refreshClusterStatus(){
+      try {
+        const clusterStatus = await this.apiReq('/cluster/status')
+        this.clusterEnabled = clusterStatus.data.data.enabled === 'yes' && clusterStatus.data.data.running === 'yes' ? true : false
+        this.scope.node = this.clusterEnabled ? 'cluster' : 'manager'
+      } catch (error) {
+        return Promise.reject(error)
+      }
+
+    }
+
   }
   controllers.controller('navTabCtrl', NavTabCtrl)
 })

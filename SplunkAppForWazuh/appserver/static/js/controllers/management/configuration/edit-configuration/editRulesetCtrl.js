@@ -10,7 +10,7 @@ define([
   'use strict'
 
   class EditRulesetCtrl {
-    constructor($scope, $notificationService, isAdmin, $fileEditor, $cdbEditor, $filter) {
+    constructor($scope, $notificationService, isAdmin, $fileEditor, $cdbEditor, $filter, $mdDialog) {
       this.scope = $scope
       this.notificationService = $notificationService
       this.toast = this.notificationService.showSimpleToast
@@ -20,6 +20,7 @@ define([
       this.pagination = pagination
       this.checkGap = checkGap
       this.filter = $filter
+      this.mdDialog = $mdDialog
     }
 
     $onInit() {
@@ -322,7 +323,7 @@ define([
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
         this.initPagination()
-        this.toast("CDB list saved.")
+        await this.showRestartDialog('CDB list updated')
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         this.toast(error)
@@ -374,6 +375,54 @@ define([
       this.checkGap(this.scope, this.scope.items)
       this.scope.searchTable()      
     }
+
+    async showRestartDialog(msg) {
+      const confirm = this.mdDialog.confirm({
+        controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
+          $scope.myScope = myScope;
+          $scope.closeDialog = () => {
+            $mdDialog.hide();
+            $('body').removeClass('md-dialog-body');
+          };
+          $scope.confirmDialog = () => {
+            $mdDialog.hide();
+            $restartService.restart()
+              .then(data => {
+                $('body').removeClass('md-dialog-body');
+                $notificationService.showSimpleToast(data);
+                $scope.myScope.$applyAsync();
+              })
+              .catch(error =>
+                $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
+          }
+        },
+        template:
+          '<md-dialog class="modalTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          '<md-dialog-content>' +
+          '<div class="euiToastHeader">' +
+          '<i class="fa fa-check"></i>' +
+          '<span class="euiToastHeader__title">' +
+          `${msg}` +
+          `. Do you want to restart now?` +
+          '</span>' +
+          '</div>' +
+          '</md-dialog-content>' +
+          '<md-dialog-actions>' +
+          '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">I will do it later</button>' +
+          '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Restart</button>' +
+          '</md-dialog-actions>' +
+          '</md-dialog>',
+        hasBackdrop: false,
+        clickOutsideToClose: true,
+        disableParentScroll: true,
+        locals: {
+          myScope: this.scope,
+        }
+      });
+      $('body').addClass('md-dialog-body');
+      this.mdDialog.show(confirm);
+    }
+
   }
   controllers.controller('editRulesetCtrl', EditRulesetCtrl)
 })

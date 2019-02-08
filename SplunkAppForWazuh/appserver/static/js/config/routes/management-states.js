@@ -263,7 +263,36 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf')
           },
-          controller: 'navTabCtrl'
+          controller: 'navTabCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  console.error('err : ', error)
+                  return false
+                }
+              }
+            ],
+            clusterEnabled: [
+              '$requestService',
+              async $requestService => {
+                try {
+                  const result = await $requestService.apiReq('/cluster/status') 
+                  const clusterStatus = result.data.data.enabled === 'yes' ? true : false
+                  return clusterStatus
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
 
         // Manager - Configuration - Overview
@@ -309,7 +338,7 @@ define(['../module'], function (module) {
                 try {
                   const info = {}
                   const clusterStatus = await $requestService.apiReq('/cluster/status')
-                  if (clusterStatus.data.data.running === 'yes') {
+                  if (clusterStatus.data.data.enabled === 'yes' && clusterStatus.data.data.running === 'yes') {
                     const nodesList = await $requestService.apiReq('/cluster/nodes')
                     Object.assign(info, { clusterEnabled: true, nodes: nodesList })
                   } else {
@@ -548,52 +577,6 @@ define(['../module'], function (module) {
             ]
           }
         })
-        // ossec.conf edition
-        /*.state('mg-edition', {
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-edition')
-          },
-          controller: 'editionCtrl',
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
-                } catch (error) {
-                  console.error('err : ', error)
-                  return false
-                }
-              }
-            ],
-            clusterInfo: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const info = {}
-                  const clusterStatus = await $requestService.apiReq('/cluster/status')
-                  if (clusterStatus.data.data.running === 'yes') {
-                    const nodesList = await $requestService.apiReq('/cluster/nodes')
-                    Object.assign(info, { clusterEnabled: true, nodes: nodesList })
-                  } else {
-                    Object.assign(info, { clusterEnabled: false })
-                  }
-                  return info
-                } catch (error) {
-                  $state.go('manager')
-                }
-              }
-            ]
-          }
-        })*/
     }
   ])
 })
