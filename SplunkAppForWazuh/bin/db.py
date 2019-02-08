@@ -30,7 +30,6 @@ class database():
             hostPath=rest.makeSplunkdUri().strip("/")
         )
         self.sessionKey = splunk.getSessionKey()
-        # self.headers = {"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}
 
     def insert(self, obj):
         """Insert a new API.
@@ -44,7 +43,6 @@ class database():
         try:
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
-            self.logger.info('------------------------------------------------ INSERT --------------- %s' % (result))
             if not '_key' in result:
                 raise Exception('Format error when inserting object.')
             key = result['_key']
@@ -69,7 +67,6 @@ class database():
             del obj['_key']
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
             result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
-            self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:
             self.logger.error("Error updating in DB module: %s" % (e))
@@ -87,25 +84,25 @@ class database():
 
         """
         try:
-            self.logger.info("db remove key: "+str(_key))
             if not _key:
                 raise Exception('Missing ID in remove DB module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
-            self.logger.info("kvstoreUri: "+str(kvstoreUri))
             result = self.session.delete(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False)
-            self.logger.info('result %s' % (result))
-            parsed_result = jsonbak.dumps({'data': result})
+            if result.status_code == 200:
+                parsed_result = jsonbak.dumps({'data': 'API removed.'})
+            else:
+                msg = jsonbak.loads(result.text)
+                text = msg['messages'][0]['text']
+                raise Exception(text)
+            return parsed_result
         except Exception as e:
             self.logger.error("Error removing an API in DB module: %s" % (e))
             raise e
-        return parsed_result
-
 
     def all(self):
         try:
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
-            self.logger.info('result %s' % (result))
             return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error('Error returning all API rows in DB module: %s ' % (e))
@@ -117,7 +114,6 @@ class database():
                 raise Exception('Missing ID')
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
             result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
-            self.logger.info('result %s' % (result))
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:
             self.logger.error("Error getting an API in DB module : %s" % (e))
