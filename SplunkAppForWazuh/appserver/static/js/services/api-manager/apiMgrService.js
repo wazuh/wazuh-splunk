@@ -63,7 +63,7 @@ define(['../module'], function (module) {
           record.filterName = resultRawConnection.data.managerName.name
         }
         const key = await $splunkStoreService.insert(record)
-        record['_key'] = key
+        record['_key'] = key.result
         return record
       } catch (err) {
         return Promise.reject(err)
