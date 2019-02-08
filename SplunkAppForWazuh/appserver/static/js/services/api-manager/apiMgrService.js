@@ -13,9 +13,7 @@ define(['../module'], function (module) {
      */
     const select = async id => {
       try {
-        console.log("apiMgrService select ", id)
         const entry = await $splunkStoreService.getApiById(id)
-        console.log("apiMgrService select ", entry)
         return entry
       } catch (err) {
         return Promise.reject(err)
@@ -28,16 +26,7 @@ define(['../module'], function (module) {
      */
     const remove = async api => {
       try {
-        console.log("apiMgrService remove ", api)
-        if (
-          $apiIndexStorageService.getApi() &&
-          $apiIndexStorageService.getApi()._key === api._key
-        ) {
-          throw new Error("The selected API cannot be deleted.")          
-        } else {
-          console.log("send api key ", api._key)
-          await $splunkStoreService.delete(api._key)
-        }
+        await $splunkStoreService.delete(api._key)
         return
       } catch (err) {
         return Promise.reject(err)
@@ -50,7 +39,6 @@ define(['../module'], function (module) {
      */
     const insert = async record => {
       try {
-        console.log("insert ", record)
         const result = await $splunkStoreService.insert(record)
         return result
       } catch (err) {
@@ -64,7 +52,6 @@ define(['../module'], function (module) {
      */
     const addApi = async record => {
       try {
-        console.log("addApi ", record)
         // if the API is not connecting, then throw error
         const resultRawConnection = await checkRawConnection(record)
         record.managerName = resultRawConnection.data.managerName.name
@@ -88,7 +75,6 @@ define(['../module'], function (module) {
      * @param {Object} api
      */
     const update = register => {
-      console.log("update ", register)
       return $splunkStoreService.update(register)
     }
 
@@ -98,7 +84,6 @@ define(['../module'], function (module) {
      * Gets the current selected API
      */
     const getApi = () => {
-      console.log("getApi")
       return $apiIndexStorageService.getApi()
     }
 
@@ -108,7 +93,6 @@ define(['../module'], function (module) {
      */
     const getApiList = async () => {
       try {
-        console.log("getApiList")
         const apiList = await $splunkStoreService.getAllApis()
         return apiList
       } catch (err) {
@@ -121,7 +105,6 @@ define(['../module'], function (module) {
      * @param {Object} api
      */
     const setApi = api => {
-      console.log("set ", api)
       return $apiIndexStorageService.setApi(api)
     }
 
@@ -175,14 +158,13 @@ define(['../module'], function (module) {
     const chose = async id => {
       try {
         const apiList = await getApiList()
-        const api = apiList.filter( api => api['_key'] === id)[0]
-        console.log('selected api ',api)
+        const api = apiList.filter(api => api['_key'] === id)[0]
         if (api && typeof api === 'object') {
           $apiIndexStorageService.setApi(api)
         }
         return
       } catch (err) {
-        console.error('err' ,err)
+        console.error('err', err)
         return Promise.reject(err)
       }
     }
@@ -193,7 +175,6 @@ define(['../module'], function (module) {
      */
     const checkSelectedApiConnection = async () => {
       try {
-        console.log("checkSelectedApiConnection")
         const currentApi = $apiIndexStorageService.getApi()
         if (!currentApi) {
           throw new Error('No selected API in sessionStorage.')
@@ -228,7 +209,6 @@ define(['../module'], function (module) {
      */
     const checkRawConnection = async api => {
       try {
-        console.log("apiMgrService checkRawConnection ", api)
         if (
           api &&
           typeof api === 'object' &&
@@ -262,7 +242,6 @@ define(['../module'], function (module) {
      */
     const updateApiFilter = async (api) => {
       try {
-        console.log("updateApiFilter ", api)
         const results = await Promise.all([
           $requestService.apiReq(`/cluster/status`, {
             id: api['_key']
@@ -305,18 +284,13 @@ define(['../module'], function (module) {
      */
     const checkApiConnection = async id => {
       try {
-        console.log("checkApiConnection ", id)
         const api = await select(id)
         const updatedApi = await updateApiFilter(api)
-        //console.log('current api ',api)
-        //console.log('updated API ',updatedApi)
         let equal = true
-        Object.keys(updatedApi).forEach((key) =>{ if (updatedApi[key] !== api[key]) equal=false })
+        Object.keys(updatedApi).forEach((key) => { if (updatedApi[key] !== api[key]) equal = false })
         if (!equal) {
-          console.log('UPDATING API')
           await $splunkStoreService.update(updatedApi)
         } else {
-          console.log('SAME API!! NO CHANGES')
         }
         delete updatedApi['passapi']
         return updatedApi
