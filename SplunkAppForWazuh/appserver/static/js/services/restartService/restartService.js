@@ -8,32 +8,42 @@ define(['../module'], function (module) {
         const instance = clusterStatus.data.data.enabled === 'yes' &&
           clusterStatus.data.data.running === 'yes' &&
           clusterStatus.data.data.running === 'yes' ? 'cluster' : 'manager'
-        const result = await $requestService.apiReq(`/${instance}/restart`, {}, `PUT`)
-        if (
-          result &&
-          result.data &&
-          result.data.error === 0
-        ) {
-          return `Restart signal sended successfully to the ${instance}.`
+        const checkConfig = await $requestService.apiReq(`/${instance}/configuration/validation`)
+        if (checkConfig.data.data === 'Configuration is OK') {
+          const result = await $requestService.apiReq(`/${instance}/restart`, {}, `PUT`)
+          if (
+            result &&
+            result.data &&
+            result.data.error === 0
+          ) {
+            return `Restart signal sended successfully to the ${instance}.`
+          } else {
+            throw new Error(`Cannot send restart signal to the ${instance}.`)
+          }
         } else {
-          throw new Error(`Cannot send restart signal to the ${instance}.`)
+          throw new Error('Bad configuration, restart aborted.')
         }
       } catch (error) {
-
+        throw new Error(error)
       }
     }
 
     const restartNode = async (node) => {
       try {
-        const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
-        if (
-          result &&
-          result.data &&
-          result.data.error === 0
-        ) {
-          return `Restart signal sended successfully to the node ${node}.`
+        const checkConfig = await $requestService.apiReq(`/${instance}/configuration/validation`)
+        if (checkConfig.data.data === 'Configuration is OK') {
+          const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
+          if (
+            result &&
+            result.data &&
+            result.data.error === 0
+          ) {
+            return `Restart signal sended successfully to the node ${node}.`
+          } else {
+            throw new Error(`Cannot send restart signal to the node ${node}.`)
+          }
         } else {
-          throw new Error(`Cannot send restart signal to the node ${node}.`)
+          throw new Error('Bad configuration, restart aborted.')
         }
       } catch (error) {
         throw new Error(error)
