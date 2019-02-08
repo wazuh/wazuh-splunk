@@ -76,7 +76,6 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
 
-    # /custom/SplunkAppForWazuh/manager/check_connection
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
         """Check API connection.
@@ -102,7 +101,6 @@ class manager(controllers.BaseController):
             request_cluster_name = self.session.get(
                 url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()
             output = {}
-            self.logger.info(' REQUEST CONTENIDOO %s' % (request_manager))
             output['managerName'] = request_manager['data']
             output['clusterMode'] = request_cluster['data']
             output['clusterName'] = request_cluster_name['data']
@@ -110,7 +108,7 @@ class manager(controllers.BaseController):
             result = jsonbak.dumps(output)
         except Exception as e:
             self.logger.error("Cannot connect to API : %s" % (e))
-            return jsonbak.dumps({"status": "400", "error": str(e)})
+            return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
         return result
 
     @expose_page(must_login=False, methods=['GET'])
@@ -188,7 +186,6 @@ class manager(controllers.BaseController):
 
         """
         try:
-            self.logger.info('Manager get_api KWARGS:  %s' % (kwargs))
             if 'id' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['id']
@@ -228,7 +225,6 @@ class manager(controllers.BaseController):
 
         """
         try:
-            self.logger.info('ADDING API')
 
             record = kwargs
             keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName', 'filterType', 'filterName']
@@ -253,7 +249,6 @@ class manager(controllers.BaseController):
 
         """
         try:
-            self.logger.info("removing api kwargs "+str(kwargs))
             api_id = kwargs
             if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})
@@ -275,8 +270,6 @@ class manager(controllers.BaseController):
 
         """
         try:
-            self.logger.info('------------------------------------------------------------------------------')
-            self.logger.info('KWARGS! %s' % (kwargs))
             entry = kwargs
             if '_user' in kwargs:
                 del kwargs['_user']

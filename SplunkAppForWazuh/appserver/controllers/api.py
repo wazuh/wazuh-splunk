@@ -142,7 +142,6 @@ class api(controllers.BaseController):
                     return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
-            self.logger.info('KWARGSSSS API PYTHON %s ' % (kwargs))
             the_id = kwargs['id']
             api = self.db.get(the_id)
             api = jsonbak.loads(api)

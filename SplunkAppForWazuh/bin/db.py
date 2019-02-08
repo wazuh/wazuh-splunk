@@ -65,14 +65,14 @@ class database():
                 raise Exception('Missing Key')
             id = obj['_key']
             del obj['_key']
+            obj = jsonbak.dumps(obj)
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
             result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             parsed_result = jsonbak.dumps({'data': result})
+            return parsed_result
         except Exception as e:
             self.logger.error("Error updating in DB module: %s" % (e))
             raise e
-        return parsed_result
-
 
     def remove(self, _key):
         """Remove an API.
