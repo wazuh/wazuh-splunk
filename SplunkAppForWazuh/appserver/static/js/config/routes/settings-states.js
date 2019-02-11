@@ -156,7 +156,8 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('discover')
           },
-          params: { id: null }
+          controller: 'discoverCtrl',
+          params: { fromDashboard: null, previousState: null, breadcrumbs: null },
         })
     }
   ])

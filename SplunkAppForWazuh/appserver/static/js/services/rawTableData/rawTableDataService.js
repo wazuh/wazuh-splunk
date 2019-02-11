@@ -13,8 +13,9 @@ define([
      * @param {String} token
      * @param {String} value
      * @param {scope} scope
+     * @param {string} name
      */
-    constructor(id, search, token, value, scope) {
+    constructor(id, search, token, value, scope, name) {
       super(
         new SearchEventHandler({
           id: id,
@@ -34,23 +35,26 @@ define([
       )
       mvc.Components.revokeInstance(this.id)
       this.token = token
+      this.name = name
       this.results = {}
 
       this.getSearch().on('search:failed', () => {
+        this.results = {}
         console.error('Failed search')
       })
 
       this.getSearch().on('search:cancelled', () => {
+        this.results = {}
         console.error('Cancelled search')
       })
 
       this.getSearch().on('search:error', error => {
+        this.results = {}
         console.error(error)
       })
 
       this.getSearch().on('search:start', () => {
         this.results = {}
-        this.getSearch().trigger('result', this.results)
       })
 
       this.getSearch().on('search:progress', () => {})
@@ -65,12 +69,10 @@ define([
         tableData.on('data', data => {
           try {
             if (data._data) {
-              this.results = {
-                fields: tableData._data.fields,
-                rows: tableData._data.rows
-              }
-              this.getSearch().trigger('result', this.results)
+              this.results.fields = tableData._data.fields
+              this.results.rows = tableData._data.rows
               this.getSearch().finish = true
+              this.checkVizzStatus()
             } else {
               this.getSearch().finish = false
             }

@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, Table, AreaChart, TimePicker, rawTableDataService) {
+], function(app, PieChart, Table, AreaChart, TimePicker, RawTableDataService) {
   'use strict'
 
   class AgentsVirusTotal {
@@ -105,53 +105,38 @@ define([
           }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
           'filesAffected',
           this.scope
+        ),
+        new RawTableDataService(
+          'eventsSummaryTable',
+          `${
+            this.filters
+          } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
+          'eventsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Events Summary'
+        ),
+        new RawTableDataService(
+          'top5RulesTable',
+          `${
+            this.filters
+          } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'top5RulesTableToken',
+          '$result$',
+          this.scope,
+          'Top 5 Rules'
+        ),
+        new RawTableDataService(
+          'filesAffectedTable',
+          `${
+            this.filters
+          }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
+          'filesAffectedTableToken',
+          '$result$',
+          this.scope,
+          'Files Affected'
         )
       ]
-
-      this.eventsSummaryTable = new rawTableDataService(
-        'eventsSummaryTable',
-        `${
-          this.filters
-        } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-        'eventsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.eventsSummaryTable)
-
-      this.eventsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Events Summary'] = result
-      })
-
-      this.top5RulesTable = new rawTableDataService(
-        'top5RulesTable',
-        `${
-          this.filters
-        } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-        'top5RulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.top5RulesTable)
-
-      this.top5RulesTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 Rules'] = result
-      })
-
-      this.filesAffectedTable = new rawTableDataService(
-        'filesAffectedTable',
-        `${
-          this.filters
-        }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-        'filesAffectedTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.filesAffectedTable)
-
-      this.filesAffectedTable.getSearch().on('result', result => {
-        this.tableResults['Files Affected'] = result
-      })
 
       // Set agent info
       try {
@@ -202,6 +187,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

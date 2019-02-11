@@ -1,0 +1,43 @@
+<div layout="row" layout-padding="" class="layout-padding layout-row">
+  <span class="fa fa-fw fa-pencil-square-o"></span>
+  <span ng-if="!clusterEnabled" class="font-size-18"> Manager configuration</span>
+  <span ng-if="clusterEnabled" class="font-size-18"> Cluster configuration</span>
+</div>
+<!-- XML editor for ossec.conf -->
+<div ng-show="editingNode">
+  <div layout="row" class="md-padding">
+    <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+        aria-hidden="true"></i>
+      <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+    </button>
+    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+        file</span>
+      <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+        XML format error</span>
+    </button>
+
+    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)"
+      style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
+      
+    <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="restart()" class='btn btn-primary pull-right wz-margin-left-10'>
+      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart {{editingNode}}</span>
+    </button>
+    <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="restart(editingNode)" class='btn btn-primary pull-right wz-margin-left-10'>
+      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart {{editingNode}}</span>
+    </button>
+
+  </div>
+  <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
+    <wz-xml-file-editor file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
+    </wz-xml-file-editor>
+  </div>
+</div>
+
+
+<div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
+</div>
+
+<!-- End last registered agent section -->
+
+</div>

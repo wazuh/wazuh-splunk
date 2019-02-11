@@ -161,12 +161,19 @@ define(['../../module'], function(app) {
                     item => !agent.data.data.group.includes(item)
                   )
                   this.scope.addingGroupToAgent = false
+                  this.scope.editGroup = false
                   this.notificationService.showSimpleToast(
                     `Group ${group} has been added.`
                   )
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
                 .catch(error => {
+                  if(!this.$scope.agent) {
+                    if ( (error || {}).status === -1 ) {
+                      this.scope.emptyAgent = 'Wazuh API timeout.'
+                    }
+                  }
+                  this.$scope.editGroup = false
                   this.scope.addingGroupToAgent = false
                   this.notificationService.showSimpleToast(
                     error.message || error
@@ -230,9 +237,11 @@ define(['../../module'], function(app) {
         }
         this.scope.adminMode = this.extensions['admin'] === 'true'
       } catch (err) {
-        console.error('err ', err)
+        this.scope.load = false
         this.scope.adminMode = false
         this.notificationService.showSimpleToast('Error loading agent data.')
+        if (!this.$scope.$$phase) this.$scope.$digest()
+
       }
     }
 

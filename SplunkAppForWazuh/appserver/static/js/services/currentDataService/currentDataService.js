@@ -56,16 +56,20 @@ define(['../module'], function(module) {
       return $filterService.addFilter(filter)
     }
 
-    const getSerializedFilters = () => {
-      return $filterService.getSerializedFilters()
+    const getSerializedFilters = (hideOnlyShowFilters) => {
+      return $filterService.getSerializedFilters(hideOnlyShowFilters)
     }
 
     const removeFilter = filter => {
       return $filterService.removeFilter(filter)
     }
 
-    const cleanFilters = () => {
-      return $filterService.cleanFilters()
+    const pinFilter = filter => {
+      return $filterService.pinFilter(filter)
+    }
+
+    const cleanFilters = (cleanAgentsPinedFilters) => {
+      return $filterService.cleanFilters(cleanAgentsPinedFilters)
     }
 
     const update = register => {
@@ -146,6 +150,7 @@ define(['../module'], function(module) {
       addFilter: addFilter,
       getSerializedFilters: getSerializedFilters,
       removeFilter: removeFilter,
+      pinFilter: pinFilter,
       cleanFilters: cleanFilters,
       getFilters: getFilters,
       update: update,

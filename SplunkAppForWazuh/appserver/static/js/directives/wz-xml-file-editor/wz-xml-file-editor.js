@@ -22,23 +22,69 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function(app, CodeMirror) {
+], function (app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function(BASE_URL) {
+  app.directive('wzXmlFileEditor', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         fileName: '@fileName',
         validFn: '&',
         data: '=data',
-        targetName: '=targetName'
+        targetName: '=targetName',
+        closeFn: '&'
       },
-      controller($scope, $document, $notificationService, $groupHandler) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor, $mdDialog, $restartService) {
+        /**
+         * Custom .replace method. Instead of using .replace which
+         * evaluates regular expressions.
+         * Alternative using split + join, same result.
+         */
+        String.prototype.xmlReplace = function (str, newstr) {
+          return this.split(str).join(newstr)
+        }
         let firstTime = true
+        const parser = new DOMParser() // eslint-disable-line
+
+        /**
+         * Escape "&" characters.
+         * @param {*} text
+         */
+        const replaceIllegalXML = text => {
+          const oDOM = parser.parseFromString(text, 'text/html')
+          const lines = oDOM.documentElement.textContent.split('\n')
+
+          for (const line of lines) {
+            const sanitized = line
+              .trim()
+              .xmlReplace('&', '&amp;')
+              .xmlReplace(/</g, '\&lt;')
+              .xmlReplace(/>/g, '\&gt;')
+              .xmlReplace(/"/g, '\&quot;')
+              .xmlReplace(/'/g, '\&apos;')
+            /**
+             * Do not remove this condition. We don't want to replace
+             * non-sanitized lines.
+             */
+            if (!line.includes(sanitized)) {
+              text = text.xmlReplace(line.trim(), sanitized)
+            }
+          }
+          return text
+        }
+
+        // Block function if there is another check in progress
+        let checkingXmlError = false
         const checkXmlParseError = () => {
+          if (checkingXmlError) {
+            return
+          }
+          checkingXmlError = true
           try {
-            const parser = new DOMParser() // eslint-disable-line
-            const xml = $scope.xmlCodeBox.getValue()
+            const text = $scope.xmlCodeBox.getValue()
+
+            const xml = replaceIllegalXML(text)
+
             const xmlDoc = parser.parseFromString(
               '<file>' + xml + '</file>',
               'text/xml'
@@ -52,26 +98,85 @@ define([
           } catch (error) {
             $notificationService.showSimpleToast(error, 'Error validating XML')
           }
+          checkingXmlError = false
           if (!$scope.$$phase) $scope.$digest()
           return
         }
 
-        const autoFormat = () => {
-          const totalLines = $scope.xmlCodeBox.lineCount()
-          $scope.xmlCodeBox.autoFormatRange(
-            { line: 0, ch: 0 },
-            { line: totalLines - 1 }
-          )
-          $scope.xmlCodeBox.setCursor(0)
+        const autoFormat = xml => {
+          var reg = /(>)\s*(<)(\/*)/g
+          var wsexp = / *(.*) +\n/g
+          var contexp = /(<.+>)(.+\n)/g
+          xml = xml
+            .replace(reg, '$1\n$2$3')
+            .replace(wsexp, '$1\n')
+            .replace(contexp, '$1\n$2')
+          var formatted = ''
+          var lines = xml.split('\n')
+          var indent = 0
+          var lastType = 'other'
+          var transitions = {
+            'single->single': 0,
+            'single->closing': -1,
+            'single->opening': 0,
+            'single->other': 0,
+            'closing->single': 0,
+            'closing->closing': -1,
+            'closing->opening': 0,
+            'closing->other': 0,
+            'opening->single': 1,
+            'opening->closing': 0,
+            'opening->opening': 1,
+            'opening->other': 1,
+            'other->single': 0,
+            'other->closing': -1,
+            'other->opening': 0,
+            'other->other': 0
+          }
+
+          for (var i = 0; i < lines.length; i++) {
+            var ln = lines[i]
+            if (ln.match(/\s*<\?xml/)) {
+              formatted += ln + '\n'
+              continue
+            }
+            var single = Boolean(ln.match(/<.+\/>/)) // is this line a single tag? ex. <br />
+            var closing = Boolean(ln.match(/<\/.+>/)) // is this a closing tag? ex. </a>
+            var opening = Boolean(ln.match(/<[^!].*>/)) // is this even a tag (that's not <!something>)
+            var type = single
+              ? 'single'
+              : closing
+                ? 'closing'
+                : opening
+                  ? 'opening'
+                  : 'other'
+            var fromTo = lastType + '->' + type
+            lastType = type
+            var padding = ''
+
+            indent += transitions[fromTo]
+            for (var j = 0; j < indent; j++) {
+              padding += '\t'
+            }
+            if (fromTo == 'opening->closing')
+              formatted = formatted.substr(0, formatted.length - 1) + ln + '\n'
+            // substr removes line break (\n) from prev loop
+            else formatted += padding + ln + '\n'
+          }
+          return formatted.trim()
         }
 
         const saveFile = async params => {
           try {
-            const content = $scope.xmlCodeBox.getValue().trim()
-            await $groupHandler.sendConfiguration(params.group, content)
-            $notificationService.showSimpleToast(
-              'Success. Group has been updated'
-            )
+            const text = $scope.xmlCodeBox.getValue()
+            const xml = replaceIllegalXML(text)
+            if (params && params.group) {
+              await $groupHandler.sendConfiguration(params.group, xml)
+            } else if (params && params.file) {
+              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
+            }
+            showRestartDialog(`${params.file || params.group} updated`, params.node)
+            $scope.closeFn()
           } catch (error) {
             $notificationService.showSimpleToast(
               error.message || error,
@@ -96,9 +201,11 @@ define([
 
         const init = (data = false) => {
           try {
-            $scope.xmlCodeBox.setValue(data || $scope.data)
+            $scope.xmlCodeBox.setValue(autoFormat(data || $scope.data))
             firstTime = false
-            $scope.xmlCodeBox.refresh()
+            setTimeout(() => {
+              $scope.xmlCodeBox.refresh()
+            }, 1)
             autoFormat()
           } catch (error) {
             $notificationService.showSimpleToast('Fetching original file')
@@ -118,6 +225,65 @@ define([
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
+
+        const showRestartDialog = async (msg, target) => {
+          const confirm = $mdDialog.confirm({
+            controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
+              $scope.myScope = myScope
+              $scope.closeDialog = () => {
+                $mdDialog.hide()
+                $('body').removeClass('md-dialog-body')
+              }
+              $scope.confirmDialog = () => {
+                $mdDialog.hide()
+                if (target) {
+                  $restartService.restartNode(target)
+                  .then(data => {
+                    $('body').removeClass('md-dialog-body')
+                    $notificationService.showSimpleToast(data)
+                    $scope.myScope.$applyAsync()
+                  })
+                  .catch(error =>
+                    $notificationService.showSimpleToast(error.message || error, 'Error restarting node'))
+                } else {
+                  $restartService.restart()
+                  .then(data => {
+                    $('body').removeClass('md-dialog-body')
+                    $notificationService.showSimpleToast(data)
+                    $scope.myScope.$applyAsync()
+                  })
+                  .catch(error =>
+                    $notificationService.showSimpleToast(error.message || error, 'Error restarting'))
+                }
+              }
+            },
+            template:
+              '<md-dialog class="modalTheme euiToast euiToast--success euiGlobalToastListItem">' +
+              '<md-dialog-content>' +
+              '<div class="euiToastHeader">' +
+              '<i class="fa fa-check"></i>' +
+              '<span class="euiToastHeader__title">' +
+              `${msg}` +
+              `. Do you want to restart now?` +
+              '</span>' +
+              '</div>' +
+              '</md-dialog-content>' +
+              '<md-dialog-actions>' +
+              '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">I will do it later</button>' +
+              '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Restart</button>' +
+              '</md-dialog-actions>' +
+              '</md-dialog>',
+            hasBackdrop: false,
+            clickOutsideToClose: true,
+            disableParentScroll: true,
+            locals: {
+              myScope: $scope,
+            }
+          })
+          $('body').addClass('md-dialog-body')
+          $mdDialog.show(confirm)
+        }
+
       },
       templateUrl:
         BASE_URL +

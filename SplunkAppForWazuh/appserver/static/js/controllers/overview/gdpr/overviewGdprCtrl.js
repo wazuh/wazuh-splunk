@@ -20,7 +20,8 @@ define([
       $scope,
       $currentDataService,
       $state,
-      $reportingService
+      $reportingService,
+      gdprTabs
     ) {
       this.scope = $scope
       this.state = $state
@@ -28,6 +29,7 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       this.filters = this.getFilters()
+      this.scope.gdprTabs = (gdprTabs) ? gdprTabs : false
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -74,7 +76,7 @@ define([
           'groupsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups{}`,
           'groupsViz',
           this.scope
         ),

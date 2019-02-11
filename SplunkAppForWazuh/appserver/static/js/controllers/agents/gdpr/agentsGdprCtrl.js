@@ -13,7 +13,7 @@ define([
   Table,
   TimePicker,
   Dropdown,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -34,7 +34,8 @@ define([
       $scope,
       $state,
       agent,
-      $reportingService
+      $reportingService,
+      gdprTabs
     ) {
       this.scope = $scope
       this.state = $state
@@ -77,9 +78,7 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
       })
-
-      this.scope.gdprTabs = false
-
+      this.scope.gdprTabs = (gdprTabs) ? gdprTabs : false
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
       })
@@ -104,7 +103,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
@@ -131,23 +130,18 @@ define([
           } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -197,10 +191,16 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
       })
+      
       /**
        * When controller is destroyed
        */

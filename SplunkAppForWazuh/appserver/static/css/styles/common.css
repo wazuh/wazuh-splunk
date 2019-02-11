@@ -20,6 +20,28 @@
   outline-color: transparent !important;
 } */
 
+.wzJsonXmlEditorBody, .wzJsonXmlEditorBody .CodeMirror{
+  height: 100%;
+  min-height: 300px;
+}
+
+/*
+ * https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
+ * Handling long URLs on error toasts.
+ */
+ .euiGlobalToastList > .euiToast > .euiToastHeader > .euiToastHeader__title {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+} 
+
+
 .addGroupInput {
   max-height: 20px !important;
   max-width: 181px !important;
@@ -28,6 +50,10 @@
 
 .addGroupBtn {
   background-color: #0079a5 !important
+}
+
+.min-height-300 {
+  min-height: 300px;
 }
 
 .agreeBtn {
@@ -793,6 +819,16 @@ kbn-vis .vis-container {
 .wz-icon {
   width: 35px !important;
   height: 35px !important;
+}
+
+.btn-as-i {
+  background: transparent !important;
+  border: 0;
+  padding: 0!important;
+  margin: 0;
+  font-size: 18px;
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
 }
 
 md-backdrop.md-opaque {

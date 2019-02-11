@@ -4,14 +4,12 @@ define(['../module', 'jquery'], function(module, $) {
     constructor(
       $rootScope,
       vis2png,
-      //  rawVisualizations,
       $currentDataService,
       $requestService,
       $notificationService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
-      //  this.rawVisualizations = rawVisualizations
       this.visHandlers = $currentDataService
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
@@ -40,31 +38,25 @@ define(['../module', 'jquery'], function(module, $) {
           this.errorHandler('Report in progress')
           return
         }
-        this.$rootScope.reportBusy = true
-        this.$rootScope.reportStatus = 'Generating report...0%'
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
 
         this.vis2png.clear()
 
-        // const idArray = this.rawVisualizations.getList().map(item => item.id)
-        const idArray = vizz
-
-        for (const item of idArray) {
+        for (const item of vizz) {
           const tmpHTMLElement = $(`#${item}`)
           this.vis2png.assignHTMLItem(item, tmpHTMLElement)
         }
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const images = await this.vis2png.checkArray(idArray)
+        const images = await this.vis2png.checkArray(vizz)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
         //Search time range
-        const timeRange = document
-          .getElementById('timePicker')
-          .getElementsByTagName('span')[1].innerHTML
+        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML ?
+          document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML : ' '
 
         const data = {
           images,
@@ -87,8 +79,6 @@ define(['../module', 'jquery'], function(module, $) {
           data: JSON.stringify(data)
         })
 
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.errorHandler('Success. Go to Management -> Reporting')
         this.$rootScope.$broadcast('loadingReporting', { status: false })
@@ -103,17 +93,11 @@ define(['../module', 'jquery'], function(module, $) {
         }
       }
     }
-    async reportInventoryData(
-      tab,
-      sectionTitle,
-      queryFilters = '',
-      vizz = [],
-      metrics = {},
-      tableResults = {},
-      isAgents = 'inventory',
-      agentId
-    ) {
+
+    async reportInventoryData(agentId) {
       try {
+        let tableResults = {}
+        let isAgents
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         //Get agent info and formating tables
         try {
@@ -206,15 +190,14 @@ define(['../module', 'jquery'], function(module, $) {
         const packagesTable = { fields: packagesKeys, rows: packagesData }
         tableResults['Packages'] = packagesTable
 
-        const images = vizz
         const data = {
-          images,
+          images: [],
           tableResults,
           timeRange: '',
-          sectionTitle,
-          queryFilters,
-          metrics,
-          pdfName: tab,
+          sectionTitle: 'Inventory Data',
+          queryFilters: '',
+          metrics: {},
+          pdfName: 'agents-inventory',
           isAgents
         }
 
@@ -222,15 +205,12 @@ define(['../module', 'jquery'], function(module, $) {
           data: JSON.stringify(data)
         })
 
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.errorHandler('Success. Go to Management -> Reporting')
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
+        console.error(error)
         this.errorHandler('Reporting error')
       }
     }

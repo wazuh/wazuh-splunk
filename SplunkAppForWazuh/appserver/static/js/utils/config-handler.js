@@ -172,6 +172,7 @@ define([
         try {
           const cleaned = objectWithoutProperties(config)
           $scope.XMLContent = XMLBeautifier(js2xmlparser(cleaned))
+          $scope.$broadcast('XMLContentReady', { data: $scope.XMLContent })
         } catch (error) {
           $scope.XMLContent = false
         }
@@ -192,7 +193,8 @@ define([
       } else {
         try {
           const cleaned = objectWithoutProperties(config)
-          $scope.JSONContent = this.beautifier.prettyPrint(cleaned)
+          $scope.JSONContent = JSON.stringify(cleaned, null, 2)
+          $scope.$broadcast('JSONContentReady', { data: $scope.JSONContent })
         } catch (error) {
           $scope.JSONContent = false
         }

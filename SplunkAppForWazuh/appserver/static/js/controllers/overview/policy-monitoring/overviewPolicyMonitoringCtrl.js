@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
+], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
   class PM {
     /**
@@ -28,6 +28,9 @@ define([
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
+      $currentDataService.addFilter(
+        `{"rule.groups":"rootcheck", "implicit":true}`
+      )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.timePicker = new TimePicker(
@@ -42,7 +45,7 @@ define([
           'elementOverTime',
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="rootcheck" rule.description=* | timechart span=1h count by rule.description`,
+          } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime',
           this.scope
         ),
@@ -50,7 +53,7 @@ define([
           'cisRequirements',
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="rootcheck" rule.cis{}=* | top  rule.cis{}`,
+          } sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
           'cisRequirements',
           this.scope
         ),
@@ -58,7 +61,7 @@ define([
           'topPciDss',
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="rootcheck" rule.pci_dss{}=* | top  rule.pci_dss{}`,
+          } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss',
           this.scope
         ),
@@ -66,7 +69,7 @@ define([
           'eventsPerAgent',
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="rootcheck" | timechart span=2h count by agent.name`,
+          } sourcetype=wazuh | timechart span=2h count by agent.name`,
           'eventsPerAgent',
           this.scope
         ),
@@ -74,26 +77,21 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="rootcheck" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh "rule.groups"="rootcheck" |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -140,6 +138,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
