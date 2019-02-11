@@ -283,10 +283,15 @@ define(['../module'], function (module) {
      */
     const checkApiConnection = async id => {
       try {
-        const api = await select(id)
+        const api = await select(id)//Before update cluster or not cluster
+        const apiSaved = { ...api }
         const updatedApi = await updateApiFilter(api)
         let equal = true
-        Object.keys(updatedApi).forEach((key) => { if (updatedApi[key] !== api[key]) equal = false })
+        Object.keys(updatedApi).forEach((key) => {
+          if (updatedApi[key] !== apiSaved[key]) {
+            equal = false
+          }
+        })
         if (!equal) {
           await $splunkStoreService.update(updatedApi)
         } else {
