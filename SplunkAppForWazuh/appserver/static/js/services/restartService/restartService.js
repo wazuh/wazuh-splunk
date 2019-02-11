@@ -9,7 +9,7 @@ define(['../module'], function (module) {
           clusterStatus.data.data.running === 'yes' &&
           clusterStatus.data.data.running === 'yes' ? 'cluster' : 'manager'
         const checkConfig = await $requestService.apiReq(`/${instance}/configuration/validation`)
-        if (checkConfig.data.data === 'Configuration is OK') {
+        if (checkConfig.data.data.status === 'OK') {
           const result = await $requestService.apiReq(`/${instance}/restart`, {}, `PUT`)
           if (
             result &&
@@ -31,7 +31,7 @@ define(['../module'], function (module) {
     const restartNode = async (node) => {
       try {
         const checkConfig = await $requestService.apiReq(`/cluster/${node}/configuration/validation`)
-        if (checkConfig.data.data === 'Configuration is OK') {
+        if (checkConfig.data.data.status === 'OK') {
           const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
           if (
             result &&

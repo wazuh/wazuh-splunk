@@ -56,7 +56,7 @@
     <!-- End separator -->
 
     <!-- Restart button -->
-    <button ng-if="isAdmin" ng-click="restart()" class="btn btn-primary pull-right ng-scope">
+    <button ng-if="isAdmin" ng-click="restart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
       <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
         Restart {{node}}
       </span>

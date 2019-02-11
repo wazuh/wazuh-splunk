@@ -228,8 +228,7 @@ define([
 
         const showRestartDialog = async (msg, target) => {
           const confirm = $mdDialog.confirm({
-            controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
-              $scope.myScope = myScope
+            controller: function ($scope, scope, $notificationService, $mdDialog, $restartService) {
               $scope.closeDialog = () => {
                 $mdDialog.hide()
                 $('body').removeClass('md-dialog-body')
@@ -237,20 +236,24 @@ define([
               $scope.confirmDialog = () => {
                 $mdDialog.hide()
                 if (target) {
+                  scope.$broadcast('restartResponseReceived', {})
                   $restartService.restartNode(target)
                   .then(data => {
                     $('body').removeClass('md-dialog-body')
                     $notificationService.showSimpleToast(data)
-                    $scope.myScope.$applyAsync()
+                    scope.$broadcast('restartResponseReceived', {})
+                    scope.$applyAsync()
                   })
                   .catch(error =>
                     $notificationService.showSimpleToast(error.message || error, 'Error restarting node'))
                 } else {
+                  scope.$broadcast('restartResponseReceived', {})
                   $restartService.restart()
                   .then(data => {
                     $('body').removeClass('md-dialog-body')
                     $notificationService.showSimpleToast(data)
-                    $scope.myScope.$applyAsync()
+                    scope.$broadcast('restartResponseReceived', {})
+                    scope.$applyAsync()
                   })
                   .catch(error =>
                     $notificationService.showSimpleToast(error.message || error, 'Error restarting'))
@@ -277,7 +280,7 @@ define([
             clickOutsideToClose: true,
             disableParentScroll: true,
             locals: {
-              myScope: $scope,
+              scope: $scope,
             }
           })
           $('body').addClass('md-dialog-body')
