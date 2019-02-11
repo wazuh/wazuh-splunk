@@ -14,7 +14,7 @@ define(['../../module'], function(controllers) {
     }
 
     $onInit() {
-      const id = this.currentapi['_key']
+      const id = this.currentApi['_key']
       this.scope.toggleExtension = (extension, state) =>
         this.toggleExtension(extension, state)
       this.currentExtensions = this.extensions.data || this.extensions
