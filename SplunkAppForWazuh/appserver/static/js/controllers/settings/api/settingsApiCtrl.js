@@ -58,7 +58,7 @@ define(['../../module'], function (controllers) {
         let currentApi = this.currentDataService.getApi()
         // If there is API, then show it as selected
         if (currentApi) {
-          this.apiList.map((api) => { (api['_key'] === currentApi['_key']) ? api.selected = true : api.selected = false })
+          this.setYellowStar(currentApi['_key'])
         }
         this.scope.apiList = this.apiList
         if (!currentApi && Array.isArray(this.scope.apiList)) {
@@ -261,8 +261,13 @@ define(['../../module'], function (controllers) {
         // Empties the form fields
         this.clearForm()
 
-        // If the only one API in the list, then try to select it
+        // Push to te API list
         this.scope.apiList.push(api)
+
+        // If the only one API in the list, then try to select it
+        if (this.scope.apiList.length === 1) {
+          this.selectManager(api['_key'])
+        }
 
         this.scope.showForm = false
         if (!this.scope.$$phase) this.scope.$digest()
@@ -314,7 +319,7 @@ define(['../../module'], function (controllers) {
       this.scope.user = ''
       this.scope.pass = ''
     }
-
+    
     setYellowStar(key) {
       this.apiList.map((api) => { (api['_key'] === key) ? api.selected = true : api.selected = false })
     }
