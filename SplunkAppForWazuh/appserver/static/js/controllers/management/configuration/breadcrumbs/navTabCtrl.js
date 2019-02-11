@@ -14,6 +14,7 @@ define(['../../../module'], function (controllers) {
     }
 
     $onInit() {
+      this.scope.restartInProgress = false
       this.scope.isAdmin = this.isAdmin
       this.scope.node = this.clusterEnabled ? 'cluster' : 'manager'
 
@@ -48,6 +49,9 @@ define(['../../../module'], function (controllers) {
       }
 
       this.scope.restart = (node) => this.restart(node)
+
+      //Listen if restart response was received
+      this.scope.$on('restartResponseReceived ', () => this.scope.restartInProgress = !this.scope.restartInProgress)
     }
 
     getSectionName(name) {
@@ -71,6 +75,7 @@ define(['../../../module'], function (controllers) {
 
     async restart(node = false) {
       try {
+        this.scope.restartInProgress = true
         let result = ''
         if (this.clusterEnabled && node) {
           result = await this.restartService.restartNode(node)
@@ -79,8 +84,10 @@ define(['../../../module'], function (controllers) {
         }
         this.toast(result)
         this.refreshClusterStatus()
+        this.scope.restartInProgress = false
       } catch (error) {
         this.toast(error)
+        this.scope.restartInProgress = false
       }
     }
 

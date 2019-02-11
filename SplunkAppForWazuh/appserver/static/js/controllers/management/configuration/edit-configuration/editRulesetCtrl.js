@@ -378,19 +378,20 @@ define([
 
     async showRestartDialog(msg) {
       const confirm = this.mdDialog.confirm({
-        controller: function ($scope, myScope, $notificationService, $mdDialog, $restartService) {
-          $scope.myScope = myScope;
+        controller: function ($scope, scope, $notificationService, $mdDialog, $restartService) {
           $scope.closeDialog = () => {
             $mdDialog.hide();
             $('body').removeClass('md-dialog-body');
           };
           $scope.confirmDialog = () => {
             $mdDialog.hide();
+            scope.$broadcast('restartResponseReceived', {})
             $restartService.restart()
               .then(data => {
                 $('body').removeClass('md-dialog-body');
                 $notificationService.showSimpleToast(data);
-                $scope.myScope.$applyAsync();
+                scope.$broadcast('restartResponseReceived', {})
+                scope.$applyAsync();
               })
               .catch(error =>
                 $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
@@ -416,7 +417,7 @@ define([
         clickOutsideToClose: true,
         disableParentScroll: true,
         locals: {
-          myScope: this.scope,
+          scope: this.scope,
         }
       });
       $('body').addClass('md-dialog-body');
