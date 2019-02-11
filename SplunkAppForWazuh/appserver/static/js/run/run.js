@@ -31,7 +31,6 @@ define(['./module'], function(module) {
             }", "implicit":true}`
           )
         } catch (err) {
-          console.error('err ',err)
           $rootScope.$broadcast('loading', { status: false })
           if (state != 'settings.api')
             $rootScope.$broadcast('stateChanged', 'settings')
