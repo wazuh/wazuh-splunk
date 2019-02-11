@@ -54,6 +54,9 @@ define([
       this.showFiles = false
       this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel
+      this.currentDataService.addFilter(
+        `{"rule.groups":"syscheck", "implicit":true, "onlyShow":true}`
+      )
       if (
         this.agent &&
         this.agent.data &&

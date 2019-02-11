@@ -31,10 +31,12 @@ define([
       $scope,
       $currentDataService,
       $state,
-      $reportingService
+      $reportingService,
+      pciTabs
     ) {
       this.scope = $scope
       this.state = $state
+      this.scope.pciTabs = (pciTabs) ? pciTabs : false
       this.reportingService = $reportingService
       this.tableResults = {}
       this.getFilters = $currentDataService.getSerializedFilters

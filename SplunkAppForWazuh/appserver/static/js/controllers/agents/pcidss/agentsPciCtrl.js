@@ -33,13 +33,15 @@ define([
       $state,
       $currentDataService,
       agent,
-      $reportingService
+      $reportingService,
+      pciTabs
     ) {
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.scope = $scope
+      this.scope.pciTabs = (pciTabs) ? pciTabs : false
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',

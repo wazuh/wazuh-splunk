@@ -28,16 +28,16 @@ define(['../module'], function(directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
 
-        $scope.dumpHtml = item => {
-          $scope.menuNavItem = item
+        $scope.openDiscover = () => {
+          $scope.menuNavItem = 'discover'
           $scope.$broadcast('stateChanged', 'discover')
           if (!$scope.$$phase) $scope.$digest()
           //Generate url
-          let filters = $currentDataService.getSerializedFilters()
-          let url = `${BASE_URL}/app/search/search?q=${filters}`
+          let url = `${BASE_URL}/app/search/search?q=index=wazuh`
           localStorage.setItem('urlDiscover', url)
-          $state.go('discover')
+          $state.go('discover', { fromDashboard: false })
         }
+
         const checkLastState = (prefix, state) => {
           if (
             ($navigationService.getLastState() &&

@@ -36,6 +36,9 @@ define([
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
+      $currentDataService.addFilter(
+        `{"rule.groups":"syscheck", "implicit":true, "onlyShow":true}`
+      )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.tableResults = {}

@@ -53,7 +53,8 @@ define([
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
         adminMode: '=adminMode',
-        emptyResults: '=emptyResults'
+        emptyResults: '=emptyResults',
+        quickEdit: '=quickEdit'
       },
       controller(
         $rootScope,
@@ -123,10 +124,12 @@ define([
          */
         const fetch = async (options = {}) => {
           try {
-            if((instance.filters || []).length) {
-              $scope.customEmptyResults = 'No results match your search criteria'
+            if ((instance.filters || []).length) {
+              $scope.customEmptyResults =
+                'No results match your search criteria'
             } else {
-              $scope.customEmptyResults = $scope.emptyResults || 'Empty results for this table.';
+              $scope.customEmptyResults =
+                $scope.emptyResults || 'Empty results for this table.'
             }
             const result = await instance.fetch(options)
             items = options.realTime ? result.items.slice(0, 10) : result.items
@@ -357,6 +360,10 @@ define([
           $scope.removingGroup = null
         }
 
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList',{group})
+        }
+
         $scope.confirmRemoveAgent = async agent => {
           try {
             const group = instance.path.split('/').pop()
@@ -383,6 +390,11 @@ define([
           $scope.removingGroup = null
           return init()
         }
+
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList',{group})
+        }
+        
       },
       templateUrl:
         BASE_URL +

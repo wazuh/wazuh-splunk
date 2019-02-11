@@ -12,5 +12,6 @@ define([
   './wz-data-table/wz-data-table',
   './wz-xml-file-editor/wz-xml-file-editor',
   './wz-multiple-selector/wz-multiple-selector',
-  './wz-config-viewer/wz-config-viewer'
+  './wz-config-viewer/wz-config-viewer',
+  './wz-discover/wz-discover'
 ], function() {})
