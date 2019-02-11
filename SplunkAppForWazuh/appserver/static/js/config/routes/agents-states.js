@@ -579,6 +579,29 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            configAssess: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/configuration_assessment/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
             ]
           }
         })

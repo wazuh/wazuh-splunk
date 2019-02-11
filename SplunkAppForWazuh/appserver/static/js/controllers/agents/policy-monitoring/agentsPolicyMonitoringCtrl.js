@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function (app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class AgentsPM {
@@ -41,6 +41,7 @@ define([
       $state,
       $currentDataService,
       agent,
+      configAssess,
       $reportingService,
       $requestService,
       $notificationService,
@@ -51,12 +52,13 @@ define([
       this.rootScope = $rootScope
       this.scope = $scope
       this.apiReq = $requestService.apiReq
-      this.scope.showRootcheckScan = false
+      this.scope.showPolicies = false
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
+      this.configAssess = configAssess
       this.toast = $notificationService.showSimpleToast
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
@@ -73,6 +75,18 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
+
+      if (
+        this.configAssess &&
+        this.configAssess.data &&
+        this.configAssess.data.data &&
+        this.configAssess.data.data.items &&
+        this.configAssess.data.error === 0
+      ){
+        this.configAssess = this.configAssess.data.data.items
+        this.scope.configAssess = this.configAssess
+      }
+
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -94,7 +108,7 @@ define([
         new AreaChart(
           'elementOverTime',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime',
           this.scope
@@ -108,7 +122,7 @@ define([
         new PieChart(
           'topPciDss',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss',
           this.scope
@@ -116,7 +130,7 @@ define([
         new AreaChart(
           'eventsPerAgent',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh | timechart span=2h count by agent.name`,
           'eventsPerAgent',
           this.scope
@@ -124,7 +138,7 @@ define([
         new Table(
           'alertsSummary',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
@@ -132,7 +146,7 @@ define([
         new RawTableDataService(
           'alertsSummaryTable',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
@@ -190,7 +204,7 @@ define([
           this.scope.loadingVizz = false
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })
@@ -216,12 +230,7 @@ define([
       this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
       this.scope.switchRootcheckScan = () => {
-        this.scope.showRootcheckScan = !this.scope.showRootcheckScan
-        if (!this.scope.showRootcheckScan) {
-          this.rootScope.$emit('changeTabView', {
-            tabView: this.scope.tabView
-          })
-        }
+        this.scope.showPolicies = !this.scope.showPolicies
         if (!this.scope.$$phase) this.scope.$digest()
       }
 
@@ -287,7 +296,7 @@ define([
         await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
         this.toast(
           `Policy monitoring scan launched successfully on agent ${
-            this.scope.agent.id
+          this.scope.agent.id
           }`
         )
       } catch (error) {
