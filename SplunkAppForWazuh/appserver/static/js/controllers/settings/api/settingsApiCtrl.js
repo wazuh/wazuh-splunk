@@ -105,7 +105,7 @@ define(['../../module'], function (controllers) {
           entry._key
         )
         for (let i = 0; i < this.scope.apiList.length; i++) {
-          if (this.scope.apiList[i].id === entry.id) {
+          if (this.scope.apiList[i]._key === entry._key) {
             this.scope.apiList[i] = connectionData
             this.scope.apiList[i].selected = entry.selected // Check if the API was selected, if it was, set the yellow star
             break
