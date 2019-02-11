@@ -234,6 +234,11 @@ define([
         if (!this.scope.$$phase) this.scope.$digest()
       }
 
+      this.scope.loadPolicyContent = (policyId) => {
+        console.log(`Load ${policyId}`)
+        //API req to /configuration_assessment/{{agentId}}/checks/{{policyId}}
+      }
+
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

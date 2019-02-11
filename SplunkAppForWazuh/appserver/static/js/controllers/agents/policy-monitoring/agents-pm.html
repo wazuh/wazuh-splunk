@@ -138,13 +138,13 @@
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tbody>
               <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
-                <td>{{policy.name}}</td>
+                <td ng-click="loadPolicyContent(policy.id)" class="wz-text-link cursor-pointer">{{policy.name}}</td>
                 <td>
-                  <span style="background-color:red">{{policy.fail}}</span>
-                  <span style="background-color:green">{{policy.pass}}</span>
+                  <span class="wrong">{{policy.fail}}</span>
+                  <span class="pass">{{policy.pass}}</span>
                 </td>
                 <td>Score: <b>{{policy.score}}</b></td>
-                <td>{{policy.references}}</td>
+                <td class="wz-text-link cursor-pointer"><a href="{{policy.references}}" target="_blank">{{policy.references}}</a></td>
               </tr>
             </tbody>
           </table>
