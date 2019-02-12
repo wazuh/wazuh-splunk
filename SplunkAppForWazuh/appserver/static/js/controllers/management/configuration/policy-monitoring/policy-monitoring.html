@@ -27,6 +27,8 @@
   <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Policy monitoring navigation links">
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
+    <md-nav-item ng-if="currentAgent" class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-ca')" name="pm-ca">Configuration
+      assessment</md-nav-item>
   </md-nav-bar>
   <!-- End Policy monitoring navigation bar -->
 
@@ -157,6 +159,39 @@
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
+
+      <!-- The configuration assessment -->
+      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ca'">
+      <md-card-content>
+        <div layout="row" layout-align="start center">
+          <div>
+            <span class="font-size-16">Configuration assessment</span>
+            <div class="wz-margin-top-10">
+              <span class="md-subheader small">Configuration parameters</span>
+            </div>
+          </div>
+          <span flex></span>
+          <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+          <span class="small">&nbsp;&centerdot;&nbsp;</span>
+          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+        </div>
+        <md-divider class="wz-margin-top-10"></md-divider>
+
+        <!-- Configuration block -->
+        <div class="wz-padding-top-10">
+
+          <!-- content -->
+
+          <!-- <wz-config-item label="Policy monitoring service status" value="currentConfig['syscheck-rootcheck'].rootcheck.disabled === 'no' ? 'enabled' : 'disabled'">
+          </wz-config-item> -->
+          
+          <!-- end content -->
+
+        </div>
+        <!-- End configuration block -->
+      </md-card-content>
+      </md-card>
+      <!-- End configuration assessment -->
 
 
       <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
