@@ -230,7 +230,8 @@ define([
       this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
       this.scope.switchRootcheckScan = () => this.switchRootcheckScan()
-      this.scope.loadPolicyChecks = (policyId) => this.loadPolicyChecks(policyId)
+      this.scope.loadPolicyChecks = (id, name) => this.loadPolicyChecks(id, name)
+      this.scope.backToConfAssess = () => this.backToConfAssess()
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -308,16 +309,26 @@ define([
      */
     switchRootcheckScan() {
       this.scope.showPolicies = !this.scope.showPolicies
+      this.scope.showPolicyChecks = name
       this.scope.$applyAsync()
     }
 
     /**
      * Loads policies checks
      */
-    async loadPolicyChecks(policyId) {
+    async loadPolicyChecks(id, name) {
+      this.scope.showPolicyChecks = name
+      this.scope.policyId = id
       const agentId = this.agent.data.data.id
-      const checks = await this.apiReq(`/configuration_assessment/${agentId}/checks/${policyId}`)
-      console.log("Policy checks ", checks)
+      this.scope.wzTablePath = `/configuration_assessment/${agentId}/checks/${id}`
+    }
+
+    /**
+     * Back to configuration assessment from a policy checks
+     */
+    backToConfAssess(){
+      this.scope.showPolicyChecks = false
+      this.scope.showPolicies = true
     }
 
   }
