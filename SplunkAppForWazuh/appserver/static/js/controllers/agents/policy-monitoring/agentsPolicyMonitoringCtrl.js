@@ -82,7 +82,7 @@ define([
         this.configAssess.data.data &&
         this.configAssess.data.data.items &&
         this.configAssess.data.error === 0
-      ){
+      ) {
         this.configAssess = this.configAssess.data.data.items
         this.scope.configAssess = this.configAssess
       }
@@ -229,15 +229,8 @@ define([
       this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
       this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
-      this.scope.switchRootcheckScan = () => {
-        this.scope.showPolicies = !this.scope.showPolicies
-        if (!this.scope.$$phase) this.scope.$digest()
-      }
-
-      this.scope.loadPolicyContent = (policyId) => {
-        console.log(`Load ${policyId}`)
-        //API req to /configuration_assessment/{{agentId}}/checks/{{policyId}}
-      }
+      this.scope.switchRootcheckScan = () => this.switchRootcheckScan()
+      this.scope.loadPolicyChecks = (policyId) => this.loadPolicyChecks(policyId)
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -296,32 +289,37 @@ define([
       this.state.reload()
     }
 
+    /**
+     * Launches a rootcheck scan
+     */
     async launchRootcheckScan() {
       try {
-        await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
-        this.toast(
-          `Policy monitoring scan launched successfully on agent ${
-          this.scope.agent.id
-          }`
-        )
+        const result = await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
+        if (result && result.data && result.data.error === 0){
+          this.toast(`Policy monitoring scan launched successfully on agent ${this.scope.agent.id}`)
+        }
       } catch (error) {
         this.toast(error.message || error)
       }
-      return
     }
 
-    async launchSyscheckScan() {
-      try {
-        await this.apiReq(`/syscheck/${this.scope.agent.id}`, {}, 'PUT')
-        this.toast(
-          `FIM scan launched successfully on agent ${this.scope.agent.id}`
-        )
-      } catch (error) {
-        this.toast(error.message || error)
-      }
-      return
+    /**
+     * Switches between alerts visualizations and policies
+     */
+    switchRootcheckScan() {
+      this.scope.showPolicies = !this.scope.showPolicies
+      this.scope.$applyAsync()
     }
+
+    /**
+     * Loads policies checks
+     */
+    async loadPolicyChecks(policyId) {
+      const agentId = this.agent.data.data.id
+      const checks = await this.apiReq(`/configuration_assessment/${agentId}/checks/${policyId}`)
+      console.log("Policy checks ", checks)
+    }
+
   }
-
   app.controller('agentsPolicyMonitoringCtrl', AgentsPM)
 })

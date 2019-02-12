@@ -138,7 +138,7 @@
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tbody>
               <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
-                <td ng-click="loadPolicyContent(policy.id)" class="wz-text-link cursor-pointer">{{policy.name}}</td>
+                <td ng-click="loadPolicyChecks(policy.id)" class="wz-text-link cursor-pointer">{{policy.name}}</td>
                 <td>
                   <span class="wrong">{{policy.fail}}</span>
                   <span class="pass">{{policy.pass}}</span>
