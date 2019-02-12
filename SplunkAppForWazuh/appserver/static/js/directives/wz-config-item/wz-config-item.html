@@ -1,5 +1,5 @@
 <div ng-if="value || value === 0" layout="column" layout-gt-md="row" layout-align-gt-md="start center" class="wz-configuration-item">
-    <div flex-gt-md="30" class="wz-configuration-label">
+    <div ng-if="label" flex-gt-md="30" class="wz-configuration-label">
         {{ label }}
     </div>
     <div ng-if="!isArray" flex-gt-md="50" class="wz-configuration-value">
