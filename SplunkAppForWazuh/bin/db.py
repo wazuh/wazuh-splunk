@@ -99,10 +99,11 @@ class database():
             self.logger.error("Error removing an API in DB module: %s" % (e))
             raise e
 
-    def all(self):
+    def all(self, session_key=False):
         try:
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
-            result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error('Error returning all API rows in DB module: %s ' % (e))

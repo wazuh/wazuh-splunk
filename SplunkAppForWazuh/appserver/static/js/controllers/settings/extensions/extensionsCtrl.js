@@ -30,7 +30,7 @@ define(['../../module'], function(controllers) {
 
     toggleExtension(extension, state) {
       try {
-        const api = this.currentapi['_key']
+        const api = this.currentApi['_key']
         this.currentExtensions[extension] = state.toString()
         this.setExtensions(api, this.currentExtensions)
         if (!this.scope.$$phase) this.scope.$digest()
