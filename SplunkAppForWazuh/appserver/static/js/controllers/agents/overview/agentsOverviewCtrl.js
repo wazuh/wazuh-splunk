@@ -51,8 +51,8 @@ define(['../../module'], function (app) {
       this.groups = groups
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
-      this.scope.restartInProgress = false;
-      this.scope.isAdmin = isAdmin;
+      this.scope.restartInProgress = false
+      this.scope.isAdmin = isAdmin
     }
 
     /**
@@ -145,31 +145,7 @@ define(['../../module'], function (app) {
             this.scope.cancelAddGroup = () =>
               (this.scope.addingGroupToAgent = false)
 
-            this.scope.restart = async () => {
-              try {
-                this.scope.restartInProgress = true;
-                const result = await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`, {}, 'PUT');
-                if (result.error) {
-                  this.notificationService.showSimpleToast(
-                    `Error ${result.error} : ${result.message}`
-                  )
-                } else if (result.data.failed_ids) {
-                  this.notificationService.showSimpleToast(
-                    `Error restarting agent (${this.scope.agent.id})`
-                  )
-                } else {
-                  this.notificationService.showSimpleToast(
-                    `Agent (${this.scope.agent.id}) is restarting.`
-                  )
-                }
-                this.scope.restartInProgress = false;
-              } catch (error) {
-                this.scope.restartInProgress = false;
-                this.notificationService.showSimpleToast(
-                  `Error restarting agent: ${error}`
-                )
-              }
-            }
+            this.scope.restart = () => this.restartAgent()
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -316,9 +292,41 @@ define(['../../module'], function (app) {
       agentStatus === 'Active' ? 'teal' : 'red'
     }
 
+    /**
+     * Switch editing group
+     */
     switchGroupEdit() {
       this.scope.editGroup = !!!this.scope.editGroup
       if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    /**
+     * Restart the agent
+     */
+    async restartAgent() {
+      try {
+        this.scope.restartInProgress = true
+        const result = await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`, {}, 'PUT')
+        if (result.error) {
+          this.notificationService.showSimpleToast(
+            `Error ${result.error} : ${result.message}`
+          )
+        } else if (result.data.failed_ids) {
+          this.notificationService.showSimpleToast(
+            `Error restarting agent (${this.scope.agent.id})`
+          )
+        } else {
+          this.notificationService.showSimpleToast(
+            `Agent (${this.scope.agent.id}) is restarting.`
+          )
+        }
+        this.scope.restartInProgress = false
+      } catch (error) {
+        this.scope.restartInProgress = false
+        this.notificationService.showSimpleToast(
+          `Error restarting agent: ${error}`
+        )
+      }
     }
   }
 
