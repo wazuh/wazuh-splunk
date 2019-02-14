@@ -145,21 +145,25 @@ define(['../../module'], function (app) {
             this.scope.cancelAddGroup = () =>
               (this.scope.addingGroupToAgent = false)
 
-            this.scope.restart = async() => {
+            this.scope.restart = async () => {
               try {
                 this.scope.restartInProgress = true;
-                const result = await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`,{},'PUT');
-                if(!result.error && result.data.failed_ids){
+                const result = await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`, {}, 'PUT');
+                if (result.error) {
+                  this.notificationService.showSimpleToast(
+                    `Error ${result.error} : ${result.message}`
+                  )
+                } else if (result.data.failed_ids) {
                   this.notificationService.showSimpleToast(
                     `Error restarting agent (${this.scope.agent.id})`
                   )
-                }else {
+                } else {
                   this.notificationService.showSimpleToast(
                     `Agent (${this.scope.agent.id}) is restarting.`
                   )
                 }
                 this.scope.restartInProgress = false;
-              }catch (error) {
+              } catch (error) {
                 this.scope.restartInProgress = false;
                 this.notificationService.showSimpleToast(
                   `Error restarting agent: ${error}`
