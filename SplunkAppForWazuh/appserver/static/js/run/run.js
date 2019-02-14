@@ -79,14 +79,14 @@ define(['./module'], function (module) {
           if (from !== 'agents' && !from.includes('agent') && !from.includes('ag-') && from !== 'discover') {
             const cleanAgentsPinedFilters = true
             $currentDataService.cleanFilters(cleanAgentsPinedFilters)
-            $rootScope.$broadcast('stateChanged', 'agents')
-          } else if (to.includes('ow-')) {
-            $rootScope.$broadcast('stateChanged', 'overview')
-          } else if (to.includes('mg-')) {
-            $rootScope.$broadcast('stateChanged', 'manager')
-          } else if (to.includes('settings')) {
-            $rootScope.$broadcast('stateChanged', 'settings')
           }
+          $rootScope.$broadcast('stateChanged', 'agents')
+        } else if (to.includes('ow-')) {
+          $rootScope.$broadcast('stateChanged', 'overview')
+        } else if (to.includes('mg-')) {
+          $rootScope.$broadcast('stateChanged', 'manager')
+        } else if (to.includes('settings')) {
+          $rootScope.$broadcast('stateChanged', 'settings')
         }
       })
 
