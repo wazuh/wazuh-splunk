@@ -14,7 +14,7 @@ define(['../../module'], function(controllers) {
     }
 
     $onInit() {
-      const id = this.currentApi.id
+      const id = this.currentApi['_key']
       this.scope.toggleExtension = (extension, state) =>
         this.toggleExtension(extension, state)
       this.currentExtensions = this.extensions.data || this.extensions
@@ -30,7 +30,7 @@ define(['../../module'], function(controllers) {
 
     toggleExtension(extension, state) {
       try {
-        const api = this.currentApi.id
+        const api = this.currentApi['_key']
         this.currentExtensions[extension] = state.toString()
         this.setExtensions(api, this.currentExtensions)
         if (!this.scope.$$phase) this.scope.$digest()

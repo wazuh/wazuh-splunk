@@ -100,7 +100,7 @@ define(['../../module', 'FileSaver'], function(app) {
     async downloadCsv(path, name) {
       try {
         this.toast('Your download should begin automatically...')
-        const currentApi = this.api.id
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
           currentApi,

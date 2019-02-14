@@ -1,37 +1,35 @@
-# -*- coding: utf-8 -*-
-"""
-Wazuh app - Database backend.
-
-Copyright (C) 2015-2019 Wazuh, Inc.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-Find more information about this on the LICENSE file.
-"""
-
+#
+# Wazuh app - Database backend
+# Copyright (C) 2018 Wazuh, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Find more information about this on the LICENSE file.
+#
 import jsonbak
+import requestsbak
 import os
-# from splunk import AuthorizationFailed as AuthorizationFailed
-from tinydb import TinyDB, Query
-# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from log import log
-import threading
-
+import splunk
+from splunk import entity, rest
 
 class database():
-    """Handle CRUD methods for DB."""
-
     def __init__(self):
-        """Constructor."""
         self.logger = log()
-        self.origin = TinyDB(os.path.dirname(
-            os.path.abspath(__file__))+'/apilist.json')
-        self.db = self.origin.table('apis', cache_size=0)
-        self.Api = Query()
-        self.mutex = threading.Lock()
+        self.session = requestsbak.Session()
+        self.session.trust_env = False
+        self.kvstoreUri = entity.buildEndpoint(
+            entityClass=["storage", "collections", "data"],
+            entityName="credentials",
+            owner="nobody",
+            namespace="SplunkAppForWazuh",
+            hostPath=rest.makeSplunkdUri().strip("/")
+        )
+        self.sessionKey = splunk.getSessionKey()
 
     def insert(self, obj):
         """Insert a new API.
@@ -42,14 +40,16 @@ class database():
             The new API
 
         """
-        with self.mutex:
-            try:
-                result = self.db.insert(obj)
-                parsed_result = jsonbak.dumps({'data': result})
-            except Exception as e:
-                self.logger.error("Error inserting in DB module: %s" % (e))
-                raise e
-            return parsed_result
+        try:
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
+            result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            if not '_key' in result:
+                raise Exception('Format error when inserting object.')
+            key = result['_key']
+            return key
+        except Exception as e:
+            self.logger.error("Error inserting in DB module: %s" % (e))
+            raise e
 
     def update(self, obj):
         """Update an already inserted API.
@@ -60,16 +60,21 @@ class database():
             The API to edit.
 
         """
-        with self.mutex:
-            try:
-                self.db.update(obj, self.Api.id == obj['id'])
-                parsed_result = jsonbak.dumps({'data': 'success'})
-            except Exception as e:
-                self.logger.error("Error updating in DB module: %s" % (e))
-                raise e
+        try:
+            if not '_key' in obj:
+                raise Exception('Missing Key')
+            id = obj['_key']
+            del obj['_key']
+            obj = jsonbak.dumps(obj)
+            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            parsed_result = jsonbak.dumps({'data': result})
             return parsed_result
+        except Exception as e:
+            self.logger.error("Error updating in DB module: %s" % (e))
+            raise e
 
-    def remove(self, id):
+    def remove(self, _key):
         """Remove an API.
 
         Parameters
@@ -78,38 +83,40 @@ class database():
             The API to be removed.
 
         """
-        with self.mutex:
-            try:
-                self.db.remove(self.Api.id == id)
-                parsed_result = jsonbak.dumps({'data': 'success'})
-            except Exception as e:
-                self.logger.error("Error removing in DB module: %s" % (e))
-                raise e
+        try:
+            if not _key:
+                raise Exception('Missing ID in remove DB module')
+            kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
+            result = self.session.delete(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False)
+            if result.status_code == 200:
+                parsed_result = jsonbak.dumps({'data': 'API removed.'})
+            else:
+                msg = jsonbak.loads(result.text)
+                text = msg['messages'][0]['text']
+                raise Exception(text)
             return parsed_result
+        except Exception as e:
+            self.logger.error("Error removing an API in DB module: %s" % (e))
+            raise e
 
-    def all(self):
-        """Obtain the full API list."""
-        with self.mutex:
-            try:
-                all = self.db.all()
-            except Exception as e:
-                self.logger.error("Error at get all documents DB module: %s" % (e))
-                raise e
-            return all
+    def all(self, session_key=False):
+        try:
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error('Error returning all API rows in DB module: %s ' % (e))
+            return jsonbak.dumps({"error": str(e)})
 
     def get(self, id):
-        """Get API by ID.
-
-        Parameters
-        ----------
-        id : unicode
-            The API ID
-
-        """
-        with self.mutex:
-            try:
-                data = self.db.search(self.Api.id == id)
-            except Exception as e:
-                self.logger.error("Error at get document DB: %s" % (e))
-                raise e
-            return data
+        try:
+            if not id:
+                raise Exception('Missing ID')
+            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            parsed_result = jsonbak.dumps({'data': result})
+        except Exception as e:
+            self.logger.error("Error getting an API in DB module : %s" % (e))
+            raise e
+        return parsed_result

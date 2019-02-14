@@ -12,6 +12,10 @@ define(['../module'], function(module) {
       return $apiMgrService.getPollintState
     }
 
+    const addApi = (record) => {
+      return $apiMgrService.addApi(record)
+    }
+
     const getBaseUrl = () => {
       return $requestService.getBaseUrl()
     }
@@ -165,7 +169,8 @@ define(['../module'], function(module) {
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
       setExtensions: setExtensions,
-      getExtensionsById: getExtensionsById
+      getExtensionsById: getExtensionsById,
+      addApi: addApi
     }
   })
 })
