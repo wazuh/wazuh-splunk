@@ -148,10 +148,16 @@ define(['../../module'], function (app) {
             this.scope.restart = async() => {
               try {
                 this.scope.restartInProgress = true;
-                await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`,{},'PUT');
-                this.notificationService.showSimpleToast(
-                  `Agent (${this.scope.agent.id}) is restarting.`
-                )
+                const result = await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`,{},'PUT');
+                if(!result.error && result.data.failed_ids){
+                  this.notificationService.showSimpleToast(
+                    `Error restarting agent (${this.scope.agent.id})`
+                  )
+                }else {
+                  this.notificationService.showSimpleToast(
+                    `Agent (${this.scope.agent.id}) is restarting.`
+                  )
+                }
                 this.scope.restartInProgress = false;
               }catch (error) {
                 this.scope.restartInProgress = false;
