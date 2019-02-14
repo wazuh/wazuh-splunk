@@ -23,7 +23,7 @@
       <i class="fa fa-fw fa-tv" aria-hidden="true"></i> {{ agent.name || '-' }} <span class="wz-text-bold wz-text-link"
         ui-sref='discover' tooltip="Discover"><i class="fa fa-fw fa-compass" aria-hidden="true"></i></span>
       <!-- Restart button -->
-    <button ng-if="isAdmin" ng-click="restart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
+    <button ng-if="isAdmin && agent.status === 'Active'" ng-click="restart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
       <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
         Restart agent
       </span>
