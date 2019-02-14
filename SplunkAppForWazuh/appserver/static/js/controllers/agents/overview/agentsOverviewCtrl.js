@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class AgentsOverview {
@@ -33,6 +33,7 @@ define(['../../module'], function(app) {
       $notificationService,
       agent,
       groups,
+      isAdmin,
       $mdDialog,
       $groupHandler,
       $dateDiffService
@@ -50,6 +51,8 @@ define(['../../module'], function(app) {
       this.groups = groups
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
+      this.scope.restartInProgress = false;
+      this.scope.isAdmin = isAdmin;
     }
 
     /**
@@ -67,27 +70,27 @@ define(['../../module'], function(app) {
 
           this.scope.agentOS =
             this.scope.agent &&
-            this.scope.agent.os &&
-            this.scope.agent.os.name &&
-            this.scope.agent.os.codename &&
-            this.scope.agent.os.version
+              this.scope.agent.os &&
+              this.scope.agent.os.name &&
+              this.scope.agent.os.codename &&
+              this.scope.agent.os.version
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
+                .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
 
           this.scope.syscheck =
             this.agent.length > 0 &&
-            typeof this.agent[1] === 'object' &&
-            typeof this.agent[1].data === 'object' &&
-            !this.agent[1].data.error
+              typeof this.agent[1] === 'object' &&
+              typeof this.agent[1].data === 'object' &&
+              !this.agent[1].data.error
               ? this.agent[1].data.data
               : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
           this.scope.rootcheck =
             this.agent.length > 1 &&
-            typeof this.agent[2] === 'object' &&
-            typeof this.agent[2].data === 'object' &&
-            !this.agent[2].data.error
+              typeof this.agent[2] === 'object' &&
+              typeof this.agent[2].data === 'object' &&
+              !this.agent[2].data.error
               ? this.agent[2].data.data
               : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
@@ -142,6 +145,22 @@ define(['../../module'], function(app) {
             this.scope.cancelAddGroup = () =>
               (this.scope.addingGroupToAgent = false)
 
+            this.scope.restart = async() => {
+              try {
+                this.scope.restartInProgress = true;
+                await this.requestService.apiReq(`/agents/${this.scope.agent.id}/restart`);
+                this.notificationService.showSimpleToast(
+                  `Agent restarting`
+                )
+                this.scope.restartInProgress = false;
+              }catch (error) {
+                this.scope.restartInProgress = false;
+                this.notificationService.showSimpleToast(
+                  `Error restarting agent: ${error}`
+                )
+              }
+            }
+
             this.scope.confirmAddGroup = group => {
               this.groupHandler
                 .addAgentToGroup(group, this.scope.agent.id)
@@ -161,8 +180,8 @@ define(['../../module'], function(app) {
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
                 .catch(error => {
-                  if(!this.$scope.agent) {
-                    if ( (error || {}).status === -1 ) {
+                  if (!this.$scope.agent) {
+                    if ((error || {}).status === -1) {
                       this.scope.emptyAgent = 'Wazuh API timeout.'
                     }
                   }
