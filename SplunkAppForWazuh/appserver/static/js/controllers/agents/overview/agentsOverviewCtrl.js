@@ -311,7 +311,8 @@ define(['../../module'], function (app) {
         const result = await this.requestService.apiReq(`/agents/${id}/restart`, {}, 'PUT')
         if (
           result &&
-          result.data.error === 0
+          result.data.error === 0 &&
+          !result.data.failed_ids
         ) {
           this.notificationService.showSimpleToast(`Agent ${name}(${id}) is restarting.`)
         } else {
