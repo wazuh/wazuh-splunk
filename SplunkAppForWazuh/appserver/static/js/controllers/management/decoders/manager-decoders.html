@@ -27,14 +27,15 @@
         <span class="fa fa-search" aria-hidden="true"></span>
       </button>
     </div>
-
-    <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
-      <a ng-click="addNewFile()">Add new decoder <i aria-hidden="true" class="fa fa-plus"></i></a>
-      <span flex="" class="flex"></span>
-      <md-switch class="wz-switch" aria-label="Only customs" ng-model="localFilter">
-        <div class="md-label">Only custom</div>
-      </md-switch>
-    </md-card-actions>
+    <div>
+      <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
+        <a ng-click="addNewFile()">Add new decoder <i aria-hidden="true" class="fa fa-plus"></i></a>
+        <span flex="" class="flex"></span>
+        <md-switch class="wz-switch" aria-label="Only customs" ng-model="localFilter">
+          <div class="md-label">Only custom</div>
+        </md-switch>
+      </md-card-actions>
+    </div>
 
     <md-chips class="wz-chips" readonly="true" ng-show="appliedFilters.length">
       <md-chip class="wz-chip" ng-show="includesFilter('file')">

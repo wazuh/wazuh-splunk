@@ -217,7 +217,23 @@ define(['../module'], function (module) {
             $navigationService.storeRoute('mg-cdb')
           },
           controller: 'managerCdbCtrl',
-          params: { filters: null }
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
 
         // Manager - CDB List/:id
@@ -306,7 +322,6 @@ define(['../module'], function (module) {
                   )
                   return extensions['admin'] === 'true'
                 } catch (error) {
-                  console.error('err : ', error)
                   return false
                 }
               }
@@ -357,7 +372,6 @@ define(['../module'], function (module) {
                   )
                   return extensions['admin'] === 'true'
                 } catch (error) {
-                  console.error('err : ', error)
                   return false
                 }
               }
@@ -404,7 +418,6 @@ define(['../module'], function (module) {
                   )
                   return extensions['admin'] === 'true'
                 } catch (error) {
-                  console.error('err : ', error)
                   return false
                 }
               }
@@ -431,7 +444,6 @@ define(['../module'], function (module) {
                   )
                   return extensions['admin'] === 'true'
                 } catch (error) {
-                  console.error('err : ', error)
                   return false
                 }
               }
@@ -443,7 +455,6 @@ define(['../module'], function (module) {
                   const result = $requestService.apiReq('/agents/groups')
                   return result
                 } catch (error) {
-                  console.error('err : ', error)
                   return false
                 }
               }
