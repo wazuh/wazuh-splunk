@@ -397,71 +397,7 @@ define(['../module'], function (module) {
             ]
           }
         })
-
-        // Manager - Configuration - EditRuleset
-        .state('mg-conf.editRuleset', {
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/edit-configuration/manager-edit-rulesets.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf.editRuleset')
-          },
-          controller: 'editRulesetCtrl',
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
-                } catch (error) {
-                  return false
-                }
-              }
-            ]}
-        }) 
         
-        // Manager - Configuration - EditGroups
-        .state('mg-conf.editGroups', {
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/edit-configuration/manager-edit-groups.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf.editGroups')
-          },
-          controller: 'editGroupsCtrl',
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
-                } catch (error) {
-                  return false
-                }
-              }
-            ],
-            groups: [
-              '$requestService',
-              async $requestService => {
-                try {
-                  const result = $requestService.apiReq('/agents/groups')
-                  return result
-                } catch (error) {
-                  return false
-                }
-              }
-            ]
-          }
-        })        
-
         // Manager - Status
         .state('mg-status', {
           templateUrl:
