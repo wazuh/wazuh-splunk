@@ -21,7 +21,15 @@
   <div layout="column" layout-padding>
     <span class="font-size-18">
       <i class="fa fa-fw fa-tv" aria-hidden="true"></i> {{ agent.name || '-' }} <span class="wz-text-bold wz-text-link"
-        ui-sref='discover' tooltip="Discover"><i class="fa fa-fw fa-compass" aria-hidden="true"></i></span></span>
+        ui-sref='discover' tooltip="Discover"><i class="fa fa-fw fa-compass" aria-hidden="true"></i></span>
+      <!-- Restart button -->
+    <button ng-if="isAdmin && agent.status === 'Active'" ng-click="restart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
+      <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+        Restart agent
+      </span>
+    </button>
+    </span>
+
   </div>
   <!-- End headline -->
 
@@ -68,8 +76,7 @@
               <span flex="25">Last syscheck scan</span>
               <span class="wz-text-right color-grey" ng-if="syscheck.inProgress">Scan in progress</span>
               <span class="wz-text-right color-grey" ng-if="!syscheck.inProgress">{{syscheck.end || '-'}}
-                <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
-                  md-direction="bottom" class="wz-tooltip">
+                <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom" class="wz-tooltip">
                   Start time: {{ syscheck.start || '-'}} <br>
                   End time: {{ syscheck.end || '-'}} <br>
                   Duration time: {{ syscheck.duration +' minutes' || '-'}}
@@ -80,8 +87,8 @@
               <span flex="25">Last rootcheck scan</span>
               <span class="wz-text-right color-grey" ng-if="rootcheck.inProgress">Scan in progress</span>
               <span class="wz-text-right color-grey" ng-if="!rootcheck.inProgress">{{rootcheck.end || '-'}}
-                <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end"
-                  md-direction="bottom" class="wz-tooltip">
+                <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end" md-direction="bottom"
+                  class="wz-tooltip">
                   Start time: {{ rootcheck.start || '-'}} <br>
                   End time: {{ rootcheck.end || '-'}} <br>
                   Duration time: {{ rootcheck.duration +' minutes' || '-'}}
