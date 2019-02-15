@@ -81,7 +81,23 @@ define(['../module'], function (module) {
             $navigationService.storeRoute('mg-rules')
           },
           controller: 'managerRulesetCtrl',
-          params: { filters: null }
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Manager - Ruleset/:id
         .state('mg-rules-id', {
@@ -133,9 +149,24 @@ define(['../module'], function (module) {
             $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersCtrl',
-          params: { filters: null }
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
-
         // Manager - Decoders/:id
         .state('mg-decoders-id', {
           templateUrl:
