@@ -67,6 +67,8 @@ define(['../../module', '../../../utils/config-handler'], function(
      * On controller loads
      */
     $onInit() {
+      this.$scope.showingInfo = false
+      this.$scope.showInfo = () => this.showInfo()
       this.$scope.breadCrumbs = true
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -140,6 +142,15 @@ define(['../../module', '../../../utils/config-handler'], function(
         this.errorHandler.showSimpleToast('Error fetching group data')
       }
     }
+
+    /**
+     * Show or hide sidebar with info
+     */
+    showInfo() {
+      this.$scope.showingInfo = !this.$scope.showingInfo
+      this.$scope.$applyAsync()
+    }
+
   }
 
   controllers.controller('configurationAgentCtrl', ConfigurationController)

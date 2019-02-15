@@ -6,7 +6,6 @@ define(['../module'], function (module) {
     'BASE_URL',
     function ($stateProvider, BASE_URL) {
       $stateProvider
-
         // Manager
         .state('manager', {
           templateUrl:
