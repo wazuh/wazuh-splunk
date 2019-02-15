@@ -35,7 +35,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
-      this.scope.onlyParentDecoders
+      this.scope.localFilter = false
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)

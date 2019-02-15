@@ -31,14 +31,15 @@
       <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-36 wz-margin-top-4 wz-margin-right-16" ng-click="search(custom_search)">
         <span class="fa fa-search" aria-hidden="true"></span>
       </button>
-
-      <div layout="column" class="height-40 wz-select-input wz-margin-right-8">
-        <select flex class="kuiSelect wz-border-none cursor-pointer" ng-model="typeFilter" aria-label="Filter by type" ng-init="typeFilter='all'" ng-change="onlyParents(typeFilter)">
-          <option value="all">All decoders</option>
-          <option value="parents">Parent decoders</option>
-        </select>
-      </div>
     </div>
+
+    <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
+      <a ng-click="addNewFile()">Add new decoder <i aria-hidden="true" class="fa fa-plus"></i></a>
+      <span flex="" class="flex"></span>
+      <md-switch class="wz-switch" aria-label="Only customs" ng-model="localFilter">
+        <div class="md-label">Only custom</div>
+      </md-switch>
+    </md-card-actions>
 
     <md-chips class="wz-chips" readonly="true" ng-show="appliedFilters.length">
       <md-chip class="wz-chip" ng-show="includesFilter('file')">
@@ -54,7 +55,10 @@
     </md-chips>
 
     <div layout="row">
-      <wazuh-table implicit-filter="appliedFilters" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+      <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+        allow-click="true" rows-per-page="14">
+      </wazuh-table>    
+      <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
       </wazuh-table>    
     </div>

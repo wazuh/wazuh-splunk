@@ -32,8 +32,16 @@
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
+      <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
+        <a ng-click="addNewFile()">Add new rule <i aria-hidden="true" class="fa fa-plus"></i></a>
+        <span flex="" class="flex"></span>
+        <md-switch class="wz-switch" aria-label="Only customs" ng-model="localFilter">
+          <div class="md-label">Only custom</div>
+        </md-switch>
+      </md-card-actions>
     </div>
   </div>
+</div>
 
   <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
     <md-chip class="wz-chip" ng-show="includesFilter('file')">
@@ -68,9 +76,12 @@
     </md-chip>
   </md-chips>
   <div layout="row" layout-padding>
-    <wazuh-table implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
+    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    allow-click="true" rows-per-page="14">
+  </wazuh-table>
   </div>
   <div layout="row" class="wz-margin-top-10">
     <span flex></span>

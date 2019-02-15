@@ -34,7 +34,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
-      this.localFilterEnabled = false
+      this.scope.localFilter = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
 
