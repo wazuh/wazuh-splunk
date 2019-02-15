@@ -8,13 +8,7 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
-  <!-- Headline
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Decoders</span>
-    <span>Review all your current rules, decoders and cdb lists</span>
-  </div>
-  End headline -->
+</div>
 
   <!-- Nav bar -->
   <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
@@ -23,6 +17,7 @@
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
   </md-nav-bar>
 
+<div ng-if="!addingNewFile">  
   <div flex layout="column" class="md-padding">
     <div id="content" layout="row" layout-align="start start">
 
@@ -69,5 +64,24 @@
       </a>
     </div>
   </div>
+</div>
 
+<div ng-if="addingNewFile">
+    <div layout="row" class="md-padding">
+        <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+        <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+          class='btn btn-primary pull-right wz-margin-left-10'>
+          <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+            file</span>
+          <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+            XML format error</span>
+        </button>
+        <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
+          style="margin-left: 10px;">
+      </div>
+      <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
+        <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+          valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+        </wz-xml-file-editor>
+      </div>
 </div>
