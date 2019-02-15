@@ -408,6 +408,20 @@ define(['../module'], function (module) {
           },
           controller: 'statusCtrl',
           resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ],
             statusData: [
               '$requestService',
               '$state',

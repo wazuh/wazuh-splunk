@@ -9,13 +9,17 @@ define(['../../module'], function(controllers) {
      * @param {*} $notificationService
      * @param {Array} statusData
      * @param {Object} agentInfo
+     * @param {Boolean} isAdmin
+     * @param {*} $restartService
      */
     constructor(
       $scope,
       $requestService,
       $notificationService,
       statusData,
-      agentInfo
+      agentInfo,
+      isAdmin,
+      $restartService
     ) {
       this.scope = $scope
       this.scope.load = true
@@ -44,12 +48,16 @@ define(['../../module'], function(controllers) {
       this.decoders = decoders
       this.scope.clusterEnabled = masterNode || false
       this.agentInfo = agentInfo.data.data
+      this.isAdmin = isAdmin
+      this.restartService = $restartService
     }
 
     /**
      * On controller loads
      */
     $onInit() {
+      this.scope.isAdmin = this.isAdmin
+      this.scope.restartInProgress = false
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name
         this.scope.nodeId = masterNodeName
@@ -65,8 +73,12 @@ define(['../../module'], function(controllers) {
         this.scope.load = false
         if (!this.scope.$$phase) this.scope.$digest()
       }
+
       this.scope.changeNode = node => this.changeNode(node)
+      this.scope.restart = () => this.restart()
       this.bindStatus()
+
+
       if (this.nodeStatus) {
         this.scope.daemons = this.nodeStatus
       }
@@ -143,6 +155,22 @@ define(['../../module'], function(controllers) {
         this.toast(err.message || err)
       }
     }
+
+    /**
+     * Function to restart the manager or cluster
+     */
+    async restart() {
+      try {
+        this.scope.restartInProgress = true
+        const result = await this.restartService.restart()
+        this.toast(result)
+        this.scope.restartInProgress = false
+      } catch (error) {
+        this.toast(error)
+        this.scope.restartInProgress = false
+      }
+    }
+
   }
 
   controllers.controller('statusCtrl', Status)
