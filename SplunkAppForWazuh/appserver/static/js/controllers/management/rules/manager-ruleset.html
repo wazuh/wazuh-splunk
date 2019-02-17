@@ -8,13 +8,7 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
-  <!-- Headline 
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Ruleset</span>
-    <span>Review all your current rules, decoders and cdb lists</span>
-  </div>
-  End headline -->
+</div>
 
   <!-- Nav bar -->
   <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
@@ -23,6 +17,7 @@
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
   </md-nav-bar>
 
+<div ng-if="!addingNewFile">
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
@@ -32,6 +27,13 @@
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
+      <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
+        <a ng-click="addNewFile()">Add new rule <i aria-hidden="true" class="fa fa-plus"></i></a>
+        <span flex="" class="flex"></span>
+        <md-switch class="wz-switch" aria-label="Only customs" ng-model="localFilter">
+          <div class="md-label">Only custom</div>
+        </md-switch>
+      </md-card-actions>
     </div>
   </div>
 
@@ -68,14 +70,38 @@
     </md-chip>
   </md-chips>
   <div layout="row" layout-padding>
-    <wazuh-table implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
+    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    allow-click="true" rows-per-page="14">
+  </wazuh-table>
   </div>
   <div layout="row" class="wz-margin-top-10">
     <span flex></span>
     <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
       <i aria-hidden="true" class="fa fa-download"></i>
     </a>
+  </div>
+</div>
+
+<!-- XML editor for add new file-->
+<div ng-if="addingNewFile">
+  <div layout="row" class="md-padding">
+    <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+    <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+      class='btn btn-primary pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+        file</span>
+      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+        XML format error</span>
+    </button>
+    <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
+      style="margin-left: 10px;">
+  </div>
+  <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
+    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+      valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+    </wz-xml-file-editor>
   </div>
 </div>

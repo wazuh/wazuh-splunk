@@ -1,92 +1,36 @@
 <div flex="auto" layout="column" ng-init="switchConfigurationTab('welcome')">
   <div layout="row" layout-align="start center">
 
-    <div ng-if='!currentAgent'>
+    <div>
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
       <div layout="row" layout-padding>
         <!-- Welcome section -->
-        <div ng-if="configurationTab === 'welcome'">
+        <div>
           <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
           <span> / </span>
           <span>Configuration</span>
-        </div>
-        <!-- First-level section -->
-        <div ng-if="configurationTab !== 'welcome'">
-          <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
-          <span> / </span>
-          <span>Configuration</span>
-          <span> / </span>
-          <span> {{sectionName}} </span>
         </div>
       </div>
       <!-- End breadcrumbs -->
+      <!-- Separator -->
+      <span flex></span>
+      <!-- End separator -->
     </div>
-    <div ng-if='currentAgent'>
-      <!-- Navigation section (Breadcrumbs, etc) -->
-      <!-- Breadcrumbs -->
-      <div layout="row" layout-padding>
-        <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-        <div>
-          <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
-          <span> / </span>
-          <span ui-sref='agent-overview({id:currentAgent.id})' class="wz-text-link cursor-pointer">{{currentAgent.name}}
-            ({{currentAgent.id}})</span>
-        </div>
-        <div ng-if="currentAgent.status">
-          <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)" aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
-        </div>
-        <span> / </span>
-        <!-- Welcome section -->
-        <div ng-if="configurationTab === 'welcome'">
-          <span>Configuration</span>
-        </div>
-        <!-- First-level section -->
-        <div ng-if="configurationTab !== 'welcome'">
-          <span>Configuration</span>
-          <span> / </span>
-          <span> {{sectionName}} </span>
-          <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
-        </div>
-        <div flex></div>
-      </div>
-    </div>
-    <!-- Separator -->
-    <span flex></span>
-    <!-- End separator -->
+    <!-- End navigation section -->
+  </div>
 
-    <!-- Restart button -->
-    <button ng-if="isAdmin" ng-click="restart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
-      <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
-        Restart {{node}}
+  <!-- Button to edit configuration -->
+  <div ng-show="!editingConfig" ng-click="switchToEdition()" layout="row" layout-align="start center" class="layout-align-start-center layout-row">
+    <button style="margin-left: 15px; margin-bottom: 10px;" ng-if="isAdmin" ui-sref="mg-conf.editConfig" class="btn btn-primary pull-right ng-scope">
+      <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+        Edit configuration
       </span>
     </button>
-
-    <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ui-sref="settings.about"
-      aria-label="Link to open app about section">
-      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
-    </md-button>
-    <!-- End help button -->
   </div>
-  <!-- End navigation section -->
-  <!-- Nav bar tabs -->
-  <div layout="row" layout-padding>
-    <md-nav-bar style="width:100%" class="wz-nav-bar" md-selected-nav-item="tabName" nav-bar-aria-label="Ruleset navigation links">
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('overview')" ui-sref="mg-conf.overview" name="overview">Overview</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editConfig')" ui-sref="mg-conf.editConfig" name="editConfig">Edit
-        configuration</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editRuleset')" ui-sref="mg-conf.editRuleset" name="editRuleset">Edit
-        ruleset</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="switchTab('editGroups')" ui-sref="mg-conf.editGroups" name="editGroups">Edit
-        groups</md-nav-item>
-    </md-nav-bar>
-  </div>
-  <!-- End nav bar tabs -->
-</div>
 
-<!-- ui-view for child states templates -->
-<div layout="column" layout-align="start stretch">
-  <div ui-view></div>
-</div>
-<!-- end ui-view-->
+  <!-- ui-view for child states templates -->
+  <div layout="column" layout-align="start stretch">
+    <div ui-view></div>
+  </div>
+  <!-- end ui-view-->
