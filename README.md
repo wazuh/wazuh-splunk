@@ -12,6 +12,10 @@
 
 -   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
 
+## Branches
+
+- `stable` branch on correspond to the last Wazuh app stable version.
+- `master` branch contains the latest code, be aware of possible bugs on this branch.
 
 ### Requisites
 1. An already installed Wazuh Manager with access to the API.
