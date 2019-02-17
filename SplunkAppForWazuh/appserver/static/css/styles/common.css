@@ -20,6 +20,10 @@
   outline-color: transparent !important;
 } */
 
+.wzJsonXmlEditorBody, .wzJsonXmlEditorBody .CodeMirror{
+  height: 100%;
+  min-height: 300px;
+}
 
 /*
  * https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
@@ -36,6 +40,7 @@
   -webkit-hyphens: auto;
   hyphens: auto;
 } 
+
 
 .addGroupInput {
   max-height: 20px !important;
@@ -814,6 +819,16 @@ kbn-vis .vis-container {
 .wz-icon {
   width: 35px !important;
   height: 35px !important;
+}
+
+.btn-as-i {
+  background: transparent !important;
+  border: 0;
+  padding: 0!important;
+  margin: 0;
+  font-size: 18px;
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
 }
 
 md-backdrop.md-opaque {

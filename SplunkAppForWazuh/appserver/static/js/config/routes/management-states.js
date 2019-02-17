@@ -1,12 +1,11 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
-
         // Manager
         .state('manager', {
           templateUrl:
@@ -81,7 +80,23 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('mg-rules')
           },
           controller: 'managerRulesetCtrl',
-          params: { filters: null }
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Manager - Ruleset/:id
         .state('mg-rules-id', {
@@ -108,7 +123,20 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
             ]
+
           }
         })
         // Manager - Decoders
@@ -120,9 +148,24 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersCtrl',
-          params: { filters: null }
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
-
         // Manager - Decoders/:id
         .state('mg-decoders-id', {
           templateUrl:
@@ -148,21 +191,7 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
-            ]
-          }
-        })
-
-        // Manager - Groups
-        .state('mg-groups', {
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/groups/groups.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-groups')
-          },
-          controller: 'groupsCtrl',
-          params: { group: null },
-          resolve: {
+            ],
             extensions: [
               '$currentDataService',
               async $currentDataService => {
@@ -178,17 +207,196 @@ define(['../module'], function(module) {
           }
         })
 
+        // Manager - CDB List
+        .state('mg-cdb', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-cdb')
+          },
+          controller: 'managerCdbCtrl',
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+
+        // Manager - CDB List/:id
+        .state('mg-cdb-id', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb-id.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-cdb')
+          },
+          controller: 'managerCdbIdCtrl',
+          params: { name: null, path: null },
+          resolve: {
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            cdbInfo: [
+              '$cdbEditor',
+              '$stateParams',
+              '$state',
+              async ($cdbEditor, $stateParams, $state) => {
+                try {
+                  const result = await $cdbEditor.getConfiguration($stateParams.name, $stateParams.path)
+                  return {file: $stateParams.name, path: $stateParams.path, content: result}
+                } catch (error) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+
+          }
+        })
         // Manager - Groups
+        .state('mg-groups', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/groups/groups.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-groups')
+          },
+          controller: 'groupsCtrl',
+          params: { group: null },
+          resolve: {
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  return result
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+
+        // Manager - Configuration
         .state('mg-conf', {
+          abstract: true,
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/breadcrumbs/breadcrumbs-mg.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-conf')
+          },
+          controller: 'navTabCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ],
+            clusterEnabled: [
+              '$requestService',
+              async $requestService => {
+                try {
+                  const result = await $requestService.apiReq('/cluster/status') 
+                  const clusterStatus = result.data.data.enabled === 'yes' ? true : false
+                  return clusterStatus
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+
+        // Manager - Configuration - Overview
+        .state('mg-conf.overview', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf')
+            $navigationService.storeRoute('mg-conf.overview')
           },
           controller: 'configurationCtrl'
         })
 
+        // Manager - Configuration - EditConfig
+        .state('mg-conf.editConfig', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-conf.editConfig')
+          },
+          controller: 'editionCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ],
+            clusterInfo: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const info = {}
+                  const clusterStatus = await $requestService.apiReq('/cluster/status')
+                  if (clusterStatus.data.data.enabled === 'yes' && clusterStatus.data.data.running === 'yes') {
+                    const nodesList = await $requestService.apiReq('/cluster/nodes')
+                    Object.assign(info, { clusterEnabled: true, nodes: nodesList })
+                  } else {
+                    Object.assign(info, { clusterEnabled: false })
+                  }
+                  return info
+                } catch (error) {
+                  $state.go('manager')
+                }
+              }
+            ]
+          }
+        })
+        
         // Manager - Status
         .state('mg-status', {
           templateUrl:
@@ -199,6 +407,20 @@ define(['../module'], function(module) {
           },
           controller: 'statusCtrl',
           resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ],
             statusData: [
               '$requestService',
               '$state',

@@ -54,7 +54,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
           loadedAll: false
         }
         this.scope.addMultipleAgents(false)
-        this.scope.$broadcast('closeEditXmlFile', {})
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -70,6 +69,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.editingFile = false
         if (!this.scope.$$phase) this.scope.$digest()
       })
+
+      // Come from the pencil icon on the groups table
+      this.scope.$on('openGroupFromList',(ev,parameters) => {
+        this.scope.editingFile = true;
+        this.scope.groupsSelectedTab = 'files';
+        return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
+      })
+
 
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
         this.goBackToAgents()
@@ -121,6 +128,13 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       })
+
+      this.scope.$on('openGroupFromList',(ev,parameters) => {
+        this.scope.editingFile = true;
+        this.scope.groupsSelectedTab = 'files';
+        return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
+      })
+
     }
 
     /**
@@ -213,7 +227,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
     async downloadCsv(path, name) {
       try {
         this.toast('Your download should begin automatically...')
-        const currentApi = this.api.id
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
           currentApi,
@@ -525,8 +539,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (error) {
         this.toast(error.message || error)
       }
-      this.scope.editingFile = false
-      if (!this.scope.$$phase) this.scope.$digest()
       return
     }
 
@@ -581,7 +593,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     closeEditingFile() {
       this.scope.editingFile = false
-      this.scope.$broadcast('closeEditXmlFile', {})
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     xmlIsValid(valid) {

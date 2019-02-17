@@ -2,16 +2,12 @@
   <div layout="row" class="layout-row layout-align-end wz-white-background">
     <div class='wz-margin-left-10 wz-margin-top-12'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
-      <span> / Ruleset </span>
+      <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
+      <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Rules</span>
+      <span> / {{ruleInfo.id}}</span>
     </div>
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
-  </div>
-  <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Ruleset</span>
-    <span>Review all your current rules and decoders</span>
   </div>
   <!-- End headline -->
   <div flex layout="column">
@@ -32,7 +28,7 @@
     <!-- End back button, title and status indicator -->
 
     <!-- Rule information ribbon -->
-    <div layout="row">
+    <div layout="row" ng-if="!editingFile">
       <md-card flex class="wz-metric-color wz-md-card">
         <md-card-content layout="row" class="wz-padding-metric">
           <div flex="15" ng-if="ruleInfo.id" class="wz-text-truncatable">ID:
@@ -65,13 +61,20 @@
     </div>
     <!-- End Rule information ribbon -->
 
+    <!-- Edit button -->
+    <div layout="row" ng-if="!editingFile">
+      <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn btn-primary btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+        Edit {{ruleInfo.file}}
+      </button>
+    </div>
+
     <!-- Rest of rule information -->
     <div layout="column" layout-align="start">
 
       <div layout="row" layout-align="start stretch">
 
         <!-- Groups section -->
-        <md-card ng-if="ruleInfo.groups.length > 0" flex class="wz-md-card">
+        <md-card ng-if="ruleInfo.groups.length > 0 && !editingFile" flex class="wz-md-card">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">
               <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> Groups</span>
@@ -89,12 +92,12 @@
         <!-- End groups section -->
 
         <!-- Details section -->
-        <md-card flex class="wz-md-card" ng-if="ruleInfo.details">
+        <md-card flex class="wz-md-card" ng-if="ruleInfo.details && !editingFile">
           <md-card-content>
             <span class="wz-headline-title"><i class="fa fa-fw fa-info" aria-hidden="true"></i> Details</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-padding-top-10" ng-repeat="(key, value) in ruleInfo.details" ng-if='!isArray(value)'>
-              <span flex="20">{{key}}</span>
+              <span class="wz-word-break-rule">{{key}}</span>
               <span ng-if="!isObject(value)" class="wz-text-right color-grey">{{value}}</span>
               <span ng-if="isObject(value)" class="color-grey">
                 <span ng-repeat="(key, value) in value">{{key}}: {{value}} <span ng-if="!$last">|</span> </span>
@@ -109,7 +112,7 @@
       <div layout="row" layout-align="start stretch" ng-if="ruleInfo.pci.length > 0 || ruleInfo.gdpr.length > 0">
 
         <!-- PCI section -->
-        <md-card ng-if="ruleInfo.pci.length > 0" flex class="wz-md-card">
+        <md-card ng-if="ruleInfo.pci.length > 0 && !editingFile" flex class="wz-md-card">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">
               <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> PCI</span>
@@ -196,17 +199,37 @@
       </div>
 
       <!-- Related rules section -->
-      <div layout="row" ng-if="ruleInfo">
+      <div layout="row" ng-if="ruleInfo && !editingFile">
         <h1 class="md-headline wz-headline">
           <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i> Related rules</h1>
       </div>
-      <div layout="row" ng-if="ruleInfo" class="md-padding">
+      <div layout="row" ng-if="ruleInfo && !editingFile" class="md-padding">
         <wazuh-table flex path="'/rules'" implicit-filter="[{ name:'file',value: ruleInfo.file}]" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
           allow-click="true">
         </wazuh-table>
       </div>
+      <!-- XML editor for rules -->
+      <div ng-show="editingFile">
+        <div layout="row" class="md-padding">
+          <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+              aria-hidden="true"></i>
+            <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+          </button>
+          <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn btn-primary pull-right wz-margin-left-10'>
+            <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+              file</span>
+            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+              XML format error</span>
+          </button>
+        </div>
+        <div class="wzXmlEditorDivContent" style="height: calc(100vh - 260px);" ng-if="fetchedXML">
+          <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="ruleInfo.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+          </wz-xml-file-editor>
+        </div>
+      </div>
       <!-- End related rules section -->
-      <div layout="row" class="wz-margin-top-10">
+      <div ng-show="!editingFile" layout="row" class="wz-margin-top-10">
         <span flex></span>
         <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
           <i aria-hidden="true" class="fa fa-download"></i>

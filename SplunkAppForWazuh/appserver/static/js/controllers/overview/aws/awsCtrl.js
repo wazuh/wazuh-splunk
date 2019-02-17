@@ -13,7 +13,7 @@ define([
   ColumnChart,
   Table,
   TimePicker,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -116,38 +116,28 @@ define([
           } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'top5Rules',
           this.scope
+        ),
+        new RawTableDataService(
+          'top5BucketsTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+          'top5BucketsTableToken',
+          '$result$',
+          this.scope,
+          'Top 5 buckets'
+        ),
+        new RawTableDataService(
+          'top5RulesTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'top5RulesTableToken',
+          '$result$',
+          this.scope,
+          'Top 5 Rules'
         )
       ]
-
-      this.top5BucketsTable = new rawTableDataService(
-        'top5BucketsTable',
-        `${
-          this.filters
-        } sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
-        'top5BucketsTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.top5BucketsTable)
-
-      this.top5BucketsTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 buckets'] = result
-      })
-
-      this.top5RulesTable = new rawTableDataService(
-        'top5RulesTable',
-        `${
-          this.filters
-        } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-        'top5RulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.top5RulesTable)
-
-      this.top5RulesTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 rules'] = result
-      })
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -195,6 +185,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

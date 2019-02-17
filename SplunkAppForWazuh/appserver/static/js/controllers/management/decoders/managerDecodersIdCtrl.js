@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
@@ -21,7 +21,9 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       currentDecoder,
       $currentDataService,
       $tableFilterService,
-      $csvRequestService
+      $csvRequestService,
+      extensions,
+      $fileEditor
     ) {
       super(
         $scope,
@@ -33,12 +35,13 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $csvRequestService
       )
       this.state = $state
+      this.extensions = extensions
+      this.fileEditor = $fileEditor
       try {
         this.filters = JSON.parse(window.localStorage.decoders) || []
       } catch (err) {
         this.filters = []
       }
-
       this.scope.currentDecoder = currentDecoder.data.data.items[0]
     }
 
@@ -49,6 +52,12 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>
         this.addDetailFilter(name, value)
+      this.scope.adminMode = this.extensions['admin'] === 'true'
+      this.scope.isLocal = this.scope.currentDecoder.path === '/var/ossec/etc/decoders' ? true : false
+      this.scope.saveDecoderConfig = fileName => this.saveDecoderConfig(fileName)
+      this.scope.closeEditingFile = () => this.closeEditingFile()
+      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+      this.scope.editDecoder = fileName => this.editDecoder(fileName)
     }
 
     /**
@@ -64,6 +73,44 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         this.state.go('mg-decoders')
       } catch (err) {
         this.toast(err.message || err)
+      }
+    }
+
+    closeEditingFile() {
+      this.scope.editingFile = false
+    }
+
+    xmlIsValid(valid) {
+      this.scope.xmlHasErrors = valid
+      if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    saveDecoderConfig(fileName) {
+      this.scope.$broadcast('saveXmlFile', {
+        file: fileName,
+        dir: 'decoders'
+      })
+    }
+
+    async editDecoder(fileName) {
+      try {
+        this.scope.editingFile = true
+        this.scope.fetchedXML = await this.fetchFileContent(fileName)
+        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+      } catch (error) {
+        this.scope.fetchedXML = null
+        this.toast(error.message || error)
+      }
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
+    }
+
+    async fetchFileContent(fileName) {
+      try {
+        const result = await this.fileEditor.getConfiguration(fileName, 'decoders')
+        return result
+      } catch (error) {
+        return Promise.reject(error)
       }
     }
   }

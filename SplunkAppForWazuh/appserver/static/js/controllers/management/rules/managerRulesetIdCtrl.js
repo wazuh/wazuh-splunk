@@ -12,6 +12,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $fileEditor
      */
     constructor(
       $scope,
@@ -21,7 +22,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       ruleInfo,
       $currentDataService,
       $tableFilterService,
-      $csvRequestService
+      $csvRequestService,
+      extensions,
+      $fileEditor
     ) {
       super(
         $scope,
@@ -33,12 +36,14 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $csvRequestService
       )
       this.state = $state
+      this.extensions = extensions
+      this.fileEditor = $fileEditor
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
         this.filters = []
       }
-
+      
       this.scope.ruleInfo = ruleInfo.data.data.items[0]
       if (
         !(Object.keys((this.scope.ruleInfo || {}).details || {}) || []).length
@@ -53,8 +58,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     $onInit() {
       this.scope.isObject = item => typeof item === 'object'
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.addDetailFilter = (name, value) =>
-        this.addDetailFilter(name, value)
+      this.scope.addDetailFilter = (name, value) => this.addDetailFilter(name, value)
+      this.scope.adminMode = this.extensions['admin'] === 'true'    
+      this.scope.isLocal = this.scope.ruleInfo.path === '/var/ossec/etc/rules' ? true : false
+      this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
+      this.scope.closeEditingFile = () => this.closeEditingFile()
+      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+      this.scope.editRule = fileName => this.editRule(fileName)
     }
 
     /**
@@ -72,6 +82,44 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         this.toast(err.message || err)
       }
     }
+
+    closeEditingFile() {
+      this.scope.editingFile = false
+    }
+
+    xmlIsValid(valid) {
+      this.scope.xmlHasErrors = valid
+      if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    saveRuleConfig(fileName) {
+      this.scope.$broadcast('saveXmlFile', {
+        file: fileName,
+        dir: 'rules'
+      })
+    }
+
+    async editRule(fileName) {
+      try {
+        this.scope.editingFile = true
+        this.scope.fetchedXML = await this.fetchFileContent(fileName)
+        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+      } catch (error) {
+        this.scope.fetchedXML = null
+        this.toast(error.message || error)
+      }
+      if (!this.scope.$$phase) this.scope.$digest()
+      return
+    }
+
+    async fetchFileContent(fileName){
+      try {
+        const result = await this.fileEditor.getConfiguration(fileName, 'rules')
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    } 
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)
 })

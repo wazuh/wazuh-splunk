@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
+], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class Osquery {
@@ -92,38 +92,28 @@ define([
           } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
+        ),
+        new RawTableDataService(
+          'topRulesTable',
+          `${
+            this.filters
+          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'topRulesTableToken',
+          '$result$',
+          this.scope,
+          'Top 5 Rules'
+        ),
+        new RawTableDataService(
+          'topPacksTable',
+          `${
+            this.filters
+          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
+          'topPacksTableToken',
+          '$result$',
+          this.scope,
+          'Top 5 Packs'
         )
       ]
-
-      this.topRulesTable = new rawTableDataService(
-        'topRulesTable',
-        `${
-          this.filters
-        } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-        'topRulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.topRulesTable)
-
-      this.topRulesTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 Rules'] = result
-      })
-
-      this.topPacksTable = new rawTableDataService(
-        'topPacksTable',
-        `${
-          this.filters
-        } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-        'topPacksTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.topPacksTable)
-
-      this.topPacksTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 Packs'] = result
-      })
 
       /**
        * Generates report
@@ -155,6 +145,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData'){
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()

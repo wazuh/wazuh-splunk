@@ -52,7 +52,9 @@ define([
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
-        adminMode: '=adminMode'
+        adminMode: '=adminMode',
+        emptyResults: '=emptyResults',
+        quickEdit: '=quickEdit'
       },
       controller(
         $rootScope,
@@ -77,6 +79,10 @@ define([
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
         $scope.items = []
+        $scope.customEmptyResults =
+          $scope.emptyResults && typeof $scope.emptyResults === 'string'
+            ? $scope.emptyResults
+            : 'Empty results for this table.'
 
         /**
          * Resizing. Calculate number of table rows depending on the screen height
@@ -118,6 +124,13 @@ define([
          */
         const fetch = async (options = {}) => {
           try {
+            if ((instance.filters || []).length) {
+              $scope.customEmptyResults =
+                'No results match your search criteria'
+            } else {
+              $scope.customEmptyResults =
+                $scope.emptyResults || 'Empty results for this table.'
+            }
             const result = await instance.fetch(options)
             items = options.realTime ? result.items.slice(0, 10) : result.items
             $scope.time = result.time
@@ -147,7 +160,12 @@ define([
          * @param {String} term
          * @param {Boolean} removeFilters
          */
-        const search = async (term, removeFilters) =>
+        const search = async (term, removeFilters) => {
+
+          if (term && typeof term === 'string') {
+            $scope.customEmptyResults = 'No results match your search criteria.'
+          }
+
           data.searchData(
             term,
             removeFilters,
@@ -157,6 +175,7 @@ define([
             $tableFilterService,
             $notificationService
           )
+        }
 
         /**
          * Queries to the API
@@ -341,6 +360,10 @@ define([
           $scope.removingGroup = null
         }
 
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList',{group})
+        }
+
         $scope.confirmRemoveAgent = async agent => {
           try {
             const group = instance.path.split('/').pop()
@@ -367,6 +390,11 @@ define([
           $scope.removingGroup = null
           return init()
         }
+
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList',{group})
+        }
+        
       },
       templateUrl:
         BASE_URL +

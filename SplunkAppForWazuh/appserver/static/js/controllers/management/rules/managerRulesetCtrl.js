@@ -1,4 +1,4 @@
-define(['../../module', './ruleset'], function(controllers, Ruleset) {
+define(['../../module', './ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
@@ -17,7 +17,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $notificationService,
       $currentDataService,
       $tableFilterService,
-      $csvRequestService
+      $csvRequestService,
+      isAdmin
     ) {
       super(
         $scope,
@@ -28,14 +29,24 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $tableFilterService,
         $csvRequestService
       )
+      this.isAdmin = isAdmin
     }
 
     /**
      * On controller load
      */
     $onInit() {
+      this.scope.adminMode = this.isAdmin
+      this.scope.localFilter = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
+      this.scope.addNewFile = () => this.addNewFile()
+      this.scope.saveRuleConfig = (fileName, dir) => this.saveRuleConfig(fileName, dir)
+      this.scope.closeEditingFile = () => this.closeEditingFile()
+      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+
+      this.scope.selectedNavTab = 'rules'
+
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.ruleset) {
@@ -49,17 +60,66 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
           this.toast('Error applying filter')
         }
       })
-
-      this.scope.$on('rulesetIsReloaded', () => {
-        this.scope.viewingDetail = false
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      this.scope.$on('wazuhShowRule', () => {
-        this.scope.viewingDetail = true
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
     }
+
+  /**
+   * Open the editor for a new file
+   */
+    addNewFile() {
+      this.scope.addingNewFile = true
+      this.scope.editingFile = {
+        file: ``,
+        dir: `rules`
+      }
+      this.scope.addingNewFile = true
+      this.scope.fetchedXML = `<!-- Configure your local rules here -->`
+    }
+
+    /**
+     * Edit rules and decoders functions
+     */
+    closeEditingFile() {
+      this.scope.editingFile = false
+      this.scope.addingNewFile = false
+      this.scope.fetchedXML = ''
+    }
+
+    /**
+     * Check if XML is valid
+     * @param {Boolean} valid 
+     */
+    xmlIsValid(valid) {
+      this.scope.xmlHasErrors = valid
+      this.scope.$applyAsync()
+    }
+
+    /**
+     * Save the new content
+     * @param {String} fileName 
+     * @param {String} dir 
+     */
+    saveRuleConfig(fileName, dir) {
+      try {
+        const containsNumberBlanks = /.*[0-9 ].*/
+        fileName = this.scope.editingFile.file
+        fileName = fileName.endsWith('.xml') ? fileName : `${fileName}.xml`
+        if (containsNumberBlanks.test(fileName)) {
+          this.toast('Error creating a new file. The filename can not contain numbers or white spaces.')
+        } else {
+          if (fileName !== '.xml') {
+            this.scope.$broadcast('saveXmlFile', {
+              file: fileName,
+              dir: dir
+            })
+          } else {
+            throw new Error('The name cannot be ".xml"')
+          }
+        }
+      } catch (error) {
+        this.toast('Please set a valid name')
+      }
+    }
+
   }
   controllers.controller('managerRulesetCtrl', Rules)
   return Rules

@@ -39,6 +39,9 @@ define(['../module', 'domToImg'], function(app, domToImg) {
             try {
               if (!classes.includes('table')) {
                 const tmpResult = await domToImg.toPng(tmpNode[0])
+                if (tmpResult === 'data:,') {
+                  return Promise.reject('Impossible fetch visualizations')
+                }
                 this.rawArray.push({
                   element: tmpResult,
                   width: tmpNode.width(),

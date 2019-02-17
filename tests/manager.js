@@ -55,8 +55,8 @@ describe('manager-api', () => {
     resBodyJson.forEach(api => {
       api.passapi.should.be.a('string')
       api.portapi.should.be.a('string')
-      api.id.should.be.a('string')
-      chai.expect(api.id).to.match(/^\w+\-\w+\-\w+\-\w+\-\w+$/) // eslint-disable-line
+      api['_key'].should.be.a('string')
+      chai.expect(api['_key']).to.match(/^\w+\-\w+\-\w+\-\w+\-\w+$/) // eslint-disable-line
       api.url.should.be.a('string')
       api.userapi.should.be.a('string')
     })   

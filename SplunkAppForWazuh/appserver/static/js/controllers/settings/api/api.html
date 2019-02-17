@@ -39,7 +39,7 @@
             <p flex="15">{{entry.portapi}}</p>
             <p flex="15">{{entry.userapi}}</p>
             <p flex="20">
-              <i ng-click="selectManager(entry.id)"  class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true">
+              <i ng-click="selectManager(entry['_key'])"  class="fa fa-star font-size-18 cursor-pointer" aria-hidden="true">
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Set as default Manager
                 </md-tooltip>

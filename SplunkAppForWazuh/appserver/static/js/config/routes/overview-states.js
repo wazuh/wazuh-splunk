@@ -49,7 +49,7 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
+                  const id = $currentDataService.getApi()['_key']
                   const result = await $currentDataService.getExtensionsById(id)
                   return result
                 } catch (err) {
@@ -161,7 +161,26 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-pci')
           },
-          controller: 'overviewPciCtrl'
+          controller: 'overviewPciCtrl',
+          resolve: {
+            pciTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const pciTabs = []
+                  const data = await $requestService.httpReq('GET','/api/pci?requirement=all')
+                  if (!data) return []
+                  for (const key in data.data) {
+                    pciTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return pciTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
         // Overview - GDPR
         .state('ow-gdpr', {
@@ -171,8 +190,28 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-gdpr')
           },
-          controller: 'overviewGdprCtrl'
+          controller: 'overviewGdprCtrl',
+          resolve: {
+            gdprTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const gdprTabs = []
+                  const data = await $requestService.httpReq('GET','/api/gdpr?requirement=all')
+                  if (!data) return []
+                  for (const key in data.data) {
+                    gdprTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return gdprTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+          }
         })
+
         // Overview - Vulnerabilities
         .state('ow-vul', {
           templateUrl:

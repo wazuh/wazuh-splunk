@@ -4,14 +4,12 @@ define(['../module', 'jquery'], function(module, $) {
     constructor(
       $rootScope,
       vis2png,
-      //  rawVisualizations,
       $currentDataService,
       $requestService,
       $notificationService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
-      //  this.rawVisualizations = rawVisualizations
       this.visHandlers = $currentDataService
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
@@ -40,31 +38,25 @@ define(['../module', 'jquery'], function(module, $) {
           this.errorHandler('Report in progress')
           return
         }
-        this.$rootScope.reportBusy = true
-        this.$rootScope.reportStatus = 'Generating report...0%'
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
 
         this.vis2png.clear()
 
-        // const idArray = this.rawVisualizations.getList().map(item => item.id)
-        const idArray = vizz
-
-        for (const item of idArray) {
+        for (const item of vizz) {
           const tmpHTMLElement = $(`#${item}`)
           this.vis2png.assignHTMLItem(item, tmpHTMLElement)
         }
 
         const appliedFilters = this.visHandlers.getSerializedFilters()
 
-        const images = await this.vis2png.checkArray(idArray)
+        const images = await this.vis2png.checkArray(vizz)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
         //Search time range
-        const timeRange = document
-          .getElementById('timePicker')
-          .getElementsByTagName('span')[1].innerHTML
+        const timeRange = document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML ?
+          document.getElementById('timePicker').getElementsByTagName('span')[1].innerHTML : ' '
 
         const data = {
           images,
@@ -83,13 +75,10 @@ define(['../module', 'jquery'], function(module, $) {
           section: isAgents ? 'agents' : 'overview',
           isAgents
         }
-
         await this.genericReq('POST', '/report/generate', {
-          data: JSON.stringify(data)
+           data : JSON.stringify(data )
         })
 
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.errorHandler('Success. Go to Management -> Reporting')
         this.$rootScope.$broadcast('loadingReporting', { status: false })
@@ -97,20 +86,18 @@ define(['../module', 'jquery'], function(module, $) {
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
-        this.errorHandler('Reporting error')
+        if (error === 'Impossible fetch visualizations'){
+          this.errorHandler(`Reporting error: ${error}`)
+        }else{
+          this.errorHandler('Reporting error')
+        }
       }
     }
-    async reportInventoryData(
-      tab,
-      sectionTitle,
-      queryFilters = '',
-      vizz = [],
-      metrics = {},
-      tableResults = {},
-      isAgents = 'inventory',
-      agentId
-    ) {
+
+    async reportInventoryData(agentId) {
       try {
+        let tableResults = {}
+        let isAgents
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         //Get agent info and formating tables
         try {
@@ -142,7 +129,8 @@ define(['../module', 'jquery'], function(module, $) {
         const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
         const networkInterfaceData = netiface.data.data.items.map(i => {
-          return [i.name, i.mac, i.state, i.mtu.toString(), i.type]
+          i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
+          return [i.name, i.mac, i.state, i.mtu, i.type]
         })
         const networkInterfaceTable = {
           fields: networkInterfaceKeys,
@@ -154,7 +142,8 @@ define(['../module', 'jquery'], function(module, $) {
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
         const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
         const networkPortsData = ports.data.data.items.map(p => {
-          return [p.local.ip, p.local.port.toString(), p.state, p.protocol]
+          p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
+          return [p.local.ip, p.local.port, p.state, p.protocol]
         })
         const networkPortsTable = {
           fields: networkPortsKeys,
@@ -186,7 +175,8 @@ define(['../module', 'jquery'], function(module, $) {
         )
         const processesKeys = ['Name', 'Euser', 'Nice', 'State']
         const processesData = processes.data.data.items.map(n => {
-          return [n.name, n.euser, n.nice.toString(), n.state]
+          n.nice = n.nice ? n.nice.toString() : 'undefined'
+          return [n.name, n.euser, n.nice, n.state]
         })
         const processesTable = { fields: processesKeys, rows: processesData }
         tableResults['Processes'] = processesTable
@@ -200,15 +190,14 @@ define(['../module', 'jquery'], function(module, $) {
         const packagesTable = { fields: packagesKeys, rows: packagesData }
         tableResults['Packages'] = packagesTable
 
-        const images = vizz
         const data = {
-          images,
+          images: [],
           tableResults,
           timeRange: '',
-          sectionTitle,
-          queryFilters,
-          metrics,
-          pdfName: tab,
+          sectionTitle: 'Inventory Data',
+          queryFilters: '',
+          metrics: {},
+          pdfName: 'agents-inventory',
           isAgents
         }
 
@@ -216,15 +205,12 @@ define(['../module', 'jquery'], function(module, $) {
           data: JSON.stringify(data)
         })
 
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.errorHandler('Success. Go to Management -> Reporting')
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
+        console.error(error)
         this.errorHandler('Reporting error')
       }
     }

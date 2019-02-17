@@ -24,7 +24,7 @@ from db import database
 from log import log
 
 
-def getSelfConfStanza(file,stanza):
+def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
 
     Parameters
@@ -53,7 +53,7 @@ def diff_keys_dic_update_api(kwargs_dic):
     try:
         diff = []
         kwargs_dic_keys = kwargs_dic.keys()
-        dic_keys = ['id', 'url', 'portapi', 'userapi', 'passapi']
+        dic_keys = ['_key', 'url', 'portapi', 'userapi', 'passapi','filterName', 'filterType', 'managerName']
         for key in dic_keys:
             if key not in kwargs_dic_keys:
                 diff.append(key)
@@ -76,7 +76,6 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
 
-    # /custom/SplunkAppForWazuh/manager/node
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
         """Check API connection.
@@ -95,13 +94,21 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
+            request_manager = self.session.get(
+                url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()
             request_cluster = self.session.get(
-                url + '/version', auth=auth, timeout=8, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
+            request_cluster_name = self.session.get(
+                url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()
+            output = {}
+            output['managerName'] = request_manager['data']
+            output['clusterMode'] = request_cluster['data']
+            output['clusterName'] = request_cluster_name['data']
             del kwargs['pass']
-            result = jsonbak.dumps(request_cluster)
+            result = jsonbak.dumps(output)
         except Exception as e:
             self.logger.error("Cannot connect to API : %s" % (e))
-            return jsonbak.dumps({"status": "400", "error": str(e)})
+            return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
         return result
 
     @expose_page(must_login=False, methods=['GET'])
@@ -138,7 +145,7 @@ class manager(controllers.BaseController):
 
         """
         try:
-            stanza = getSelfConfStanza("config","extensions")
+            stanza = getSelfConfStanza("config", "extensions")
             data_temp = stanza
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
@@ -200,8 +207,8 @@ class manager(controllers.BaseController):
 
         """
         try:
-            data_temp = self.db.all()
-            result = jsonbak.dumps(data_temp)
+            apis = self.db.all()
+            result = apis
         except Exception as e:
             self.logger.error(jsonbak.dumps({"error": str(e)}))
             return jsonbak.dumps({"error": str(e)})
@@ -218,18 +225,18 @@ class manager(controllers.BaseController):
 
         """
         try:
+
             record = kwargs
-            keys_list = ['url', 'portapi', 'userapi', 'passapi']
+            keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName', 'filterType', 'filterName']
             if set(record.keys()) == set(keys_list):
-                record['id'] = str(uuid.uuid4())
-                self.db.insert(record)
-                parsed_data = jsonbak.dumps({'result': record['id']})
+                key = self.db.insert(jsonbak.dumps(record))
+                parsed_data = jsonbak.dumps({'result': key})
+                return parsed_data
             else:
-                return jsonbak.dumps({'error': 'Invalid number of arguments'})
+                raise Exception('Invalid number of arguments')
         except Exception as e:
-            self.logger.error({'error': str(e)})
+            self.logger.error({'manager - add_api': str(e)})
             return jsonbak.dumps({'error': str(e)})
-        return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
@@ -243,9 +250,9 @@ class manager(controllers.BaseController):
         """
         try:
             api_id = kwargs
-            if 'id' not in api_id:
+            if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})
-            self.db.remove(api_id['id'])
+            self.db.remove(api_id['_key'])
             parsed_data = jsonbak.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error in remove_api endpoint: %s" % (e))
@@ -264,7 +271,9 @@ class manager(controllers.BaseController):
         """
         try:
             entry = kwargs
-            keys_list = ['id', 'url', 'portapi', 'userapi',
+            if '_user' in kwargs:
+                del kwargs['_user']
+            keys_list = ['_key', 'url', 'portapi', 'userapi',
                          'passapi', 'filterName', 'filterType', 'managerName']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)

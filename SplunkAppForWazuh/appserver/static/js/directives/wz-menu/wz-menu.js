@@ -28,16 +28,16 @@ define(['../module'], function(directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
 
-        $scope.dumpHtml = item => {
-          $scope.menuNavItem = item
+        $scope.openDiscover = () => {
+          $scope.menuNavItem = 'discover'
           $scope.$broadcast('stateChanged', 'discover')
           if (!$scope.$$phase) $scope.$digest()
           //Generate url
-          let filters = $currentDataService.getSerializedFilters()
-          let url = `${BASE_URL}/app/search/search?q=${filters}`
+          let url = `${BASE_URL}/app/search/search?q=index=wazuh`
           localStorage.setItem('urlDiscover', url)
-          $state.go('discover')
+          $state.go('discover', { fromDashboard: false })
         }
+
         const checkLastState = (prefix, state) => {
           if (
             ($navigationService.getLastState() &&
@@ -52,12 +52,14 @@ define(['../module'], function(directives) {
         }
 
         const update = () => {
-          $scope.currentIndex = !$currentDataService.getIndex()
+          const index = $currentDataService.getIndex()
+          const api = $currentDataService.getApi()
+          $scope.currentIndex = !index
             ? 'wazuh'
-            : $currentDataService.getIndex().index
-          $scope.currentAPI = !$currentDataService.getApi()
+            : index.index
+          $scope.currentAPI = !api
             ? '---'
-            : $currentDataService.getApi().managerName
+            : api.managerName
           $scope.theresAPI = $scope.currentAPI === '---' ? false : true
 
           if (checkLastState('ow-', 'overview')) {
@@ -73,7 +75,6 @@ define(['../module'], function(directives) {
           } else if (checkLastState('discover', 'discover')) {
             $scope.menuNavItem = 'discover'
           }
-          //else if ($navigationService.getLastState() && $navigationService.getLastState() !== '' && $navigationService.getLastState().includes('dev-tools')) { $scope.menuNavItem = 'dev-tools'  }
           if (!$scope.$$phase) $scope.$digest()
         }
         // Listens for changes in the selected API

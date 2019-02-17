@@ -19,5 +19,8 @@ define([
   './get-ids/getIdService',
   './token-model/urlTokenModelService',
   './group-handler/group-handler',
-  './date-diff/dateDiffService'
+  './date-diff/dateDiffService',
+  './file-editor/file-editor',
+  './cdb-editor/cdb-editor',
+  './restartService/restartService'
 ], function() {})

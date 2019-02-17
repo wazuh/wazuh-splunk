@@ -52,8 +52,9 @@ define(['../module'], function(module) {
         else if (method === 'POST')
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
-        else if (method === 'DELETE')
+        else if (method === 'DELETE'){
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+        }
         if (!data) {
           throw new Error(
             `Error doing a request to ${tmpUrl}, method: ${method}.`
@@ -64,6 +65,7 @@ define(['../module'], function(module) {
         }
         return $q.resolve(data)
       } catch (error) {
+        console.error("errore in request ", error)
         return $q.reject(error)
       }
     }
@@ -78,7 +80,7 @@ define(['../module'], function(module) {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
-        const id = currentApi && currentApi.id ? currentApi.id : opts.id
+        const id = currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
         const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
@@ -90,11 +92,53 @@ define(['../module'], function(module) {
       }
     }
 
+    const sendConfiguration = async (url, content) => {
+      try {
+        const result = await apiReq(
+          `${url}`,
+          { content, origin: 'xmleditor' },
+          'POST'
+        )
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          throw new Error('Cannot send file.')
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    const getConfiguration = async (url) => {
+      try {
+        const result = await apiReq(url)
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          throw new Error("Cannot get file.")
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     const service = {
       getBaseUrl: getBaseUrl,
       getWellFormedUri: getWellFormedUri,
       apiReq: apiReq,
-      httpReq: httpReq
+      httpReq: httpReq,
+      sendConfiguration: sendConfiguration,
+      getConfiguration: getConfiguration
     }
     return service
   })
