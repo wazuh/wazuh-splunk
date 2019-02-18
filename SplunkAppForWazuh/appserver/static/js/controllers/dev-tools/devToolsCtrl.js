@@ -37,7 +37,7 @@ define([
   markSeletion,
   showHint,
   queryString,
-  ExcludedIntelliSenseTriggerKeys
+  ExcludedIntelliSenseTriggerKeys,
 ) {
     'use strict'
     class DevToolsController {
@@ -81,90 +81,95 @@ define([
        * When controller loads
        */
       $onInit() {
-        $(this.$document[0]).keydown(e => {
-          if (!this.multipleKeyPressed.includes(e.which)) {
-            this.multipleKeyPressed.push(e.which)
-          }
-          if (
-            this.multipleKeyPressed.includes(13) &&
-            this.multipleKeyPressed.includes(16) &&
-            this.multipleKeyPressed.length === 2
-          ) {
-            e.preventDefault()
-            return this.send()
-          }
-        })
-
-        // eslint-disable-next-line
-        $(this.$document[0]).keyup(e => {
-          this.multipleKeyPressed = []
-        })
-        this.apiInputBox = CodeMirror.fromTextArea(
-          this.$document[0].getElementById('api_input'),
-          {
-            lineNumbers: true,
-            matchBrackets: true,
-            mode: { name: 'javascript', json: true },
-            theme: 'ttcn',
-            foldGutter: true,
-            styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter']
-          }
-        )
-        // Register plugin for code mirror
-        CodeMirror.commands.autocomplete = function (cm) {
-          CodeMirror.showHint(cm, CodeMirror.hint.dictionaryHint, {
-            completeSingle: false
+        try {
+          $(this.$document[0]).keydown(e => {
+            if (!this.multipleKeyPressed.includes(e.which)) {
+              this.multipleKeyPressed.push(e.which)
+            }
+            if (
+              this.multipleKeyPressed.includes(13) &&
+              this.multipleKeyPressed.includes(16) &&
+              this.multipleKeyPressed.length === 2
+            ) {
+              e.preventDefault()
+              return this.send()
+            }
           })
-        }
 
-        this.apiInputBox.on('change', () => {
-          this.groups = this.analyzeGroups()
-          const currentState = this.apiInputBox.getValue().toString()
-          this.appState.setCurrentDevTools(currentState)
-          const currentGroup = this.calculateWhichGroup()
-          if (currentGroup) {
-            const hasWidget = this.widgets.filter(
-              item => item.start === currentGroup.start
-            )
-            if (hasWidget.length)
-              this.apiInputBox.removeLineWidget(hasWidget[0].widget)
-            setTimeout(() => this.checkJsonParseError(), 150)
-          }
-        })
-
-        this.apiInputBox.on('cursorActivity', () => {
-          const currentGroup = this.calculateWhichGroup()
-          this.highlightGroup(currentGroup)
-          this.checkJsonParseError()
-        })
-
-        this.apiOutputBox = CodeMirror.fromTextArea(
-          this.$document[0].getElementById('api_output'),
-          {
-            lineNumbers: true,
-            matchBrackets: true,
-            mode: { name: 'javascript', json: true },
-            readOnly: true,
-            lineWrapping: true,
-            styleActiveLine: true,
-            theme: 'ttcn',
-            foldGutter: true,
-            gutters: ['CodeMirror-foldgutter']
-          }
-        )
-
-        this.$scope.send = firstTime => this.send(firstTime)
-
-        this.$scope.help = () => {
-          this.$window.open(
-            'https://documentation.wazuh.com/current/user-manual/api/reference.html'
+          // eslint-disable-next-line
+          $(this.$document[0]).keyup(e => {
+            this.multipleKeyPressed = []
+          })
+          this.apiInputBox = CodeMirror.fromTextArea(
+            this.$document[0].getElementById('api_input'),
+            {
+              lineNumbers: true,
+              matchBrackets: true,
+              mode: { name: 'javascript', json: true },
+              theme: 'ttcn',
+              foldGutter: true,
+              styleSelectedText: true,
+              gutters: ['CodeMirror-foldgutter']
+            }
           )
+          // Register plugin for code mirror
+          CodeMirror.commands.autocomplete = function (cm) {
+            CodeMirror.showHint(cm, CodeMirror.hint.dictionaryHint, {
+              completeSingle: false
+            })
+          }
+
+          this.apiInputBox.on('change', () => {
+            this.groups = this.analyzeGroups()
+            const currentState = this.apiInputBox.getValue().toString()
+            this.appState.setCurrentDevTools(currentState)
+            const currentGroup = this.calculateWhichGroup()
+            if (currentGroup) {
+              const hasWidget = this.widgets.filter(
+                item => item.start === currentGroup.start
+              )
+              if (hasWidget.length)
+                this.apiInputBox.removeLineWidget(hasWidget[0].widget)
+              setTimeout(() => this.checkJsonParseError(), 150)
+            }
+          })
+
+          this.apiInputBox.on('cursorActivity', () => {
+            const currentGroup = this.calculateWhichGroup()
+            this.highlightGroup(currentGroup)
+            this.checkJsonParseError()
+          })
+
+          this.apiOutputBox = CodeMirror.fromTextArea(
+            this.$document[0].getElementById('api_output'),
+            {
+              lineNumbers: true,
+              matchBrackets: true,
+              mode: { name: 'javascript', json: true },
+              readOnly: true,
+              lineWrapping: true,
+              styleActiveLine: true,
+              theme: 'ttcn',
+              foldGutter: true,
+              gutters: ['CodeMirror-foldgutter']
+            }
+          )
+
+          this.$scope.send = firstTime => this.send(firstTime)
+
+          this.$scope.help = () => {
+            this.$window.open(
+              'https://documentation.wazuh.com/current/user-manual/api/reference.html'
+            )
+          }
+
+          this.init()
+          this.$scope.send(true)
+          this.$scope.exportOutput = () => this.exportOutput()
+        } catch (error) {
+          this.toast(error)
         }
 
-        this.init()
-        this.$scope.send(true)
-        this.$scope.exportOutput = () => this.exportOutput()
       }
 
       /**
@@ -176,7 +181,7 @@ define([
           const blob = new Blob([this.apiOutputBox.getValue()], {
             type: 'application/json'
           })
-          FileSaver.saveAs(blob, 'export.json')
+          saveAs(blob, 'export.json')
         } catch (error) {
           this.toast(error.message || error)
         }
@@ -619,8 +624,8 @@ define([
               "Wazuh API don't reachable. Reason: timeout."
             )
           } else {
-            const parsedError = this.errorHandler.handle(error, null, null, true);
-            if (typeof parsedError === 'string') {
+            this.toast(error)
+            if (typeof error === 'string') {
               return this.apiOutputBox.setValue(error)
             } else if (error && error.data && typeof error.data === 'object') {
               return this.apiOutputBox.setValue(JSON.stringify(error))
