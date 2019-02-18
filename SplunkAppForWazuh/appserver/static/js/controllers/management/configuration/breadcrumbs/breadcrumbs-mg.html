@@ -1,4 +1,4 @@
-<div flex="auto" layout="column" ng-init="switchConfigurationTab('welcome')">
+<div flex="auto" layout="column">
   <div layout="row" layout-align="start center">
 
     <div>
@@ -21,8 +21,8 @@
   </div>
 
   <!-- Button to edit configuration -->
-  <div ng-show="!editingConfig" ng-click="switchToEdition()" layout="row" layout-align="start center" class="layout-align-start-center layout-row">
-    <button style="margin-left: 15px; margin-bottom: 10px;" ng-if="isAdmin" ui-sref="mg-conf.editConfig" class="btn btn-primary pull-right ng-scope">
+  <div ng-show="!editingConfig" layout="row" layout-align="start center" class="layout-align-start-center layout-row">
+    <button style="margin-left: 15px; margin-bottom: 10px;" ng-if="isAdmin" ng-click="switchToEdition()" ui-sref="mg-conf.editConfig" class="btn btn-primary pull-right ng-scope">
       <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
         Edit configuration
       </span>

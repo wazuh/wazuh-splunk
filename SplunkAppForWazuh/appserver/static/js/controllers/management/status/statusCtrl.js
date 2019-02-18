@@ -56,7 +56,9 @@ define(['../../module'], function(controllers) {
      * On controller loads
      */
     $onInit() {
+      this.scope.confirmingRestart = false
       this.scope.isAdmin = this.isAdmin
+      this.scope.switchRestart = () => this.switchRestart()
       this.scope.restartInProgress = false
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name
@@ -162,15 +164,21 @@ define(['../../module'], function(controllers) {
     async restart() {
       try {
         this.scope.restartInProgress = true
+        this.scope.confirmingRestart = false
         const result = await this.restartService.restart()
         this.toast(result)
         this.scope.restartInProgress = false
       } catch (error) {
         this.toast(error)
+        this.scope.confirmingRestart = false
         this.scope.restartInProgress = false
       }
     }
 
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
+    }
   }
 
   controllers.controller('statusCtrl', Status)
