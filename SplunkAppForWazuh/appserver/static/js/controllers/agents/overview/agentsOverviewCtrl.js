@@ -60,6 +60,7 @@ define(['../../module'], function (app) {
      */
     $onInit() {
       try {
+        this.scope.confirmingRestart = false
         if (
           this.agent.length &&
           typeof this.agent[0] === 'object' &&
@@ -146,6 +147,7 @@ define(['../../module'], function (app) {
               (this.scope.addingGroupToAgent = false)
 
             this.scope.restart = () => this.restartAgent()
+            this.scope.switchRestart = () => this.switchRestart()
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -325,6 +327,11 @@ define(['../../module'], function (app) {
           `Error restarting agent: ${error}`
         )
       }
+    }
+
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
     }
   }
 
