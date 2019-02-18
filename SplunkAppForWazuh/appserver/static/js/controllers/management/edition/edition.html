@@ -12,7 +12,7 @@
         aria-hidden="true"></i>
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
-    <button style="height: 30px;" ng-if="isAdmin" ng-click="switchToEdition()" ui-sref="mg-conf.overview" class='btn btn-info wz-margin-left-10'>Cancel</button>
+    <button style="height: 30px;" ng-if="isAdmin" ng-click="switchToEdition()" ui-sref="mg-conf" class='btn btn-info wz-margin-left-10'>Cancel</button>
     <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
         file</span>
@@ -33,7 +33,7 @@
     </button>
 
   </div>
-  <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 315px)">
+  <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 260px)">
     <wz-xml-file-editor  style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
     </wz-xml-file-editor>
   </div>
