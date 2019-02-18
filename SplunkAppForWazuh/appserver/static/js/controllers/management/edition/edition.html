@@ -21,16 +21,33 @@
     </button>
     <span class="flex"></span>
     
-    <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="restart()" ng-disabled="restartInProgress"
-      class='btn btn-primary pull-right wz-margin-left-10'>
-      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
-        {{editingNode}}</span>
-    </button>
-    <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="restart(editingNode)" ng-disabled="restartInProgress"
-      class='btn btn-primary pull-right wz-margin-left-10'>
-      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
-        {{editingNode}}</span>
-    </button>
+    <!-- Restart button -->
+    <div ng-show="!confirmingRestart">
+      <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()" ng-disabled="restartInProgress"
+        class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
+          {{editingNode}}</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()" ng-disabled="restartInProgress"
+        class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
+          {{editingNode}}</span>
+      </button>
+    </div>
+    <div ng-show="confirmingRestart">
+      <span style="padding-top: 8px;">The {{editingNode}} will be restarted...</span>
+      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()" class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin && clusterEnabled" ng-click="restart(editingNode); switchRestart()" class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
+    <!-- End restart button -->
+
 
   </div>
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 260px)">
