@@ -167,7 +167,6 @@
             <div>
               <span class="font-size-16">Configuration assessment</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Configuration parameters</span>
               </div>
             </div>
             <span flex></span>
@@ -181,13 +180,13 @@
             <!-- Configuration block -->
             <div class="wz-padding-top-10" style="width:50%; padding-left:5%; float:left;padding-top: 30px;">
               <!-- content -->
-              <wz-config-item label="Configuration assessment status" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assesment'].enabled === 'yes' ? 'enabled' : 'disabled'">
+              <wz-config-item label="Configuration assessment status" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].enabled === 'yes' ? 'enabled' : 'disabled'">
               </wz-config-item>
-              <wz-config-item label="Interval" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assesment'].interval">
+              <wz-config-item label="Interval" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].interval">
               </wz-config-item>
-              <wz-config-item label="Scan on start" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assesment'].scan_on_start">
+              <wz-config-item label="Scan on start" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].scan_on_start">
               </wz-config-item>
-              <wz-config-item label="Skip nfs" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assesment'].skip_nfs">
+              <wz-config-item label="Skip nfs" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].skip_nfs">
               </wz-config-item>
               <!-- end content -->
             </div>
@@ -197,8 +196,8 @@
             <div class="wz-padding-top-10" style="width:80%; float:left; margin-right:15%;">
               <!-- content -->
               <span style="padding-left: 30px;"><b>Policies applied</b></span>
-              <wz-config-item ng-repeat="profile in currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assesment'].profiles"
-                label="" value="profile.profile">
+              <wz-config-item ng-repeat="policy in currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].policies"
+                label="" value="policy">
               </wz-config-item>
               <!-- end content -->
             </div>
