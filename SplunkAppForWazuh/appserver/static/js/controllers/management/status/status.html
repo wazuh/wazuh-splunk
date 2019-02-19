@@ -38,6 +38,15 @@
     </div>
   </div>
 
+  <!-- Show errors in the configuration -->
+  <div ng-show="showErrorMessages">
+    <ul>
+      <li ng-repeat="err in errorInfo track by $index">
+        {{err}}
+      </li>
+    </ul>
+  </div>
+
   <!-- Loading ring -->
   <div class='uil-ring-css' ng-show="load">
     <div></div>

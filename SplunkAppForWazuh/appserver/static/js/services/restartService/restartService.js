@@ -11,7 +11,7 @@ define(['../module'], function (module) {
           return await restartManager()
         }
       } catch (error) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -31,14 +31,16 @@ define(['../module'], function (module) {
           }
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
-            const msgErr = checkConfig.data.data.details.join()
-            throw new Error(msgErr)
+            const objErr = {}
+            objErr['badConfig'] = true
+            objErr['error'] = checkConfig.data.data.details
+            throw objErr
           } else {
             throw new Error('Bad configuration, restart aborted.')
           }
         }
       } catch (error) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -58,14 +60,16 @@ define(['../module'], function (module) {
           }
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
-            const msgErr = checkConfig.data.data.details.join()
-            throw new Error(msgErr)
+            const objErr = {}
+            objErr['badConfig'] = true
+            objErr['error'] = checkConfig.data.data.details
+            throw objErr
           } else {
             throw new Error('Bad configuration, restart aborted.')
           }
         }
       } catch (error) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -87,8 +91,10 @@ define(['../module'], function (module) {
             }
           } else {
             if (Array.isArray(checkConfig.data.data.details)) {
-              const msgErr = checkConfig.data.data.details.join()
-              throw new Error(msgErr)
+              const objErr = {}
+              objErr['badConfig'] = true
+              objErr['error'] = checkConfig.data.data.details
+              throw objErr
             } else {
               throw new Error('Bad configuration, restart aborted.')
             }
@@ -98,7 +104,7 @@ define(['../module'], function (module) {
           return `Cluster disabled, cannot send the restart signal to ${node}, the manager is going to restart.`
         }
       } catch (error) {
-        throw new Error(error)
+        throw error
       }
     }
 

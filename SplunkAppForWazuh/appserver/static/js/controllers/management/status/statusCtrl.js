@@ -163,13 +163,19 @@ define(['../../module'], function(controllers) {
      */
     async restart() {
       try {
+        this.scope.showErrorMessages = false
         this.scope.restartInProgress = true
         this.scope.confirmingRestart = false
         const result = await this.restartService.restart()
         this.toast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.toast(error)
+        if (error.badConfig && error.error) {
+          this.scope.showErrorMessages = true
+          const uniqueErrors = [... new Set(error.error)]
+          this.scope.errorInfo = uniqueErrors
+        }
+        this.toast("Cannot restart.")
         this.scope.confirmingRestart = false
         this.scope.restartInProgress = false
       }
