@@ -409,6 +409,10 @@ define([
 
         cleanKeys()
 
+        $scope.getEquivalence = key => {
+          return $scope.keyEquivalence[key]
+        }
+
         $scope.showCheckbox = () => {
           $scope.showingChecks = !$scope.showingChecks
         }

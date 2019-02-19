@@ -9,7 +9,7 @@
   <div class="wz-table-checkboxes">
     <div ng-show="showingChecks">
       <md-checkbox ng-repeat="(key, value) in cleanKeys track by $index" ng-checked="value" ng-model="value" ng-change="switchKey(key)" aria-label="key">
-        {{key}}
+        {{getEquivalence(key)}}
       </md-checkbox>
     </div>
   </div>
