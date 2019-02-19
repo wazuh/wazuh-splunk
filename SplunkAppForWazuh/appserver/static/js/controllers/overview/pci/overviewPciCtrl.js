@@ -60,6 +60,10 @@ define([
         '#timePicker',
         $urlTokenModel.handleValueChange
       )
+
+      this.scope.expandArray = [false,false,false,false,false]
+            this.scope.expand = (i,id) => this.expand(i,id);
+
       this.dropdown = new Dropdown(
         'dropDownInput',
         `${
@@ -168,6 +172,14 @@ define([
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
+
+    }
+
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i];
+      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
+      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
     }
 
     /**

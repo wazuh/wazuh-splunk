@@ -908,3 +908,21 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   background-color: #005472!important;
   border-color: #004c68!important;
 }
+
+.fullscreen {
+  display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      z-index: 9999;
+      width: auto;
+      height: calc(100vh - 100px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      margin: 50px 10px 50px 10px;
+      outline: 50px solid rgba(0, 0, 0, 0.5)!important;
+      max-width: 100% !important;
+  }

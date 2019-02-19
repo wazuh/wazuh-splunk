@@ -28,16 +28,20 @@
   <wazuh-bar></wazuh-bar>
   <!-- First row -->
   <div layout="row" layout-align="center stretch">
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
       <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with engines detected</span>
+        <span class="wz-headline-title">Top 5 agents with engines detected
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5AgentsPositive')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="top5AgentsPositive" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
       <md-card-content>
-        <span class="wz-headline-title">Events summary</span>
+        <span class="wz-headline-title">Events summary
+          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'eventsSummary')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="eventsSummary" class="dashboard-element single" style="width: 100%;"></div>
       </md-card-content>
@@ -45,16 +49,20 @@
   </div>
   <!-- Second row -->
   <div layout="row" layout-align="center stretch">
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with no positives found</span>
+        <span class="wz-headline-title">Top 5 agents with no positives found
+          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5AgentsNoPositive')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="top5AgentsNoPositive" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
       <md-card-content>
-        <span class="wz-headline-title">Alerts per agent</span>
+        <span class="wz-headline-title">Alerts per agent
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsPerAgent')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="alertsPerAgent" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
@@ -62,9 +70,11 @@
   </div>
   <!-- Third row -->
   <div layout="row" layout-align="left stretch">
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
       <md-card-content>
-        <span class="wz-headline-title">Top 5 rules</span>
+        <span class="wz-headline-title">Top 5 rules
+          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'top5Rules')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="top5Rules" class="dashboard-element single" style="width: 100%;"></div>
       </md-card-content>

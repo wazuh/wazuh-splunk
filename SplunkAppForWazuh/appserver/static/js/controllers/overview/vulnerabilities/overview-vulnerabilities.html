@@ -47,16 +47,20 @@
   </div>
 
   <div layout="row" layout-align="center stretch">
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Most affected agents</span>
+        <span class="wz-headline-title">Most affected agents
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'affectedAgents')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='affectedAgents'></div>
       </md-card-content>
     </md-card>
-    <md-card flex="66" class="wz-md-card">
+    <md-card flex="66" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts evolution over time</span>
+        <span class="wz-headline-title">Alerts evolution over time
+          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsEvolution')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsEvolution'></div>
       </md-card-content>
@@ -64,23 +68,29 @@
   </div>
 
   <div layout="row" layout-align="center stretch">
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Severity distribution</span>
+        <span class="wz-headline-title">Severity distribution
+          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'severityDist')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='severityDist'></div>
       </md-card-content>
     </md-card>
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Commonly affectected packages</span>
+        <span class="wz-headline-title">Commonly affectected packages
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'commonAffectedPackages')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='commonAffectedPackages'></div>
       </md-card-content>
     </md-card>
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Most common CVEs</span>
+        <span class="wz-headline-title">Most common CVEs
+          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'commonCves')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='commonCves'></div>
       </md-card-content>
@@ -88,9 +98,11 @@
   </div>
 
   <div layout="row" class="height-570">
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts summary</span>
+        <span class="wz-headline-title">Alerts summary
+          <span class="wz-text-link" style="float:right;" ng-click="expand(5,'alertsSummary')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsSummary'></div>
       </md-card-content>
