@@ -109,7 +109,7 @@ define(['../module', 'splunkjs/mvc'], function(module) {
 
           //Remove this block when API call returns the correct format output
           let totalItems = 0
-          if (this.path.includes("configuration_assessment")) {
+          if (this.path.includes("configuration-assessment")) {
             this.items.push(...firstPage.data.data)
             totalItems = firstPage.data.data.length
           } else {
