@@ -908,3 +908,9 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   background-color: #005472!important;
   border-color: #004c68!important;
 }
+
+.wz-table-checkboxes {
+  width: 100%;
+  text-align: right;
+  padding-right: 10px;
+}

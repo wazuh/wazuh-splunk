@@ -244,6 +244,7 @@ define([
          */
         const init = async () => {
           try {
+            $scope.showingChecks = false
             $scope.error = false
             $scope.wazuhTableLoading = true
             await fetch()
@@ -395,6 +396,32 @@ define([
           $scope.$emit('openGroupFromList',{group})
         }
         
+        /**
+         * Show a checkbox for each key to show or hide it
+         */
+        const cleanKeys = () => {
+          $scope.cleanKeys = {}
+          $scope.keys.map(key => {
+            const k = key.value || key
+            $scope.cleanKeys[k] = true
+          })
+        }
+
+        cleanKeys()
+
+        $scope.showCheckbox = () => {
+          $scope.showingChecks = !$scope.showingChecks
+        }
+
+        $scope.switchKey = (key) => {
+          $scope.cleanKeys[key] = !$scope.cleanKeys[key]
+        }
+
+        $scope.showKey = (item) => {
+          const it = item.value || item
+          return $scope.cleanKeys[it]
+        }
+
       },
       templateUrl:
         BASE_URL +

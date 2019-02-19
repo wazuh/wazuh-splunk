@@ -3,10 +3,26 @@
     <div></div>
   </div>
 </div>
+
+<!-- Checkbox to hide columns -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length">
+  <div class="wz-table-checkboxes">
+    <div ng-show="showingChecks">
+      <md-checkbox ng-repeat="(key, value) in cleanKeys track by $index" ng-checked="value" ng-model="value" ng-change="switchKey(key)" aria-label="key">
+        {{key}}
+      </md-checkbox>
+    </div>
+  </div>
+  <div style="margin-right: 10px;">
+    <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><i aria-hidden="true" class="fa fa-cog"></i></span>
+  </div>
+</div>
+<!-- End Checkbox -->
+<div layout="row" ng-show="!error && !wazuhTableLoading && items.length">
+  <!-- Table -->
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
+      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
         ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
@@ -28,7 +44,7 @@
             {{ parseValue(key,item) }}
           </md-tooltip>
         </td>
-        <td ng-repeat="key in keys" ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)">
+        <td ng-repeat="key in keys | filter: showKey" ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)">
           <span ng-if="key === 'id'" class="wz-text-link">
             {{ item.id }}
           </span>
@@ -136,6 +152,7 @@
       </td>
     </tfoot>
   </table>
+  <!-- End Table -->
 </div>
 
 <div layout="row" ng-if="!error && !wazuhTableLoading && !totalItems">
