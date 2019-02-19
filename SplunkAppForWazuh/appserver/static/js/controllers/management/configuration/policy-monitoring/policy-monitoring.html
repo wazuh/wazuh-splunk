@@ -163,22 +163,18 @@
       <!-- The configuration assessment -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ca'">
         <md-card-content>
+          <!-- Configuration block -->
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Configuration assessment</span>
               <div class="wz-margin-top-10">
               </div>
             </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
-          <div layout="row" style="padding-left: 20%;">
-            <!-- Configuration block -->
-            <div class="wz-padding-top-10" style="width:50%; padding-left:5%; float:left;padding-top: 30px;">
+          <div layout="row" style="padding-left: 20%; margin-bottom:30px;">
+            <div class="wz-padding-top-10" style="width:100%">
               <!-- content -->
               <wz-config-item label="Configuration assessment status" value="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].enabled === 'yes' ? 'enabled' : 'disabled'">
               </wz-config-item>
@@ -190,20 +186,40 @@
               </wz-config-item>
               <!-- end content -->
             </div>
-            <!-- End configuration block -->
+          </div>
+          <!-- End configuration block -->
 
-            <!-- Policies block -->
-            <div class="wz-padding-top-10" style="width:80%; float:left; margin-right:15%;">
-              <!-- content -->
-              <span style="padding-left: 30px;"><b>Policies applied</b></span>
-              <wz-config-item ng-repeat="policy in currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].policies"
-                label="" value="policy">
-              </wz-config-item>
-              <!-- end content -->
+          <!-- Policies block -->
+          <div layout="row" layout-align="start center">
+            <div>
+              <span class="font-size-16">Policies</span>
+              <div class="wz-margin-top-10">
+              </div>
             </div>
           </div>
+          <md-divider class="wz-margin-top-10"></md-divider>
+
+          <div class="wz-padding-top-10" style="width:100%">
+            <!-- content -->
+            <table class="table table-striped table-condensed table-layout-fixed table-vertical-align-middle">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Name</th>
+              </thead>
+              <tbody>
+                <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].policies">
+                  <td>
+                    <span>{{policy}}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </wz-config-item>
+            <!-- end content -->
+          </div>
+          <!-- End policies block -->
+
+
         </md-card-content>
-        <!-- end policies block-->
 
       </md-card>
       <!-- End configuration assessment -->
