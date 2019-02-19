@@ -76,19 +76,25 @@
   
   <div layout="row" layout-align="center stretch">
     <div flex layout-align="center stretch">
-      <md-card flex class="wz-md-card">
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
         <md-card-content>
-          <span class="wz-headline-title">Top 5 CIS-CAT groups</span>
+          <span class="wz-headline-title">Top 5 CIS-CAT groups
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'topCiscatGroups')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div id="topCiscatGroups" class="dashboard-element single" style="width: 100%"></div>
+          <span class="wz-text-link" ng-click="expand(0)"><i class="fa fa-fw fa-expand"></i></span>
+
         </md-card-content>
       </md-card>
     </div>
     
     <div flex layout-align="center stretch">
-      <md-card flex class="wz-md-card">
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
         <md-card-content>
-          <span class="wz-headline-title">Scan result evolution</span>
+          <span class="wz-headline-title">Scan result evolution
+            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'scanResultEvolution')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div id="scanResultEvolution" class="dashboard-element single" style="width: 100%"></div>
         </md-card-content>
@@ -99,9 +105,11 @@
   
   <div layout="row" layout-align="center stretch">
     <div flex layout-align="center stretch">
-      <md-card class="wz-md-card">
+      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
         <md-card-content>
-          <span class="wz-headline-title">Alerts summary</span>
+          <span class="wz-headline-title">Alerts summary
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsSummary')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div id="alertsSummary" class="dashboard-element single" style="width: 100%"></div>
         </md-card-content>

@@ -37,6 +37,9 @@ define([
         `{"rule.groups":"virustotal", "implicit":true}`
       )
       this.agent = agent
+      this.scope.expandArray = [false,false,false,false,false]
+      this.scope.expand = (i,id) => this.expand(i,id);
+
       if (
         this.agent &&
         this.agent.data &&
@@ -241,6 +244,14 @@ define([
         'Files deleted': this.scope.filesDeleted
       }
     }
+
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i];
+      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
+      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+    }
+
   }
   app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)
 })
