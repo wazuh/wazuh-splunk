@@ -112,7 +112,6 @@ define([
         this.scope.filterContent = (filter) => this.filterContent(filter)
         
       } catch (error) {
-        console.error(error)
         this.toast("Error editing CDB list")
       }
 
@@ -276,8 +275,13 @@ define([
                 scope.$broadcast('restartResponseReceived', {})
                 scope.$applyAsync();
               })
-              .catch(error =>
-                $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
+              .catch(error => {
+                if (error.badConfig) {
+                  $notificationService.showSimpleToast('Bad configuration detected, cannot restart.')
+                } else {
+                  $notificationService.showSimpleToast(error.message || error, 'Error restarting manager')
+                }              })
+                
           }
         },
         template:

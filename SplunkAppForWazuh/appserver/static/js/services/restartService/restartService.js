@@ -6,9 +6,11 @@ define(['../module'], function (module) {
       try {
         const clusterEnabled = await clusterIsEnabled()
         if (clusterEnabled) {
-          return await restartCluster()
+          const result =  await restartCluster()
+          return result
         } else {
-          return await restartManager()
+          const result = await restartManager()
+          return result
         }
       } catch (error) {
         throw error

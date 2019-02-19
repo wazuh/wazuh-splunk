@@ -244,8 +244,12 @@ define([
                     scope.$broadcast('restartResponseReceived', {})
                     scope.$applyAsync()
                   })
-                  .catch(error =>
-                    $notificationService.showSimpleToast(error.message || error, 'Error restarting node'))
+                  .catch(error =>{
+                    if (error.badConfig) {
+                      $notificationService.showSimpleToast('Bad configuration detected, cannot restart.')
+                    } else {
+                      $notificationService.showSimpleToast(error.message || error, 'Error restarting manager')
+                    }                    })
                 } else {
                   scope.$broadcast('restartResponseReceived', {})
                   $restartService.restart()
@@ -255,8 +259,12 @@ define([
                     scope.$broadcast('restartResponseReceived', {})
                     scope.$applyAsync()
                   })
-                  .catch(error =>
-                    $notificationService.showSimpleToast(error.message || error, 'Error restarting'))
+                  .catch(error =>{
+                    if (error.badConfig) {
+                      $notificationService.showSimpleToast('Bad configuration detected, cannot restart.')
+                    } else {
+                      $notificationService.showSimpleToast(error.message || error, 'Error restarting manager')
+                    }                  })
                 }
               }
             },
