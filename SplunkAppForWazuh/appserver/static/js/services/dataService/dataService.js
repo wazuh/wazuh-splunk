@@ -101,22 +101,10 @@ define(['../module', 'splunkjs/mvc'], function(module) {
           // Fetch next <limit> items
           const firstPage = await $requestService.apiReq(this.path, parameters)
           
-          //Uncomment when API  call returns the correct format output
-          /*this.items = this.items.filter(item => !!item)
+          this.items = this.items.filter(item => !!item)
           this.items.push(...firstPage.data.data.items)
 
-          const totalItems = firstPage.data.data.totalItems*/
-
-          //Remove this block when API call returns the correct format output
-          let totalItems = 0
-          if (this.path.includes("configuration-assessment")) {
-            this.items.push(...firstPage.data.data)
-            totalItems = firstPage.data.data.length
-          } else {
-            this.items.push(...firstPage.data.data.items)
-            totalItems = firstPage.data.data.totalItems
-          }
-          //End of block to remove
+          const totalItems = firstPage.data.data.totalItems
 
           const remaining =
             this.items.length === totalItems
