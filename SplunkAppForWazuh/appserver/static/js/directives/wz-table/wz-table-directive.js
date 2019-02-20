@@ -54,7 +54,7 @@ define([
         extraLimit: '=extraLimit',
         adminMode: '=adminMode',
         emptyResults: '=emptyResults',
-        quickEdit: '=quickEdit'
+        customColumns: '=customColumns'
       },
       controller(
         $rootScope,
@@ -395,6 +395,20 @@ define([
 
         $scope.editGroup = group => {
           $scope.$emit('openGroupFromList',{group})
+        }
+
+        $scope.isPolicyMonitoring = () => {
+          return instance.path.includes('configuration-assessment') && instance.path.includes('/checks')
+        }
+  
+        $scope.expandPolicyMonitoringCheck = item => {
+          
+          if (item.expanded) item.expanded = false
+          else {
+            $scope.pagedItems[$scope.currentPage].map(item => item.expanded = false)
+            item.expanded = true
+          }
+  
         }
         
       },
