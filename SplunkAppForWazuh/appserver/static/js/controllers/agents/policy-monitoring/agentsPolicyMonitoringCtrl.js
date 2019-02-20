@@ -41,7 +41,6 @@ define([
       $state,
       $currentDataService,
       agent,
-      configAssess,
       $reportingService,
       $requestService,
       $notificationService,
@@ -58,7 +57,6 @@ define([
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
-      this.configAssess = configAssess
       this.toast = $notificationService.showSimpleToast
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
@@ -75,17 +73,6 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-
-      if (
-        this.configAssess &&
-        this.configAssess.data &&
-        this.configAssess.data.data &&
-        this.configAssess.data.data.items &&
-        this.configAssess.data.error === 0
-      ) {
-        this.configAssess = this.configAssess.data.data.items
-        this.scope.configAssess = this.configAssess
-      }
 
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
@@ -229,10 +216,6 @@ define([
       this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
       this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
-      this.scope.switchRootcheckScan = () => this.switchRootcheckScan()
-      this.scope.loadPolicyChecks = (id, name) => this.loadPolicyChecks(id, name)
-      this.scope.backToConfAssess = () => this.backToConfAssess()
-
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -303,34 +286,6 @@ define([
         this.toast(error.message || error)
       }
     }
-
-    /**
-     * Switches between alerts visualizations and policies
-     */
-    switchRootcheckScan() {
-      this.scope.showPolicies = !this.scope.showPolicies
-      this.scope.showPolicyChecks = name
-      this.scope.$applyAsync()
-    }
-
-    /**
-     * Loads policies checks
-     */
-    async loadPolicyChecks(id, name) {
-      this.scope.showPolicyChecks = name
-      this.scope.policyId = id
-      const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/configuration-assessment/${agentId}/checks/${id}`
-    }
-
-    /**
-     * Back to configuration assessment from a policy checks
-     */
-    backToConfAssess(){
-      this.scope.showPolicyChecks = false
-      this.scope.showPolicies = true
-    }
-
   }
   app.controller('agentsPolicyMonitoringCtrl', AgentsPM)
 })
