@@ -183,6 +183,8 @@
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Configuration to ensure compliance with security policies, standards and hardening guides'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_timelion.svg'"
+              title="'Configuration assessment'" ui-sref='ag-ca({id:aoc.agent.id})' current-tab="'conf-assess'" description="'Configuration assessment'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
               title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
               description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>

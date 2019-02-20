@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function (app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class AgentsPM {
@@ -29,23 +29,38 @@ define([
      * @param {Object} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} $requestService
+     * @param {*} $notificationService
+     * @param {*} $csvRequestService
      */
 
     constructor(
       $urlTokenModel,
+      $rootScope,
       $scope,
       $state,
       $currentDataService,
       agent,
-      $reportingService
+      $reportingService,
+      $requestService,
+      $notificationService,
+      $csvRequestService,
+      $tableFilterService
     ) {
       this.urlTokenModel = $urlTokenModel
+      this.rootScope = $rootScope
       this.scope = $scope
+      this.apiReq = $requestService.apiReq
+      this.scope.showPolicies = false
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
+      this.toast = $notificationService.showSimpleToast
+      this.api = $currentDataService.getApi()
+      this.csvReq = $csvRequestService
+      this.wzTableFilter = $tableFilterService
       this.currentDataService.addFilter(
         `{"rule.groups":"rootcheck", "implicit":true}`
       )
@@ -58,6 +73,7 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
+
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -79,7 +95,7 @@ define([
         new AreaChart(
           'elementOverTime',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime',
           this.scope
@@ -93,7 +109,7 @@ define([
         new PieChart(
           'topPciDss',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss',
           this.scope
@@ -101,7 +117,7 @@ define([
         new AreaChart(
           'eventsPerAgent',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh | timechart span=2h count by agent.name`,
           'eventsPerAgent',
           this.scope
@@ -109,7 +125,7 @@ define([
         new Table(
           'alertsSummary',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
@@ -117,7 +133,7 @@ define([
         new RawTableDataService(
           'alertsSummaryTable',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
@@ -175,7 +191,7 @@ define([
           this.scope.loadingVizz = false
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })
@@ -194,6 +210,12 @@ define([
     }
 
     $onInit() {
+      this.scope.searchRootcheck = (term, specificFilter) =>
+        this.scope.$broadcast('wazuhSearch', { term, specificFilter })
+      this.scope.downloadCsv = () => this.downloadCsv()
+      this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
+      this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -223,13 +245,47 @@ define([
     }
 
     /**
+     * Exports the table in CSV format
+     */
+    async downloadCsv() {
+      try {
+        this.toast('Your download should begin automatically...')
+        const currentApi = this.api.id
+        const output = await this.csvReq.fetch(
+          '/agents',
+          currentApi,
+          this.wzTableFilter.get()
+        )
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, 'agents.csv') // eslint-disable-line
+        return
+      } catch (error) {
+        this.toast('Error downloading CSV')
+      }
+      return
+    }
+
+    /**
      * Gets filters and launches search
      */
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
     }
-  }
 
+    /**
+     * Launches a rootcheck scan
+     */
+    async launchRootcheckScan() {
+      try {
+        const result = await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
+        if (result && result.data && result.data.error === 0){
+          this.toast(`Policy monitoring scan launched successfully on agent ${this.scope.agent.id}`)
+        }
+      } catch (error) {
+        this.toast(error.message || error)
+      }
+    }
+  }
   app.controller('agentsPolicyMonitoringCtrl', AgentsPM)
 })

@@ -13,5 +13,6 @@ define([
   './policy-monitoring/agentsPolicyMonitoringCtrl',
   './scap/agentsOpenScapCtrl',
   './ciscat/agentsCiscatCtrl',
-  './vulnerabilities/agentsVulnerabilitiesCtrl'
+  './vulnerabilities/agentsVulnerabilitiesCtrl',
+  './configuration-assessment/agentsConfigurationAssessmentsCtrl'
 ], function() {})

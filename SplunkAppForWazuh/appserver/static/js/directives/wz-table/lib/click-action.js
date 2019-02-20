@@ -48,23 +48,11 @@ define([], function() {
         fileName: item.filename
       })
     } else if (instance.path === '/rules') {
-      if ($scope.quickEdit) {
-        $scope.$emit("quickRuleEdit", { item: item })
-      } else {
-        $state.go('mg-rules-id', { id: item.id })
-      }
+      $state.go('mg-rules-id', { id: item.id })
     } else if (instance.path.includes('/decoders')) {
-      if ($scope.quickEdit) {
-        $scope.$emit("quickDecoderEdit", { item: item }) 
-      } else {
-        $state.go('mg-decoders-id', { file: item.file, name: item.name })
-      }
+      $state.go('mg-decoders-id', { file: item.file, name: item.name })
     } else if (instance.path === '/lists/files') {
-      if ($scope.quickEdit) {
-        $scope.$emit("quickCdbListEdit", { item: item })
-      } else {
-        $state.go('mg-cdb-id', { name: item.name, path: item.path })
-      }
+      $state.go('mg-cdb-id', { name: item.name, path: item.path })
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
     }

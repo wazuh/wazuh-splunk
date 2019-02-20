@@ -1,225 +1,225 @@
 <md-content flex layout="column" layout-align="end">
-  <!-- Breadcrumbs -->
-
-
-  <div layout="row" layout-padding>
-    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
-      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
-      <span> / </span>
-      <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
-        ({{agent.id}})</span>
-      <span ng-if="agent.error">Unknown agent</span>
-      <span> / </span>
-      <span>File integrity monitoring</span>
-    </div>
-    <div ng-if="agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
-    </div>
-    <div flex></div>
-    <!-- Report button -->
-    <div style="display:flex; padding-right: 10px;">
-        <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" ng-hide="loadingVizz" ng-click="startVis2Png()"
-          aria-label="Generate report button">
-          <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-          <md-tooltip md-direction="left" class="wz-tooltip">
-            Generate report
-          </md-tooltip>
-        </md-button>
-        <span class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i
-            class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></span>
-        <wz-discover breadcrumbs="{section: 'Agents', subSection: 'File integrity monitoring', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
+    <!-- Breadcrumbs -->
+  
+  
+    <div layout="row" layout-padding>
+      <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+      <div>
+        <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+        <span> / </span>
+        <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
+          ({{agent.id}})</span>
+        <span ng-if="agent.error">Unknown agent</span>
+        <span> / </span>
+        <span>File integrity monitoring</span>
       </div>
-      <div style="margin-right:7px;" id='timePicker'></div>
-    </div>
+      <div ng-if="agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </div>
+      <div flex></div>
+      <!-- Report button -->
+      <div style="display:flex; padding-right: 10px;">
+          <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" ng-hide="loadingVizz" ng-click="startVis2Png()"
+            aria-label="Generate report button">
+            <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+            <md-tooltip md-direction="left" class="wz-tooltip">
+              Generate report
+            </md-tooltip>
+          </md-button>
+          <span class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i
+              class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></span>
+          <wz-discover breadcrumbs="{section: 'Agents', subSection: 'File integrity monitoring', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
+        </div>
+        <div style="margin-right:7px;" id='timePicker'></div>
+      </div>
+    
+      <!-- Loading report-->
+      <div text-align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
+    
+    <!-- Wazuh filters bar -->
+    <wazuh-bar></wazuh-bar>
+    <div ng-show='!showFiles'>
+      <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
+      <!-- first row  -->
+      <div id="row2" layout="row">
+        <div flex="50">
+          <!-- second row - first vis -->
+          <md-card flex class="wz-md-card">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Events over time</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id='eventsOverTimeElement'></div>
+            </md-card-content>
+          </md-card>
+        </div>
+        <div flex="25">
+          <md-card flex class="wz-md-card">
+            <md-card-content>
+              <span class="wz-headline-title">Top group owners</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id='topGroupOwnersElement'></div>
+            </md-card-content>
+          </md-card>
+        </div>
+        <div flex="25">
+          <!-- first row - second vis -->
+          <md-card flex class="wz-md-card">
+            <md-card-content layout='column'>
+              <span class="wz-headline-title">Top user owners</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout-fill id='topUserOwnersElement'></div>
+            </md-card-content>
+          </md-card>
+        </div>
+      </div>
   
-    <!-- Loading report-->
-    <div text-align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
-  
-  <!-- Wazuh filters bar -->
-  <wazuh-bar></wazuh-bar>
-  <div ng-show='!showFiles'>
-    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
-    <!-- first row  -->
-    <div id="row2" layout="row">
-      <div flex="50">
-        <!-- second row - first vis -->
-        <md-card flex class="wz-md-card">
+      <!-- second row  -->
+      <div id="row3" layout='row'>
+        <!-- third row - first vis -->
+        <md-card flex="50" class="wz-md-card">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Events over time</span>
+            <span class="wz-headline-title">Top file changes</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='eventsOverTimeElement'></div>
+            <div id='topFileChangesElement'></div>
           </md-card-content>
         </md-card>
+        <!-- second row - second vis -->
+        <md-card flex="50" class="wz-md-card">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Root user file changes</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='rootUserFileChangesElement'></div>
+          </md-card-content>
+        </md-card>
+        <!-- second row - third vis -->
+        <!--<md-card flex="33" class="wz-md-card">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">World writable modified files</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='wordWritableFilesElement'></div>
+        </md-card-content>
+      </md-card>-->
       </div>
-      <div flex="25">
+  
+      <!-- third row  -->
+      <div id="row5" layout='row'>
+  
+        <md-card flex="100" class="wz-md-card">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Events summary</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='eventsSummaryElement'></div>
+          </md-card-content>
+        </md-card>
+  
+      </div>
+    </div>
+  
+    <div ng-show='showFiles'>
+      <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span>
+      <!-- Fifth row  -->
+      <div layout='row'>
         <md-card flex class="wz-md-card">
           <md-card-content>
-            <span class="wz-headline-title">Top group owners</span>
+            <div layout="row" class="wz-margin-top-10">
+              <input flex placeholder="Filter files..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                aria-invalid="false" wz-enter="search(processSearch,'processes')">
+              <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
+                <span class="fa fa-search" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+              <wazuh-table flex path="'/syscheck/'+agent.id" row-sizes="[6]" extra-limit="true" keys="['file','size','uname','gname','perm']">
+              </wazuh-table>
+            </div>
+            <div layout="row" class="wz-margin-top-10">
+              <span flex></span>
+              <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">Formatted
+                <i aria-hidden="true" class="fa fa-download"></i>
+              </a>
+            </div>
+          </md-card-content>
+        </md-card>
+  
+      </div>
+    </div>
+  
+    <div ng-show='showFiles'>
+      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
+        <md-card flex="" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-windows"></i> Windows registry</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topGroupOwnersElement'></div>
+            <div layout="row" class="wz-margin-top-10">
+              <input flex placeholder="Filter registry..." ng-model="registrySearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                aria-invalid="false" wz-enter="search(registrySearch,{name:'type',value:'registry'})">
+              <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(registrySearch,{name:'type',value:'registry'})">
+                <span class="fa fa-search" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+              <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
+                row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
+              </wazuh-table>
+            </div>
+            <div layout="row" layout-padding>
+              <span flex></span>
+              <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">Formatted
+                <i aria-hidden="true" class="fa fa-fw fa-download"></i></a>
+            </div>
           </md-card-content>
         </md-card>
       </div>
-      <div flex="25">
-        <!-- first row - second vis -->
-        <md-card flex class="wz-md-card">
-          <md-card-content layout='column'>
-            <span class="wz-headline-title">Top user owners</span>
+  
+      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
+        <md-card flex="" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout-fill id='topUserOwnersElement'></div>
+            <div layout="row" class="wz-margin-top-10">
+              <input flex placeholder="Filter files..." ng-model="filesSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                aria-invalid="false" wz-enter="search(filesSearch,{name:'type',value:'file'})">
+              <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(filesSearch,{name:'type',value:'file'})">
+                <span class="fa fa-search" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+              <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]" row-sizes="[6,6,6]"
+                extra-limit="true" keys="['file','size','uname','perm','sha1','sha256','uid','mtime','md5']">
+              </wazuh-table>
+            </div>
+            <div layout="row" layout-padding>
+              <span flex></span>
+              <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv', [{name:'type',value:'file'}])">Formatted
+                <i aria-hidden="true" class="fa fa-fw fa-download"></i></a>
+            </div>
+          </md-card-content>
+        </md-card>
+      </div>
+  
+      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'">
+        <md-card flex="" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div layout="row" class="wz-margin-top-10">
+              <input flex placeholder="Filter files..." ng-model="filesSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                aria-invalid="false" wz-enter="search(filesSearch)">
+              <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(filesSearch)">
+                <span class="fa fa-search" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+              <wazuh-table flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" extra-limit="true" keys="['file','size','inode','gname','uname','perm','sha1','sha256','uid','gid','mtime','md5']">
+              </wazuh-table>
+            </div>
+            <div layout="row" layout-padding>
+              <span flex></span>
+              <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv')">Formatted
+                <i aria-hidden="true" class="fa fa-fw fa-download"></i></a>
+            </div>
           </md-card-content>
         </md-card>
       </div>
     </div>
-
-    <!-- second row  -->
-    <div id="row3" layout='row'>
-      <!-- third row - first vis -->
-      <md-card flex="50" class="wz-md-card">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top file changes</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='topFileChangesElement'></div>
-        </md-card-content>
-      </md-card>
-      <!-- second row - second vis -->
-      <md-card flex="50" class="wz-md-card">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Root user file changes</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='rootUserFileChangesElement'></div>
-        </md-card-content>
-      </md-card>
-      <!-- second row - third vis -->
-      <!--<md-card flex="33" class="wz-md-card">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">World writable modified files</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='wordWritableFilesElement'></div>
-      </md-card-content>
-    </md-card>-->
-    </div>
-
-    <!-- third row  -->
-    <div id="row5" layout='row'>
-
-      <md-card flex="100" class="wz-md-card">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Events summary</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='eventsSummaryElement'></div>
-        </md-card-content>
-      </md-card>
-
-    </div>
-  </div>
-
-  <div ng-show='showFiles'>
-    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span>
-    <!-- Fifth row  -->
-    <div layout='row'>
-      <md-card flex class="wz-md-card">
-        <md-card-content>
-          <div layout="row" class="wz-margin-top-10">
-            <input flex placeholder="Filter files..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-              aria-invalid="false" wz-enter="search(processSearch,'processes')">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
-              <span class="fa fa-search" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table flex path="'/syscheck/'+agent.id" row-sizes="[6]" extra-limit="true" keys="['file','size','uname','gname','perm']">
-            </wazuh-table>
-          </div>
-          <div layout="row" class="wz-margin-top-10">
-            <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">Formatted
-              <i aria-hidden="true" class="fa fa-download"></i>
-            </a>
-          </div>
-        </md-card-content>
-      </md-card>
-
-    </div>
-  </div>
-
-  <div ng-show='showFiles'>
-    <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
-      <md-card flex="" class="wz-md-card _md flex">
-        <md-card-content>
-          <span class="wz-headline-title"><i class="fa fa-fw fa-windows"></i> Windows registry</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-margin-top-10">
-            <input flex placeholder="Filter registry..." ng-model="registrySearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-              aria-invalid="false" wz-enter="search(registrySearch,{name:'type',value:'registry'})">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(registrySearch,{name:'type',value:'registry'})">
-              <span class="fa fa-search" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
-              row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
-            </wazuh-table>
-          </div>
-          <div layout="row" layout-padding>
-            <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">Formatted
-              <i aria-hidden="true" class="fa fa-fw fa-download"></i></a>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-
-    <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
-      <md-card flex="" class="wz-md-card _md flex">
-        <md-card-content>
-          <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-margin-top-10">
-            <input flex placeholder="Filter files..." ng-model="filesSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-              aria-invalid="false" wz-enter="search(filesSearch,{name:'type',value:'file'})">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(filesSearch,{name:'type',value:'file'})">
-              <span class="fa fa-search" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]" row-sizes="[6,6,6]"
-              extra-limit="true" keys="['file','size','uname','perm','sha1','sha256','uid','mtime','md5']">
-            </wazuh-table>
-          </div>
-          <div layout="row" layout-padding>
-            <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv', [{name:'type',value:'file'}])">Formatted
-              <i aria-hidden="true" class="fa fa-fw fa-download"></i></a>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-
-    <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'">
-      <md-card flex="" class="wz-md-card _md flex">
-        <md-card-content>
-          <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-margin-top-10">
-            <input flex placeholder="Filter files..." ng-model="filesSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-              aria-invalid="false" wz-enter="search(filesSearch)">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(filesSearch)">
-              <span class="fa fa-search" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" extra-limit="true" keys="['file','size','inode','gname','uname','perm','sha1','sha256','uid','gid','mtime','md5']">
-            </wazuh-table>
-          </div>
-          <div layout="row" layout-padding>
-            <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv')">Formatted
-              <i aria-hidden="true" class="fa fa-fw fa-download"></i></a>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-  </div>
-</md-content>
+  </md-content>

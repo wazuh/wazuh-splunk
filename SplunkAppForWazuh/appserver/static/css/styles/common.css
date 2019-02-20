@@ -922,3 +922,19 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   text-overflow: ellipsis;
   padding-right: 40px !important;
 }
+
+span.pass {
+  background-color: green !important;
+  color: white !important;
+  width: 50px !important;
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+span.wrong {
+  background-color: red !important;
+  color: white !important;
+  width: 50px !important;
+  display: inline-block !important;
+  text-align: center !important;
+}

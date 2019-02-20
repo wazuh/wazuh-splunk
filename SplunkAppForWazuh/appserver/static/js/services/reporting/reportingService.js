@@ -76,7 +76,7 @@ define(['../module', 'jquery'], function(module, $) {
           isAgents
         }
         await this.genericReq('POST', '/report/generate', {
-           data : JSON.stringify(data )
+          data: JSON.stringify(data)
         })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
@@ -86,9 +86,9 @@ define(['../module', 'jquery'], function(module, $) {
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
-        if (error === 'Impossible fetch visualizations'){
+        if (error === 'Impossible fetch visualizations') {
           this.errorHandler(`Reporting error: ${error}`)
-        }else{
+        } else {
           this.errorHandler('Reporting error')
         }
       }
