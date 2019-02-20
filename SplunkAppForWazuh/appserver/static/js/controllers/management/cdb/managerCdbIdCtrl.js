@@ -276,12 +276,8 @@ define([
                 scope.$applyAsync();
               })
               .catch(error => {
-                if (error.badConfig) {
-                  $notificationService.showSimpleToast('Bad configuration detected, cannot restart.')
-                } else {
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting manager')
-                }              })
-                
+                  $notificationService.showSimpleToast(error.message || error, 'Error restarting.')
+              })     
           }
         },
         template:

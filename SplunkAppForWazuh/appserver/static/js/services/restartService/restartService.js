@@ -6,11 +6,9 @@ define(['../module'], function (module) {
       try {
         const clusterEnabled = await clusterIsEnabled()
         if (clusterEnabled) {
-          const result =  await restartCluster()
-          return result
+          return await restartCluster()
         } else {
-          const result = await restartManager()
-          return result
+          return await restartManager()
         }
       } catch (error) {
         throw error
@@ -33,16 +31,14 @@ define(['../module'], function (module) {
           }
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
-            const objErr = {}
-            objErr['badConfig'] = true
-            objErr['error'] = checkConfig.data.data.details
-            throw objErr
+            const msgErr = checkConfig.data.data.details.join()
+            throw msgErr
           } else {
             throw new Error('Bad configuration, restart aborted.')
           }
         }
       } catch (error) {
-        throw error
+        throw new Error(error)
       }
     }
 
@@ -62,16 +58,14 @@ define(['../module'], function (module) {
           }
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
-            const objErr = {}
-            objErr['badConfig'] = true
-            objErr['error'] = checkConfig.data.data.details
-            throw objErr
+            const msgErr = checkConfig.data.data.details.join()
+            throw msgErr
           } else {
             throw new Error('Bad configuration, restart aborted.')
           }
         }
       } catch (error) {
-        throw error
+        throw new Error(error)
       }
     }
 
@@ -93,10 +87,8 @@ define(['../module'], function (module) {
             }
           } else {
             if (Array.isArray(checkConfig.data.data.details)) {
-              const objErr = {}
-              objErr['badConfig'] = true
-              objErr['error'] = checkConfig.data.data.details
-              throw objErr
+              const msgErr = checkConfig.data.data.details.join()
+              throw msgErr
             } else {
               throw new Error('Bad configuration, restart aborted.')
             }
@@ -106,7 +98,7 @@ define(['../module'], function (module) {
           return `Cluster disabled, cannot send the restart signal to ${node}, the manager is going to restart.`
         }
       } catch (error) {
-        throw error
+        throw new Error(error)
       }
     }
 
