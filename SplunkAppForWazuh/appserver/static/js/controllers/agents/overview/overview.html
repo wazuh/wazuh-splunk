@@ -68,8 +68,7 @@
               <span flex="25">Last syscheck scan</span>
               <span class="wz-text-right color-grey" ng-if="syscheck.inProgress">Scan in progress</span>
               <span class="wz-text-right color-grey" ng-if="!syscheck.inProgress">{{syscheck.end || '-'}}
-                <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
-                  md-direction="bottom" class="wz-tooltip">
+                <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom" class="wz-tooltip">
                   Start time: {{ syscheck.start || '-'}} <br>
                   End time: {{ syscheck.end || '-'}} <br>
                   Duration time: {{ syscheck.duration +' minutes' || '-'}}
@@ -80,8 +79,8 @@
               <span flex="25">Last rootcheck scan</span>
               <span class="wz-text-right color-grey" ng-if="rootcheck.inProgress">Scan in progress</span>
               <span class="wz-text-right color-grey" ng-if="!rootcheck.inProgress">{{rootcheck.end || '-'}}
-                <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end"
-                  md-direction="bottom" class="wz-tooltip">
+                <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end" md-direction="bottom"
+                  class="wz-tooltip">
                   Start time: {{ rootcheck.start || '-'}} <br>
                   End time: {{ rootcheck.end || '-'}} <br>
                   Duration time: {{ rootcheck.duration +' minutes' || '-'}}
@@ -166,6 +165,8 @@
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Configuration to ensure compliance with security policies, standards and hardening guides'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_timelion.svg'"
+              title="'Configuration assessment'" ui-sref='ag-ca({id:aoc.agent.id})' current-tab="'conf-assess'" description="'Configuration assessment'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
               title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
               description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
