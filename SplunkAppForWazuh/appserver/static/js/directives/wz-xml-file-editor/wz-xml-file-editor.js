@@ -168,20 +168,28 @@ define([
 
         const saveFile = async params => {
           try {
+            $scope.showErrorMessages = false
+            $scope.errorInfo = false
             const text = $scope.xmlCodeBox.getValue()
             const xml = replaceIllegalXML(text)
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
-              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
+              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml, params.checkConfig)
             }
             showRestartDialog(`${params.file || params.group} updated`, params.node)
             $scope.closeFn()
           } catch (error) {
-            $notificationService.showSimpleToast(
-              error.message || error,
-              'Send file error'
-            )
+            if (error.badConfig) {
+              $scope.showErrorMessages = true
+              $scope.errorInfo = error.errMsg
+              $notificationService.showSimpleToast("Configuration saved, but found erros.")
+            } else {
+              $notificationService.showSimpleToast(
+                error.message || error,
+                'Error sending file.'
+              )
+            }
           }
           return
         }

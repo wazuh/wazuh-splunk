@@ -72,7 +72,8 @@ define(['../../module'], function (controllers) {
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false,
-        node: node
+        node: node,
+        checkConfig: true
       })
     }
 
