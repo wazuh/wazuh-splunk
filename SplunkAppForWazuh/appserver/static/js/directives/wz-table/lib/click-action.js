@@ -55,6 +55,9 @@ define([], function() {
       $state.go('mg-cdb-id', { name: item.name, path: item.path })
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
+    } else if (instance.path.startsWith('/configuration-assessment')){
+      // TODO expand rows with the info
+      console.log("Click action executed")
     }
   }
 })
