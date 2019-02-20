@@ -100,6 +100,7 @@ define(['../module', 'splunkjs/mvc'], function(module) {
 
           // Fetch next <limit> items
           const firstPage = await $requestService.apiReq(this.path, parameters)
+          
           this.items = this.items.filter(item => !!item)
           this.items.push(...firstPage.data.data.items)
 
