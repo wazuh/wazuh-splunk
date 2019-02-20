@@ -6,30 +6,52 @@
 <!-- XML editor for ossec.conf -->
 <div ng-show="editingNode">
   <div layout="row" class="md-padding">
+    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)"
+      style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
     <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
         aria-hidden="true"></i>
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
+    <button style="height: 30px;" ng-if="isAdmin" ng-click="switchToEdition()" ui-sref="mg-conf" class='btn btn-info wz-margin-left-10'>Cancel</button>
     <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn btn-primary pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
         file</span>
       <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
+    <span class="flex"></span>
+    
+    <!-- Restart button -->
+    <div ng-show="!confirmingRestart">
+      <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()" ng-disabled="restartInProgress"
+        class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
+          {{editingNode}}</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()" ng-disabled="restartInProgress"
+        class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
+          {{editingNode}}</span>
+      </button>
+    </div>
+    <div ng-show="confirmingRestart">
+      <span style="padding-top: 8px;">The {{editingNode}} will be restarted...</span>
+      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()" class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin && clusterEnabled" ng-click="restart(editingNode); switchRestart()" class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
+    <!-- End restart button -->
 
-    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]" ng-change="changeNode(selectedNode.name)"
-      style="margin-left:5px;" ng-if="isAdmin && clusterEnabled" class="input input-dropdown"></select>
-      
-    <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="restart()" ng-disabled="restartInProgress" class='btn btn-primary pull-right wz-margin-left-10'>
-      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart {{editingNode}}</span>
-    </button>
-    <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="restart(editingNode)" ng-disabled="restartInProgress" class='btn btn-primary pull-right wz-margin-left-10'>
-      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart {{editingNode}}</span>
-    </button>
 
   </div>
-  <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-    <wz-xml-file-editor file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
+  <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 260px)">
+    <wz-xml-file-editor  style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
     </wz-xml-file-editor>
   </div>
 </div>

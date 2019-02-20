@@ -2,8 +2,7 @@ define(['../../../module'], function (controllers) {
   'use strict'
 
   class NavTabCtrl {
-    constructor($scope, $navigationService, $restartService, $notificationService, $requestService, isAdmin, clusterEnabled) {
-      this.navigationService = $navigationService
+    constructor($scope, $restartService, $notificationService, $requestService, isAdmin, clusterEnabled) {
       this.scope = $scope
       this.scope.tabName = ''
       this.isAdmin = isAdmin
@@ -14,63 +13,22 @@ define(['../../../module'], function (controllers) {
     }
 
     $onInit() {
+      this.scope.confirmingRestart = false
+      this.scope.editingConfig = false
       this.scope.restartInProgress = false
       this.scope.isAdmin = this.isAdmin
       this.scope.node = this.clusterEnabled ? 'cluster' : 'manager'
 
-      const lastState = this.navigationService.getLastState()
-      switch (lastState) {
-        case 'mg-conf.overview':
-          this.scope.sectionName = 'Overview'
-          this.scope.tabName = 'overview'
-          if (!this.scope.$$phase) this.scope.$digest()
-          break
-        case 'mg-conf.editConfig':
-          this.scope.sectionName = 'Edit configuration'
-          this.scope.tabName = 'editConfig'
-          if (!this.scope.$$phase) this.scope.$digest()
-          break
-        case 'mg-conf.editRuleset':
-          this.scope.sectionName = 'Edit ruleset and CDB lists'
-          this.scope.tabName = 'editRuleset'
-          if (!this.scope.$$phase) this.scope.$digest()
-          break
-        case 'mg-conf.editGroups':
-          this.scope.sectionName = 'Edit groups configuration'
-          this.scope.tabName = 'editGroups'
-          if (!this.scope.$$phase) this.scope.$digest()
-          break
-      }
-      this.scope.switchTab = name => {
-        this.scope.sectionName = this.getSectionName(name)
-        this.scope.tabName = name
-        this.refreshClusterStatus()
-        if (!this.scope.$$phase) this.scope.$digest()
-      }
-
       this.scope.restart = (node) => this.restart(node)
+      this.scope.switchToEdition = () => this.switchToEdition()
+      this.scope.switchRestart = () => this.switchRestart()
 
       //Listen if restart response was received
       this.scope.$on('restartResponseReceived ', () => this.scope.restartInProgress = !this.scope.restartInProgress)
     }
 
-    getSectionName(name) {
-      let sectionName = ''
-      switch (name) {
-        case 'overview':
-          sectionName = 'Overview'
-          break
-        case 'editConfig':
-          sectionName = 'Edit configuration'
-          break
-        case 'editRuleset':
-          sectionName = 'Edit ruleset and CDB lists'
-          break
-        case 'editGroups':
-          sectionName = 'Edit groups configuration'
-          break
-      }
-      return sectionName
+    switchToEdition() {
+      this.scope.editingConfig = !this.scope.editingConfig
     }
 
     async restart(node = false) {
@@ -91,7 +49,7 @@ define(['../../../module'], function (controllers) {
       }
     }
 
-    async refreshClusterStatus(){
+    async refreshClusterStatus() {
       try {
         const clusterStatus = await this.apiReq('/cluster/status')
         this.clusterEnabled = clusterStatus.data.data.enabled === 'yes' && clusterStatus.data.data.running === 'yes' ? true : false
@@ -99,7 +57,11 @@ define(['../../../module'], function (controllers) {
       } catch (error) {
         return Promise.reject(error)
       }
+    }
 
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
     }
 
   }

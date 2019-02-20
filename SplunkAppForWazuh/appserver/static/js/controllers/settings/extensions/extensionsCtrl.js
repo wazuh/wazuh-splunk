@@ -6,7 +6,6 @@ define(['../../module'], function(controllers) {
       this.scope = $scope
       this.scope.extensions = {}
       this.toast = $notificationService.showSimpleToast
-      this.setExtensions = $currentDataService.setExtensions
       this.currentApi = $currentDataService.getApi()
       this.getExtensions = $currentDataService.getExtensions
       this.setExtensions = $currentDataService.setExtensions
