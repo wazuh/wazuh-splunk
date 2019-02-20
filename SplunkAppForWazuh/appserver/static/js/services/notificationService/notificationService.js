@@ -34,12 +34,15 @@ define(['../module'], function(module) {
     let showSimpleToast = text => {
       let pinTo = getToastPosition()
 
-      $mdToast.show(
-        $mdToast
-          .simple()
-          .textContent(text)
-          .position(pinTo)
-          .hideDelay(2000)
+      $mdToast.show({
+        hideDelay   : 3000,
+        position: pinTo,
+        template: '<md-toast class="toastTheme">' +
+        '<div class="md-toast-content" style="background-color:white;">' +
+          '<p style="style="font-size:18px;""><i class="fa fa-fw fa-info"  aria-hidden="true"></i> This is a ustom preset is a custom preset is a custom preset eset'+ text +
+        '</p></div>' +
+      '</md-toast>'
+      }
       )
     }
     return {

@@ -908,3 +908,37 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   background-color: #005472!important;
   border-color: #004c68!important;
 }
+
+
+md-toast .toastTheme {
+  background-color: white;
+  animation: none!important;
+  transition: none!important;
+  transform: none!important;
+  bottom: 0;
+  right: 0;;
+  padding:0;
+  margin: 0;
+}
+
+.md-toast-content {
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+md-toast {
+  margin: 15px;
+  padding: 0;
+  position:fixed;
+  animation: none!important;
+  transition: none!important;
+  transform: none!important;
+  max-width:600px;
+  box-shadow: 0 40px 64px 0 rgba(59, 79, 93, 0.3), 
+  0 24px 32px 0 rgba(59, 79, 93, 0.3), 
+  0 16px 16px 0 rgba(59, 79, 93, 0.3), 
+  0 8px 8px 0 rgba(59, 79, 93, 0.3), 
+  0 4px 4px 0 rgba(59, 79, 93, 0.3), 
+  0 2px 2px 0 rgba(59, 79, 93, 0.3)!important;
+}
