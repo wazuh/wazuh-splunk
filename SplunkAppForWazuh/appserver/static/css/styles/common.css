@@ -914,3 +914,11 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   text-align: right;
   padding-right: 10px;
 }
+
+.wz-text-truncatable {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 1px;
+  text-overflow: ellipsis;
+  padding-right: 40px !important;
+}
