@@ -123,15 +123,22 @@
           <span class="wz-headline-title"><i class="fa fa-fw fa-shield"></i> Configuration assessment</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+            <thead>
+                <th>Policy</th>
+                <th>Description</th>
+                <th>Last scan</th>
+                <th>Fail</th>
+                <th>Pass</th>
+                <th>Score</th>
+            </thead>
             <tbody>
               <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
                 <td ng-click="loadPolicyChecks(policy.policy_id, policy.name)" class="wz-text-link cursor-pointer">{{policy.name}}</td>
-                <td>
-                  <span class="wrong">{{policy.fail}}</span>
-                  <span class="pass">{{policy.pass}}</span>
-                </td>
-                <td>Score: <b>{{policy.score}}</b></td>
-                <td class="wz-text-link cursor-pointer"><a ng-show="policy.references !== '(null)'" href="{{policy.references}}" target="_blank">{{policy.references}}</a></td>
+                <td>{{policy.description}}</td>
+                <td>{{policy.end_scan}}</td>
+                <td>{{policy.fail}}</td>
+                <td>{{policy.pass}}</td>
+                <td>{{policy.score}}%</td>
               </tr>
             </tbody>
           </table>
