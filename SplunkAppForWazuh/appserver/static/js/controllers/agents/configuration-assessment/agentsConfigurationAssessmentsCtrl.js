@@ -64,7 +64,7 @@ define([
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.currentDataService.addFilter(
-        `{"rule.groups":"configuration_assessment", "implicit":true}`
+        `{"rule.groups{}":"configuration_assessment", "implicit":true}`
       )
       if (
         this.agent &&
@@ -105,17 +105,15 @@ define([
         /**
          * Visualizations
          */
-        new AreaChart(
-          'elementOverTime',
-          `${
-          this.filters
-          } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
-          'elementOverTime',
+        new PieChart(
+          'resultDistribution',
+          `${this.filters} | top data.configuration_assessment.check.result`,
+          'resultDistribution',
           this.scope
         ),
         new PieChart(
           'cisRequirements',
-          `${this.filters} sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
+          `${this.filters} | top data.configuration_assessment.check.compliance.cis | head 5`,
           'cisRequirements',
           this.scope
         ),
@@ -123,23 +121,23 @@ define([
           'topPciDss',
           `${
           this.filters
-          } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
+          } sourcetype=wazuh | top data.configuration_assessment.check.compliance.pci_dss | head 5`,
           'topPciDss',
           this.scope
         ),
         new AreaChart(
-          'eventsPerAgent',
+          'alertsOverTime',
           `${
           this.filters
-          } sourcetype=wazuh | timechart span=2h count by agent.name`,
-          'eventsPerAgent',
+          } | stats count by data.configuration_assessment.policy | head 5`,
+          'alertsOverTime',
           this.scope
         ),
         new Table(
           'alertsSummary',
           `${
           this.filters
-          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          } | fields data.configuration_assessment.policy, data.configuration_assessment.check.result | stats count by  data.configuration_assessment.policy | rename data.configuration_assessment.policy as Policy, count as Count`,
           'alertsSummary',
           this.scope
         ),
@@ -147,7 +145,7 @@ define([
           'alertsSummaryTable',
           `${
           this.filters
-          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          } | fields data.configuration_assessment.policy, data.configuration_assessment.check.result | stats count by  data.configuration_assessment.policy | rename data.configuration_assessment.policy as Policy, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -181,10 +179,10 @@ define([
           'Configuration assessment',
           this.filters,
           [
-            'elementOverTime',
+            'resultDistribution',
             'cisRequirements',
             'topPciDss',
-            'eventsPerAgent',
+            'alertsOverTime',
             'alertsSummary'
           ],
           {}, //Metrics,
