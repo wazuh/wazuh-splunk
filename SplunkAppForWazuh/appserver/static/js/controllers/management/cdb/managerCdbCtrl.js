@@ -253,10 +253,10 @@ define([
        */
       async saveList() {
         try {
-          const containsNumberBlanks = /.* .*/
+          const constainsBlanks = /.* .*/
           const fileName = this.scope.currentList.details.file
           if (fileName) {
-            if (containsNumberBlanks.test(fileName)) {
+            if (constainsBlanks.test(fileName)) {
               this.toast('Error creating a new file. The filename can not contain white spaces.')
             } else {
               const path = this.scope.currentList.details.path
@@ -355,8 +355,9 @@ define([
                   scope.$broadcast('restartResponseReceived', {})
                   scope.$applyAsync();
                 })
-                .catch(error =>
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
+                .catch(error => {
+                  $notificationService.showSimpleToast(error.message || error, 'Error restarting.')
+                })   
             }
           },
           template:

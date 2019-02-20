@@ -17,9 +17,10 @@ define(['../module'], function(module) {
       constructor($requestService) {
         this.sendConfig = $requestService.sendConfiguration
         this.getConfig = $requestService.getConfiguration
+        this.apiReq = $requestService.apiReq
       }
   
-      async sendConfiguration(file, dir, node, content) {
+      async sendConfiguration(file, dir, node, content, checkConfig) {
         try {
           const path = dir ? `${dir}/${file}` : file
           node = node ? `cluster/${node}` : 'manager'
@@ -33,7 +34,10 @@ define(['../module'], function(module) {
           ) {
             throw new Error(`Error updating ${file} content.`)
           }
-           return result.data.data
+          if (checkConfig){
+            return await this.checkConfiguration(node)
+          } 
+          return result.data.data
         } catch (error) {
           return Promise.reject(error)
         }
@@ -56,6 +60,18 @@ define(['../module'], function(module) {
            return result.data.data
         } catch (error) {
           return Promise.reject(error)
+        }
+      }
+
+      async checkConfiguration(node){
+        const check = await this.apiReq(`/${node}/configuration/validation`)
+        if (check.data.data.status !== 'OK') {
+          const errObj = {}
+          errObj['badConfig'] = true
+          errObj['errMsg'] = [... new Set(check.data.data.details)]
+          return Promise.reject(errObj)
+        } else {
+          return "Configuration saved."
         }
       }
     }

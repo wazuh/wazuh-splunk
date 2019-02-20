@@ -11,7 +11,7 @@ define(['../module'], function (module) {
           return await restartManager()
         }
       } catch (error) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -32,7 +32,7 @@ define(['../module'], function (module) {
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
             const msgErr = checkConfig.data.data.details.join()
-            throw new Error(msgErr)
+            throw msgErr
           } else {
             throw new Error('Bad configuration, restart aborted.')
           }
@@ -59,7 +59,7 @@ define(['../module'], function (module) {
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
             const msgErr = checkConfig.data.data.details.join()
-            throw new Error(msgErr)
+            throw msgErr
           } else {
             throw new Error('Bad configuration, restart aborted.')
           }
@@ -88,7 +88,7 @@ define(['../module'], function (module) {
           } else {
             if (Array.isArray(checkConfig.data.data.details)) {
               const msgErr = checkConfig.data.data.details.join()
-              throw new Error(msgErr)
+              throw msgErr
             } else {
               throw new Error('Bad configuration, restart aborted.')
             }

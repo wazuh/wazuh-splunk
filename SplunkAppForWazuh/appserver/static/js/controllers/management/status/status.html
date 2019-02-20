@@ -28,7 +28,7 @@
         {{clusterEnabled ? "cluster" : "manager"}}</span>
     </button>
     <div ng-show="confirmingRestart" style="display: flex; float:right;">
-      <span style="padding-top: 8px;">The {{clusterEnabled ? "cluster" : "manager"}} will be restarted...</span>
+      <span style="padding-top: 8px;">The {{clusterEnabled ? "cluster" : "manager"}} will be restarted.</span>
       <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>

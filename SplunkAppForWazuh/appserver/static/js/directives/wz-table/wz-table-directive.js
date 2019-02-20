@@ -246,6 +246,7 @@ define([
          */
         const init = async () => {
           try {
+            $scope.showingChecks = false
             $scope.error = false
             $scope.wazuhTableLoading = true
             await fetch()
@@ -398,19 +399,51 @@ define([
         }
 
         $scope.isPolicyMonitoring = () => {
+          console.log("is policy ", instance.path.includes('configuration-assessment') && instance.path.includes('/checks'))
           return instance.path.includes('configuration-assessment') && instance.path.includes('/checks')
         }
   
         $scope.expandPolicyMonitoringCheck = item => {
-          
+          console.log("clicked ", item)
           if (item.expanded) item.expanded = false
           else {
             $scope.pagedItems[$scope.currentPage].map(item => item.expanded = false)
             item.expanded = true
           }
+          console.log("expanded ", item.expanded)
   
         }
         
+        /**
+         * Show a checkbox for each key to show or hide it
+         */
+        const cleanKeys = () => {
+          $scope.cleanKeys = {}
+          $scope.keys.map(key => {
+            const k = key.value || key
+            $scope.cleanKeys[k] = true
+          })
+        }
+
+        cleanKeys()
+
+        $scope.getEquivalence = key => {
+          return $scope.keyEquivalence[key]
+        }
+
+        $scope.showCheckbox = () => {
+          $scope.showingChecks = !$scope.showingChecks
+        }
+
+        $scope.switchKey = (key) => {
+          $scope.cleanKeys[key] = !$scope.cleanKeys[key]
+        }
+
+        $scope.showKey = (item) => {
+          const it = item.value || item
+          return $scope.cleanKeys[it]
+        }
+
       },
       templateUrl:
         BASE_URL +

@@ -122,11 +122,11 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      */
     saveRuleConfig(fileName, dir) {
       try {
-        const containsNumberBlanks = /.*[0-9 ].*/
+        const containsBlanks = /.* .*/
         fileName = this.scope.editingFile.file
         fileName = fileName.endsWith('.xml') ? fileName : `${fileName}.xml`
-        if (containsNumberBlanks.test(fileName)) {
-          this.toast('Error creating a new file. The filename can not contain numbers or white spaces.')
+        if (containsBlanks.test(fileName)) {
+          this.toast('Error creating a new file. The filename can not contain white spaces.')
         } else {
           if (fileName !== '.xml') {
             this.scope.$broadcast('saveXmlFile', {

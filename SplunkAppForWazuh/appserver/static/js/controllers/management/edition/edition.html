@@ -35,7 +35,7 @@
       </button>
     </div>
     <div ng-show="confirmingRestart">
-      <span style="padding-top: 8px;">The {{editingNode}} will be restarted...</span>
+      <span style="padding-top: 8px;">The {{editingNode}} will be restarted.</span>
       <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
@@ -50,6 +50,7 @@
 
 
   </div>
+
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 260px)">
     <wz-xml-file-editor  style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode" valid-fn='xmlIsValid(valid)'>
     </wz-xml-file-editor>

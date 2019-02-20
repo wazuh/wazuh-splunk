@@ -31,6 +31,7 @@ define(['../../module'], function (controllers) {
         this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
         this.scope.changeNode = (node) => this.changeNode(node)
         this.scope.restart = (node) => this.restart(node)
+        this.scope.switchRestart = () => this.switchRestart()
 
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
@@ -71,7 +72,8 @@ define(['../../module'], function (controllers) {
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false,
-        node: node
+        node: node,
+        checkConfig: true
       })
     }
 
@@ -95,6 +97,11 @@ define(['../../module'], function (controllers) {
         this.toast(error)
         this.scope.restartInProgress = false
       }
+    }
+
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
     }
 
   }
