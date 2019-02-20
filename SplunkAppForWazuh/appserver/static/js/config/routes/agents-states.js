@@ -580,6 +580,43 @@ define(['../module'], function (module) {
                 }
               }
             ],
+          }
+        })
+
+        // agents - configuration assessments
+        .state('ag-ca', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/configuration-assessment/agents-ca.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-ca')
+          },
+          controller: 'agentsConfigurationAssessmentsCtrl',
+          params: { id: null },
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
             configAssess: [
               '$requestService',
               '$stateParams',
