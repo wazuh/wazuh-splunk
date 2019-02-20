@@ -355,8 +355,9 @@ define([
                   scope.$broadcast('restartResponseReceived', {})
                   scope.$applyAsync();
                 })
-                .catch(error =>
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
+                .catch(error => {
+                  $notificationService.showSimpleToast(error.message || error, 'Error restarting.')
+                })   
             }
           },
           template:

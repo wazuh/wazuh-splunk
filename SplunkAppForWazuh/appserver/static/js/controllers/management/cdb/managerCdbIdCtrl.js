@@ -112,7 +112,6 @@ define([
         this.scope.filterContent = (filter) => this.filterContent(filter)
         
       } catch (error) {
-        console.error(error)
         this.toast("Error editing CDB list")
       }
 
@@ -276,8 +275,9 @@ define([
                 scope.$broadcast('restartResponseReceived', {})
                 scope.$applyAsync();
               })
-              .catch(error =>
-                $notificationService.showSimpleToast(error.message || error, 'Error restarting manager'));
+              .catch(error => {
+                  $notificationService.showSimpleToast(error.message || error, 'Error restarting.')
+              })     
           }
         },
         template:

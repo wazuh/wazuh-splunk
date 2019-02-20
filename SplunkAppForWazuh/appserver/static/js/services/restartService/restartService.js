@@ -11,7 +11,7 @@ define(['../module'], function (module) {
           return await restartManager()
         }
       } catch (error) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -30,7 +30,12 @@ define(['../module'], function (module) {
             throw new Error(`Cannot send restart signal to the manager.`)
           }
         } else {
-          throw new Error('Bad configuration, restart aborted.')
+          if (Array.isArray(checkConfig.data.data.details)) {
+            const msgErr = checkConfig.data.data.details.join()
+            throw msgErr
+          } else {
+            throw new Error('Bad configuration, restart aborted.')
+          }
         }
       } catch (error) {
         throw new Error(error)
@@ -52,7 +57,12 @@ define(['../module'], function (module) {
             throw new Error(`Cannot send restart signal to the cluster.`)
           }
         } else {
-          throw new Error('Bad configuration, restart aborted.')
+          if (Array.isArray(checkConfig.data.data.details)) {
+            const msgErr = checkConfig.data.data.details.join()
+            throw msgErr
+          } else {
+            throw new Error('Bad configuration, restart aborted.')
+          }
         }
       } catch (error) {
         throw new Error(error)
@@ -76,7 +86,12 @@ define(['../module'], function (module) {
               throw new Error(`Cannot send restart signal to the node ${node}.`)
             }
           } else {
-            throw new Error('Bad configuration, restart aborted.')
+            if (Array.isArray(checkConfig.data.data.details)) {
+              const msgErr = checkConfig.data.data.details.join()
+              throw msgErr
+            } else {
+              throw new Error('Bad configuration, restart aborted.')
+            }
           }
         } else {
           await restartManager()
