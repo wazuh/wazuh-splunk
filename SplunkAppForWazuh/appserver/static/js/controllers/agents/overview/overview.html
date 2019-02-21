@@ -51,7 +51,7 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>ID</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description">{{ agent.id || '-' }}</p>
+                      <p class="boldText euiText--small euiStat__description">{{ agent.id || '-' }}</p>
                   </div>
               </div>
               <div class="euiFlexItem euiFlexItem">
@@ -59,7 +59,7 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>IP</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description">{{ agent.ip || '-'}}</p>
+                      <p class="boldText euiText--small euiStat__description">{{ agent.ip || '-'}}</p>
                   </div>
               </div>
               <div class="euiFlexItem euiFlexItem">
@@ -67,7 +67,7 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>Version</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description">{{ agent.version || '-'}}</p>
+                      <p class="boldText euiText--small euiStat__description">{{ agent.version || '-'}}</p>
                   </div>
               </div>
               <div class="euiFlexItem euiFlexItem">
@@ -75,7 +75,7 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>OS</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description">{{ agentOS || '-'}}</p>
+                      <p class="boldText euiText--small euiStat__description">{{ agentOS || '-'}}</p>
                   </div>
               </div>
               <div class="euiFlexItem euiFlexItem">
@@ -83,7 +83,7 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>Registration date</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description">{{agent.dateAdd || '-'}}</p>
+                      <p class="boldText euiText--small euiStat__description">{{agent.dateAdd || '-'}}</p>
                   </div>
               </div>
               <div class="euiFlexItem euiFlexItem">
@@ -91,7 +91,7 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>Last keep alive</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description">{{agent.lastKeepAlive || '-' }}</p>
+                      <p class="boldText euiText--small euiStat__description">{{agent.lastKeepAlive || '-' }}</p>
                   </div>
               </div>
               <div class="euiFlexItem euiFlexItem">
@@ -99,9 +99,9 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>Last syscheck scan</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description" ng-if="agent.syscheck.inProgress">Scan
+                      <p class="boldText euiText--small euiStat__description" ng-if="agent.syscheck.inProgress">Scan
                           in progress</p>
-                      <p class="euiText euiText--small euiStat__description" ng-if="!agent.syscheck.inProgress">{{agent.syscheck.end
+                      <p class="boldText euiText--small euiStat__description" ng-if="!agent.syscheck.inProgress">{{agent.syscheck.end
                           || '-'}} <md-tooltip ng-if="!agent.syscheck.inProgress && agent.syscheck.start && agent.syscheck.end"
                               md-direction="bottom" class="wz-tooltip">
                               Start time: {{ agent.syscheck.start || '-'}} <br>
@@ -116,9 +116,9 @@
                       <div class="euiText euiText--small euiStat__description">
                           <p>Last rootcheck scan</p>
                       </div>
-                      <p class="euiText euiText--small euiStat__description" ng-if="agent.rootcheck.inProgress">Scan
+                      <p class="boldText euiText--small euiStat__description" ng-if="agent.rootcheck.inProgress">Scan
                           in progress</p>
-                      <p class="euiText euiText--small euiStat__description" ng-if="!agent.rootcheck.inProgress">{{agent.rootcheck.end
+                      <p class="boldText euiText--small euiStat__description" ng-if="!agent.rootcheck.inProgress">{{agent.rootcheck.end
                           || '-'}}
                           <md-tooltip ng-if="!agent.rootcheck.inProgress && agent.rootcheck.start && agent.rootcheck.end"
                               md-direction="bottom" class="wz-tooltip">

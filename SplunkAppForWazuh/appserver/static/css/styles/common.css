@@ -995,3 +995,7 @@ span.wrong {
 .configuration-margin-top{
   height: calc(100vh - 300px);
 }
+
+.boldText {
+  font-weight: bold;
+}
