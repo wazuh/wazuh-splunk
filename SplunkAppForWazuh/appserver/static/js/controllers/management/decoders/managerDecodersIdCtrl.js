@@ -23,7 +23,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       extensions,
-      $fileEditor
+      $fileEditor,
+      $restartService
     ) {
       super(
         $scope,
@@ -37,6 +38,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.state = $state
       this.extensions = extensions
       this.fileEditor = $fileEditor
+      this.restartService = $restartService
       try {
         this.filters = JSON.parse(window.localStorage.decoders) || []
       } catch (err) {
@@ -58,6 +60,13 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editDecoder = fileName => this.editDecoder(fileName)
+
+      this.scope.restart = () => this.restart()
+      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+
+      this.scope.$on('configSavedSuccessfully', () => {
+        this.scope.restartAndApply = true
+      })
     }
 
     /**
@@ -112,6 +121,19 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       } catch (error) {
         return Promise.reject(error)
       }
+    }
+
+    async restart() {
+      try {
+        const result = await this.restartService.restart()
+        this.toast(result)
+      } catch (error) {
+        this.toast(error)
+      }
+    }
+
+    closeRestartConfirmation() { 
+      this.scope.restartAndApply = false
     }
   }
   controllers.controller('managerDecodersIdCtrl', DecodersId)
