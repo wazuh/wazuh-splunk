@@ -25,7 +25,7 @@
   </div>
 
   <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load">
+  <div class="configuration-margin-top" flex="auto" layout="row" ng-if="!load">
 
     <!-- No configuration section -->
     <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
@@ -42,7 +42,7 @@
 
       <!-- Evaluations card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'openscap-evaluations' && currentConfig && currentConfig['open-scap'] && currentConfig['open-scap'].content">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Evaluations</span>
@@ -90,7 +90,7 @@
 
       <!-- General card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'openscap-general'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>
@@ -124,7 +124,7 @@
 
       <!-- JSON card -->
       <md-card flex="auto" class="wz-md-card" ng-if="JSONContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">JSON viewer</span>
@@ -150,7 +150,7 @@
 
       <!-- XML card -->
       <md-card flex="auto" class="wz-md-card" ng-if="XMLContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">XML viewer</span>

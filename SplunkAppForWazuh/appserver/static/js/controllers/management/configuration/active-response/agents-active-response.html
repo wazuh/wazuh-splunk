@@ -31,11 +31,11 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['com-active-response'] && !isString(currentConfig['com-active-response']) && currentConfig['com-active-response']['active-response']">
+    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['com-active-response'] && !isString(currentConfig['com-active-response']) && currentConfig['com-active-response']['active-response']">
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Active response settings</span>
@@ -101,7 +101,7 @@
 
       <!-- The main card will all the settings -->
       <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Command definitions</span>

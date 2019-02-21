@@ -47,13 +47,13 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['syscheck-syscheck'] && !isString(currentConfig['syscheck-syscheck']) && currentConfig['syscheck-syscheck'].syscheck">
+    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['syscheck-syscheck'] && !isString(currentConfig['syscheck-syscheck']) && currentConfig['syscheck-syscheck'].syscheck">
 
 
 
       <!-- General card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-general'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">General</span>
@@ -110,7 +110,7 @@
 
       <!-- Ignored card -->
       <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform !== 'windows' && !JSONContent && !XMLContent && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Ignored files and directories</span>
@@ -150,7 +150,7 @@
       <!-- End no configuration section -->
       
       <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Ignored</span>
@@ -192,7 +192,7 @@
 
       <!-- Monitored card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && currentConfig['syscheck-syscheck'].syscheck.directories.length">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Monitored directories</span>
@@ -275,7 +275,7 @@
 
       <!-- Windows card -->
       <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Monitored</span>
@@ -318,7 +318,7 @@
 
       <!-- No diff card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.nodiff">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">No diff directories</span>
@@ -359,7 +359,7 @@
 
       <!-- Who-data card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-whodata' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Who-data audit keys</span>
@@ -400,7 +400,7 @@
 
       <!-- JSON card -->
       <md-card flex="auto" class="wz-md-card" ng-if="JSONContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">JSON viewer</span>
@@ -426,7 +426,7 @@
 
       <!-- XML card -->
       <md-card flex="auto" class="wz-md-card" ng-if="XMLContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">XML viewer</span>

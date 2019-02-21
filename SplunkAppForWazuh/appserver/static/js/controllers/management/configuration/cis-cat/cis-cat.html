@@ -33,7 +33,7 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig['cis-cat']">
+    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig && currentConfig['cis-cat']">
 
       <!-- No configuration section -->
       <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'ciscat-benchmarks' && currentConfig && currentConfig['cis-cat'] && !currentConfig['cis-cat'].content"></wz-no-config>
@@ -41,7 +41,7 @@
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'ciscat-benchmarks' && currentConfig && currentConfig['cis-cat'] && currentConfig['cis-cat'].content">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Benchmarks</span>
@@ -84,7 +84,7 @@
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'ciscat-general'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>

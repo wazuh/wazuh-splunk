@@ -988,3 +988,10 @@ span.wrong {
   display: inline-block !important;
   text-align: center !important;
 }
+.overflow-auto {
+  overflow: auto;
+}
+
+.configuration-margin-top{
+  height: calc(100vh - 300px);
+}
