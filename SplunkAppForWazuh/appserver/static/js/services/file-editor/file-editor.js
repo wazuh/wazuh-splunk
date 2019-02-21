@@ -20,7 +20,7 @@ define(['../module'], function(module) {
         this.apiReq = $requestService.apiReq
       }
   
-      async sendConfiguration(file, dir, node, content, checkConfig) {
+      async sendConfiguration(file, dir, node, content) {
         try {
           const path = dir ? `${dir}/${file}` : file
           node = node ? `cluster/${node}` : 'manager'
@@ -34,10 +34,7 @@ define(['../module'], function(module) {
           ) {
             throw new Error(`Error updating ${file} content.`)
           }
-          if (checkConfig){
             return await this.checkConfiguration(node)
-          } 
-          return result.data.data
         } catch (error) {
           return Promise.reject(error)
         }

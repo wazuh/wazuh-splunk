@@ -22,6 +22,7 @@ define(['../../module'], function (controllers) {
      */
     $onInit() {
       try {
+        this.scope.restartAndApply = false
         this.scope.restartInProgress = false
         this.scope.editingConfig = true //Hides edit config button from parent abstract state
         this.scope.editingNode = false
@@ -32,6 +33,7 @@ define(['../../module'], function (controllers) {
         this.scope.changeNode = (node) => this.changeNode(node)
         this.scope.restart = (node) => this.restart(node)
         this.scope.switchRestart = () => this.switchRestart()
+        this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
 
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
@@ -44,6 +46,11 @@ define(['../../module'], function (controllers) {
           this.editNode()
         }
         this.scope.isAdmin = this.isAdmin
+
+        this.scope.$on('configSavedSuccessfully', () => {
+          this.scope.restartAndApply = true
+        })
+
       } catch (error) {
         this.toast(error)
       }
@@ -72,8 +79,7 @@ define(['../../module'], function (controllers) {
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false,
-        node: node,
-        checkConfig: true
+        node: node
       })
     }
 
@@ -102,6 +108,10 @@ define(['../../module'], function (controllers) {
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
       this.scope.$applyAsync()
+    }
+
+    closeRestartConfirmation() { 
+      this.scope.restartAndApply = false
     }
 
   }
