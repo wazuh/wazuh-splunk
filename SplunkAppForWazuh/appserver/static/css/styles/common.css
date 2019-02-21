@@ -942,3 +942,20 @@ md-toast {
   0 4px 4px 0 rgba(59, 79, 93, 0.3), 
   0 2px 2px 0 rgba(59, 79, 93, 0.3)!important;
 }
+.fullscreen {
+  display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      z-index: 9999;
+      width: auto;
+      height: calc(100vh - 100px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      margin: 50px 10px 50px 10px;
+      outline: 50px solid rgba(0, 0, 0, 0.5)!important;
+      max-width: 100% !important;
+  }
