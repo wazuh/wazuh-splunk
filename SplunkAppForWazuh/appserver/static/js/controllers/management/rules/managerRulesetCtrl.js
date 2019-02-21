@@ -52,9 +52,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
 
-      this.scope.$on('configSavedSuccessfully', () => {
-        this.scope.restartAndApply = true
-      })
+      this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
+      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
 
       this.scope.$on('loadedTable', () => {
         try {
@@ -116,6 +115,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
           this.toast('Error creating a new file. The filename can not contain white spaces.')
         } else {
           if (fileName !== '.xml') {
+            this.scope.saveIncomplete = true
             this.scope.$broadcast('saveXmlFile', {
               file: fileName,
               dir: dir
