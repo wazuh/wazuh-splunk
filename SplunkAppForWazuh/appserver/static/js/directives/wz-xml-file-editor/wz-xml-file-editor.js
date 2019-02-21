@@ -176,11 +176,13 @@ define([
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
-              $notificationService.showSimpleToast(`Configuration saved successfully.`)
+              $scope.$emit('saveComplete', {})
               $scope.$emit('configSavedSuccessfully', {})
+              $notificationService.showSimpleToast(`Configuration saved successfully.`)
             }
             //$scope.closeFn()
           } catch (error) {
+            $scope.$emit('saveComplete', {})
             if (error.badConfig) {
               $scope.showErrorMessages = true
               $scope.errorInfo = error.errMsg
