@@ -62,9 +62,11 @@
       </md-card-content>
     </md-card>
     <!-- first row - first vis -->
-    <md-card flex="60" class="wz-md-card">
+    <md-card flex="60" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts over time</span>
+        <span class="wz-headline-title">Alerts over time
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'alertsOverTime')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsOverTime'></div>
       </md-card-content>
@@ -75,17 +77,21 @@
   <!-- second row  -->
   <div id="row2" layout="row">
     <!-- first row - second vis -->
-    <md-card flex="40" class="wz-md-card">
+    <md-card flex="40" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Most common packs</span>
+        <span class="wz-headline-title">Most common packs
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'mostCommonEvents')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='mostCommonEvents'></div>
       </md-card-content>
     </md-card>
     <!-- first row - first vis -->
-    <md-card flex="60" class="wz-md-card">
+    <md-card flex="60" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts evolution - Top 5 agents</span>
+        <span class="wz-headline-title">Alerts evolution - Top 5 agents
+          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsEvolution')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsEvolution'></div>
       </md-card-content>
@@ -94,17 +100,21 @@
   </div>
   <div id="row3" layout="row">
     <!-- second row - third vis -->
-    <md-card flex="100" class="wz-md-card">
+    <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 packs</span>
+        <span class="wz-headline-title">Top 5 packs
+          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'topPacks')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='topPacks'></div>
       </md-card-content>
     </md-card>
     <!-- second row - third vis -->
-    <md-card flex="100" class="wz-md-card">
+    <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 rules</span>
+        <span class="wz-headline-title">Top 5 rules
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'topRules')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='topRules'></div>
       </md-card-content>

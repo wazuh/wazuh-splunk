@@ -399,18 +399,15 @@ define([
         }
 
         $scope.isPolicyMonitoring = () => {
-          console.log("is policy ", instance.path.includes('configuration-assessment') && instance.path.includes('/checks'))
           return instance.path.includes('configuration-assessment') && instance.path.includes('/checks')
         }
   
         $scope.expandPolicyMonitoringCheck = item => {
-          console.log("clicked ", item)
           if (item.expanded) item.expanded = false
           else {
             $scope.pagedItems[$scope.currentPage].map(item => item.expanded = false)
             item.expanded = true
           }
-          console.log("expanded ", item.expanded)
   
         }
         

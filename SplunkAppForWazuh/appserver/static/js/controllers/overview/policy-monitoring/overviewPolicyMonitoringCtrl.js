@@ -37,6 +37,10 @@ define([
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
+
+      this.scope.expandArray = [false,false,false,false,false]
+      this.scope.expand = (i,id) => this.expand(i,id);
+
       this.vizz = [
         /**
          * Visualizations
@@ -156,6 +160,13 @@ define([
       this.filters = this.getFilters()
       this.state.reload()
     }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i];
+      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
+      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+    }
+
   }
   app.controller('overviewPolicyMonitoringCtrl', PM)
 })

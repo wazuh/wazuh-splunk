@@ -27,11 +27,11 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['agent-buffer'] && !isString(currentConfig['agent-buffer']) && currentConfig['agent-buffer'].buffer">
+    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['agent-buffer'] && !isString(currentConfig['agent-buffer']) && currentConfig['agent-buffer'].buffer">
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>

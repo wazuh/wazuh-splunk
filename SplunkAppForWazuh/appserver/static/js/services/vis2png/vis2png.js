@@ -30,9 +30,10 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = this.htmlObject[currentValue]
-            const title = document
+            let title = document
               .getElementById(currentValue)
               .parentElement.getElementsByTagName('span')[0].innerHTML
+            if (title.search('<span')) title = title.substring(0, title.search('<span'))
             const classes = document
               .getElementById(currentValue)
               .className.split(' ')
@@ -64,6 +65,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         this.$rootScope.reportStatus = `Generating PDF document...`
         return this.rawArray
       } catch (error) {
+        console.error("err ", error)
         this.working = false
         return Promise.reject(error)
       }

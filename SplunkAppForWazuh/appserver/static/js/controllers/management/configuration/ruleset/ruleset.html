@@ -30,10 +30,10 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column">
+    <div class="configuration-margin-top" flex layout="column">
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'rules'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Rules directories</span>
@@ -127,7 +127,7 @@
       <!-- End main card with all the settings -->
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'decoders'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Decoders directories</span>
@@ -221,7 +221,7 @@
       <!-- End main card with all the settings -->
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'cdbs'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">CDB lists</span>

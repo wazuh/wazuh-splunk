@@ -26,11 +26,11 @@
   <!-- End no configuration section -->
 
   <!-- This section is the main content -->
-  <div flex layout="column" ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && currentConfig['logcollector-localfile'].localfile && currentConfig['logcollector-localfile'].localfile.length">
+  <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && currentConfig['logcollector-localfile'].localfile && currentConfig['logcollector-localfile'].localfile.length">
 
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-      <md-card-content flex layout="column">
+      <md-card-content class="overflow-auto" flex layout="column">
         <div layout="row" layout-align="start center">
           <div>
             <span class="font-size-16">Logs files and command monitoring</span>
@@ -128,7 +128,7 @@
 
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
-      <md-card-content flex layout="column">
+      <md-card-content class="overflow-auto" flex layout="column">
         <div layout="row" layout-align="start center">
           <div>
             <span class="font-size-16">Output sockets</span>

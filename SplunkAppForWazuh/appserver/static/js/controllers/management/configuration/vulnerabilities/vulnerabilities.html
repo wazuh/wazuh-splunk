@@ -34,7 +34,7 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig['vulnerability-detector']">
+    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig && currentConfig['vulnerability-detector']">
 
 
       <!-- No configuration section -->
@@ -43,7 +43,7 @@
 
       <!-- Feeds card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'vulnerabilities-feeds' && currentConfig && currentConfig['vulnerability-detector'] && currentConfig['vulnerability-detector'].feeds">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Feeds</span>
@@ -91,7 +91,7 @@
 
       <!-- General card -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'vulnerabilities-general'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>
@@ -127,7 +127,7 @@
 
       <!-- JSON card -->
       <md-card flex="auto" class="wz-md-card" ng-if="JSONContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">JSON viewer</span>
@@ -153,7 +153,7 @@
 
       <!-- XML card -->
       <md-card flex="auto" class="wz-md-card" ng-if="XMLContent">
-        <md-card-content flex layout="column">
+        <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">XML viewer</span>
