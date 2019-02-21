@@ -999,3 +999,7 @@ span.wrong {
 .boldText {
   font-weight: bold;
 }
+
+.table-width-id{
+  width: 10px !important;
+}

@@ -42,35 +42,37 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] | filter:{item:'!'}"
         ng-click="clickAction(item)">
-        <td ng-repeat="key in keys | filter: showKey" ng-if="path !== '/decoders' && path !== '/rules'" class="wz-text-truncatable">
-          {{
-          parseValue(key,item)
-          }}
+        <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}" ng-if="path !== '/decoders' && path !== '/rules'" class="wz-text-truncatable">
+          <div class="table-width-id" ng-if="key === 'id'">{{
+            parseValue(key,item)
+            }}</div>
+          <div ng-if="key !== 'id'">{{
+            parseValue(key,item)
+            }}</div> 
           <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom" class="wz-tooltip">
             {{ parseValue(key,item) }}
           </md-tooltip>
         </td>
-        <td ng-repeat="key in keys | filter: showKey" ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)"
+        <td ng-repeat="key in keys | filter: showKey"  ng-class="{'table-width-id': key === 'id'}" ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)"
           class="wz-text-truncatable">
-          <span ng-if="key === 'id'" class="wz-text-left">
-            {{ item.id }}
-          </span>
-
-          <span ng-if="key !== 'id'">
-            {{
+          <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
-            }}
-          </span>
+            }}</div>
+          <div ng-if="key !== 'id'">{{
+            parseValue(key,item)
+            }}</div> 
           <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom" class="wz-tooltip">
             {{ parseValue(key,item) }}
           </md-tooltip>
         </td>
-        <td ng-repeat="key in keys | filter: showKey" ng-if="path === '/decoders'" class="wz-text-truncatable">
+        <td ng-repeat="key in keys | filter: showKey"  ng-class="{'table-width-id': key === 'id'}" ng-if="path === '/decoders'" class="wz-text-truncatable">
           <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
-
-            {{
-            parseValue(key,item)
-            }}
+            <div class="table-width-id" ng-if="key === 'id'">{{
+              parseValue(key,item)
+              }}</div>
+            <div ng-if="key !== 'id'">{{
+              parseValue(key,item)
+              }}</div> 
           </div>
           <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom" class="wz-tooltip">
             {{ parseValue(key,item) }}
