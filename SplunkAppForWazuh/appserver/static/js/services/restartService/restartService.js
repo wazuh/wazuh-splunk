@@ -1,6 +1,6 @@
 define(['../module'], function (module) {
   'use strict'
-  module.service('$restartService', function ($requestService) {
+  module.service('$restartService', function ($requestService, $notificationService) {
 
     const restart = async () => {
       try {
@@ -46,16 +46,21 @@ define(['../module'], function (module) {
       try {
         const checkConfig = await $requestService.apiReq(`/cluster/configuration/validation`)
         if (checkConfig.data.data.status === 'OK') {
-          const result = await $requestService.apiReq(`/cluster/restart`, {}, `PUT`)
-          if (
-            result &&
-            result.data &&
-            result.data.error === 0
-          ) {
-            return `Restart signal sended successfully to the cluster.`
-          } else {
-            throw new Error(`Cannot send restart signal to the cluster.`)
-          }
+          setTimeout(() => {
+            $requestService.apiReq(`/cluster/restart`, {}, `PUT`).then((result) => {
+              if (
+                result &&
+                result.data &&
+                result.data.error === 0
+              ) {
+                $notificationService.showSimpleToast("Cluster received restart signal suscessfully.")
+                return `Cluster received restart signal suscessfully.`
+              } else {
+                throw new Error(`Cannot send restart signal to the cluster.`)
+              }
+            })
+          }, 15000)
+          return "Cluster restart in progress, it will take up to 15 seconds."
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
             const msgErr = checkConfig.data.data.details.join()
