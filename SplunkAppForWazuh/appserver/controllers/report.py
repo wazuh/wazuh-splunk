@@ -103,23 +103,23 @@ class report(controllers.BaseController):
             json_acceptable_string = kwargs['data']
             data = jsonbak.loads(json_acceptable_string)
             #Replace "'" in images
-            self.clean_images = jsonbak.dumps(data['images'])
-            self.clean_images.replace("'", "\"")
-            data['images'] = jsonbak.loads(self.clean_images)
+            clean_images = jsonbak.dumps(data['images'])
+            clean_images.replace("'", "\"")
+            data['images'] = jsonbak.loads(clean_images)
             today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             #Get filters and other information
-            self.filters = data['queryFilters']
-            self.pdf_name = data['pdfName']
-            self.time_range = data['timeRange']
-            self.section_title = data['sectionTitle']
-            self.metrics = data['metrics']
-            self.tables = data['tableResults']
-            if self.metrics:
-                self.metrics = jsonbak.loads(self.metrics)
-            self.agent_data = data['isAgents']
+            filters = data['queryFilters']
+            pdf_name = data['pdfName']
+            time_range = data['timeRange']
+            section_title = data['sectionTitle']
+            metrics = data['metrics']
+            tables = data['tableResults']
+            if metrics:
+                metrics = jsonbak.loads(metrics)
+            agent_data = data['isAgents']
             #Save the images
-            self.save_images(data['images'])
+            saved_images = self.save_images(data['images'])
             parsed_data = jsonbak.dumps({'data': 'success'})
             # Add title and filters 
             pdf.alias_nb_pages()
@@ -219,7 +219,7 @@ class report(controllers.BaseController):
                         y_img = 50
                         count = 0
             #Add tables
-            if self.tablesHaveInfo(tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
+            if self.tables_have_info(tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
                 if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
                     pdf.add_page()
                     pdf.ln(20)
@@ -279,7 +279,7 @@ class report(controllers.BaseController):
         return parsed_data
 
     #Check if tables are not empties
-    def tablesHaveInfo(self, tables):
+    def tables_have_info(self, tables):
         for key in tables.keys():
             if tables[key]:
                 return True
