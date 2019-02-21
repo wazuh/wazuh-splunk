@@ -43,7 +43,7 @@ define(['../module'], function (module) {
         $mdToast.show({
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template: '<md-toast  style="border-top: 2px solid #49e02d;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
             '<p class="toastTitle"><i class="fa fa-check"></i> Success <md-divider></md-divider>' + text +
             '</p></div>' +
@@ -54,7 +54,7 @@ define(['../module'], function (module) {
         $mdToast.show({
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template: '<md-toast  style="border-top: 2px solid #f70c0c;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
             '<p class=""><i aria-hidden="true" class="fa fa-fw fa-close"></i>Error<md-divider></md-divider>' + text +
             '</p></div>' +
@@ -65,7 +65,7 @@ define(['../module'], function (module) {
         $mdToast.show({
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template: '<md-toast style="border-top: 2px solid #fdec1c;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
             '<p class=""><i class="fa fa-warning fa-fw"></i>Warning<md-divider></md-divider>' + text +
             '</p></div>' +
@@ -76,7 +76,7 @@ define(['../module'], function (module) {
         $mdToast.show({
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template: '<md-toast style="border-top: 2px solid #005571;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
             '<p class=""><i class="fa fa-fw fa-info" aria-hidden="true"></i>' + text +
             '</p></div>' +
