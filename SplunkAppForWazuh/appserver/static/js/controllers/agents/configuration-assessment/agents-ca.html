@@ -26,7 +26,7 @@
       </md-button>
       <span class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i
           class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></span>
-      <wz-discover breadcrumbs="{section: 'Agents', subSection: 'Policity monitoring', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
+      <wz-discover breadcrumbs="{section: 'Agents', subSection: 'Configuration assessment', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>
   </div>
@@ -107,6 +107,7 @@
     </md-card>
   </div>
   </div>
+  <!-- End alerts visualizations-->
 
   <!-- Policies list -->
   <div ng-show="showPolicies && !showPolicyChecks">
@@ -136,7 +137,8 @@
         <md-card-content>
           <span class="wz-headline-title"><i class="fa fa-fw fa-shield"></i> Configuration assessment</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+          <p ng-if="configAssess.length === 0">No policies configured.</p>
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle" ng-if="configAssess > 0">
             <thead>
               <th>Policy</th>
               <th>Description</th>
@@ -160,6 +162,7 @@
       </md-card>
     </div>
   </div>
+  <!-- End policies list -->
 
   <!-- Policies checks table -->
   <div ng-if="showPolicyChecks">

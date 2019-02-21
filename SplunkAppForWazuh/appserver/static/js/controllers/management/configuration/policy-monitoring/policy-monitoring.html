@@ -190,31 +190,33 @@
           <!-- End configuration block -->
 
           <!-- Policies block -->
-          <div layout="row" layout-align="start center">
-            <div>
-              <span class="font-size-16">Policies</span>
-              <div class="wz-margin-top-10">
+          <div ng-if="currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].enabled === 'yes'">
+            <div layout="row" layout-align="start center">
+              <div>
+                <span class="font-size-16">Policies</span>
+                <div class="wz-margin-top-10">
+                </div>
               </div>
             </div>
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
+            <md-divider class="wz-margin-top-10"></md-divider>
 
-          <div class="wz-padding-top-10" style="width:100%">
-            <!-- content -->
-            <table class="table table-striped table-condensed table-layout-fixed table-vertical-align-middle">
-              <thead class="wz-text-bold">
-                <th class="wz-text-left">Name</th>
-              </thead>
-              <tbody>
-                <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].policies">
-                  <td>
-                    <span>{{policy}}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            </wz-config-item>
-            <!-- end content -->
+            <div class="wz-padding-top-10" style="width:100%">
+              <!-- content -->
+              <table class="table table-striped table-condensed table-layout-fixed table-vertical-align-middle">
+                <thead class="wz-text-bold">
+                  <th class="wz-text-left">Name</th>
+                </thead>
+                <tbody>
+                  <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['wmodules-wmodules']['wmodules'][4]['configuration-assessment'].policies">
+                    <td>
+                      <span>{{policy}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </wz-config-item>
+              <!-- end content -->
+            </div>
           </div>
           <!-- End policies block -->
 
