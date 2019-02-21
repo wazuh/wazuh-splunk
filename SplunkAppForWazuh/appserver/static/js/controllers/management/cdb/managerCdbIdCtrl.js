@@ -210,6 +210,7 @@ define([
     async saveList() {
       try {
         this.scope.restartAndApply = false
+        this.scope.saveIncomplete = true
         const fileName = this.scope.currentList.details.file
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
@@ -222,8 +223,10 @@ define([
         this.initPagination()
         this.toast("File saved successfully.")
         this.scope.restartAndApply = true
+        this.scope.saveIncomplete = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
+        this.scope.saveIncomplete = false
         this.toast(error)
       }
     }

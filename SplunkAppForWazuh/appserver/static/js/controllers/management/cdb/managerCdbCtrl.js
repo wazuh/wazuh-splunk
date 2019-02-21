@@ -261,6 +261,7 @@ define([
             if (constainsBlanks.test(fileName)) {
               this.toast('Error creating a new file. The filename can not contain white spaces.')
             } else {
+              this.scope.saveIncomplete = true
               const path = this.scope.currentList.details.path
               const content = this.objToString(this.scope.currentList.list)
               const result = await this.cdbEditor.sendConfiguration(fileName, path, content)
@@ -271,6 +272,7 @@ define([
               ) {
                 this.toast("File saved successfully.")
                 this.scope.restartAndApply = true
+                this.scope.saveIncomplete = false
                 this.scope.$applyAsync()
               } else {
                 throw new Error(`Error creating new CDB list `, result)
@@ -280,6 +282,7 @@ define([
             this.toast('Please set a name for the new CDB list.')
           }
         } catch (error) {
+          this.scope.saveIncomplete = false
           this.toast(`Cannot created ${fileName}`)
         }
       }
