@@ -18,7 +18,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      isAdmin
+      isAdmin,
+      $restartService
     ) {
       super(
         $scope,
@@ -30,6 +31,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         $csvRequestService
       )
       this.isAdmin = isAdmin
+      this.restartService = $restartService
     }
 
     /**
@@ -47,6 +49,13 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
 
       this.scope.selectedNavTab = 'rules'
 
+      this.scope.restart = () => this.restart()
+      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+
+      this.scope.$on('configSavedSuccessfully', () => {
+        this.scope.restartAndApply = true
+      })
+
       this.scope.$on('loadedTable', () => {
         try {
           if (window.localStorage.ruleset) {
@@ -62,9 +71,9 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       })
     }
 
-  /**
-   * Open the editor for a new file
-   */
+    /**
+     * Open the editor for a new file
+     */
     addNewFile() {
       this.scope.addingNewFile = true
       this.scope.editingFile = {
@@ -118,6 +127,25 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       } catch (error) {
         this.toast('Please set a valid name')
       }
+    }
+
+  /**
+   * Restarts the manager or cluster
+   */
+    async restart() {
+      try {
+        const result = await this.restartService.restart()
+        this.toast(result)
+      } catch (error) {
+        this.toast(error)
+      }
+    }
+
+    /**
+     * Closes the confirm of restart message
+     */
+    closeRestartConfirmation() {
+      this.scope.restartAndApply = false
     }
 
   }

@@ -10,12 +10,12 @@
   </div>
 </div>
 
-  <!-- Nav bar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
-  </md-nav-bar>
+<!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+</md-nav-bar>
 
 <div ng-if="!addingNewFile">
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
@@ -23,7 +23,8 @@
       <div layout="row">
         <input placeholder="Filter rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(customSearch)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
+          ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
@@ -73,9 +74,10 @@
     <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
-    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
-    allow-click="true" rows-per-page="14">
-  </wazuh-table>
+    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]" flex path="'/rules'"
+      keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+      allow-click="true" rows-per-page="14">
+    </wazuh-table>
   </div>
   <div layout="row" class="wz-margin-top-10">
     <span flex></span>
@@ -98,6 +100,20 @@
     </button>
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
       style="margin-left: 10px;">
+
+    <!-- Restart if saved without errors-->
+    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
+      <span>Do you want to restart to apply configuration?</span>
+      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
+        class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
+    <!-- End restart button -->
+
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
