@@ -47,9 +47,8 @@ define(['../../module'], function (controllers) {
         }
         this.scope.isAdmin = this.isAdmin
 
-        this.scope.$on('configSavedSuccessfully', () => {
-          this.scope.restartAndApply = true
-        })
+        this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
+        this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
 
       } catch (error) {
         this.toast(error)
@@ -76,6 +75,7 @@ define(['../../module'], function (controllers) {
 
     saveOssecConfig() {
       const node = this.scope.editingNode === 'manager' ? false : this.scope.editingNode
+      this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false,
