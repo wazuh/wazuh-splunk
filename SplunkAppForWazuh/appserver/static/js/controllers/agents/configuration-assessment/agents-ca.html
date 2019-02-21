@@ -50,25 +50,31 @@
 
     <!-- First row -->
     <div layout="row" layout-align="center stretch" class="height-390">
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 CIS Requirements</span>
+        <span class="wz-headline-title">Top 5 CIS Requirements
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'cisRequirements')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='cisRequirements'></div>
       </md-card-content>
     </md-card>
 
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 PCI DSS Requirements</span>
+        <span class="wz-headline-title">Top 5 PCI DSS Requirements
+          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topPciDss')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='topPciDss'></div>
       </md-card-content>
     </md-card>
 
-    <md-card flex="33" class="wz-md-card">
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Result distribution</span>
+        <span class="wz-headline-title">Result distribution
+          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'resultDistribution')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='resultDistribution'></div>
       </md-card-content>
@@ -77,9 +83,11 @@
 
   <!-- Second row -->
   <div layout="row" layout-align="center stretch" class="height-500">
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts over time</span>
+        <span class="wz-headline-title">Alerts over time
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsOverTime')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsOverTime'></div>
       </md-card-content>
@@ -88,9 +96,11 @@
 
   <!-- Third row -->
   <div layout="row" layout-align="center stretch" class="height-560">
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts summary</span>
+        <span class="wz-headline-title">Alerts summary
+          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'eventsOverTimeElement')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsSummary'></div>
       </md-card-content>
