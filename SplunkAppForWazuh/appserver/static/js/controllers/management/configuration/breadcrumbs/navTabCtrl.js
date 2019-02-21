@@ -13,6 +13,7 @@ define(['../../../module'], function (controllers) {
     }
 
     $onInit() {
+      this.scope.confirmingRestart = false
       this.scope.editingConfig = false
       this.scope.restartInProgress = false
       this.scope.isAdmin = this.isAdmin
@@ -20,12 +21,13 @@ define(['../../../module'], function (controllers) {
 
       this.scope.restart = (node) => this.restart(node)
       this.scope.switchToEdition = () => this.switchToEdition()
+      this.scope.switchRestart = () => this.switchRestart()
 
       //Listen if restart response was received
       this.scope.$on('restartResponseReceived ', () => this.scope.restartInProgress = !this.scope.restartInProgress)
     }
 
-    switchToEdition(){
+    switchToEdition() {
       this.scope.editingConfig = !this.scope.editingConfig
     }
 
@@ -47,7 +49,7 @@ define(['../../../module'], function (controllers) {
       }
     }
 
-    async refreshClusterStatus(){
+    async refreshClusterStatus() {
       try {
         const clusterStatus = await this.apiReq('/cluster/status')
         this.clusterEnabled = clusterStatus.data.data.enabled === 'yes' && clusterStatus.data.data.running === 'yes' ? true : false
@@ -55,7 +57,11 @@ define(['../../../module'], function (controllers) {
       } catch (error) {
         return Promise.reject(error)
       }
+    }
 
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
     }
 
   }

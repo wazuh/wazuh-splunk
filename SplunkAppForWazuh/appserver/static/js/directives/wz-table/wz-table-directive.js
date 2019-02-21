@@ -54,7 +54,7 @@ define([
         extraLimit: '=extraLimit',
         adminMode: '=adminMode',
         emptyResults: '=emptyResults',
-        quickEdit: '=quickEdit'
+        customColumns: '=customColumns'
       },
       controller(
         $rootScope,
@@ -68,7 +68,8 @@ define([
         $notificationService,
         $tableFilterService,
         $window,
-        $groupHandler
+        $groupHandler,
+        $sce
       ) {
         /**
          * Init variables
@@ -236,7 +237,8 @@ define([
             $keyEquivalenceService.equivalences(),
             key,
             item,
-            instance.path
+            instance.path,
+            $sce
           )
 
         /**
@@ -244,6 +246,7 @@ define([
          */
         const init = async () => {
           try {
+            $scope.showingChecks = false
             $scope.error = false
             $scope.wazuhTableLoading = true
             await fetch()
@@ -394,7 +397,50 @@ define([
         $scope.editGroup = group => {
           $scope.$emit('openGroupFromList',{group})
         }
+
+        $scope.isPolicyMonitoring = () => {
+          return instance.path.includes('configuration-assessment') && instance.path.includes('/checks')
+        }
+  
+        $scope.expandPolicyMonitoringCheck = item => {
+          if (item.expanded) item.expanded = false
+          else {
+            $scope.pagedItems[$scope.currentPage].map(item => item.expanded = false)
+            item.expanded = true
+          }
+  
+        }
         
+        /**
+         * Show a checkbox for each key to show or hide it
+         */
+        const cleanKeys = () => {
+          $scope.cleanKeys = {}
+          $scope.keys.map(key => {
+            const k = key.value || key
+            $scope.cleanKeys[k] = true
+          })
+        }
+
+        cleanKeys()
+
+        $scope.getEquivalence = key => {
+          return $scope.keyEquivalence[key]
+        }
+
+        $scope.showCheckbox = () => {
+          $scope.showingChecks = !$scope.showingChecks
+        }
+
+        $scope.switchKey = (key) => {
+          $scope.cleanKeys[key] = !$scope.cleanKeys[key]
+        }
+
+        $scope.showKey = (item) => {
+          const it = item.value || item
+          return $scope.cleanKeys[it]
+        }
+
       },
       templateUrl:
         BASE_URL +

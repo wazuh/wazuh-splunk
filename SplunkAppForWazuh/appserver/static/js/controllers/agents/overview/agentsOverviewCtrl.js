@@ -47,6 +47,7 @@ define(['../../module'], function (app) {
       this.extensions = extensions
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
+      this.scope.showRootcheckScan = false
       this.scope.addingGroupToAgent = false
       this.groups = groups
       this.$mdDialog = $mdDialog
@@ -60,6 +61,7 @@ define(['../../module'], function (app) {
      */
     $onInit() {
       try {
+        this.scope.confirmingRestart = false
         if (
           this.agent.length &&
           typeof this.agent[0] === 'object' &&
@@ -114,6 +116,12 @@ define(['../../module'], function (app) {
               this.getAgentStatusClass(agentStatus)
             this.scope.goGroups = group => this.goGroups(group)
 
+            this.scope.searchRootcheck = (term, specificFilter) =>
+              this.scope.$broadcast('wazuhSearch', { term, specificFilter })
+
+            this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
+            this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
               this.scope.syscheck.end
@@ -146,6 +154,7 @@ define(['../../module'], function (app) {
               (this.scope.addingGroupToAgent = false)
 
             this.scope.restart = () => this.restartAgent()
+            this.scope.switchRestart = () => this.switchRestart()
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -325,6 +334,11 @@ define(['../../module'], function (app) {
           `Error restarting agent: ${error}`
         )
       }
+    }
+
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
     }
   }
 

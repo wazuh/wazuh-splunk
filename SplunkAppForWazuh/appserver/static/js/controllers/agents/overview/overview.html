@@ -22,14 +22,24 @@
     <span class="font-size-18">
       <i class="fa fa-fw fa-tv" aria-hidden="true"></i> {{ agent.name || '-' }} <span class="wz-text-bold wz-text-link"
         ui-sref='discover' tooltip="Discover"><i class="fa fa-fw fa-compass" aria-hidden="true"></i></span>
-      <!-- Restart button -->
-    <button ng-if="isAdmin && agent.status === 'Active'" ng-click="restart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
-      <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
-        Restart agent
-      </span>
-    </button>
     </span>
-
+    <!-- Restart button -->
+    <div ng-show="!confirmingRestart">
+      <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
+        <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+          Restart agent
+        </span>
+      </button>
+    </div>
+    <div ng-show="confirmingRestart" style="text-align: right;">
+      <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
+      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()" class='btn btn-primary pull-right wz-margin-left-10'>
+        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
   </div>
   <!-- End headline -->
 <div layout="row" layout-padding>
@@ -206,6 +216,8 @@
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Configuration to ensure compliance with security policies, standards and hardening guides'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_timelion.svg'"
+              title="'Configuration assessment'" ui-sref='ag-ca({id:aoc.agent.id})' current-tab="'conf-assess'" description="'Configuration assessment'"></wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
               title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
               description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>

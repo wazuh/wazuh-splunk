@@ -302,62 +302,22 @@ define(['../module'], function (module) {
 
         // Manager - Configuration
         .state('mg-conf', {
-          abstract: true,
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/breadcrumbs/breadcrumbs-mg.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf')
-          },
-          controller: 'navTabCtrl',
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
-                } catch (error) {
-                  return false
-                }
-              }
-            ],
-            clusterEnabled: [
-              '$requestService',
-              async $requestService => {
-                try {
-                  const result = await $requestService.apiReq('/cluster/status') 
-                  const clusterStatus = result.data.data.enabled === 'yes' ? true : false
-                  return clusterStatus
-                } catch (error) {
-                  return false
-                }
-              }
-            ]
-          }
-        })
-
-        // Manager - Configuration - Overview
-        .state('mg-conf.overview', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf.overview')
+            $navigationService.storeRoute('mg-conf')
           },
           controller: 'configurationCtrl'
         })
 
-        // Manager - Configuration - EditConfig
-        .state('mg-conf.editConfig', {
+        // Manager - EditConfig
+        .state('mg-editConfig', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-conf.editConfig')
+            $navigationService.storeRoute('mg-editConfig')
           },
           controller: 'editionCtrl',
           resolve: {

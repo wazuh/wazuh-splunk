@@ -8,19 +8,21 @@ define(['../../module'], function (controllers) {
      * @param {Array} clusterInfo
      * @param {Boolean} isAdmin
      */
-    constructor($scope, isAdmin, $notificationService, clusterInfo, $fileEditor) {
+    constructor($scope, isAdmin, $notificationService, clusterInfo, $fileEditor, $restartService) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
       this.isAdmin = isAdmin
       this.toast = $notificationService.showSimpleToast
       this.clusterInfo = clusterInfo
       this.fileEditor = $fileEditor
+      this.restartService = $restartService
     }
     /**
      * On controller loads
      */
     $onInit() {
       try {
+        this.scope.restartInProgress = false
         this.scope.editingConfig = true //Hides edit config button from parent abstract state
         this.scope.editingNode = false
         this.scope.editNode = (nodeName) => this.editNode(nodeName)
@@ -28,6 +30,8 @@ define(['../../module'], function (controllers) {
         this.scope.saveOssecConfig = () => this.saveOssecConfig()
         this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
         this.scope.changeNode = (node) => this.changeNode(node)
+        this.scope.restart = (node) => this.restart(node)
+        this.scope.switchRestart = () => this.switchRestart()
 
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
@@ -68,13 +72,36 @@ define(['../../module'], function (controllers) {
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
         dir: false,
-        node: node
+        node: node,
+        checkConfig: true
       })
     }
 
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid
       if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    async restart(node = false) {
+      try {
+        this.scope.restartInProgress = true
+        let result = ''
+        if (this.clusterInfo.clusterEnabled && node) {
+          result = await this.restartService.restartNode(node)
+        } else {
+          result = await this.restartService.restart()
+        }
+        this.toast(result)
+        this.scope.restartInProgress = false
+      } catch (error) {
+        this.toast(error)
+        this.scope.restartInProgress = false
+      }
+    }
+
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
     }
 
   }

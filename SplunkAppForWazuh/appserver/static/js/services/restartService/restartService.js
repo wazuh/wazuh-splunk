@@ -4,24 +4,65 @@ define(['../module'], function (module) {
 
     const restart = async () => {
       try {
-        const clusterStatus = await $requestService.apiReq('/cluster/status')
-        const instance = clusterStatus.data.data.enabled === 'yes' &&
-          clusterStatus.data.data.running === 'yes' &&
-          clusterStatus.data.data.running === 'yes' ? 'cluster' : 'manager'
-        const checkConfig = await $requestService.apiReq(`/${instance}/configuration/validation`)
+        const clusterEnabled = await clusterIsEnabled()
+        if (clusterEnabled) {
+          return await restartCluster()
+        } else {
+          return await restartManager()
+        }
+      } catch (error) {
+        throw error
+      }
+    }
+
+    const restartManager = async () => {
+      try {
+        const checkConfig = await $requestService.apiReq(`/manager/configuration/validation`)
         if (checkConfig.data.data.status === 'OK') {
-          const result = await $requestService.apiReq(`/${instance}/restart`, {}, `PUT`)
+          const result = await $requestService.apiReq(`/manager/restart`, {}, `PUT`)
           if (
             result &&
             result.data &&
             result.data.error === 0
           ) {
-            return `Restart signal sended successfully to the ${instance}.`
+            return `Restart signal sended successfully to the manager.`
           } else {
-            throw new Error(`Cannot send restart signal to the ${instance}.`)
+            throw new Error(`Cannot send restart signal to the manager.`)
           }
         } else {
-          throw new Error('Bad configuration, restart aborted.')
+          if (Array.isArray(checkConfig.data.data.details)) {
+            const msgErr = checkConfig.data.data.details.join()
+            throw msgErr
+          } else {
+            throw new Error('Bad configuration, restart aborted.')
+          }
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+
+    const restartCluster = async () => {
+      try {
+        const checkConfig = await $requestService.apiReq(`/cluster/configuration/validation`)
+        if (checkConfig.data.data.status === 'OK') {
+          const result = await $requestService.apiReq(`/cluster/restart`, {}, `PUT`)
+          if (
+            result &&
+            result.data &&
+            result.data.error === 0
+          ) {
+            return `Restart signal sended successfully to the cluster.`
+          } else {
+            throw new Error(`Cannot send restart signal to the cluster.`)
+          }
+        } else {
+          if (Array.isArray(checkConfig.data.data.details)) {
+            const msgErr = checkConfig.data.data.details.join()
+            throw msgErr
+          } else {
+            throw new Error('Bad configuration, restart aborted.')
+          }
         }
       } catch (error) {
         throw new Error(error)
@@ -30,24 +71,43 @@ define(['../module'], function (module) {
 
     const restartNode = async (node) => {
       try {
-        const checkConfig = await $requestService.apiReq(`/cluster/${node}/configuration/validation`)
-        if (checkConfig.data.data.status === 'OK') {
-          const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
-          if (
-            result &&
-            result.data &&
-            result.data.error === 0
-          ) {
-            return `Restart signal sended successfully to the node ${node}.`
+        const enabled = await clusterIsEnabled()
+        if (enabled) {
+          const checkConfig = await $requestService.apiReq(`/cluster/${node}/configuration/validation`)
+          if (checkConfig.data.data.status === 'OK') {
+            const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
+            if (
+              result &&
+              result.data &&
+              result.data.error === 0
+            ) {
+              return `Restart signal sended successfully to the node ${node}.`
+            } else {
+              throw new Error(`Cannot send restart signal to the node ${node}.`)
+            }
           } else {
-            throw new Error(`Cannot send restart signal to the node ${node}.`)
+            if (Array.isArray(checkConfig.data.data.details)) {
+              const msgErr = checkConfig.data.data.details.join()
+              throw msgErr
+            } else {
+              throw new Error('Bad configuration, restart aborted.')
+            }
           }
         } else {
-          throw new Error('Bad configuration, restart aborted.')
+          await restartManager()
+          return `Cluster disabled, cannot send the restart signal to ${node}, the manager is going to restart.`
         }
       } catch (error) {
         throw new Error(error)
       }
+    }
+
+    const clusterIsEnabled = async () => {
+      const result = await $requestService.apiReq('/cluster/status')
+      const status = result.data.data.enabled === 'yes' &&
+        result.data.data.running === 'yes' &&
+        result.data.data.running === 'yes' ? true : false
+      return status
     }
 
     return {

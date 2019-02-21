@@ -926,3 +926,32 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
       outline: 50px solid rgba(0, 0, 0, 0.5)!important;
       max-width: 100% !important;
   }
+.wz-table-checkboxes {
+  width: 100%;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.wz-text-truncatable {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 1px;
+  text-overflow: ellipsis;
+  padding-right: 40px !important;
+}
+
+span.pass {
+  background-color: green !important;
+  color: white !important;
+  width: 50px !important;
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+span.wrong {
+  background-color: red !important;
+  color: white !important;
+  width: 50px !important;
+  display: inline-block !important;
+  text-align: center !important;
+}
