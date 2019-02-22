@@ -69,9 +69,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.editRule = fileName => this.editRule(fileName)
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
-
-      this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
-      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
     }
 
     /**

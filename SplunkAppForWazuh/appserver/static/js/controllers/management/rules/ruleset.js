@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(app) {
+define(['../../module', 'FileSaver'], function (app) {
   'use strict'
 
   class Ruleset {
@@ -11,6 +11,7 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $restartService
      */
     constructor(
       $scope,
@@ -19,7 +20,8 @@ define(['../../module', 'FileSaver'], function(app) {
       view,
       $currentDataService,
       $tableFilterService,
-      $csvRequestService
+      $csvRequestService,
+      $restartService
     ) {
       this.scope = $scope
       this.view = view
@@ -28,6 +30,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.wzTableFilter = $tableFilterService
       this.csvReq = $csvRequestService
       this.sce = $sce
+      this.restartService = $restartService
       this.colors = [
         '#004A65',
         '#00665F',
@@ -76,6 +79,8 @@ define(['../../module', 'FileSaver'], function(app) {
      * On controller load
      */
     initialize() {
+      console.log("thisrestart ", this.restartService)
+      //console.elog("res ", $restartService)
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
         : delete window.localStorage.decoders
@@ -92,6 +97,11 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.colorRegex = regex => this.colorRegex(regex)
       }
       this.scope.colorOrder = order => this.colorOrder(order)
+      this.scope.restart = () => this.restart()
+      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+
+      this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
+      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
     }
 
     /**
@@ -128,10 +138,10 @@ define(['../../module', 'FileSaver'], function(app) {
           coloredString = coloredString.replace(
             /\(((?!<\/span>).)*?\)(?!<\/span>)/im,
             '<span style="color: ' +
-              this.colors[i] +
-              ' ">' +
-              valuesArray[i] +
-              '</span>'
+            this.colors[i] +
+            ' ">' +
+            valuesArray[i] +
+            '</span>'
           )
         }
       }
@@ -150,10 +160,10 @@ define(['../../module', 'FileSaver'], function(app) {
         coloredString = coloredString.replace(
           valuesArray[i],
           '<span style="color: ' +
-            this.colors[i] +
-            ' ">' +
-            valuesArray[i] +
-            '</span>'
+          this.colors[i] +
+          ' ">' +
+          valuesArray[i] +
+          '</span>'
         )
       }
       return this.sce.trustAsHtml(coloredString)
@@ -314,6 +324,27 @@ define(['../../module', 'FileSaver'], function(app) {
         .map(item => item.name)
         .includes(filterName)
     }
+
+  /**
+   * Restarts the manager or cluster
+   */
+    async restart() {
+      console.log("trying to restart on ruleset")
+      try {
+        const result = await this.restartService.restart()
+        this.toast(result)
+      } catch (error) {
+        this.toast(error)
+      }
+    }
+
+    /**
+     * Closes the confirm of restart message
+     */
+    closeRestartConfirmation() {
+      this.scope.restartAndApply = false
+    }    
+
   }
   app.controller('managerRulesetCtrl', Ruleset)
   return Ruleset
