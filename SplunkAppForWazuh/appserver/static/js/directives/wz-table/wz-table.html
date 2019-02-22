@@ -143,7 +143,7 @@
             </span>
         </td>
       </tr>
-      <tr class="wz-word-wrap" ng-if="item.expanded" ng-repeat-end="">
+      <tr class="wz-word-wrap" ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.compliance.length > 0)" ng-repeat-end="">
         <td colspan="3">
           <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
             <span class="boldText">Rationale</span>
