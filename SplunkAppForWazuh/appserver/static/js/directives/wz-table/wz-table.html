@@ -160,7 +160,7 @@
             <md-divider class="wz-margin-top-10"></md-divider>
             <p class="wz-margin-top-10">{{ item.directory }}</p>
           </div>
-          <div layout="column" ng-if="item.compliance" class="wz-margin-top-10">
+          <div layout="column" ng-if="item.compliance.length > 0" class="wz-margin-top-10">
             <span class="wz-headline-title"><strong>Compliance</strong></span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <p class="wz-margin-top-10"><span class="wz-padding-right-8" ng-repeat="c in item.compliance">{{c.key}}/{{c.value}}</span></p>
