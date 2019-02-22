@@ -52,16 +52,13 @@ define(['../module'], function (module) {
                 if (
                   result &&
                   result.data &&
-                  !result.data.error
+                  result.data.error !== 0
                 ) {
-                  $notificationService.showSimpleToast('Cluster received restart signal suscessfully.')
-                  return 'Cluster received restart signal suscessfully.'
-                } else {
-                  $notificationService.showErrorToast('Cannot send restart signal to the cluster.')
+                  throw new Error((result.data.error || 'Cannot restart the cluster.'))
                 }
               })
               .catch((error) => {
-                $notificationService.showErrorToast('Cannot send restart signal to the cluster.')
+                $notificationService.showErrorToast(error || 'Cannot restart the cluster.')
               })
           }, 15000)
           return 'Cluster restart in progress, it will take up to 15 seconds.'
