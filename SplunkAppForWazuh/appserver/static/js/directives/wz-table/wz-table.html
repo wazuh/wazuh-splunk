@@ -133,7 +133,7 @@
         class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
     </thead>
     <tbody>
-      <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
+      <tr ng-class="{'cursor-pointer':allowClick, 'boldText':item.expanded}" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
         ng-click="expandPolicyMonitoringCheck(item)">
         <td ng-repeat="key in keys | filter: showKey">
             <span>
@@ -143,29 +143,24 @@
             </span>
         </td>
       </tr>
-      <tr class="wz-word-wrap" style="background-color: #ecf6fb !important" ng-if="item.expanded" ng-repeat-end="">
+      <tr class="wz-word-wrap" ng-if="item.expanded" ng-repeat-end="">
         <td colspan="3">
-          <div layout="column" ng-if="item.rationale" class="wz-margin-top-10">
-            <span class="wz-headline-title"><strong>Rationale</strong></span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <p class="wz-margin-top-10">{{item.rationale}}</p>
+          <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
+            <span class="boldText">Rationale</span>
+            <p class="wz-margin-top-10 pExpanded">{{item.rationale}}</p>
           </div>
-          <div layout="column" ng-if="item.remediation" class="wz-margin-top-10">
-            <span class="wz-headline-title"><strong>Remediation</strong></span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <p class="wz-margin-top-10">{{item.remediation}}</p>
+          <div layout="column" ng-if="item.remediation" class="wz-margin-top-10 expandedDiv">
+            <span class="boldText">Remediation</span>
+            <p class="wz-margin-top-10 pExpanded">{{item.remediation}}</p>
           </div>
-          <div layout="column" ng-if="item.directory" class="wz-margin-top-10">
-            <span class="wz-headline-title"><strong>Path(s)</strong></span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <p class="wz-margin-top-10">{{ item.directory }}</p>
+          <div layout="column" ng-if="item.directory" class="wz-margin-top-10 expandedDiv">
+            <span class="boldText">Path(s)</span>
+            <p class="wz-margin-top-10 pExpanded">{{ item.directory }}</p>
           </div>
-          <div layout="column" ng-if="item.compliance.length > 0" class="wz-margin-top-10">
-            <span class="wz-headline-title"><strong>Compliance</strong></span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <p class="wz-margin-top-10"><span class="wz-padding-right-8" ng-repeat="c in item.compliance">{{c.key}}/{{c.value}}</span></p>
+          <div layout="column" ng-if="item.compliance.length > 0" class="wz-margin-top-10 expandedDiv">
+            <span class="boldText">Compliance</span>
+            <p class="wz-margin-top-10 pExpanded"><span class="wz-padding-right-8" ng-repeat="c in item.compliance">{{c.key}}/{{c.value}}</span></p>
           </div>
-          <div layout="column" class="wz-margin-top-10"></div>
         </td>
       </tr>
     </tbody>

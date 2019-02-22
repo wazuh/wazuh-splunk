@@ -293,6 +293,7 @@ define([
      * Switches between alerts visualizations and policies
      */
     switchVisualizations() {
+      console.log("configasss ", this.scope.configAssess)
       this.scope.showPolicies = !this.scope.showPolicies
       this.scope.showPolicyChecks = name
       this.scope.$applyAsync()
@@ -305,7 +306,7 @@ define([
       this.scope.showPolicyChecks = name
       this.scope.policyId = id
       const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
+      this.scope.wzTablePath = `/configuration-assessment/${agentId}/checks/${id}`
     }
 
 

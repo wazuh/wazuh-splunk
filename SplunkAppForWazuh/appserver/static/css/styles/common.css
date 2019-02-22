@@ -999,3 +999,14 @@ span.wrong {
 .boldText {
   font-weight: bold;
 }
+
+.expandedDiv {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.pExpanded {
+  padding-left: 10px;
+  margin-bottom: -10px;
+  margin-top: -2px;
+}

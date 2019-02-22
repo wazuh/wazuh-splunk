@@ -648,7 +648,7 @@ define(['../module'], function (module) {
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
-                  const result = await $requestService.apiReq(`/sca/${id}`)
+                  const result = await $requestService.apiReq(`/configuration-assessment/${id}`)
                   return result
                 } catch (err) {
                   $state.go('agents')
