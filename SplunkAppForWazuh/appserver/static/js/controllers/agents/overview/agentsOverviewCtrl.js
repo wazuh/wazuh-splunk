@@ -170,7 +170,7 @@ define(['../../module'], function (app) {
                   this.scope.addingGroupToAgent = false
                   this.scope.editGroup = false
                   this.notificationService.showSimpleToast(
-                    `Group ${group} has been added.`
+                    `Agent ${this.scope.agent.name}(${this.scope.agent.id}) has been added to group ${group}.`
                   )
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
