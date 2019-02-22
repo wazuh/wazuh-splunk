@@ -34,7 +34,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         'ruleset',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService
       )
       this.state = $state
       this.extensions = extensions
@@ -125,19 +126,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         return Promise.reject(error)
       }
     } 
-
-    async restart() {
-      try {
-        const result = await this.restartService.restart()
-        this.toast(result)
-      } catch (error) {
-        this.toast(error)
-      }
-    }
-
-    closeRestartConfirmation() { 
-      this.scope.restartAndApply = false
-    }
 
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)

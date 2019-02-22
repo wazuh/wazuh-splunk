@@ -38,7 +38,8 @@ define([
           'cbd',
           $currentDataService,
           $tableFilterService,
-          $csvRequestService
+          $csvRequestService,
+          $restartService
         )
         this.pagination = pagination
         this.checkGap = checkGap
@@ -338,25 +339,6 @@ define([
         this.scope.totalItems = this.scope.items.length
         this.checkGap(this.scope, this.scope.items)
         this.scope.searchTable()
-      }
-
-    /**
-     * Restart manager or cluster
-     */
-      async restart() {
-        try {
-          const result = await this.restartService.restart()
-          this.toast(result)
-        } catch (error) {
-          this.toast(error)
-        }
-      }
-
-      /**
-       * Close confirm dialog to restart manager or cluster
-       */
-      closeRestartConfirmation() {
-        this.scope.restartAndApply = false
       }
 
     }

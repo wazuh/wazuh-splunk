@@ -79,7 +79,6 @@ define(['../../module', 'FileSaver'], function (app) {
      * On controller load
      */
     initialize() {
-      console.log("thisrestart ", this.restartService)
       //console.elog("res ", $restartService)
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
@@ -329,7 +328,6 @@ define(['../../module', 'FileSaver'], function (app) {
    * Restarts the manager or cluster
    */
     async restart() {
-      console.log("trying to restart on ruleset")
       try {
         const result = await this.restartService.restart()
         this.toast(result)

@@ -18,8 +18,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      isAdmin,
-      $restartService
+      $restartService,
+      isAdmin
     ) {
       super(
         $scope,
@@ -28,7 +28,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         'decoders',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService
       )
       this.scope.typeFilter = 'all'
       this.isAdmin = isAdmin
@@ -147,25 +148,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.toast('Please set a valid name')
       }
     }    
-
-    /**
-     * Restarts the manager or cluster
-     */
-    async restart() {
-      try {
-        const result = await this.restartService.restart()
-        this.toast(result)
-      } catch (error) {
-        this.toast(error)
-      }
-    }
-
-    /**
-     * Closes the confirm of restart message
-     */
-    closeRestartConfirmation() { 
-      this.scope.restartAndApply = false
-    }
 
   }
   controllers.controller('managerDecodersCtrl', Decoders)

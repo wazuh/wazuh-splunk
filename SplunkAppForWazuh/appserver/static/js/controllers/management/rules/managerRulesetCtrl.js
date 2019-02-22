@@ -18,6 +18,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
+      $restartService,
       isAdmin
     ) {
       super(
@@ -27,7 +28,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         'ruleset',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService
       )
       this.isAdmin = isAdmin
     }
