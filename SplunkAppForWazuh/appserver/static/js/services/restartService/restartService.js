@@ -54,7 +54,7 @@ define(['../module'], function (module) {
                   result.data &&
                   result.data.error !== 0
                 ) {
-                  throw new Error((result.data.error || 'Cannot restart the cluster.'))
+                  throw new Error(result.data.message || result.data.error || 'Cannot restart the cluster.')
                 }
               })
               .catch((error) => {
@@ -71,7 +71,7 @@ define(['../module'], function (module) {
           }
         }
       } catch (error) {
-        throw new Error(error)
+        throw new Error('Cannot restart the cluster.')
       }
     }
 
