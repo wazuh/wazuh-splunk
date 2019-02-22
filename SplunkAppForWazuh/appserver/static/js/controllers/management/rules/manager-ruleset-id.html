@@ -63,7 +63,7 @@
 
     <!-- Edit button -->
     <div layout="row" ng-if="!editingFile">
-      <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn btn-primary btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+      <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn wz-button btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
         Edit {{ruleInfo.file}}
       </button>
     </div>
@@ -215,12 +215,12 @@
               aria-hidden="true"></i>
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
-          <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn btn-primary pull-right wz-margin-left-10'>
+          <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
+          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn wz-button pull-right wz-margin-left-10'>
             <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
               file</span>
-            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-              XML format error</span>
+            <button ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+              XML format error</button>
           </button>
         </div>
         <div class="wzXmlEditorDivContent" style="height: calc(100vh - 260px);" ng-if="fetchedXML">

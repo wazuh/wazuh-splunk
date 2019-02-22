@@ -25,8 +25,8 @@
     </span>
     <!-- Restart button -->
     <div ng-show="!confirmingRestart">
-      <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress" class="btn btn-primary pull-right ng-scope">
-        <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+      <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress" class="btn wz-button pull-right ng-scope">
+        <button aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
           Restart agent
         </span>
       </button>
@@ -36,7 +36,7 @@
       <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
-      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()" class='btn btn-primary pull-right wz-margin-left-10'>
+      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()" class='btn wz-button pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
     </div>

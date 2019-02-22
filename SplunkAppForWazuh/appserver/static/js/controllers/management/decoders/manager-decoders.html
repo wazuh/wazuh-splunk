@@ -69,13 +69,13 @@
 
 <div ng-if="addingNewFile">
     <div layout="row" class="md-padding">
-        <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+        <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
         <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
-          class='btn btn-primary pull-right wz-margin-left-10'>
+          class='btn wz-button pull-right wz-margin-left-10'>
           <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
             file</span>
-          <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-            XML format error</span>
+          <button ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+            XML format error</button>
         </button>
         <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
           style="margin-left: 10px;">
