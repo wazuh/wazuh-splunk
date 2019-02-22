@@ -122,7 +122,7 @@
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isPolicyMonitoring()">
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
+      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
         ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
@@ -135,7 +135,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
         ng-click="expandPolicyMonitoringCheck(item)">
-        <td ng-repeat="key in keys">
+        <td ng-repeat="key in keys | filter: showKey">
             <span>
               {{
               parseValue(key,item)
