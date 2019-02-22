@@ -88,8 +88,8 @@
           <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn wz-button pull-right wz-margin-left-10'>
             <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
               file</span>
-            <button ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-              XML format error</button>
+            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+              XML format error</span>
           </button>
         </div>
         <div class="wzXmlEditorDivContent" style="height: calc(100vh - 400px);" ng-if="fetchedXML">

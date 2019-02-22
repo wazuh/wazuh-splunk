@@ -965,7 +965,7 @@ md-toast {
   padding-right: 10px;
 }
 
-.wz-text-truncatable {
+.wz-text-truncatable-ellipsis {
   white-space: nowrap;
   overflow: hidden;
   max-width: 1px;

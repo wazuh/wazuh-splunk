@@ -11,16 +11,16 @@
     <div ng-show="showingChecks">
       <md-checkbox ng-repeat="(key, value) in cleanKeys track by $index" ng-checked="value" ng-model="value" ng-change="switchKey(key)"
         aria-label="key">
-        {{getEquivalence(key)}}
+        {{getEquivalence(key) ? getEquivalence(key) : key}}
       </md-checkbox>
     </div>
   </div>
   <div style="margin-right: 10px;">
-    <button class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><i aria-hidden="true" class="fa fa-cog"></i>
+    <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><i aria-hidden="true" class="fa fa-cog"></i>
       <md-tooltip md-direction="left" class="wz-tooltip">
         Show or hide columns
       </md-tooltip>
-    </button>
+    </span>
   </div>
 </div>
 <!-- End Checkbox -->
@@ -42,7 +42,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] | filter:{item:'!'}"
         ng-click="clickAction(item)">
-        <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}" ng-if="path !== '/decoders' && path !== '/rules'" class="wz-text-truncatable">
+        <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}" ng-if="path !== '/decoders' && path !== '/rules'" class="wz-text-truncatable-ellipsis">
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
@@ -54,7 +54,7 @@
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey"  ng-class="{'table-width-id': key === 'id'}" ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)"
-          class="wz-text-truncatable">
+          class="wz-text-truncatable-ellipsis">
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
@@ -65,7 +65,7 @@
             {{ parseValue(key,item) }}
           </md-tooltip>
         </td>
-        <td ng-repeat="key in keys | filter: showKey"  ng-class="{'table-width-id': key === 'id'}" ng-if="path === '/decoders'" class="wz-text-truncatable">
+        <td ng-repeat="key in keys | filter: showKey"  ng-class="{'table-width-id': key === 'id'}" ng-if="path === '/decoders'" class="wz-text-truncatable-ellipsis">
           <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
             <div class="table-width-id" ng-if="key === 'id'">{{
               parseValue(key,item)
@@ -85,7 +85,7 @@
           <md-tooltip>Open Configuration for this agent"</md-tooltip>
         </td>
         <td ng-if="path === '/agents/groups' && adminMode" ng-click="$event.stopPropagation()" class="cursor-default action-btn-td"
-          class="wz-text-truncatable">
+          class="wz-text-truncatable-ellipsis">
           <span>
             <i ng-if="removingGroup !== item.name && item.name !== 'default'" ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
               class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true"></i>

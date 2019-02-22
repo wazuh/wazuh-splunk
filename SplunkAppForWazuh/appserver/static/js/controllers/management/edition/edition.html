@@ -16,8 +16,8 @@
     <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn wz-button pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save'></i>Save
         file</span>
-      <button ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-        XML format error</button>
+      <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+        XML format error</span>
     </button>
     <span class="flex"></span>
     

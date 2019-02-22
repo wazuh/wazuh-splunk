@@ -74,8 +74,8 @@
           class='btn wz-button pull-right wz-margin-left-10'>
           <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
             file</span>
-          <button ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-            XML format error</button>
+          <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+            XML format error</span>
         </button>
         <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
           style="margin-left: 10px;">

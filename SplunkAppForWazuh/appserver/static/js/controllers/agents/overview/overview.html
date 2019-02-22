@@ -26,7 +26,7 @@
     <!-- Restart button -->
     <div ng-show="!confirmingRestart">
       <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress" class="btn wz-button pull-right ng-scope">
-        <button aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+        <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
           Restart agent
         </span>
       </button>
