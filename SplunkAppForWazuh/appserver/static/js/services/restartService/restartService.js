@@ -110,10 +110,9 @@ define(['../module'], function (module) {
 
     const clusterIsEnabled = async () => {
       try {
-        const result = await $requestService.apiReq('/cluster/status')
-        const status = result.data.data.enabled === 'yes' &&
-          result.data.data.running === 'yes' &&
-          result.data.data.running === 'yes' ? true : false
+        const response = await $requestService.apiReq('/cluster/status')
+        const result = ((response || {}).data || {}).data || {}
+        const status = result.enabled === 'yes' && result.running === 'yes'
         return status
       } catch (error) {
         throw new Error('Cannot send restart signal')
