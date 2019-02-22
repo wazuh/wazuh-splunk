@@ -305,7 +305,7 @@ define([
       this.scope.showPolicyChecks = name
       this.scope.policyId = id
       const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/configuration-assessment/${agentId}/checks/${id}`
+      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
     }
 
 
