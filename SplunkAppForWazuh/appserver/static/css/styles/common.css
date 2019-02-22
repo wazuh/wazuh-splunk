@@ -1010,3 +1010,7 @@ span.wrong {
   margin-bottom: -10px;
   margin-top: -2px;
 }
+
+.blueLeftBorder {
+  border-left: 3px solid #0079a5;
+}
