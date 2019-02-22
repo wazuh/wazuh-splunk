@@ -47,8 +47,8 @@ define(['../module'], function (module) {
         const checkConfig = await $requestService.apiReq('/cluster/configuration/validation')
         if (checkConfig.data.data.status === 'OK') {
           setTimeout(() => {
-            $requestService.apiReq('/cluster/restart', {}, 'PUT').then((result) => {
-              try {
+            $requestService.apiReq('/cluster/restart', {}, 'PUT')
+              .then((result) => {
                 if (
                   result &&
                   result.data &&
@@ -57,12 +57,12 @@ define(['../module'], function (module) {
                   $notificationService.showSimpleToast('Cluster received restart signal suscessfully.')
                   return 'Cluster received restart signal suscessfully.'
                 } else {
-                  throw new Error('Cannot send restart signal to the cluster.')
+                  $notificationService.showErrorToast('Cannot send restart signal to the cluster.')
                 }
-              } catch (error) {
-                throw error
-              }
-            })
+              })
+              .catch((error) => {
+                $notificationService.showErrorToast('Cannot send restart signal to the cluster.')
+              })
           }, 15000)
           return 'Cluster restart in progress, it will take up to 15 seconds.'
         } else {
@@ -112,11 +112,16 @@ define(['../module'], function (module) {
     }
 
     const clusterIsEnabled = async () => {
-      const result = await $requestService.apiReq('/cluster/status')
-      const status = result.data.data.enabled === 'yes' &&
-        result.data.data.running === 'yes' &&
-        result.data.data.running === 'yes' ? true : false
-      return status
+      try {
+        const result = await $requestService.apiReq('/cluster/status')
+        const status = result.data.data.enabled === 'yes' &&
+          result.data.data.running === 'yes' &&
+          result.data.data.running === 'yes' ? true : false
+        return status
+      } catch (error) {
+        throw new Error('Cannot send restart signal')
+      }
+
     }
 
     return {
