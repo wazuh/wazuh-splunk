@@ -41,3 +41,17 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+
+.wzXmlEditorError{
+    border-bottom: inherit;
+}
+
+.wzXmlEditorError b{
+    font-weight: 600;
+}
+
+.mdListXmlError {
+    padding-bottom: 25px;
+    padding-top: 0px;
+}

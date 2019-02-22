@@ -10,30 +10,31 @@
   </div>
 </div>
 
-  <!-- Nav bar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"  md-selected-nav-item="selectedNavTab">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">CDB Lists</md-nav-item>
-  </md-nav-bar>
+<!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">CDB Lists</md-nav-item>
+</md-nav-bar>
 
-  <div ng-if="!addingNewFile">  
+<div ng-if="!addingNewFile">
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
         <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;' ng-click="search(customSearch)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
+          ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
     </div>
   </div>
   <div style="padding-left:15px;">
-  <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
-    <a ng-click="addNewFile()">Add new CDB list <i aria-hidden="true" class="fa fa-plus"></i></a>
-    <span flex="" class="flex"></span>
-  </md-card-actions> 
+    <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
+      <a ng-click="addNewFile()">Add new CDB list <i aria-hidden="true" class="fa fa-plus"></i></a>
+      <span flex="" class="flex"></span>
+    </md-card-actions>
   </div>
 
   <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
@@ -69,8 +70,8 @@
     </md-chip>
   </md-chips>
   <div layout="row" layout-padding>
-    <wazuh-table implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']"
-      allow-click="true" rows-per-page="14">
+    <wazuh-table implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']" allow-click="true"
+      rows-per-page="14">
     </wazuh-table>
   </div>
   <div layout="row" class="wz-margin-top-10">
@@ -83,11 +84,25 @@
 
 
 <div ng-if="addingNewFile">
-<!-- Table with CDB List info -->
-<div layout="column" layout-align="start" ng-if="currentList">
+  <!-- Table with CDB List info -->
+  <div layout="column" layout-align="start" ng-if="currentList">
     <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;">
       <input placeholder="New CDB list file name..." type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
         aria-invalid="false" ng-model="currentList.details.file">
+
+    <!-- Restart if saved without errors-->
+    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
+        <span>Do you want to restart to apply configuration?</span>
+        <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+          <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+        </button>
+        <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
+          class='btn wz-button pull-right wz-margin-left-10'>
+          <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+        </button>
+      </div>
+      <!-- End restart button -->
+
     </div>
     <div layout="row">
       <span style='margin-left: 15px' class="font-size-15"><i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i>Editing
@@ -100,9 +115,10 @@
         </md-button>
         <button style='width: 5px; height: 20px; line-height: 20px; min-height: 20px; vertical-align: top; font-size: 10px; padding: 0 0; margin: 0;'
           class="btn btn-info md-button md-ink-ripple wz-button md-raised md-primary" ng-click="saveList()" ng-disabled="items.length === 0 || !items"
-          ng-if="adminMode">
+          ng-if="adminMode && !saveIncomplete">
           Save
         </button>
+        <span class="btn-as-i" ng-if="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
       </span>
     </div>
     <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
@@ -166,7 +182,7 @@
                         Remove this entry
                       </md-tooltip>
                     </i>
-  
+
                     <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
                       <div layout="row">
                         <span class="font-size-12 wz-padding-left-8">This entry will be
@@ -191,12 +207,12 @@
                     <li ng-show="currentPage" class="md-padding">
                       <a href ng-click="prevPage()">« Prev</a>
                     </li>
-  
+
                     <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) " ng-class="{'wz-text-active': n == currentPage}"
                       ng-click="setPage(n)" class="md-padding">
                       <a href ng-bind="n + 1">1</a>
                     </li>
-  
+
                     <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
                       <a href ng-click="nextPage()">Next »</a>
                     </li>
