@@ -216,9 +216,10 @@ define(['../module'], function (module) {
           api.userapi &&
           api.passapi
         ) {
-          const checkConnectionEndpoint = `/manager/check_connection?ip=${
-            api.url
-            }&port=${api.portapi}&user=${api.userapi}&pass=${api.passapi}`
+          // Encode user and password, this prevent fails with special charsets
+          const user = encodeURIComponent(api.userapi)
+          const pass = encodeURIComponent(api.passapi)
+          const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${user}&pass=${pass}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
