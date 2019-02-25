@@ -23,7 +23,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       extensions,
-      $fileEditor
+      $fileEditor,
+      $restartService
     ) {
       super(
         $scope,
@@ -32,11 +33,13 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         'decoders',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService
       )
       this.state = $state
       this.extensions = extensions
       this.fileEditor = $fileEditor
+      this.restartService = $restartService
       try {
         this.filters = JSON.parse(window.localStorage.decoders) || []
       } catch (err) {
@@ -58,7 +61,10 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editDecoder = fileName => this.editDecoder(fileName)
-    }
+
+      this.scope.restart = () => this.restart()
+      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+ }
 
     /**
      * Adds a filter
@@ -86,12 +92,13 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
     }
 
     saveDecoderConfig(fileName) {
+      this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
         dir: 'decoders'
       })
     }
-
+    
     async editDecoder(fileName) {
       try {
         this.scope.editingFile = true

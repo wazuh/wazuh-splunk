@@ -2,14 +2,14 @@ define([
   '../../module',
   '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap' 
-  ], function(
-    controllers,
-    Ruleset,
-    pagination,
-    checkGap
-    ) {
-  'use strict'
+  '../../../directives/wz-table/lib/check-gap'
+], function (
+  controllers,
+  Ruleset,
+  pagination,
+  checkGap
+) {
+    'use strict'
     class CDBList extends Ruleset {
       /**
        * Class cdb
@@ -29,7 +29,7 @@ define([
         $csvRequestService,
         isAdmin,
         $cdbEditor,
-        $mdDialog
+        $restartService
       ) {
         super(
           $scope,
@@ -38,15 +38,16 @@ define([
           'cbd',
           $currentDataService,
           $tableFilterService,
-          $csvRequestService
+          $csvRequestService,
+          $restartService
         )
         this.pagination = pagination
         this.checkGap = checkGap
         this.isAdmin = isAdmin
         this.cdbEditor = $cdbEditor
-        this.mdDialog = $mdDialog
+        this.restartService = $restartService
       }
-  
+
       /**
        * On controller load
        */
@@ -69,19 +70,19 @@ define([
         this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
         this.scope.addNewFile = () => this.addNewFile()
         this.scope.saveList = () => this.saveList()
-  
+
         /**
          * Pagination variables and functions
          */
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
-        this.scope.totalItems = this.scope.items.length    
+        this.scope.totalItems = this.scope.items.length
         this.scope.itemsPerPage = 10
         this.scope.pagedItems = []
         this.scope.currentPage = 0
         this.scope.gap = 0
         this.scope.searchTable = () => this.pagination.searchTable(this.scope, this.scope.items)
-        this.scope.groupToPages = () => this.pagination.groupToPages(this.scope) 
+        this.scope.groupToPages = () => this.pagination.groupToPages(this.scope)
         //this.initPagination()
         this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
@@ -91,8 +92,10 @@ define([
           this.scope.nextPage(n)
         }
         this.scope.filterContent = (filter) => this.filterContent(filter)
-        
-  
+
+        this.scope.restart = () => this.restart()
+        this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+
         this.scope.$on('loadedTable', () => {
           try {
             if (window.localStorage.cdb) {
@@ -134,7 +137,7 @@ define([
         } catch (error) {
           this.toast("Cannot add new CDB list file.")
         }
-  
+
       }
 
       /**
@@ -144,13 +147,13 @@ define([
         this.scope.currentList = false
         this.scope.addingNewFile = false
         this.scope.items = null
-        this.scope.totalItems = null    
+        this.scope.totalItems = null
         this.scope.pagedItems = null
         this.scope.currentPage = 0
         this.scope.gap = 0
         this.cancelEditingKey()
       }
-      
+
       /**
        * Adds new entry field
        * @param {String} key 
@@ -175,7 +178,7 @@ define([
           this.toast("Error adding entry.")
         }
       }
-  
+
       /**
      * Enable edition for a given key
      * @param {String} key Entry key
@@ -184,7 +187,7 @@ define([
         this.scope.editingKey = key
         this.scope.editingNewValue = value
       }
-  
+
       /**
        * Cancel edition of an entry
        */
@@ -192,7 +195,7 @@ define([
         this.scope.editingKey = false
         this.scope.editingNewValue = ''
       }
-  
+
       /**
        * Shows confirmation to remove a field
        * @param {*} ev 
@@ -201,7 +204,7 @@ define([
       showConfirmRemoveEntry(ev, key) {
         this.scope.removingEntry = key
       }
-  
+
       /**
        * Sets a new value for a field
        * @param {String} key 
@@ -216,14 +219,14 @@ define([
           this.toast("Error editing value.")
         }
       }
-  
+
       /**
        * Cancels the removing of a entry
        */
       cancelRemoveEntry() {
         this.scope.removingEntry = false
       }
-  
+
       /**
        * Confirms if wants to remove a entry
        * @param {String} key 
@@ -236,9 +239,9 @@ define([
         } catch (error) {
           this.toast("Error deleting entry.")
         }
-  
+
       }
-  
+
       /**
        * Refreshs CDB list fields
        */
@@ -247,7 +250,7 @@ define([
         this.initPagination()
         this.scope.$applyAsync()
       }
-  
+
       /**
        * Saves the CDB list content
        */
@@ -259,6 +262,7 @@ define([
             if (constainsBlanks.test(fileName)) {
               this.toast('Error creating a new file. The filename can not contain white spaces.')
             } else {
+              this.scope.saveIncomplete = true
               const path = this.scope.currentList.details.path
               const content = this.objToString(this.scope.currentList.list)
               const result = await this.cdbEditor.sendConfiguration(fileName, path, content)
@@ -267,8 +271,10 @@ define([
                 result.data &&
                 result.data.error === 0
               ) {
-                await this.showRestartDialog(`CDB ${fileName} created`)
-                this.cancelCdbListEdition()
+                this.toast("File saved successfully.")
+                this.scope.restartAndApply = true
+                this.scope.saveIncomplete = false
+                this.scope.$applyAsync()
               } else {
                 throw new Error(`Error creating new CDB list `, result)
               }
@@ -277,6 +283,7 @@ define([
             this.toast('Please set a name for the new CDB list.')
           }
         } catch (error) {
+          this.scope.saveIncomplete = false
           this.toast(`Cannot created ${fileName}`)
         }
       }
@@ -295,7 +302,7 @@ define([
         })
         return result
       }
-  
+
       /**
        * Converts object to string
        * @param {Object} obj 
@@ -307,11 +314,11 @@ define([
         }
         return raw
       }
-      
+
       /**
        * Converts objecto to array
        */
-      cdbToArr(){
+      cdbToArr() {
         try {
           const obj = this.scope.currentList.list
           let items = []
@@ -324,71 +331,17 @@ define([
           return []
         }
       }
-  
+
       /**
        * Init the table pagination
        */
-      initPagination(){
+      initPagination() {
         this.scope.totalItems = this.scope.items.length
         this.checkGap(this.scope, this.scope.items)
-        this.scope.searchTable()      
-      }
-  
-      /**
-       * Show restart md-dialog if the cdb list was saved successfully
-       * @param {String} msg 
-       */
-      async showRestartDialog(msg) {
-        const confirm = this.mdDialog.confirm({
-          controller: function ($scope, scope, $notificationService, $mdDialog, $restartService) {
-            $scope.closeDialog = () => {
-              $mdDialog.hide();
-              $('body').removeClass('md-dialog-body');
-            };
-            $scope.confirmDialog = () => {
-              $mdDialog.hide();
-              scope.$broadcast('restartResponseReceived', {})
-              $restartService.restart()
-                .then(data => {
-                  $('body').removeClass('md-dialog-body');
-                  $notificationService.showSimpleToast(data);
-                  scope.$broadcast('restartResponseReceived', {})
-                  scope.$applyAsync();
-                })
-                .catch(error => {
-                  $notificationService.showSimpleToast(error.message || error, 'Error restarting.')
-                })   
-            }
-          },
-          template:
-            '<md-dialog class="modalTheme euiToast euiToast--success euiGlobalToastListItem">' +
-            '<md-dialog-content>' +
-            '<div class="euiToastHeader">' +
-            '<i class="fa fa-check"></i>' +
-            '<span class="euiToastHeader__title">' +
-            `${msg}` +
-            `. Do you want to restart now?` +
-            '</span>' +
-            '</div>' +
-            '</md-dialog-content>' +
-            '<md-dialog-actions>' +
-            '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">I will do it later</button>' +
-            '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Restart</button>' +
-            '</md-dialog-actions>' +
-            '</md-dialog>',
-          hasBackdrop: false,
-          clickOutsideToClose: true,
-          disableParentScroll: true,
-          locals: {
-            scope: this.scope,
-          }
-        });
-        $('body').addClass('md-dialog-body');
-        this.mdDialog.show(confirm);
+        this.scope.searchTable()
       }
 
     }
     controllers.controller('managerCdbCtrl', CDBList)
     return CDBList
   })
-  

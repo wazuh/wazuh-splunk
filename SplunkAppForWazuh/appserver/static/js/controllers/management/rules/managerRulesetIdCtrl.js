@@ -24,7 +24,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       extensions,
-      $fileEditor
+      $fileEditor,
+      $restartService
     ) {
       super(
         $scope,
@@ -33,11 +34,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         'ruleset',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService
       )
       this.state = $state
       this.extensions = extensions
       this.fileEditor = $fileEditor
+      this.restartService = $restartService
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
@@ -65,6 +68,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editRule = fileName => this.editRule(fileName)
+      this.scope.restart = () => this.restart()
+      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
     }
 
     /**
@@ -93,6 +98,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     }
 
     saveRuleConfig(fileName) {
+      this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
         dir: 'rules'
@@ -120,6 +126,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         return Promise.reject(error)
       }
     } 
+
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)
 })

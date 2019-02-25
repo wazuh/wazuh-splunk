@@ -175,11 +175,14 @@ define([
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
-              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml, params.checkConfig)
+              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
+              $scope.$emit('saveComplete', {})
+              $scope.$emit('configSavedSuccessfully', {})
+              $notificationService.showSimpleToast(`Configuration saved successfully.`)
             }
-            showRestartDialog(`${params.file || params.group} updated`, params.node)
-            $scope.closeFn()
+            //$scope.closeFn()
           } catch (error) {
+            $scope.$emit('saveComplete', {})
             if (error.badConfig) {
               $scope.showErrorMessages = true
               $scope.errorInfo = error.errMsg
@@ -233,72 +236,6 @@ define([
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
-
-        const showRestartDialog = async (msg, target) => {
-          const confirm = $mdDialog.confirm({
-            controller: function ($scope, scope, $notificationService, $mdDialog, $restartService) {
-              $scope.closeDialog = () => {
-                $mdDialog.hide()
-                $('body').removeClass('md-dialog-body')
-              }
-              $scope.confirmDialog = () => {
-                $mdDialog.hide()
-                if (target) {
-                  scope.$broadcast('restartResponseReceived', {})
-                  $restartService.restartNode(target)
-                  .then(data => {
-                    $('body').removeClass('md-dialog-body')
-                    $notificationService.showSimpleToast(data)
-                    scope.$broadcast('restartResponseReceived', {})
-                    scope.$applyAsync()
-                  })
-                  .catch(error =>{
-                    if (error.badConfig) {
-                      $notificationService.showSimpleToast('Bad configuration detected, cannot restart.')
-                    } else {
-                      $notificationService.showSimpleToast(error.message || error, 'Error restarting manager')
-                    }                    })
-                } else {
-                  scope.$broadcast('restartResponseReceived', {})
-                  $restartService.restart()
-                  .then(data => {
-                    $('body').removeClass('md-dialog-body')
-                    $notificationService.showSimpleToast(data)
-                    scope.$broadcast('restartResponseReceived', {})
-                    scope.$applyAsync()
-                  })
-                  .catch(error => {
-                    $notificationService.showSimpleToast(error.message || error, 'Error restarting.')
-                  })   
-                }
-              }
-            },
-            template:
-              '<md-dialog class="modalTheme euiToast euiToast--success euiGlobalToastListItem">' +
-              '<md-dialog-content>' +
-              '<div class="euiToastHeader">' +
-              '<i class="fa fa-check"></i>' +
-              '<span class="euiToastHeader__title">' +
-              `${msg}` +
-              `. Do you want to restart now?` +
-              '</span>' +
-              '</div>' +
-              '</md-dialog-content>' +
-              '<md-dialog-actions>' +
-              '<button class="md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple" type="button" ng-click="closeDialog()">I will do it later</button>' +
-              '<button class="md-primary md-confirm-button md-button md-ink-ripple md-default-theme" type="button" ng-click="confirmDialog()">Restart</button>' +
-              '</md-dialog-actions>' +
-              '</md-dialog>',
-            hasBackdrop: false,
-            clickOutsideToClose: true,
-            disableParentScroll: true,
-            locals: {
-              scope: $scope,
-            }
-          })
-          $('body').addClass('md-dialog-body')
-          $mdDialog.show(confirm)
-        }
 
       },
       templateUrl:
