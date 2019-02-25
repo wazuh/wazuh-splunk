@@ -216,8 +216,13 @@
               aria-hidden="true"></i>
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
+<<<<<<< HEAD
+          <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
+          <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn wz-button pull-right wz-margin-left-10'>
+=======
           <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
           <button ng-if="adminMode && !saveIncomplete" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn wz-button pull-right wz-margin-left-10'>
+>>>>>>> e62930a4f52f2d9bb673a4933b0850c3ce9e8f5b
             <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
               file</span>
             <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>

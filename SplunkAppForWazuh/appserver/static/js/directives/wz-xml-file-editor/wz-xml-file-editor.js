@@ -174,6 +174,7 @@ define([
             const xml = replaceIllegalXML(text)
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
+              $notificationService.showSimpleToast(`Configuration saved successfully.`)
             } else if (params && params.file) {
               await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
               $scope.$emit('saveComplete', {})

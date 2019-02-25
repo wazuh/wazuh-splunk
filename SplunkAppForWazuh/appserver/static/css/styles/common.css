@@ -966,7 +966,7 @@ md-toast {
   padding-right: 10px;
 }
 
-.wz-text-truncatable {
+.wz-text-truncatable-ellipsis {
   white-space: nowrap;
   overflow: hidden;
   max-width: 1px;
@@ -1034,4 +1034,8 @@ span.wrong {
   width: 8px !important;
   display: inline-flex;
   margin-right: -4px;
+}
+
+.table-width-id{
+  width: 20px !important;
 }
