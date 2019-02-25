@@ -50,7 +50,7 @@ class api(controllers.BaseController):
                 opt_password = api['data']["passapi"]
                 opt_base_url = api['data']["url"]
                 opt_base_port = api['data']["portapi"]
-                url = opt_base_url + ":" + opt_base_port
+                url = str(opt_base_url) + ":" + str(opt_base_port)
                 auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
                 verify = False
                 return url, auth, verify
