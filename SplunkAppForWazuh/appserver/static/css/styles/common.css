@@ -1006,11 +1006,24 @@ span.wrong {
 }
 
 .pExpanded {
-  padding-left: 10px;
   margin-bottom: -10px;
-  margin-top: -2px;
+  margin-top: 2px;
+  color: #696565;
 }
 
 .blueLeftBorder {
   border-left: 3px solid #0079a5;
+}
+
+.backgroundSky {
+  background: #ebf6ff;
+}
+
+.tSize16 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.noBorderBottom {
+  border-bottom: none !important;
 }

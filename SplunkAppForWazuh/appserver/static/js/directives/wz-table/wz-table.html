@@ -133,34 +133,37 @@
         class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
     </thead>
     <tbody>
-      <tr ng-class="{'cursor-pointer':allowClick, 'boldText':item.expanded, 'blueLeftBorder':item.expanded}" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
+      <tr ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
         ng-click="expandPolicyMonitoringCheck(item)">
-        <td ng-repeat="key in keys | filter: showKey">
-            <span>
-              {{
-              parseValue(key,item)
-              }}
-            </span>
+        <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
+          <span>
+            {{
+            parseValue(key,item)
+            }}
+          </span>
         </td>
       </tr>
-      <tr class="wz-word-wrap blueLeftBorder" style="background:#ebf6ff;" ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.compliance.length > 0)" ng-repeat-end="">
-        <td colspan="3">
-          <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
-            <span class="boldText">Rationale</span>
-            <p class="wz-margin-top-10 pExpanded">{{item.rationale}}</p>
-          </div>
-          <div layout="column" ng-if="item.remediation" class="wz-margin-top-10 expandedDiv">
-            <span class="boldText">Remediation</span>
-            <p class="wz-margin-top-10 pExpanded">{{item.remediation}}</p>
-          </div>
-          <div layout="column" ng-if="item.directory" class="wz-margin-top-10 expandedDiv">
-            <span class="boldText">Path(s)</span>
-            <p class="wz-margin-top-10 pExpanded">{{ item.directory }}</p>
-          </div>
-          <div layout="column" ng-if="item.compliance.length > 0" class="wz-margin-top-10 expandedDiv">
-            <span class="boldText">Compliance</span>
-            <p class="wz-margin-top-10 pExpanded"><span class="wz-padding-right-8" ng-repeat="c in item.compliance">{{c.key}}/{{c.value}}</span></p>
-          </div>
+      <tr class="wz-word-wrap backgroundSky" ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.compliance.length > 0)"
+        ng-repeat-end="">
+        <td colspan="3" style="border-top: none">
+          <md-card>
+            <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
+              <span class="tSize16">Rationale</span>
+              <p class="wz-margin-top-10 pExpanded">{{item.rationale}}</p>
+            </div>
+            <div layout="column" ng-if="item.remediation" class="wz-margin-top-10 expandedDiv">
+              <span class="tSize16">Remediation</span>
+              <p class="wz-margin-top-10 pExpanded">{{item.remediation}}</p>
+            </div>
+            <div layout="column" ng-if="item.directory" class="wz-margin-top-10 expandedDiv">
+              <span class="tSize16">Path(s)</span>
+              <p class="wz-margin-top-10 pExpanded">{{ item.directory }}</p>
+            </div>
+            <div layout="column" ng-if="item.compliance.length > 0" class="wz-margin-top-10 expandedDiv">
+              <span class="tSize16">Compliance</span>
+              <p class="wz-margin-top-10 pExpanded"><span class="wz-padding-right-8" ng-repeat="c in item.compliance">{{c.key}}/{{c.value}}</span></p>
+            </div>
+          </md-card>
         </td>
       </tr>
     </tbody>
