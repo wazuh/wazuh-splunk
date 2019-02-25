@@ -1,6 +1,6 @@
 define(['../module'], function (module) {
   'use strict'
-  module.service('$restartService', function ($requestService) {
+  module.service('$restartService', function ($requestService, $notificationService) {
 
     const restart = async () => {
       try {
@@ -17,17 +17,17 @@ define(['../module'], function (module) {
 
     const restartManager = async () => {
       try {
-        const checkConfig = await $requestService.apiReq(`/manager/configuration/validation`)
+        const checkConfig = await $requestService.apiReq('/manager/configuration/validation')
         if (checkConfig.data.data.status === 'OK') {
-          const result = await $requestService.apiReq(`/manager/restart`, {}, `PUT`)
+          const result = await $requestService.apiReq('/manager/restart', {}, 'PUT')
           if (
             result &&
             result.data &&
-            result.data.error === 0
+            !result.data.error
           ) {
-            return `Restart signal sended successfully to the manager.`
+            return 'Restart signal sended successfully to the manager.'
           } else {
-            throw new Error(`Cannot send restart signal to the manager.`)
+            throw new Error('Cannot send restart signal to the manager.')
           }
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
@@ -44,18 +44,24 @@ define(['../module'], function (module) {
 
     const restartCluster = async () => {
       try {
-        const checkConfig = await $requestService.apiReq(`/cluster/configuration/validation`)
+        const checkConfig = await $requestService.apiReq('/cluster/configuration/validation')
         if (checkConfig.data.data.status === 'OK') {
-          const result = await $requestService.apiReq(`/cluster/restart`, {}, `PUT`)
-          if (
-            result &&
-            result.data &&
-            result.data.error === 0
-          ) {
-            return `Restart signal sended successfully to the cluster.`
-          } else {
-            throw new Error(`Cannot send restart signal to the cluster.`)
-          }
+          setTimeout(() => {
+            $requestService.apiReq('/cluster/restart', {}, 'PUT')
+              .then((result) => {
+                if (
+                  result &&
+                  result.data &&
+                  result.data.error !== 0
+                ) {
+                  throw new Error(result.data.message || result.data.error || 'Cannot restart the cluster.')
+                }
+              })
+              .catch((error) => {
+                $notificationService.showErrorToast(error || 'Cannot restart the cluster.')
+              })
+          }, 15000)
+          return 'Cluster restart in progress, it will take up to 15 seconds.'
         } else {
           if (Array.isArray(checkConfig.data.data.details)) {
             const msgErr = checkConfig.data.data.details.join()
@@ -65,7 +71,7 @@ define(['../module'], function (module) {
           }
         }
       } catch (error) {
-        throw new Error(error)
+        throw new Error('Cannot restart the cluster.')
       }
     }
 
@@ -75,11 +81,11 @@ define(['../module'], function (module) {
         if (enabled) {
           const checkConfig = await $requestService.apiReq(`/cluster/${node}/configuration/validation`)
           if (checkConfig.data.data.status === 'OK') {
-            const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, `PUT`)
+            const result = await $requestService.apiReq(`/cluster/${node}/restart`, {}, 'PUT')
             if (
               result &&
               result.data &&
-              result.data.error === 0
+              !result.data.error
             ) {
               return `Restart signal sended successfully to the node ${node}.`
             } else {
@@ -103,11 +109,15 @@ define(['../module'], function (module) {
     }
 
     const clusterIsEnabled = async () => {
-      const result = await $requestService.apiReq('/cluster/status')
-      const status = result.data.data.enabled === 'yes' &&
-        result.data.data.running === 'yes' &&
-        result.data.data.running === 'yes' ? true : false
-      return status
+      try {
+        const response = await $requestService.apiReq('/cluster/status')
+        const result = ((response || {}).data || {}).data || {}
+        const status = result.enabled === 'yes' && result.running === 'yes'
+        return status
+      } catch (error) {
+        throw new Error('Cannot send restart signal')
+      }
+
     }
 
     return {
