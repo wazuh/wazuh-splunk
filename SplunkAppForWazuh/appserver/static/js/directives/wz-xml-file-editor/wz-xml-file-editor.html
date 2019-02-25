@@ -1,15 +1,15 @@
 <div class='wzXmlEditor'>
+  <!-- Show errors in the configuration -->
+  <div class='wzXmlEditorError' ng-show="showErrorMessages">
+    <md-list role="list" class="mdListXmlError">
+      <md-list-item style="color:#ff645c !important; margin-bottom: -30px;" ng-repeat="err in errorInfo track by $index">
+        {{err}}
+      </md-list-item>
+    </md-list>
+  </div>
+  <!-- End show errors -->
   <div class='wzXmlEditorHeader'>
     <span>Edit <b>configuration</b> of <b>{{targetName}}</b></span>
-    <!-- Show errors in the configuration -->
-    <div ng-show="showErrorMessages">
-      <md-list role="list">
-        <md-list-item style="color:#ff645c !important; margin-bottom: -30px;" ng-repeat="err in errorInfo track by $index">
-          {{err}}
-        </md-list-item>
-      </md-list>
-    </div>
-    <!-- End show errors -->
   </div>
   <div class='wzXmlEditorBody' ng-show='!loadingFile'>
     <textarea id='xml_box'></textarea>

@@ -18,6 +18,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
+      $restartService,
       isAdmin
     ) {
       super(
@@ -27,7 +28,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         'ruleset',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService
       )
       this.isAdmin = isAdmin
     }
@@ -62,9 +64,9 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       })
     }
 
-  /**
-   * Open the editor for a new file
-   */
+    /**
+     * Open the editor for a new file
+     */
     addNewFile() {
       this.scope.addingNewFile = true
       this.scope.editingFile = {
@@ -107,6 +109,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
           this.toast('Error creating a new file. The filename can not contain white spaces.')
         } else {
           if (fileName !== '.xml') {
+            this.scope.saveIncomplete = true
             this.scope.$broadcast('saveXmlFile', {
               file: fileName,
               dir: dir

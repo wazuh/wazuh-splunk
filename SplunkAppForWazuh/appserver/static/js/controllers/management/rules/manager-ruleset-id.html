@@ -63,7 +63,8 @@
 
     <!-- Edit button -->
     <div layout="row" ng-if="!editingFile">
-      <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn wz-button btn-ruleset ng-scope"><i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+      <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)" class="btn wz-button btn-ruleset ng-scope"><i
+          aria-hidden="true" class="fa fa-fw fa-pencil"></i>
         Edit {{ruleInfo.file}}
       </button>
     </div>
@@ -215,19 +216,43 @@
               aria-hidden="true"></i>
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
+<<<<<<< HEAD
           <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
           <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn wz-button pull-right wz-margin-left-10'>
+=======
+          <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+          <button ng-if="adminMode && !saveIncomplete" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(ruleInfo.file)' class='btn wz-button pull-right wz-margin-left-10'>
+>>>>>>> e62930a4f52f2d9bb673a4933b0850c3ce9e8f5b
             <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
               file</span>
             <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
               XML format error</span>
           </button>
+          <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
+
+          <!-- Restart if saved without errors-->
+          <span class="flex"></span>
+          <div ng-show="restartAndApply" style="padding-right: 15px;">
+            <span>Do you want to restart to apply configuration?</span>
+            <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+              <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+            </button>
+            <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
+              class='btn wz-button pull-right wz-margin-left-10'>
+              <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+            </button>
+          </div>
+          <!-- End restart button -->
+
         </div>
         <div class="wzXmlEditorDivContent" style="height: calc(100vh - 260px);" ng-if="fetchedXML">
-          <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="ruleInfo.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+          <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="ruleInfo.file"
+            valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
           </wz-xml-file-editor>
         </div>
       </div>
+      <!-- End XML editor-->
+
       <!-- End related rules section -->
       <div ng-show="!editingFile" layout="row" class="wz-margin-top-10">
         <span flex></span>

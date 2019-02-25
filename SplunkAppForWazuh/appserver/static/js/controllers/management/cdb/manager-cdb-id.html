@@ -27,9 +27,25 @@
     </md-button>
     <span>Editing&nbsp; </span>
     <span class="wz-text-bold">{{currentList.details.file}}</span>
-    <button ng-if="adminMode" ng-click='saveList()'  ng-disable="items.length === 0 || !items" class='btn wz-button pull-right wz-margin-left-10'>
+    <button ng-if="adminMode && !saveIncomplete" ng-click='saveList()' ng-disable="items.length === 0 || !items" class='btn wz-button pull-right wz-margin-left-10'>
       <span><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save</span>
     </button>
+    <span class="btn-as-i" ng-if="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
+
+    <!-- Restart if saved without errors-->
+    <span class="flex"></span>
+    <div ng-show="restartAndApply" style="padding-right: 15px;">
+      <span>Do you want to restart to apply configuration?</span>
+      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
+        class='btn wz-button pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
+    <!-- End restart button -->
+
   </div>
   <!-- End back button, title and status indicator -->
 
