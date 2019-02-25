@@ -285,6 +285,7 @@ define(['../module'], function (module) {
     const checkApiConnection = async id => {
       try {
         const api = await select(id)//Before update cluster or not cluster
+        const connect = await checkRawConnection(api)
         const apiSaved = { ...api }
         const updatedApi = await updateApiFilter(api)
         let equal = true
