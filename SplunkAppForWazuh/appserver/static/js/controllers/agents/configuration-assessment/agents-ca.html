@@ -36,7 +36,7 @@
       aria-hidden="true"></i></div>
 
   <!-- Wazuh filters bar -->
-  <wazuh-bar></wazuh-bar>
+  <wazuh-bar ng-show="!showPolicies && !showPolicyChecks"></wazuh-bar>
 
   <!-- Alerts visualizations -->
   <div ng-show="!showPolicies && !showPolicyChecks">
