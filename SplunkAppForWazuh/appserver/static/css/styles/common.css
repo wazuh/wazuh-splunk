@@ -1027,3 +1027,10 @@ span.wrong {
 .noBorderBottom {
   border-bottom: none !important;
 }
+
+.littleStat {
+  height: 8px !important;
+  width: 8px !important;
+  display: inline-flex;
+  margin-right: -4px;
+}

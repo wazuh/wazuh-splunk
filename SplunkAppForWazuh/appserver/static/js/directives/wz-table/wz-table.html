@@ -133,9 +133,12 @@
         class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
     </thead>
     <tbody>
-      <tr ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
-        ng-click="expandPolicyMonitoringCheck(item)">
+      <tr ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}" class="wz-word-wrap"
+        ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="expandPolicyMonitoringCheck(item)">
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
+          <span ng-show="key === 'result'" class="no-wrap">
+            <p class="round status littleStat" ng-class="(item.result === 'passed') ? 'teal' : 'red'"></p>&nbsp;&nbsp;
+          </span>
           <span>
             {{
             parseValue(key,item)
