@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
@@ -10,7 +10,7 @@ define(['../module'], function(module) {
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function(
+    function (
       $mdIconProvider,
       $locationProvider,
       $stateProvider,
@@ -82,6 +82,19 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
                 }
               }
             ]
@@ -169,7 +182,7 @@ define(['../module'], function(module) {
               async ($requestService, $state) => {
                 try {
                   const pciTabs = []
-                  const data = await $requestService.httpReq('GET','/api/pci?requirement=all')
+                  const data = await $requestService.httpReq('GET', '/api/pci?requirement=all')
                   if (!data) return []
                   for (const key in data.data) {
                     pciTabs.push({ title: key, content: data.data[key] })
@@ -198,7 +211,7 @@ define(['../module'], function(module) {
               async ($requestService, $state) => {
                 try {
                   const gdprTabs = []
-                  const data = await $requestService.httpReq('GET','/api/gdpr?requirement=all')
+                  const data = await $requestService.httpReq('GET', '/api/gdpr?requirement=all')
                   if (!data) return []
                   for (const key in data.data) {
                     gdprTabs.push({ title: key, content: data.data[key] })
