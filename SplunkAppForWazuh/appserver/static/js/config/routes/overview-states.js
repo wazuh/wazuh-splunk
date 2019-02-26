@@ -84,19 +84,6 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
-            ],
-            reportingEnabled: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
             ]
           }
         })

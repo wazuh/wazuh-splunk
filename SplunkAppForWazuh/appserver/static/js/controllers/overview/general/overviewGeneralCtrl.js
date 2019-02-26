@@ -33,7 +33,6 @@ define([
      * @param {Object} pollingState
      * @param {*} $reportingService
      * @param {*} $rootScope
-     * @param {*} reportingEnabled
      */
     constructor(
       $urlTokenModel,
@@ -45,7 +44,6 @@ define([
       pollingState,
       $reportingService,
       $rootScope,
-      reportingEnabled
     ) {
       this.currentDataService = $currentDataService
       this.rootScope = $rootScope
@@ -67,7 +65,6 @@ define([
           ? false
           : true
       this.toast = $notificationService.showSimpleToast
-      this.scope.reportingEnabled = reportingEnabled
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
