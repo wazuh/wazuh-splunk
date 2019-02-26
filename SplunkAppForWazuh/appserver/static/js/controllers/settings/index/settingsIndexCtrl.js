@@ -38,6 +38,7 @@ define([
         try {
           if (newValue && this.dropdownInstance) {
             this.currentDataService.setIndex(newValue)
+            this.scope.$emit('updatedAPI', {})
             this.urlTokenModel.handleValueChange(this.dropdownInstance)
           }
         } catch (error) {
