@@ -1,0 +1,42 @@
+<div ng-cloak flex layout="column" class='wz-white-background'>
+  <div layout="row" class="layout-row layout-align-end wz-white-background">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+      <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
+      <span> / CDB Lists </span>
+    </div>
+    <div flex></div>
+    <div style="margin-right:7px;" id='input1'></div>
+  </div>
+</div>
+
+<!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="files">Files</md-nav-item>
+</md-nav-bar>
+
+<!-- Sub navbar-->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedSubNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('rules')" name="rules">Rules</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('decoders')" name="decoders">Decoders</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('cdbList')" name="cdbList">CDB Lists</md-nav-item>
+</md-nav-bar>
+
+<!-- Files tables -->
+<div layout="row" layout-padding>
+  <!-- Rules -->
+  <wazuh-table ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]"
+    keys="['file']" rows-per-page="[16,13,11]">
+  </wazuh-table>
+  <!-- Decoders -->
+  <wazuh-table ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]"
+    keys="['file']" rows-per-page="[16,13,11]">
+  </wazuh-table>
+  <!-- CDB lists -->
+  <wazuh-table ng-if="selectedSubNavTab==='cdbList'" flex path="'/lists/files'" keys="['name']" rows-per-page="[16,13,11]">
+  </wazuh-table>
+</div>
+<!-- End files table -->
