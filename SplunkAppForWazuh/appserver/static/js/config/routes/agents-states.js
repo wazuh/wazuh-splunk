@@ -188,6 +188,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -250,6 +263,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -293,6 +319,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -328,6 +367,19 @@ define(['../module'], function (module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
                 }
               }
             ]
@@ -367,6 +419,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -404,6 +469,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -439,6 +517,19 @@ define(['../module'], function (module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
                 }
               }
             ]
@@ -503,6 +594,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -557,6 +661,19 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -595,6 +712,19 @@ define(['../module'], function (module) {
                 }
               }
             ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
           }
         })
 
@@ -654,6 +784,19 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -708,8 +851,20 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
-
           }
         })
 
@@ -744,6 +899,19 @@ define(['../module'], function (module) {
                   return result
                 } catch (err) {
                   $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
                 }
               }
             ]
@@ -781,6 +949,19 @@ define(['../module'], function (module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
                 }
               }
             ]

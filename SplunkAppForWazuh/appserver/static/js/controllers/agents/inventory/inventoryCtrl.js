@@ -28,9 +28,11 @@ define(['../../module'], function(module) {
       $rootScope,
       $notificationService,
       $scope,
-      $reportingService
+      $reportingService,
+      reportingEnabled      
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.data = syscollector
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
