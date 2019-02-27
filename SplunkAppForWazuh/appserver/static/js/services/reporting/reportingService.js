@@ -103,7 +103,7 @@ define(['../module', 'jquery'], function (module, $) {
           this.$rootScope.$broadcast('loadingReporting', { status: false })
           return
         } else {
-          this.warning("Reporting service disabled. Go to Settings > Extensions to enable it.")
+          this.warning("Reporting service disabled.")
         }
       } catch (error) {
         this.$rootScope.reportBusy = false
@@ -234,7 +234,7 @@ define(['../module', 'jquery'], function (module, $) {
           this.$rootScope.$broadcast('loadingReporting', { status: false })
           return
         } else {
-          this.warning("Reporting service disabled. Go to Settings > Extensions to enable it.")
+          this.warning("Reporting service disabled.")
         }
       } catch (error) {
         console.error(error)
