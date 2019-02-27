@@ -49,7 +49,7 @@ define([], function() {
       })
     } else if (instance.path === '/rules') {
       $state.go('mg-rules-id', { id: item.id })
-    } else if (instance.path.includes('/decoders')) {
+    } else if (instance.path === '/decoders') {
       $state.go('mg-decoders-id', { file: item.file, name: item.name })
     } else if (instance.path === '/lists/files') {
       $state.go('mg-cdb-id', { name: item.name, path: item.path })
