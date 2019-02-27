@@ -416,12 +416,10 @@ define([
          * Removes a file
          */
         $scope.showConfirmRemoveFile = (ev, item) => {
-          console.log("show confirm : ", item)
           $scope.removingFile = item
         }
 
         $scope.confirmRemoveFile = (item) => {
-          console.log("confirm : ", item)
           $scope.removingFile = false
         }
 
