@@ -22,7 +22,6 @@
 <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedSubNavTab">
   <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('rules')" name="rules">Rules</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('decoders')" name="decoders">Decoders</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('cdbList')" name="cdbList">CDB Lists</md-nav-item>
 </md-nav-bar>
 
 <!-- Files tables -->
@@ -47,10 +46,6 @@
   <!-- Decoders -->
   <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]"
     keys="['file']" rows-per-page="[16,13,11]" allow-click="false">
-  </wazuh-table>
-  <!-- CDB lists -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='cdbList'" flex path="'/lists/files'" keys="['name']" rows-per-page="[16,13,11]"
-    allow-click="false">
   </wazuh-table>
 </div>
 <!-- End files table -->
