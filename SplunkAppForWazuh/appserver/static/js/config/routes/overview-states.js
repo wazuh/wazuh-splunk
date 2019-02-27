@@ -87,16 +87,7 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -112,16 +103,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -137,16 +119,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -176,16 +149,7 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -201,16 +165,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -226,16 +181,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -268,16 +214,7 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -310,16 +247,7 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -336,16 +264,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -361,16 +280,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -386,16 +296,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -411,16 +312,7 @@ define(['../module'], function (module) {
           resolve: {
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  const status = result.reporting === 'true' ? true : false
-                  return status
-                } catch (err) {
-                  return true
-                }
-              }
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
