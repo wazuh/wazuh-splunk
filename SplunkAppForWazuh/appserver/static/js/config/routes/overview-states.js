@@ -84,6 +84,19 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -95,7 +108,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-pm')
           },
-          controller: 'overviewPolicyMonitoringCtrl'
+          controller: 'overviewPolicyMonitoringCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
         // Overview - FIM
         .state('ow-fim', {
@@ -105,9 +133,24 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-fim')
           },
-          controller: 'overviewFimCtrl'
+          controller: 'overviewFimCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
-        // Overview - OSQUERy
+        // Overview - Osquery
         .state('ow-osquery', {
           templateUrl:
             BASE_URL +
@@ -130,6 +173,19 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -141,7 +197,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-audit')
           },
-          controller: 'overviewAuditCtrl'
+          controller: 'overviewAuditCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
         // Overview - OpenSCAP
         .state('ow-os', {
@@ -151,7 +222,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-os')
           },
-          controller: 'overviewOpenScapCtrl'
+          controller: 'overviewOpenScapCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
         // Overview - PCI-DSS
         .state('ow-pci', {
@@ -177,6 +263,19 @@ define(['../module'], function (module) {
                   return pciTabs
                 } catch (err) {
                   $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
                 }
               }
             ]
@@ -208,6 +307,19 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
             ]
           }
         })
@@ -220,7 +332,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-vul')
           },
-          controller: 'overviewVulnerabilitiesCtrl'
+          controller: 'overviewVulnerabilitiesCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
         // Overview - CIS-CAT
         .state('ow-ciscat', {
@@ -230,7 +357,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-ciscat')
           },
-          controller: 'ciscatCtrl'
+          controller: 'ciscatCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
         // Overview - VirusTotal
         .state('ow-virustotal', {
@@ -240,7 +382,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-virustotal')
           },
-          controller: 'overviewVirusTotal'
+          controller: 'overviewVirusTotal',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
         // =========== AWS =========== //
         .state('ow-aws', {
@@ -250,7 +407,22 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-aws')
           },
-          controller: 'awsCtrl'
+          controller: 'awsCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi()['_key']
+                  const result = await $currentDataService.getExtensionsById(id)
+                  const status = result.reporting === 'true' ? true : false
+                  return status
+                } catch (err) {
+                  return true
+                }
+              }
+            ]
+          }
         })
     }
   ])
