@@ -419,8 +419,14 @@ define([
           $scope.removingFile = item
         }
 
-        $scope.confirmRemoveFile = (item) => {
-          $scope.removingFile = false
+        $scope.confirmRemoveFile = async (item) => {
+          try {
+            $scope.removingFile = false
+            const result = await $fileEditor.removeFile(item)
+            $notificationService.showSuccessToast(result)
+          } catch (error) {
+            $notificationService.showErrorToast(error || `Cannot delete ${item.file || item.name}`)
+          }
         }
 
         $scope.cancelRemoveFile = () => {

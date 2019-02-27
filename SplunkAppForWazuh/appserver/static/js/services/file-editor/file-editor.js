@@ -10,57 +10,58 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
-    'use strict'
-  
-    class FileEditor {
-      constructor($requestService) {
-        this.sendConfig = $requestService.sendConfiguration
-        this.getConfig = $requestService.getConfiguration
-        this.apiReq = $requestService.apiReq
-      }
-  
-      async sendConfiguration(file, dir, node, content) {
-        try {
-          const path = dir ? `${dir}/${file}` : file
-          node = node ? `cluster/${node}` : 'manager'
-          const url =  `/${node}/files?path=etc/${path}`
-          const result = await this.sendConfig(url, content)
-          if (
-            !result ||
-            !result.data ||
-            !result.data.data ||
-            result.data.error != 0
-          ) {
-            throw new Error(`Error updating ${file} content.`)
-          }
-            return await this.checkConfiguration(node)
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-  
-      async getConfiguration(file, dir, node) {
-        try {
-          const path = dir ? `${dir}/${file}` : file
-          node = node ? `cluster/${node}` : 'manager'
-          const url = `/${node}/files?path=etc/${path}`
-          const result = await this.getConfig(url)
-          if (
-            !result ||
-            !result.data ||
-            !result.data.data ||
-            result.data.error != 0
-          ) {
-            throw new Error(`Error fetching ${file} content.`)
-          }
-           return result.data.data
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
+define(['../module'], function (module) {
+  'use strict'
 
-      async checkConfiguration(node){
+  class FileEditor {
+    constructor($requestService) {
+      this.sendConfig = $requestService.sendConfiguration
+      this.getConfig = $requestService.getConfiguration
+      this.apiReq = $requestService.apiReq
+    }
+
+    async sendConfiguration(file, dir, node, content) {
+      try {
+        const path = dir ? `${dir}/${file}` : file
+        node = node ? `cluster/${node}` : 'manager'
+        const url = `/${node}/files?path=etc/${path}`
+        const result = await this.sendConfig(url, content)
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error != 0
+        ) {
+          throw new Error(`Error updating ${file} content.`)
+        }
+        return await this.checkConfiguration(node)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    async getConfiguration(file, dir, node) {
+      try {
+        const path = dir ? `${dir}/${file}` : file
+        node = node ? `cluster/${node}` : 'manager'
+        const url = `/${node}/files?path=etc/${path}`
+        const result = await this.getConfig(url)
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error != 0
+        ) {
+          throw new Error(`Error fetching ${file} content.`)
+        }
+        return result.data.data
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    async checkConfiguration(node) {
+      try {
         const check = await this.apiReq(`/${node}/configuration/validation`)
         if (check.data.data.status !== 'OK') {
           const errObj = {}
@@ -70,8 +71,33 @@ define(['../module'], function(module) {
         } else {
           return "Configuration saved."
         }
+      } catch (error) {
+        throw new Error(error)
+      }
+
+    }
+
+    async removeFile(item) {
+      try {
+        const file = item.file || item.name
+        const filePath = `${item.path}/${file}`
+        const url = `/manager/files?path=${filePath}`
+        const result = await this.apiReq(url, {}, 'DELETE')
+        if (
+          result &&
+          result.data &&
+          !result.data.error
+        ) {
+          return `File ${file} deleted.`
+        } else {
+          throw result.data.message || `Cannot remove ${file}`
+        }
+      } catch (error) {
+        throw new Error(error)
       }
     }
-    
+
+  }
+
   module.service('$fileEditor', FileEditor)
 })
