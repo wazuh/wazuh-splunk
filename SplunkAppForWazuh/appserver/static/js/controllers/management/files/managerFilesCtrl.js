@@ -60,7 +60,6 @@ define([
         this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
         return
       }
-      
     }
     controllers.controller('managerFilesCtrl', Files)
     return Files

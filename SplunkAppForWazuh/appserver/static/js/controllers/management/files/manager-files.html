@@ -41,15 +41,15 @@
 
 <div layout="row" layout-padding>
   <!-- Rules -->
-  <wazuh-table ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]"
+  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]"
     keys="['file']" rows-per-page="[16,13,11]" allow-click="false">
   </wazuh-table>
   <!-- Decoders -->
-  <wazuh-table ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]"
+  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]"
     keys="['file']" rows-per-page="[16,13,11]" allow-click="false">
   </wazuh-table>
   <!-- CDB lists -->
-  <wazuh-table ng-if="selectedSubNavTab==='cdbList'" flex path="'/lists/files'" keys="['name']" rows-per-page="[16,13,11]"
+  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='cdbList'" flex path="'/lists/files'" keys="['name']" rows-per-page="[16,13,11]"
     allow-click="false">
   </wazuh-table>
 </div>

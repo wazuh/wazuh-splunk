@@ -69,7 +69,8 @@ define([
         $tableFilterService,
         $window,
         $groupHandler,
-        $sce
+        $sce,
+        $fileEditor
       ) {
         /**
          * Init variables
@@ -410,7 +411,24 @@ define([
           }
   
         }
-        
+
+        /**
+         * Removes a file
+         */
+        $scope.showConfirmRemoveFile = (ev, item) => {
+          console.log("show confirm : ", item)
+          $scope.removingFile = item
+        }
+
+        $scope.confirmRemoveFile = (item) => {
+          console.log("confirm : ", item)
+          $scope.removingFile = false
+        }
+
+        $scope.cancelRemoveFile = () => {
+          $scope.removingFile = false
+        }
+         
         /**
          * Show a checkbox for each key to show or hide it
          */
