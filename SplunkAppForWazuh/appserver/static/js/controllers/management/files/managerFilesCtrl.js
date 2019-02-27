@@ -2,7 +2,7 @@ define([
   '../../module',
 ], function (
   controllers,
-) {
+  ) {
     'use strict'
     class Files {
       /**
@@ -39,13 +39,28 @@ define([
         this.scope.adminMode = this.isAdmin
 
         this.scope.switchSubTab = (tab) => this.switchSubTab(tab)
+        this.scope.search = term => this.search(term)
 
       }
 
+      /**
+       * Switch between subtabs
+       * @param {String} tab 
+       */
       switchSubTab(tab) {
         this.scope.selectedSubNavTab = tab
       }
 
+      /**
+       * Searches a rule
+       * @param {String} term
+       */
+      search(term) {
+        if (!term) term = ''
+        this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
+        return
+      }
+      
     }
     controllers.controller('managerFilesCtrl', Files)
     return Files

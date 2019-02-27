@@ -26,17 +26,31 @@
 </md-nav-bar>
 
 <!-- Files tables -->
+<div layout="row" layout-align="start center" class="md-padding">
+  <div flex="" class="height-40 wz-margin-right-15 flex">
+    <div layout="row" class="layout-row">
+      <input placeholder="Filter ..." ng-model="customSearch" type="text" flex="" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid ng-untouched flex"
+        aria-invalid="false" wz-enter="search(customSearch)">
+      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style="height:32px !important;"
+        ng-click="search(customSearch)">
+        <span class="fa fa-search" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div layout="row" layout-padding>
   <!-- Rules -->
   <wazuh-table ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]"
-    keys="['file']" rows-per-page="[16,13,11]">
+    keys="['file']" rows-per-page="[16,13,11]" allow-click="false">
   </wazuh-table>
   <!-- Decoders -->
   <wazuh-table ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]"
-    keys="['file']" rows-per-page="[16,13,11]">
+    keys="['file']" rows-per-page="[16,13,11]" allow-click="false">
   </wazuh-table>
   <!-- CDB lists -->
-  <wazuh-table ng-if="selectedSubNavTab==='cdbList'" flex path="'/lists/files'" keys="['name']" rows-per-page="[16,13,11]">
+  <wazuh-table ng-if="selectedSubNavTab==='cdbList'" flex path="'/lists/files'" keys="['name']" rows-per-page="[16,13,11]"
+    allow-click="false">
   </wazuh-table>
 </div>
 <!-- End files table -->
