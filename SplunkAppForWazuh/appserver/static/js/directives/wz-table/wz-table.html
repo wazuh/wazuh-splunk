@@ -38,7 +38,7 @@
       </th>
       <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) && !isLookingDefaultGroup"
         class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
-      <th ng-if="(path === '/rules/files' || path === '/decoders/files') && adminMode" class="wz-text-left">
+      <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode" class="wz-text-left">
         Actions
       </th>
     </thead>
@@ -86,7 +86,7 @@
           <md-tooltip>Open Configuration for this agent"</md-tooltip>
         </td>
         <!-- Remove files -->
-        <td ng-if="adminMode" ng-if="path === '/rules/files' || path === '/decoders/files'">
+        <td ng-if="adminMode" ng-if="path === '/rules/files' || path === '/decoders/files' || path === '/lists/files'">
           <i ng-if="!removingFile" ng-click="showConfirmRemoveFile($event, item); $event.stopPropagation()"
             class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
             <md-tooltip md-direction="left" class="wz-tooltip">
