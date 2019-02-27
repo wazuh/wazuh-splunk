@@ -10,7 +10,7 @@ define(['../module', 'jquery'], function (module, $) {
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
-      this.visHandlers = $currentDataService
+      this.currentDataService = $currentDataService
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
       this.toast = $notificationService.showSimpleToast
@@ -24,8 +24,8 @@ define(['../module', 'jquery'], function (module, $) {
      */
     async reportIsEnabled() {
       try {
-        const id = this.visHandlers.getApi()['_key']
-        const result = await this.visHandlers.getExtensionsById(id)
+        const id = this.currentDataService.getApi()['_key']
+        const result = await this.currentDataService.getExtensionsById(id)
         const status = result.reporting === 'true' ? true : false
         return status
       } catch (err) {
@@ -66,7 +66,7 @@ define(['../module', 'jquery'], function (module, $) {
             this.vis2png.assignHTMLItem(item, tmpHTMLElement)
           }
 
-          const appliedFilters = this.visHandlers.getSerializedFilters()
+          const appliedFilters = this.currentDataService.getSerializedFilters()
 
           const images = await this.vis2png.checkArray(vizz)
           const name = `wazuh-${
