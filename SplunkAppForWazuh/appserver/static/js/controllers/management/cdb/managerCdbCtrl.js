@@ -278,9 +278,9 @@ define([
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()
               } else if (result.data.error === 1905) {
-                this.toast("File already exists.")
                 this.scope.overwrite = true
                 this.scope.saveIncomplete = false
+                this.scope.$applyAsync()  
               }else {
                 throw result.data.message || `Cannot send this file.`
               }
