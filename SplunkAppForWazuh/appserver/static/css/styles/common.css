@@ -1007,4 +1007,10 @@ div.inline {
 
 .btn[disabled] {
   opacity: .7 !important;
+  box-shadow: none !important;
+}
+
+.btn[disabled]:hover {
+  opacity: .7 !important;
+  box-shadow: none !important;
 }

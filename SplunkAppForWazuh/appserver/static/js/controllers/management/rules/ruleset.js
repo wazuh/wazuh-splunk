@@ -99,6 +99,8 @@ define(['../../module', 'FileSaver'], function (app) {
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
 
+      this.scope.enableSave = () => this.enableSave()
+
       this.scope.$on('configSavedSuccessfully', () => {
         this.scope.overwrite = false
         this.scope.restartAndApply = true
@@ -106,7 +108,7 @@ define(['../../module', 'FileSaver'], function (app) {
       this.scope.$on('saveComplete', () => {
         this.scope.saveIncomplete = false
       })
-      this.scope.$on('needsOverwrite', () => {
+      this.scope.$on('fileAlreadyExists', () => {
         this.scope.saveIncomplete = false
         this.scope.overwrite = true
         this.scope.$applyAsync()
@@ -351,6 +353,13 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     closeRestartConfirmation() {
       this.scope.restartAndApply = false
+    }
+
+    /**
+     * Enables save button  
+     */
+    enableSave() {
+      this.scope.overwrite = false
     }
 
   }

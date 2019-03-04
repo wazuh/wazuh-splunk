@@ -33,7 +33,7 @@ define(['../module'], function (module) {
           result.data.error !== 0
         ) {
           if (result.data.error === 1905){
-            return 'overwrite'
+            return 'fileAlreadyExists'
           } else {
             throw result.data.message || `Error updating ${file} content.`
           }
