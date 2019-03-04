@@ -52,6 +52,7 @@ define([
        * On controller load
        */
       $onInit() {
+        this.scope.overwrite = false
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
         this.scope.selectedNavTab = 'cdbList'
@@ -69,7 +70,7 @@ define([
         this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
         this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
         this.scope.addNewFile = () => this.addNewFile()
-        this.scope.saveList = () => this.saveList()
+        this.scope.saveList = (overwrite) => this.saveList(overwrite)
 
         /**
          * Pagination variables and functions
@@ -254,7 +255,7 @@ define([
       /**
        * Saves the CDB list content
        */
-      async saveList() {
+      async saveList(overwrite = false) {
         try {
           const constainsBlanks = /.* .*/
           const fileName = this.scope.currentList.details.file
@@ -265,18 +266,23 @@ define([
               this.scope.saveIncomplete = true
               const path = this.scope.currentList.details.path
               const content = this.objToString(this.scope.currentList.list)
-              const result = await this.cdbEditor.sendConfiguration(fileName, path, content)
+              const result = await this.cdbEditor.sendConfiguration(fileName, path, content, overwrite)
               if (
                 result &&
                 result.data &&
                 result.data.error === 0
               ) {
+                this.scope.overwrite = false
                 this.toast("File saved successfully.")
                 this.scope.restartAndApply = true
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()
-              } else {
-                throw new Error(`Error creating new CDB list `, result)
+              } else if (result.data.error === 1905) {
+                this.toast("File already exists.")
+                this.scope.overwrite = true
+                this.scope.saveIncomplete = false
+              }else {
+                throw result.data.message || `Cannot send this file.`
               }
             }
           } else {
@@ -284,7 +290,7 @@ define([
           }
         } catch (error) {
           this.scope.saveIncomplete = false
-          this.toast(`Cannot created ${fileName}`)
+          this.toast(error)
         }
       }
 

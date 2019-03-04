@@ -19,9 +19,9 @@ define(['../module'], function(module) {
         this.apiReq = $requestService.apiReq
       }
   
-      async sendConfiguration(file, path, content) {
+      async sendConfiguration(file, path, content, overwrite = false) {
         try {
-          const url = `/manager/files?path=${path}/${file}`
+          const url = overwrite ? `/manager/files?path=${path}/${file}&overwrite=true` : `/manager/files?path=${path}/${file}`
           const result = await this.apiReq(
             `${url}`,
             { content, origin: 'raw' },
@@ -34,7 +34,11 @@ define(['../module'], function(module) {
             result.data.error !== 0 ||
             (result.data.data.error && result.data.data.error !== 0)
           ) {
-            throw new Error('Cannot send file.')
+            if (result.data.error === 1905) {
+              return result
+            } else {
+              throw result.data.message || 'Cannot send this file.'
+            }
           }
           return result
         } catch (error) {
