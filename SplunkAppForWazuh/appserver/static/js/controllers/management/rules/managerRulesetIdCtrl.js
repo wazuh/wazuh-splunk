@@ -1,4 +1,4 @@
-define(['../../module', './ruleset'], function(controllers, Ruleset) {
+define(['../../module', './ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class RulesetId extends Ruleset {
@@ -25,7 +25,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $csvRequestService,
       extensions,
       $fileEditor,
-      $restartService
+      $restartService,
+      $requestService
     ) {
       super(
         $scope,
@@ -41,12 +42,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.extensions = extensions
       this.fileEditor = $fileEditor
       this.restartService = $restartService
+      this.requestService = $requestService
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
         this.filters = []
       }
-      
+
       this.scope.ruleInfo = ruleInfo.data.data.items[0]
       if (
         !(Object.keys((this.scope.ruleInfo || {}).details || {}) || []).length
@@ -62,10 +64,10 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.isObject = item => typeof item === 'object'
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) => this.addDetailFilter(name, value)
-      this.scope.adminMode = this.extensions['admin'] === 'true'    
+      this.scope.adminMode = this.extensions['admin'] === 'true'
       this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
-      this.scope.closeEditingFile = () => this.closeEditingFile()
+      this.scope.closeEditingFile = async () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editRule = fileName => this.editRule(fileName)
       this.scope.restart = () => this.restart()
@@ -88,8 +90,16 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       }
     }
 
-    closeEditingFile() {
-      this.scope.editingFile = false
+    async closeEditingFile() {
+      try {
+        //Refresh rule info
+        const result = await this.requestService.apiReq(`/rules/${this.scope.ruleInfo.id}`)
+        this.scope.ruleInfo = result.data.data.items[0]
+        this.scope.editingFile = false
+      } catch (error) {
+        this.scope.editingFile = false
+      }
+      this.scope.$applyAsync()
     }
 
     xmlIsValid(valid) {
@@ -119,14 +129,14 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       return
     }
 
-    async fetchFileContent(fileName){
+    async fetchFileContent(fileName) {
       try {
         const result = await this.fileEditor.getConfiguration(fileName, 'rules')
         return result
       } catch (error) {
         return Promise.reject(error)
       }
-    } 
+    }
 
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)
