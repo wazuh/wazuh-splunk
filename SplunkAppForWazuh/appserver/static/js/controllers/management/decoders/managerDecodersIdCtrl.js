@@ -95,7 +95,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: 'decoders'
+        dir: 'decoders',
+        overwrite: true
       })
     }
     
