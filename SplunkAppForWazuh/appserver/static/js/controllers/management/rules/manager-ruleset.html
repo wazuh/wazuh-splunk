@@ -75,7 +75,7 @@
     <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
-    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]" flex path="'/rules'"
+    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'"
       keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>

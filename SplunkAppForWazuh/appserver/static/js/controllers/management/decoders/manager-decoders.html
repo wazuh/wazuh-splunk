@@ -56,7 +56,7 @@
       <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
       </wazuh-table>
-      <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]" flex path="'/decoders'"
+      <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/decoders'}]" flex path="'/decoders'"
         keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
       </wazuh-table>
