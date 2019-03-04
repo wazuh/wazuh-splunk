@@ -1004,3 +1004,7 @@ span.wrong {
 div.inline {
   display: inline-block;
 }
+
+.btn[disabled] {
+  opacity: .7 !important;
+}

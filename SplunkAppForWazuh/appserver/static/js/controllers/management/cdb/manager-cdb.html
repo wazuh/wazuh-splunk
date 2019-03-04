@@ -94,8 +94,8 @@
           <button class="btn btn-info" ng-click="cancelCdbListEdition()">
             Cancel
           </button>
-          <button class="btn wz-button pull-right wz-margin-left-10" ng-click="saveList()" ng-disabled="items.length === 0 || !items"
-            ng-if="adminMode && !saveIncomplete && !overwrite">
+          <button class="btn wz-button pull-right wz-margin-left-10" ng-click="saveList()" ng-disabled="items.length === 0 || !items || overwrite || !currentList.details.file"
+            ng-if="adminMode && !saveIncomplete">
             <i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>
             Save
           </button>
