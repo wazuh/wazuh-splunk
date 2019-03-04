@@ -40,11 +40,11 @@
 
 <div layout="row" layout-padding>
   <!-- Rules -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]"
+  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
     keys="['file']" rows-per-page="[16,13,11]">
   </wazuh-table>
   <!-- Decoders -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]"
+  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: 'etc/decoders'}]"
     keys="['file']" rows-per-page="[16,13,11]">
   </wazuh-table>
 </div>
