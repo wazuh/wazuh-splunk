@@ -86,7 +86,7 @@
           <md-tooltip>Open Configuration for this agent"</md-tooltip>
         </td>
         <!-- Remove files -->
-        <td ng-if="adminMode" ng-if="path === '/rules/files' || path === '/decoders/files' || path === '/lists/files'">
+        <td ng-if="adminMode && (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
           <i ng-if="!removingFile" ng-click="$event.stopPropagation();showConfirmRemoveFile($event, item.file || item.name); $event.stopPropagation()"
             class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
             <md-tooltip md-direction="left" class="wz-tooltip">
