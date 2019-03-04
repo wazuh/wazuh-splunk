@@ -300,7 +300,6 @@ define([
        * Enables save button  
        */
       enableSave() {
-        console.log("changing jejeje")
         this.scope.overwrite = false
       }
 
