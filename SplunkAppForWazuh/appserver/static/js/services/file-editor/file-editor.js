@@ -20,19 +20,23 @@ define(['../module'], function (module) {
       this.apiReq = $requestService.apiReq
     }
 
-    async sendConfiguration(file, dir, node, content) {
+    async sendConfiguration(file, dir, node, content, overwrite = false) {
       try {
         const path = dir ? `${dir}/${file}` : file
         node = node ? `cluster/${node}` : 'manager'
-        const url = `/${node}/files?path=etc/${path}`
+        const url = overwrite ? `/${node}/files?path=etc/${path}&overwrite=true` : `/${node}/files?path=etc/${path}`
         const result = await this.sendConfig(url, content)
         if (
           !result ||
           !result.data ||
           !result.data.data ||
-          result.data.error != 0
+          result.data.error !== 0
         ) {
-          throw new Error(`Error updating ${file} content.`)
+          if (result.data.error === 1905){
+            return 'overwrite'
+          } else {
+            throw result.data.message || `Error updating ${file} content.`
+          }
         }
         return await this.checkConfiguration(node)
       } catch (error) {
