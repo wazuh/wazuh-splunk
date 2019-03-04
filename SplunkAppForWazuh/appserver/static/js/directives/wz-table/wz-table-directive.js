@@ -424,6 +424,8 @@ define([
             $scope.removingFile = false
             const result = await $fileEditor.removeFile(item)
             $notificationService.showSuccessToast(result)
+            init()
+            $scope.$applyAsync()
           } catch (error) {
             $notificationService.showErrorToast(error || `Cannot delete ${item.file || item.name}`)
           }
