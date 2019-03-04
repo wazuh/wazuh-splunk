@@ -70,7 +70,8 @@ define([
         this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
         this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
         this.scope.addNewFile = () => this.addNewFile()
-        this.scope.saveList = (overwrite) => this.saveList(overwrite)
+        this.scope.saveList = () => this.saveList()
+        this.scope.enableSave = () => this.enableSave()
 
         /**
          * Pagination variables and functions
@@ -126,6 +127,7 @@ define([
        */
       addNewFile() {
         try {
+          this.scope.overwrite = false
           this.scope.addingNewFile = true
           this.scope.currentList = {
             list: {},
@@ -255,7 +257,7 @@ define([
       /**
        * Saves the CDB list content
        */
-      async saveList(overwrite = false) {
+      async saveList() {
         try {
           const constainsBlanks = /.* .*/
           const fileName = this.scope.currentList.details.file
@@ -266,23 +268,23 @@ define([
               this.scope.saveIncomplete = true
               const path = this.scope.currentList.details.path
               const content = this.objToString(this.scope.currentList.list)
-              const result = await this.cdbEditor.sendConfiguration(fileName, path, content, overwrite)
+              const result = await this.cdbEditor.sendConfiguration(fileName, path, content)
               if (
                 result &&
                 result.data &&
                 result.data.error === 0
               ) {
-                this.scope.overwrite = false
                 this.toast("File saved successfully.")
                 this.scope.restartAndApply = true
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()
               } else if (result.data.error === 1905) {
+                this.toast(result.data.message || 'File already exists.')
                 this.scope.overwrite = true
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()  
               }else {
-                throw result.data.message || `Cannot send this file.`
+                throw result.data.message || 'Cannot send this file.'
               }
             }
           } else {
@@ -293,6 +295,15 @@ define([
           this.toast(error)
         }
       }
+
+      /**
+       * Enables save button  
+       */
+      enableSave() {
+        console.log("changing jejeje")
+        this.scope.overwrite = false
+      }
+
 
       /**
        * Converts string to object
