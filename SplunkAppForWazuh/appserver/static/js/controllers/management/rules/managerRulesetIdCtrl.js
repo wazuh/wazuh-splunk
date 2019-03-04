@@ -63,7 +63,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) => this.addDetailFilter(name, value)
       this.scope.adminMode = this.extensions['admin'] === 'true'    
-      this.scope.isLocal = this.scope.ruleInfo.path === '/var/ossec/etc/rules' ? true : false
+      this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
