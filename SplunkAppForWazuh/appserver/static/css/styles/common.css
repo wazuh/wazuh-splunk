@@ -1028,3 +1028,17 @@ span.wrong {
 .daemon-name {
   padding: 2px 10px 5px 28px;
 }
+
+div.inline {
+  display: inline-block;
+}
+
+.btn[disabled] {
+  opacity: .7 !important;
+  box-shadow: none !important;
+}
+
+.btn[disabled]:hover {
+  opacity: .7 !important;
+  box-shadow: none !important;
+}

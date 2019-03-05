@@ -69,7 +69,8 @@ define([
         $tableFilterService,
         $window,
         $groupHandler,
-        $sce
+        $sce,
+        $fileEditor
       ) {
         /**
          * Init variables
@@ -410,7 +411,30 @@ define([
           }
   
         }
-        
+
+        /**
+         * Removes a file
+         */
+        $scope.showConfirmRemoveFile = (ev, item) => {
+          $scope.removingFile = item
+        }
+
+        $scope.confirmRemoveFile = async (item) => {
+          try {
+            $scope.removingFile = false
+            const result = await $fileEditor.removeFile(item)
+            $notificationService.showSuccessToast(result)
+            init()
+            $scope.$applyAsync()
+          } catch (error) {
+            $notificationService.showErrorToast(error || `Cannot delete ${item.file || item.name}`)
+          }
+        }
+
+        $scope.cancelRemoveFile = () => {
+          $scope.removingFile = false
+        }
+         
         /**
          * Show a checkbox for each key to show or hide it
          */

@@ -52,6 +52,7 @@ define([
        * On controller load
        */
       $onInit() {
+        this.scope.overwrite = false
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
         this.scope.selectedNavTab = 'cdbList'
@@ -70,6 +71,7 @@ define([
         this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
         this.scope.addNewFile = () => this.addNewFile()
         this.scope.saveList = () => this.saveList()
+        this.scope.enableSave = () => this.enableSave()
 
         /**
          * Pagination variables and functions
@@ -125,6 +127,7 @@ define([
        */
       addNewFile() {
         try {
+          this.scope.overwrite = false
           this.scope.addingNewFile = true
           this.scope.currentList = {
             list: {},
@@ -275,8 +278,13 @@ define([
                 this.scope.restartAndApply = true
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()
-              } else {
-                throw new Error(`Error creating new CDB list `, result)
+              } else if (result.data.error === 1905) {
+                this.toast(result.data.message || 'File already exists.')
+                this.scope.overwrite = true
+                this.scope.saveIncomplete = false
+                this.scope.$applyAsync()  
+              }else {
+                throw result.data.message || 'Cannot send this file.'
               }
             }
           } else {
@@ -284,9 +292,17 @@ define([
           }
         } catch (error) {
           this.scope.saveIncomplete = false
-          this.toast(`Cannot created ${fileName}`)
+          this.toast(error)
         }
       }
+
+      /**
+       * Enables save button  
+       */
+      enableSave() {
+        this.scope.overwrite = false
+      }
+
 
       /**
        * Converts string to object

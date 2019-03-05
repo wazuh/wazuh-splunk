@@ -215,7 +215,7 @@ define([
         const fileName = this.scope.currentList.details.file
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
-        const check = await this.cdbEditor.sendConfiguration(fileName, path, content)
+        const check = await this.cdbEditor.sendConfiguration(fileName, path, content, true)
         const cdbUpdated = await this.fetchFile(fileName, path)
         this.scope.currentList.list = this.stringToObj(cdbUpdated)
         // Re-init pagination
@@ -228,7 +228,7 @@ define([
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         this.scope.saveIncomplete = false
-        this.toast(error)
+        this.toast(error || `Cannot send this file.`)
       }
     }
 
