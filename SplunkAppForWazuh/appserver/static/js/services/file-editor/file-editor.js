@@ -76,7 +76,7 @@ define(['../module'], function (module) {
           return "Configuration saved."
         }
       } catch (error) {
-        throw new Error(error)
+        return Promise.reject(error)
       }
 
     }
@@ -94,10 +94,10 @@ define(['../module'], function (module) {
         ) {
           return `File ${file} deleted.`
         } else {
-          throw result.data.message || `Cannot remove ${file}`
+          throw new Error(result.data.message || `Cannot remove ${file}`)
         }
       } catch (error) {
-        throw new Error(error)
+        return Promise.reject(error)
       }
     }
 
