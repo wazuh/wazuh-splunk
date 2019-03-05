@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Status {
@@ -82,11 +82,21 @@ define(['../../module'], function(controllers) {
 
 
       if (this.nodeStatus) {
-        this.scope.daemons = this.nodeStatus
+        this.scope.daemons = this.objToArr(this.nodeStatus)
       }
       if (this.nodeInfo) {
         this.scope.managerInfo = this.nodeInfo
       }
+    }
+
+    /**
+     * Transforms objects to arrays
+     * @param {Object} : obj
+     */
+    objToArr(obj) {
+      const arr = []
+      for (const key in obj) arr.push({ key, value: obj[key] })
+      return arr
     }
 
     /**
@@ -117,7 +127,7 @@ define(['../../module'], function(controllers) {
             'This cluster is enabled but not running. Please check your cluster health.'
           )
         }
-        this.scope.daemons = daemonResult[0].data.data
+        this.scope.daemons = this.objToArr(daemonResult[0].data.data)
         this.scope.managerInfo = daemonResult[1].data.data
         this.scope.load = false
         if (!this.scope.$$phase) this.scope.$digest()
