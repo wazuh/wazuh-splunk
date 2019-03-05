@@ -94,6 +94,10 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       try {
         //Refresh rule info
         const result = await this.requestService.apiReq(`/rules/${this.scope.ruleInfo.id}`)
+        if (result.data.data.totalItems === 0) {  
+          this.state.go('mg-rules')    
+        } else {
+        }
         this.scope.ruleInfo = result.data.data.items[0]
       } catch (error) {}
       this.scope.editingFile = false
