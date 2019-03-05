@@ -67,7 +67,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.adminMode = this.extensions['admin'] === 'true'
       this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
-      this.scope.closeEditingFile = async () => this.closeEditingFile()
+      this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editRule = fileName => this.editRule(fileName)
       this.scope.restart = () => this.restart()
@@ -95,10 +95,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         //Refresh rule info
         const result = await this.requestService.apiReq(`/rules/${this.scope.ruleInfo.id}`)
         this.scope.ruleInfo = result.data.data.items[0]
-        this.scope.editingFile = false
-      } catch (error) {
-        this.scope.editingFile = false
-      }
+      } catch (error) {}
+      this.scope.editingFile = false
       this.scope.$applyAsync()
     }
 
