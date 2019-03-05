@@ -99,8 +99,20 @@ define(['../../module', 'FileSaver'], function (app) {
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
 
-      this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
-      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
+      this.scope.enableSave = () => this.enableSave()
+
+      this.scope.$on('configSavedSuccessfully', () => {
+        this.scope.overwrite = false
+        this.scope.restartAndApply = true
+      })
+      this.scope.$on('saveComplete', () => {
+        this.scope.saveIncomplete = false
+      })
+      this.scope.$on('fileAlreadyExists', () => {
+        this.scope.saveIncomplete = false
+        this.scope.overwrite = true
+        this.scope.$applyAsync()
+      })
     }
 
     /**
@@ -324,9 +336,9 @@ define(['../../module', 'FileSaver'], function (app) {
         .includes(filterName)
     }
 
-  /**
-   * Restarts the manager or cluster
-   */
+    /**
+     * Restarts the manager or cluster
+     */
     async restart() {
       try {
         const result = await this.restartService.restart()
@@ -341,7 +353,14 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     closeRestartConfirmation() {
       this.scope.restartAndApply = false
-    }    
+    }
+
+    /**
+     * Enables save button  
+     */
+    enableSave() {
+      this.scope.overwrite = false
+    }
 
   }
   app.controller('managerRulesetCtrl', Ruleset)

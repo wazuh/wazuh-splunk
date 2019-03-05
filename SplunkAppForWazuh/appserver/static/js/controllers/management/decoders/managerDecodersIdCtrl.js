@@ -56,7 +56,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.addDetailFilter = (name, value) =>
         this.addDetailFilter(name, value)
       this.scope.adminMode = this.extensions['admin'] === 'true'
-      this.scope.isLocal = this.scope.currentDecoder.path === '/var/ossec/etc/decoders' ? true : false
+      this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
       this.scope.saveDecoderConfig = fileName => this.saveDecoderConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
@@ -95,7 +95,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: 'decoders'
+        dir: 'decoders',
+        overwrite: true
       })
     }
     

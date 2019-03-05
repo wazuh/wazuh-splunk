@@ -175,10 +175,16 @@ define([
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
             } else if (params && params.file) {
-              await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml)
-              $scope.$emit('saveComplete', {})
-              $scope.$emit('configSavedSuccessfully', {})
-              $notificationService.showSimpleToast(`Configuration saved successfully.`)
+              const result = await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml, params.overwrite)
+              if (result === 'fileAlreadyExists') {
+                $scope.showErrorMessages = true
+                $scope.errorInfo = ['File already exists.']
+                $scope.$emit('fileAlreadyExists', {})
+              } else {
+                $scope.$emit('saveComplete', {})
+                $scope.$emit('configSavedSuccessfully', {})
+                $notificationService.showSimpleToast(`Configuration saved successfully.`)
+              }
             }
             //$scope.closeFn()
           } catch (error) {

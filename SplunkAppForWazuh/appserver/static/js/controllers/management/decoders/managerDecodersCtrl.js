@@ -47,7 +47,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
       this.scope.addNewFile = () => this.addNewFile()
-      this.scope.saveRuleConfig = (fileName, dir) => this.saveRuleConfig(fileName, dir)
+      this.scope.saveRuleConfig = (fileName, dir, overwrite) => this.saveRuleConfig(fileName, dir, overwrite)
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
 
@@ -94,6 +94,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      * Open the editor for a new file
      */
     addNewFile() {
+      this.scope.overwrite = false
       this.scope.addingNewFile = true
       this.scope.editingFile = {
         file: ``,
@@ -126,7 +127,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      * @param {String} fileName 
      * @param {String} dir 
      */
-    saveRuleConfig(fileName, dir) {
+    saveRuleConfig(fileName, dir, overwrite=false) {
       try {
         const containsBlanks = /.* .*/
         fileName = this.scope.editingFile.file
@@ -138,7 +139,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
             this.scope.saveIncomplete = true
             this.scope.$broadcast('saveXmlFile', {
               file: fileName,
-              dir: dir
+              dir,
+              overwrite
             })
           } else {
             throw new Error('The name cannot be ".xml"')
