@@ -57,7 +57,7 @@ define([
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
@@ -251,7 +251,7 @@ define([
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api.id
         const output = await this.csvReq.fetch(
           '/agents',
@@ -262,7 +262,7 @@ define([
         saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -288,10 +288,10 @@ define([
       try {
         const result = await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
         if (result && result.data && result.data.error === 0) {
-          this.toast(`Policy monitoring scan launched successfully on agent ${this.scope.agent.id}`)
+          this.notification.showSuccessToast(`Policy monitoring scan launched successfully on agent ${this.scope.agent.id}`)
         }
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
     }
   }
