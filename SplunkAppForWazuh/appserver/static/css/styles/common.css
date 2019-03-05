@@ -104,6 +104,10 @@
   padding-left: 8px
 }
 
+.wz-padding-top-7 {
+  padding-top: 7px;
+}
+
 .wz-back-btn-absolute{
   position: absolute!important;
   top: 210px!important;
