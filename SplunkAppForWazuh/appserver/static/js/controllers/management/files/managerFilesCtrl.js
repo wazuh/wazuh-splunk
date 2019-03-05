@@ -48,6 +48,10 @@ define([
           this.editFile(params.file, params.path)
         })
 
+        this.scope.$on('configSavedSuccessfully', () => {
+          this.scope.restartAndApply = true
+        })
+
         this.scope.$on('saveComplete', () => {
           this.scope.saveIncomplete = false
         })
@@ -56,6 +60,7 @@ define([
         this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
         this.scope.saveFile = file => this.saveFile(file)
         this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+        this.scope.restart = () => this.restart()
 
       }
 
@@ -110,9 +115,9 @@ define([
         })
       }
 
-    /**
-     * Closes the confirm of restart message
-     */
+      /**
+       * Closes the confirm of restart message
+       */
       closeRestartConfirmation() {
         this.scope.restartAndApply = false
       }
@@ -147,6 +152,19 @@ define([
         this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
         return
       }
+
+      /**
+       * Restarts the manager or cluster
+       */
+      async restart() {
+        try {
+          const result = await this.restartService.restart()
+          this.notification.showSimpleToast(result)
+        } catch (error) {
+          this.notification.showErrorToast(error)
+        }
+      }
+
     }
     controllers.controller('managerFilesCtrl', Files)
     return Files
