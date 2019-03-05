@@ -175,7 +175,7 @@ define(['../module'], function (module) {
             $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersIdCtrl',
-          params: { id: null, name: null },
+          params: { file: null, name: null },
           resolve: {
             currentDecoder: [
               '$requestService',
@@ -184,7 +184,7 @@ define(['../module'], function (module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/decoders/${$stateParams.name}`
+                    `/decoders?file=${$stateParams.file}`
                   )
                   return result
                 } catch (err) {
