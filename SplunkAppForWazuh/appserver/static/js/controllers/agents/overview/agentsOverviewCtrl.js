@@ -42,7 +42,7 @@ define(['../../module'], function (app) {
       this.scope = $scope
       this.requestService = $requestService
       this.state = $state
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.agent = agent
       this.extensions = extensions
       this.dateDiffService = $dateDiffService
@@ -169,7 +169,7 @@ define(['../../module'], function (app) {
                   )
                   this.scope.addingGroupToAgent = false
                   this.scope.editGroup = false
-                  this.notificationService.showSimpleToast(
+                  this.notification.showSuccessToast(
                     `Agent ${this.scope.agent.name}(${this.scope.agent.id}) has been added to group ${group}.`
                   )
                   if (!this.scope.$$phase) this.scope.$digest()
@@ -182,7 +182,7 @@ define(['../../module'], function (app) {
                   }
                   this.$scope.editGroup = false
                   this.scope.addingGroupToAgent = false
-                  this.notificationService.showSimpleToast(
+                  this.notification.showErrorToast(
                     error.message || error
                   )
                 })
@@ -246,7 +246,7 @@ define(['../../module'], function (app) {
       } catch (err) {
         this.scope.load = false
         this.scope.adminMode = false
-        this.notificationService.showSimpleToast('Error loading agent data.')
+        this.notification.showErrorToast('Error loading agent data.')
         if (!this.$scope.$$phase) this.$scope.$digest()
 
       }
@@ -276,7 +276,7 @@ define(['../../module'], function (app) {
         }
         this.state.go(`mg-groups`, { group: this.groupData[0] })
       } catch (err) {
-        this.notificationService.showSimpleToast(
+        this.notification.showErrorToast(
           'Error fetching group data.',
           err.message || err
         )
@@ -323,14 +323,14 @@ define(['../../module'], function (app) {
           result.data.error === 0 &&
           !result.data.failed_ids
         ) {
-          this.notificationService.showSimpleToast(`Agent ${name}(${id}) is restarting.`)
+          this.notification.showSimpleToast(`Agent ${name}(${id}) is restarting.`)
         } else {
-          this.notificationService.showSimpleToast(`Agent ${name}(${id}) could not be restarted.`)
+          this.notification.showErrorToast(`Agent ${name}(${id}) could not be restarted.`)
         }
         this.scope.restartInProgress = false
       } catch (error) {
         this.scope.restartInProgress = false
-        this.notificationService.showSimpleToast(
+        this.notification.showErrorToast(
           `Error restarting agent: ${error}`
         )
       }

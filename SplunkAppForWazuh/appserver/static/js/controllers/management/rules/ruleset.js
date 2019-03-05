@@ -25,7 +25,7 @@ define(['../../module', 'FileSaver'], function (app) {
     ) {
       this.scope = $scope
       this.view = view
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.api = $currentDataService.getApi()
       this.wzTableFilter = $tableFilterService
       this.csvReq = $csvRequestService
@@ -120,7 +120,7 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     async downloadCsv(path, name) {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
@@ -131,7 +131,7 @@ define(['../../module', 'FileSaver'], function (app) {
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -321,7 +321,7 @@ define(['../../module', 'FileSaver'], function (app) {
         }
         return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
       } catch (err) {
-        this.toast('Error removing the filter')
+        this.notification.showErrorToast('Error removing the filter')
       }
     }
 
@@ -342,9 +342,9 @@ define(['../../module', 'FileSaver'], function (app) {
     async restart() {
       try {
         const result = await this.restartService.restart()
-        this.toast(result)
+        this.notification.showSimpleToast(result)
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
       }
     }
 

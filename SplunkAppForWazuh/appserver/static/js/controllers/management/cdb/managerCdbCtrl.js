@@ -88,7 +88,7 @@ define([
         //this.initPagination()
         this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-        this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notificationService, null)
+        this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notification, null)
         this.scope.setPage = (n) => {
           this.scope.currentPage = n
           this.scope.nextPage(n)
@@ -108,7 +108,7 @@ define([
               }
             }
           } catch (err) {
-            this.toast('Error applying filter')
+            this.notification.showErrorToast('Error applying filter')
           }
         })
       }
@@ -138,7 +138,7 @@ define([
             }
           }
         } catch (error) {
-          this.toast("Cannot add new CDB list file.")
+          this.notification.showErrorToast("Cannot add new CDB list file.")
         }
 
       }
@@ -165,7 +165,7 @@ define([
       async addEntry(key, value) {
         try {
           if (!key) {
-            this.toast("Cannot send empty fields.")
+            this.notification.showWarningToast("Cannot send empty fields.")
           } else {
             if (!this.scope.currentList.list[key]) {
               value = value ? value : ''
@@ -174,11 +174,11 @@ define([
               this.scope.newValue = ''
               this.refreshCdbList()
             } else {
-              this.toast("Error adding new entry, the key exists.")
+              this.notification.showErrorToast("Error adding new entry, the key exists.")
             }
           }
         } catch (error) {
-          this.toast("Error adding entry.")
+          this.notification.showErrorToast("Error adding entry.")
         }
       }
 
@@ -219,7 +219,7 @@ define([
           this.cancelEditingKey()
           this.refreshCdbList()
         } catch (error) {
-          this.toast("Error editing value.")
+          this.notification.showErrorToast("Error editing value.")
         }
       }
 
@@ -240,7 +240,7 @@ define([
           this.scope.removingEntry = false
           this.refreshCdbList()
         } catch (error) {
-          this.toast("Error deleting entry.")
+          this.notification.showErrorToast("Error deleting entry.")
         }
 
       }
@@ -263,7 +263,7 @@ define([
           const fileName = this.scope.currentList.details.file
           if (fileName) {
             if (constainsBlanks.test(fileName)) {
-              this.toast('Error creating a new file. The filename can not contain white spaces.')
+              this.notification.showErrorToast('Error creating a new file. The filename can not contain white spaces.')
             } else {
               this.scope.saveIncomplete = true
               const path = this.scope.currentList.details.path
@@ -274,12 +274,12 @@ define([
                 result.data &&
                 result.data.error === 0
               ) {
-                this.toast("File saved successfully.")
+                this.notification.showSuccessToast("File saved successfully.")
                 this.scope.restartAndApply = true
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()
               } else if (result.data.error === 1905) {
-                this.toast(result.data.message || 'File already exists.')
+                this.notification.showWarningToast(result.data.message || 'File already exists.')
                 this.scope.overwrite = true
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()  
@@ -288,11 +288,11 @@ define([
               }
             }
           } else {
-            this.toast('Please set a name for the new CDB list.')
+            this.notification.showWarningToast('Please set a name for the new CDB list.')
           }
         } catch (error) {
           this.scope.saveIncomplete = false
-          this.toast(error)
+          this.notification.showErrorToast(error)
         }
       }
 

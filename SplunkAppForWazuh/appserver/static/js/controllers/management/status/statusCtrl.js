@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Status {
@@ -24,7 +24,7 @@ define(['../../module'], function(controllers) {
       this.scope = $scope
       this.scope.load = true
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       const parsedStatusData = statusData.map(item =>
         item && item.data && item.data.data ? item.data.data : item
       )
@@ -82,11 +82,21 @@ define(['../../module'], function(controllers) {
 
 
       if (this.nodeStatus) {
-        this.scope.daemons = this.nodeStatus
+        this.scope.daemons = this.objToArr(this.nodeStatus)
       }
       if (this.nodeInfo) {
         this.scope.managerInfo = this.nodeInfo
       }
+    }
+
+    /**
+     * Transforms objects to arrays
+     * @param {Object} : obj
+     */
+    objToArr(obj) {
+      const arr = []
+      for (const key in obj) arr.push({ key, value: obj[key] })
+      return arr
     }
 
     /**
@@ -117,7 +127,7 @@ define(['../../module'], function(controllers) {
             'This cluster is enabled but not running. Please check your cluster health.'
           )
         }
-        this.scope.daemons = daemonResult[0].data.data
+        this.scope.daemons = this.objToArr(daemonResult[0].data.data)
         this.scope.managerInfo = daemonResult[1].data.data
         this.scope.load = false
         if (!this.scope.$$phase) this.scope.$digest()
@@ -154,7 +164,7 @@ define(['../../module'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
         this.scope.load = false
-        this.toast(err.message || err)
+        this.notification.showErrorToast(err.message || err)
       }
     }
 
@@ -166,10 +176,10 @@ define(['../../module'], function(controllers) {
         this.scope.restartInProgress = true
         this.scope.confirmingRestart = false
         const result = await this.restartService.restart()
-        this.toast(result)
+        this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
         this.scope.confirmingRestart = false
         this.scope.restartInProgress = false
       }

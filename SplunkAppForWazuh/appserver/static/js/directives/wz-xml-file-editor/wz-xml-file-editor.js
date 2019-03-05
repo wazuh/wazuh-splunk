@@ -34,7 +34,7 @@ define([
         targetName: '=targetName',
         closeFn: '&'
       },
-      controller($scope, $document, $notificationService, $groupHandler, $fileEditor, $mdDialog, $restartService) {
+      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
         /**
          * Custom .replace method. Instead of using .replace which
          * evaluates regular expressions.
@@ -96,7 +96,7 @@ define([
                 !xml.length
             })
           } catch (error) {
-            $notificationService.showSimpleToast(error, 'Error validating XML')
+            $notificationService.showErrorToast(error, 'Error validating XML')
           }
           checkingXmlError = false
           if (!$scope.$$phase) $scope.$digest()
@@ -183,7 +183,7 @@ define([
               } else {
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
-                $notificationService.showSimpleToast(`Configuration saved successfully.`)
+                $notificationService.showSuccessToast("Configuration saved successfully.")
               }
             }
             //$scope.closeFn()
@@ -192,9 +192,9 @@ define([
             if (error.badConfig) {
               $scope.showErrorMessages = true
               $scope.errorInfo = error.errMsg
-              $notificationService.showSimpleToast("Configuration saved, but found erros.")
+              $notificationService.showWarningToast("Configuration saved, but found erros.")
             } else {
-              $notificationService.showSimpleToast(
+              $notificationService.showErrorToast(
                 error.message || error,
                 'Error sending file.'
               )

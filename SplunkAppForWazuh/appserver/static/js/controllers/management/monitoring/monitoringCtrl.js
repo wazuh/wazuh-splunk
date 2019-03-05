@@ -45,7 +45,7 @@ define([
       this.scope.expand = (i,id) => this.expand(i,id);
 
 
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.apiReq = $requestService.apiReq
       this.vizz = [
         new LinearChart(
@@ -191,7 +191,7 @@ define([
           }
           if (!this.scope.$$phase) this.scope.$digest()
         } catch (error) {
-          this.toast(error.message || error)
+          this.notification.showErrorToast(error.message || error)
         }
       })
 
