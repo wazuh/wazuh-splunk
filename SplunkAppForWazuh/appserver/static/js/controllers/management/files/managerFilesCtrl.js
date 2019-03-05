@@ -45,8 +45,7 @@ define([
         this.scope.search = term => this.search(term)
 
         this.scope.$on('editFile', (ev, params) => {
-          const file = `${params.path}/${params.file}`
-          this.editFile(file)
+          this.editFile(params.file, params.path)
         })
 
         this.scope.$on('saveComplete', () => {
@@ -64,11 +63,14 @@ define([
        * Open xml editior box
        * @param {String} file
        */
-      async editFile(file) {
+      async editFile(file, path) {
         this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
         try {
-          this.scope.editingFile = file
-          this.scope.fetchedXML = await this.fetchFileContent(file)
+          this.scope.editingFile = {
+            file,
+            path: `${path}/${file}`
+          }
+          this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
           this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
         } catch (error) {
           this.scope.fetchedXML = null
