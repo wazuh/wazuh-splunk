@@ -284,7 +284,7 @@ define([
                 this.scope.saveIncomplete = false
                 this.scope.$applyAsync()  
               }else {
-                throw result.data.message || 'Cannot send this file.'
+                throw new Error(result.data.message || 'Cannot send this file.')
               }
             }
           } else {
