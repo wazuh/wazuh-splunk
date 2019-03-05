@@ -24,7 +24,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $csvRequestService,
       extensions,
       $fileEditor,
-      $restartService
+      $restartService,
+      $requestService
     ) {
       super(
         $scope,
@@ -40,12 +41,19 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.extensions = extensions
       this.fileEditor = $fileEditor
       this.restartService = $restartService
+      this.requestService = $requestService
       try {
         this.filters = JSON.parse(window.localStorage.decoders) || []
       } catch (err) {
         this.filters = []
       }
-      this.scope.currentDecoder = currentDecoder.data.data.items[0]
+      
+      try {
+        this.scope.currentDecoder = currentDecoder.data.data.items[0]
+      } catch (error) {
+        this.state.go('mg-decoders')
+      }
+
     }
 
     /**
@@ -84,6 +92,22 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     closeEditingFile() {
       this.scope.editingFile = false
+    }
+
+    async closeEditingFile() {
+      try {
+        //Refresh decoder info
+        const result = await this.requestService.apiReq(`/decoders/${this.scope.currentDecoder.name}`)
+        if (result.data.data.totalItems === 0) {  
+          this.state.go('mg-decoders')    
+        } else {
+        }
+        this.scope.currentDecoder = result.data.data.items[0]
+      } catch (error) {
+        this.state.go('mg-decoders')
+      }
+      this.scope.editingFile = false
+      this.scope.$applyAsync()
     }
 
     xmlIsValid(valid) {
