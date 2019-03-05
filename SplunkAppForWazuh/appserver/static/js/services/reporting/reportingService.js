@@ -13,7 +13,7 @@ define(['../module', 'jquery'], function(module, $) {
       this.visHandlers = $currentDataService
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
-      this.errorHandler = $notificationService.showSimpleToast
+      this.notification = $notificationService
     }
 
     /**
@@ -35,7 +35,7 @@ define(['../module', 'jquery'], function(module, $) {
         metrics = JSON.stringify(metrics)
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         if (this.vis2png.isWorking()) {
-          this.errorHandler('Report in progress')
+          this.notification.showSimpleToast('Report in progress')
           return
         }
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
@@ -80,16 +80,16 @@ define(['../module', 'jquery'], function(module, $) {
         })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-        this.errorHandler('Success. Go to Management -> Reporting')
+        this.notification.showSuccessToast('Success. Go to Management -> Reporting')
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
         if (error === 'Impossible fetch visualizations') {
-          this.errorHandler(`Reporting error: ${error}`)
+          this.notification.showErrorToast(`Reporting error: ${error}.`)
         } else {
-          this.errorHandler('Reporting error')
+          this.notification.showErrorToast('Reporting error.')
         }
       }
     }
@@ -206,12 +206,12 @@ define(['../module', 'jquery'], function(module, $) {
         })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-        this.errorHandler('Success. Go to Management -> Reporting')
+        this.notification.showSuccessToast('Success. Go to Management -> Reporting')
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
         console.error(error)
-        this.errorHandler('Reporting error')
+        this.notification.showErrorToast('Reporting error')
       }
     }
   }

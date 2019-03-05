@@ -12,7 +12,7 @@ define(['../../module'], function (controllers) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
       this.isAdmin = isAdmin
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.clusterInfo = clusterInfo
       this.fileEditor = $fileEditor
       this.restartService = $restartService
@@ -51,7 +51,7 @@ define(['../../module'], function (controllers) {
         this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
 
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
       }
     }
 
@@ -65,7 +65,7 @@ define(['../../module'], function (controllers) {
         this.scope.$broadcast('fetchedFile', {data: content})
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast(`Error editing node: ${error}`)
+        this.notification.showErrorToast(`Error editing node: ${error}`)
       }
     }
 
@@ -98,10 +98,10 @@ define(['../../module'], function (controllers) {
         } else {
           result = await this.restartService.restart()
         }
-        this.toast(result)
+        this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
       }
     }

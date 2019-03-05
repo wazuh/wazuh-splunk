@@ -60,13 +60,13 @@
   </div>
 
   <!-- Daemons status section -->
-  <div layout="row" layout-align="start stretch" ng-if="!load && !clusterError">
-    <md-card flex class="wz-md-card" ng-repeat="(k,v) in daemons">
-      <md-card-content>
-        <center>
-          <p ng-class="getDaemonStatusClass(v)" class="round"></p>
-          <p class="wz-padding-top-10">{{k}}</p>
-        </center>
+  <div layout="row" ng-if="!load && !clusterError">
+    <md-card flex class="wz-md-card wz-margin-bottom-25 wz-margin-top-15">
+      <md-card-content class="daemons-card">
+        <div ng-repeat="daemon in daemons" class="daemon-label">
+          <p ng-class="getDaemonStatusClass(daemon.value)" class="round daemon-bullet"></p>
+          <p class="daemon-name">{{daemon.key}}</p>
+        </div>
       </md-card-content>
     </md-card>
   </div>

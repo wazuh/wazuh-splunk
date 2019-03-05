@@ -23,7 +23,7 @@ define(['../../module', 'FileSaver'], function(app) {
     ) {
       this.scope = $scope
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.scope.type_log = 'all'
       this.scope.category = 'all'
       this.api = $currentDataService.getApi()
@@ -47,7 +47,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.downloadCsv = () => this.downloadCsv()
         this.initialize()
       } catch (err) {
-        this.toast('Cannot fetch logs data from server')
+        this.notification.showErrorToast('Cannot fetch logs data from server')
       }
     }
 
@@ -56,7 +56,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api['_key']
         if (this.clusterEnabled) {
           this.path = `/cluster/${this.scope.selectedNode}/logs`
@@ -70,11 +70,11 @@ define(['../../module', 'FileSaver'], function(app) {
           const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
           saveAs(blob, 'logs.csv') // eslint-disable-line
         } else {
-          this.toast('Empty results.')
+          this.notification.showWarningToast('Empty results.')
         }
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -124,7 +124,7 @@ define(['../../module', 'FileSaver'], function(app) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (err) {
-        this.toast('Error initializing data')
+        this.notification.showErrorToast('Error initializing data')
       }
       return
     }
@@ -149,7 +149,7 @@ define(['../../module', 'FileSaver'], function(app) {
         }))
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Error at fetching logs')
+        this.notification.showErrorToast('Error at fetching logs')
       }
     }
 

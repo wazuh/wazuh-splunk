@@ -86,7 +86,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         window.localStorage.setItem('ruleset', JSON.stringify(this.filters))
         this.state.go('mg-rules')
       } catch (err) {
-        this.toast(err.message || err)
+        this.notification.showErrorToast(err.message || err)
       }
     }
 
@@ -121,7 +121,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return

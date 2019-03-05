@@ -12,7 +12,7 @@ define(['../../../module'], function (controllers) {
       this.scope = $scope
       this.isAdmin = isAdmin
       this.groups = groups
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.fileEditor = $fileEditor
       this.apiReq = $requestService.apiReq
       this.groupHandler = $groupHandler
@@ -41,9 +41,9 @@ define(['../../../module'], function (controllers) {
           try {
             this.scope.addingGroup = false
             await this.groupHandler.createGroup(name)
-            this.toast(`Success. Group ${name} has been created`)
+            this.notification.showSuccessToast(`Success. Group ${name} has been created`)
           } catch (error) {
-            this.toast(`${error.message || error}`)
+            this.notification.showErrorToast(`${error.message || error}`)
           }
           this.scope.$broadcast('wazuhSearch', {})
         }
@@ -74,7 +74,7 @@ define(['../../../module'], function (controllers) {
         this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return
@@ -99,7 +99,7 @@ define(['../../../module'], function (controllers) {
           group: this.scope.currentGroup.name
         })
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
       return
     }
