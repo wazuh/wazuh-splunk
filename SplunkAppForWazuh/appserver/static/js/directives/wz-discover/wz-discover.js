@@ -30,7 +30,7 @@ define(['../module'], function (directives) {
             const breadcrumbs = lastState && $scope.breadcrumbs ? $scope.breadcrumbs : {}
             $state.go('discover', { fromDashboard: fromDashboard, previousState: lastState, breadcrumbs: breadcrumbs})
           } catch (error) {
-            $notificationService.showSimpleToast("Cannot open discover over this section.")
+            $notificationService.showErrorToast("Cannot open discover over this section.")
           }
         }
       },
