@@ -24,7 +24,7 @@ define(['../../module'], function (controllers) {
       this.scope = $scope
       this.scope.load = true
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       const parsedStatusData = statusData.map(item =>
         item && item.data && item.data.data ? item.data.data : item
       )
@@ -164,7 +164,7 @@ define(['../../module'], function (controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
         this.scope.load = false
-        this.toast(err.message || err)
+        this.notification.showErrorToast(err.message || err)
       }
     }
 
@@ -176,10 +176,10 @@ define(['../../module'], function (controllers) {
         this.scope.restartInProgress = true
         this.scope.confirmingRestart = false
         const result = await this.restartService.restart()
-        this.toast(result)
+        this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
         this.scope.confirmingRestart = false
         this.scope.restartInProgress = false
       }

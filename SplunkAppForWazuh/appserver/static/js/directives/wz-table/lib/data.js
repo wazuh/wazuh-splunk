@@ -32,7 +32,7 @@ define([], function() {
       } catch (error) {
         $scope.wazuhTableLoading = false
         $scope.error = `Error searching - ${error.message || error}.`
-        $notificationService.showSimpleToast(
+        $notificationService.showErrorToast(
           `Error searching. ${error.message || error}`
         )
       }
@@ -79,7 +79,7 @@ define([], function() {
         $scope.error = `Error filtering by ${
           filter ? filter.value : 'undefined'
         }. ${error.message || error}.`
-        $notificationService.showSimpleToast(
+        $notificationService.showErrorToast(
           `Error filtering by ${
             filter ? filter.value : 'undefined'
           }. ${error.message || error}`

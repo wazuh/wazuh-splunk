@@ -8,7 +8,7 @@ define(['../../../module'], function (controllers) {
       this.isAdmin = isAdmin
       this.clusterEnabled = clusterEnabled
       this.restartService = $restartService
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.apiReq = $requestService.apiReq
     }
 
@@ -40,11 +40,11 @@ define(['../../../module'], function (controllers) {
         } else {
           result = await this.restartService.restart()
         }
-        this.toast(result)
+        this.notification.showSimpleToast(result)
         this.refreshClusterStatus()
         this.scope.restartInProgress = false
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
       }
     }
