@@ -35,7 +35,7 @@ define(['../module'], function (module) {
           if (result.data.error === 1905){
             return 'fileAlreadyExists'
           } else {
-            throw result.data.message || `Error updating ${file} content.`
+            throw new Error(result.data.message || `Error updating ${file} content.`)
           }
         }
         return await this.checkConfiguration(node)
