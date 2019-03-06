@@ -86,7 +86,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -150,7 +150,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -214,7 +214,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -238,7 +238,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -276,7 +276,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -325,7 +325,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -348,7 +348,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -390,7 +390,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  return $currentDataService.isAdmin()
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
