@@ -42,37 +42,36 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.requestService = $requestService
-      try {
-        this.filters = JSON.parse(window.localStorage.decoders) || []
-      } catch (err) {
-        this.filters = []
-      }
-      
-      try {
-        this.scope.currentDecoder = currentDecoder.data.data.items[0]
-      } catch (error) {
-        this.state.go('mg-decoders')
-      }
-
+      this.currentDecoder = currentDecoder
     }
 
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.addDetailFilter = (name, value) =>
-        this.addDetailFilter(name, value)
-      this.scope.adminMode = this.extensions['admin'] === 'true'
-      this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
-      this.scope.saveDecoderConfig = fileName => this.saveDecoderConfig(fileName)
-      this.scope.closeEditingFile = () => this.closeEditingFile()
-      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
-      this.scope.editDecoder = fileName => this.editDecoder(fileName)
+      try {
+        try {
+          this.filters = JSON.parse(window.localStorage.decoders) || []
+        } catch (error) {
+          this.filters = []
+        }
+        this.scope.currentDecoder = this.currentDecoder.data.data.items[0]
+        this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+        this.scope.addDetailFilter = (name, value) =>
+          this.addDetailFilter(name, value)
+        this.scope.adminMode = this.extensions['admin'] === 'true'
+        this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
+        this.scope.saveDecoderConfig = fileName => this.saveDecoderConfig(fileName)
+        this.scope.closeEditingFile = () => this.closeEditingFile()
+        this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+        this.scope.editDecoder = fileName => this.editDecoder(fileName)
 
-      this.scope.restart = () => this.restart()
-      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
- }
+        this.scope.restart = () => this.restart()
+        this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+      } catch (error) {
+        this.state.go('mg-decoders')
+      } 
+    }
 
     /**
      * Adds a filter
@@ -98,8 +97,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       try {
         //Refresh decoder info
         const result = await this.requestService.apiReq(`/decoders/${this.scope.currentDecoder.name}`)
-        if (result.data.data.totalItems === 0) {  
-          this.state.go('mg-decoders')    
+        if (result.data.data.totalItems === 0) {
+          this.state.go('mg-decoders')
         } else {
         }
         this.scope.currentDecoder = result.data.data.items[0]
@@ -123,7 +122,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         overwrite: true
       })
     }
-    
+
     async editDecoder(fileName) {
       try {
         this.scope.editingFile = true
