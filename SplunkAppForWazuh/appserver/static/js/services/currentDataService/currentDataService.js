@@ -145,9 +145,26 @@ define(['../module'], function (module) {
      * Checks if is admin
      */
     const isAdmin = async () => {
-      const id = getApi().id
-      const extensions = await getExtensionsById(id)
-      return extensions['admin'] === 'true'
+      try {
+        const id = getApi().id
+        const extensions = await getExtensionsById(id)
+        return extensions['admin'] === 'true'
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Get extension by for the current API id
+     */
+    const getCurrentExtensions = async () => {
+      try {
+        const id = getApi()['_key']
+        return await getExtensionsById(id)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+
     }
 
     return {
@@ -177,8 +194,9 @@ define(['../module'], function (module) {
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
-      setExtensions: setExtensions,
+      getCurrentExtensions: getCurrentExtensions,
       getExtensionsById: getExtensionsById,
+      setExtensions: setExtensions,
       addApi: addApi,
       isAdmin: isAdmin
     }

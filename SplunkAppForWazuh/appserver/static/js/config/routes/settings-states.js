@@ -79,11 +79,7 @@ define(['../module'], function(module) {
               '$currentDataService',
               async ($state, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi()['_key']
-                  const currentExtensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return currentExtensions
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   $state.reload()
                 }
@@ -137,11 +133,7 @@ define(['../module'], function(module) {
               '$currentDataService',
               async ($state, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi()['_key']
-                  const currentExtensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return await currentExtensions
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   $state.go('settings.api')
                 }

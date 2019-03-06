@@ -124,9 +124,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -188,9 +186,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -300,9 +296,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
