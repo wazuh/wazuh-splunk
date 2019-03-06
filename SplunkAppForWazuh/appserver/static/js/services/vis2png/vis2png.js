@@ -65,7 +65,6 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         this.$rootScope.reportStatus = `Generating PDF document...`
         return this.rawArray
       } catch (error) {
-        console.error("err ", error)
         this.working = false
         return Promise.reject(error)
       }

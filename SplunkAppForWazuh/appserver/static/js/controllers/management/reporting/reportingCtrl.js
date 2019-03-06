@@ -52,9 +52,9 @@ define(['../../module'], function(app) {
         this.loading = true
         await this.genericReq('GET', '/report/remove', { name: name })
         await this.load()
-        this.notification.showSuccessToast('Deleted report')
+        this.notification.showSuccessToast('Deleted report.')
       } catch (error) {
-        this.notification.showErrorToast('Reporting error')
+        this.notification.showErrorToast('Cannot delete the report.')
       }
     }
 
@@ -150,7 +150,7 @@ define(['../../module'], function(app) {
         this.loading = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.notification.showErrorToast('Error loading reports')
+        this.notification.showErrorToast('Error loading reports.')
       }
     }
   }
