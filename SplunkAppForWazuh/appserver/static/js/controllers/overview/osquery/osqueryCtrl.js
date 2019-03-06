@@ -58,7 +58,7 @@ define([
         '#timePicker',
         $urlTokenModel.handleValueChange
       )
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.vizz = [
         /**
          * Visualizations
@@ -178,7 +178,7 @@ define([
         const wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
       } catch (err) {
-        this.toast(
+        this.notification.showErrorToast(
           'Cannot load wodle configuration. Osquery is not configured.'
         )
       }

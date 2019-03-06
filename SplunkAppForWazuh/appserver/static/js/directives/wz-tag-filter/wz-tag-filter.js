@@ -80,7 +80,7 @@ define(['../module'], function(app) {
               $scope.newTag = ''
             }
           } catch (error) {
-            $notificationService.showSimpleToast(error, 'Error adding filter')
+            $notificationService.showErrorToast(error, 'Error adding filter')
           }
         }
 
@@ -127,7 +127,7 @@ define(['../module'], function(app) {
             })
             $scope.queryFn({ q: queryObj.query, search: queryObj.search })
           } catch (error) {
-            $notificationService.showSimpleToast(
+            $notificationService.showErrorToast(
               error,
               'Error in query request'
             )

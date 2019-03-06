@@ -13,10 +13,7 @@ define(['../module', 'jquery'], function (module, $) {
       this.currentDataService = $currentDataService
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
-      this.warning = $notificationService.showWarningToast
-      this.error = $notificationService.showErrorToast
-      this.success = $notificationService.showSuccessToast
+      this.notification = $notificationService
     }
 
     /**
@@ -49,15 +46,24 @@ define(['../module', 'jquery'], function (module, $) {
       isAgents = false
     ) {
       try {
+
         const enabled = await this.reportIsEnabled()
         if (enabled) {
           metrics = JSON.stringify(metrics)
           this.$rootScope.$broadcast('loadingReporting', { status: true })
           if (this.vis2png.isWorking()) {
-            this.toast('Report in progress')
+            this.notification.showSimpleToast('Report in progress')
             return
           }
           if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+
+          this.vis2png.clear()
+
+          for (const item of vizz) {
+            const tmpHTMLElement = $(`#${item}`)
+            this.vis2png.assignHTMLItem(item, tmpHTMLElement)
+          }
+
 
           this.vis2png.clear()
 
@@ -97,21 +103,21 @@ define(['../module', 'jquery'], function (module, $) {
           await this.genericReq('POST', '/report/generate', {
             data: JSON.stringify(data)
           })
-
           if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-          this.success('Success. Go to Management -> Reporting')
+          this.notification.showSuccessToast('Success. Go to Management -> Reporting')
           this.$rootScope.$broadcast('loadingReporting', { status: false })
           return
         } else {
-          this.warning("Reporting service disabled.")
+          this.notification.showWarningToast("Reporting service disabled.")
         }
+        return
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
         if (error === 'Impossible fetch visualizations') {
-          this.error(`Reporting error: ${error}`)
+          this.notification.showErrorToast(`Reporting error: ${error}.`)
         } else {
-          this.error('Reporting error')
+          this.notification.showErrorToast('Reporting error.')
         }
       }
     }
@@ -148,7 +154,7 @@ define(['../module', 'jquery'], function (module, $) {
           } catch (error) {
             isAgents = 'inventory'
           }
-  
+
           //Network interfaces
           const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
           const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
@@ -161,7 +167,7 @@ define(['../module', 'jquery'], function (module, $) {
             rows: networkInterfaceData
           }
           tableResults['Network interfaces'] = networkInterfaceTable
-  
+
           //Network ports
           const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
           const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
@@ -174,7 +180,7 @@ define(['../module', 'jquery'], function (module, $) {
             rows: networkPortsData
           }
           tableResults['Network ports'] = networkPortsTable
-  
+
           //Network addresses
           const netaddr = await this.apiReq(`/syscollector/${agentId}/netaddr`)
           const networkAdressessKeys = [
@@ -192,7 +198,7 @@ define(['../module', 'jquery'], function (module, $) {
             rows: networkAdressessData
           }
           tableResults['Network addresses'] = networkAdressessTable
-  
+
           //Processes
           const processes = await this.apiReq(
             `/syscollector/${agentId}/processes`
@@ -204,7 +210,7 @@ define(['../module', 'jquery'], function (module, $) {
           })
           const processesTable = { fields: processesKeys, rows: processesData }
           tableResults['Processes'] = processesTable
-  
+
           //Packages
           const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
           const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
@@ -213,7 +219,7 @@ define(['../module', 'jquery'], function (module, $) {
           })
           const packagesTable = { fields: packagesKeys, rows: packagesData }
           tableResults['Packages'] = packagesTable
-  
+
           const data = {
             images: [],
             tableResults,
@@ -224,21 +230,20 @@ define(['../module', 'jquery'], function (module, $) {
             pdfName: 'agents-inventory',
             isAgents
           }
-  
+
           await this.genericReq('POST', '/report/generate', {
             data: JSON.stringify(data)
           })
-  
+
           if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-          this.success('Success. Go to Management -> Reporting')
+          this.notification.showSuccessToast('Success. Go to Management -> Reporting')
           this.$rootScope.$broadcast('loadingReporting', { status: false })
           return
         } else {
-          this.warning("Reporting service disabled.")
+          this.notification.showWarningToast("Reporting service disabled.")
         }
       } catch (error) {
-        console.error(error)
-        this.error('Reporting error')
+        this.notification.showErrorToast('Reporting error')
       }
     }
   }

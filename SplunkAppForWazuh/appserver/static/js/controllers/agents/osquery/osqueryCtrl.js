@@ -49,7 +49,7 @@ define([
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.urlTokenModel = $urlTokenModel
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.tableResults = {}
       this.reportingService = $reportingService
       this.osquery = osquery
@@ -216,7 +216,7 @@ define([
           item => item.osquery
         )[0].osquery
       } catch (err) {
-        this.notificationService.showSimpleToast(
+        this.notification.showErrorToast(
           'Cannot load wodle configuration. Osquery not configured.'
         )
       }

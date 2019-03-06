@@ -37,7 +37,7 @@ define(['../../module'], function(module) {
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
       this.root = $rootScope
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.netifaceResponse = false
       this.ports = {}
       this.packagesDate = {}
@@ -113,7 +113,7 @@ define(['../../module'], function(module) {
 
         return
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
     }
 

@@ -61,7 +61,7 @@ define([
       this.currentDataService = $currentDataService
       this.agent = agent
       this.configAssess = configAssess
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
@@ -267,7 +267,7 @@ define([
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api.id
         const output = await this.csvReq.fetch(
           '/agents',
@@ -278,7 +278,7 @@ define([
         saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }

@@ -5,7 +5,7 @@ define(['../../module'], function(controllers) {
     constructor($scope, $currentDataService, $notificationService, extensions) {
       this.scope = $scope
       this.scope.extensions = {}
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.currentApi = $currentDataService.getApi()
       this.getExtensions = $currentDataService.getExtensions
       this.setExtensions = $currentDataService.setExtensions
@@ -34,7 +34,7 @@ define(['../../module'], function(controllers) {
         this.setExtensions(api, this.currentExtensions)
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
       }
     }
   }

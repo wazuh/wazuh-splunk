@@ -62,7 +62,7 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.requestService = $requestService
       this.tableResults = {}
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
@@ -324,7 +324,7 @@ define([
         }
         this.state.go(`mg-groups`, { group: this.groupData[0] })
       } catch (err) {
-        this.notificationService.showSimpleToast('Error fetching group data')
+        this.notification.showErrorToast('Error fetching group data')
       }
     }
 

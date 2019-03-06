@@ -40,7 +40,7 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.urlTokenModel = $urlTokenModel
       this.state = $state
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.reportingService = $reportingService
       this.currentDataService = $currentDataService
       this.tableResults = {}
