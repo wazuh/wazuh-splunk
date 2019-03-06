@@ -1053,6 +1053,7 @@ div.inline {
 
 .md-actions-conf {
   height: 45px;
+  border-top: 0px !important;
 }
 
 .btn-invisible-conf {
@@ -1061,4 +1062,12 @@ div.inline {
   color: #0079a5;
   height: 45px;
   padding-left: 15px;
+}
+
+tr.striped {
+  background-color: rgb(250,250,250);
+}
+
+th.w-350 {
+  width: 350px;
 }

@@ -19,15 +19,15 @@
         </md-card-actions>
         <md-card-content>
           <!--Main configurations table-->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">Main configuration</th>
             </tr>
             <tr>
-              <th>Name</th>
+              <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
+            <tr class="striped" ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
               <td>Global configuration</td>
               <td>Global and remote settings</td>
             </tr>
@@ -35,7 +35,7 @@
               <td>Cluster</td>
               <td>Master node configuration</td>
             </tr>
-            <tr ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
+            <tr class="striped" ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
               <td>Registration service</td>
               <td>Automatic agent registration using service</td>
             </tr>
@@ -43,15 +43,15 @@
           <!-- End main configurations -->
 
           <!-- Alerts and output management table -->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">Alerts and output management</th>
             </tr>
             <tr>
-              <th>Name</th>
+              <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">
+            <tr class="striped" ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">
               <td>Alerts</td>
               <td>Settings related to the alerts and their format</td>
             </tr>
@@ -63,15 +63,15 @@
           <!-- End of alerts and output management-->
 
           <!-- Auditing and policy monitoring card table -->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">Auditing and policy monitoring</th>
             </tr>
             <tr>
-              <th>Name</th>
+              <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}])">
+            <tr class="striped" ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}])">
               <td>Policy monitoring</td>
               <td>Configuration to ensure compliance with security policies, standards and hardening guides</td>
             </tr>
@@ -79,7 +79,7 @@
               <td>OpenSCAP</td>
               <td>Configuration assessment and automation of compliance monitoring using SCAP checks</td>
             </tr>
-            <tr ng-click="switchWodle('cis-cat')">
+            <tr class="striped" ng-click="switchWodle('cis-cat')">
               <td>CIS-CAT</td>
               <td>Configuration assessment using CIS scanner and SCAP checks</td>
             </tr>
@@ -87,15 +87,15 @@
           <!-- End of auditing and policy monitoring card -->
 
           <!-- System, threats and incident response table -->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">System threats and incident response</th>
             </tr>
             <tr>
-              <th>Name</th>
+              <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchWodle('vulnerability-detector')">
+            <tr class="striped" ng-click="switchWodle('vulnerability-detector')">
               <td>Vulnerabilities</td>
               <td>Discover what applications are affected by well-known vulnerabilities</td>
             </tr>
@@ -103,7 +103,7 @@
               <td>Osquery</td>
               <td>Expose an operating system as a high-performance relational database</td>
             </tr>
-            <tr ng-click="switchWodle('syscollector')">
+            <tr class="striped" ng-click="switchWodle('syscollector')">
               <td>Inventory data</td>
               <td>Gather relevant information about system OS, hardware and packages</td>
             </tr>
@@ -111,7 +111,7 @@
               <td>Active response</td>
               <td>Active threat addressing by inmmediate response</td>
             </tr>
-            <tr ng-click="switchWodle('command')">
+            <tr class="striped" ng-click="switchWodle('command')">
               <td>Commands</td>
               <td>Configuration options of the Command wodle</td>
             </tr>
@@ -119,15 +119,15 @@
           <!-- End system, threats and incident response table -->
 
           <!-- Log data analysis table -->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">System threats and incident response</th>
             </tr>
             <tr>
-              <th>Name</th>
+              <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchConfigTab('log-collection',[{component:'logcollector',configuration:'localfile'},{component:'logcollector',configuration:'socket'}])">
+            <tr class="striped" ng-click="switchConfigTab('log-collection',[{component:'logcollector',configuration:'localfile'},{component:'logcollector',configuration:'socket'}])">
               <td>Log collection</td>
               <td>Log analysis from text files, Windows events or syslog outputs</td>
             </tr>
@@ -135,7 +135,7 @@
               <td>Integrity monitoring</td>
               <td>Identify changes in content, permissions, ownership, and attributes of files</td>
             </tr>
-            <tr ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])">
+            <tr class="striped" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])">
               <td>Agentless</td>
               <td>Run integrity checks on devices such as routers, firewalls or switches</td>
             </tr>
@@ -143,15 +143,15 @@
           <!-- End log data analysis table -->
 
           <!-- Cloud security monitoring table -->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">System threats and incident response</th>
             </tr>
             <tr>
-              <th>Name</th>
+              <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchWodle('aws-s3')">
+            <tr class="striped" ng-click="switchWodle('aws-s3')">
               <td>Amazon S3</td>
               <td>Security events related to Amazon AWS services, collected directly via AWS API</td>
             </tr>
