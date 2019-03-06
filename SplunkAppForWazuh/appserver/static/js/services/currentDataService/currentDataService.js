@@ -1,7 +1,7 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentDataService', function(
+  module.service('$currentDataService', function (
     $apiMgrService,
     $filterService,
     $navigationService,
@@ -141,6 +141,15 @@ define(['../module'], function(module) {
       }
     }
 
+    /**
+     * Checks if is admin
+     */
+    const isAdmin = async () => {
+      const id = getApi().id
+      const extensions = await getExtensionsById(id)
+      return extensions['admin'] === 'true'
+    }
+
     return {
       getPollintState: getPollintState,
       getBaseUrl: getBaseUrl,
@@ -170,7 +179,8 @@ define(['../module'], function(module) {
       getExtensions: getExtensions,
       setExtensions: setExtensions,
       getExtensionsById: getExtensionsById,
-      addApi: addApi
+      addApi: addApi,
+      isAdmin: isAdmin
     }
   })
 })

@@ -27,7 +27,7 @@ define([
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      extensions,
+      isAdmin,
       $cdbEditor,
       cdbInfo,
       $filter, 
@@ -44,7 +44,7 @@ define([
         $restartService
       )
       this.state = $state
-      this.extensions = extensions
+      this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor
       this.cdbInfo = cdbInfo
       this.notification = $notificationService
@@ -87,7 +87,7 @@ define([
         this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)
 
         this.scope.currentList.list = this.cdbInfo.content
-        this.scope.adminMode = this.extensions['admin'] === 'true'
+        this.scope.adminMode = this.isAdmin
         this.scope.saveList = () => this.saveList()
 
         /**
