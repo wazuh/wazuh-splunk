@@ -10,9 +10,16 @@
 
       <!-- Card with all sections -->
       <md-card class="wz-md-card">
-        <table>
+        <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf">
+          <button ng-if="isAdmin" ui-sref="mg-editConfig" class="btn-invisible-conf ng-scope">
+            <span aria-hidden="false">
+              Edit configuration&nbsp;<i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
+            </span>
+          </button>
+        </md-card-actions>
+        <md-card-content>
           <!--Main configuration-->
-          <table class="table table-layout-fixed table-hover table-vertical-align-middle table-conf">
+          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">Main configuration</th>
             </tr>
@@ -33,30 +40,29 @@
               <td>Automatic agent registration using service</td>
             </tr>
           </table>
-        </table>
 
-        <table class="table table-layout-fixed table-hover table-vertical-align-middle table-conf">
-          <tr>
-            <th colspan="2">Main configuration</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-          <tr ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
-            <td>Global configuration</td>
-            <td>Global and remote settings</td>
-          </tr>
-          <tr ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">
-            <td>Cluster</td>
-            <td>Master node configuration</td>
-          </tr>
-          <tr ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
-            <td>Registration service</td>
-            <td>Automatic agent registration using service</td>
-          </tr>
-        </table>
-        </table>
+          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+            <tr>
+              <th colspan="2">Main configuration</th>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+            <tr ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
+              <td>Global configuration</td>
+              <td>Global and remote settings</td>
+            </tr>
+            <tr ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">
+              <td>Cluster</td>
+              <td>Master node configuration</td>
+            </tr>
+            <tr ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
+              <td>Registration service</td>
+              <td>Automatic agent registration using service</td>
+            </tr>
+          </table>
+        </md-card-content>
       </md-card>
       <!-- End of card -->
 

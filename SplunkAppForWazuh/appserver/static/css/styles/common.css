@@ -1050,3 +1050,15 @@ div.inline {
   width: auto;
   min-width: auto;
 }
+
+.md-actions-conf {
+  height: 45px;
+}
+
+.btn-invisible-conf {
+  background: none;
+  border: none;
+  color: #0079a5;
+  height: 45px;
+  padding-left: 15px;
+}
