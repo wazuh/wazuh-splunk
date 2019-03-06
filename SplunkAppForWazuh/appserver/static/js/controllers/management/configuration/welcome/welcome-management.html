@@ -5,7 +5,7 @@
   <!-- Configuration section cards and right sidenav -->
   <div flex="auto" layout="row">
 
-    <!-- This section has the configuration cards -->
+    <!-- This section has the configuration tables -->
     <div flex layout="column">
 
       <!-- Card with all sections -->
@@ -18,7 +18,7 @@
           </button>
         </md-card-actions>
         <md-card-content>
-          <!--Main configuration-->
+          <!--Main configurations table-->
           <table class="table table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
               <th colspan="2">Main configuration</th>
@@ -40,227 +40,130 @@
               <td>Automatic agent registration using service</td>
             </tr>
           </table>
+          <!-- End main configurations -->
 
+          <!-- Alerts and output management table -->
           <table class="table table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
-              <th colspan="2">Main configuration</th>
+              <th colspan="2">Alerts and output management</th>
             </tr>
             <tr>
               <th>Name</th>
               <th>Description</th>
             </tr>
-            <tr ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
-              <td>Global configuration</td>
-              <td>Global and remote settings</td>
+            <tr ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">
+              <td>Alerts</td>
+              <td>Settings related to the alerts and their format</td>
             </tr>
-            <tr ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">
-              <td>Cluster</td>
-              <td>Master node configuration</td>
-            </tr>
-            <tr ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
-              <td>Registration service</td>
-              <td>Automatic agent registration using service</td>
+            <tr ng-click="switchConfigTab('integrations',[{component:'integrator',configuration:'integration'}])">
+              <td>Integrations</td>
+              <td>Slack, VirusTotal and PagerDuty integrations with external APIs</td>
             </tr>
           </table>
+          <!-- End of alerts and output management-->
+
+          <!-- Auditing and policy monitoring card table -->
+          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+            <tr>
+              <th colspan="2">Auditing and policy monitoring</th>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+            <tr ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}])">
+              <td>Policy monitoring</td>
+              <td>Configuration to ensure compliance with security policies, standards and hardening guides</td>
+            </tr>
+            <tr ng-click="switchWodle('open-scap')">
+              <td>OpenSCAP</td>
+              <td>Configuration assessment and automation of compliance monitoring using SCAP checks</td>
+            </tr>
+            <tr ng-click="switchWodle('cis-cat')">
+              <td>CIS-CAT</td>
+              <td>Configuration assessment using CIS scanner and SCAP checks</td>
+            </tr>
+          </table>
+          <!-- End of auditing and policy monitoring card -->
+
+          <!-- System, threats and incident response table -->
+          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+            <tr>
+              <th colspan="2">System threats and incident response</th>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+            <tr ng-click="switchWodle('vulnerability-detector')">
+              <td>Vulnerabilities</td>
+              <td>Discover what applications are affected by well-known vulnerabilities</td>
+            </tr>
+            <tr ng-click="switchWodle('osquery')">
+              <td>Osquery</td>
+              <td>Expose an operating system as a high-performance relational database</td>
+            </tr>
+            <tr ng-click="switchWodle('syscollector')">
+              <td>Inventory data</td>
+              <td>Gather relevant information about system OS, hardware and packages</td>
+            </tr>
+            <tr ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])">
+              <td>Active response</td>
+              <td>Active threat addressing by inmmediate response</td>
+            </tr>
+            <tr ng-click="switchWodle('command')">
+              <td>Commands</td>
+              <td>Configuration options of the Command wodle</td>
+            </tr>
+          </table>
+          <!-- End system, threats and incident response table -->
+
+          <!-- Log data analysis table -->
+          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+            <tr>
+              <th colspan="2">System threats and incident response</th>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+            <tr ng-click="switchConfigTab('log-collection',[{component:'logcollector',configuration:'localfile'},{component:'logcollector',configuration:'socket'}])">
+              <td>Log collection</td>
+              <td>Log analysis from text files, Windows events or syslog outputs</td>
+            </tr>
+            <tr ng-click="switchConfigTab('integrity-monitoring',[{component:'syscheck',configuration:'syscheck'}])">
+              <td>Integrity monitoring</td>
+              <td>Identify changes in content, permissions, ownership, and attributes of files</td>
+            </tr>
+            <tr ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])">
+              <td>Agentless</td>
+              <td>Run integrity checks on devices such as routers, firewalls or switches</td>
+            </tr>
+          </table>
+          <!-- End log data analysis table -->
+
+          <!-- Cloud security monitoring table -->
+          <table class="table table-layout-fixed table-hover table-vertical-align-middle">
+            <tr>
+              <th colspan="2">System threats and incident response</th>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+            <tr ng-click="switchWodle('aws-s3')">
+              <td>Amazon S3</td>
+              <td>Security events related to Amazon AWS services, collected directly via AWS API</td>
+            </tr>
+          </table>
+          <!-- End cloud security monitoring table -->
+
         </md-card-content>
       </md-card>
       <!-- End of card -->
 
-      <!-- Main configurations card -->
-      <md-card class="wz-md-card">
-        <md-card-content>
-          <span class="font-size-16">Main configurations</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <md-list layout="row" layout-wrap>
-            <!-- Manager sections -->
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">Global
-                  configuration</h3>
-                <p>Global and remote settings</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">Cluster</h3>
-                <p>Master node configuration</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">Registration
-                  service</h3>
-                <p>Automatic agent registration using service</p>
-              </div>
-            </md-list-item>
-          </md-list>
-
-        </md-card-content>
-      </md-card>
-      <!-- End main configurations card -->
-
-      <!-- Alerts and output management card -->
-      <md-card class="wz-md-card">
-        <md-card-content>
-          <span class="font-size-16">Alerts and output management</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <md-list layout="row" layout-wrap>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">Alerts</h3>
-                <p>Settings related to the alerts and their format</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('integrations',[{component:'integrator',configuration:'integration'}])">Integrations</h3>
-                <p>Slack, VirusTotal and PagerDuty integrations with external APIs</p>
-              </div>
-            </md-list-item>
-            <!-- <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-                    <div class="md-list-item-text">
-                      <h3 class="wz-text-link" ng-click="switchConfigTab('database-output')">Database output</h3>
-                      <p>MySQL and PostgreSQL database output configuration</p>
-                    </div>
-                  </md-list-item> -->
-          </md-list>
-
-        </md-card-content>
-      </md-card>
-      <!-- End alerts and output management card -->
-
-      <!-- Auditing and policy monitoring card -->
-      <md-card class="wz-md-card">
-        <md-card-content>
-          <span class="font-size-16">Auditing and policy monitoring</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <md-list layout="row" layout-wrap>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}])">Policy
-                  monitoring</h3>
-                <p>Configuration to ensure compliance with security policies, standards and hardening
-                  guides</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('open-scap')">OpenSCAP</h3>
-                <p>Configuration assessment and automation of compliance monitoring using SCAP checks</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('cis-cat')">CIS-CAT</h3>
-                <p>Configuration assessment using CIS scanner and SCAP checks</p>
-              </div>
-            </md-list-item>
-          </md-list>
-
-        </md-card-content>
-      </md-card>
-      <!-- End auditing and policy monitoring card -->
-
-      <!-- System, threats and incident response card -->
-      <md-card class="wz-md-card">
-        <md-card-content>
-          <span class="font-size-16">System threats and incident response</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <md-list layout="row" layout-wrap>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('vulnerability-detector')">Vulnerabilities</h3>
-                <p>Discover what applications are affected by well-known vulnerabilities</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('osquery')">Osquery</h3>
-                <p>Expose an operating system as a high-performance relational database</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('syscollector')">Inventory data</h3>
-                <p>Gather relevant information about system OS, hardware and packages.</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])">Active
-                  response</h3>
-                <p>Active threat addressing by inmmediate response</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('command')">Commands</h3>
-                <p>Configuration options of the Command wodle</p>
-              </div>
-            </md-list-item>
-          </md-list>
-
-        </md-card-content>
-      </md-card>
-      <!-- End system, threats and incident response card -->
-
-      <!-- Log data analysis card -->
-      <md-card class="wz-md-card">
-        <md-card-content>
-          <span class="font-size-16">Log data analysis</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <md-list layout="row" layout-wrap>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('log-collection',[{component:'logcollector',configuration:'localfile'},{component:'logcollector',configuration:'socket'}])">Log
-                  collection</h3>
-                <p>Log analysis from text files, Windows events or syslog outputs</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('integrity-monitoring',[{component:'syscheck',configuration:'syscheck'}])">Integrity
-                  monitoring</h3>
-                <p>Identify changes in content, permissions, ownership, and attributes of files</p>
-              </div>
-            </md-list-item>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])">Agentless</h3>
-                <p>Run integrity checks on devices such as routers, firewalls or switches.</p>
-              </div>
-            </md-list-item>
-          </md-list>
-
-        </md-card-content>
-      </md-card>
-      <!-- End log data analysis card -->
-
-      <!-- Cloud security monitoring card -->
-      <md-card class="wz-md-card">
-        <md-card-content>
-          <span class="font-size-16">Cloud security monitoring</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-
-          <md-list layout="row" layout-wrap>
-            <md-list-item flex="100" flex-gt-md="50" flex-gt-lg="33" class="md-2-line">
-              <div class="md-list-item-text">
-                <h3 class="wz-text-link" ng-click="switchWodle('aws-s3')">Amazon S3</h3>
-                <p>Security events related to Amazon AWS services, collected directly via AWS API</p>
-              </div>
-            </md-list-item>
-          </md-list>
-
-        </md-card-content>
-      </md-card>
-      <!-- End cloud security monitoring card -->
-
     </div>
-    <!-- End configuration cards section -->
+    <!-- End configuration tables section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
@@ -284,6 +187,5 @@
 
   </div>
   <!-- End configuration section cards and right sidenav -->
-
 
 </div>
