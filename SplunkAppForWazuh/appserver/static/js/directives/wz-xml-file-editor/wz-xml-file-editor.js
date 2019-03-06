@@ -174,6 +174,8 @@ define([
             const xml = replaceIllegalXML(text)
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
+              $scope.$emit('saveComplete', {})
+              $notificationService.showSuccessToast(`Group ${params.group} saved successfully.`)
             } else if (params && params.file) {
               const result = await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml, params.overwrite)
               if (result === 'fileAlreadyExists') {
