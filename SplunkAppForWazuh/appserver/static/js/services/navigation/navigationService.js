@@ -11,7 +11,7 @@ define(['../module'], function (module) {
         try {
           var lastState = sessionStorage.history.split(',')
 
-          var newHistory = lastState[0];
+          var newHistory = lastState[0]
           if (lastState.length > 1) { // if there are previous states
             for (var i = 1; i < lastState.length - 2; i++) {
               newHistory += ',' + lastState[i]
@@ -22,7 +22,7 @@ define(['../module'], function (module) {
               lastState,
               {}, //routeParams
               { reload: true, notify: false }
-            );
+            )
           }
 
         } catch (error) {
@@ -37,29 +37,33 @@ define(['../module'], function (module) {
       sessionStorage.params = params
       this.addToHistory(params)
 
-      this.$location.search('currentTab', params); //set currentTab to the new state
+      this.$location.search('currentTab', params) //set currentTab to the new state
     }
 
     addToHistory(url) {
-      if (!sessionStorage.history) {
-        sessionStorage.history = url;
-      } else {
-        var history = sessionStorage.history.split(',');
-        history.push(url);
-        var newHistory = history[0];
-        if (history.length < 20) {
-          for (var i = 1; i < history.length; i++) {
-            if (history[i - 1] !== history[i])
-              newHistory += ',' + history[i];
-          }
+      try{
+        if (!sessionStorage.history) {
+          sessionStorage.history = url
         } else {
-          for (var i = 11; i < history.length; i++) {
-            if (history[i - 11] !== history[i])
-              newHistory += ',' + history[i];
+          var history = sessionStorage.history.split(',')
+          history.push(url)
+          var newHistory = history[0]
+          if (history.length < 20) {
+            for (var i = 1; i < history.length; i++) {
+              if (history[i - 1] !== history[i])
+                newHistory += ',' + history[i]
+            }
+          } else {
+            for (var i = 11; i < history.length; i++) {
+              if (history[i - 11] !== history[i])
+                newHistory += ',' + history[i]
+            }
           }
+          sessionStorage.history = newHistory
+  
         }
-        sessionStorage.history = newHistory;
-
+      }catch(error){
+        this.goToLastState()
       }
     }
 
@@ -74,11 +78,15 @@ define(['../module'], function (module) {
     * if no tab is specified it redirects to the last state visited 
     * */
     manageState(){
-      var url_params = this.$location.search();
-      if(url_params.currentTab){
-        this.$state.go(url_params.currentTab)
-      } else{
-        this.goToLastState()
+      try{
+        var url_params = this.$location.search()
+        if(url_params.currentTab){
+          this.$state.go(url_params.currentTab)
+        } else{
+          this.goToLastState()
+        }
+      }catch(error){
+        this.$state.go('settings.api')
       }
     }
 
