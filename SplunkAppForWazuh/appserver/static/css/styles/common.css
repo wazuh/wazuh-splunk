@@ -1071,3 +1071,7 @@ tr.striped {
 th.w-350 {
   width: 350px;
 }
+
+.medium-text {
+  font-size: 17px;
+}

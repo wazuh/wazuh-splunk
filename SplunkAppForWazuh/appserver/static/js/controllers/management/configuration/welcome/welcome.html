@@ -1,5 +1,22 @@
 <div flex="auto" layout="column" ng-if="configurationTab === 'welcome'">
+  <div ng-if="agent && agent.id !== '000'" layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="agent.group">
+    <md-card flex class="wz-metric-color wz-md-card">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div class="wz-word-break" flex ng-if="agent.group">
+          Groups: <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{
+            group }}&nbsp;</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
   <!-- Headline -->
+  <div layout="column" layout-padding>
+    <div ng-if="agent && agent.id !== '000'">
+      <span class="font-size-18"> <i class="fa fa-fw fa-cog" aria-hidden="true"></i> Configuration</span>
+      <span ng-if="isSynchronized" class="wz-agent-status-indicator small teal">SYNCHRONIZED</span>
+      <span ng-if="!isSynchronized" class="wz-agent-status-indicator small red">NOT SYNCHRONIZED</span>
+    </div>
+  </div>
   <!-- End headline -->
 
   <!-- Configuration section cards and right sidenav -->
@@ -10,7 +27,7 @@
 
       <!-- Card with all sections -->
       <md-card class="wz-md-card">
-        <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf">
+        <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf" ng-if="!agent || agent.id === '000'">
           <button ng-if="isAdmin" ui-sref="mg-editConfig" class="btn-invisible-conf ng-scope">
             <span aria-hidden="false">
               Edit configuration&nbsp;<i aria-hidden="true" class="fa fa-fw fa-pencil"></i>
@@ -19,9 +36,9 @@
         </md-card-actions>
         <md-card-content>
           <!--Main configurations table-->
-          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle" ng-if="!agent || agent.id === '000'">
             <tr>
-              <th colspan="2">Main configuration</th>
+              <th colspan="2" class="medium-text">Main configuration</th>
             </tr>
             <tr>
               <th class="w-350">Name</th>
@@ -42,10 +59,38 @@
           </table>
           <!-- End main configurations -->
 
-          <!-- Alerts and output management table -->
-          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+          <!-- Agents configuration table -->
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle" ng-if="agent && agent.id !== '000'">
             <tr>
-              <th colspan="2">Alerts and output management</th>
+              <th colspan="2" class="medium-text">Main configuration</th>
+            </tr>
+            <tr>
+              <th class="w-350">Name</th>
+              <th>Description</th>
+            </tr>
+            <tr class="striped" ng-click="switchConfigTab('global-configuration', [{component:'com',configuration:'logging'}])">
+              <td>Global configuration</td>
+              <td>ogging settings that apply to the agent</td>
+            </tr>
+            <tr ng-click="switchConfigTab('client', [{component:'agent',configuration:'client'}])">
+              <td>Client configuration</td>
+              <td>Settings related to the connection with the manager</td>
+            </tr>
+            <tr class="striped" ng-click="switchConfigTab('client-buffer', [{component:'agent',configuration:'buffer'}])">
+              <td>Anti-flooding settings</td>
+              <td>Agent bucket parameters to avoid event flooding</td>
+            </tr>
+            <tr ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">
+              <td>Labels</td>
+              <td>User-defined information about the agent included in alerts</td>
+            </tr>
+          </table>
+          <!-- Ends agents configuration table-->
+
+          <!-- Alerts and output management table -->
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle" ng-if="!agent || agent.id === '000'">
+            <tr>
+              <th colspan="2" class="medium-text">Alerts and output management</th>
             </tr>
             <tr>
               <th class="w-350">Name</th>
@@ -65,7 +110,7 @@
           <!-- Auditing and policy monitoring card table -->
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
-              <th colspan="2">Auditing and policy monitoring</th>
+              <th colspan="2" class="medium-text">Auditing and policy monitoring</th>
             </tr>
             <tr>
               <th class="w-350">Name</th>
@@ -89,13 +134,13 @@
           <!-- System, threats and incident response table -->
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
-              <th colspan="2">System threats and incident response</th>
+              <th colspan="2" class="medium-text">System threats and incident response</th>
             </tr>
             <tr>
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchWodle('vulnerability-detector')">
+            <tr class="striped" ng-click="switchWodle('vulnerability-detector')" ng-if="!agent || agent.id === '000'">
               <td>Vulnerabilities</td>
               <td>Discover what applications are affected by well-known vulnerabilities</td>
             </tr>
@@ -107,7 +152,11 @@
               <td>Inventory data</td>
               <td>Gather relevant information about system OS, hardware and packages</td>
             </tr>
-            <tr ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])">
+            <tr ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])" ng-if="!agent || agent.id === '000'">
+              <td>Active response</td>
+              <td>Active threat addressing by inmmediate response</td>
+            </tr>
+            <tr ng-click="switchConfigTab('active-response',[{component:'com',configuration:'active-response'}])" ng-if="agent && agent.id !== '000'">
               <td>Active response</td>
               <td>Active threat addressing by inmmediate response</td>
             </tr>
@@ -121,7 +170,7 @@
           <!-- Log data analysis table -->
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <tr>
-              <th colspan="2">System threats and incident response</th>
+              <th colspan="2" class="medium-text">System threats and incident response</th>
             </tr>
             <tr>
               <th class="w-350">Name</th>
@@ -135,7 +184,7 @@
               <td>Integrity monitoring</td>
               <td>Identify changes in content, permissions, ownership, and attributes of files</td>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])">
+            <tr class="striped" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])" ng-if="!agent || agent.id === '000'">
               <td>Agentless</td>
               <td>Run integrity checks on devices such as routers, firewalls or switches</td>
             </tr>
@@ -143,9 +192,9 @@
           <!-- End log data analysis table -->
 
           <!-- Cloud security monitoring table -->
-          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+          <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle" ng-if="!agent || agent.id === '000'">
             <tr>
-              <th colspan="2">System threats and incident response</th>
+              <th colspan="2" class="medium-text">System threats and incident response</th>
             </tr>
             <tr>
               <th class="w-350">Name</th>
