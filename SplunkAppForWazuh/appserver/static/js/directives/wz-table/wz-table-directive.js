@@ -140,6 +140,7 @@ define([
             $scope.items = items
             checkGap($scope, items)
             $scope.searchTable()
+            $scope.$emit('wazuhFetched', {items})
             return
           } catch (error) {
             if (

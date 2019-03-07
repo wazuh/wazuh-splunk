@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(app) {
+define(['../../module', 'FileSaver'], function (app) {
   'use strict'
 
   class Logs {
@@ -46,9 +46,37 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
         this.initialize()
+
+        this.scope.$on('wazuhFetched', (ev, params) => {
+          this.scope.XMLContent = this.parseLogsToText(params.items)
+          this.scope.$broadcas('XMLContentReady', { data: this.scope.XMLContent })
+          this.scope.$applyAsync()
+        })
+
       } catch (err) {
         this.notification.showErrorToast('Cannot fetch logs data from server')
       }
+    }
+
+    /**
+     * Parse json logs to plane text
+     * @param {Object} logs
+     */
+    parseLogsToText(logs) {
+      try {
+        let result = ''
+        logs.map(log => {
+          if (log) {
+            result = result.concat(
+              `${log.timestamp} ${log.tag} ${log.level} ${log.description}`
+            )
+          }
+        })
+        return result
+      } catch (error) {
+        this.notification.showErrorToast('Cannot parse logs.')
+      }
+
     }
 
     /**
@@ -114,8 +142,8 @@ define(['../../module', 'FileSaver'], function(app) {
 
         const data = this.clusterEnabled
           ? await this.apiReq(
-              `/cluster/${this.scope.selectedNode}/logs/summary`
-            )
+            `/cluster/${this.scope.selectedNode}/logs/summary`
+          )
           : await this.apiReq('/manager/logs/summary')
         const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({
