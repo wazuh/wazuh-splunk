@@ -205,15 +205,26 @@
       </div>
 
       <!-- Related rules section -->
-      <div layout="row" ng-if="ruleInfo && !editingFile">
-        <h1 class="md-headline wz-headline">
-          <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i> Related rules</h1>
-      </div>
-      <div layout="row" ng-if="ruleInfo && !editingFile" class="md-padding">
-        <wazuh-table flex path="'/rules'" implicit-filter="[{ name:'file',value: ruleInfo.file}]" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
-          allow-click="true">
-        </wazuh-table>
-      </div>
+      <md-card class="wz-md-card" ng-if="ruleInfo && !editingFile">
+        <md-card-contents>
+          <div layout="row">
+            <h1 class="md-headline wz-headline">
+              <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i> Related rules</h1>
+          </div>
+          <div layout="row" class="md-padding">
+            <wazuh-table flex path="'/rules'" implicit-filter="[{ name:'file',value: ruleInfo.file}]" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+              allow-click="true">
+            </wazuh-table>
+          </div>
+          <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
+            <span flex></span>
+            <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
+              <i aria-hidden="true" class="fa fa-download"></i>
+            </a>
+          </div>
+        </md-card-contents>
+      </md-card>
+      <!-- End related rules section -->
       <!-- XML editor for rules -->
       <div ng-show="editingFile">
         <div layout="row" class="md-padding">
@@ -253,17 +264,7 @@
         </div>
       </div>
       <!-- End XML editor-->
-
-      <!-- End related rules section -->
-      <div ng-show="!editingFile" layout="row" class="wz-margin-top-10">
-        <span flex></span>
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
-          <i aria-hidden="true" class="fa fa-download"></i>
-        </a>
-      </div>
+      <!-- End rest of rule information -->
     </div>
-    <!-- End rest of rule information -->
-
   </div>
-
 </div>
