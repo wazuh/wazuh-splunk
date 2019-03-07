@@ -1060,15 +1060,26 @@ div.inline {
 }
 
 .ruleset-csv-formater {
-  margin-top: -15px;
   padding-bottom: 10px;
   padding-right: 20px;
+  background: #e4f2f5;
+  margin-top: -36px;
+  padding-top: 10px;
 }
 
 .show-checkboxes {
   background-color: rgb(228, 242, 245);
-  padding-left: -20px;
   margin-left: -16px;
   margin-right: -16px;
   margin-top: -16px;
+  padding-top: 15px;
+}
+
+.showing-checks {
+  margin-right: 36px;
+}
+
+.not-showing-checks {
+  margin-bottom: -25px;
+  margin-right: 20px;
 }
