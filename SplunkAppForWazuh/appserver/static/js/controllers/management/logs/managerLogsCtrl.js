@@ -70,7 +70,7 @@ define(['../../module', 'FileSaver'], function (app) {
         logs.map(log => {
           if (log) {
             result = result.concat(
-              `${log.timestamp} ${log.tag} ${log.level} ${log.description}`
+              `${log.timestamp} ${log.tag} ${log.level} ${log.description}\n`
             )
           }
         })

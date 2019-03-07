@@ -24,7 +24,8 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         getjson: '&',
         getxml: '&',
         jsoncontent: '=',
-        xmlcontent: '='
+        xmlcontent: '=',
+        hideHeader: '='
       }
       this.templateUrl =
         BASE_URL +
@@ -37,6 +38,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           $document[0].getElementById('viewer_json_box'),
           {
             lineNumbers: true,
+            autoRefresh: true,
             matchClosing: true,
             matchBrackets: true,
             mode: { name: 'javascript', json: true },
@@ -53,6 +55,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           $document[0].getElementById('viewer_xml_box'),
           {
             lineNumbers: true,
+            autoRefresh: true,
             matchClosing: true,
             matchBrackets: true,
             mode: 'text/xml',
@@ -76,6 +79,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           $scope.jsonCodeBox.setValue($scope.jsoncontent)
           setTimeout(function() {
             $scope.jsonCodeBox.refresh()
+            $scope.$applyAsync()
           }, 1)
         }
       }
@@ -89,6 +93,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
           setTimeout(function() {
             $scope.xmlCodeBox.refresh()
+            $scope.$applyAsync()
           }, 1)
         }
       }
