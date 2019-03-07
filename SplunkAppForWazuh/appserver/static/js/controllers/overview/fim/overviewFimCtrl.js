@@ -60,7 +60,7 @@ define([
           'deletedFiles',
           `${
             this.filters
-          } sourcetype=wazuh syscheck.event=deleted | top agent.name limit=5`,
+          } sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
           'deletedFiles',
           this.scope
         ),
@@ -89,7 +89,7 @@ define([
           'newFiles',
           `${
             this.filters
-          } sourcetype=wazuh syscheck.event=added | top agent.name limit=5`,
+          } sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
           'newFiles',
           this.scope
         ),
@@ -97,7 +97,7 @@ define([
           'modifiedFiles',
           `${
             this.filters
-          } sourcetype=wazuh syscheck.event=modified | top agent.name limit=5`,
+          } sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
           'modifiedFiles',
           this.scope
         ),

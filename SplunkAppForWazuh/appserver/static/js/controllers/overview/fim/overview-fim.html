@@ -28,18 +28,9 @@
   <wazuh-bar></wazuh-bar>
   <!-- First row -->
   <div layout="row" layout-align="center stretch">
-    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with deleted files
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'deletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="deletedFiles" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
       <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with new files
+        <span class="wz-headline-title">Top new files
           <span class="wz-text-link" style="float:right;" ng-click="expand(1,'newFiles')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
@@ -48,13 +39,22 @@
     </md-card>
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with modified files
+        <span class="wz-headline-title">Top modified files
           <span class="wz-text-link" style="float:right;" ng-click="expand(2,'modifiedFiles')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="modifiedFiles" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card-content>
+          <span class="wz-headline-title">Top deleted files
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'deletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="deletedFiles" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
   </div>
   <!-- Second row -->
   <div layout="row" layout-align="center stretch">
