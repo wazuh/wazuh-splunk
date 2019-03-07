@@ -37,15 +37,18 @@
     </div>
   </div>
 </div>
-
-<div layout="row" layout-padding>
-  <!-- Rules -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
-    keys="['file']" rows-per-page="[16,13,11]">
-  </wazuh-table>
-  <!-- Decoders -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: 'etc/decoders'}]"
-    keys="['file']" rows-per-page="[16,13,11]">
-  </wazuh-table>
-</div>
+<md-card class="wz-md-card">
+  <md-card-contents>
+    <div layout="row" layout-padding>
+      <!-- Rules -->
+      <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'"
+        implicit-filter="[{ name:'path',value: 'etc/rules'}]" keys="['file']" rows-per-page="[16,13,11]">
+      </wazuh-table>
+      <!-- Decoders -->
+      <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'"
+        implicit-filter="[{ name:'path',value: 'etc/decoders'}]" keys="['file']" rows-per-page="[16,13,11]">
+      </wazuh-table>
+    </div>
+  </md-card-contents>
+</md-card>
 <!-- End files table -->
