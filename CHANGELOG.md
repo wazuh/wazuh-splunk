@@ -1,5 +1,86 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
+## Wazuh v3.9.0 - Splunk Enterprise v7.2.4 - Splunk app v3.9.0-rev-23
+
+### Added 
+
+- Support for Wazuh v3.9.0
+- Edit master and worker configuration (
+    [#525](https://github.com/wazuh/wazuh-splunk/pull/525),
+    [#534](https://github.com/wazuh/wazuh-splunk/pull/534)
+    [#572](https://github.com/wazuh/wazuh-splunk/pull/572)
+    ).
+- Edit local rules, local decoders and CDB lists (
+[#525](https://github.com/wazuh/wazuh-splunk/pull/525),
+[#532](https://github.com/wazuh/wazuhsplunk/pull/532), 
+[#501](https://github.com/wazuh/wazuhsplunk/pull/501)
+[#572](https://github.com/wazuh/wazuh-splunk/pull/572)
+)
+- Dev Tools additions
+- Added hotkey `[shift] + [enter]` for sending query ([#503](https://github.com/wazuh/wazuh-splunk/pull/503)).
+- Added `Export JSON` button for the Dev Tools ([#503](https://github.com/wazuh/wazuh-splunk/pull/503)).
+- Added configuration assessment information in "Agent > Configuration Assessments" ([#505](https://github.com/wazuh/wazuh-splunk/pull/505)).
+- Restart master and worker nodes (
+    [#564](https://github.com/wazuh/wazuh-splunk/pull/564)
+    [#545](https://github.com/wazuh/wazuh-splunk/pull/545)
+    [#535](https://github.com/wazuh/wazuh-splunk/pull/535)
+    [#563](https://github.com/wazuh/wazuh-splunk/pull/563)
+    ).
+- Restart agents ([#556](https://github.com/wazuh/wazuh-splunk/pull/556)).
+- Discover function on each section ([#529](https://github.com/wazuh/wazuh-splunk/pull/529)).
+- Can pined filters ([#529](https://github.com/wazuh/wazuh-splunk/pull/529)).
+- Expand visualizations on the dashboard ([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).
+- Reporting as extension ([#585](https://github.com/wazuh/wazuh-splunk/pull/585)).
+- Delete rules, decoders and CDB lists files ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
+- Prevent overwrite a existing file ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
+- Unescape back slash for JSON raw content ([#599](https://github.com/wazuh/wazuh-splunk/pull/599)).
+- Add edition in Management > Ruleset > Files ([#597](https://github.com/wazuh/wazuh-splunk/pull/597)).
+- Allow navigation throught url ([#596](https://github.com/wazuh/wazuh-splunk/pull/596)).
+- Enable back button ([#596](https://github.com/wazuh/wazuh-splunk/pull/596)).
+- Capability to hide or show columns ([#566](https://github.com/wazuh/wazuh-splunk/pull/566)).
+- Cabability to expand visualizations ([#567](https://github.com/wazuh/wazuh-splunk/pull/567)).
+
+
+### Changed
+
+- Changed empty results message for Wazuh tables ([#487](https://github.com/wazuh/wazuh-splunk/pull/487)).
+- Escape XML special characters ([#496](https://github.com/wazuh/wazuh-splunk/pull/496)).
+- Allowing the same query multiple times on the Dev Tools ([#503](https://github.com/wazuh/wazuh-splunk/pull/503)).
+- Using full height for all containers when possible ([#575](https://github.com/wazuh/wazuh-splunk/pull/575)).
+- Changed some visualizations for FIM, GDPR, PCI, Vulnerability and Security Events ([#527](https://github.com/wazuh/wazuh-splunk/pull/527)).
+- New design for agent header view ([#575](https://github.com/wazuh/wazuh-splunk/pull/575)).
+- Not fetching data the very first time the Dev Tools are opened ([#503](https://github.com/wazuh/wazuh-splunk/pull/503)).
+- Store the API database into Splunk KVstore ([#537](https://github.com/wazuh/wazuh-splunk/pull/537)).
+- Notification toast types and style([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).
+- UI changes for editing groups ([#478](https://github.com/wazuh/wazuh-splunk/pull/478)).
+- Use new meaningful toasters ([#591](https://github.com/wazuh/wazuh-splunk/pull/591)).
+- Change several descriptions ([#597](https://github.com/wazuh/wazuh-splunk/pull/597)).
+- Redisign configuration view ([#597](https://github.com/wazuh/wazuh-splunk/pull/597)).
+- Updated autocomplete list in DevTools ([#538](https://github.com/wazuh/wazuh-splunk/pull/538)).
+- Modularize some functions ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
+- Show logs in a text box ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
+
+### Fixed
+
+- Permit special charsets in API credentials([#578](https://github.com/wazuh/wazuh-splunk/pull/578)).
+- Can download API response in Devtools ([#559](https://github.com/wazuh/wazuh-splunk/pull/559)).
+- Do not lose the focus of the navbar ([#558](https://github.com/wazuh/wazuh-splunk/pull/558)).
+- Polling agents state ([#548](https://github.com/wazuh/wazuh-splunk/pull/548)).
+- Reporting ([#504](https://github.com/wazuh/wazuh-splunk/pull/504)).
+- Refresh rule info afeter edit it ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
+- Change the selected index ([#580](https://github.com/wazuh/wazuh-splunk/pull/580)).
+- More descriptive error when savinga file and get an error ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
+- Show success message when group configuration is saved ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
+- Error when trying to download a CSV file ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
+
+
+- Properly handling long messages on notifier service, until now, they were using out of the card space, also we replaced some API messages with more meaningful messages ([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).
+- Adapted Wazuh icon for multiple browsers where it was gone ([#475](https://github.com/wazuh/wazuh-splunk/pull/475)).
+
+
+=======================================
+=======================================
+
 ## Wazuh v3.8.2 - Splunk Enterprise v7.2.3 - Splunk app v3.8.2-rev-22
 
 ### Added
@@ -51,6 +132,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Updated localfile values in the configuration of an agent ([#451](https://github.com/wazuh/wazuh-splunk/pull/451)).
 - Dev tools is now showing the response as it is, like curl does ([#461](https://github.com/wazuh/wazuh-splunk/pull/461)).
 - Removed `unknown` as valid node name ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
+- Agents header. ([#518](https://github.com/wazuh/wazuh-splunk/pull/518)).
 
 ### Fixed
 
@@ -63,6 +145,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fix overlapped play button in Dev-tools when the input box has a scrollbar ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
 - Fix Dev-tools behavior when parse json invalid blocks ([#430](https://github.com/wazuh/wazuh-splunk/pull/430)).
 - Fix rule details for `list` and `info` parameters ([#477](https://github.com/wazuh/wazuh-splunk/pull/477)).
+
 
 ## Wazuh v3.7.2 - Splunk Enterprise v7.2.1 - Splunk app v3.7.2-rev-19
 There are no changes for Splunk app for Wazuh in this version.
@@ -103,7 +186,7 @@ There are no changes for Splunk app for Wazuh in this version.
 - Added a node selector for _Management > Logs_ section when Wazuh cluster is enabled ([#299](https://github.com/wazuh/wazuh-splunk/pull/299)).
 
 ### Changed
-- Configuration section ([#261](https://github.com/wazuh/wazuh-splunk/pull/261))
+- Configuration section ([#261](https://github.com/wazuh/wazuh-splunk/pull/261)).
 - FIM section ([#255](https://github.com/wazuh/wazuh-splunk/pull/255)).
 - Settings section ([#265](https://github.com/wazuh/wazuh-splunk/pull/265)).
 - The `wz-table` directive now checks if a request is aborted ([#301](https://github.com/wazuh/wazuh-splunk/pull/301)).
@@ -130,13 +213,13 @@ There are no changes for Splunk app for Wazuh in this version.
 - Minor fixes.
 
 ## Wazuh v3.6.0 - Splunk Enterprise v7.1.2 - Splunk app v3.6.0-rev-13
-- Minor fixes ([#229](https://github.com/wazuh/wazuh-splunk/pull/229))
+- Minor fixes ([#229](https://github.com/wazuh/wazuh-splunk/pull/229)).
 
 ## Wazuh v3.6.0 - Splunk Enterprise v7.1.2 - Splunk app v3.6.0-rev-12
 - Support for Wazuh 3.6.0
 
 ## Wazuh v3.5.0 - Splunk Enterprise v7.1.2 - Splunk app v3.5.0-rev-11
-- Minor fixes ([#211](https://github.com/wazuh/wazuh-splunk/pull/211))
+- Minor fixes ([#211](https://github.com/wazuh/wazuh-splunk/pull/211)).
 
 ## Wazuh v3.5.0 - Splunk Enterprise v7.1.2 - Splunk app v3.5.0-rev-10
 - Support for Wazuh v3.5.0
@@ -147,39 +230,39 @@ There are no changes for Splunk app for Wazuh in this version.
 ## Wazuh v3.3.0/v3.3.1 - Splunk Enterprise v7.1.1 - Splunk app v3.3.0-rev-8
 ### Added
 - Support for Wazuh v3.3.1
-- Redesigned agents summary dashboard ([#115](https://github.com/wazuh/wazuh-splunk/pull/115))
-- Manager status dashboard redesigned ([#117](https://github.com/wazuh/wazuh-splunk/pull/117))
-- Manager configuration dashboard redesigned ([#120](https://github.com/wazuh/wazuh-splunk/pull/120))
-- Agent group configuration dashboard redesigned ([#122](https://github.com/wazuh/wazuh-splunk/pull/122))
-- Groups configuration dashboard redesigned ([#125](https://github.com/wazuh/wazuh-splunk/pull/125))
-- Rules and decoders dashboards redesigned ([#128](https://github.com/wazuh/wazuh-splunk/pull/128))
-- Logs dashboard redesigned ([#130](https://github.com/wazuh/wazuh-splunk/pull/130))
-- Settings dashboard redesigned ([#133](https://github.com/wazuh/wazuh-splunk/pull/133))
+- Redesigned agents summary dashboard ([#115](https://github.com/wazuh/wazuh-splunk/pull/115)).
+- Manager status dashboard redesigned ([#117](https://github.com/wazuh/wazuh-splunk/pull/117)).
+- Manager configuration dashboard redesigned ([#120](https://github.com/wazuh/wazuh-splunk/pull/120)).
+- Agent group configuration dashboard redesigned ([#122](https://github.com/wazuh/wazuh-splunk/pull/122)).
+- Groups configuration dashboard redesigned ([#125](https://github.com/wazuh/wazuh-splunk/pull/125)).
+- Rules and decoders dashboards redesigned ([#128](https://github.com/wazuh/wazuh-splunk/pull/128)).
+- Logs dashboard redesigned ([#130](https://github.com/wazuh/wazuh-splunk/pull/130)).
+- Settings dashboard redesigned ([#133](https://github.com/wazuh/wazuh-splunk/pull/133)).
 
 ### Fixed
-- Fixed Firefox bug ([#114](https://github.com/wazuh/wazuh-splunk/pull/114))
-- Fixed table filters ([#131](https://github.com/wazuh/wazuh-splunk/pull/131))
-- Minor fixes ([#136](https://github.com/wazuh/wazuh-splunk/pull/136))
+- Fixed Firefox bug ([#114](https://github.com/wazuh/wazuh-splunk/pull/114)).
+- Fixed table filters ([#131](https://github.com/wazuh/wazuh-splunk/pull/131)).
+- Minor fixes ([#136](https://github.com/wazuh/wazuh-splunk/pull/136)).
 
 ## Wazuh v3.3.0 - Splunk Enterprise v7.1.1 - Splunk app v3.3.0-rev-7
 ### Added
-- Polling and index agent status data ([#101](https://github.com/wazuh/wazuh-splunk/pull/101))
+- Polling and index agent status data ([#101](https://github.com/wazuh/wazuh-splunk/pull/101)).
 ### Changed
-- Selecting 'wazuh' index when any other is selected ([#100](https://github.com/wazuh/wazuh-splunk/issues/100))
+- Selecting 'wazuh' index when any other is selected ([#100](https://github.com/wazuh/wazuh-splunk/issues/100)).
 ### Fixed
-- Extending response timeout in checking connection endpoint ([#509cb7b](https://github.com/wazuh/wazuh-splunk/pull/101/commits/509cb7bab923294dcd5c5d2f93fff9425356f056))
-- Deprecated interval field in manager configuration cluster section ([#93](https://github.com/wazuh/wazuh-splunk/issues/93))
+- Extending response timeout in checking connection endpoint ([#509cb7b](https://github.com/wazuh/wazuh-splunk/pull/101/commits/509cb7bab923294dcd5c5d2f93fff9425356f056)).
+- Deprecated interval field in manager configuration cluster section ([#93](https://github.com/wazuh/wazuh-splunk/issues/93)).
 
 ## Wazuh v3.2.4 - Splunk Enterprise v7.1.1 - Splunk app v3.2.4-rev-6
 There are no changes for Splunk app for Wazuh in this version.
 
 ## Wazuh v3.2.3 - Splunk Enterprise v7.1.1 - Splunk app v3.2.3-rev-6
 ### Added
-- New About tab ([#67](https://github.com/wazuh/wazuh-splunk/pull/67))
-- New GDPR tabs ([#66](https://github.com/wazuh/wazuh-splunk/pull/66))
-- New multi Index support ([#79](https://github.com/wazuh/wazuh-splunk/pull/79))
+- New About tab ([#67](https://github.com/wazuh/wazuh-splunk/pull/67)).
+- New GDPR tabs ([#66](https://github.com/wazuh/wazuh-splunk/pull/66)).
+- New multi Index support ([#79](https://github.com/wazuh/wazuh-splunk/pull/79)).
 ### Changed
-- Multi-API support ([#65](https://github.com/wazuh/wazuh-splunk/pull/65))
+- Multi-API support ([#65](https://github.com/wazuh/wazuh-splunk/pull/65)).
 ### Fixed
 - First API inserted is now selected by default [#47a1fe7](https://github.com/wazuh/wazuh-splunk/commit/47a1fe71f8b32c27b2ac51c3134b93447bd8d6f4)
 - Any API will be inserted if it hasn't connectivity [#47a1fe7](https://github.com/wazuh/wazuh-splunk/commit/47a1fe71f8b32c27b2ac51c3134b93447bd8d6f4)
@@ -205,8 +288,8 @@ There are no changes for Splunk app for Wazuh in this version.
 
 ## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 - Splunk app v2.2.0
 ### Added
-- New Manager Configuration tab ([#32](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/32))
-- Dynamic tables([#37](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/37))
+- New Manager Configuration tab ([#32](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/32)).
+- Dynamic tables([#37](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/37)).
   - Now the app uses dynamic tables improving the pagination and filtering.
   - Backend endpoints were adapted to pagination and better interaction with Wazuh API.
 
@@ -244,25 +327,25 @@ There are no changes for Splunk app for Wazuh in this version.
 - Credentials are now stored in KVStore database, values are getting from ajax when needed.
 - Each query now send parameters to streaming commands.
 - The app is now called 'Wazuh' instead 'SplunkAppForWazuh'.
-- Some unused tabs were deleted (Splunk and Tools).
+- Some unused tabs were deleted (Splunk and Tools)
 ### Fixed
 - Ruleset and Decoders search tabs now are able to filter properly.
 
 ## Wazuh v3.2.1 - Splunk Enterprise > v6.6.0 -  Splunk app v2.0.0
 ### Added
-- New Manager Logs tab ([#6](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/6)):
+- New Manager Logs tab ([#6](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/6)):.
   - New module implemented to show Manager logs.
   - Data is fetched directly from Wazuh API.
-- Back-end ([#14](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/14))
+- Back-end ([#14](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/14)).
   - Now the Splunk App has its own backend in order to modularize any REST routes it might need.
   -  Several code refactoring for a better handling of possible use cases.
   -  All queries along the App where bootstrapped in order to use the new back-end instead using indexes.
 
 ### Changed
-- Ruleset and Decoders data will be fetched from API ([#12](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/12)):
+- Ruleset and Decoders data will be fetched from API ([#12](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/12)):.
   - Now the app will avoid indexing Ruleset and Decoders data.
-- Manager info will be fetched from API ([#14](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/14)):
+- Manager info will be fetched from API ([#14](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/14)):.
   - Now the app will avoid indexing Manager info data.
-- Agents data will be fetched from API ([#15](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/15)):
+- Agents data will be fetched from API ([#15](https://github.com/SplunkAppForWazuh/SplunkAppForWazuh-splunk/pull/15)):.
   - Now the app will avoid indexing Agents info data.
 - And the best thing, it's no longer needed any extra index and the TA-wazuh-api-connector anymore.
