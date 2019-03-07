@@ -80,7 +80,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setTimeout(function() {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()
-          }, 1)
+          }, 300)
         }
       }
 
@@ -94,7 +94,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setTimeout(function() {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
-          }, 1)
+          }, 300)
         }
       }
 
