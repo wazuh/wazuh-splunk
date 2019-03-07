@@ -1083,3 +1083,8 @@ div.inline {
   margin-bottom: -25px;
   margin-right: 20px;
 }
+
+.no-margin-sides {
+  margin-right: 0;
+  margin-left: 0;
+}
