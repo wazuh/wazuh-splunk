@@ -64,7 +64,7 @@ define([
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.currentDataService.addFilter(
-        `{"rule.groups{}":"configuration_assessment", "implicit":true}`
+        `{"rule.groups{}":"sca", "implicit":true}`
       )
       this.scope.expandArray = [false,false,false,false,false]
       this.scope.expand = (i,id) => this.expand(i,id);
@@ -110,13 +110,13 @@ define([
          */
         new PieChart(
           'resultDistribution',
-          `${this.filters} | top data.configuration_assessment.check.result`,
+          `${this.filters} | top data.sca.check.result`,
           'resultDistribution',
           this.scope
         ),
         new PieChart(
           'cisRequirements',
-          `${this.filters} | top data.configuration_assessment.check.compliance.cis | head 5`,
+          `${this.filters} | top data.sca.check.compliance.cis | head 5`,
           'cisRequirements',
           this.scope
         ),
@@ -124,7 +124,7 @@ define([
           'topPciDss',
           `${
           this.filters
-          } sourcetype=wazuh | top data.configuration_assessment.check.compliance.pci_dss | head 5`,
+          } sourcetype=wazuh | top data.sca.check.compliance.pci_dss | head 5`,
           'topPciDss',
           this.scope
         ),
@@ -132,7 +132,7 @@ define([
           'alertsOverTime',
           `${
           this.filters
-          } | stats count by data.configuration_assessment.policy | head 5`,
+          } | stats count by data.sca.policy | head 5`,
           'alertsOverTime',
           this.scope
         ),
@@ -140,7 +140,7 @@ define([
           'alertsSummary',
           `${
           this.filters
-          } | fields data.configuration_assessment.policy, data.configuration_assessment.check.result | stats count by  data.configuration_assessment.policy | rename data.configuration_assessment.policy as Policy, count as Count`,
+          } | fields data.sca.policy, data.sca.check.result | stats count by  data.sca.policy | rename data.sca.policy as Policy, count as Count`,
           'alertsSummary',
           this.scope
         ),
@@ -148,7 +148,7 @@ define([
           'alertsSummaryTable',
           `${
           this.filters
-          } | fields data.configuration_assessment.policy, data.configuration_assessment.check.result | stats count by  data.configuration_assessment.policy | rename data.configuration_assessment.policy as Policy, count as Count`,
+          } | fields data.sca.policy, data.sca.check.result | stats count by  data.sca.policy | rename data.sca.policy as Policy, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -305,7 +305,7 @@ define([
       this.scope.showPolicyChecks = name
       this.scope.policyId = id
       const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/configuration-assessment/${agentId}/checks/${id}`
+      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
     }
 
 
