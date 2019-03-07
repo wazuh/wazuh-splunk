@@ -48,6 +48,7 @@ define(['../../module', 'FileSaver'], function (app) {
         this.scope.downloadCsv = () => this.downloadCsv()
         this.initialize()
 
+        this.scope.sort = () => this.sort()
         this.scope.$on('wazuhFetched', (ev, params) => {
           this.scope.XMLContent = this.parseLogsToText(params.items)
           this.scope.$broadcast('XMLContentReady', { data: this.scope.XMLContent })

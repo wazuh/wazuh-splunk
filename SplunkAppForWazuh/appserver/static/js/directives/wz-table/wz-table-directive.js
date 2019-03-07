@@ -326,7 +326,6 @@ define([
         })
 
         $scope.$on('wazuhSort', (event, parameters) => {
-          console.log("sorted ", parameters)
           $scope.sort(parameters.field)
         })
 
