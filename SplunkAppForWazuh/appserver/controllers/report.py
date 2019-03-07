@@ -99,6 +99,7 @@ class report(controllers.BaseController):
         try:
             pdf = PDF('P', 'mm', 'A4')
             metrics_exists = False
+            first_page = True
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data']
             data = jsonbak.loads(json_acceptable_string)
@@ -159,7 +160,7 @@ class report(controllers.BaseController):
                     text_w = pdf.get_string_width(text) + w
                     line_width = line_width + text_w
                     if line_width >= total_width:
-                        pdf.cell((total_width - (line_width - text_w)), 4, '', 0, 0, 'L', 1)#Fill rest of the width
+                        pdf.cell((total_width - (line_width - text_w)), 4, '', 0, 0, 'L', 1)#Fill rest of the width                                                                 
                         pdf.ln(4)
                         line_width = text_w
                     pdf.cell(text_w, 4, text, 0, 0, 'L', 1)
@@ -190,30 +191,28 @@ class report(controllers.BaseController):
                 #Insert images
                 for img in images:
                     #Change width and heigh
-                    if img['width'] >= 420 and img['width'] <= 430 or img['width'] >= 580 and img['width'] <= 590:
+                    if img['width'] <= 550:
                         w = 118
-                        h = 62
-                        x_img = 48
-                    elif img['width'] >= 705 and img['width'] <= 725:
-                        w = 145
                         h = 65
-                        x_img = 26                
-                    elif img['width'] >= 895 and img['width'] <= 910 or img['width'] >= 1080 and img['width'] <= 1100 or img['width'] >= 1300 and img['width'] <= 1400:
-                        w = 162
-                        h = 72
-                        x_img = 26
-                    elif img['width'] >= 1800 and img['width'] <= 1900:
-                        w = 190
-                        h = 90
-                        x_img = 10     
+                        x_img = 40
+                    else:
+                        w = 189
+                        h = 55
+                        x_img = 12     
                     #Insert image
                     pdf.cell(x , y, img['title'], 0, 1)
-                    pdf.image(img['path'], x_img, y_img, w, h)
-                    pdf.ln(80)
-                    y_img = y_img + 90
+                    pdf.image(img['path'], x_img, y_img, w,h)
+                    pdf.ln(65)
+                    y_img = y_img + 75
                     count = count + 1
                     n_images = n_images - 1
-                    if count == 2 and n_images >= 1:
+                    if count == 2 and n_images >= 1 and first_page:
+                        pdf.add_page()
+                        pdf.ln(20)
+                        y_img = 50
+                        count = 0
+                        first_page = False
+                    if count == 3 and n_images >= 1 and first_page:
                         pdf.add_page()
                         pdf.ln(20)
                         y_img = 50

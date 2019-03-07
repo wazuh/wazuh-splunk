@@ -41,11 +41,10 @@ define(['../module', 'domToImg'], function(app, domToImg) {
               .className.split(' ')
             try {
               if (!classes.includes('table')) {
-                const tmpResult = await domToImg.toPng(tmpNode[0])
+                const tmpResult = await domToImg.toPng(tmpNode[0],{'width':tmpNode.width(),'height':tmpNode.height()})
                 if (tmpResult === 'data:,') {
                   return Promise.reject('Impossible fetch visualizations')
                 }
-
                 this.rawArray.push({
                   element: tmpResult,
                   width: tmpNode.width(),
