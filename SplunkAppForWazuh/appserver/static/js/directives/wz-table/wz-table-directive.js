@@ -54,7 +54,8 @@ define([
         extraLimit: '=extraLimit',
         adminMode: '=adminMode',
         emptyResults: '=emptyResults',
-        customColumns: '=customColumns'
+        customColumns: '=customColumns',
+        implicitSort: '=implicitSort'
       },
       controller(
         $rootScope,
@@ -76,7 +77,7 @@ define([
          * Init variables
          */
         let realTime = false
-        const instance = new $dataService($scope.path, $scope.implicitFilter)
+        const instance = new $dataService($scope.path, $scope.implicitFilter, $scope.implicitSort)
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
@@ -322,6 +323,11 @@ define([
         $scope.$on('wazuhStopRealTime', () => {
           realTime = false
           return init()
+        })
+
+        $scope.$on('wazuhSort', (event, parameters) => {
+          console.log("sorted ", parameters)
+          $scope.sort(parameters.field)
         })
 
         $scope.$on('$destroy', () => {

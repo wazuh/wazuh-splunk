@@ -26,6 +26,7 @@ define(['../../module', 'FileSaver'], function (app) {
       this.notification = $notificationService
       this.scope.type_log = 'all'
       this.scope.category = 'all'
+      this.scope.sortFilter = false
       this.api = $currentDataService.getApi()
       this.logs = logs
       this.csvReq = $csvRequestService
@@ -49,7 +50,7 @@ define(['../../module', 'FileSaver'], function (app) {
 
         this.scope.$on('wazuhFetched', (ev, params) => {
           this.scope.XMLContent = this.parseLogsToText(params.items)
-          this.scope.$broadcas('XMLContentReady', { data: this.scope.XMLContent })
+          this.scope.$broadcast('XMLContentReady', { data: this.scope.XMLContent })
           this.scope.$applyAsync()
         })
 
@@ -76,7 +77,13 @@ define(['../../module', 'FileSaver'], function (app) {
       } catch (error) {
         this.notification.showErrorToast('Cannot parse logs.')
       }
+    }
 
+    /**
+     * Sorts logs by timestamp
+     */
+    sort() {
+      this.scope.$broadcast('wazuhSort', {field: 'timestamp'})
     }
 
     /**

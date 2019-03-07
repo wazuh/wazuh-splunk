@@ -22,8 +22,9 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * @param {String} path
        * @param {Object} implicitFilter
        */
-      constructor(path, implicitFilter) {
+      constructor(path, implicitFilter, implicitSort) {
         this.implicitFilter = implicitFilter || false
+        this.implicitSort = implicitSort || false
         this.items = []
         this.path = path
         this.filters = []
@@ -32,6 +33,7 @@ define(['../module', 'splunkjs/mvc'], function(module) {
         this.sortValue = false
         this.busy = false
         if (this.implicitFilter) this.filters.push(...this.implicitFilter)
+        if (this.implicitSort) {this.addSorting(this.implicitSort)} 
       }
 
       /**
@@ -95,7 +97,6 @@ define(['../module', 'splunkjs/mvc'], function(module) {
           const offset = options.offset || 0
           const limit = options.limit || 500
           const parameters = { limit, offset }
-
           this.serializeFilters(parameters)
 
           // Fetch next <limit> items
