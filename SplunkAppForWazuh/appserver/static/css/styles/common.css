@@ -385,6 +385,10 @@ div.uil-ring-css {
   margin-right: 10px;
 }
 
+.wz-margin-left-20 {
+  margin-left: 20px;
+}
+
 /* Custom buttons styles */
 
 .wz-button {
@@ -972,10 +976,12 @@ md-toast {
       outline: 50px solid rgba(0, 0, 0, 0.5)!important;
       max-width: 100% !important;
   }
+
 .wz-table-checkboxes {
   width: 100%;
   text-align: right;
   padding-right: 10px;
+  text-align: left;
 }
 
 .wz-text-truncatable {
@@ -1057,4 +1063,12 @@ div.inline {
   margin-top: -15px;
   padding-bottom: 10px;
   padding-right: 20px;
+}
+
+.show-checkboxes {
+  background-color: rgb(228, 242, 245);
+  padding-left: -20px;
+  margin-left: -16px;
+  margin-right: -16px;
+  margin-top: -16px;
 }

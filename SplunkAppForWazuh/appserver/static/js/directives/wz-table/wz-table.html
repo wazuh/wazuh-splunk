@@ -6,16 +6,16 @@
 </div>
 
 <!-- Checkbox to hide columns -->
-<div layout="row" ng-show="!error && !wazuhTableLoading && items.length">
+<div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-class="{'show-checkboxes':showingChecks}">
   <div class="wz-table-checkboxes">
-    <div ng-show="showingChecks">
+    <div ng-show="showingChecks" class="wz-margin-left-20">
       <md-checkbox ng-repeat="(key, value) in cleanKeys track by $index" ng-checked="value" ng-model="value" ng-change="switchKey(key)"
         aria-label="key">
         {{getEquivalence(key)}}
       </md-checkbox>
     </div>
   </div>
-  <div class="wz-margin-right-10" ng-style="!showingChecks && {'margin-bottom': '-25px'}">
+  <div class="wz-margin-right-20" ng-style="!showingChecks && {'margin-bottom': '-25px'}">
     <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><i aria-hidden="true" class="fa fa-cog"></i>
       <md-tooltip md-direction="left" class="wz-tooltip">
         Show or hide columns
