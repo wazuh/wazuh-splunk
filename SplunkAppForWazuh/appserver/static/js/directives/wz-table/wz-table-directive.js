@@ -400,7 +400,7 @@ define([
         }
 
         $scope.isPolicyMonitoring = () => {
-          return instance.path.includes('configuration-assessment') && instance.path.includes('/checks')
+          return instance.path.includes('sca') && instance.path.includes('/checks')
         }
   
         $scope.expandPolicyMonitoringCheck = item => {

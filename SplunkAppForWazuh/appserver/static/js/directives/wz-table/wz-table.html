@@ -25,8 +25,8 @@
 </div>
 <!-- End Checkbox -->
 
+<!-- Table -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="!isPolicyMonitoring()">
-  <!-- Table -->
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="wz_table">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
@@ -98,10 +98,11 @@
               <span class="font-size-12 wz-padding-left-8">This file will be removed</span>
             </div>
             <div class="inline" layout="row">
-              <md-button class="cancelBtn" type="button" ng-click="$event.stopPropagation();cancelRemoveFile()"><i aria-hidden='true' class='fa fa-fw fa-close'></i>
+              <md-button class="cancelBtn" type="button" ng-click="$event.stopPropagation();cancelRemoveFile()"><i
+                  aria-hidden='true' class='fa fa-fw fa-close'></i>
                 Cancel</md-button>
-              <md-button class="agreeBtn" type="button" ng-click="$event.stopPropagation();confirmRemoveFile(item)"><i aria-hidden='true'
-                  class='fa fa-fw fa-check'></i> Confirm</md-button>
+              <md-button class="agreeBtn" type="button" ng-click="$event.stopPropagation();confirmRemoveFile(item)"><i
+                  aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
             </div>
           </div>
         </td>
