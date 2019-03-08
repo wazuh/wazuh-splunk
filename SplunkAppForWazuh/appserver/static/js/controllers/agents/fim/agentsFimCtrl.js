@@ -47,7 +47,7 @@ define([
       this.agent = agent
       this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.scope = $scope
@@ -276,7 +276,7 @@ define([
      */
     async downloadCsv(path, name) {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
@@ -287,7 +287,7 @@ define([
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }

@@ -99,10 +99,15 @@
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-padding-top-10" ng-repeat="(key, value) in ruleInfo.details" ng-if='!isArray(value)'>
               <span class="wz-word-break-rule">{{key}}</span>
-              <span ng-if="!isObject(value)" class="wz-text-right color-grey">{{value}}</span>
-              <span ng-if="isObject(value)" class="color-grey">
+              <span ng-if="!isObject(value)" class="wz-text-right color-grey wz-margin-left-7">{{value}}</span>
+              <span ng-if="isObject(value)" class="color-grey wz-margin-left-7">
                 <span ng-repeat="(key, value) in value">{{key}}: {{value}} <span ng-if="!$last">|</span> </span>
               </span>
+            </div>
+            <div layout="row" class="wz-padding-top-10" ng-repeat="(key, value) in ruleInfo.details" ng-if='isArray(value)'>
+              <span class="wz-word-break-rule">{{key}}</span>
+              <span ng-if="isArray(value)" ng-repeat="v in value track by $index" class="wz-text-right color-grey wz-margin-left-7">{{v}}{{$last
+                ? '' : ',&nbsp;'}}</span>
             </div>
           </md-card-content>
         </md-card>

@@ -84,7 +84,7 @@ define(['../module'], function (directives) {
             $scope.$emit('barFilter', {})
             if (!$scope.$$phase) $scope.$digest()
           } catch (err) {
-            $notificationService.showSimpleToast(err.message || err)
+            $notificationService.showErrorToast(err.message || err)
           }
         }
 
@@ -143,7 +143,7 @@ define(['../module'], function (directives) {
             $scope.filters = getPrettyFilters()
             if (!$scope.$$phase) $scope.$digest()
           } catch (err) {
-            $notificationService.showSimpleToast(err.message || err)
+            $notificationService.showErrorToast(err.message || err)
           }
 
         }

@@ -64,7 +64,7 @@ define([
         this.request = $requestService
         this.$window = $window
         this.appState = $navigationService
-        this.toast = $notificationService.showSimpleToast
+        this.notification = $notificationService
         this.$document = $document
         this.groups = []
         this.linesWithClass = []
@@ -167,7 +167,7 @@ define([
           this.$scope.send(true)
           this.$scope.exportOutput = () => this.exportOutput()
         } catch (error) {
-          this.toast(error)
+          this.notification.showErrorToast(error)
         }
 
       }
@@ -183,7 +183,7 @@ define([
           })
           saveAs(blob, 'export.json')
         } catch (error) {
-          this.toast(error.message || error)
+          this.notification.showErrorToast(error.message || error)
         }
       }
 
@@ -624,7 +624,7 @@ define([
               "Wazuh API don't reachable. Reason: timeout."
             )
           } else {
-            this.toast(error)
+            this.notification.showErrorToast(error)
             if (typeof error === 'string') {
               return this.apiOutputBox.setValue(error)
             } else if (error && error.data && typeof error.data === 'object') {
