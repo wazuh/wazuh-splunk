@@ -110,11 +110,11 @@ define([
           this.scope
         ),
         new Table(
-          'topRules',
+          'topAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'topRules',
+          } sourcetype=wazuh rule.groups=syscheck  | top agent.name limit=10`,
+          'topAgents',
           this.scope
         ),
         new Table(

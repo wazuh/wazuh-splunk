@@ -7,23 +7,24 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-        <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" ng-hide="loadingVizz" ng-click="startVis2Png()"
-          aria-label="Generate report button">
-          <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-          <md-tooltip md-direction="left" class="wz-tooltip">
-            Generate report
-          </md-tooltip>
-        </md-button>
-        <span class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i
-            class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></span>
-        <wz-discover breadcrumbs="{section: 'Overview', subSection: 'File integrity monitoring', ref: 'overview'}"></wz-discover>
-      </div>
-      <div style="margin-right:7px;" id='timePicker'></div>
+      <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" ng-hide="loadingVizz" ng-click="startVis2Png()"
+        aria-label="Generate report button">
+        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Generate report
+        </md-tooltip>
+      </md-button>
+      <span class='wz-margin-right-15 wz-margin-top-12' ng-hide='!loadingVizz'>Waiting for reporting information <i
+          class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></span>
+      <wz-discover breadcrumbs="{section: 'Overview', subSection: 'File integrity monitoring', ref: 'overview'}"></wz-discover>
     </div>
-  
-    <!-- Loading report-->
-    <div text-align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
-  
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+
+  <!-- Loading report-->
+  <div text-align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner"
+      aria-hidden="true"></i></div>
+
   <!-- Wazuh filters bar -->
   <wazuh-bar></wazuh-bar>
   <!-- First row -->
@@ -47,14 +48,14 @@
       </md-card-content>
     </md-card>
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-        <md-card-content>
-          <span class="wz-headline-title">Top deleted files
-            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'deletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="deletedFiles" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
+      <md-card-content>
+        <span class="wz-headline-title">Top deleted files
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'deletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id="deletedFiles" class="dashboard-element single" style="width: 100%"></div>
+      </md-card-content>
+    </md-card>
   </div>
   <!-- Second row -->
   <div layout="row" layout-align="center stretch">
@@ -77,32 +78,20 @@
       </md-card-content>
     </md-card>
   </div>
-  
+
   <div layout="row" layout-align="center stretch">
     <div flex='33' layout-align="center stretch">
       <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
         <md-card-content>
-          <span class="wz-headline-title">Top 5 rules
-            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'topRules')"><i class="fa fa-fw fa-expand"></i></span>
+          <span class="wz-headline-title">Top 10 agents
+            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'topAgents')"><i class="fa fa-fw fa-expand"></i></span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="topRules" class="dashboard-element single" style="width: 100%"></div>
+          <div id="topAgents" class="dashboard-element single" style="width: 100%"></div>
         </md-card-content>
       </md-card>
     </div>
-    
-    <div flex='33' layout-align="center stretch">
-      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}" style="height: 423px;">
-        <md-card-content>
-          <span class="wz-headline-title">Whodata usage
-            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'whodataUsage')"><i class="fa fa-fw fa-expand"></i></span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="whodataUsage" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-    </div>
-    
+
     <div flex='33' layout-align="center stretch">
       <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
         <md-card-content>
@@ -114,5 +103,18 @@
         </md-card-content>
       </md-card>
     </div>
+
+    <div flex='33' layout-align="center stretch">
+      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}" style="height: 423px;">
+        <md-card-content>
+          <span class="wz-headline-title">Whodata usage
+            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'whodataUsage')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="whodataUsage" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
+    </div>
+
   </div>
 </md-content>
