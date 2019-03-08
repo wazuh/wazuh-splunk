@@ -402,16 +402,19 @@ define([
         $scope.isPolicyMonitoring = () => {
           return instance.path.includes('sca') && instance.path.includes('/checks')
         }
+
+        $scope.isSyschecks = () => {
+          return instance.path.startsWith('/syscheck')
+        }
   
-        $scope.expandPolicyMonitoringCheck = item => {
+        $scope.expandItem = item => {
           if (item.expanded) item.expanded = false
           else {
             $scope.pagedItems[$scope.currentPage].map(item => item.expanded = false)
             item.expanded = true
           }
-  
         }
-
+        
         /**
          * Removes a file
          */
