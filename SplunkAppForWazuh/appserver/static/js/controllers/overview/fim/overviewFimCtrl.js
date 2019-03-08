@@ -37,7 +37,7 @@ define([
       this.state = $state
       this.reportingService = $reportingService
       $currentDataService.addFilter(
-        `{"rule.groups":"syscheck", "implicit":true, "onlyShow":true}`
+        `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
       )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
@@ -66,7 +66,7 @@ define([
         ),
         new ColumnChart(
           'whodataUsage',
-          `${this.filters} sourcetype=wazuh rule.groups=syscheck
+          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck
           | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
           | stats count BY WHODATA
           | addcoltotals count labelfield=WHODATA label=Total
@@ -78,7 +78,7 @@ define([
           'alertsVolume',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=syscheck | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
+          } sourcetype=wazuh rule.groups{}=syscheck | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
           | stats count BY SYSCHECK
           | addcoltotals count labelfield=SYSCHECK label=Total
           | where NOT SYSCHECK="NO"`,
@@ -105,7 +105,7 @@ define([
           'eventsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=syscheck | timechart count`,
+          } sourcetype=wazuh rule.groups{}=syscheck | timechart count`,
           'eventsSummary',
           this.scope
         ),
@@ -113,7 +113,7 @@ define([
           'topAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=syscheck  | top agent.name limit=10`,
+          } sourcetype=wazuh rule.groups{}=syscheck  | top agent.name limit=10`,
           'topAgents',
           this.scope
         ),
@@ -129,7 +129,7 @@ define([
           'topRulesTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh rule.groups{}=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'topRulesTableToken',
           '$result$',
           this.scope,

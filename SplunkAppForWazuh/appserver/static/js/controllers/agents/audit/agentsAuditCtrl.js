@@ -65,7 +65,7 @@ define([
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.agent = agent
       this.currentDataService.addFilter(
-        `{"rule.groups":"audit", "implicit":true}`
+        `{"rule.groups{}":"audit", "implicit":true}`
       )
       this.scope.expandArray = [false,false,false,false,false,false,false,false,false,false,false]
             this.scope.expand = (i,id) => this.expand(i,id);
@@ -132,7 +132,7 @@ define([
          */
         new PieChart(
           'groupsVizz',
-          `${this.filters} sourcetype=wazuh | top rule.groups`,
+          `${this.filters} sourcetype=wazuh | top rule.groups{}`,
           'groupsVizz',
           this.scope
         ),

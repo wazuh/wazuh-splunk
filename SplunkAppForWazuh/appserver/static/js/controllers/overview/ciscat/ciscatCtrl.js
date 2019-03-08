@@ -142,7 +142,7 @@ define([
           `lastScanBenchmark`,
           `${
             this.filters
-          } rule.groups=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
+          } rule.groups{}=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
           'lastScanBenchmark',
           '$result.data.cis.benchmark$',
           'lastScanBenchmark',
@@ -156,7 +156,7 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
+          } sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
@@ -164,7 +164,7 @@ define([
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
+          } sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope
         ),
@@ -172,7 +172,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          } sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
         ),
@@ -180,7 +180,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          }  sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+          }  sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -228,7 +228,7 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
+      this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
 
       /**
        * On controller destroy

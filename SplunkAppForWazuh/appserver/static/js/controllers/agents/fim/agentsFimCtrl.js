@@ -55,7 +55,7 @@ define([
       this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel
       this.currentDataService.addFilter(
-        `{"rule.groups":"syscheck", "implicit":true, "onlyShow":true}`
+        `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
       )
       this.scope.expandArray = [false,false,false,false,false,false,false,false,false]
             this.scope.expand = (i,id) => this.expand(i,id)
@@ -92,7 +92,7 @@ define([
           'eventsOverTimeElement',
           `${
             this.filters
-          } sourcetype="wazuh"  "rule.groups"="syscheck" | timechart span=12h count by rule.description`,
+          } sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement',
           this.scope
         ),
@@ -132,7 +132,7 @@ define([
           'wordWritableFilesElement',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
+          } sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement',
           this.scope
         ),
@@ -140,7 +140,7 @@ define([
           'eventsSummaryElement',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement',
           this.scope
         ),
@@ -148,7 +148,7 @@ define([
           'eventsSummaryTable',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryTableToken',
           '$result$',
           this.scope,

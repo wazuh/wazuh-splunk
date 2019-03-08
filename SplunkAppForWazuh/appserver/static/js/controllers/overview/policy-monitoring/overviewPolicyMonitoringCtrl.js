@@ -29,7 +29,7 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       $currentDataService.addFilter(
-        `{"rule.groups":"rootcheck", "implicit":true}`
+        `{"rule.groups{}":"rootcheck", "implicit":true}`
       )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()

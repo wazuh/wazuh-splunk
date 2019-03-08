@@ -40,7 +40,7 @@ define([
       this.reportingService = $reportingService
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
-        `{"rule.groups":"audit", "implicit":true, "onlyShow":true}`
+        `{"rule.groups{}":"audit", "implicit":true, "onlyShow":true}`
       )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
@@ -117,7 +117,7 @@ define([
           'groupsElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" | top rule.groups`,
+          } sourcetype=wazuh rule.groups{}="audit" | top rule.groups{}`,
           'groupsElement',
           this.scope
         ),
@@ -125,7 +125,7 @@ define([
           'agentsElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" agent.name=* | top agent.name`,
+          } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top agent.name`,
           'agentsElement',
           this.scope
         ),
@@ -133,7 +133,7 @@ define([
           'directoriesElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" data.audit.directory.name=* | top data.audit.directory.name`,
+          } sourcetype=wazuh rule.groups{}="audit" data.audit.directory.name=* | top data.audit.directory.name`,
           'directoriesElement',
           this.scope
         ),
@@ -141,7 +141,7 @@ define([
           'filesElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" data.audit.file.name=* | top data.audit.file.name`,
+          } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top data.audit.file.name`,
           'filesElement',
           this.scope
         ),
@@ -149,7 +149,7 @@ define([
           'alertsOverTime',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" | timechart limit=10 count by rule.description`,
+          } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
           'alertsOverTimeElement',
           this.scope
         ),
@@ -157,7 +157,7 @@ define([
           'fileReadAccess',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" rule.id=80784 | top data.audit.file.name`,
+          } sourcetype=wazuh rule.groups{}="audit" rule.id=80784 | top data.audit.file.name`,
           'fileReadAccessElement',
           this.scope
         ),
@@ -165,7 +165,7 @@ define([
           'fileWriteAccess',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" rule.id=80781 | top data.audit.file.name`,
+          } sourcetype=wazuh rule.groups{}="audit" rule.id=80781 | top data.audit.file.name`,
           'fileWriteAccessElement',
           this.scope
         ),
@@ -173,7 +173,7 @@ define([
           'commands',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" | top data.audit.command`,
+          } sourcetype=wazuh rule.groups{}="audit" | top data.audit.command`,
           'commandsElement',
           this.scope
         ),
@@ -181,7 +181,7 @@ define([
           'createdFiles',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" rule.id=80790 | top data.audit.file.name`,
+          } sourcetype=wazuh rule.groups{}="audit" rule.id=80790 | top data.audit.file.name`,
           'createdFilesElement',
           this.scope
         ),
@@ -189,7 +189,7 @@ define([
           'removedFiles',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" rule.id=80791 | top data.audit.file.name`,
+          } sourcetype=wazuh rule.groups{}="audit" rule.id=80791 | top data.audit.file.name`,
           'removedFilesElement',
           this.scope
         ),
@@ -197,7 +197,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryElement',
           this.scope
         ),
@@ -205,7 +205,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

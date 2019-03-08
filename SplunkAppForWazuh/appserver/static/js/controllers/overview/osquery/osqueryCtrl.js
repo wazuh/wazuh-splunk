@@ -35,7 +35,7 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService.addFilter(
-        `{"rule.groups":"osquery", "implicit":true}`
+        `{"rule.groups{}":"osquery", "implicit":true}`
       )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()

@@ -62,7 +62,7 @@ define([
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.currentDataService.addFilter(
-        `{"rule.groups":"rootcheck", "implicit":true}`
+        `{"rule.groups{}":"rootcheck", "implicit":true}`
       )
       this.scope.expandArray = [false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)

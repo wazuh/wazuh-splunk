@@ -104,7 +104,7 @@ define([
         ),
         new PieChart(
           'top5GroupsVizz',
-          `${this.filters} sourcetype=wazuh | top rule.groups limit=5`,
+          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=5`,
           'top5GroupsVizz',
           this.scope
         ),

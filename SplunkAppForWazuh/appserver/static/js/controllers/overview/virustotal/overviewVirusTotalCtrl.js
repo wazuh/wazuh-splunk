@@ -41,7 +41,7 @@ define([
       this.tableResults = {}
       //Add filer for VirusTotal
       $currentDataService.addFilter(
-        `{"rule.groups":"virustotal", "implicit":true}`
+        `{"rule.groups{}":"virustotal", "implicit":true}`
       )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()

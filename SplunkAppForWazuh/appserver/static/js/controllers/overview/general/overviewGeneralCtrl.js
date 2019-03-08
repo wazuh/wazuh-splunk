@@ -105,7 +105,7 @@ define([
           `searchAuthFailure`,
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="authentication_fail*" | stats count`,
+          } sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
@@ -116,7 +116,7 @@ define([
           `searchAuthSuccess`,
           `${
             this.filters
-          } sourcetype=wazuh  "rule.groups"="authentication_success" | stats count`,
+          } sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
