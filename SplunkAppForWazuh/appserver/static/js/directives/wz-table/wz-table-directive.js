@@ -256,7 +256,6 @@ define([
               $scope.wazuhTableLoading = false
               $scope.$emit('loadedTable')
               if (!$scope.$$phase) $scope.$digest()
-              console.log($("table"))
               $("table").colResizable({
                 liveDrag: true,
                 draggingClass: false,
@@ -443,13 +442,6 @@ define([
             return init()
           }
 
-          $scope.editGroup = group => {
-            $scope.$emit('openGroupFromList', { group })
-          }
-
-          $scope.isPolicyMonitoring = () => {
-            return instance.path.includes('sca') && instance.path.includes('/checks')
-          }
 
           $scope.isSyschecks = () => {
             return instance.path.startsWith('/syscheck')
@@ -462,7 +454,6 @@ define([
               item.expanded = true
             }
           }
-
 
           /**
            * Show a checkbox for each key to show or hide it
