@@ -65,7 +65,7 @@ define([
             $scope.keys = Object.keys(items[0])
             return
           } catch (error) {
-            $notificationService.showSimpleToast(error, 'Error loading table')
+            $notificationService.showErrorToast(error, 'Error loading table')
           }
           return
         }

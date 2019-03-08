@@ -104,6 +104,10 @@
   padding-left: 8px
 }
 
+.wz-padding-top-7 {
+  padding-top: 7px;
+}
+
 .wz-back-btn-absolute{
   position: absolute!important;
   top: 210px!important;
@@ -371,6 +375,10 @@ div.uil-ring-css {
 
 .wz-margin-top-4 {
   margin-top: 4px;
+}
+
+.wz-margin-top-15 {
+  margin-top: 15px;
 }
 
 /* Custom buttons styles */
@@ -1038,4 +1046,38 @@ span.wrong {
 
 .table-width-id{
   width: 20px !important;
+}
+
+.daemons-card {
+  padding: 16px 5px !important;
+}
+
+.daemon-label {
+  width: 165px;
+  float: left;
+  border-radius: 30px;
+  margin: 3px;
+}
+
+.daemon-bullet {
+  float: left;
+  margin: 5px 0 0 8px;
+}
+
+.daemon-name {
+  padding: 2px 10px 5px 28px;
+}
+
+div.inline {
+  display: inline-block;
+}
+
+.btn[disabled] {
+  opacity: .7 !important;
+  box-shadow: none !important;
+}
+
+.btn[disabled]:hover {
+  opacity: .7 !important;
+  box-shadow: none !important;
 }

@@ -69,7 +69,8 @@ define([
         $tableFilterService,
         $window,
         $groupHandler,
-        $sce
+        $sce,
+        $fileEditor
       ) {
         /**
          * Init variables
@@ -257,7 +258,7 @@ define([
           } catch (error) {
             $scope.wazuhTableLoading = false
             $scope.error = `Error while init table. ${error.message || error}.`
-            $notificationService.showSimpleToast(
+            $notificationService.showErrorToast(
               `Error while init table. ${error.message || error}`
             )
           }
@@ -371,11 +372,11 @@ define([
           try {
             const group = instance.path.split('/').pop()
             await $groupHandler.removeAgentFromGroup(group, agent)
-            $notificationService.showSimpleToast(
+            $notificationService.showSuccessToast(
               `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
-            $notificationService.showSimpleToast(`${error.message || error}`)
+            $notificationService.showErrorToast(`${error.message || error}`)
           }
           $scope.removingAgent = null
           return init()
@@ -384,11 +385,11 @@ define([
         $scope.confirmRemoveGroup = async group => {
           try {
             await $groupHandler.removeGroup(group)
-            $notificationService.showSimpleToast(
+            $notificationService.showSuccessToast(
               `Success. Group ${group} has been removed`
             )
           } catch (error) {
-            $notificationService.showSimpleToast(`${error.message || error}`)
+            $notificationService.showErrorToast(`${error.message || error}`)
           }
           $scope.removingGroup = null
           return init()
@@ -410,7 +411,30 @@ define([
           }
   
         }
-        
+
+        /**
+         * Removes a file
+         */
+        $scope.showConfirmRemoveFile = (ev, item) => {
+          $scope.removingFile = item
+        }
+
+        $scope.confirmRemoveFile = async (item) => {
+          try {
+            $scope.removingFile = false
+            const result = await $fileEditor.removeFile(item)
+            $notificationService.showSuccessToast(result)
+            init()
+            $scope.$applyAsync()
+          } catch (error) {
+            $notificationService.showErrorToast(error || `Cannot delete ${item.file || item.name}`)
+          }
+        }
+
+        $scope.cancelRemoveFile = () => {
+          $scope.removingFile = false
+        }
+         
         /**
          * Show a checkbox for each key to show or hide it
          */

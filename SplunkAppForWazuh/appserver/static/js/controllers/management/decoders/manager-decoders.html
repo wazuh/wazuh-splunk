@@ -15,6 +15,7 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="decoders">Decoders</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-files" name="files">Files</md-nav-item>
 </md-nav-bar>
 
 <div ng-if="!addingNewFile">
@@ -55,7 +56,7 @@
       <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
       </wazuh-table>
-      <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/decoders'}]" flex path="'/decoders'"
+      <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/decoders'}]" flex path="'/decoders'"
         keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
         allow-click="true" rows-per-page="14">
       </wazuh-table>
@@ -71,8 +72,8 @@
 
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
-    <button ng-if="adminMode && !saveIncomplete" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+    <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
+    <button ng-show="!saveIncomplete" ng-disabled='xmlHasErrors || overwrite' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
       class='btn wz-button pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
         file</span>
@@ -82,7 +83,7 @@
     <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
 
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
-      style="margin-left: 10px;">
+      style="margin-left: 10px;" ng-change="enableSave()">
 
     <!-- Restart if saved without errors-->
     <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
