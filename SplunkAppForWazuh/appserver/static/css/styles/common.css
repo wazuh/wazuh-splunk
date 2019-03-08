@@ -393,8 +393,16 @@ div.uil-ring-css {
   margin: 12px;
 }
 
+.wz-width-85 {
+  min-width: 85px;
+  width: 85px;
+  max-width: 85px;
+}
+
 .wz-width-150 {
+  min-width: 150px;
   width: 150px;
+  max-width: 150px;
 }
 
 /* Custom buttons styles */

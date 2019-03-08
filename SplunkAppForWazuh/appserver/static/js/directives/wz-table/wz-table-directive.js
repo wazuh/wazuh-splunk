@@ -414,6 +414,17 @@ define([
             item.expanded = true
           }
         }
+
+        $scope.getWitdh = key => {
+          try {
+            if (key.includes('id') || key.includes('level')) {
+              return 'wz-width-85'
+            }
+            if (key.includes('pci') || key.includes('gdpr')) {
+              return 'wz-width-150'
+            }
+          } catch (error) {}
+        }
         
         /**
          * Removes a file

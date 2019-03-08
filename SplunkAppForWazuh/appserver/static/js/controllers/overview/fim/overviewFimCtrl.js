@@ -109,7 +109,7 @@ define([
           'eventsSummary',
           this.scope
         ),
-        new Pie(
+        new PieChart(
           'topAgents',
           `${
             this.filters

@@ -29,7 +29,7 @@
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="!isPolicyMonitoring() && !isSyschecks()">
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
+      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size } && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
@@ -37,7 +37,7 @@
           aria-hidden="true"></i>
       </th>
       <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) && !isLookingDefaultGroup"
-        class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
+        class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">Actions</th>
       <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode" class="wz-text-left">
         Actions
       </th>
@@ -188,7 +188,7 @@
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isPolicyMonitoring()">
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
+      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }  && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
@@ -196,7 +196,7 @@
           aria-hidden="true"></i>
       </th>
       <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) && !isLookingDefaultGroup"
-        class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
+        class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}  && getWitdh(key.value || key)">Actions</th>
     </thead>
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
@@ -264,15 +264,12 @@
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isSyschecks()">
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }"
+      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size} && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
-        {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
-        key] || key.value || key }}
+        {{ keyEquivalence[key.value || key] || key.value || key }}
         <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon" ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
           aria-hidden="true"></i>
       </th>
-      <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) && !isLookingDefaultGroup"
-        class="wz-text-left" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}">Actions</th>
     </thead>
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
