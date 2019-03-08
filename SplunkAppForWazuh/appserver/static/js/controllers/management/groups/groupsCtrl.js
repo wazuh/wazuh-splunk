@@ -35,7 +35,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.mainGroup = ''
       this.scope.lookingGroup = false
       this.scope.editingFile = false
@@ -123,7 +123,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             }
           }
         } catch (error) {
-          this.toast(error.message || error)
+          this.notification.showErrorToast(error.message || error)
         }
         if (!this.scope.$$phase) this.scope.$digest()
         return
@@ -154,9 +154,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
           try {
             this.scope.addingGroup = false
             await this.groupHandler.createGroup(name)
-            this.toast(`Success. Group ${name} has been created`)
+            this.notification.showSuccessToast(`Success. Group ${name} has been created`)
           } catch (error) {
-            this.toast(`${error.message || error}`)
+            this.notification.showErrorToast(`${error.message || error}`)
           }
           this.scope.$broadcast('wazuhSearch', {})
         }
@@ -217,7 +217,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (err) {
         console.error('err ', err)
         this.scope.adminMode = true
-        this.toast('Error loading groups information')
+        this.notification.showErrorToast('Error loading groups information')
       }
     }
 
@@ -226,7 +226,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      */
     async downloadCsv(path, name) {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
@@ -237,7 +237,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -258,7 +258,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.mainGroup = group
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Cannot load group data')
+        this.notification.showErrorToast('Cannot load group data')
       }
       return
     }
@@ -301,7 +301,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.multipleSelectorLoading = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
     }
 
@@ -338,7 +338,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.scope.selectedAgents.loadedAll = true
         }
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
       this.scope.selectedAgents.loaded = true
     }
@@ -384,7 +384,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
         }
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
     }
 
@@ -414,7 +414,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.scope.multipleSelectorLoading = false
         }
       } catch (err) {
-        this.toast('Error adding agents.')
+        this.notification.showErrorToast('Error adding agents.')
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return
@@ -446,7 +446,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
         }
       } catch (error) {
-        this.toast(error.message || error, 'Groups')
+        this.notification.showErrorToast(error.message || error, 'Groups')
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return
@@ -486,11 +486,11 @@ define(['../../module', 'FileSaver'], function(controllers) {
         }
 
         if (failedIds.length) {
-          this.toast(
+          this.notification.showWarningToast(
             `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
           )
         } else {
-          this.toast('Success. Group has been updated')
+          this.notification.showSuccessToast('Success. Group has been updated')
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
@@ -499,7 +499,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         })
       } catch (err) {
         this.scope.multipleSelectorLoading = false
-        this.toast(err.message || err, 'Error applying changes')
+        this.notification.showErrorToast(err.message || err, 'Error applying changes')
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return
@@ -512,7 +512,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return
@@ -537,7 +537,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           group: this.scope.currentGroup.name
         })
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
       return
     }
@@ -669,7 +669,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.filename = fileName
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Error showing file ')
+        this.notification.showErrorToast('Error showing file ')
       }
       return
     }

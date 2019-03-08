@@ -12,6 +12,7 @@ define([
   './edition/editionCtrl',
   './cdb/managerCdbCtrl',
   './cdb/managerCdbIdCtrl',
+  './files/managerFilesCtrl',
   './status/statusCtrl',
   './configuration/edit-configuration/editGroupsCtrl'
 ], function() {})

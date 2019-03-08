@@ -265,7 +265,7 @@ define(['../module'], function (module) {
               async ($cdbEditor, $stateParams, $state) => {
                 try {
                   const result = await $cdbEditor.getConfiguration($stateParams.name, $stateParams.path)
-                  return {file: $stateParams.name, path: $stateParams.path, content: result}
+                  return { file: $stateParams.name, path: $stateParams.path, content: result }
                 } catch (error) {
                   $state.go('settings.api')
                 }
@@ -274,6 +274,35 @@ define(['../module'], function (module) {
 
           }
         })
+
+        // Manager - Files
+        .state('mg-files', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/management/files/manager-files.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('mg-files')
+          },
+          controller: 'managerFilesCtrl',
+          params: { filters: null },
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+
         // Manager - Groups
         .state('mg-groups', {
           templateUrl:
@@ -356,7 +385,7 @@ define(['../module'], function (module) {
             ]
           }
         })
-        
+
         // Manager - Status
         .state('mg-status', {
           templateUrl:

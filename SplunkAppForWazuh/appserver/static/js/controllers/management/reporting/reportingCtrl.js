@@ -11,7 +11,7 @@ define(['../../module'], function(app) {
      */
     constructor($scope, $notificationService, $requestService, reportsList) {
       this.scope = $scope
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.genericReq = $requestService.httpReq
       this.loading = true
       this.itemsPerPage = 15
@@ -52,9 +52,9 @@ define(['../../module'], function(app) {
         this.loading = true
         await this.genericReq('GET', '/report/remove', { name: name })
         await this.load()
-        this.toast('Deleted report')
+        this.notification.showSuccessToast('Deleted report')
       } catch (error) {
-        this.toast('Reporting error')
+        this.notification.showErrorToast('Reporting error')
       }
     }
 
@@ -150,7 +150,7 @@ define(['../../module'], function(app) {
         this.loading = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Error loading reports')
+        this.notification.showErrorToast('Error loading reports')
       }
     }
   }

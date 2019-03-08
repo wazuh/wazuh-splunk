@@ -82,7 +82,7 @@ define(['../module'], function (app) {
               $scope.newTag = ''
             }
           } catch (error) {
-            $notificationService.showSimpleToast(error, 'Error adding filter')
+            $notificationService.showErrorToast(error, 'Error adding filter')
           }
         }
 

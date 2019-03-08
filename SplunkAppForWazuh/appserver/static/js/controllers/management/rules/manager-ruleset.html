@@ -15,6 +15,7 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-files" name="files">Files</md-nav-item>
 </md-nav-bar>
 
 <div ng-if="!addingNewFile">
@@ -74,8 +75,7 @@
     <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
-    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: '/var/ossec/etc/rules'}]" flex path="'/rules'"
-      keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
   </div>
@@ -91,7 +91,7 @@
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding">
     <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-    <button ng-if="adminMode && !saveIncomplete" ng-disabled='xmlHasErrors' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+    <button ng-show="!saveIncomplete" ng-disabled='xmlHasErrors || overwrite' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
       class='btn wz-button pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
         file</span>
@@ -100,7 +100,7 @@
     </button>
     <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
-      style="margin-left: 10px;">
+      style="margin-left: 10px;" ng-change="enableSave()">
 
     <!-- Restart if saved without errors-->
     <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
