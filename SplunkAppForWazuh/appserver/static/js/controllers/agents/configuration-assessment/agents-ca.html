@@ -43,9 +43,9 @@
 
     <div layout="row" layout-padding class="wz-padding-top-0">
       <span flex></span>
-      <span ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-shield"></i>
+      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-shield"></i>
         Show
-        policies</span>
+        policies</button>
     </div>
 
     <!-- First row -->
@@ -113,8 +113,8 @@
   <div ng-show="showPolicies && !showPolicyChecks">
     <div layout="row" layout-padding class="wz-padding-top-0">
       <span flex></span>
-      <span ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-area-chart"></i>
-        Show alerts</span>
+      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-area-chart"></i>
+        Show alerts</button>
     </div>
 
     <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-if="showPolicies && (!agent || !agent.os)">
@@ -168,8 +168,8 @@
   <div ng-if="showPolicyChecks">
     <div layout="row" layout-padding class="wz-padding-top-0">
       <span flex></span>
-      <span ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-area-chart"></i>
-        Show alerts</span>
+      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-area-chart"></i>
+        Show alerts</button>
     </div>
 
     <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-if="showPolicies && (!agent || !agent.os)">

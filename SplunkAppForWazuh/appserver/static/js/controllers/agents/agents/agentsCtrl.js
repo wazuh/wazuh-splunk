@@ -49,7 +49,7 @@ define([
       this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.currentClusterInfo = this.currentDataService.getClusterInfo()
       this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
@@ -141,7 +141,7 @@ define([
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           '/agents',
@@ -152,7 +152,7 @@ define([
         saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -190,7 +190,7 @@ define([
           throw Error('Cannot fetch agent name')
         }
       } catch (err) {
-        this.toast(err.message || 'Error fetching agent data')
+        this.notification.showErrorToast(err.message || 'Error fetching agent data')
       }
     }
   }

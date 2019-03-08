@@ -3,7 +3,7 @@ define(['../module'], function (module) {
 
   class FilterService {
     constructor($notificationService) {
-      this.$notificationService = $notificationService
+      this.notification = $notificationService
     }
 
     /**
@@ -48,7 +48,7 @@ define(['../module'], function (module) {
           window.localStorage.setItem('filters', `[${filter}]`)
         }
       } catch (err) {
-        this.$notificationService.showSimpleToast(
+        this.notification.showErrorToast(
           'Incorrent format. Please use key:value syntax'
         )
       }
@@ -79,7 +79,7 @@ define(['../module'], function (module) {
         }
         return filterStr
       } catch (err) {
-        this.$notificationService.showSimpleToast('Error when getting filters.')
+        this.notification.showErrorToast('Error when getting filters.')
       }
     }
 
@@ -104,7 +104,7 @@ define(['../module'], function (module) {
         })
         window.localStorage.setItem('filters', JSON.stringify(filters))
       } catch (err) {
-        this.$notificationService.showSimpleToast('Error removing filter.')
+        this.notification.showErrorToast('Error removing filter.')
       }
     }
 
@@ -128,7 +128,7 @@ define(['../module'], function (module) {
         filters.push(filter)
         window.localStorage.setItem('filters', JSON.stringify(filters))
       } catch (err) {
-        this.$notificationService.showSimpleToast('Error pinning filter.')
+        this.notification.showErrorToast('Error pinning filter.')
       }
     }
 

@@ -47,7 +47,7 @@ define([
       this.extensions = extensions
       this.cdbEditor = $cdbEditor
       this.cdbInfo = cdbInfo
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.pagination = pagination
       this.checkGap = checkGap
       this.filter = $filter
@@ -105,7 +105,7 @@ define([
         this.initPagination()
         this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-        this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notificationService, null)
+        this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notification, null)
         this.scope.setPage = (n) => {
           this.scope.currentPage = n
           this.scope.nextPage(n)
@@ -116,7 +116,7 @@ define([
         this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
         
       } catch (error) {
-        this.toast("Error editing CDB list")
+        this.notification.showErrorToast("Error editing CDB list")
       }
 
     }
@@ -138,7 +138,7 @@ define([
     async addEntry(key, value) {
       try {
         if (!key) {
-          this.toast("Cannot send empty fields.")
+          this.notification.showWarningToast("Cannot send empty fields.")
         } else {
           if (!this.scope.currentList.list[key]) {
             value = value ? value : ''
@@ -147,11 +147,11 @@ define([
             this.scope.newValue = ''
             this.refreshCdbList()
           } else {
-            this.toast("Error adding new entry, the key exists.")
+            this.notification.showErrorToast("Error adding new entry, the key exists.")
           }
         }
       } catch (error) {
-        this.toast("Error adding entry.")
+        this.notification.showErrorToast("Error adding entry.")
       }
 
     }
@@ -183,7 +183,7 @@ define([
         this.cancelEditingKey()
         this.refreshCdbList()
       } catch (error) {
-        this.toast("Error editing value.")
+        this.notification.showErrorToast("Error editing value.")
       }
     }
 
@@ -197,7 +197,7 @@ define([
         this.scope.removingEntry = false
         this.refreshCdbList()
       } catch (error) {
-        this.toast("Error deleting entry.")
+        this.notification.showErrorToast("Error deleting entry.")
       }
 
     }
@@ -215,20 +215,20 @@ define([
         const fileName = this.scope.currentList.details.file
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
-        const check = await this.cdbEditor.sendConfiguration(fileName, path, content)
+        const check = await this.cdbEditor.sendConfiguration(fileName, path, content, true)
         const cdbUpdated = await this.fetchFile(fileName, path)
         this.scope.currentList.list = this.stringToObj(cdbUpdated)
         // Re-init pagination
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
         this.initPagination()
-        this.toast("File saved successfully.")
+        this.notification.showSuccessToast("File saved successfully.")
         this.scope.restartAndApply = true
         this.scope.saveIncomplete = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         this.scope.saveIncomplete = false
-        this.toast(error)
+        this.notification.showErrorToast(error || `Cannot send this file.`)
       }
     }
 
