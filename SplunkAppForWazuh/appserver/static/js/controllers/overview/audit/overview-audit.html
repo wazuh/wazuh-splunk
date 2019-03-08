@@ -48,7 +48,7 @@
   
   <div layout="row" layout-align="center stretch">
     <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Groups
           <span class="wz-text-link" style="float:right;" ng-click="expand(0,'groupsElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -57,7 +57,7 @@
       </md-card-content>
     </md-card>
     <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Agents
           <span class="wz-text-link" style="float:right;" ng-click="expand(1,'agentsElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -66,7 +66,7 @@
       </md-card-content>
     </md-card>
     <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Directories
           <span class="wz-text-link" style="float:right;" ng-click="expand(2,'directoriesElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -75,7 +75,7 @@
       </md-card-content>
     </md-card>
     <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Files
           <span class="wz-text-link" style="float:right;" ng-click="expand(3,'filesElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -87,7 +87,7 @@
   
   <div layout="row" layout-align="center stretch">
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alerts over time
           <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsOverTimeElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -100,7 +100,7 @@
   <div layout="row" layout-align="center stretch">
     <div flex layout-align="center stretch">
       <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-        <md-card-content>
+        <md-card-content class="wazuh-column">
           <span class="wz-headline-title">File read access
             <span class="wz-text-link" style="float:right;" ng-click="expand(5,'fileReadAccessElement')"><i class="fa fa-fw fa-expand"></i></span>
           </span>
@@ -112,7 +112,7 @@
     
     <div flex layout-align="center stretch">
       <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
-        <md-card-content>
+        <md-card-content class="wazuh-column">
           <span class="wz-headline-title">File write access
             <span class="wz-text-link" style="float:right;" ng-click="expand(6,'fileWriteAccessElement')"><i class="fa fa-fw fa-expand"></i></span>
           </span>
@@ -124,7 +124,7 @@
     
     <div flex="60" layout-align="center stretch">
       <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
-        <md-card-content>
+        <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Commands
             <span class="wz-text-link" style="float:right;" ng-click="expand(7,'commandsElement')"><i class="fa fa-fw fa-expand"></i></span>
           </span>
@@ -136,7 +136,7 @@
   </div>
   <div layout="row" layout-align="center stretch">
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Created files
           <span class="wz-text-link" style="float:right;" ng-click="expand(8,'createdFilesElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -145,7 +145,7 @@
       </md-card-content>
     </md-card>
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[9]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Removed files
           <span class="wz-text-link" style="float:right;" ng-click="expand(9,'removedFilesElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -156,7 +156,7 @@
   </div>
   <div flex layout="row">
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[10]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alerts summary
           <span class="wz-text-link" style="float:right;" ng-click="expand(10,'alertsSummaryElement')"><i class="fa fa-fw fa-expand"></i></span>
         </span>

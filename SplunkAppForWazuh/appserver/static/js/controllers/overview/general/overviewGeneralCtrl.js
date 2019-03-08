@@ -294,7 +294,6 @@ define([
     }
     
     expand(i, id) {
-      //ng-dblclick="expand(0,'alertLevEvoVizz')"
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
