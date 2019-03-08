@@ -64,7 +64,7 @@ define([
         (pollingState.data.error || pollingState.data.disabled === 'true')
           ? false
           : true
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -195,7 +195,7 @@ define([
             if (!this.scope.$$phase) this.scope.$digest()
           })
           .catch(error => {
-            this.toast(`Cannot fetch agent status data: ${error}`)
+            this.notification.showErrorToast(`Cannot fetch agent status data: ${error}`)
           })
       } else {
         this.scope.wzMonitoringEnabled = true

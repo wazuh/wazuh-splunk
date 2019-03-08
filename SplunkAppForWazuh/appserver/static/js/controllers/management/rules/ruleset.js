@@ -25,7 +25,7 @@ define(['../../module', 'FileSaver'], function (app) {
     ) {
       this.scope = $scope
       this.view = view
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.api = $currentDataService.getApi()
       this.wzTableFilter = $tableFilterService
       this.csvReq = $csvRequestService
@@ -99,8 +99,20 @@ define(['../../module', 'FileSaver'], function (app) {
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
 
-      this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
-      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
+      this.scope.enableSave = () => this.enableSave()
+
+      this.scope.$on('configSavedSuccessfully', () => {
+        this.scope.overwrite = false
+        this.scope.restartAndApply = true
+      })
+      this.scope.$on('saveComplete', () => {
+        this.scope.saveIncomplete = false
+      })
+      this.scope.$on('fileAlreadyExists', () => {
+        this.scope.saveIncomplete = false
+        this.scope.overwrite = true
+        this.scope.$applyAsync()
+      })
     }
 
     /**
@@ -108,7 +120,7 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     async downloadCsv(path, name) {
       try {
-        this.toast('Your download should begin automatically...')
+        this.notification.showSimpleToast('Your download should begin automatically...')
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
@@ -119,7 +131,7 @@ define(['../../module', 'FileSaver'], function (app) {
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -309,7 +321,7 @@ define(['../../module', 'FileSaver'], function (app) {
         }
         return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
       } catch (err) {
-        this.toast('Error removing the filter')
+        this.notification.showErrorToast('Error removing the filter')
       }
     }
 
@@ -324,15 +336,15 @@ define(['../../module', 'FileSaver'], function (app) {
         .includes(filterName)
     }
 
-  /**
-   * Restarts the manager or cluster
-   */
+    /**
+     * Restarts the manager or cluster
+     */
     async restart() {
       try {
         const result = await this.restartService.restart()
-        this.toast(result)
+        this.notification.showSimpleToast(result)
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
       }
     }
 
@@ -341,7 +353,14 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     closeRestartConfirmation() {
       this.scope.restartAndApply = false
-    }    
+    }
+
+    /**
+     * Enables save button  
+     */
+    enableSave() {
+      this.scope.overwrite = false
+    }
 
   }
   app.controller('managerRulesetCtrl', Ruleset)
