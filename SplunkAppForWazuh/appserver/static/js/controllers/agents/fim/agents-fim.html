@@ -42,6 +42,45 @@
   <div ng-show='!showFiles'>
     <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
     <!-- first row  -->
+    <div id="row1" layout="row">
+      <div flex="33">
+        <!-- first row - first vis -->
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top new files
+              <span class="wz-text-link" style="float:right;" ng-click="expand(6,'topNewFiles')"><i class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topNewFiles'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+      <div flex="33">
+        <!-- first row - second vis -->
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top modified files
+              <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topModifiedFiles')"><i class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topModifiedFiles'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+      <div flex="33">
+        <!-- first row - third vis -->
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top deleted files
+              <span class="wz-text-link" style="float:right;" ng-click="expand(8,'topDeletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topDeletedFiles'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+    <!-- second row  -->
     <div id="row2" layout="row">
       <div flex="50">
         <!-- second row - first vis -->
@@ -56,18 +95,7 @@
         </md-card>
       </div>
       <div flex="25">
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-          <md-card-content>
-            <span class="wz-headline-title">Top group owners
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topGroupOwnersElement')"><i class="fa fa-fw fa-expand"></i></span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topGroupOwnersElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
-      <div flex="25">
-        <!-- first row - second vis -->
+        <!-- second row - second vis -->
         <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content layout='column'>
             <span class="wz-headline-title">Top user owners
@@ -78,9 +106,21 @@
           </md-card-content>
         </md-card>
       </div>
+      <div flex="25">
+        <!-- second row - third vis -->
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+          <md-card-content>
+            <span class="wz-headline-title">Top group owners
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topGroupOwnersElement')"><i class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topGroupOwnersElement'></div>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
 
-    <!-- second row  -->
+    <!-- third row  -->
     <div id="row3" layout='row'>
       <!-- third row - first vis -->
       <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
@@ -102,19 +142,10 @@
           <div id='rootUserFileChangesElement'></div>
         </md-card-content>
       </md-card>
-      <!-- second row - third vis -->
-      <!--<md-card flex="33" class="wz-md-card">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">World writable modified files</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='wordWritableFilesElement'></div>
-        </md-card-content>
-      </md-card>-->
     </div>
 
-    <!-- third row  -->
-    <div id="row5" layout='row'>
-
+    <!-- fourth row  -->
+    <div id="row4" layout='row'>
       <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Events summary

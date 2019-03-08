@@ -153,6 +153,30 @@ define([
           '$result$',
           this.scope,
           'Events Summary'
+        ),
+        new PieChart(
+          'topNewFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topNewFiles',
+          this.scope
+        ),,
+        new PieChart(
+          'topModifiedFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topModifiedFiles',
+          this.scope
+        ),,
+        new PieChart(
+          'topDeletedFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topDeletedFiles',
+          this.scope
         )
       ]
 
@@ -182,6 +206,9 @@ define([
           'File integrity monitoring',
           this.filters,
           [
+            'topNewFiles',
+            'topModifiedFiles',
+            'topDeletedFiles',
             'eventsOverTimeElement',
             'topGroupOwnersElement',
             'topUserOwnersElement',
