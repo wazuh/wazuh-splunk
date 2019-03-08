@@ -227,7 +227,7 @@
             </button>
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" extra-limit="true" keys="['file','size','inode','gname','uname','perm','sha1','sha256','uid','gid','mtime','md5']">
+            <wazuh-table flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" extra-limit="true" keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']">
             </wazuh-table>
           </div>
           <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">

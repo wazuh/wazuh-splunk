@@ -256,9 +256,11 @@ define([
               $scope.wazuhTableLoading = false
               $scope.$emit('loadedTable')
               if (!$scope.$$phase) $scope.$digest()
+              console.log($("table"))
               $("table").colResizable({
-                liveDrag:true,
-                draggingClass: false
+                liveDrag: true,
+                draggingClass: false,
+                partialRefresh: true
               })
             } catch (error) {
               $scope.wazuhTableLoading = false
@@ -437,43 +439,65 @@ define([
           }
 
           $scope.cancelRemoveFile = () => {
-            $scope.removingFile = false
+            $scope.removingGroup = null
+            return init()
           }
+
+          $scope.editGroup = group => {
+            $scope.$emit('openGroupFromList', { group })
+          }
+
+          $scope.isPolicyMonitoring = () => {
+            return instance.path.includes('sca') && instance.path.includes('/checks')
+          }
+
+          $scope.isSyschecks = () => {
+            return instance.path.startsWith('/syscheck')
+          }
+
+          $scope.expandItem = item => {
+            if (item.expanded) item.expanded = false
+            else {
+              $scope.pagedItems[$scope.currentPage].map(item => item.expanded = false)
+              item.expanded = true
+            }
+          }
+
 
           /**
            * Show a checkbox for each key to show or hide it
            */
           const cleanKeys = () => {
-            $scope.cleanKeys = {}
-            $scope.keys.map(key => {
-              const k = key.value || key
-              $scope.cleanKeys[k] = true
-            })
-          }
+              $scope.cleanKeys = {}
+              $scope.keys.map(key => {
+                const k = key.value || key
+                $scope.cleanKeys[k] = true
+              })
+            }
 
-          cleanKeys()
+            cleanKeys()
 
-          $scope.getEquivalence = key => {
-            return $scope.keyEquivalence[key]
-          }
+            $scope.getEquivalence = key => {
+              return $scope.keyEquivalence[key]
+            }
 
-          $scope.showCheckbox = () => {
-            $scope.showingChecks = !$scope.showingChecks
-          }
+            $scope.showCheckbox = () => {
+              $scope.showingChecks = !$scope.showingChecks
+            }
 
-          $scope.switchKey = (key) => {
-            $scope.cleanKeys[key] = !$scope.cleanKeys[key]
-          }
+            $scope.switchKey = (key) => {
+              $scope.cleanKeys[key] = !$scope.cleanKeys[key]
+            }
 
-          $scope.showKey = (item) => {
-            const it = item.value || item
-            return $scope.cleanKeys[it]
-          }
+            $scope.showKey = (item) => {
+              const it = item.value || item
+              return $scope.cleanKeys[it]
+            }
 
-        },
-        templateUrl:
+          },
+            templateUrl:
           BASE_URL +
-          '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
-      }
-    })
+            '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
+        }
+      })
   })

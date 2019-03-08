@@ -389,6 +389,9 @@ div.uil-ring-css {
   margin-left: 20px;
 }
 
+.wz-margin-12 {
+  margin: 12px;
+}
 /* Custom buttons styles */
 
 .wz-button {
@@ -1090,5 +1093,5 @@ div.inline {
 }
 
 table >thead th:not(:first-child){
-  border-left: 1px dashed #ddd;
+  border-left: 1px dashed #dfeff8;
 }
