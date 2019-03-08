@@ -52,7 +52,7 @@ define([
       this.reportingService = $reportingService
       this.osquery = osquery
       this.currentDataService.addFilter(
-        `{"rule.groups":"osquery", "implicit":true}`
+        `{"rule.groups{}":"osquery", "implicit":true}`
       )
       this.scope.expandArray = [false,false,false,false,false]
             this.scope.expand = (i,id) => this.expand(i,id)

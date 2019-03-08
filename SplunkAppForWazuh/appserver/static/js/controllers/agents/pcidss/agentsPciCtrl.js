@@ -108,7 +108,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups{}`,
           'groupsVizz',
           this.scope
         ),

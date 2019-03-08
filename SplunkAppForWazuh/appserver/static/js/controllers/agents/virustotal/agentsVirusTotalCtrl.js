@@ -34,7 +34,7 @@ define([
       this.scope = $scope
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
-        `{"rule.groups":"virustotal", "implicit":true}`
+        `{"rule.groups{}":"virustotal", "implicit":true}`
       )
       this.agent = agent
       this.scope.expandArray = [false,false,false,false,false]
