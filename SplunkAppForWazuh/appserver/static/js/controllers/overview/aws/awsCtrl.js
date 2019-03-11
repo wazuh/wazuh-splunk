@@ -33,9 +33,11 @@ define([
       $currentDataService,
       $state,
       $notificationService,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.urlTokenModel = $urlTokenModel
       this.state = $state
       this.notification = $notificationService
