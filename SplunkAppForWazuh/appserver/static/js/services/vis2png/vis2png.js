@@ -34,11 +34,11 @@ define(['../module', 'domToImg'], function(app, domToImg) {
               .getElementById(currentValue)
               .parentElement.getElementsByTagName('span')[0].innerHTML
               
-            //tmpNode.parent().parent().parent().addClass("fullscreen")  //adds fullscreen class to the md-card where the vis is
-            if (title.search('<span')) title = title.substring(0, title.search('<span'))
-            const classes = document
-              .getElementById(currentValue)
-              .className.split(' ')
+            if (title.search('<span')) title = title.substring(0, title.search('<span')) {
+              const classes = document
+                .getElementById(currentValue)
+                .className.split(' ')
+            }
             try {
               if (!classes.includes('table')) {
                 const tmpResult = await domToImg.toPng(tmpNode[0],{'width':tmpNode.width(),'height':tmpNode.height()})
@@ -54,10 +54,9 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 })
               }
             } catch (error) {
-              console.error('error converting ', error)
+              console.error('Error', error.message || error)
             } // eslint-disable-line
             
-            //tmpNode.parent().parent().parent().addClass("fullscreen")  //removes fullscreen class to the md-card where the vis is
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100
