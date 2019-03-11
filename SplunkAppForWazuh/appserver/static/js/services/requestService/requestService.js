@@ -109,7 +109,7 @@ define(['../module'], function(module) {
           if (result.data.error === 1905) {
             return result
           } else {
-            throw new Error(result.data.message || 'Cannot send file.')
+            throw new Error(result.data.message || result.data.error || 'Cannot send file.')
           }
         }
         return result

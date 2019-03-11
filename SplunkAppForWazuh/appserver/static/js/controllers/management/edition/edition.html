@@ -13,14 +13,14 @@
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
     <button style="height: 30px;" ng-if="isAdmin" ui-sref="mg-conf" class='btn btn-info wz-margin-left-10'>Cancel</button>
-    <button style="height: 30px;" ng-if="isAdmin && !saveIncomplete" ng-disabled='xmlHasErrors' ng-click='saveOssecConfig()' class='btn wz-button pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && isAdmin'><i aria-hidden='true' class='fa fa-fw fa-save'></i>Save
-        file</span>
+    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='saveOssecConfig()'
+      class='btn wz-button pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && isAdmin'>
+        <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
+        Save file</span>
       <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
-    <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
-
     <span class="flex"></span>
 
     <!-- Restart if saved without errors-->
