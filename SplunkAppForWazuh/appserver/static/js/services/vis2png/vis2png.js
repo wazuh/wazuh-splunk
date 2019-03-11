@@ -31,11 +31,13 @@ define(['../module', 'domToImg'], function(app, domToImg) {
           visArray.map(async currentValue => {
             const tmpNode = $("#"+currentValue + " .panel-body")
             let title = document
+            let classes = ''
               .getElementById(currentValue)
               .parentElement.getElementsByTagName('span')[0].innerHTML
               
-            if (title.search('<span')) title = title.substring(0, title.search('<span')) {
-              const classes = document
+            if (title.search('<span')) {
+              title = title.substring(0, title.search('<span')) 
+              classes = document
                 .getElementById(currentValue)
                 .className.split(' ')
             }
