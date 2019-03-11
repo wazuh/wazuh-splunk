@@ -28,9 +28,9 @@
           ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
-        <button ng-click="switchFiles()" ng-if="!rulesFiles" class='btn wz-button pull-right files-button'><i class="fa fa-files-o" aria-hidden="true"></i>
+        <button ng-click="switchFiles()" ng-if="!rulesetFiles" class='btn wz-button pull-right files-button'><i class="fa fa-files-o" aria-hidden="true"></i>
           Show rules files</button>
-        <button ng-click="switchFiles()" ng-if="rulesFiles" class='btn wz-button pull-right files-button'><i class="fa fa-list" aria-hidden="true"></i>
+        <button ng-click="switchFiles()" ng-if="rulesetFiles" class='btn wz-button pull-right files-button'><i class="fa fa-list" aria-hidden="true"></i>
           Show rules</button>
       </div>
       <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
@@ -76,13 +76,13 @@
     </md-chip>
   </md-chips>
   <div layout="row" layout-padding>
-    <wazuh-table ng-if="!localFilter && !rulesFiles" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
-    <wazuh-table ng-if="localFilter && !rulesFiles" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+    <wazuh-table ng-if="localFilter && !rulesetFiles" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
       allow-click="true" rows-per-page="14">
     </wazuh-table>
-    <wazuh-table admin-mode="adminMode" ng-if="rulesFiles" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
+    <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
       keys="['file']" rows-per-page="[16,13,11]">
     </wazuh-table>
   </div>

@@ -19,7 +19,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       $restartService,
-      isAdmin
+      isAdmin,
+      $fileEditor
     ) {
       super(
         $scope,
@@ -29,7 +30,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
-        $restartService
+        $restartService,
+        $fileEditor
       )
       this.scope.typeFilter = 'all'
       this.isAdmin = isAdmin
@@ -48,8 +50,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveRuleConfig = (fileName, dir, overwrite) => this.saveRuleConfig(fileName, dir, overwrite)
-      this.scope.closeEditingFile = () => this.closeEditingFile()
-      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
 
       this.scope.selectedNavTab = 'decoders'
 
@@ -94,32 +94,16 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      * Open the editor for a new file
      */
     addNewFile() {
+      console.log("add new file dec executed")
       this.scope.overwrite = false
       this.scope.addingNewFile = true
       this.scope.editingFile = {
         file: ``,
         dir: `decoders`
       }
-      this.scope.addingNewFile = true
       this.scope.fetchedXML = `<!-- Configure your local decoders here -->`
-    }
-
-    /**
-     * Edit rules and decoders functions
-     */
-    closeEditingFile() {
-      this.scope.editingFile = false
-      this.scope.addingNewFile = false
-      this.scope.fetchedXML = ''
-    }
-
-    /**
-     * Check if XML is valid
-     * @param {Boolean} valid 
-     */
-    xmlIsValid(valid) {
-      this.scope.xmlHasErrors = valid
-      this.scope.$applyAsync()
+      console.log("this.scop.fetchedXml ", this.scope.fetchedXML)
+      console.log("this.scope.addingNewFile ", this.scope.addingNewFile)
     }
 
     /**

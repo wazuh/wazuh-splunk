@@ -81,6 +81,7 @@ define(['../../module', 'FileSaver'], function (app) {
      * On controller load
      */
     initialize() {
+      this.scope.rulesetFiles = false
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
         : delete window.localStorage.decoders
@@ -102,6 +103,8 @@ define(['../../module', 'FileSaver'], function (app) {
 
       this.scope.enableSave = () => this.enableSave()
 
+      this.scope.switchFiles = () => this.switchFiles()
+
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.saveFile = file => this.saveFile(file)
@@ -122,6 +125,13 @@ define(['../../module', 'FileSaver'], function (app) {
       this.scope.$on('editFile', (ev, params) => {
         this.editFile(params.file, params.path)
       })
+    }
+
+    /**
+     * Switch between rules or files table
+     */
+    switchFiles() {
+      this.scope.rulesetFiles = !this.scope.rulesetFiles
     }
 
     /**

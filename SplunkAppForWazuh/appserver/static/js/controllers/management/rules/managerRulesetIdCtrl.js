@@ -91,6 +91,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
 
     async closeEditingFile() {
       try {
+        this.scope.restartAndApply = false
         //Refresh rule info
         const result = await this.requestService.apiReq(`/rules/${this.scope.ruleInfo.id}`)
         if (result.data.data.totalItems === 0) {  

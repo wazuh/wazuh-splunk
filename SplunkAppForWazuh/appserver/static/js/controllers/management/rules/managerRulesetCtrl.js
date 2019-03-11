@@ -40,7 +40,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
-      this.scope.rulesFiles = false
       this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
@@ -49,8 +48,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.saveRuleConfig = (fileName, dir, overwrite) => this.saveRuleConfig(fileName, dir, overwrite)
 
       this.scope.selectedNavTab = 'rules'
-
-      this.scope.switchFiles = () => this.switchFiles()
 
       this.scope.$on('loadedTable', () => {
         try {
@@ -109,12 +106,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       }
     }
 
-    /**
-     * Switch between rules or files table
-     */
-    switchFiles() {
-      this.scope.rulesFiles = !this.scope.rulesFiles
-    }
   }
   controllers.controller('managerRulesetCtrl', Rules)
   return Rules
