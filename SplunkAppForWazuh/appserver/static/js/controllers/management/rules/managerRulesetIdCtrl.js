@@ -68,7 +68,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
-      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.editRule = fileName => this.editRule(fileName)
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
@@ -103,11 +102,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       }
       this.scope.editingFile = false
       this.scope.$applyAsync()
-    }
-
-    xmlIsValid(valid) {
-      this.scope.xmlHasErrors = valid
-      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     saveRuleConfig(fileName) {

@@ -19,7 +19,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       $restartService,
-      isAdmin
+      isAdmin,
+      $fileEditor
     ) {
       super(
         $scope,
@@ -29,7 +30,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
-        $restartService
+        $restartService,
+        $fileEditor
       )
       this.isAdmin = isAdmin
     }
@@ -38,16 +40,17 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
      * On controller load
      */
     $onInit() {
+      this.scope.rulesFiles = false
       this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveRuleConfig = (fileName, dir, overwrite) => this.saveRuleConfig(fileName, dir, overwrite)
-      this.scope.closeEditingFile = () => this.closeEditingFile()
-      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
 
       this.scope.selectedNavTab = 'rules'
+
+      this.scope.switchFiles = () => this.switchFiles()
 
       this.scope.$on('loadedTable', () => {
         try {
@@ -69,31 +72,12 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
      */
     addNewFile() {
       this.scope.overwrite = false
-      this.scope.addingNewFile = true
       this.scope.editingFile = {
         file: ``,
         dir: `rules`
       }
       this.scope.addingNewFile = true
       this.scope.fetchedXML = `<!-- Configure your local rules here -->`
-    }
-
-    /**
-     * Edit rules and decoders functions
-     */
-    closeEditingFile() {
-      this.scope.editingFile = false
-      this.scope.addingNewFile = false
-      this.scope.fetchedXML = ''
-    }
-
-    /**
-     * Check if XML is valid
-     * @param {Boolean} valid 
-     */
-    xmlIsValid(valid) {
-      this.scope.xmlHasErrors = valid
-      this.scope.$applyAsync()
     }
 
     /**
@@ -125,6 +109,12 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       }
     }
 
+    /**
+     * Switch between rules or files table
+     */
+    switchFiles() {
+      this.scope.rulesFiles = !this.scope.rulesFiles
+    }
   }
   controllers.controller('managerRulesetCtrl', Rules)
   return Rules
