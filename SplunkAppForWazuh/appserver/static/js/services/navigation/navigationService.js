@@ -9,9 +9,9 @@ define(['../module'], function (module) {
       
       this.$window.onpopstate = function (event) {
         try {
-          var lastState = sessionStorage.history.split(',')
+          let lastState = sessionStorage.history.split(',')
 
-          var newHistory = lastState[0]
+          let newHistory = lastState[0]
           if (lastState.length > 1) { // if there are previous states
             for (var i = 1; i < lastState.length - 2; i++) {
               newHistory += ',' + lastState[i]
@@ -45,16 +45,17 @@ define(['../module'], function (module) {
         if (!sessionStorage.history) {
           sessionStorage.history = url
         } else {
-          var history = sessionStorage.history.split(',')
+          const history = sessionStorage.history.split(',')
           history.push(url)
-          var newHistory = history[0]
+          let newHistory = history[0]
+          const len = history.length
           if (history.length < 20) {
-            for (var i = 1; i < history.length; i++) {
+            for (let i = 1; i < len; i++) {
               if (history[i - 1] !== history[i])
                 newHistory += ',' + history[i]
             }
           } else {
-            for (var i = 11; i < history.length; i++) {
+            for (let i = 11; i < len; i++) {
               if (history[i - 11] !== history[i])
                 newHistory += ',' + history[i]
             }
@@ -79,7 +80,7 @@ define(['../module'], function (module) {
     * */
     manageState(){
       try{
-        var url_params = this.$location.search()
+        const url_params = this.$location.search()
         if(url_params.currentTab){
           this.$state.go(url_params.currentTab)
         } else{
@@ -91,7 +92,7 @@ define(['../module'], function (module) {
     }
 
     getLastState() {
-      if (sessionStorage.params) return sessionStorage.params
+      return sessionStorage.params || undefined
     }
 
     setCurrentAgent(currentAgentId) {
@@ -99,7 +100,7 @@ define(['../module'], function (module) {
     }
 
     getCurrentAgent() {
-      if (sessionStorage.currentAgent) return sessionStorage.currentAgent
+      return sessionStorage.currentAgent || undefined
     }
 
     setCurrentDevTools(current) {
