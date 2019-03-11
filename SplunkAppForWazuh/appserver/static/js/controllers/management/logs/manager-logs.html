@@ -71,7 +71,7 @@
   <!-- End Filters and Realtime button section -->
 
   <!-- Logs section -->
-  <div layout="row" layout-padding ng-if="logsPath" ng-hide="true">
+  <div  layout="row" layout-padding ng-if="logsPath" ng-hide="true">
     <wazuh-table flex extra-limit="100" path="logsPath" implicit-sort="'timestamp'" keys="['timestamp',{value:'tag',size:2},'level',{value:'description',size:4,nosortable:true}]"
       rows-per-page="15">
     </wazuh-table>

@@ -32,6 +32,9 @@ define(['../../module', 'FileSaver'], function (app) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
+      this.scope.$on('scrolledToBottom', (event, parameters) =>
+        this.scope.$broadcast('increaseLogs',parameters)
+      )
     }
 
     /**
@@ -164,7 +167,7 @@ define(['../../module', 'FileSaver'], function (app) {
       }
       return
     }
-
+    
     /**
      * Changes the cluster node
      * @param {String} node

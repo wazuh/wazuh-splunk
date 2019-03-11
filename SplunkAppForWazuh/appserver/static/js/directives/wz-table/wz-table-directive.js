@@ -135,7 +135,7 @@ define([
                 $scope.emptyResults || 'Empty results for this table.'
             }
             const result = await instance.fetch(options)
-            items = options.realTime ? result.items.slice(0, 10) : result.items
+            items = result.items
             $scope.time = result.time
             $scope.totalItems = items.length
             $scope.items = items
@@ -196,6 +196,7 @@ define([
             fetch,
             $notificationService
           )
+          
 
         /**
          * Filters API results
@@ -219,7 +220,7 @@ define([
           try {
             $scope.error = false
             while (realTime) {
-              await fetch({ realTime: true, limit: 10 })
+              await fetch({ realTime: true, limit: $scope.maxLogs })
               if (!$scope.$$phase) $scope.$digest()
               await $timeout(1000)
             }
@@ -282,14 +283,18 @@ define([
         $scope.prevPage = () => pagination.prevPage($scope)
         $scope.nextPage = async currentPage =>
           pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-        $scope.setPage = function() {
-          $scope.currentPage = this.n
-          $scope.nextPage(this.n)
-        }
+        $scope.setPage = function (page = false) {
+          $scope.currentPage = page || this.n;
+          $scope.nextPage(this.n);
+        };
 
         /**
          * Event listeners
          */
+        $scope.$on('increaseLogs', async(event,parameters) =>{
+          $scope.setPage(parseInt(parameters.lines / $scope.itemsPerPage));
+        })
+
         $scope.$on('wazuhUpdateInstancePath', (event, parameters) =>
           listeners.wazuhUpdateInstancePath(parameters, instance, init)
         )

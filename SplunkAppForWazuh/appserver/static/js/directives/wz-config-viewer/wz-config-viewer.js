@@ -66,8 +66,19 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
             gutters: ['CodeMirror-foldgutter']
           }
         )
+        bindXmlListener();
       }
 
+      const bindXmlListener = () => {
+        var scrollElement = $scope.xmlCodeBox.getScrollerElement();
+        $(scrollElement).bind('scroll', function (e) {
+          var element = $(e.currentTarget)[0];
+          if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+            $scope.$emit('scrolledToBottom',{ lines: $scope.xmlCodeBox.lineCount() })
+
+          }
+        });
+      }
       const init = () => {}
 
       const refreshJsonBox = json => {
