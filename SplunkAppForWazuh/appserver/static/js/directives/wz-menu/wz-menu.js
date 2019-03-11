@@ -32,8 +32,9 @@ define(['../module'], function(directives) {
           $scope.menuNavItem = 'discover'
           $scope.$broadcast('stateChanged', 'discover')
           if (!$scope.$$phase) $scope.$digest()
+          const index = $currentDataService.getIndex().index || 'wazuh'
           //Generate url
-          let url = `${BASE_URL}/app/search/search?q=index=wazuh`
+          let url = `${BASE_URL}/app/search/search?q=index=${index}`
           localStorage.setItem('urlDiscover', url)
           $state.go('discover', { fromDashboard: false })
         }
