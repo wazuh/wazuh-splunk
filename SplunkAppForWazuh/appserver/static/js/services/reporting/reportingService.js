@@ -86,6 +86,7 @@ define(['../module', 'jquery'], function(module, $) {
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
         if (error === 'Impossible fetch visualizations') {
           this.notification.showErrorToast(`Reporting error: ${error}.`)
         } else {
