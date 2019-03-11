@@ -10,12 +10,12 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'splunkjs/mvc'], function(module) {
+define(['../module', 'splunkjs/mvc'], function (module) {
   'use strict'
   /**
    * Class that handles dynamic table methods
    */
-  module.service('$dataService', function($requestService) {
+  module.service('$dataService', function ($requestService) {
     return class DataFactory {
       /**
        * Class constructor
@@ -100,27 +100,33 @@ define(['../module', 'splunkjs/mvc'], function(module) {
 
           // Fetch next <limit> items
           const firstPage = await $requestService.apiReq(this.path, parameters)
-          
-          this.items = this.items.filter(item => !!item)
-          this.items.push(...firstPage.data.data.items)
 
-          const totalItems = firstPage.data.data.totalItems
+          if (firstPage.data.error) {
+            this.busy = false
+            return Promise.reject(firstPage.data.message)
+          } else {
+            this.items = this.items.filter(item => !!item)
+            this.items.push(...firstPage.data.data.items)
 
-          const remaining =
-            this.items.length === totalItems
-              ? 0
-              : totalItems - this.items.length
+            const totalItems = firstPage.data.data.totalItems
 
-          // Ignore manager as an agent, once the team solves this issue, review this line
-          if (this.path === '/agents')
-            this.items = this.items.filter(item => item.id !== '000')
+            const remaining =
+              this.items.length === totalItems
+                ? 0
+                : totalItems - this.items.length
 
-          if (remaining > 0) this.items.push(...Array(remaining).fill(null))
+            // Ignore manager as an agent, once the team solves this issue, review this line
+            if (this.path === '/agents')
+              this.items = this.items.filter(item => item.id !== '000')
 
-          const end = new Date()
-          const elapsed = (end - start) / 1000
-          this.busy = false
-          return { items: this.items, time: elapsed }
+            if (remaining > 0) this.items.push(...Array(remaining).fill(null))
+
+            const end = new Date()
+            const elapsed = (end - start) / 1000
+            this.busy = false
+            return { items: this.items, time: elapsed }
+
+          }
         } catch (error) {
           this.busy = false
           return Promise.reject(error)
