@@ -36,7 +36,7 @@
       <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
         <a ng-click="addNewFile()">Add new rule file <i aria-hidden="true" class="fa fa-plus"></i></a>
         <span flex="" class="flex"></span>
-        <md-switch class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
+        <md-switch  ng-show="!rulesetFiles" class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
           <div class="md-label">Only custom rules</div>
         </md-switch>
       </md-card-actions>
