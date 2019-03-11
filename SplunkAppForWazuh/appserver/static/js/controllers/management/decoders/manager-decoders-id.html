@@ -133,15 +133,26 @@
     </div>
 
     <!-- Related decoders section -->
-    <div layout="row" ng-if="currentDecoder && !editingFile">
-      <h1 class="md-headline wz-headline">
-        <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders</h1>
-    </div>
-    <div layout="row" ng-if="currentDecoder && !editingFile" class="md-padding">
-      <wazuh-table flex path="'/decoders'" implicit-filter="[{ name:'file',value: currentDecoder.file}]" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
-        allow-click="true">
-      </wazuh-table>
-    </div>
+    <md-card class="wz-md-card" ng-if="currentDecoder && !editingFile">
+      <md-card-contents>
+        <div layout="row">
+          <h1 class="md-headline wz-headline">
+            <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders</h1>
+        </div>
+        <div layout="row" class="md-padding">
+          <wazuh-table flex path="'/decoders'" implicit-filter="[{ name:'file',value: currentDecoder.file}]" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+            allow-click="true">
+          </wazuh-table>
+        </div>
+        <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
+          <span flex></span>
+          <a class="small" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">Formatted
+            <i aria-hidden="true" class="fa fa-download"></i>
+          </a>
+        </div>
+      </md-card-contents>
+    </md-card>
+    <!-- End related decoders section -->
     <!-- XML editor for decoder -->
     <div ng-show="editingFile">
       <div layout="row" class="md-padding">
@@ -181,14 +192,6 @@
       </div>
     </div>
     <!-- End XML editor-->
-
-    <!-- End related decoders section -->
-    <div ng-show="!editingFile" layout="row" class="wz-margin-top-10">
-      <span flex></span>
-      <a class="small" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">Formatted
-        <i aria-hidden="true" class="fa fa-download"></i>
-      </a>
-    </div>
   </div>
   <!-- End rest of decoder information -->
 </div>
