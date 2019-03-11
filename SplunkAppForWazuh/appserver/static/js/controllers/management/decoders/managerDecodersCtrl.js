@@ -94,7 +94,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
      * Open the editor for a new file
      */
     addNewFile() {
-      console.log("add new file dec executed")
       this.scope.overwrite = false
       this.scope.addingNewFile = true
       this.scope.editingFile = {
@@ -102,8 +101,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         dir: `decoders`
       }
       this.scope.fetchedXML = `<!-- Configure your local decoders here -->`
-      console.log("this.scop.fetchedXml ", this.scope.fetchedXML)
-      console.log("this.scope.addingNewFile ", this.scope.addingNewFile)
     }
 
     /**
