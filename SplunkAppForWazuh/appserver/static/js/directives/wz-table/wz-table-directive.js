@@ -464,7 +464,7 @@ define([
 
           $scope.isWindows = () => {
             try {
-              const agent = $scope.$parent.$parent.$parent.agent
+              const agent = $scope.$parent.$parent.$parent.$parent.agent
               return (agent.os || {}).platform === "windows"
             } catch (error) {
               return false

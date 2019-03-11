@@ -9,7 +9,8 @@ define(['../../module', '../../../utils/config-handler'], function(
       $scope,
       $requestService,
       $beautifierJson,
-      $notificationService
+      $notificationService,
+      isAdmin
     ) {
       this.$scope = $scope
       this.errorHandler = $notificationService
@@ -26,6 +27,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.configurationSubTab = ''
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
+      this.$scope.isAdmin = isAdmin
     }
 
     $onInit() {

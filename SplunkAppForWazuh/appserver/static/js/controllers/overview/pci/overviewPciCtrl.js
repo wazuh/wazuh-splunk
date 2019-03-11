@@ -32,9 +32,11 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      pciTabs
+      pciTabs,
+      reportingEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.state = $state
       this.scope.pciTabs = (pciTabs) ? pciTabs : false
       this.reportingService = $reportingService

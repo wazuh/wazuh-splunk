@@ -41,11 +41,13 @@ define([
       $currentDataService,
       $state,
       osquery,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.urlTokenModel = $urlTokenModel
       this.notification = $notificationService
       this.tableResults = {}

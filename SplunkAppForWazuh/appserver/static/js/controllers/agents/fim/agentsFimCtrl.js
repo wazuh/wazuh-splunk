@@ -39,7 +39,8 @@ define([
       $tableFilterService,
       $csvRequestService,
       $notificationService,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.state = $state
       this.wzTableFilter = $tableFilterService
@@ -51,6 +52,7 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.showFiles = false
       this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel

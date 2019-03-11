@@ -35,9 +35,11 @@ define([
       $state,
       agent,
       $reportingService,
-      gdprTabs
+      gdprTabs,
+      reportingEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService

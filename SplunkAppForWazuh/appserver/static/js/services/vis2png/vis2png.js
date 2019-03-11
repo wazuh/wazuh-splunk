@@ -29,17 +29,21 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         let currentCompleted = 0
         await Promise.all(
           visArray.map(async currentValue => {
-            const tmpNode = this.htmlObject[currentValue]
+            const tmpNode = $("#"+currentValue + " .panel-body")
+            const classes = ''
             let title = document
               .getElementById(currentValue)
               .parentElement.getElementsByTagName('span')[0].innerHTML
-            if (title.search('<span')) title = title.substring(0, title.search('<span'))
-            const classes = document
-              .getElementById(currentValue)
-              .className.split(' ')
+              
+            if (title.search('<span')) {
+              title = title.substring(0, title.search('<span')) 
+              classess = document
+                .getElementById(currentValue)
+                .className.split(' ')
+            }
             try {
               if (!classes.includes('table')) {
-                const tmpResult = await domToImg.toPng(tmpNode[0])
+                const tmpResult = await domToImg.toPng(tmpNode[0],{'width':tmpNode.width(),'height':tmpNode.height()})
                 if (tmpResult === 'data:,') {
                   return Promise.reject('Impossible fetch visualizations')
                 }
@@ -52,8 +56,9 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 })
               }
             } catch (error) {
-              console.error('error converting ', error)
+              console.error('Error', error.message || error)
             } // eslint-disable-line
+            
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100

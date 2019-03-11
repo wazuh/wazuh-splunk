@@ -22,9 +22,10 @@ define(['../module'], function (module) {
 
     async sendConfiguration(file, dir, node, content, overwrite = false) {
       try {
-        const path = dir ? `${dir}/${file}` : file
+        let path = dir ? `${dir}/${file}` : file
+        path = path.startsWith('etc/') ? path : `etc/${path}`
         node = node ? `cluster/${node}` : 'manager'
-        const url = overwrite ? `/${node}/files?path=etc/${path}&overwrite=true` : `/${node}/files?path=etc/${path}`
+        const url = overwrite ? `/${node}/files?path=${path}&overwrite=true` : `/${node}/files?path=${path}`
         const result = await this.sendConfig(url, content)
         if (
           !result ||
@@ -46,9 +47,10 @@ define(['../module'], function (module) {
 
     async getConfiguration(file, dir, node) {
       try {
-        const path = dir ? `${dir}/${file}` : file
+        let path = dir ? `${dir}/${file}` : file
+        path = path.startsWith('etc/') ? path : `etc/${path}`
         node = node ? `cluster/${node}` : 'manager'
-        const url = `/${node}/files?path=etc/${path}`
+        const url = `/${node}/files?path=${path}`
         const result = await this.getConfig(url)
         if (
           !result ||

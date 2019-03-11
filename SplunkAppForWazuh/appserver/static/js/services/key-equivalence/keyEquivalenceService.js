@@ -75,7 +75,9 @@ define(['../module'], function(module) {
           gid: 'Group ID',
           mtime: 'Last modified',
           date: 'Date',
-          expanded: 'Expanded'
+          expanded: 'Expanded',
+          title: 'Title',
+          result: 'Result'
         }
       }
     }
