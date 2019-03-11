@@ -76,9 +76,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Adapted Wazuh icon for multiple browsers where it was gone ([#475](https://github.com/wazuh/wazuh-splunk/pull/475)).
 
 
-=======================================
-=======================================
-
 ## Wazuh v3.8.2 - Splunk Enterprise v7.2.3 - Splunk app v3.8.2-rev-22
 
 ### Added
