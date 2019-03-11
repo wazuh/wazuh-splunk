@@ -1114,3 +1114,9 @@ th.w-350 {
 .medium-text {
   font-size: 17px;
 }
+
+.files-button {
+  padding-left: 10px;
+  margin-left: 20px;
+  height: 32px;
+}
