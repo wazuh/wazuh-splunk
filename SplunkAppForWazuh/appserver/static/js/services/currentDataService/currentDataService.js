@@ -166,6 +166,20 @@ define(['../module'], function (module) {
       }
 
     }
+    
+    /*
+     * Gets reporting status
+     */
+     const getReportingStatus = async () => {
+       try {
+         const id = getApi()['_key']
+         const result = await getExtensionsById(id)
+         const status = result.reporting === 'true'
+         return status
+       } catch (error) {
+         return true
+       }
+     }
 
     return {
       getPollintState: getPollintState,
@@ -198,7 +212,9 @@ define(['../module'], function (module) {
       getExtensionsById: getExtensionsById,
       setExtensions: setExtensions,
       addApi: addApi,
-      isAdmin: isAdmin
+      isAdmin: isAdmin,
+      getReportingStatus: getReportingStatus,
+      addApi: addApi
     }
   })
 })

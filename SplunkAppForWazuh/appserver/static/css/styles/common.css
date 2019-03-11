@@ -974,7 +974,7 @@ md-toast {
   padding-right: 10px;
 }
 
-.wz-text-truncatable {
+.wz-text-truncatable-ellipsis {
   white-space: nowrap;
   overflow: hidden;
   max-width: 1px;
@@ -1007,6 +1007,45 @@ span.wrong {
 
 .boldText {
   font-weight: bold;
+}
+
+.expandedDiv {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.pExpanded {
+  margin-bottom: -10px;
+  margin-top: 2px;
+  color: #696565;
+}
+
+.blueLeftBorder {
+  border-left: 3px solid #0079a5;
+}
+
+.backgroundSky {
+  background: #ebf6ff;
+}
+
+.tSize16 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.noBorderBottom {
+  border-bottom: none !important;
+}
+
+.littleStat {
+  height: 8px !important;
+  width: 8px !important;
+  display: inline-flex;
+  margin-right: -4px;
+}
+
+.table-width-id{
+  width: 20px !important;
 }
 
 .daemons-card {
