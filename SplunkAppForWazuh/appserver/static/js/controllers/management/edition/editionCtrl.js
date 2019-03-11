@@ -24,7 +24,6 @@ define(['../../module'], function (controllers) {
       try {
         this.scope.restartAndApply = false
         this.scope.restartInProgress = false
-        this.scope.editingConfig = true //Hides edit config button from parent abstract state
         this.scope.editingNode = false
         this.scope.editNode = (nodeName) => this.editNode(nodeName)
         this.scope.cancelEditNode = () => this.cancelEditNode()

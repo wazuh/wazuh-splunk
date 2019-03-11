@@ -337,7 +337,23 @@ define(['../module'], function (module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('mg-conf')
           },
-          controller: 'configurationCtrl'
+          controller: 'configurationCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  const id = $currentDataService.getApi().id
+                  const extensions = await $currentDataService.getExtensionsById(
+                    id
+                  )
+                  return extensions['admin'] === 'true'
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
         })
 
         // Manager - EditConfig

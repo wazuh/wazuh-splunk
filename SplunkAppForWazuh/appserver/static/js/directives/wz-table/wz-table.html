@@ -87,9 +87,17 @@
         </td>
         <!-- Remove files -->
         <td ng-if="adminMode && (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
-          <i ng-if="!removingFile" ng-click="$event.stopPropagation();showConfirmRemoveFile($event, item.file || item.name); $event.stopPropagation()"
-            class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
+          <!-- Edit icon -->
+          <i ng-if="!removingFile && path !== '/lists/files'" ng-click="editFile(item.file || item.name, item.path); $event.stopPropagation()"
+            class="fa fa-fw fa-pencil cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
             <md-tooltip md-direction="left" class="wz-tooltip">
+              Edit this file
+            </md-tooltip>
+          </i>
+          <!--Remove icon -->
+          <i ng-if="!removingFile" ng-click="showConfirmRemoveFile($event, item.file || item.name); $event.stopPropagation()"
+            class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
+            <md-tooltip md-direction="bottom" class="wz-tooltip">
               Remove this file
             </md-tooltip>
           </i>
@@ -98,10 +106,11 @@
               <span class="font-size-12 wz-padding-left-8">This file will be removed</span>
             </div>
             <div class="inline" layout="row">
-              <md-button class="cancelBtn" type="button" ng-click="$event.stopPropagation();cancelRemoveFile()"><i aria-hidden='true' class='fa fa-fw fa-close'></i>
+              <md-button class="cancelBtn" type="button" ng-click="$event.stopPropagation();cancelRemoveFile()"><i
+                  aria-hidden='true' class='fa fa-fw fa-close'></i>
                 Cancel</md-button>
-              <md-button class="agreeBtn" type="button" ng-click="$event.stopPropagation();confirmRemoveFile(item)"><i aria-hidden='true'
-                  class='fa fa-fw fa-check'></i> Confirm</md-button>
+              <md-button class="agreeBtn" type="button" ng-click="$event.stopPropagation();confirmRemoveFile(item)"><i
+                  aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
             </div>
           </div>
         </td>
