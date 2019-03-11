@@ -462,6 +462,15 @@ define([
             return instance.path.startsWith('/syscheck')
           }
 
+          $scope.isWindows = () => {
+            try {
+              const agent = $scope.$parent.$parent.$parent.agent
+              return (agent.os || {}).platform === "windows"
+            } catch (error) {
+              return false
+            }
+          }
+
           $scope.expandItem = item => {
             if (item.expanded) item.expanded = false
             else {

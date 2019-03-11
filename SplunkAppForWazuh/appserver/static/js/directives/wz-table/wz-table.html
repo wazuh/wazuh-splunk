@@ -287,7 +287,7 @@
           <md-card class="wz-margin-12">
             <table class="table wz-no-outline table-condensed">
               <tbody>
-                <tr ng-repeat="(key,value) in item">
+                <tr ng-repeat="(key,value) in item" ng-show="!isWindows() || (key !== 'inode' && key !== 'gid' && key !== 'gname')">
                   <td class="wz-width-150"><b>{{keyEquivalence[key] || key}}</b></td>
                   <td>{{value}}</td>
                 </tr>
