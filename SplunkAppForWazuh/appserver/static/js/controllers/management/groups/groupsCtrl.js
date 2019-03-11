@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(controllers) {
+define(['../../module', 'FileSaver'], function (controllers) {
   'use strict'
   class Groups {
     /**
@@ -134,6 +134,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.groupsSelectedTab = 'files';
         return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
       })
+
+      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
 
     }
 
@@ -602,6 +604,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     doSaveGroupAgentConfig() {
+      this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         group: this.scope.currentGroup.name
       })
