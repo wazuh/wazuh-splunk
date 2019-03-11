@@ -21,9 +21,9 @@
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
-        <input flex placeholder="Filter decoders..." ng-model="custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <input flex placeholder="Filter decoders..." ng-model="customSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-32" ng-click="search(custom_search)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-32" ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
         <button ng-click="switchFiles()" ng-if="!rulesetFiles" class='btn wz-button pull-right files-button'><i class="fa fa-files-o"
