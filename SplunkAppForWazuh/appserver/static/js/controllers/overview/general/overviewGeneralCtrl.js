@@ -43,12 +43,14 @@ define([
       $requestService,
       pollingState,
       $reportingService,
-      $rootScope
+      $rootScope,
+      reportingEnabled
     ) {
       this.currentDataService = $currentDataService
       this.rootScope = $rootScope
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.reportingService = $reportingService
       this.apiReq = $requestService.apiReq
       this.tableResults = {}

@@ -26,9 +26,11 @@ define([
       $state,
       $notificationService,
       osquery,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.osquery = osquery
       this.state = $state
       this.currentDataService = $currentDataService

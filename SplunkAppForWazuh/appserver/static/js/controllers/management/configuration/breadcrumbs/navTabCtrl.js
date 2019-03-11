@@ -14,21 +14,15 @@ define(['../../../module'], function (controllers) {
 
     $onInit() {
       this.scope.confirmingRestart = false
-      this.scope.editingConfig = false
       this.scope.restartInProgress = false
       this.scope.isAdmin = this.isAdmin
       this.scope.node = this.clusterEnabled ? 'cluster' : 'manager'
 
       this.scope.restart = (node) => this.restart(node)
-      this.scope.switchToEdition = () => this.switchToEdition()
       this.scope.switchRestart = () => this.switchRestart()
 
       //Listen if restart response was received
       this.scope.$on('restartResponseReceived ', () => this.scope.restartInProgress = !this.scope.restartInProgress)
-    }
-
-    switchToEdition() {
-      this.scope.editingConfig = !this.scope.editingConfig
     }
 
     async restart(node = false) {

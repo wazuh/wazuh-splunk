@@ -69,7 +69,9 @@ define(['../module'], function(module) {
           sha1: 'SHA1',
           sha256: 'SHA256',
           cis: 'CIS',
-          event: 'Event'
+          event: 'Event',
+          title: 'Title',
+          result: 'Result'
         }
       }
     }

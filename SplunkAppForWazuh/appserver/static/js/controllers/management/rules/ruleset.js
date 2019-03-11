@@ -141,22 +141,25 @@ define(['../../module', 'FileSaver'], function (app) {
      * @param {*} regex
      */
     colorRegex(regex) {
-      regex = regex.toString()
-      let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gim)
-      let coloredString = regex
-      if (valuesArray && valuesArray.length) {
-        for (let i = 0, len = valuesArray.length; i < len; i++) {
-          coloredString = coloredString.replace(
-            /\(((?!<\/span>).)*?\)(?!<\/span>)/im,
-            '<span style="color: ' +
-            this.colors[i] +
-            ' ">' +
-            valuesArray[i] +
-            '</span>'
-          )
+      if (regex) {
+        regex = regex.toString()
+        let valuesArray = regex.match(/\(((?!<\/span>).)*?\)(?!<\/span>)/gim)
+        let coloredString = regex
+        if (valuesArray && valuesArray.length) {
+          for (let i = 0, len = valuesArray.length; i < len; i++) {
+            coloredString = coloredString.replace(
+              /\(((?!<\/span>).)*?\)(?!<\/span>)/im,
+              '<span style="color: ' +
+              this.colors[i] +
+              ' ">' +
+              valuesArray[i] +
+              '</span>'
+            )
+          }
         }
+        return this.sce.trustAsHtml(coloredString)
       }
-      return this.sce.trustAsHtml(coloredString)
+      return
     }
 
     /**

@@ -91,6 +91,7 @@ define([
         : 0
 
       this.scope.searchBarModel = {
+        name: [],
         status: ['Active', 'Disconnected', 'Never connected'],
         group: groups ? groups : [],
         version: versions ? versions : [],
