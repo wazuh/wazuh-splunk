@@ -400,7 +400,7 @@ define([
         }
 
         $scope.isPolicyMonitoring = () => {
-          return instance.path.includes('configuration-assessment') && instance.path.includes('/checks')
+          return instance.path.includes('sca') && instance.path.includes('/checks')
         }
   
         $scope.expandPolicyMonitoringCheck = item => {
@@ -410,6 +410,13 @@ define([
             item.expanded = true
           }
   
+        }
+
+        /**
+         * Edits a file
+         */
+        $scope.editFile = (file, path) => {
+          $scope.$emit('editFile', {file, path})
         }
 
         /**

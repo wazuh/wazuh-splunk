@@ -13,8 +13,8 @@ define(['./module'], function (module) {
       $navigationService,
       $currentDataService
     ) {
-      //Go to last state at login
-      $navigationService.goToLastState()
+      //Go to last state or to a specified tab if "currentTab" param is specified in the url
+      $navigationService.manageState()
 
       async function checkBeforeTransition(state) {
         try {
