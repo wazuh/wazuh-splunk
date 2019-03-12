@@ -17,15 +17,15 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-        <md-button ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz" ng-click="startVis2Png()"
-          aria-label="Generate report button">
-          <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-          <md-tooltip md-direction="left" class="wz-tooltip">
-            Generate report
-          </md-tooltip>
-        </md-button>
-        <wz-discover breadcrumbs="{section: 'Overview', subSection: 'General', ref: 'overview'}"></wz-discover>
-      </div>
+      <md-button ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz"
+        ng-click="startVis2Png()" aria-label="Generate report button">
+        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Generate report
+        </md-tooltip>
+      </md-button>
+      <wz-discover breadcrumbs="{section: 'Overview', subSection: 'General', ref: 'overview'}"></wz-discover>
+    </div>
     <div style="margin-right:7px;" id='timePicker'></div>
   </div>
 
@@ -45,64 +45,95 @@
         policies</button>
     </div>
 
+    <!-- Alerts over time -->
+    <div layout="row" layout-align="center stretch" class="height-560">
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alerts over time
+            <span class="wz-text-link" style="float:right;" ng-click="expand(7,'alertsOverTime')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='alertsOverTime'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+
     <!-- First row -->
     <div layout="row" layout-align="center stretch" class="height-390">
-    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 CIS Requirements
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'cisRequirements')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='cisRequirements'></div>
-      </md-card-content>
-    </md-card>
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 CIS Requirements Passed
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5CISPassed')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5CISPassed'></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 CIS CSC Requirements Passed
+            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'top5CISCSCPassed')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5CISCSCPassed'></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 PCI DSS Requirements Passed
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5PCIDSSPassed')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5PCIDSSPassed'></div>
+        </md-card-content>
+      </md-card>
 
-    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 PCI DSS Requirements
-          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topPciDss')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='topPciDss'></div>
-      </md-card-content>
-    </md-card>
+    </div>
 
-    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Result distribution
-          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'resultDistribution')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='resultDistribution'></div>
-      </md-card-content>
-    </md-card>
-  </div>
 
-  <!-- Second row -->
-  <div layout="row" layout-align="center stretch" class="height-500">
-    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts over time
-          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsOverTime')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='alertsOverTime'></div>
-      </md-card-content>
-    </md-card>
-  </div>
+    <!-- Second row -->
+    <div layout="row" layout-align="center stretch" class="height-390">
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 CIS Requirements Failed
+            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'top5CISFailed')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5CISFailed'></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 CIS CSC Requirements Failed
+            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'top5CISCSCFailed')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5CISCSCFailed'></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 PCI DSS Requirements Failed
+            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'top5PCIDSSFailed')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5PCIDSSFailed'></div>
+        </md-card-content>
+      </md-card>
+    </div>
 
-  <!-- Third row -->
-  <div layout="row" layout-align="center stretch" class="height-560">
-    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts summary
-          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'eventsOverTimeElement')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='alertsSummary'></div>
-      </md-card-content>
-    </md-card>
-  </div>
+    <!-- Third row -->
+    <div layout="row" layout-align="center stretch" class="height-560">
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alerts summary
+            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'alertsSummary')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='alertsSummary'></div>
+        </md-card-content>
+      </md-card>
+    </div>
   </div>
   <!-- End alerts visualizations-->
 
@@ -120,7 +151,8 @@
           <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
             <defs>
-              <path id="help-a" d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z"></path>
+              <path id="help-a" d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
+              </path>
             </defs>
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#help-a" fill-rule="evenodd"></use>
           </svg>
@@ -175,7 +207,8 @@
           <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
             <defs>
-              <path id="help-a" d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z"></path>
+              <path id="help-a" d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
+              </path>
             </defs>
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#help-a" fill-rule="evenodd"></use>
           </svg>
@@ -196,7 +229,12 @@
             {{showPolicyChecks}}
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
+<<<<<<< Updated upstream
           <wazuh-table flex path="wzTablePath" row-sizes="[13,11,9]" allow-click="true" extra-limit="100" keys="['title','file','result']">
+=======
+          <wazuh-table custom-columns="true" flex path="wzTablePath" row-sizes="[13,11,9]" allow-click="true"
+            extra-limit="100" keys="['title','file','result']">
+>>>>>>> Stashed changes
           </wazuh-table>
 
         </md-card-content>
