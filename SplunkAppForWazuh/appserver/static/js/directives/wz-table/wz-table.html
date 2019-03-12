@@ -198,7 +198,7 @@
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isPolicyMonitoring()">
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }  && getWitdh(key.value || key)"
+      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }  && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
@@ -224,7 +224,7 @@
       </tr>
       <tr class="wz-word-wrap backgroundSky" ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.compliance.length > 0)"
         ng-repeat-end="">
-        <td colspan="3" style="border-top: none">
+        <td colspan="{{keys.length}}" style="border-top: none">
           <md-card>
             <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Rationale</span>
@@ -275,7 +275,7 @@
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isSyschecks()">
   <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size} && getWitdh(key.value || key)"
+      <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size} && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
         {{ keyEquivalence[key.value || key] || key.value || key }}
         <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon" ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
@@ -285,7 +285,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
         ng-click="expandItem(item)">
-        <td ng-repeat="key in keys">
+        <td ng-repeat="key in keys | filter: showKey">
           <span>
             {{
             parseValue(key,item)
