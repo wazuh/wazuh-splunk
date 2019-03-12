@@ -30,9 +30,8 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = $("#"+currentValue + " .panel-body")
-            const classes = ''
-            let title = document
             let classes = ''
+            let title = document
               .getElementById(currentValue)
               .parentElement.getElementsByTagName('span')[0].innerHTML
               
