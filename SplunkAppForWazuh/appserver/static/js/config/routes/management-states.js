@@ -257,30 +257,6 @@ define(['../module'], function (module) {
           }
         })
 
-        // Manager - Files
-        .state('mg-files', {
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/files/manager-files.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('mg-files')
-          },
-          controller: 'managerFilesCtrl',
-          params: { filters: null },
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
-              }
-            ]
-          }
-        })
-
         // Manager - Groups
         .state('mg-groups', {
           templateUrl:

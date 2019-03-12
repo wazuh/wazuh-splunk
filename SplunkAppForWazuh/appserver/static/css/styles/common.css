@@ -116,6 +116,10 @@
   padding-top: 7px;
 }
 
+.wz-padding-20 {
+  padding: 20px;
+}
+
 .wz-back-btn-absolute{
   position: absolute!important;
   top: 210px!important;
@@ -1187,4 +1191,25 @@ th.w-350 {
 
 .medium-text {
   font-size: 17px;
+}
+
+.files-button {
+  padding-left: 10px;
+  margin-left: 20px;
+  height: 32px;
+}
+
+.remove-filters {
+  padding: 10px;
+  margin-right: -30px;
+}
+
+.wz-color-text {
+  color: #006eaa;
+}
+
+.back-arrow {
+  margin-top: 4px;
+  margin-right: 12px;
+  margin-left: 5px;
 }

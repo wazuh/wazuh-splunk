@@ -15,17 +15,25 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-files" name="files">Files</md-nav-item>
 </md-nav-bar>
 
-<div ng-if="!addingNewFile">
+<div ng-if="!addingNewFile && !editingRulesetFile">
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
-        <input placeholder="Filter rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <!-- Show decoders -->
+        <span ng-if="rulesetFiles" class="back-arrow" aria-label="Back to rules list"
+          ng-click="switchFiles()">
+          <i class="fa fa-fw fa-arrow-left ng-scope" aria-hidden="true"></i>
+          <md-tooltip md-direction="right" class="wz-tooltip">
+            Back to rules
+          </md-tooltip>
+        </span>
+        <input ng-if="!rulesetFiles" placeholder="Filter rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
-          ng-click="search(customSearch)">
+        <input ng-if="rulesetFiles" placeholder="Filter rules files..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false" wz-enter="search(customSearch)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-32" ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
@@ -33,9 +41,14 @@
   </div>
   <md-card class="wz-md-card">
     <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-      <a ng-click="addNewFile()">Add new rule <i aria-hidden="true" class="fa fa-plus"></i></a>
+
+      <!-- Show files and button to add a new file -->
+      <a ng-if="rulesetFiles" ng-click="addNewFile()">Add new rules file <i aria-hidden="true" class="fa fa-plus"></i></a>
+      <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
+        Manage rules files
+      </span>
       <span flex="" class="flex"></span>
-      <md-switch class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
+      <md-switch ng-if="!rulesetFiles" class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
         <div class="md-label">Only custom rules</div>
       </md-switch>
     </md-card-actions>
@@ -73,12 +86,15 @@
         </md-chip>
       </md-chips>
       <div layout="row" layout-padding>
-        <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+        <wazuh-table ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
-        <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'"
-          keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+        <wazuh-table ng-if="localFilter && !rulesetFiles" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex
+          path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
           allow-click="true" rows-per-page="14">
+        </wazuh-table>
+        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
+          keys="['file']" rows-per-page="[16,13,11]">
         </wazuh-table>
       </div>
       <div layout="row" class="ruleset-csv-formater">
@@ -91,13 +107,14 @@
   </md-card>
 </div>
 
-<!-- XML editor for add new file-->
+<!-- XML editor for add new rule file-->
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding">
     <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
-    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)' class='btn wz-button pull-right wz-margin-left-10'>
+    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+      class='btn wz-button pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'>
-          <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
+        <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
         Save file
       </span>
       <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
@@ -122,6 +139,42 @@
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+      valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+    </wz-xml-file-editor>
+  </div>
+</div>
+
+
+<!-- XML editor for edit file-->
+<div ng-if="editingRulesetFile">
+  <div layout="row" class="md-padding">
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info wz-margin-left-5'>Cancel</button>
+    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
+      class='btn wz-button pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && adminMode'><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+          aria-hidden='true'></i>
+        Save file</span>
+      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+        XML format error</span>
+    </button>
+    <span class="flex"></span>
+
+    <!-- Restart if saved without errors-->
+    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
+      <span>Do you want to restart to apply configuration?</span>
+      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
+        class='btn wz-button pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
+    <!-- End restart button -->
+
+  </div>
+  <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
+    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingRulesetFile.file"
       valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
     </wz-xml-file-editor>
   </div>

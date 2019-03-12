@@ -90,7 +90,7 @@
         <!-- Remove files -->
         <td ng-if="adminMode && (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
           <!-- Edit icon -->
-          <i ng-if="!removingFile && path !== '/lists/files'" ng-click="editFile(item.file || item.name, item.path); $event.stopPropagation()"
+          <i ng-if="!removingFile && path !== '/lists/files'" ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path)"
             class="fa fa-fw fa-pencil cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
             <md-tooltip md-direction="left" class="wz-tooltip">
               Edit this file

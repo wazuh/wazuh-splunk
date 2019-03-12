@@ -13,11 +13,11 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function (app, PieChart, LinearChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class AgentsCA {
@@ -110,39 +110,55 @@ define([
         /**
          * Visualizations
          */
-        new PieChart(
-          'resultDistribution',
-          `${this.filters} | top data.sca.check.result`,
-          'resultDistribution',
-          this.scope
-        ),
-        new PieChart(
-          'cisRequirements',
-          `${this.filters} | top data.sca.check.compliance.cis | head 5`,
-          'cisRequirements',
-          this.scope
-        ),
-        new PieChart(
-          'topPciDss',
-          `${
-          this.filters
-          } sourcetype=wazuh | top data.sca.check.compliance.pci_dss | head 5`,
-          'topPciDss',
-          this.scope
-        ),
-        new AreaChart(
+        new LinearChart(
           'alertsOverTime',
           `${
-          this.filters
-          } | stats count by data.sca.policy | head 5`,
+            this.filters
+          } data.sca.type="summary"  | timechart count by data.sca.policy_id`,
           'alertsOverTime',
+          this.scope
+        ),
+        new PieChart(
+          'top5CISPassed',
+          `${this.filters} data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
+          'top5CISPassed',
+          this.scope
+        ),
+        new PieChart(
+          'top5CISCSCPassed',
+          `${this.filters}  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
+          'top5CISCSCPassed',
+          this.scope
+        ),
+        new PieChart(
+          'top5PCIDSSPassed',
+          `${this.filters}  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
+          'top5PCIDSSPassed',
+          this.scope
+        ),
+        new PieChart(
+          'top5CISFailed',
+          `${this.filters}  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
+          'top5CISFailed',
+          this.scope
+        ),
+        new PieChart(
+          'top5CISCSCFailed',
+          `${this.filters}  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
+          'top5CISCSCFailed',
+          this.scope
+        ),
+        new PieChart(
+          'top5PCIDSSFailed',
+          `${this.filters}  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
+          'top5PCIDSSFailed',
           this.scope
         ),
         new Table(
           'alertsSummary',
           `${
           this.filters
-          } | fields data.sca.policy, data.sca.check.result | stats count by  data.sca.policy | rename data.sca.policy as Policy, count as Count`,
+          } |  stats count(data.sca.check.rationale) as Count by data.sca.check.rationale,data.sca.check.remediation | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required"  | table Reason,"Change Required",Count`,
           'alertsSummary',
           this.scope
         ),
@@ -150,7 +166,7 @@ define([
           'alertsSummaryTable',
           `${
           this.filters
-          } | fields data.sca.policy, data.sca.check.result | stats count by  data.sca.policy | rename data.sca.policy as Policy, count as Count`,
+          } |  stats count(data.sca.check.rationale) as Count by data.sca.check.rationale,data.sca.check.remediation | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required"  | table Reason,"Change Required",Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -184,10 +200,13 @@ define([
           'Configuration assessment',
           this.filters,
           [
-            'resultDistribution',
-            'cisRequirements',
-            'topPciDss',
             'alertsOverTime',
+            'top5CISPassed',
+            'top5CISCSCPassed',
+            'top5PCIDSSPassed',
+            'top5CISFailed',
+            'top5CISCSCFailed',
+            'top5PCIDSSFailed',
             'alertsSummary'
           ],
           {}, //Metrics,

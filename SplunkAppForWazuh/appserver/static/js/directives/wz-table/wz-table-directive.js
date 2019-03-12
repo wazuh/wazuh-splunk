@@ -423,8 +423,16 @@ define([
           }
 
           /**
+           * Edits a file
+           */
+          $scope.editFile = (file, path) => {
+            $scope.$emit('editFile', { file, path })
+          }
+
+          /**
            * Removes a file
            */
+
           $scope.showConfirmRemoveFile = (ev, item) => {
             $scope.removingFile = item
           }
@@ -442,10 +450,9 @@ define([
           }
 
           $scope.cancelRemoveFile = () => {
-            $scope.removingGroup = null
+            $scope.removingFile = null
             return init()
           }
-
 
           $scope.getWitdh = key => {
             try {

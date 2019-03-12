@@ -32,12 +32,13 @@ define(['../module', 'domToImg'], function(app, domToImg) {
             const tmpNode = $("#"+currentValue + " .panel-body")
             const classes = ''
             let title = document
+            let classes = ''
               .getElementById(currentValue)
               .parentElement.getElementsByTagName('span')[0].innerHTML
               
             if (title.search('<span')) {
               title = title.substring(0, title.search('<span')) 
-              classess = document
+              classes = document
                 .getElementById(currentValue)
                 .className.split(' ')
             }
