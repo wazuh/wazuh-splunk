@@ -140,7 +140,7 @@
         <md-card class="wz-md-card">
           <md-card-contents>
             <div layout="row" ng-if="!lookingGroup" class="md-padding">
-              <wazuh-table admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'" keys="['name','count','mergedSum']"
+              <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'" keys="['name','count','mergedSum']"
                 allow-click="true" row-sizes="[14,12,10]">
               </wazuh-table>
             </div>

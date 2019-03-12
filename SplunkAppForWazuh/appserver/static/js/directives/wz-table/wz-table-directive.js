@@ -77,6 +77,8 @@ define([
           /**
            * Init variables
            */
+
+          $scope.showingChecks = false
           let realTime = false
           const instance = new $dataService($scope.path, $scope.implicitFilter, $scope.implicitSort)
           $scope.keyEquivalence = $keyEquivalenceService.equivalences()
@@ -87,6 +89,38 @@ define([
             $scope.emptyResults && typeof $scope.emptyResults === 'string'
               ? $scope.emptyResults
               : 'Empty results for this table.'
+
+          $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
+          $scope.updateColumns = key => {
+            $("#wz_table").colResizable({ disable: true })
+            const str = key
+            const cleanArray = $scope.keys.map(item => item.value || item)
+            if (cleanArray.includes(str)) {
+              const idx = cleanArray.indexOf(str)
+              if (idx > -1) {
+                $scope.keys.splice(idx, 1)
+              }
+            } else {
+              const originalIdx = $scope.originalkeys.findIndex(
+                item => (item) === (key)
+              )
+              if (originalIdx >= 0) {
+                $scope.keys.splice(originalIdx, 0, key)
+              } else {
+                $scope.keys.push(key)
+              }
+            }
+            init()
+              .then(() => ($scope.setColResizable()))
+          }
+
+
+          $scope.setColResizable = () => {
+            if ($scope.customColumns) {
+              $("#wz_table").colResizable({ liveDrag: true, minWidth: 100, partialRefresh: true, draggingClass: false })
+              $scope.$applyAsync()
+            }
+          }
 
           /**
            * Resizing. Calculate number of table rows depending on the screen height
@@ -250,19 +284,15 @@ define([
            */
           const init = async () => {
             try {
-              $scope.showingChecks = false
               $scope.error = false
-              $scope.wazuhTableLoading = true
               await fetch()
               $tableFilterService.set(instance.filters)
               $scope.wazuhTableLoading = false
               $scope.$emit('loadedTable')
               if (!$scope.$$phase) $scope.$digest()
-              $("table").colResizable({
-                liveDrag: true,
-                draggingClass: false,
-                partialRefresh: true
-              })
+              setTimeout(() => {
+                $scope.setColResizable()
+              }, 100)
             } catch (error) {
               $scope.wazuhTableLoading = false
               $scope.error = `Error while init table. ${error.message || error}.`

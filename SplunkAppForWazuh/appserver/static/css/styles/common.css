@@ -1156,7 +1156,7 @@ div.inline {
   margin-left: 0;
 }
 
-table >thead th:not(:first-child){
+.table-resizable >thead th:not(:first-child){
   border-left: 1px dashed #dfeff8;
 }
 
