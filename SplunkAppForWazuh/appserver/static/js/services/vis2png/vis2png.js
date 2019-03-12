@@ -30,6 +30,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         await Promise.all(
           visArray.map(async currentValue => {
             const tmpNode = $("#"+currentValue + " .panel-body")
+            const classes = ''
             let title = document
             let classes = ''
               .getElementById(currentValue)
@@ -70,7 +71,6 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         this.$rootScope.reportStatus = `Generating PDF document...`
         return this.rawArray
       } catch (error) {
-        console.error("err ", error)
         this.working = false
         return Promise.reject(error)
       }

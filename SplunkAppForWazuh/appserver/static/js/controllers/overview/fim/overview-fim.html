@@ -26,18 +26,9 @@
   <wazuh-bar></wazuh-bar>
   <!-- First row -->
   <div layout="row" layout-align="center stretch">
-    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with deleted files
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'deletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="deletedFiles" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-      <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with new files
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top new files
           <span class="wz-text-link" style="float:right;" ng-click="expand(1,'newFiles')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
@@ -45,19 +36,28 @@
       </md-card-content>
     </md-card>
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-      <md-card-content>
-        <span class="wz-headline-title">Top 5 agents with modified files
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top modified files
           <span class="wz-text-link" style="float:right;" ng-click="expand(2,'modifiedFiles')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id="modifiedFiles" class="dashboard-element single" style="width: 100%"></div>
       </md-card-content>
     </md-card>
+    <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Top deleted files
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'deletedFiles')"><i class="fa fa-fw fa-expand"></i></span>
+        </span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id="deletedFiles" class="dashboard-element single" style="width: 100%"></div>
+      </md-card-content>
+    </md-card>
   </div>
   <!-- Second row -->
   <div layout="row" layout-align="center stretch">
     <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">FIM Alerts volume
           <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsVolume')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -66,7 +66,7 @@
       </md-card-content>
     </md-card>
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-      <md-card-content>
+      <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Events summary
           <span class="wz-text-link" style="float:right;" ng-click="expand(4,'eventsSummary')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
@@ -75,35 +75,23 @@
       </md-card-content>
     </md-card>
   </div>
-  
+
   <div layout="row" layout-align="center stretch">
     <div flex='33' layout-align="center stretch">
       <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-        <md-card-content>
-          <span class="wz-headline-title">Top 5 rules
-            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'topRules')"><i class="fa fa-fw fa-expand"></i></span>
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 10 agents
+            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'topAgents')"><i class="fa fa-fw fa-expand"></i></span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="topRules" class="dashboard-element single" style="width: 100%"></div>
+          <div id="topAgents" class="dashboard-element single" style="width: 100%"></div>
         </md-card-content>
       </md-card>
     </div>
-    
-    <div flex='33' layout-align="center stretch">
-      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
-        <md-card-content>
-          <span class="wz-headline-title">Whodata usage
-            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'whodataUsage')"><i class="fa fa-fw fa-expand"></i></span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="whodataUsage" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-    </div>
-    
+
     <div flex='33' layout-align="center stretch">
       <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
-        <md-card-content>
+        <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Top 5 users
             <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topUsers')"><i class="fa fa-fw fa-expand"></i></span>
           </span>
@@ -112,5 +100,18 @@
         </md-card-content>
       </md-card>
     </div>
+
+    <div flex='33' layout-align="center stretch">
+      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}" style="height: 423px;">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Whodata usage
+            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'whodataUsage')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="whodataUsage" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
+    </div>
+
   </div>
 </md-content>

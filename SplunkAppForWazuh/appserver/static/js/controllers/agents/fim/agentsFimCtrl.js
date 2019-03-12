@@ -57,7 +57,7 @@ define([
       this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel
       this.currentDataService.addFilter(
-        `{"rule.groups":"syscheck", "implicit":true, "onlyShow":true}`
+        `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
       )
       this.scope.expandArray = [false,false,false,false,false,false,false,false,false]
             this.scope.expand = (i,id) => this.expand(i,id)
@@ -94,7 +94,7 @@ define([
           'eventsOverTimeElement',
           `${
             this.filters
-          } sourcetype="wazuh"  "rule.groups"="syscheck" | timechart span=12h count by rule.description`,
+          } sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement',
           this.scope
         ),
@@ -134,7 +134,7 @@ define([
           'wordWritableFilesElement',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
+          } sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement',
           this.scope
         ),
@@ -142,7 +142,7 @@ define([
           'eventsSummaryElement',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement',
           this.scope
         ),
@@ -150,11 +150,35 @@ define([
           'eventsSummaryTable',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryTableToken',
           '$result$',
           this.scope,
           'Events Summary'
+        ),
+        new PieChart(
+          'topNewFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topNewFiles',
+          this.scope
+        ),,
+        new PieChart(
+          'topModifiedFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topModifiedFiles',
+          this.scope
+        ),,
+        new PieChart(
+          'topDeletedFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topDeletedFiles',
+          this.scope
         )
       ]
 
@@ -184,6 +208,9 @@ define([
           'File integrity monitoring',
           this.filters,
           [
+            'topNewFiles',
+            'topModifiedFiles',
+            'topDeletedFiles',
             'eventsOverTimeElement',
             'topGroupOwnersElement',
             'topUserOwnersElement',
@@ -306,6 +333,17 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
 
 

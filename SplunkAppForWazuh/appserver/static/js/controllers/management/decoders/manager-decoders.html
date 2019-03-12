@@ -17,32 +17,38 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
 </md-nav-bar>
 
+
+
+
 <div ng-if="!addingNewFile && !editingRulesetFile">
   <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
-        <input flex placeholder="Filter decoders..." ng-model="customSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <input ng-if="!rulesetFiles" flex placeholder="Filter decoders..." ng-model="customSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
+        <input ng-if="rulesetFiles" flex placeholder="Filter decoders files..." ng-model="customSearch" type="text"
+          class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false" wz-enter="search(customSearch)">
         <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-32" ng-click="search(customSearch)">
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
         <button ng-click="switchFiles()" ng-if="!rulesetFiles" class='btn wz-button pull-right files-button'><i class="fa fa-files-o"
-            aria-hidden="true"></i>
-          Show decoders files</button>
+            aria-hidden="true"></i> Show decoders files
+        </button>
         <button ng-click="switchFiles()" ng-if="rulesetFiles" class='btn wz-button pull-right files-button'><i class="fa fa-list"
-            aria-hidden="true"></i>
-          Show decoders</button>
+            aria-hidden="true"></i> Show decoders
+        </button>
       </div>
-      <div>
-        <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
-          <a ng-click="addNewFile()">Add new decoder file <i aria-hidden="true" class="fa fa-plus"></i></a>
-          <span flex="" class="flex"></span>
-          <md-switch ng-show="!rulesetFiles" class="wz-switch" aria-label="Only custom decoders" ng-model="localFilter">
-            <div class="md-label">Only custom decoders</div>
-          </md-switch>
-        </md-card-actions>
-      </div>
-
+    </div>
+  </div>
+  <md-card class="wz-md-card">
+    <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+      <a ng-click="addNewFile()">Add new decoder <i aria-hidden="true" class="fa fa-plus"></i></a>
+      <span flex="" class="flex"></span>
+      <md-switch class="wz-switch" aria-label="Only custom decoders" ng-model="localFilter">
+        <div class="md-label">Only custom decoders</div>
+      </md-switch>
+    </md-card-actions>
+    <md-card-contents>
       <md-chips class="wz-chips" readonly="true" ng-show="appliedFilters.length">
         <md-chip class="wz-chip" ng-show="includesFilter('file')">
           <span>File: {{ getFilter('file') }}
@@ -55,8 +61,7 @@
           </span>
         </md-chip>
       </md-chips>
-
-      <div layout="row">
+      <div layout="row" layout-padding>
         <wazuh-table ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex path="'/decoders'"
           keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
           allow-click="true" rows-per-page="14">
@@ -69,28 +74,32 @@
           keys="['file']" rows-per-page="[16,13,11]">
         </wazuh-table>
       </div>
-      <div layout="row" class="wz-margin-top-10">
+      <div layout="row" class="ruleset-csv-formater">
         <span flex></span>
         <a class="small" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">Formatted
           <i aria-hidden="true" class="fa fa-download"></i>
         </a>
       </div>
-    </div>
-  </div>
+    </md-card-contents>
+  </md-card>
+</div>
+</div>
+</div>
+
 </div>
 
 <!-- XML editor for add new decoder file-->
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding">
     <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
-    <button ng-show="!saveIncomplete" ng-disabled='xmlHasErrors || overwrite' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
       class='btn wz-button pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
-        file</span>
+      <span ng-show='!xmlHasErrors && adminMode'>
+        <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
+        Save file</span>
       <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
-    <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
 
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
       style="margin-left: 10px;" ng-change="enableSave()">
@@ -120,14 +129,15 @@
 <div ng-if="editingRulesetFile">
   <div layout="row" class="md-padding">
     <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info wz-margin-left-5'>Cancel</button>
-    <button ng-show="!saveIncomplete" ng-disabled='xmlHasErrors || overwrite' ng-click='saveFile(editingRulesetFile.path)'
+    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
       class='btn wz-button pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
-        file</span>
+      <span ng-show='!xmlHasErrors && adminMode'><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+          aria-hidden='true'></i>
+        Save file</span>
       <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
-    <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
+    <span class="flex"></span>
 
     <!-- Restart if saved without errors-->
     <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">

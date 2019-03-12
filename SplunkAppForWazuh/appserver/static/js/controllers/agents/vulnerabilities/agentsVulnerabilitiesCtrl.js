@@ -54,7 +54,7 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
-        `{"rule.groups":"vulnerability-detector", "implicit":true, "onlyShow":true}`
+        `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )
       this.reportingService = $reportingService
       this.tableResults = {}
@@ -137,7 +137,7 @@ define([
           'alertsSeverityOverTimeVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+          } sourcetype=wazuh rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsSeverityOverTimeVizz',
           this.scope
         ),
@@ -145,7 +145,7 @@ define([
           'commonRules',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
+          } rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
           'commonRules',
           this.scope
         ),
@@ -153,7 +153,7 @@ define([
           'commonCves',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top data.vulnerability.cve limit=5`,
+          } rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
           'commonCves',
           this.scope
         ),
@@ -161,7 +161,7 @@ define([
           'severityDistribution',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top data.vulnerability.severity limit=5`,
+          } rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
           'severityDistribution',
           this.scope
         ),
@@ -193,7 +193,7 @@ define([
           'commonRulesTable',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          } rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'commonRulesTableToken',
           '$result$',
           this.scope,
@@ -327,6 +327,17 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
 
 

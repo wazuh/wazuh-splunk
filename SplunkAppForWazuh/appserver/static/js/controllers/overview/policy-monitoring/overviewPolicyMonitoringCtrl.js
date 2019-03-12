@@ -31,7 +31,7 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       $currentDataService.addFilter(
-        `{"rule.groups":"rootcheck", "implicit":true}`
+        `{"rule.groups{}":"rootcheck", "implicit":true}`
       )
       this.getFilters = $currentDataService.getSerializedFilters
       this.filters = this.getFilters()
@@ -167,6 +167,17 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
 
   }

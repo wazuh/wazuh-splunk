@@ -86,11 +86,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -128,9 +124,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -154,11 +148,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -196,9 +186,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -222,11 +210,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -246,14 +230,12 @@ define(['../module'], function (module) {
           controller: 'managerCdbIdCtrl',
           params: { name: null, path: null },
           resolve: {
-            extensions: [
+            isAdmin: [
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
-                } catch (err) {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
                   return false
                 }
               }
@@ -290,9 +272,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -315,11 +295,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -342,11 +318,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }
@@ -388,11 +360,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
                   return false
                 }

@@ -53,8 +53,8 @@
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alert level evolution
           <span class="wz-text-link" style="float:right;" ng-click="expand(0,'alertLevEvoVizz')"><i class="fa fa-fw fa-expand"></i></span>
+          <md-divider class="wz-margin-top-10"></md-divider>
         </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertLevEvoVizz'></div>
       </md-card-content>
     </md-card>
@@ -75,21 +75,21 @@
     <!-- third row - first vis -->
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 agents
-          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5AgentsVizz')"><i class="fa fa-fw fa-expand"></i></span>
+        <span class="wz-headline-title">Alerts evolution - Top 10 agents
+          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsEvoTop10Agents')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='top5AgentsVizz'></div>
+        <div id='alertsEvoTop10Agents'></div>
       </md-card-content>
     </md-card>
     <!-- third row - second vis -->
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
       <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts evolution - Top 5 agents
-          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsEvoTop5Agents')"><i class="fa fa-fw fa-expand"></i></span>
+        <span class="wz-headline-title">Top 10 rule groups
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'top10ruleGroups')"><i class="fa fa-fw fa-expand"></i></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='alertsEvoTop5Agents'></div>
+        <div id='top10ruleGroups'></div>
       </md-card-content>
     </md-card>
     <!-- third row - third vis -->
