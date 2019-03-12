@@ -50,17 +50,19 @@ define([
         $currentDataService,
         $state,
         agent,
-        $reportingService
+        $reportingService,
+        reportingEnabled
       ) {
         this.urlTokenModel = $urlTokenModel
         this.scope = $scope
+        this.scope.reportingEnabled = reportingEnabled
         this.currentDataService = $currentDataService
         this.reportingService = $reportingService
         this.tableResults = {}
         this.state = $state
         this.agent = agent
         this.currentDataService.addFilter(
-          `{"rule.groups":"oscap", "implicit":true}`
+          `{"rule.groups{}":"oscap", "implicit":true}`
         )
 
         this.scope.expandArray = [false, false, false, false, false, false, false, false]
@@ -83,7 +85,7 @@ define([
           'dropDownInput',
           `${
           this.filters
-          } sourcetype=wazuh  rule.groups!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
+          } sourcetype=wazuh  rule.groups{}!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
           'oscap.scan.profile.title',
           '$form.profile$',
           'dropDownInput',
@@ -142,7 +144,7 @@ define([
             'agentsVizz',
             `${
             this.filters
-            } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
+            } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
             'agentsVizz',
             this.scope
           ),
@@ -150,7 +152,7 @@ define([
             'profilesVizz',
             `${
             this.filters
-            } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.profile.title`,
+            } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.profile.title`,
             'profilesVizz',
             this.scope
           ),
@@ -158,7 +160,7 @@ define([
             'contentVizz',
             `${
             this.filters
-            } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.content`,
+            } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.content`,
             'contentVizz',
             this.scope
           ),
@@ -166,7 +168,7 @@ define([
             'severityVizz',
             `${
             this.filters
-            } sourcetype=wazuh oscap.check.result="fail" rule.groups!="syslog" oscap.scan.profile.title="$profile$" | top oscap.check.severity`,
+            } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top oscap.check.severity`,
             'severityVizz',
             this.scope
           ),
@@ -182,7 +184,7 @@ define([
             'top10AleertsVizz',
             `${
             this.filters
-            } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
+            } sourcetype=wazuh oscap.check.result="fail" rule.groups{}="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
             'top10AleertsVizz',
             this.scope
           ),
@@ -190,7 +192,7 @@ define([
             'top10HRAlertsVizz',
             `${
             this.filters
-            } sourcetype=wazuh oscap.check.result="fail" rule.groups="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
+            } sourcetype=wazuh oscap.check.result="fail" rule.groups{}="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
             'top10HRAlertsVizz',
             this.scope
           ),
@@ -341,6 +343,17 @@ define([
         this.scope.expandArray[i] = !this.scope.expandArray[i];
         let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
         this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+        let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+          if(this.scope.expandArray[i]){
+            this.scope.expandArray[i] = !this.scope.expandArray[i];
+            this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+            this.scope.$applyAsync()
+          }else{
+            e.preventDefault();
+          }
+        });
       }
 
     }

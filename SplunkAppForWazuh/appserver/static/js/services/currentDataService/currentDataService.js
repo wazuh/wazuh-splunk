@@ -1,7 +1,7 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
-  module.service('$currentDataService', function(
+  module.service('$currentDataService', function (
     $apiMgrService,
     $filterService,
     $navigationService,
@@ -141,6 +141,46 @@ define(['../module'], function(module) {
       }
     }
 
+    /**
+     * Checks if is admin
+     */
+    const isAdmin = async () => {
+      try {
+        const id = getApi().id
+        const extensions = await getExtensionsById(id)
+        return extensions['admin'] === 'true'
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Get extension by for the current API id
+     */
+    const getCurrentExtensions = async () => {
+      try {
+        const id = getApi()['_key']
+        return await getExtensionsById(id)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+
+    }
+    
+    /*
+     * Gets reporting status
+     */
+     const getReportingStatus = async () => {
+       try {
+         const id = getApi()['_key']
+         const result = await getExtensionsById(id)
+         const status = result.reporting === 'true'
+         return status
+       } catch (error) {
+         return true
+       }
+     }
+
     return {
       getPollintState: getPollintState,
       getBaseUrl: getBaseUrl,
@@ -168,8 +208,12 @@ define(['../module'], function(module) {
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
-      setExtensions: setExtensions,
+      getCurrentExtensions: getCurrentExtensions,
       getExtensionsById: getExtensionsById,
+      setExtensions: setExtensions,
+      addApi: addApi,
+      isAdmin: isAdmin,
+      getReportingStatus: getReportingStatus,
       addApi: addApi
     }
   })

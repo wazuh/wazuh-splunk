@@ -105,13 +105,8 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const extensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return extensions['admin'] === 'true'
+                  return await $currentDataService.isAdmin()
                 } catch (error) {
-                  console.error('err : ', error)
                   return false
                 }
               }
@@ -120,9 +115,7 @@ define(['../module'], function (module) {
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi()['_key']
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -188,6 +181,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -250,6 +247,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -293,6 +294,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -330,6 +335,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -367,6 +376,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -404,6 +417,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -441,6 +458,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -503,6 +524,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -557,6 +582,10 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -595,6 +624,10 @@ define(['../module'], function (module) {
                 }
               }
             ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+            ]
           }
         })
 
@@ -648,12 +681,16 @@ define(['../module'], function (module) {
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
-                  const result = await $requestService.apiReq(`/configuration-assessment/${id}`)
+                  const result = await $requestService.apiReq(`/sca/${id}`)
                   return result
                 } catch (err) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -708,8 +745,11 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
-
           }
         })
 
@@ -746,6 +786,10 @@ define(['../module'], function (module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })
@@ -783,6 +827,10 @@ define(['../module'], function (module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => { return await $currentDataService.getReportingStatus() }
             ]
           }
         })

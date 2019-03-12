@@ -43,12 +43,14 @@ define([
       $requestService,
       pollingState,
       $reportingService,
-      $rootScope
+      $rootScope,
+      reportingEnabled
     ) {
       this.currentDataService = $currentDataService
       this.rootScope = $rootScope
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.reportingService = $reportingService
       this.apiReq = $requestService.apiReq
       this.tableResults = {}
@@ -105,7 +107,7 @@ define([
           `searchAuthFailure`,
           `${
             this.filters
-          } sourcetype=wazuh "rule.groups"="authentication_fail*" | stats count`,
+          } sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
@@ -116,7 +118,7 @@ define([
           `searchAuthSuccess`,
           `${
             this.filters
-          } sourcetype=wazuh  "rule.groups"="authentication_success" | stats count`,
+          } sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
@@ -140,18 +142,18 @@ define([
           'alertsVizz',
           this.scope
         ),
-        new PieChart(
-          'top5AgentsVizz',
-          `${this.filters} sourcetype=wazuh | top agent.name`,
-          'top5AgentsVizz',
+        new LinearChart(
+          'alertsEvoTop10Agents',
+          `${this.filters} sourcetype=wazuh | timechart span=1h limit=10 useother=f count by agent.name`,
+          'alertsEvoTop10Agents',
           this.scope
         ),
-        new AreaChart(
-          'alertsEvoTop5Agents',
+        new PieChart(
+          'top10ruleGroups',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'alertsEvoTop5Agents',
+          } sourcetype=wazuh | top rule.groups{} limit=10`,
+          'top10ruleGroups',
           this.scope
         ),
         new Table(
@@ -237,8 +239,8 @@ define([
           [
             'alertLevEvoVizz',
             'alertsVizz',
-            'top5AgentsVizz',
-            'alertsEvoTop5Agents',
+            'alertsEvoTop10Agents',
+            'top10ruleGroups',
             'agentsSummaryVizz'
           ],
           this.reportMetrics,
@@ -297,7 +299,20 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
+
+    
 
   }
 

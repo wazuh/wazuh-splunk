@@ -16,6 +16,9 @@ require.config({
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
 
+    // COL RESIZABLE
+    colResizable: 'js/libs/col-resizable/col-resizable',
+
     // File saver
     FileSaver: 'js/libs/file-saver/file-saver',
 

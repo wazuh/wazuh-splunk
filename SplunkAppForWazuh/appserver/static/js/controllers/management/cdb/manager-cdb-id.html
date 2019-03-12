@@ -27,10 +27,9 @@
     </md-button>
     <span>Editing&nbsp; </span>
     <span class="wz-text-bold">{{currentList.details.file}}</span>
-    <button ng-if="adminMode && !saveIncomplete" ng-click='saveList()' ng-disable="items.length === 0 || !items" class='btn wz-button pull-right wz-margin-left-10'>
-      <span><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save</span>
+    <button ng-if="adminMode" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items" class='btn wz-button pull-right wz-margin-left-10'>
+      <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>Save</span>
     </button>
-    <span class="btn-as-i" ng-if="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
 
     <!-- Restart if saved without errors-->
     <span class="flex"></span>

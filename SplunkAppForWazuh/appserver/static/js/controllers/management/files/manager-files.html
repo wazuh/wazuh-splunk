@@ -19,33 +19,70 @@
 </md-nav-bar>
 
 <!-- Sub navbar-->
-<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedSubNavTab">
-  <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('rules')" name="rules">Rules</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('decoders')" name="decoders">Decoders</md-nav-item>
-</md-nav-bar>
+<div ng-if="!editingFile">
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedSubNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('rules')" name="rules">Rules</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchSubTab('decoders')" name="decoders">Decoders</md-nav-item>
+  </md-nav-bar>
 
-<!-- Files tables -->
-<div layout="row" layout-align="start center" class="md-padding">
-  <div flex="" class="height-40 wz-margin-right-15 flex">
-    <div layout="row" class="layout-row">
-      <input placeholder="Filter ..." ng-model="customSearch" type="text" flex="" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid ng-untouched flex"
-        aria-invalid="false" wz-enter="search(customSearch)">
-      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style="height:32px !important;"
-        ng-click="search(customSearch)">
-        <span class="fa fa-search" aria-hidden="true"></span>
-      </button>
+  <!-- Files tables -->
+  <div layout="row" layout-align="start center" class="md-padding">
+    <div flex="" class="height-40 wz-margin-right-15 flex">
+      <div layout="row" class="layout-row">
+        <input placeholder="Filter ..." ng-model="customSearch" type="text" flex="" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid ng-untouched flex"
+          aria-invalid="false" wz-enter="search(customSearch)">
+        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style="height:32px !important;"
+          ng-click="search(customSearch)">
+          <span class="fa fa-search" aria-hidden="true"></span>
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<div layout="row" layout-padding>
-  <!-- Rules -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
-    keys="['file']" rows-per-page="[16,13,11]">
-  </wazuh-table>
-  <!-- Decoders -->
-  <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: 'etc/decoders'}]"
-    keys="['file']" rows-per-page="[16,13,11]">
-  </wazuh-table>
+  <div layout="row" layout-padding>
+    <!-- Rules -->
+    <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='rules'" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
+      keys="['file']" rows-per-page="[16,13,11]">
+    </wazuh-table>
+    <!-- Decoders -->
+    <wazuh-table admin-mode="adminMode" ng-if="selectedSubNavTab==='decoders'" flex path="'/decoders/files'"
+      implicit-filter="[{ name:'path',value: 'etc/decoders'}]" keys="['file']" rows-per-page="[16,13,11]">
+    </wazuh-table>
+  </div>
 </div>
 <!-- End files table -->
+
+
+<!-- XML editor for add new file-->
+<div ng-if="editingFile">
+  <div layout="row" class="md-padding">
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info wz-margin-left-5'>Cancel</button>
+    <button ng-show="!saveIncomplete" ng-disabled='xmlHasErrors || overwrite' ng-click='saveFile(editingFile.path)'
+      class='btn wz-button pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
+        file</span>
+      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+        XML format error</span>
+    </button>
+    <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
+
+    <!-- Restart if saved without errors-->
+    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
+      <span>Do you want to restart to apply configuration?</span>
+      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+      </button>
+      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
+        class='btn wz-button pull-right wz-margin-left-10'>
+        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+      </button>
+    </div>
+    <!-- End restart button -->
+
+  </div>
+  <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
+    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+      valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+    </wz-xml-file-editor>
+  </div>
+</div>

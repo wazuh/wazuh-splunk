@@ -50,11 +50,13 @@ define([
       $currentDataService,
       $state,
       agent,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.reportingService = $reportingService
       this.tableResults = {}
       this.urlTokenModel = $urlTokenModel
@@ -65,7 +67,7 @@ define([
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.agent = agent
       this.currentDataService.addFilter(
-        `{"rule.groups":"audit", "implicit":true}`
+        `{"rule.groups{}":"audit", "implicit":true}`
       )
       this.scope.expandArray = [false,false,false,false,false,false,false,false,false,false,false]
             this.scope.expand = (i,id) => this.expand(i,id);
@@ -132,7 +134,7 @@ define([
          */
         new PieChart(
           'groupsVizz',
-          `${this.filters} sourcetype=wazuh | top rule.groups`,
+          `${this.filters} sourcetype=wazuh | top rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
@@ -355,6 +357,18 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
+      
     }
   }
   app.controller('agentsAuditCtrl', AgentsAudit)

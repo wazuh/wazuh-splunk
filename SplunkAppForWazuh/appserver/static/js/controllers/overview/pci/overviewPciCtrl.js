@@ -32,9 +32,11 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      pciTabs
+      pciTabs,
+      reportingEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.state = $state
       this.scope.pciTabs = (pciTabs) ? pciTabs : false
       this.reportingService = $reportingService
@@ -88,7 +90,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
@@ -180,6 +182,17 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
 
     /**

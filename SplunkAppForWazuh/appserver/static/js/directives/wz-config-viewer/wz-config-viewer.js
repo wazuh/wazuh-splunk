@@ -88,7 +88,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
-          $scope.jsonCodeBox.setValue($scope.jsoncontent)
+          $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'));
           setTimeout(function() {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()

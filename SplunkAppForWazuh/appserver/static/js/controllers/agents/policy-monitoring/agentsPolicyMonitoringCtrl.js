@@ -45,11 +45,13 @@ define([
       $requestService,
       $notificationService,
       $csvRequestService,
-      $tableFilterService
+      $tableFilterService,
+      reportingEnabled
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
       this.state = $state
@@ -62,7 +64,7 @@ define([
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.currentDataService.addFilter(
-        `{"rule.groups":"rootcheck", "implicit":true}`
+        `{"rule.groups{}":"rootcheck", "implicit":true}`
       )
       this.scope.expandArray = [false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
@@ -279,6 +281,17 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
 
     /**

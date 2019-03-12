@@ -29,76 +29,80 @@
           <span class="fa fa-search" aria-hidden="true"></span>
         </button>
       </div>
-      <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row">
-        <a ng-click="addNewFile()">Add new rule <i aria-hidden="true" class="fa fa-plus"></i></a>
-        <span flex="" class="flex"></span>
-        <md-switch class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
-          <div class="md-label">Only custom rules</div>
-        </md-switch>
-      </md-card-actions>
     </div>
   </div>
-
-  <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
-    <md-chip class="wz-chip" ng-show="includesFilter('file')">
-      <span>File: {{getFilter('file')}}
-        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
-      </span>
-    </md-chip>
-    <md-chip class="wz-chip" ng-show="includesFilter('path')">
-      <span>Path: {{getFilter('path')}}
-        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
-      </span>
-    </md-chip>
-    <md-chip class="wz-chip" ng-show="includesFilter('level')">
-      <span>Level: {{getFilter('level')}}
-        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('level')"></i>
-      </span>
-    </md-chip>
-    <md-chip class="wz-chip" ng-show="includesFilter('group')">
-      <span>Group: {{getFilter('group')}}
-        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('group')"></i>
-      </span>
-    </md-chip>
-    <md-chip class="wz-chip" ng-show="includesFilter('pci')">
-      <span>PCI control: {{getFilter('pci')}}
-        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('pci')"></i>
-      </span>
-    </md-chip>
-    <md-chip class="wz-chip" ng-show="includesFilter('gdpr')">
-      <span>GDPR: {{getFilter('gdpr')}}
-        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('gdpr')"></i>
-      </span>
-    </md-chip>
-  </md-chips>
-  <div layout="row" layout-padding>
-    <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
-      allow-click="true" rows-per-page="14">
-    </wazuh-table>
-    <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
-      allow-click="true" rows-per-page="14">
-    </wazuh-table>
-  </div>
-  <div layout="row" class="wz-margin-top-10">
-    <span flex></span>
-    <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
-      <i aria-hidden="true" class="fa fa-download"></i>
-    </a>
-  </div>
+  <md-card class="wz-md-card">
+    <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+      <a ng-click="addNewFile()">Add new rule <i aria-hidden="true" class="fa fa-plus"></i></a>
+      <span flex="" class="flex"></span>
+      <md-switch class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
+        <div class="md-label">Only custom rules</div>
+      </md-switch>
+    </md-card-actions>
+    <md-card-contents>
+      <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
+        <md-chip class="wz-chip" ng-show="includesFilter('file')">
+          <span>File: {{getFilter('file')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
+          </span>
+        </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('path')">
+          <span>Path: {{getFilter('path')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
+          </span>
+        </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('level')">
+          <span>Level: {{getFilter('level')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('level')"></i>
+          </span>
+        </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('group')">
+          <span>Group: {{getFilter('group')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('group')"></i>
+          </span>
+        </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('pci')">
+          <span>PCI control: {{getFilter('pci')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('pci')"></i>
+          </span>
+        </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('gdpr')">
+          <span>GDPR: {{getFilter('gdpr')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('gdpr')"></i>
+          </span>
+        </md-chip>
+      </md-chips>
+      <div layout="row" layout-padding>
+        <wazuh-table ng-if="!localFilter" implicit-filter="appliedFilters" flex path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+          allow-click="true" rows-per-page="14">
+        </wazuh-table>
+        <wazuh-table ng-if="localFilter" implicit-filter="[{ name:'path',value: 'etc/rules'}]" flex path="'/rules'"
+          keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+          allow-click="true" rows-per-page="14">
+        </wazuh-table>
+      </div>
+      <div layout="row" class="ruleset-csv-formater">
+        <span flex></span>
+        <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">Formatted
+          <i aria-hidden="true" class="fa fa-download"></i>
+        </a>
+      </div>
+    </md-card-contents>
+  </md-card>
 </div>
 
 <!-- XML editor for add new file-->
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding">
-    <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-    <button ng-show="!saveIncomplete" ng-disabled='xmlHasErrors || overwrite' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
-      class='btn wz-button pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
-        file</span>
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
+    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)' class='btn wz-button pull-right wz-margin-left-10'>
+      <span ng-show='!xmlHasErrors && adminMode'>
+          <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
+        Save file
+      </span>
       <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
-    <span class="btn-as-i" ng-show="saveIncomplete"><i class="fa fa-fw fa-spin fa-spinner btn-as-i"></i></span>
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
       style="margin-left: 10px;" ng-change="enableSave()">
 

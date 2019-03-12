@@ -26,16 +26,18 @@ define([
       $state,
       $notificationService,
       osquery,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.osquery = osquery
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService.addFilter(
-        `{"rule.groups":"osquery", "implicit":true}`
+        `{"rule.groups{}":"osquery", "implicit":true}`
       )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
@@ -195,6 +197,17 @@ define([
       this.scope.expandArray[i] = !this.scope.expandArray[i];
       let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
       this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick((e) => {
+        if(this.scope.expandArray[i]){
+          this.scope.expandArray[i] = !this.scope.expandArray[i];
+          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        }else{
+          e.preventDefault();
+        }
+      });
     }
 
   }
