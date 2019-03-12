@@ -1195,3 +1195,13 @@ th.w-350 {
   padding: 10px;
   margin-right: -30px;
 }
+
+.wz-color-text {
+  color: #006eaa;
+}
+
+.back-arrow {
+  margin-top: 4px;
+  margin-right: 12px;
+  margin-left: 5px;
+}
