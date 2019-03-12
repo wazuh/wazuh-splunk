@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(app) {
+define(['../../module', 'FileSaver'], function (app) {
   'use strict'
 
   class Logs {
@@ -26,11 +26,16 @@ define(['../../module', 'FileSaver'], function(app) {
       this.notification = $notificationService
       this.scope.type_log = 'all'
       this.scope.category = 'all'
+      this.scope.sortFilter = false
       this.api = $currentDataService.getApi()
       this.logs = logs
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
+      this.scope.$on('scrolledToBottom', (ev, parameters) => {
+        if (!this.scope.realtime)
+          this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
+      })
     }
 
     /**
@@ -46,9 +51,42 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
         this.initialize()
+
+        this.scope.sort = () => this.sort()
+        this.scope.$on('wazuhFetched', (ev, params) => {
+          this.scope.XMLContent = this.parseLogsToText(params.items)
+          this.scope.$broadcast('XMLContentReady', { data: this.scope.XMLContent })
+          this.scope.$applyAsync()
+        })
+
       } catch (err) {
         this.notification.showErrorToast('Cannot fetch logs data from server')
       }
+    }
+
+    /**
+     * Parse json logs to plane text
+     * @param {Object} logs
+     */
+    parseLogsToText(logs) {
+      try {
+        let result = ''
+        logs.map(log => {
+          if (log) {
+            result += `${log.timestamp} ${log.tag} ${(log.level || '').toUpperCase()}:  ${log.description}\n`            
+          }
+        })
+        return result
+      } catch (error) {
+        this.notification.showErrorToast('Cannot parse logs.')
+      }
+    }
+
+    /**
+     * Sorts logs by timestamp
+     */
+    sort() {
+      this.scope.$broadcast('wazuhSort', { field: 'timestamp' })
     }
 
     /**
@@ -114,8 +152,8 @@ define(['../../module', 'FileSaver'], function(app) {
 
         const data = this.clusterEnabled
           ? await this.apiReq(
-              `/cluster/${this.scope.selectedNode}/logs/summary`
-            )
+            `/cluster/${this.scope.selectedNode}/logs/summary`
+          )
           : await this.apiReq('/manager/logs/summary')
         const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({

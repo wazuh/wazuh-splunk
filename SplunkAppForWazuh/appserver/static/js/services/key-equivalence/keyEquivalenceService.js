@@ -77,7 +77,8 @@ define(['../module'], function(module) {
           date: 'Date',
           expanded: 'Expanded',
           title: 'Title',
-          result: 'Result'
+          result: 'Result',
+          agents: 'Agents'
         }
       }
     }

@@ -34,10 +34,20 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Delete rules, decoders and CDB lists files ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
 - Prevent overwrite a existing file ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
 - Unescape back slash for JSON raw content ([#599](https://github.com/wazuh/wazuh-splunk/pull/599)).
-- Add edition in Management > Ruleset > Files ([#597](https://github.com/wazuh/wazuh-splunk/pull/597)).
+- Capability to edit rules and decoders files (
+    [#597](https://github.com/wazuh/wazuh-splunk/pull/597)
+    [#613](https://github.com/wazuh/wazuh-splunk/pull/613)
+    ).
 - Allow navigation throught url ([#596](https://github.com/wazuh/wazuh-splunk/pull/596)).
 - Enable back button ([#596](https://github.com/wazuh/wazuh-splunk/pull/596)).
-- Capability to hide or show columns ([#566](https://github.com/wazuh/wazuh-splunk/pull/566)).
+- Capability to hide or show columns (
+    [#566](https://github.com/wazuh/wazuh-splunk/pull/566)
+    [#614](https://github.com/wazuh/wazuh-splunk/pull/614)
+    ).
+- Can resize columns (
+    [#566](https://github.com/wazuh/wazuh-splunk/pull/566)
+    [#614](https://github.com/wazuh/wazuh-splunk/pull/614)
+    ).
 - Cabability to expand visualizations ([#567](https://github.com/wazuh/wazuh-splunk/pull/567)).
 
 
@@ -58,6 +68,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Redisign configuration view ([#597](https://github.com/wazuh/wazuh-splunk/pull/597)).
 - Updated autocomplete list in DevTools ([#538](https://github.com/wazuh/wazuh-splunk/pull/538)).
 - Modularize some functions ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
+- View logs as raw text ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
+- Show logs in a text box ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
 
 ### Fixed
 
@@ -70,6 +82,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Change the selected index ([#580](https://github.com/wazuh/wazuh-splunk/pull/580)).
 - More descriptive error when savinga file and get an error ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
 - Show success message when group configuration is saved ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
+- Error when trying to download a CSV file ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
 
 
 - Properly handling long messages on notifier service, until now, they were using out of the card space, also we replaced some API messages with more meaningful messages ([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).

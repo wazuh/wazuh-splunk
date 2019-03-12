@@ -63,7 +63,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
         this.scope.saveDecoderConfig = fileName => this.saveDecoderConfig(fileName)
         this.scope.closeEditingFile = () => this.closeEditingFile()
-        this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
         this.scope.editDecoder = fileName => this.editDecoder(fileName)
 
         this.scope.restart = () => this.restart()
@@ -89,12 +88,9 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       }
     }
 
-    closeEditingFile() {
-      this.scope.editingFile = false
-    }
-
     async closeEditingFile() {
       try {
+        this.scope.restartAndApply = false
         //Refresh decoder info
         const result = await this.requestService.apiReq(`/decoders/${this.scope.currentDecoder.name}`)
         if (result.data.data.totalItems === 0) {
@@ -107,11 +103,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       }
       this.scope.editingFile = false
       this.scope.$applyAsync()
-    }
-
-    xmlIsValid(valid) {
-      this.scope.xmlHasErrors = valid
-      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     saveDecoderConfig(fileName) {

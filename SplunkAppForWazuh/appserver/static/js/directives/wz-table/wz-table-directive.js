@@ -55,7 +55,8 @@ define([
           extraLimit: '=extraLimit',
           adminMode: '=adminMode',
           emptyResults: '=emptyResults',
-          customColumns: '=customColumns'
+          customColumns: '=customColumns',
+          implicitSort: '=implicitSort'
         },
         controller(
           $rootScope,
@@ -79,7 +80,7 @@ define([
 
           $scope.showingChecks = false
           let realTime = false
-          const instance = new $dataService($scope.path, $scope.implicitFilter)
+          const instance = new $dataService($scope.path, $scope.implicitFilter, $scope.implicitSort)
           $scope.keyEquivalence = $keyEquivalenceService.equivalences()
           $scope.totalItems = 0
           $scope.wazuhTableLoading = true
@@ -169,12 +170,13 @@ define([
                   $scope.emptyResults || 'Empty results for this table.'
               }
               const result = await instance.fetch(options)
-              items = options.realTime ? result.items.slice(0, 10) : result.items
+              items = result.items
               $scope.time = result.time
               $scope.totalItems = items.length
               $scope.items = items
               checkGap($scope, items)
               $scope.searchTable()
+              $scope.$emit('wazuhFetched', { items })
               return
             } catch (error) {
               if (
@@ -252,7 +254,7 @@ define([
             try {
               $scope.error = false
               while (realTime) {
-                await fetch({ realTime: true, limit: 10 })
+                await fetch({ realTime: true })
                 if (!$scope.$$phase) $scope.$digest()
                 await $timeout(1000)
               }
@@ -316,14 +318,19 @@ define([
           $scope.prevPage = () => pagination.prevPage($scope)
           $scope.nextPage = async currentPage =>
             pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-          $scope.setPage = function () {
-            $scope.currentPage = this.n
+          $scope.setPage = function (page = false) {
+            $scope.currentPage = page || this.n
             $scope.nextPage(this.n)
           }
 
           /**
            * Event listeners
            */
+
+          $scope.$on('increaseLogs', async (event, parameters) => {
+            $scope.setPage(parseInt(parameters.lines / $scope.itemsPerPage))
+          })
+
           $scope.$on('wazuhUpdateInstancePath', (event, parameters) =>
             listeners.wazuhUpdateInstancePath(parameters, instance, init)
           )
@@ -331,6 +338,7 @@ define([
           $scope.$on('wazuhFilter', (event, parameters) =>
             listeners.wazuhFilter(parameters, filter)
           )
+
 
           $scope.$on('wazuhSearch', (event, parameters) =>
             listeners.wazuhSearch(parameters, instance, search)
@@ -445,8 +453,16 @@ define([
           }
 
           /**
+           * Edits a file
+           */
+          $scope.editFile = (file, path) => {
+            $scope.$emit('editFile', { file, path })
+          }
+
+          /**
            * Removes a file
            */
+
           $scope.showConfirmRemoveFile = (ev, item) => {
             $scope.removingFile = item
           }
@@ -464,10 +480,9 @@ define([
           }
 
           $scope.cancelRemoveFile = () => {
-            $scope.removingGroup = null
+            $scope.removingFile = null
             return init()
           }
-
 
           $scope.getWitdh = key => {
             try {
@@ -495,7 +510,7 @@ define([
           $scope.isWindows = () => {
             try {
               const agent = $scope.$parent.$parent.$parent.$parent.agent
-              return (agent.os || {}).platform === "windows"
+              return (agent.os || {}).platform === 'windows'
             } catch (error) {
               return false
             }

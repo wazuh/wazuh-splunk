@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
+define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
   app,
   CodeMirror
 ) {
@@ -24,7 +24,8 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         getjson: '&',
         getxml: '&',
         jsoncontent: '=',
-        xmlcontent: '='
+        xmlcontent: '=',
+        hideHeader: '='
       }
       this.templateUrl =
         BASE_URL +
@@ -37,6 +38,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           $document[0].getElementById('viewer_json_box'),
           {
             lineNumbers: true,
+            autoRefresh: true,
             matchClosing: true,
             matchBrackets: true,
             mode: { name: 'javascript', json: true },
@@ -48,11 +50,14 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           }
         )
       }
+
       const setXmlBox = () => {
         $scope.xmlCodeBox = CodeMirror.fromTextArea(
           $document[0].getElementById('viewer_xml_box'),
           {
             lineNumbers: true,
+            autoRefresh: true,
+            lineWrapping: true,
             matchClosing: true,
             matchBrackets: true,
             mode: 'text/xml',
@@ -63,33 +68,46 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
             gutters: ['CodeMirror-foldgutter']
           }
         )
+        bindXmlListener()
       }
 
-      const init = () => {}
+      const bindXmlListener = () => {
+        const scrollElement = $scope.xmlCodeBox.getScrollerElement()
+        $(scrollElement).bind('scroll', function (e) {
+          var element = $(e.currentTarget)[0]
+          if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+            $scope.$emit('scrolledToBottom', { lines: $scope.xmlCodeBox.lineCount() })
+          }
+        })
+      }
+
+      const init = () => { }
 
       const refreshJsonBox = json => {
         $scope.jsoncontent = json
-        if(!$scope.jsonCodeBox){
+        if (!$scope.jsonCodeBox) {
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
           $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'));
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.jsonCodeBox.refresh()
-          }, 1)
+            $scope.$applyAsync()
+          }, 300)
         }
       }
 
       const refreshXmlBox = xml => {
         $scope.xmlcontent = xml
-        if(!$scope.xmlCodeBox){
+        if (!$scope.xmlCodeBox) {
           setXmlBox()
         }
         if ($scope.xmlcontent != false) {
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.xmlCodeBox.refresh()
-          }, 1)
+            $scope.$applyAsync()
+          }, 300)
         }
       }
 
