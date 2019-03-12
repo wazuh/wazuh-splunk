@@ -56,6 +56,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           {
             lineNumbers: true,
             autoRefresh: true,
+            lineWrapping: true,
             matchClosing: true,
             matchBrackets: true,
             mode: 'text/xml',

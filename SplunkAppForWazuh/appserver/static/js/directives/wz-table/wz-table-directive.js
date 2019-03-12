@@ -220,7 +220,7 @@ define([
           try {
             $scope.error = false
             while (realTime) {
-              await fetch({ realTime: true, limit: $scope.maxLogs })
+              await fetch({ realTime: true })
               if (!$scope.$$phase) $scope.$digest()
               await $timeout(1000)
             }
@@ -284,8 +284,8 @@ define([
         $scope.nextPage = async currentPage =>
           pagination.nextPage(currentPage, $scope, $notificationService, fetch)
         $scope.setPage = function (page = false) {
-          $scope.currentPage = page || this.n;
-          $scope.nextPage(this.n);
+          $scope.currentPage = page || this.n
+          $scope.nextPage(this.n)
         };
 
         /**

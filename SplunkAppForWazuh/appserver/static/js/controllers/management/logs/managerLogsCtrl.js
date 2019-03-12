@@ -32,9 +32,10 @@ define(['../../module', 'FileSaver'], function (app) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
-      this.scope.$on('scrolledToBottom', (event, parameters) =>
-        this.scope.$broadcast('increaseLogs',parameters)
-      )
+      this.scope.$on('scrolledToBottom', (ev, parameters) => {
+        if (!this.scope.realtime)
+          this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
+      })
     }
 
     /**
@@ -73,7 +74,7 @@ define(['../../module', 'FileSaver'], function (app) {
         logs.map(log => {
           if (log) {
             result = result.concat(
-              `${log.timestamp} ${log.tag} ${log.level} ${log.description}\n`
+              `${log.timestamp} ${log.tag} ${(log.level || "").toUpperCase()}:  ${log.description}\n`
             )
           }
         })
