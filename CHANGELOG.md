@@ -69,6 +69,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Updated autocomplete list in DevTools ([#538](https://github.com/wazuh/wazuh-splunk/pull/538)).
 - Modularize some functions ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
 - View logs as raw text ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
+- Show logs in a text box ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
 
 ### Fixed
 
@@ -81,6 +82,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Change the selected index ([#580](https://github.com/wazuh/wazuh-splunk/pull/580)).
 - More descriptive error when savinga file and get an error ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
 - Show success message when group configuration is saved ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
+- Error when trying to download a CSV file ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
 
 
 - Properly handling long messages on notifier service, until now, they were using out of the card space, also we replaced some API messages with more meaningful messages ([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).

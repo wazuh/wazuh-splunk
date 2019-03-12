@@ -22,7 +22,7 @@ define([], function() {
         ) {
           $scope.currentPage++
         }
-        if (
+        if ($scope.pagedItems[currentPage || $scope.currentPage] &&
           $scope.pagedItems[currentPage || $scope.currentPage].includes(null)
         ) {
           const copy = $scope.currentPage

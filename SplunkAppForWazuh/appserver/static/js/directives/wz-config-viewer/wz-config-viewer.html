@@ -1,9 +1,9 @@
-<div layout="row" ng-show="jsoncontent || xmlcontent" style="height: calc(100vh - 240px);">
+<div layout="row" ng-show="jsoncontent || xmlcontent" ng-style="hideHeader && {'height': 'calc(100vh - 375px)'} || {'height': 'calc(100vh - 240px)'}">
   
   <!-- JSON card -->
-  <md-card flex="auto" class="wz-md-card" ng-show="jsoncontent">
-    <md-card-content flex layout="column">
-      <div layout="row" layout-align="start center">
+  <md-card flex="auto" class="wz-md-card" ng-show="jsoncontent" ng-class="{'wz-no-margin':hideHeader}">
+    <md-card-content flex layout="column" ng-class="{'wz-no-padding':hideHeader}">
+      <div layout="row" layout-align="start center" ng-hide="hideHeader">
         <div>
           <span class="font-size-16">JSON viewer</span>
           <div class="wz-margin-top-10">
@@ -15,7 +15,7 @@
         <span class="small">&nbsp;&centerdot;&nbsp;</span>
         <span ng-class="xmlcontent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="callgetxml()">XML</span>
       </div>
-      <md-divider class="wz-margin-top-10"></md-divider>
+      <md-divider class="wz-margin-top-10" ng-hide="hideHeader"></md-divider>
       
       <!-- The JSON viewer -->
       <div class='wzJsonXmlEditorBody'>
@@ -27,9 +27,9 @@
   <!-- End JSON card -->
   
   <!-- XML card -->
-  <md-card flex="auto" class="wz-md-card" ng-show="xmlcontent">
-    <md-card-content flex layout="column">
-      <div layout="row" layout-align="start center">
+  <md-card flex="auto" class="wz-md-card" ng-show="xmlcontent" ng-class="{'wz-no-margin':hideHeader}">
+    <md-card-content flex layout="column" ng-class="{'wz-no-padding':hideHeader}">
+      <div layout="row" layout-align="start center" ng-hide="hideHeader">
         <div>
           <span class="font-size-16">XML viewer</span>
           <div class="wz-margin-top-10">
@@ -41,7 +41,7 @@
         <span class="small">&nbsp;&centerdot;&nbsp;</span>
         <span ng-class="xmlcontent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="callgetxml()">XML</span>
       </div>
-      <md-divider class="wz-margin-top-10"></md-divider>
+      <md-divider class="wz-margin-top-10" ng-hide="hideHeader"></md-divider>
       
       <!-- The XML viewer -->
       <div class='wzJsonXmlEditorBody'>

@@ -230,15 +230,14 @@ class api(controllers.BaseController):
                         parsed_filters.pop(key, None)
                 filters.update(parsed_filters)
 
-            the_id = kwargs['_key']
+            the_id = kwargs['id']
             api = self.db.get(the_id)
-            opt_username = api[0]["userapi"]
-            opt_password = api[0]["passapi"]
-            opt_base_url = api[0]["url"]
-            opt_base_port = api[0]["portapi"]
+            api = jsonbak.loads(api)
+            opt_username = api["data"]["userapi"]
+            opt_password = api["data"]["passapi"]
+            opt_base_url = api["data"]["url"]
+            opt_base_port = api["data"]["portapi"]
             opt_endpoint = kwargs['path']
-            del kwargs['_key']
-            del kwargs['path']
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
