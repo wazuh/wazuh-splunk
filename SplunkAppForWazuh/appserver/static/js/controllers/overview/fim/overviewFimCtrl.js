@@ -171,7 +171,6 @@ define([
             'modifiedFiles',
             'alertsVolume',
             'eventsSummary',
-            'topRules',
             'whodataUsage',
             'topUsers'
           ],
