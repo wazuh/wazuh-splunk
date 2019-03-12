@@ -286,13 +286,13 @@ define([
         $scope.setPage = function (page = false) {
           $scope.currentPage = page || this.n
           $scope.nextPage(this.n)
-        };
+        }
 
         /**
          * Event listeners
          */
         $scope.$on('increaseLogs', async(event,parameters) =>{
-          $scope.setPage(parseInt(parameters.lines / $scope.itemsPerPage));
+          $scope.setPage(parseInt(parameters.lines / $scope.itemsPerPage))
         })
 
         $scope.$on('wazuhUpdateInstancePath', (event, parameters) =>
