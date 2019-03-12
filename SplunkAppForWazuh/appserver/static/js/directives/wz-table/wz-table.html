@@ -6,10 +6,10 @@
 </div>
 
 <!-- Checkbox to hide columns -->
-<div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-class="{'show-checkboxes':showingChecks}">
+<div ng-if="customColumns" layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-class="{'show-checkboxes':showingChecks}">
   <div class="wz-table-checkboxes">
     <div ng-show="showingChecks" class="wz-margin-left-20">
-      <md-checkbox ng-repeat="(key, value) in cleanKeys track by $index" ng-checked="value" ng-model="value" ng-change="switchKey(key)"
+      <md-checkbox ng-repeat="(key, value) in cleanKeys track by $index" ng-click="updateColumns(key)" ng-checked="value" ng-model="value" ng-change="switchKey(key)"
         aria-label="key">
         {{getEquivalence(key) ? getEquivalence(key) : key}}
       </md-checkbox>
@@ -27,7 +27,7 @@
 
 <!-- Table -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="!isPolicyMonitoring() && !isSyschecks()">
-  <table class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="wz_table">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size } && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -196,7 +196,7 @@
 
 <!-- Table for configuration assessment -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isPolicyMonitoring()">
-  <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }  && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -273,7 +273,7 @@
 
 <!-- Table for syschecks -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isSyschecks()">
-  <table class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size} && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
