@@ -69,7 +69,7 @@
         </md-chip>
       </md-chips>
       <div layout="row" layout-padding>
-        <wazuh-table implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']" allow-click="true"
+        <wazuh-table custom-columns="true" implicit-filter="appliedFilters" flex path="'/lists/files'" keys="['name', 'path']" allow-click="true"
           rows-per-page="14" admin-mode="adminMode">
         </wazuh-table>
       </div>
