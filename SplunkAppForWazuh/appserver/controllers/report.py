@@ -202,20 +202,20 @@ class report(controllers.BaseController):
                     #Insert image
                     pdf.cell(x , y, img['title'], 0, 1)
                     pdf.image(img['path'], x_img, y_img, w,h)
-                    pdf.ln(65)
-                    y_img = y_img + 75
+                    pdf.ln(75)
+                    y_img = y_img + 85
                     count = count + 1
                     n_images = n_images - 1
                     if count == 2 and n_images >= 1 and first_page:
                         pdf.add_page()
-                        pdf.ln(20)
-                        y_img = 50
+                        pdf.ln(15)
+                        y_img = 45
                         count = 0
                         first_page = False
-                    if count == 3 and n_images >= 1 and first_page:
+                    if count == 3 and n_images >= 1:
                         pdf.add_page()
-                        pdf.ln(20)
-                        y_img = 50
+                        pdf.ln(15)
+                        y_img = 45
                         count = 0
             #Add tables
             if self.tables_have_info(tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'domToImg'], function(app, domToImg) {
+define(['../module', 'domToImg'], function (app, domToImg) {
   'use strict'
   class Vis2PNG {
     constructor($rootScope, $currentDataService) {
@@ -29,21 +29,26 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         let currentCompleted = 0
         await Promise.all(
           visArray.map(async currentValue => {
-            const tmpNode = $("#"+currentValue + " .panel-body")
-            const classes = ''
-            let title = document
-              .getElementById(currentValue)
-              .parentElement.getElementsByTagName('span')[0].innerHTML
-              
-            if (title.search('<span')) {
-              title = title.substring(0, title.search('<span')) 
-              classess = document
+            const tmpNode = $("#" + currentValue + " .panel-body")
+            let classes = ''
+            let title = ''
+            try { //Try to fetch the title of the visualization
+              title = document
                 .getElementById(currentValue)
-                .className.split(' ')
+                .parentElement.getElementsByTagName('span')[0].innerHTML
+
+              if (title.search('<span')) {
+                title = title.substring(0, title.search('<span'))
+                classes = document
+                  .getElementById(currentValue)
+                  .className.split(' ')
+              }
+            } catch (error) {
             }
+
             try {
               if (!classes.includes('table')) {
-                const tmpResult = await domToImg.toPng(tmpNode[0],{'width':tmpNode.width(),'height':tmpNode.height()})
+                const tmpResult = await domToImg.toPng(tmpNode[0], { 'width': tmpNode.width(), 'height': tmpNode.height() })
                 if (tmpResult === 'data:,') {
                   return Promise.reject('Impossible fetch visualizations')
                 }
@@ -56,9 +61,8 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                 })
               }
             } catch (error) {
-              console.error('Error', error.message || error)
             } // eslint-disable-line
-            
+
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100

@@ -21,7 +21,8 @@ define(['../../module', 'FileSaver'], function (app) {
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      $restartService
+      $restartService,
+      $fileEditor
     ) {
       this.scope = $scope
       this.view = view
@@ -63,6 +64,7 @@ define(['../../module', 'FileSaver'], function (app) {
         '#25B23B',
         'E045E5'
       ]
+      this.fileEditor = $fileEditor
       this.scope.appliedFilters = []
       try {
         this.filter = JSON.parse(window.localStorage[`${this.view}`]) || []
@@ -79,7 +81,7 @@ define(['../../module', 'FileSaver'], function (app) {
      * On controller load
      */
     initialize() {
-      //console.elog("res ", $restartService)
+      this.scope.rulesetFiles = false
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
         : delete window.localStorage.decoders
@@ -101,6 +103,12 @@ define(['../../module', 'FileSaver'], function (app) {
 
       this.scope.enableSave = () => this.enableSave()
 
+      this.scope.switchFiles = () => this.switchFiles()
+
+      this.scope.closeEditingFile = () => this.closeEditingFile()
+      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+      this.scope.saveFile = file => this.saveFile(file)
+
       this.scope.$on('configSavedSuccessfully', () => {
         this.scope.overwrite = false
         this.scope.restartAndApply = true
@@ -113,6 +121,17 @@ define(['../../module', 'FileSaver'], function (app) {
         this.scope.overwrite = true
         this.scope.$applyAsync()
       })
+
+      this.scope.$on('editFile', (ev, params) => {
+        this.editFile(params.file, params.path)
+      })
+    }
+
+    /**
+     * Switch between rules or files table
+     */
+    switchFiles() {
+      this.scope.rulesetFiles = !this.scope.rulesetFiles
     }
 
     /**
@@ -363,6 +382,73 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     enableSave() {
       this.scope.overwrite = false
+    }
+
+  /**
+   * Close editor
+   */
+    closeEditingFile() {
+      this.scope.editingRulesetFile = false
+      this.scope.editingFile = false
+      this.scope.addingNewFile = false
+      this.scope.overwrite = false
+      this.scope.restartAndApply = false
+      this.scope.fetchedXML = ''
+    }
+
+    /**
+     * Check if XML is valid
+     * @param {Boolean} valid 
+     */
+    xmlIsValid(valid) {
+      this.scope.xmlHasErrors = valid
+      this.scope.$applyAsync()
+    }
+
+
+    /**
+     * Open xml editior box
+     * @param {String} file
+     */
+    async editFile(file, path) {
+      try {
+        this.scope.editingRulesetFile = {
+          file,
+          path: `${path}/${file}`
+        }
+        this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
+        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+      } catch (error) {
+        this.scope.fetchedXML = null
+        this.notification.showErrorToast(error.message || error)
+      }
+      this.scope.$applyAsync()
+      return
+    }
+
+    /**
+     * Saves the file content
+     * @param {String} file 
+     */
+    saveFile(file) {
+      this.scope.saveIncomplete = true
+      this.scope.$broadcast('saveXmlFile', {
+        file,
+        overwrite: true
+      })
+    }
+
+    /**
+     * Fetchs file content
+     * @param {String} file 
+     */
+    async fetchFileContent(file) {
+      try {
+        const result = await this.fileEditor.getConfiguration(file)
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
     }
 
   }
