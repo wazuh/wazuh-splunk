@@ -40,7 +40,14 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
     ).
 - Allow navigation throught url ([#596](https://github.com/wazuh/wazuh-splunk/pull/596)).
 - Enable back button ([#596](https://github.com/wazuh/wazuh-splunk/pull/596)).
-- Capability to hide or show columns ([#566](https://github.com/wazuh/wazuh-splunk/pull/566)).
+- Capability to hide or show columns (
+    [#566](https://github.com/wazuh/wazuh-splunk/pull/566)
+    [#614](https://github.com/wazuh/wazuh-splunk/pull/614)
+    ).
+- Can resize columns (
+    [#566](https://github.com/wazuh/wazuh-splunk/pull/566)
+    [#614](https://github.com/wazuh/wazuh-splunk/pull/614)
+    ).
 - Cabability to expand visualizations ([#567](https://github.com/wazuh/wazuh-splunk/pull/567)).
 
 
