@@ -73,9 +73,7 @@ define(['../../module', 'FileSaver'], function (app) {
         let result = ''
         logs.map(log => {
           if (log) {
-            result = result.concat(
-              `${log.timestamp} ${log.tag} ${(log.level || "").toUpperCase()}:  ${log.description}\n`
-            )
+            result += `${log.timestamp} ${log.tag} ${(log.level || '').toUpperCase()}:  ${log.description}\n`            
           }
         })
         return result
@@ -88,7 +86,7 @@ define(['../../module', 'FileSaver'], function (app) {
      * Sorts logs by timestamp
      */
     sort() {
-      this.scope.$broadcast('wazuhSort', {field: 'timestamp'})
+      this.scope.$broadcast('wazuhSort', { field: 'timestamp' })
     }
 
     /**
@@ -168,7 +166,7 @@ define(['../../module', 'FileSaver'], function (app) {
       }
       return
     }
-    
+
     /**
      * Changes the cluster node
      * @param {String} node

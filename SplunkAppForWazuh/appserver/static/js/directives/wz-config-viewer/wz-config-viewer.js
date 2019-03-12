@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
+define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
   app,
   CodeMirror
 ) {
@@ -50,6 +50,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           }
         )
       }
+
       const setXmlBox = () => {
         $scope.xmlCodeBox = CodeMirror.fromTextArea(
           $document[0].getElementById('viewer_xml_box'),
@@ -71,25 +72,25 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
       }
 
       const bindXmlListener = () => {
-        var scrollElement = $scope.xmlCodeBox.getScrollerElement()
+        const scrollElement = $scope.xmlCodeBox.getScrollerElement()
         $(scrollElement).bind('scroll', function (e) {
           var element = $(e.currentTarget)[0]
           if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-            $scope.$emit('scrolledToBottom',{ lines: $scope.xmlCodeBox.lineCount() })
-
+            $scope.$emit('scrolledToBottom', { lines: $scope.xmlCodeBox.lineCount() })
           }
         })
       }
-      const init = () => {}
+
+      const init = () => { }
 
       const refreshJsonBox = json => {
         $scope.jsoncontent = json
-        if(!$scope.jsonCodeBox){
+        if (!$scope.jsonCodeBox) {
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
           $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'));
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()
           }, 300)
@@ -98,12 +99,12 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const refreshXmlBox = xml => {
         $scope.xmlcontent = xml
-        if(!$scope.xmlCodeBox){
+        if (!$scope.xmlCodeBox) {
           setXmlBox()
         }
         if ($scope.xmlcontent != false) {
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
           }, 300)

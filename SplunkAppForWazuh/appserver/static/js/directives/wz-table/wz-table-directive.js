@@ -220,7 +220,7 @@ define([
             try {
               $scope.error = false
               while (realTime) {
-                await fetch({ realTime: true,})
+                await fetch({ realTime: true })
                 if (!$scope.$$phase) $scope.$digest()
                 await $timeout(1000)
               }
@@ -455,7 +455,7 @@ define([
               if (key.includes('pci') || key.includes('gdpr')) {
                 return 'wz-width-150'
               }
-            } catch (error) { }
+            } catch (error) { } // eslint-disable-line
           }
 
           /**
@@ -473,7 +473,7 @@ define([
           $scope.isWindows = () => {
             try {
               const agent = $scope.$parent.$parent.$parent.$parent.agent
-              return (agent.os || {}).platform === "windows"
+              return (agent.os || {}).platform === 'windows'
             } catch (error) {
               return false
             }
