@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class FilterService {
@@ -64,7 +64,9 @@ define(['../module'], function (module) {
         let filters = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          filters = hideOnlyShowFilters ? filters.filter(fil => !fil.onlyShow) : filters
+          filters = hideOnlyShowFilters
+            ? filters.filter(fil => !fil.onlyShow)
+            : filters
         }
         for (const filter of filters) {
           if (typeof filter === 'object') {
@@ -108,10 +110,10 @@ define(['../module'], function (module) {
       }
     }
 
-      /**
-   * Pins a filter
-   * @param {Object}: The filter to be pined
-   */
+    /**
+     * Pins a filter
+     * @param {Object}: The filter to be pined
+     */
     pinFilter(filter) {
       try {
         filter = JSON.parse(filter)
@@ -120,7 +122,7 @@ define(['../module'], function (module) {
         const pined = filter.pined
         let filters = JSON.parse(window.localStorage.filters)
         filters = filters.filter(fil => Object.keys(fil)[0] != key)
-        if (pined){
+        if (pined) {
           filter = JSON.parse(`{"${key}":"${value}"}`)
         } else {
           filter = JSON.parse(`{"${key}":"${value}", "pined":"true"}`)
@@ -142,13 +144,15 @@ define(['../module'], function (module) {
           filters = JSON.parse(window.localStorage.filters)
           filters = filters.filter(fil => fil.pined)
         }
-        if (cleanAgentsPinedFilters){
-          filters = filters.filter(fil => !Object.keys(fil)[0].startsWith('agent.'))
-        } 
+        if (cleanAgentsPinedFilters) {
+          filters = filters.filter(
+            fil => !Object.keys(fil)[0].startsWith('agent.')
+          )
+        }
         filters = JSON.stringify(filters)
         window.localStorage.setItem('filters', filters)
       } catch (err) {
-        delete window.localStorage.filters// In case of error, delete all filters
+        delete window.localStorage.filters // In case of error, delete all filters
       }
     }
   }

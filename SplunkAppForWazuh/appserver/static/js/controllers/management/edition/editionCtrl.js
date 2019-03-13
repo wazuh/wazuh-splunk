@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class Edition {
@@ -8,7 +8,14 @@ define(['../../module'], function (controllers) {
      * @param {Array} clusterInfo
      * @param {Boolean} isAdmin
      */
-    constructor($scope, isAdmin, $notificationService, clusterInfo, $fileEditor, $restartService) {
+    constructor(
+      $scope,
+      isAdmin,
+      $notificationService,
+      clusterInfo,
+      $fileEditor,
+      $restartService
+    ) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
       this.isAdmin = isAdmin
@@ -25,14 +32,15 @@ define(['../../module'], function (controllers) {
         this.scope.restartAndApply = false
         this.scope.restartInProgress = false
         this.scope.editingNode = false
-        this.scope.editNode = (nodeName) => this.editNode(nodeName)
+        this.scope.editNode = nodeName => this.editNode(nodeName)
         this.scope.cancelEditNode = () => this.cancelEditNode()
         this.scope.saveOssecConfig = () => this.saveOssecConfig()
-        this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
-        this.scope.changeNode = (node) => this.changeNode(node)
-        this.scope.restart = (node) => this.restart(node)
+        this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+        this.scope.changeNode = node => this.changeNode(node)
+        this.scope.restart = node => this.restart(node)
         this.scope.switchRestart = () => this.switchRestart()
-        this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+        this.scope.closeRestartConfirmation = () =>
+          this.closeRestartConfirmation()
 
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
@@ -46,9 +54,12 @@ define(['../../module'], function (controllers) {
         }
         this.scope.isAdmin = this.isAdmin
 
-        this.scope.$on('configSavedSuccessfully', () => { this.scope.restartAndApply = true })
-        this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
-
+        this.scope.$on('configSavedSuccessfully', () => {
+          this.scope.restartAndApply = true
+        })
+        this.scope.$on('saveComplete', () => {
+          this.scope.saveIncomplete = false
+        })
       } catch (error) {
         this.notification.showErrorToast(error)
       }
@@ -58,22 +69,25 @@ define(['../../module'], function (controllers) {
       try {
         const file = 'ossec.conf'
         const dir = false
-        const content = !this.clusterInfo.clusterEnabled ? await this.fileEditor.getConfiguration(file, dir) : await this.fileEditor.getConfiguration(file, dir, nodeName)
+        const content = !this.clusterInfo.clusterEnabled
+          ? await this.fileEditor.getConfiguration(file, dir)
+          : await this.fileEditor.getConfiguration(file, dir, nodeName)
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
-        this.scope.$broadcast('fetchedFile', {data: content})
+        this.scope.$broadcast('fetchedFile', { data: content })
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
         this.notification.showErrorToast(`Error editing node: ${error}`)
       }
     }
 
-    changeNode(node){
+    changeNode(node) {
       this.editNode(node)
     }
 
     saveOssecConfig() {
-      const node = this.scope.editingNode === 'manager' ? false : this.scope.editingNode
+      const node =
+        this.scope.editingNode === 'manager' ? false : this.scope.editingNode
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: 'ossec.conf',
@@ -110,10 +124,9 @@ define(['../../module'], function (controllers) {
       this.scope.$applyAsync()
     }
 
-    closeRestartConfirmation() { 
+    closeRestartConfirmation() {
       this.scope.restartAndApply = false
     }
-
   }
 
   controllers.controller('editionCtrl', Edition)

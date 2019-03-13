@@ -69,7 +69,6 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.showingInfo = !this.$scope.showingInfo
       this.$scope.$applyAsync()
     }
-
   }
 
   controllers.controller('configurationCtrl', ConfigurationController)

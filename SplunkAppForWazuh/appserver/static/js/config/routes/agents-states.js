@@ -1,10 +1,10 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function ($stateProvider, BASE_URL) {
+    function($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -40,14 +40,14 @@ define(['../module'], function (module) {
                       select: 'version'
                     }),
                     responseStatus &&
-                      responseStatus.data &&
-                      responseStatus.data.data &&
-                      responseStatus.data.data.enabled === 'yes' &&
-                      responseStatus.data.data.running === 'yes'
+                    responseStatus.data &&
+                    responseStatus.data.data &&
+                    responseStatus.data.data.enabled === 'yes' &&
+                    responseStatus.data.data.running === 'yes'
                       ? $requestService.apiReq('/agents/stats/distinct', {
-                        fields: 'node_name',
-                        select: 'node_name'
-                      })
+                          fields: 'node_name',
+                          select: 'node_name'
+                        })
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
@@ -184,7 +184,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -250,7 +252,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -297,7 +301,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -338,7 +344,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -379,7 +387,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -420,7 +430,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -461,7 +473,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -527,7 +541,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -572,7 +588,10 @@ define(['../module'], function (module) {
               async ($requestService, $state) => {
                 try {
                   const gdprTabs = []
-                  const data = await $requestService.httpReq('GET', '/api/gdpr?requirement=all')
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/gdpr?requirement=all'
+                  )
                   if (!data) return []
                   for (const key in data.data) {
                     gdprTabs.push({ title: key, content: data.data[key] })
@@ -585,7 +604,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -626,7 +647,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -690,7 +713,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -735,7 +760,10 @@ define(['../module'], function (module) {
               async ($requestService, $state) => {
                 try {
                   const pciTabs = []
-                  const data = await $requestService.httpReq('GET', '/api/pci?requirement=all')
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/pci?requirement=all'
+                  )
                   if (!data) return []
                   for (const key in data.data) {
                     pciTabs.push({ title: key, content: data.data[key] })
@@ -748,7 +776,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -789,7 +819,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -830,7 +862,9 @@ define(['../module'], function (module) {
             ],
             reportingEnabled: [
               '$currentDataService',
-              async $currentDataService => { return await $currentDataService.getReportingStatus() }
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })

@@ -29,7 +29,7 @@ define(['../../module'], function(module) {
       $notificationService,
       $scope,
       $reportingService,
-      reportingEnabled      
+      reportingEnabled
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled

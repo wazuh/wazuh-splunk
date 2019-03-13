@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class Decoders extends Ruleset {
@@ -49,12 +49,14 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
       this.scope.addNewFile = () => this.addNewFile()
-      this.scope.saveRuleConfig = (fileName, dir, overwrite) => this.saveRuleConfig(fileName, dir, overwrite)
+      this.scope.saveRuleConfig = (fileName, dir, overwrite) =>
+        this.saveRuleConfig(fileName, dir, overwrite)
 
       this.scope.selectedNavTab = 'decoders'
 
       this.scope.restart = () => this.restart()
-      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+      this.scope.closeRestartConfirmation = () =>
+        this.closeRestartConfirmation()
 
       this.scope.$on('loadedTable', () => {
         try {
@@ -105,16 +107,18 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     /**
      * Save the new content
-     * @param {String} fileName 
-     * @param {String} dir 
+     * @param {String} fileName
+     * @param {String} dir
      */
-    saveRuleConfig(fileName, dir, overwrite=false) {
+    saveRuleConfig(fileName, dir, overwrite = false) {
       try {
         const containsBlanks = /.* .*/
         fileName = this.scope.editingFile.file
         fileName = fileName.endsWith('.xml') ? fileName : `${fileName}.xml`
         if (containsBlanks.test(fileName)) {
-          this.notification.showErrorToast('Error creating a new file. The filename can not contain white spaces.')
+          this.notification.showErrorToast(
+            'Error creating a new file. The filename can not contain white spaces.'
+          )
         } else {
           if (fileName !== '.xml') {
             this.scope.saveIncomplete = true
@@ -130,8 +134,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       } catch (error) {
         this.notification.showWarningToast('Please set a valid name')
       }
-    }    
-
+    }
   }
   controllers.controller('managerDecodersCtrl', Decoders)
   return Decoders

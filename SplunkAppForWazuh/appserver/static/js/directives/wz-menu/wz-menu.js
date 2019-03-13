@@ -55,12 +55,8 @@ define(['../module'], function(directives) {
         const update = () => {
           const index = $currentDataService.getIndex()
           const api = $currentDataService.getApi()
-          $scope.currentIndex = !index
-            ? 'wazuh'
-            : index.index
-          $scope.currentAPI = !api
-            ? '---'
-            : api.managerName
+          $scope.currentIndex = !index ? 'wazuh' : index.index
+          $scope.currentAPI = !api ? '---' : api.managerName
           $scope.theresAPI = $scope.currentAPI === '---' ? false : true
 
           if (checkLastState('ow-', 'overview')) {

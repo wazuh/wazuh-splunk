@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
@@ -61,15 +61,17 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
           this.addDetailFilter(name, value)
         this.scope.adminMode = this.extensions['admin'] === 'true'
         this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
-        this.scope.saveDecoderConfig = fileName => this.saveDecoderConfig(fileName)
+        this.scope.saveDecoderConfig = fileName =>
+          this.saveDecoderConfig(fileName)
         this.scope.closeEditingFile = () => this.closeEditingFile()
         this.scope.editDecoder = fileName => this.editDecoder(fileName)
 
         this.scope.restart = () => this.restart()
-        this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+        this.scope.closeRestartConfirmation = () =>
+          this.closeRestartConfirmation()
       } catch (error) {
         this.state.go('mg-decoders')
-      } 
+      }
     }
 
     /**
@@ -92,10 +94,11 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       try {
         this.scope.restartAndApply = false
         //Refresh decoder info
-        const result = await this.requestService.apiReq(`/decoders/${this.scope.currentDecoder.name}`)
+        const result = await this.requestService.apiReq(
+          `/decoders/${this.scope.currentDecoder.name}`
+        )
         if (result.data.data.totalItems === 0) {
           this.state.go('mg-decoders')
-        } else {
         }
         this.scope.currentDecoder = result.data.data.items[0]
       } catch (error) {
@@ -129,7 +132,10 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
 
     async fetchFileContent(fileName) {
       try {
-        const result = await this.fileEditor.getConfiguration(fileName, 'decoders')
+        const result = await this.fileEditor.getConfiguration(
+          fileName,
+          'decoders'
+        )
         return result
       } catch (error) {
         return Promise.reject(error)

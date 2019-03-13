@@ -1,6 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$notificationService', function ($mdToast) {
+  module.service('$notificationService', function($mdToast) {
     let last = {
       bottom: true,
       top: false,
@@ -31,55 +31,65 @@ define(['../module'], function (module) {
       last = angular.extend({}, current) // eslint-disable-line
     }
 
-    let showSuccessToast = (text) => showSimpleToast(text, 1);
-    let showErrorToast = (text) => showSimpleToast(text, 2);
-    let showWarningToast = (text) => showSimpleToast(text, 3);
-
+    let showSuccessToast = text => showSimpleToast(text, 1)
+    let showErrorToast = text => showSimpleToast(text, 2)
+    let showWarningToast = text => showSimpleToast(text, 3)
 
     let showSimpleToast = (text, type) => {
       let pinTo = getToastPosition()
 
       if (type === 1) {
-        $mdToast.show({//Success
+        $mdToast.show({
+          //Success
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast  style="border-top: 3px solid #23c405;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template:
+            '<md-toast  style="border-top: 3px solid #23c405;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
-            '<p class="wz-padding-top-7"><i class="fa fa-check"></i>&nbsp;' + text +
+            '<p class="wz-padding-top-7"><i class="fa fa-check"></i>&nbsp;' +
+            text +
             '</p></div>' +
             '</md-toast>'
         })
-      } else if (type === 2) {//Error
+      } else if (type === 2) {
+        //Error
         $mdToast.show({
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast  style="border-top: 3px solid #db0d0d;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template:
+            '<md-toast  style="border-top: 3px solid #db0d0d;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
-            '<p class="wz-padding-top-7"><i aria-hidden="true" class="fa fa-fw fa-close"></i>&nbsp;' + text +
+            '<p class="wz-padding-top-7"><i aria-hidden="true" class="fa fa-fw fa-close"></i>&nbsp;' +
+            text +
             '</p></div>' +
             '</md-toast>'
         })
-      } else if (type === 3) {//Warning
+      } else if (type === 3) {
+        //Warning
         $mdToast.show({
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast style="border-top: 3px solid #eddb07;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template:
+            '<md-toast style="border-top: 3px solid #eddb07;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
-            '<p class="wz-padding-top-7"><i class="fa fa-warning fa-fw"></i>&nbsp;' + text +
+            '<p class="wz-padding-top-7"><i class="fa fa-warning fa-fw"></i>&nbsp;' +
+            text +
             '</p></div>' +
             '</md-toast>'
         })
       } else {
-        $mdToast.show({//Info
+        $mdToast.show({
+          //Info
           hideDelay: 3000,
           position: pinTo,
-          template: '<md-toast style="border-top: 3px solid #005571;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+          template:
+            '<md-toast style="border-top: 3px solid #005571;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
             '<div class="md-toast-content" style="background-color:white;">' +
-            '<p class="wz-padding-top-7"><i class="fa fa-fw fa-info" aria-hidden="true"></i>&nbsp;' + text +
+            '<p class="wz-padding-top-7"><i class="fa fa-fw fa-info" aria-hidden="true"></i>&nbsp;' +
+            text +
             '</p></div>' +
             '</md-toast>'
         })
-
       }
     }
     return {

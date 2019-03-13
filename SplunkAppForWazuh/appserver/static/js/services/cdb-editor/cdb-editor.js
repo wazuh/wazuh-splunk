@@ -11,58 +11,60 @@
  */
 
 define(['../module'], function(module) {
-    'use strict'
-  
-    class CDBEditor {
-      constructor($requestService) {
-        this.getConfig = $requestService.getConfiguration
-        this.apiReq = $requestService.apiReq
-      }
-  
-      async sendConfiguration(file, path, content, overwrite = false) {
-        try {
-          const url = overwrite ? `/manager/files?path=${path}/${file}&overwrite=true` : `/manager/files?path=${path}/${file}`
-          const result = await this.apiReq(
-            `${url}`,
-            { content, origin: 'raw' },
-            'POST'
-          )
-          if (
-            !result ||
-            !result.data ||
-            !result.data.data ||
-            result.data.error !== 0 ||
-            (result.data.data.error && result.data.data.error !== 0)
-          ) {
-            if (result.data.error === 1905) {
-              return result
-            } else {
-              throw new Error(result.data.message || 'Cannot send this file.')
-            }
-          }
-          return result
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
+  'use strict'
 
-      async getConfiguration(file, path) {
-        try {
-          const url = `/manager/files?path=${path}/${file}`
-          const result = await this.getConfig(url)
-          if (
-            !result ||
-            !result.data ||
-            !result.data.data ||
-            result.data.error != 0
-          ) {
-            throw new Error("Error fetching cdb list content")
+  class CDBEditor {
+    constructor($requestService) {
+      this.getConfig = $requestService.getConfiguration
+      this.apiReq = $requestService.apiReq
+    }
+
+    async sendConfiguration(file, path, content, overwrite = false) {
+      try {
+        const url = overwrite
+          ? `/manager/files?path=${path}/${file}&overwrite=true`
+          : `/manager/files?path=${path}/${file}`
+        const result = await this.apiReq(
+          `${url}`,
+          { content, origin: 'raw' },
+          'POST'
+        )
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          if (result.data.error === 1905) {
+            return result
+          } else {
+            throw new Error(result.data.message || 'Cannot send this file.')
           }
-           return result.data.data
-        } catch (error) {
-          return Promise.reject(error)
         }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
       }
     }
-    module.service('$cdbEditor', CDBEditor)
-  })
+
+    async getConfiguration(file, path) {
+      try {
+        const url = `/manager/files?path=${path}/${file}`
+        const result = await this.getConfig(url)
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error != 0
+        ) {
+          throw new Error('Error fetching cdb list content')
+        }
+        return result.data.data
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+  }
+  module.service('$cdbEditor', CDBEditor)
+})

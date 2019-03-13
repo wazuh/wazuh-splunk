@@ -17,7 +17,14 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, PieChart, LinearChart, Table, TimePicker, RawTableDataService) {
+], function(
+  app,
+  PieChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  RawTableDataService
+) {
   'use strict'
 
   class AgentsCA {
@@ -68,8 +75,8 @@ define([
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
-      this.scope.expandArray = [false,false,false,false,false]
-      this.scope.expand = (i,id) => this.expand(i,id)
+      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
         this.agent &&
@@ -120,44 +127,56 @@ define([
         ),
         new PieChart(
           'top5CISPassed',
-          `${this.filters} data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
+          `${
+            this.filters
+          } data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
           'top5CISPassed',
           this.scope
         ),
         new PieChart(
           'top5CISCSCPassed',
-          `${this.filters}  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
+          `${
+            this.filters
+          }  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
           'top5CISCSCPassed',
           this.scope
         ),
         new PieChart(
           'top5PCIDSSPassed',
-          `${this.filters}  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
+          `${
+            this.filters
+          }  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
           'top5PCIDSSPassed',
           this.scope
         ),
         new PieChart(
           'top5CISFailed',
-          `${this.filters}  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
+          `${
+            this.filters
+          }  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
           'top5CISFailed',
           this.scope
         ),
         new PieChart(
           'top5CISCSCFailed',
-          `${this.filters}  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
+          `${
+            this.filters
+          }  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
           'top5CISCSCFailed',
           this.scope
         ),
         new PieChart(
           'top5PCIDSSFailed',
-          `${this.filters}  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
+          `${
+            this.filters
+          }  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
           'top5PCIDSSFailed',
           this.scope
         ),
         new Table(
           'alertsSummary',
           `${
-          this.filters
+            this.filters
           } |  stats count(data.sca.check.rationale) as Count by data.sca.check.rationale,data.sca.check.remediation | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required"  | table Reason,"Change Required",Count`,
           'alertsSummary',
           this.scope
@@ -165,7 +184,7 @@ define([
         new RawTableDataService(
           'alertsSummaryTable',
           `${
-          this.filters
+            this.filters
           } |  stats count(data.sca.check.rationale) as Count by data.sca.check.rationale,data.sca.check.remediation | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required"  | table Reason,"Change Required",Count`,
           'alertsSummaryTableToken',
           '$result$',
@@ -250,7 +269,8 @@ define([
       this.scope.downloadCsv = () => this.downloadCsv()
 
       this.scope.switchVisualizations = () => this.switchVisualizations()
-      this.scope.loadPolicyChecks = (id, name) => this.loadPolicyChecks(id, name)
+      this.scope.loadPolicyChecks = (id, name) =>
+        this.loadPolicyChecks(id, name)
       this.scope.backToConfAssess = () => this.backToConfAssess()
 
       this.scope.agent =
@@ -286,7 +306,9 @@ define([
      */
     async downloadCsv() {
       try {
-        this.notification.showSimpleToast('Your download should begin automatically...')
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
         const currentApi = this.api.id
         const output = await this.csvReq.fetch(
           '/agents',
@@ -329,34 +351,36 @@ define([
       this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
     }
 
-
-
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
-      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick((e) => {
-        if(this.scope.expandArray[i]){
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
-        }else{
+        } else {
           e.preventDefault()
         }
       })
     }
 
-
     /**
      * Back to configuration assessment from a policy checks
      */
-    backToConfAssess(){
+    backToConfAssess() {
       this.scope.showPolicyChecks = false
       this.scope.showPolicies = true
     }
-
   }
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
 })

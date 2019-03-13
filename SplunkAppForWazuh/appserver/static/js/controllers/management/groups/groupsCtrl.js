@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (controllers) {
+define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
   class Groups {
     /**
@@ -71,21 +71,22 @@ define(['../../module', 'FileSaver'], function (controllers) {
       })
 
       // Come from the pencil icon on the groups table
-      this.scope.$on('openGroupFromList',(ev,parameters) => {
-        this.scope.editingFile = true;
-        this.scope.groupsSelectedTab = 'files';
-        return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
+      this.scope.$on('openGroupFromList', (ev, parameters) => {
+        this.scope.editingFile = true
+        this.scope.groupsSelectedTab = 'files'
+        return this.scope
+          .loadGroup(parameters.group)
+          .then(() => this.scope.editGroupAgentConfig())
       })
-
 
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
         this.goBackToAgents()
         return this.loadGroup(parameters.group)
       })
 
-      this.scope.$on('configurationSuccess',() => {
+      this.scope.$on('configurationSuccess', () => {
         this.scope.editingFile = false
-        if(!this.scope.$$phase) this.scope.$digest()
+        if (!this.scope.$$phase) this.scope.$digest()
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
@@ -129,14 +130,17 @@ define(['../../module', 'FileSaver'], function (controllers) {
         return
       })
 
-      this.scope.$on('openGroupFromList',(ev,parameters) => {
-        this.scope.editingFile = true;
-        this.scope.groupsSelectedTab = 'files';
-        return this.scope.loadGroup(parameters.group).then(() => this.scope.editGroupAgentConfig());
+      this.scope.$on('openGroupFromList', (ev, parameters) => {
+        this.scope.editingFile = true
+        this.scope.groupsSelectedTab = 'files'
+        return this.scope
+          .loadGroup(parameters.group)
+          .then(() => this.scope.editGroupAgentConfig())
       })
 
-      this.scope.$on('saveComplete', () => { this.scope.saveIncomplete = false })
-
+      this.scope.$on('saveComplete', () => {
+        this.scope.saveIncomplete = false
+      })
     }
 
     /**
@@ -156,7 +160,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
           try {
             this.scope.addingGroup = false
             await this.groupHandler.createGroup(name)
-            this.notification.showSuccessToast(`Success. Group ${name} has been created`)
+            this.notification.showSuccessToast(
+              `Success. Group ${name} has been created`
+            )
           } catch (error) {
             this.notification.showErrorToast(`${error.message || error}`)
           }
@@ -228,7 +234,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
      */
     async downloadCsv(path, name) {
       try {
-        this.notification.showSimpleToast('Your download should begin automatically...')
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
@@ -501,7 +509,10 @@ define(['../../module', 'FileSaver'], function (controllers) {
         })
       } catch (err) {
         this.scope.multipleSelectorLoading = false
-        this.notification.showErrorToast(err.message || err, 'Error applying changes')
+        this.notification.showErrorToast(
+          err.message || err,
+          'Error applying changes'
+        )
       }
       if (!this.scope.$$phase) this.scope.$digest()
       return

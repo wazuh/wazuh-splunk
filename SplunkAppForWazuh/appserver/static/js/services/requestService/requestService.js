@@ -52,7 +52,7 @@ define(['../module'], function(module) {
         else if (method === 'POST')
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
-        else if (method === 'DELETE'){
+        else if (method === 'DELETE') {
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         }
         if (!data) {
@@ -65,7 +65,7 @@ define(['../module'], function(module) {
         }
         return $q.resolve(data)
       } catch (error) {
-        console.error("errore in request ", error)
+        console.error('errore in request ', error)
         return $q.reject(error)
       }
     }
@@ -80,7 +80,8 @@ define(['../module'], function(module) {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
-        const id = currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
+        const id =
+          currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
         const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
@@ -109,7 +110,9 @@ define(['../module'], function(module) {
           if (result.data.error === 1905) {
             return result
           } else {
-            throw new Error(result.data.message || result.data.error || 'Cannot send file.')
+            throw new Error(
+              result.data.message || result.data.error || 'Cannot send file.'
+            )
           }
         }
         return result
@@ -118,7 +121,7 @@ define(['../module'], function(module) {
       }
     }
 
-    const getConfiguration = async (url) => {
+    const getConfiguration = async url => {
       try {
         const result = await apiReq(url)
         if (
@@ -128,7 +131,7 @@ define(['../module'], function(module) {
           result.data.error !== 0 ||
           (result.data.data.error && result.data.data.error !== 0)
         ) {
-          throw new Error("Cannot get file.")
+          throw new Error('Cannot get file.')
         }
         return result
       } catch (error) {

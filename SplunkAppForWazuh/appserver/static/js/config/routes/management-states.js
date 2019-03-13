@@ -1,10 +1,10 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function ($stateProvider, BASE_URL) {
+    function($stateProvider, BASE_URL) {
       $stateProvider
         // Manager
         .state('manager', {
@@ -130,7 +130,6 @@ define(['../module'], function (module) {
                 }
               }
             ]
-
           }
         })
         // Manager - Decoders
@@ -246,14 +245,20 @@ define(['../module'], function (module) {
               '$state',
               async ($cdbEditor, $stateParams, $state) => {
                 try {
-                  const result = await $cdbEditor.getConfiguration($stateParams.name, $stateParams.path)
-                  return { file: $stateParams.name, path: $stateParams.path, content: result }
+                  const result = await $cdbEditor.getConfiguration(
+                    $stateParams.name,
+                    $stateParams.path
+                  )
+                  return {
+                    file: $stateParams.name,
+                    path: $stateParams.path,
+                    content: result
+                  }
                 } catch (error) {
                   $state.go('settings.api')
                 }
               }
             ]
-
           }
         })
 
@@ -330,10 +335,20 @@ define(['../module'], function (module) {
               async ($requestService, $state) => {
                 try {
                   const info = {}
-                  const clusterStatus = await $requestService.apiReq('/cluster/status')
-                  if (clusterStatus.data.data.enabled === 'yes' && clusterStatus.data.data.running === 'yes') {
-                    const nodesList = await $requestService.apiReq('/cluster/nodes')
-                    Object.assign(info, { clusterEnabled: true, nodes: nodesList })
+                  const clusterStatus = await $requestService.apiReq(
+                    '/cluster/status'
+                  )
+                  if (
+                    clusterStatus.data.data.enabled === 'yes' &&
+                    clusterStatus.data.data.running === 'yes'
+                  ) {
+                    const nodesList = await $requestService.apiReq(
+                      '/cluster/nodes'
+                    )
+                    Object.assign(info, {
+                      clusterEnabled: true,
+                      nodes: nodesList
+                    })
                   } else {
                     Object.assign(info, { clusterEnabled: false })
                   }

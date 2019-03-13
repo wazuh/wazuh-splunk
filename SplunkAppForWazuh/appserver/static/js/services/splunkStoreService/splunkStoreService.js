@@ -64,7 +64,7 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
-          {_key: key}
+          { _key: key }
         )
         if (data.error || data.status === 400) throw new Error(data.error)
         return data

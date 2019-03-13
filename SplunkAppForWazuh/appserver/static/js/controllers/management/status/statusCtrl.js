@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class Status {
@@ -79,7 +79,6 @@ define(['../../module'], function (controllers) {
       this.scope.changeNode = node => this.changeNode(node)
       this.scope.restart = () => this.restart()
       this.bindStatus()
-
 
       if (this.nodeStatus) {
         this.scope.daemons = this.objToArr(this.nodeStatus)

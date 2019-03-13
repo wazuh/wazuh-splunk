@@ -1,4 +1,4 @@
-define(['../../module', './ruleset'], function (controllers, Ruleset) {
+define(['../../module', './ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class RulesetId extends Ruleset {
@@ -63,14 +63,16 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
     $onInit() {
       this.scope.isObject = item => typeof item === 'object'
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.addDetailFilter = (name, value) => this.addDetailFilter(name, value)
+      this.scope.addDetailFilter = (name, value) =>
+        this.addDetailFilter(name, value)
       this.scope.adminMode = this.extensions['admin'] === 'true'
       this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.editRule = fileName => this.editRule(fileName)
       this.scope.restart = () => this.restart()
-      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+      this.scope.closeRestartConfirmation = () =>
+        this.closeRestartConfirmation()
     }
 
     /**
@@ -93,13 +95,15 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       try {
         this.scope.restartAndApply = false
         //Refresh rule info
-        const result = await this.requestService.apiReq(`/rules/${this.scope.ruleInfo.id}`)
-        if (result.data.data.totalItems === 0) {  
-          this.state.go('mg-rules')    
+        const result = await this.requestService.apiReq(
+          `/rules/${this.scope.ruleInfo.id}`
+        )
+        if (result.data.data.totalItems === 0) {
+          this.state.go('mg-rules')
         }
         this.scope.ruleInfo = result.data.data.items[0]
       } catch (error) {
-        this.state.go('mg-rules') 
+        this.state.go('mg-rules')
       }
       this.scope.editingFile = false
       this.scope.$applyAsync()
@@ -135,7 +139,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         return Promise.reject(error)
       }
     }
-
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)
 })

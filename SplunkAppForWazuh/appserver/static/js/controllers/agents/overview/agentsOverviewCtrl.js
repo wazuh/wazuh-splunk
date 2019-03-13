@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (app) {
+define(['../../module'], function(app) {
   'use strict'
 
   class AgentsOverview {
@@ -72,27 +72,27 @@ define(['../../module'], function (app) {
 
           this.scope.agentOS =
             this.scope.agent &&
-              this.scope.agent.os &&
-              this.scope.agent.os.name &&
-              this.scope.agent.os.codename &&
-              this.scope.agent.os.version
+            this.scope.agent.os &&
+            this.scope.agent.os.name &&
+            this.scope.agent.os.codename &&
+            this.scope.agent.os.version
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                .codename || '-'} ${this.scope.agent.os.version || '-'}`
+                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
 
           this.scope.syscheck =
             this.agent.length > 0 &&
-              typeof this.agent[1] === 'object' &&
-              typeof this.agent[1].data === 'object' &&
-              !this.agent[1].data.error
+            typeof this.agent[1] === 'object' &&
+            typeof this.agent[1].data === 'object' &&
+            !this.agent[1].data.error
               ? this.agent[1].data.data
               : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
           this.scope.rootcheck =
             this.agent.length > 1 &&
-              typeof this.agent[2] === 'object' &&
-              typeof this.agent[2].data === 'object' &&
-              !this.agent[2].data.error
+            typeof this.agent[2] === 'object' &&
+            typeof this.agent[2].data === 'object' &&
+            !this.agent[2].data.error
               ? this.agent[2].data.data
               : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
@@ -170,7 +170,9 @@ define(['../../module'], function (app) {
                   this.scope.addingGroupToAgent = false
                   this.scope.editGroup = false
                   this.notification.showSuccessToast(
-                    `Agent ${this.scope.agent.name}(${this.scope.agent.id}) has been added to group ${group}.`
+                    `Agent ${this.scope.agent.name}(${
+                      this.scope.agent.id
+                    }) has been added to group ${group}.`
                   )
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
@@ -182,9 +184,7 @@ define(['../../module'], function (app) {
                   }
                   this.$scope.editGroup = false
                   this.scope.addingGroupToAgent = false
-                  this.notification.showErrorToast(
-                    error.message || error
-                  )
+                  this.notification.showErrorToast(error.message || error)
                 })
             }
           }
@@ -248,7 +248,6 @@ define(['../../module'], function (app) {
         this.scope.adminMode = false
         this.notification.showErrorToast('Error loading agent data.')
         if (!this.$scope.$$phase) this.$scope.$digest()
-
       }
     }
 
@@ -317,22 +316,24 @@ define(['../../module'], function (app) {
         this.scope.restartInProgress = true
         const id = this.scope.agent.id
         const name = this.scope.agent.name
-        const result = await this.requestService.apiReq(`/agents/${id}/restart`, {}, 'PUT')
-        if (
-          result &&
-          result.data.error === 0 &&
-          !result.data.failed_ids
-        ) {
-          this.notification.showSimpleToast(`Agent ${name}(${id}) is restarting.`)
+        const result = await this.requestService.apiReq(
+          `/agents/${id}/restart`,
+          {},
+          'PUT'
+        )
+        if (result && result.data.error === 0 && !result.data.failed_ids) {
+          this.notification.showSimpleToast(
+            `Agent ${name}(${id}) is restarting.`
+          )
         } else {
-          this.notification.showErrorToast(`Agent ${name}(${id}) could not be restarted.`)
+          this.notification.showErrorToast(
+            `Agent ${name}(${id}) could not be restarted.`
+          )
         }
         this.scope.restartInProgress = false
       } catch (error) {
         this.scope.restartInProgress = false
-        this.notification.showErrorToast(
-          `Error restarting agent: ${error}`
-        )
+        this.notification.showErrorToast(`Error restarting agent: ${error}`)
       }
     }
 

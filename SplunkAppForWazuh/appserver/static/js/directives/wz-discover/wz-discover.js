@@ -10,27 +10,42 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wzDiscover', function (BASE_URL) {
+  directives.directive('wzDiscover', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
-        breadcrumbs: '=breadcrumbs',
+        breadcrumbs: '=breadcrumbs'
       },
-      controller($scope, $currentDataService, $notificationService, $state, $navigationService) {
+      controller(
+        $scope,
+        $currentDataService,
+        $notificationService,
+        $state,
+        $navigationService
+      ) {
         $scope.discoverSection = () => {
           try {
             const hideOnlyShowFilters = false
-            const filters = $currentDataService.getSerializedFilters(hideOnlyShowFilters)
+            const filters = $currentDataService.getSerializedFilters(
+              hideOnlyShowFilters
+            )
             const url = `${BASE_URL}/app/search/search?q=${filters}`
             localStorage.setItem('urlDiscover', url)
             const lastState = $navigationService.getLastState()
-            const fromDashboard = lastState ? true : false// Check if cannot get the lastState, then, cannot back to previous dashboard
-            const breadcrumbs = lastState && $scope.breadcrumbs ? $scope.breadcrumbs : {}
-            $state.go('discover', { fromDashboard: fromDashboard, previousState: lastState, breadcrumbs: breadcrumbs})
+            const fromDashboard = lastState ? true : false // Check if cannot get the lastState, then, cannot back to previous dashboard
+            const breadcrumbs =
+              lastState && $scope.breadcrumbs ? $scope.breadcrumbs : {}
+            $state.go('discover', {
+              fromDashboard: fromDashboard,
+              previousState: lastState,
+              breadcrumbs: breadcrumbs
+            })
           } catch (error) {
-            $notificationService.showErrorToast("Cannot open discover over this section.")
+            $notificationService.showErrorToast(
+              'Cannot open discover over this section.'
+            )
           }
         }
       },
