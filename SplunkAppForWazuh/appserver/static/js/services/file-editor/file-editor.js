@@ -45,7 +45,6 @@ define(['../module'], function(module) {
         }
         return await this.checkConfiguration(node)
       } catch (error) {
-        console.error("save error 1 ", error)
         return Promise.reject(error)
       }
     }
@@ -67,7 +66,6 @@ define(['../module'], function(module) {
         }
         return result.data.data
       } catch (error) {
-        console.error("save error 2 ", error)
         return Promise.reject(error)
       }
     }
@@ -92,7 +90,6 @@ define(['../module'], function(module) {
           return Promise.reject(check.data.message || 'Cannot check configuration.')
         }
       } catch (error) {
-        console.error("save error 3 ", error)
         return Promise.reject(error)
       }
     }
@@ -109,7 +106,6 @@ define(['../module'], function(module) {
           throw new Error(result.data.message || `Cannot remove ${file}`)
         }
       } catch (error) {
-        console.error("save error 4 ", error)
         return Promise.reject(error)
       }
     }
