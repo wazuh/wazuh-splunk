@@ -8,13 +8,13 @@
     "jquery" : true
   },
   "parserOptions": {
-    "ecmaVersion": 7,
+    "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
   },
-  "parser": "babel-eslint",
+  "parser": "esprima",
   "rules": {
     "node/exports-style": [
       "error",
