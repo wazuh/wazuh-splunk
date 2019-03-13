@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class SettingsApi {
@@ -52,7 +52,7 @@ define(['../../module'], function (controllers) {
         // If no API, then remove cookie
         if (Array.isArray(this.apiList) && this.apiList.length === 0) {
           this.currentDataService.removeCurrentApi()
-          this.scope.$emit('updatedAPI', () => { })
+          this.scope.$emit('updatedAPI', () => {})
         }
         // Get the current selected API
         let currentApi = this.currentDataService.getApi()
@@ -91,7 +91,9 @@ define(['../../module'], function (controllers) {
           this.notification.showSuccessToast('Manager was removed')
         }
       } catch (err) {
-        this.notification.showErrorToast(`Cannot remove API: ${err.message || err}`)
+        this.notification.showErrorToast(
+          `Cannot remove API: ${err.message || err}`
+        )
       }
     }
 
@@ -206,14 +208,12 @@ define(['../../module'], function (controllers) {
     async selectManager(key) {
       try {
         // checking if the api is up
-        const connectionData = await this.currentDataService.checkApiConnection(
-          key
-        )
+        await this.currentDataService.checkApiConnection(key)
         // Selecting API
         await this.currentDataService.chose(key)
         this.setYellowStar(key)
         this.notification.showSuccessToast('API selected')
-        this.scope.$emit('updatedAPI', () => { })
+        this.scope.$emit('updatedAPI', () => {})
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
         this.notification.showErrorToast('Could not select manager')
@@ -319,9 +319,11 @@ define(['../../module'], function (controllers) {
       this.scope.user = ''
       this.scope.pass = ''
     }
-    
+
     setYellowStar(key) {
-      this.apiList.map((api) => { (api['_key'] === key) ? api.selected = true : api.selected = false })
+      this.apiList.map(api => {
+        api['_key'] === key ? (api.selected = true) : (api.selected = false)
+      })
     }
   }
   controllers.controller('settingsApiCtrl', SettingsApi)

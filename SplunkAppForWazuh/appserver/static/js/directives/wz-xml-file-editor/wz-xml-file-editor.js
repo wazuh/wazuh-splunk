@@ -22,9 +22,9 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function (app, CodeMirror) {
+], function(app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function (BASE_URL) {
+  app.directive('wzXmlFileEditor', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -34,13 +34,19 @@ define([
         targetName: '=targetName',
         closeFn: '&'
       },
-      controller($scope, $document, $notificationService, $groupHandler, $fileEditor) {
+      controller(
+        $scope,
+        $document,
+        $notificationService,
+        $groupHandler,
+        $fileEditor
+      ) {
         /**
          * Custom .replace method. Instead of using .replace which
          * evaluates regular expressions.
          * Alternative using split + join, same result.
          */
-        String.prototype.xmlReplace = function (str, newstr) {
+        String.prototype.xmlReplace = function(str, newstr) {
           return this.split(str).join(newstr)
         }
         let firstTime = true
@@ -58,10 +64,10 @@ define([
             const sanitized = line
               .trim()
               .xmlReplace('&', '&amp;')
-              .xmlReplace(/</g, '\&lt;')
-              .xmlReplace(/>/g, '\&gt;')
-              .xmlReplace(/"/g, '\&quot;')
-              .xmlReplace(/'/g, '\&apos;')
+              .xmlReplace(/</g, '&lt;') // eslint-disable-line
+              .xmlReplace(/>/g, '&gt;') // eslint-disable-line
+              .xmlReplace(/"/g, '&quot;') // eslint-disable-line
+              .xmlReplace(/'/g, '&apos;') // eslint-disable-line
             /**
              * Do not remove this condition. We don't want to replace
              * non-sanitized lines.
@@ -146,10 +152,10 @@ define([
             var type = single
               ? 'single'
               : closing
-                ? 'closing'
-                : opening
-                  ? 'opening'
-                  : 'other'
+              ? 'closing'
+              : opening
+              ? 'opening'
+              : 'other'
             var fromTo = lastType + '->' + type
             lastType = type
             var padding = ''
@@ -175,9 +181,17 @@ define([
             if (params && params.group) {
               await $groupHandler.sendConfiguration(params.group, xml)
               $scope.$emit('saveComplete', {})
-              $notificationService.showSuccessToast(`Group ${params.group} saved successfully.`)
+              $notificationService.showSuccessToast(
+                `Group ${params.group} saved successfully.`
+              )
             } else if (params && params.file) {
-              const result = await $fileEditor.sendConfiguration(params.file, params.dir, params.node, xml, params.overwrite)
+              const result = await $fileEditor.sendConfiguration(
+                params.file,
+                params.dir,
+                params.node,
+                xml,
+                params.overwrite
+              )
               if (result === 'fileAlreadyExists') {
                 $scope.showErrorMessages = true
                 $scope.errorInfo = ['File already exists.']
@@ -185,7 +199,9 @@ define([
               } else {
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
-                $notificationService.showSuccessToast("Configuration saved successfully.")
+                $notificationService.showSuccessToast(
+                  'Configuration saved successfully.'
+                )
               }
             }
             //$scope.closeFn()
@@ -194,7 +210,9 @@ define([
             if (error.badConfig) {
               $scope.showErrorMessages = true
               $scope.errorInfo = error.errMsg
-              $notificationService.showWarningToast("Configuration saved, but found erros.")
+              $notificationService.showWarningToast(
+                'Configuration saved, but found erros.'
+              )
             } else {
               $notificationService.showErrorToast(
                 error.message || error,
@@ -244,7 +262,6 @@ define([
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
-
       },
       templateUrl:
         BASE_URL +

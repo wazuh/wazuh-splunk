@@ -3,7 +3,7 @@ define([
   'splunkjs/mvc',
   'splunkjs/mvc/simpleform/formutils',
   'splunkjs/mvc/simplexml/urltokenmodel'
-], function (module, mvc, FormUtils, UrlTokenModel) {
+], function(module, mvc, FormUtils, UrlTokenModel) {
   'use strict'
 
   class urlTokenModel {
@@ -23,7 +23,7 @@ define([
 
       this.urlTokenModel.on('url:navigate', () => {
         this.defaultTokenModel.set(this.urlTokenModel.toJSON())
-        if (typeof _.isEmpty !== "undefined") {
+        if (typeof _.isEmpty !== 'undefined') {
           if (
             !_.isEmpty(this.urlTokenModel.toJSON()) && // eslint-disable-line
             !_.all(this.urlTokenModel.toJSON(), _.isUndefined) // eslint-disable-line

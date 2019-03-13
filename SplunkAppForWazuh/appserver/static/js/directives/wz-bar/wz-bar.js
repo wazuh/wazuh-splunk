@@ -9,12 +9,12 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wazuhBar', function ($notificationService, BASE_URL) {
+  directives.directive('wazuhBar', function($notificationService, BASE_URL) {
     return {
       restrict: 'E',
-      controller: function ($scope, $currentDataService) {
+      controller: function($scope, $currentDataService) {
         /**
          * Prettifies filters for md-chips
          * @returns {Array}
@@ -77,7 +77,7 @@ define(['../module'], function (directives) {
             }
             $currentDataService.addFilter(
               `{"${customSearch.split(':')[0]}":"${
-              customSearch.split(':')[1]
+                customSearch.split(':')[1]
               }"}`
             )
             $scope.filters = getPrettyFilters()
@@ -89,10 +89,10 @@ define(['../module'], function (directives) {
         }
 
         /**
-        * Change chip showing pin and trash icons
-        * @param {Object | String} chip
-        */
-        $scope.editChip = (chip) => {
+         * Change chip showing pin and trash icons
+         * @param {Object | String} chip
+         */
+        $scope.editChip = chip => {
           const chipIsStatic = filterStatic(chip)
           if (!chipIsStatic) {
             $scope.editingChip = chip
@@ -100,17 +100,17 @@ define(['../module'], function (directives) {
         }
 
         /**
-        * Cancel edition mode
-        * @param {Object | String} chip
-        */
+         * Cancel edition mode
+         * @param {Object | String} chip
+         */
         $scope.finishChipEdition = () => {
           $scope.editingChip = false
         }
 
         /**
-        * Check if the filter is pined
-        * @param {Object | String} chip
-        */
+         * Check if the filter is pined
+         * @param {Object | String} chip
+         */
         function filterPined(filter) {
           const key = filter.split(':')[0]
           const staticTrue = $currentDataService
@@ -124,10 +124,10 @@ define(['../module'], function (directives) {
         $scope.filterPined = chip => filterPined(chip)
 
         /**
-        * Pin the filter
-        * @param {Object | String} chip
-        */
-        $scope.pinFilter = (filter) => {
+         * Pin the filter
+         * @param {Object | String} chip
+         */
+        $scope.pinFilter = filter => {
           try {
             const key = filter.split(':')[0]
             const value = filter.split(':')[1]
@@ -145,7 +145,6 @@ define(['../module'], function (directives) {
           } catch (err) {
             $notificationService.showErrorToast(err.message || err)
           }
-
         }
       },
       templateUrl:

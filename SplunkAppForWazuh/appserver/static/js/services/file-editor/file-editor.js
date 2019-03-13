@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class FileEditor {
@@ -25,7 +25,9 @@ define(['../module'], function (module) {
         let path = dir ? `${dir}/${file}` : file
         path = path.startsWith('etc/') ? path : `etc/${path}`
         node = node ? `cluster/${node}` : 'manager'
-        const url = overwrite ? `/${node}/files?path=${path}&overwrite=true` : `/${node}/files?path=${path}`
+        const url = overwrite
+          ? `/${node}/files?path=${path}&overwrite=true`
+          : `/${node}/files?path=${path}`
         const result = await this.sendConfig(url, content)
         if (
           !result ||
@@ -33,10 +35,12 @@ define(['../module'], function (module) {
           !result.data.data ||
           result.data.error !== 0
         ) {
-          if (result.data.error === 1905){
+          if (result.data.error === 1905) {
             return 'fileAlreadyExists'
           } else {
-            throw new Error(result.data.message || `Error updating ${file} content.`)
+            throw new Error(
+              result.data.message || `Error updating ${file} content.`
+            )
           }
         }
         return await this.checkConfiguration(node)
@@ -72,15 +76,14 @@ define(['../module'], function (module) {
         if (check.data.data.status !== 'OK') {
           const errObj = {}
           errObj['badConfig'] = true
-          errObj['errMsg'] = [... new Set(check.data.data.details)]
+          errObj['errMsg'] = [...new Set(check.data.data.details)]
           return Promise.reject(errObj)
         } else {
-          return "Configuration saved."
+          return 'Configuration saved.'
         }
       } catch (error) {
         return Promise.reject(error)
       }
-
     }
 
     async removeFile(item) {
@@ -89,11 +92,7 @@ define(['../module'], function (module) {
         const filePath = `${item.path}/${file}`
         const url = `/manager/files?path=${filePath}`
         const result = await this.apiReq(url, {}, 'DELETE')
-        if (
-          result &&
-          result.data &&
-          !result.data.error
-        ) {
+        if (result && result.data && !result.data.error) {
           return `File ${file} deleted.`
         } else {
           throw new Error(result.data.message || `Cannot remove ${file}`)
@@ -102,7 +101,6 @@ define(['../module'], function (module) {
         return Promise.reject(error)
       }
     }
-
   }
 
   module.service('$fileEditor', FileEditor)

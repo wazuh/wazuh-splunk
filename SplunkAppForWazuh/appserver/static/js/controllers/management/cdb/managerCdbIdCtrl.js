@@ -1,13 +1,10 @@
 define([
-  '../../module', '../rules/ruleset',
+  '../../module',
+  '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap'],
-  function (
-    controllers,
-    Ruleset,
-    pagination,
-    checkGap) {
-    'use strict'
+  '../../../directives/wz-table/lib/check-gap'
+], function(controllers, Ruleset, pagination, checkGap) {
+  'use strict'
   class CdbListId extends Ruleset {
     /**
      * Class CdbList-ID
@@ -30,7 +27,7 @@ define([
       isAdmin,
       $cdbEditor,
       cdbInfo,
-      $filter, 
+      $filter,
       $restartService
     ) {
       super(
@@ -70,12 +67,14 @@ define([
 
         //Scope methods
         this.scope.addEntry = (key, value) => this.addEntry(key, value)
-        this.scope.setEditingKey = (key, value) => this.setEditingKey(key, value)
+        this.scope.setEditingKey = (key, value) =>
+          this.setEditingKey(key, value)
         this.scope.cancelEditingKey = () => this.cancelEditingKey()
-        this.scope.showConfirmRemoveEntry = (ev, key) => this.showConfirmRemoveEntry(ev, key)
+        this.scope.showConfirmRemoveEntry = (ev, key) =>
+          this.showConfirmRemoveEntry(ev, key)
         this.scope.editKey = (key, value) => this.editKey(key, value)
         this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-        this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
+        this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
 
         // Edit cdb lists
         this.scope.currentList = {
@@ -95,30 +94,37 @@ define([
          */
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
-        this.scope.totalItems = this.scope.items.length    
+        this.scope.totalItems = this.scope.items.length
         this.scope.itemsPerPage = 10
         this.scope.pagedItems = []
         this.scope.currentPage = 0
         this.scope.gap = 0
-        this.scope.searchTable = () => this.pagination.searchTable(this.scope, this.scope.items)
-        this.scope.groupToPages = () => this.pagination.groupToPages(this.scope) 
+        this.scope.searchTable = () =>
+          this.pagination.searchTable(this.scope, this.scope.items)
+        this.scope.groupToPages = () => this.pagination.groupToPages(this.scope)
         this.initPagination()
-        this.scope.range = (size, start, end) => this.pagination.range(size, start, end, this.scope.gap)
+        this.scope.range = (size, start, end) =>
+          this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-        this.scope.nextPage = async currentPage => this.pagination.nextPage(currentPage, this.scope, this.notification, null)
-        this.scope.setPage = (n) => {
+        this.scope.nextPage = async currentPage =>
+          this.pagination.nextPage(
+            currentPage,
+            this.scope,
+            this.notification,
+            null
+          )
+        this.scope.setPage = n => {
           this.scope.currentPage = n
           this.scope.nextPage(n)
         }
-        this.scope.filterContent = (filter) => this.filterContent(filter)
+        this.scope.filterContent = filter => this.filterContent(filter)
 
         this.scope.restart = () => this.restart()
-        this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
-        
+        this.scope.closeRestartConfirmation = () =>
+          this.closeRestartConfirmation()
       } catch (error) {
-        this.notification.showErrorToast("Error editing CDB list")
+        this.notification.showErrorToast('Error editing CDB list')
       }
-
     }
 
     async filterContent(filter) {
@@ -138,7 +144,7 @@ define([
     async addEntry(key, value) {
       try {
         if (!key) {
-          this.notification.showWarningToast("Cannot send empty fields.")
+          this.notification.showWarningToast('Cannot send empty fields.')
         } else {
           if (!this.scope.currentList.list[key]) {
             value = value ? value : ''
@@ -147,19 +153,20 @@ define([
             this.scope.newValue = ''
             this.refreshCdbList()
           } else {
-            this.notification.showErrorToast("Error adding new entry, the key exists.")
+            this.notification.showErrorToast(
+              'Error adding new entry, the key exists.'
+            )
           }
         }
       } catch (error) {
-        this.notification.showErrorToast("Error adding entry.")
+        this.notification.showErrorToast('Error adding entry.')
       }
-
     }
 
     /**
-   * Enable edition for a given key
-   * @param {String} key Entry key
-   */
+     * Enable edition for a given key
+     * @param {String} key Entry key
+     */
     setEditingKey(key, value) {
       this.scope.editingKey = key
       this.scope.editingNewValue = value
@@ -183,7 +190,7 @@ define([
         this.cancelEditingKey()
         this.refreshCdbList()
       } catch (error) {
-        this.notification.showErrorToast("Error editing value.")
+        this.notification.showErrorToast('Error editing value.')
       }
     }
 
@@ -197,9 +204,8 @@ define([
         this.scope.removingEntry = false
         this.refreshCdbList()
       } catch (error) {
-        this.notification.showErrorToast("Error deleting entry.")
+        this.notification.showErrorToast('Error deleting entry.')
       }
-
     }
 
     refreshCdbList() {
@@ -215,14 +221,14 @@ define([
         const fileName = this.scope.currentList.details.file
         const path = this.scope.currentList.details.path
         const content = this.objToString(this.scope.currentList.list)
-        const check = await this.cdbEditor.sendConfiguration(fileName, path, content, true)
+        await this.cdbEditor.sendConfiguration(fileName, path, content, true)
         const cdbUpdated = await this.fetchFile(fileName, path)
         this.scope.currentList.list = this.stringToObj(cdbUpdated)
         // Re-init pagination
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
         this.initPagination()
-        this.notification.showSuccessToast("File saved successfully.")
+        this.notification.showSuccessToast('File saved successfully.')
         this.scope.restartAndApply = true
         this.scope.saveIncomplete = false
         if (!this.scope.$$phase) this.scope.$digest()
@@ -235,23 +241,22 @@ define([
     stringToObj(string) {
       let result = {}
       const splitted = string.split('\n')
-      splitted.forEach((element) => {
+      splitted.forEach(element => {
         const keyValue = element.split(':')
-        if (keyValue[0])
-          result[keyValue[0]] = keyValue[1]
+        if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })
       return result
     }
 
     objToString(obj) {
-      let raw = '';
+      let raw = ''
       for (var key in obj) {
-        raw = raw.concat(`${key}:${obj[key]}\n`);
+        raw = raw.concat(`${key}:${obj[key]}\n`)
       }
       return raw
     }
-    
-    cdbToArr(){
+
+    cdbToArr() {
       const obj = this.scope.currentList.list
       let items = []
       for (var property in obj) {
@@ -261,12 +266,11 @@ define([
       return items
     }
 
-    initPagination(){
+    initPagination() {
       this.scope.totalItems = this.scope.items.length
       this.checkGap(this.scope, this.scope.items)
-      this.scope.searchTable()      
+      this.scope.searchTable()
     }
-
   }
   controllers.controller('managerCdbIdCtrl', CdbListId)
 })

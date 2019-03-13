@@ -76,10 +76,8 @@ define([
         this.launchSearches()
       })
 
-
-      this.scope.expandArray = [false,false,false,false,false,false]
-      this.scope.expand = (i,id) => this.expand(i,id)
-
+      this.scope.expandArray = [false, false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
 
       this.vizz = [
         /**
@@ -144,15 +142,15 @@ define([
         ),
         new LinearChart(
           'alertsEvoTop10Agents',
-          `${this.filters} sourcetype=wazuh | timechart span=1h limit=10 useother=f count by agent.name`,
+          `${
+            this.filters
+          } sourcetype=wazuh | timechart span=1h limit=10 useother=f count by agent.name`,
           'alertsEvoTop10Agents',
           this.scope
         ),
         new PieChart(
           'top10ruleGroups',
-          `${
-            this.filters
-          } sourcetype=wazuh | top rule.groups{} limit=10`,
+          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=10`,
           'top10ruleGroups',
           this.scope
         ),
@@ -164,7 +162,7 @@ define([
           'agentsSummaryVizz',
           this.scope
         ),
-        this.agentsSummaryTable = new RawTableDataService(
+        (this.agentsSummaryTable = new RawTableDataService(
           'agentsSummaryTable',
           `${
             this.filters
@@ -173,7 +171,7 @@ define([
           '$result$',
           this.scope,
           'Agents Summary'
-        )
+        ))
       ]
     }
 
@@ -197,7 +195,9 @@ define([
             if (!this.scope.$$phase) this.scope.$digest()
           })
           .catch(error => {
-            this.notification.showErrorToast(`Cannot fetch agent status data: ${error}`)
+            this.notification.showErrorToast(
+              `Cannot fetch agent status data: ${error}`
+            )
           })
       } else {
         this.scope.wzMonitoringEnabled = true
@@ -265,7 +265,7 @@ define([
           this.setReportMetrics()
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })
@@ -294,26 +294,29 @@ define([
         'Authentication success': this.scope.authSuccess
       }
     }
-    
+
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
-      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick((e) => {
-        if(this.scope.expandArray[i]){
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
-        }else{
+        } else {
           e.preventDefault()
         }
       })
     }
-
-    
-
   }
 
   app.controller('overviewGeneralCtrl', OverviewGeneral)

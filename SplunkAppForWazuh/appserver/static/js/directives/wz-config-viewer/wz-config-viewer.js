@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
+define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
   app,
   CodeMirror
 ) {
@@ -73,15 +73,20 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
 
       const bindXmlListener = () => {
         const scrollElement = $scope.xmlCodeBox.getScrollerElement()
-        $(scrollElement).bind('scroll', function (e) {
+        $(scrollElement).bind('scroll', function(e) {
           var element = $(e.currentTarget)[0]
-          if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-            $scope.$emit('scrolledToBottom', { lines: $scope.xmlCodeBox.lineCount() })
+          if (
+            element.scrollHeight - element.scrollTop ===
+            element.clientHeight
+          ) {
+            $scope.$emit('scrolledToBottom', {
+              lines: $scope.xmlCodeBox.lineCount()
+            })
           }
         })
       }
 
-      const init = () => { }
+      const init = () => {}
 
       const refreshJsonBox = json => {
         $scope.jsoncontent = json
@@ -89,8 +94,8 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
-          $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'));
-          setTimeout(function () {
+          $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'))
+          setTimeout(function() {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()
           }, 300)
@@ -104,7 +109,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
         }
         if ($scope.xmlcontent != false) {
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
-          setTimeout(function () {
+          setTimeout(function() {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
           }, 300)

@@ -38,7 +38,7 @@ define([
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.state = $state
-      this.scope.pciTabs = (pciTabs) ? pciTabs : false
+      this.scope.pciTabs = pciTabs ? pciTabs : false
       this.reportingService = $reportingService
       this.tableResults = {}
       this.getFilters = $currentDataService.getSerializedFilters
@@ -63,8 +63,8 @@ define([
         $urlTokenModel.handleValueChange
       )
 
-      this.scope.expandArray = [false,false,false,false,false]
-            this.scope.expand = (i,id) => this.expand(i,id)
+      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
 
       this.dropdown = new Dropdown(
         'dropDownInput',
@@ -161,7 +161,7 @@ define([
           this.scope.loadingVizz = false
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })
@@ -174,22 +174,26 @@ define([
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
-
     }
-
 
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
-      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick((e) => {
-        if(this.scope.expandArray[i]){
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
-        }else{
+        } else {
           e.preventDefault()
         }
       })

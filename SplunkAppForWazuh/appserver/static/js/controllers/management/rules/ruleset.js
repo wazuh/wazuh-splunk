@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (app) {
+define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Ruleset {
@@ -99,7 +99,8 @@ define(['../../module', 'FileSaver'], function (app) {
       }
       this.scope.colorOrder = order => this.colorOrder(order)
       this.scope.restart = () => this.restart()
-      this.scope.closeRestartConfirmation = () => this.closeRestartConfirmation()
+      this.scope.closeRestartConfirmation = () =>
+        this.closeRestartConfirmation()
 
       this.scope.enableSave = () => this.enableSave()
 
@@ -139,7 +140,9 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     async downloadCsv(path, name) {
       try {
-        this.notification.showSimpleToast('Your download should begin automatically...')
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
@@ -169,10 +172,10 @@ define(['../../module', 'FileSaver'], function (app) {
             coloredString = coloredString.replace(
               /\(((?!<\/span>).)*?\)(?!<\/span>)/im,
               '<span style="color: ' +
-              this.colors[i] +
-              ' ">' +
-              valuesArray[i] +
-              '</span>'
+                this.colors[i] +
+                ' ">' +
+                valuesArray[i] +
+                '</span>'
             )
           }
         }
@@ -193,10 +196,10 @@ define(['../../module', 'FileSaver'], function (app) {
         coloredString = coloredString.replace(
           valuesArray[i],
           '<span style="color: ' +
-          this.colors[i] +
-          ' ">' +
-          valuesArray[i] +
-          '</span>'
+            this.colors[i] +
+            ' ">' +
+            valuesArray[i] +
+            '</span>'
         )
       }
       return this.sce.trustAsHtml(coloredString)
@@ -378,15 +381,15 @@ define(['../../module', 'FileSaver'], function (app) {
     }
 
     /**
-     * Enables save button  
+     * Enables save button
      */
     enableSave() {
       this.scope.overwrite = false
     }
 
-  /**
-   * Close editor
-   */
+    /**
+     * Close editor
+     */
     closeEditingFile() {
       this.scope.editingRulesetFile = false
       this.scope.editingFile = false
@@ -398,13 +401,12 @@ define(['../../module', 'FileSaver'], function (app) {
 
     /**
      * Check if XML is valid
-     * @param {Boolean} valid 
+     * @param {Boolean} valid
      */
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid
       this.scope.$applyAsync()
     }
-
 
     /**
      * Open xml editior box
@@ -428,7 +430,7 @@ define(['../../module', 'FileSaver'], function (app) {
 
     /**
      * Saves the file content
-     * @param {String} file 
+     * @param {String} file
      */
     saveFile(file) {
       this.scope.saveIncomplete = true
@@ -440,7 +442,7 @@ define(['../../module', 'FileSaver'], function (app) {
 
     /**
      * Fetchs file content
-     * @param {String} file 
+     * @param {String} file
      */
     async fetchFileContent(file) {
       try {
@@ -450,7 +452,6 @@ define(['../../module', 'FileSaver'], function (app) {
         return Promise.reject(error)
       }
     }
-
   }
   app.controller('managerRulesetCtrl', Ruleset)
   return Ruleset

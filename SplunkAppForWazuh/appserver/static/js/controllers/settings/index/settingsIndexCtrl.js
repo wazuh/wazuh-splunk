@@ -1,7 +1,7 @@
 define([
   '../../module',
   '../../../services/visualizations/inputs/dropdown-input'
-], function (app, Dropdown) {
+], function(app, Dropdown) {
   class SettingIndex {
     /**
      * Class constructor
@@ -10,7 +10,12 @@ define([
      * @param {Object} $urlTokenModel
      */
 
-    constructor($scope, $currentDataService, $urlTokenModel, $notificationService) {
+    constructor(
+      $scope,
+      $currentDataService,
+      $urlTokenModel,
+      $notificationService
+    ) {
       this.scope = $scope
       this.currentDataService = $currentDataService
       this.urlTokenModel = $urlTokenModel
@@ -44,7 +49,6 @@ define([
         } catch (error) {
           this.notification.showErrorToast(error)
         }
-
       })
 
       this.scope.$on('$destroy', () => {

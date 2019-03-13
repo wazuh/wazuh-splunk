@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class navigationService {
@@ -6,13 +6,14 @@ define(['../module'], function (module) {
       this.$state = $state
       this.$window = $window
       this.$location = $location
-      
-      this.$window.onpopstate = function (event) {
+
+      this.$window.onpopstate = function(event) {
         try {
           let lastState = sessionStorage.history.split(',')
 
           let newHistory = lastState[0]
-          if (lastState.length > 1) { // if there are previous states
+          if (lastState.length > 1) {
+            // if there are previous states
             for (var i = 1; i < lastState.length - 2; i++) {
               newHistory += ',' + lastState[i]
             }
@@ -24,7 +25,6 @@ define(['../module'], function (module) {
               { reload: true, notify: false }
             )
           }
-
         } catch (error) {
           sessionStorage.params
             ? $state.go(sessionStorage.params)
@@ -41,7 +41,7 @@ define(['../module'], function (module) {
     }
 
     addToHistory(url) {
-      try{
+      try {
         if (!sessionStorage.history) {
           sessionStorage.history = url
         } else {
@@ -51,42 +51,39 @@ define(['../module'], function (module) {
           const len = history.length
           if (history.length < 20) {
             for (let i = 1; i < len; i++) {
-              if (history[i - 1] !== history[i])
-                newHistory += ',' + history[i]
+              if (history[i - 1] !== history[i]) newHistory += ',' + history[i]
             }
           } else {
             for (let i = 11; i < len; i++) {
-              if (history[i - 11] !== history[i])
-                newHistory += ',' + history[i]
+              if (history[i - 11] !== history[i]) newHistory += ',' + history[i]
             }
           }
           sessionStorage.history = newHistory
-  
         }
-      }catch(error){
+      } catch (error) {
         this.goToLastState()
       }
     }
 
     goToLastState() {
       sessionStorage.params
-      ? this.$state.go(sessionStorage.params)
-      : this.$state.go('settings.api') // redirects to settings.api if no previous states were visited
+        ? this.$state.go(sessionStorage.params)
+        : this.$state.go('settings.api') // redirects to settings.api if no previous states were visited
     }
 
     /* *
-    * Redirects the user to the tab specified in the url (index?currentTab=)
-    * if no tab is specified it redirects to the last state visited 
-    * */
-    manageState(){
-      try{
+     * Redirects the user to the tab specified in the url (index?currentTab=)
+     * if no tab is specified it redirects to the last state visited
+     * */
+    manageState() {
+      try {
         const url_params = this.$location.search()
-        if(url_params.currentTab){
+        if (url_params.currentTab) {
           this.$state.go(url_params.currentTab)
-        } else{
+        } else {
           this.goToLastState()
         }
-      }catch(error){
+      } catch (error) {
         this.$state.go('settings.api')
       }
     }

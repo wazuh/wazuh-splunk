@@ -1,7 +1,7 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
-  module.service('$currentDataService', function (
+  module.service('$currentDataService', function(
     $apiMgrService,
     $filterService,
     $navigationService,
@@ -12,7 +12,7 @@ define(['../module'], function (module) {
       return $apiMgrService.getPollintState
     }
 
-    const addApi = (record) => {
+    const addApi = record => {
       return $apiMgrService.addApi(record)
     }
 
@@ -60,7 +60,7 @@ define(['../module'], function (module) {
       return $filterService.addFilter(filter)
     }
 
-    const getSerializedFilters = (hideOnlyShowFilters) => {
+    const getSerializedFilters = hideOnlyShowFilters => {
       return $filterService.getSerializedFilters(hideOnlyShowFilters)
     }
 
@@ -72,7 +72,7 @@ define(['../module'], function (module) {
       return $filterService.pinFilter(filter)
     }
 
-    const cleanFilters = (cleanAgentsPinedFilters) => {
+    const cleanFilters = cleanAgentsPinedFilters => {
       return $filterService.cleanFilters(cleanAgentsPinedFilters)
     }
 
@@ -164,22 +164,21 @@ define(['../module'], function (module) {
       } catch (error) {
         return Promise.reject(error)
       }
-
     }
-    
+
     /*
      * Gets reporting status
      */
-     const getReportingStatus = async () => {
-       try {
-         const id = getApi()['_key']
-         const result = await getExtensionsById(id)
-         const status = result.reporting === 'true'
-         return status
-       } catch (error) {
-         return true
-       }
-     }
+    const getReportingStatus = async () => {
+      try {
+        const id = getApi()['_key']
+        const result = await getExtensionsById(id)
+        const status = result.reporting === 'true'
+        return status
+      } catch (error) {
+        return true
+      }
+    }
 
     return {
       getPollintState: getPollintState,
@@ -213,8 +212,7 @@ define(['../module'], function (module) {
       setExtensions: setExtensions,
       addApi: addApi,
       isAdmin: isAdmin,
-      getReportingStatus: getReportingStatus,
-      addApi: addApi
+      getReportingStatus: getReportingStatus
     }
   })
 })

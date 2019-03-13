@@ -142,7 +142,9 @@ define([
      */
     async downloadCsv() {
       try {
-        this.notification.showSimpleToast('Your download should begin automatically...')
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           '/agents',
@@ -191,7 +193,9 @@ define([
           throw Error('Cannot fetch agent name')
         }
       } catch (err) {
-        this.notification.showErrorToast(err.message || 'Error fetching agent data')
+        this.notification.showErrorToast(
+          err.message || 'Error fetching agent data'
+        )
       }
     }
   }

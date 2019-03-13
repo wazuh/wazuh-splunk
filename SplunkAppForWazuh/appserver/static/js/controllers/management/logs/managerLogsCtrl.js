@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (app) {
+define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Logs {
@@ -55,10 +55,11 @@ define(['../../module', 'FileSaver'], function (app) {
         this.scope.sort = () => this.sort()
         this.scope.$on('wazuhFetched', (ev, params) => {
           this.scope.XMLContent = this.parseLogsToText(params.items)
-          this.scope.$broadcast('XMLContentReady', { data: this.scope.XMLContent })
+          this.scope.$broadcast('XMLContentReady', {
+            data: this.scope.XMLContent
+          })
           this.scope.$applyAsync()
         })
-
       } catch (err) {
         this.notification.showErrorToast('Cannot fetch logs data from server')
       }
@@ -73,7 +74,9 @@ define(['../../module', 'FileSaver'], function (app) {
         let result = ''
         logs.map(log => {
           if (log) {
-            result += `${log.timestamp} ${log.tag} ${(log.level || '').toUpperCase()}:  ${log.description}\n`            
+            result += `${log.timestamp} ${log.tag} ${(
+              log.level || ''
+            ).toUpperCase()}:  ${log.description}\n`
           }
         })
         return result
@@ -94,7 +97,9 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     async downloadCsv() {
       try {
-        this.notification.showSimpleToast('Your download should begin automatically...')
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
         const currentApi = this.api['_key']
         if (this.clusterEnabled) {
           this.path = `/cluster/${this.scope.selectedNode}/logs`
@@ -152,8 +157,8 @@ define(['../../module', 'FileSaver'], function (app) {
 
         const data = this.clusterEnabled
           ? await this.apiReq(
-            `/cluster/${this.scope.selectedNode}/logs/summary`
-          )
+              `/cluster/${this.scope.selectedNode}/logs/summary`
+            )
           : await this.apiReq('/manager/logs/summary')
         const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'domToImg'], function (app, domToImg) {
+define(['../module', 'domToImg'], function(app, domToImg) {
   'use strict'
   class Vis2PNG {
     constructor($rootScope, $currentDataService) {
@@ -29,10 +29,11 @@ define(['../module', 'domToImg'], function (app, domToImg) {
         let currentCompleted = 0
         await Promise.all(
           visArray.map(async currentValue => {
-            const tmpNode = $("#" + currentValue + " .panel-body")
+            const tmpNode = $('#' + currentValue + ' .panel-body')
             let classes = ''
             let title = ''
-            try { //Try to fetch the title of the visualization
+            try {
+              //Try to fetch the title of the visualization
               title = document
                 .getElementById(currentValue)
                 .parentElement.getElementsByTagName('span')[0].innerHTML
@@ -43,12 +44,14 @@ define(['../module', 'domToImg'], function (app, domToImg) {
                   .getElementById(currentValue)
                   .className.split(' ')
               }
-            } catch (error) {
-            }
+            } catch (error) {} // eslint-disable-line
 
             try {
               if (!classes.includes('table')) {
-                const tmpResult = await domToImg.toPng(tmpNode[0], { 'width': tmpNode.width(), 'height': tmpNode.height() })
+                const tmpResult = await domToImg.toPng(tmpNode[0], {
+                  width: tmpNode.width(),
+                  height: tmpNode.height()
+                })
                 if (tmpResult === 'data:,') {
                   return Promise.reject('Impossible fetch visualizations')
                 }
@@ -60,8 +63,7 @@ define(['../module', 'domToImg'], function (app, domToImg) {
                   title: title
                 })
               }
-            } catch (error) {
-            } // eslint-disable-line
+            } catch (error) {} // eslint-disable-line
 
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(

@@ -10,12 +10,12 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'splunkjs/mvc'], function (module) {
+define(['../module', 'splunkjs/mvc'], function(module) {
   'use strict'
   /**
    * Class that handles dynamic table methods
    */
-  module.service('$dataService', function ($requestService) {
+  module.service('$dataService', function($requestService) {
     return class DataFactory {
       /**
        * Class constructor
@@ -33,7 +33,9 @@ define(['../module', 'splunkjs/mvc'], function (module) {
         this.sortValue = false
         this.busy = false
         if (this.implicitFilter) this.filters.push(...this.implicitFilter)
-        if (this.implicitSort) {this.addSorting(this.implicitSort)} 
+        if (this.implicitSort) {
+          this.addSorting(this.implicitSort)
+        }
       }
 
       /**
@@ -126,7 +128,6 @@ define(['../module', 'splunkjs/mvc'], function (module) {
             const elapsed = (end - start) / 1000
             this.busy = false
             return { items: this.items, time: elapsed }
-
           }
         } catch (error) {
           this.busy = false

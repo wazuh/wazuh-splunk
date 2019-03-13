@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class AgentsPM {
@@ -99,7 +99,7 @@ define([
         new AreaChart(
           'elementOverTime',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime',
           this.scope
@@ -113,7 +113,7 @@ define([
         new PieChart(
           'topPciDss',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss',
           this.scope
@@ -121,7 +121,7 @@ define([
         new AreaChart(
           'eventsPerAgent',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=2h count by agent.name`,
           'eventsPerAgent',
           this.scope
@@ -129,7 +129,7 @@ define([
         new Table(
           'alertsSummary',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
@@ -137,7 +137,7 @@ define([
         new RawTableDataService(
           'alertsSummaryTable',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
@@ -253,7 +253,9 @@ define([
      */
     async downloadCsv() {
       try {
-        this.notification.showSimpleToast('Your download should begin automatically...')
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
         const currentApi = this.api.id
         const output = await this.csvReq.fetch(
           '/agents',
@@ -279,16 +281,22 @@ define([
 
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
-      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick((e) => {
-        if(this.scope.expandArray[i]){
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
-        }else{
+        } else {
           e.preventDefault()
         }
       })
@@ -299,9 +307,17 @@ define([
      */
     async launchRootcheckScan() {
       try {
-        const result = await this.apiReq(`/rootcheck/${this.scope.agent.id}`, {}, 'PUT')
+        const result = await this.apiReq(
+          `/rootcheck/${this.scope.agent.id}`,
+          {},
+          'PUT'
+        )
         if (result && result.data && result.data.error === 0) {
-          this.notification.showSuccessToast(`Policy monitoring scan launched successfully on agent ${this.scope.agent.id}`)
+          this.notification.showSuccessToast(
+            `Policy monitoring scan launched successfully on agent ${
+              this.scope.agent.id
+            }`
+          )
         }
       } catch (error) {
         this.notification.showErrorToast(error.message || error)

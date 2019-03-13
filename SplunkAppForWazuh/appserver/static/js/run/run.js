@@ -1,4 +1,4 @@
-define(['./module'], function (module) {
+define(['./module'], function(module) {
   'use strict'
   module.run([
     '$rootScope',
@@ -6,7 +6,7 @@ define(['./module'], function (module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
-    function (
+    function(
       $rootScope,
       $state,
       $transitions,
@@ -27,7 +27,7 @@ define(['./module'], function (module) {
           )
           $currentDataService.addFilter(
             `{"index":"${
-            $currentDataService.getIndex().index
+              $currentDataService.getIndex().index
             }", "implicit":true}`
           )
         } catch (err) {
@@ -56,8 +56,8 @@ define(['./module'], function (module) {
         const to = trans.to().name
         const from = trans.from().name
         //Select primary states
-        if (to === 'discover' &&
-          from === 'overview' ||
+        if (
+          (to === 'discover' && from === 'overview') ||
           from === 'manager' ||
           from === 'settings' ||
           from === 'agents' ||
@@ -76,7 +76,12 @@ define(['./module'], function (module) {
         )
           $currentDataService.cleanFilters()
         if (to.includes('agent') || to.includes('ag-')) {
-          if (from !== 'agents' && !from.includes('agent') && !from.includes('ag-') && from !== 'discover') {
+          if (
+            from !== 'agents' &&
+            !from.includes('agent') &&
+            !from.includes('ag-') &&
+            from !== 'discover'
+          ) {
             const cleanAgentsPinedFilters = true
             $currentDataService.cleanFilters(cleanAgentsPinedFilters)
           }

@@ -1,4 +1,4 @@
-define(['../../module', './ruleset'], function (controllers, Ruleset) {
+define(['../../module', './ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
@@ -45,7 +45,8 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.addNewFile = () => this.addNewFile()
-      this.scope.saveRuleConfig = (fileName, dir, overwrite) => this.saveRuleConfig(fileName, dir, overwrite)
+      this.scope.saveRuleConfig = (fileName, dir, overwrite) =>
+        this.saveRuleConfig(fileName, dir, overwrite)
 
       this.scope.selectedNavTab = 'rules'
 
@@ -79,16 +80,18 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
 
     /**
      * Save the new content
-     * @param {String} fileName 
-     * @param {String} dir 
+     * @param {String} fileName
+     * @param {String} dir
      */
-    saveRuleConfig(fileName, dir, overwrite=false) {
+    saveRuleConfig(fileName, dir, overwrite = false) {
       try {
         const containsBlanks = /.* .*/
         fileName = this.scope.editingFile.file
         fileName = fileName.endsWith('.xml') ? fileName : `${fileName}.xml`
         if (containsBlanks.test(fileName)) {
-          this.notification.showErrorToast('Error creating a new file. The filename can not contain white spaces.')
+          this.notification.showErrorToast(
+            'Error creating a new file. The filename can not contain white spaces.'
+          )
         } else {
           if (fileName !== '.xml') {
             this.scope.saveIncomplete = true
@@ -105,7 +108,6 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
         this.notification.showWarningToast('Please set a valid name')
       }
     }
-
   }
   controllers.controller('managerRulesetCtrl', Rules)
   return Rules

@@ -1,4 +1,4 @@
-define(['../../../module'], function (controllers) {
+define(['../../../module'], function(controllers) {
   'use strict'
 
   class EditGroupsCtrl {
@@ -8,7 +8,15 @@ define(['../../../module'], function (controllers) {
      * @param {Array} groups
      * @param {Boolean} isAdmin
      */
-    constructor($scope, $notificationService, $fileEditor, isAdmin, groups, $requestService, $groupHandler) {
+    constructor(
+      $scope,
+      $notificationService,
+      $fileEditor,
+      isAdmin,
+      groups,
+      $requestService,
+      $groupHandler
+    ) {
       this.scope = $scope
       this.isAdmin = isAdmin
       this.groups = groups
@@ -24,11 +32,13 @@ define(['../../../module'], function (controllers) {
       try {
         this.scope.editingGroup = false
 
-        this.scope.editGroupAgentConfig = group => this.editGroupAgentConfig(group)
+        this.scope.editGroupAgentConfig = group =>
+          this.editGroupAgentConfig(group)
         this.scope.closeEditingFile = () => this.closeEditingFile()
         this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
         this.scope.doSaveGroupAgentConfig = () => this.doSaveGroupAgentConfig()
-        this.scope.saveGroupAgentConfig = content => this.saveGroupAgentConfig(content)
+        this.scope.saveGroupAgentConfig = content =>
+          this.saveGroupAgentConfig(content)
 
         this.scope.groups = this.groups.data.data.items
         this.scope.adminMode = this.isAdmin
@@ -41,7 +51,9 @@ define(['../../../module'], function (controllers) {
           try {
             this.scope.addingGroup = false
             await this.groupHandler.createGroup(name)
-            this.notification.showSuccessToast(`Success. Group ${name} has been created`)
+            this.notification.showSuccessToast(
+              `Success. Group ${name} has been created`
+            )
           } catch (error) {
             this.notification.showErrorToast(`${error.message || error}`)
           }
@@ -54,17 +66,16 @@ define(['../../../module'], function (controllers) {
         }
 
         //Edit groups
-        this.scope.$on('openGroupFromList',(ev,parameters) => {
+        this.scope.$on('openGroupFromList', (ev, parameters) => {
           const groupName = parameters.group.name
-          this.scope.editingFile = true;
-          this.scope.groupsSelectedTab = 'files';
+          this.scope.editingFile = true
+          this.scope.groupsSelectedTab = 'files'
           this.editGroupAgentConfig(groupName)
         })
       } catch (error) {
         console.error(error)
       }
     }
-
 
     //Groups
     async editGroupAgentConfig(groupName) {
@@ -136,7 +147,6 @@ define(['../../../module'], function (controllers) {
         group: this.scope.currentGroup.name
       })
     }
-
   }
 
   controllers.controller('editGroupsCtrl', EditGroupsCtrl)

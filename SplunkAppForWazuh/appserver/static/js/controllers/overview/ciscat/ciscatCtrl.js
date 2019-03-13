@@ -47,9 +47,8 @@ define([
         $urlTokenModel.handleValueChange
       )
 
-      this.scope.expandArray = [false,false,false]
-      this.scope.expand = (i,id) => this.expand(i,id)
-
+      this.scope.expandArray = [false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
 
       this.scope.$on('deletedFilter', () => {
         this.launchSearches()
@@ -216,7 +215,7 @@ define([
           this.setReportMetrics()
         } else {
           this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData'){
+            if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
           })
@@ -265,24 +264,28 @@ define([
       this.state.reload()
     }
 
-
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $('#' + id + ' .panel-body .splunk-view .shared-reportvisualizer')
-      this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick((e) => {
-        if(this.scope.expandArray[i]){
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i] ? vis.css('height', 'calc(100vh - 200px)') : vis.css('height', '250px')
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
-        }else{
+        } else {
           e.preventDefault()
         }
       })
     }
-
   }
   app.controller('ciscatCtrl', Ciscat)
 })

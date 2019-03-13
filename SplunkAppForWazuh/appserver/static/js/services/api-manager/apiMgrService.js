@@ -1,6 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$apiMgrService', function (
+  module.service('$apiMgrService', function(
     $requestService,
     $apiIndexStorageService,
     $splunkStoreService
@@ -219,7 +219,9 @@ define(['../module'], function (module) {
           // Encode user and password, this prevent fails with special charsets
           const user = encodeURIComponent(api.userapi)
           const pass = encodeURIComponent(api.passapi)
-          const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${user}&pass=${pass}`
+          const checkConnectionEndpoint = `/manager/check_connection?ip=${
+            api.url
+          }&port=${api.portapi}&user=${user}&pass=${pass}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
@@ -238,9 +240,9 @@ define(['../module'], function (module) {
 
     /**
      * Checks if the API has to change its filters
-     * @param {Object} api 
+     * @param {Object} api
      */
-    const updateApiFilter = async (api) => {
+    const updateApiFilter = async api => {
       try {
         const results = await Promise.all([
           $requestService.apiReq(`/cluster/status`, {
@@ -252,11 +254,10 @@ define(['../module'], function (module) {
           })
         ])
 
-        const parsedResult = results.map(item => item && item.data && item.data.data ? item.data.data : false)
-        const [
-          clusterData,
-          managerName
-        ] = parsedResult
+        const parsedResult = results.map(item =>
+          item && item.data && item.data.data ? item.data.data : false
+        )
+        const [clusterData, managerName] = parsedResult
 
         if (managerName.name) {
           api.managerName = managerName.name
@@ -284,12 +285,12 @@ define(['../module'], function (module) {
      */
     const checkApiConnection = async id => {
       try {
-        const api = await select(id)//Before update cluster or not cluster
-        const connect = await checkRawConnection(api)
-        const apiSaved = { ...api }
+        const api = await select(id) //Before update cluster or not cluster
+        await checkRawConnection(api)
+        const apiSaved = { ...api } // eslint-disable-line
         const updatedApi = await updateApiFilter(api)
         let equal = true
-        Object.keys(updatedApi).forEach((key) => {
+        Object.keys(updatedApi).forEach(key => {
           if (updatedApi[key] !== apiSaved[key]) {
             equal = false
           }
