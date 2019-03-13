@@ -619,7 +619,7 @@ define([
             this.apiOutputBox.setValue(result)
           }
         }
-        ;(firstTime || !desiredGroup) && this.apiOutputBox.setValue('Welcome!')
+        ;(firstTime || !desiredGroup) && this.apiOutputBox.setValue('Welcome!') // eslint-disable-line
       } catch (error) {
         if ((error || {}).status === -1) {
           return this.apiOutputBox.setValue(
