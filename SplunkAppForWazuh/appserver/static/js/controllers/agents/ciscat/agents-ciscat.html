@@ -15,7 +15,7 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-        <md-button ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz" ng-click="startVis2Png()"
+        <md-button ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
           aria-label="Generate report button">
           <i class="fa fa-fw fa-print" aria-hidden="true"></i>
           <md-tooltip md-direction="left" class="wz-tooltip">
