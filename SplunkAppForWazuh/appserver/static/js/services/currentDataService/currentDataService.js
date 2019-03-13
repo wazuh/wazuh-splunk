@@ -142,6 +142,24 @@ define(['../module'], function(module) {
     }
 
     /**
+     * Gets admin extensions by ID
+     * @param {String} id
+     */
+    const getAdminExtensions = async () => {
+      try {
+        const result = {}
+        const ext = await $requestService.httpReq(
+          `GET`,
+          `/manager/admin_extensions`
+        )
+        Object.assign(result, ext.data)
+        return result
+      } catch (error) {
+        return Promise.reject(false)
+      }
+    }
+
+    /**
      * Checks if is admin
      */
     const isAdmin = async () => {
@@ -171,8 +189,7 @@ define(['../module'], function(module) {
      */
     const getReportingStatus = async () => {
       try {
-        const id = getApi()['_key']
-        const result = await getExtensionsById(id)
+        const result = await getAdminExtensions()
         const status = result.reporting === 'true'
         return status
       } catch (error) {
@@ -207,6 +224,7 @@ define(['../module'], function(module) {
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
+      getAdminExtensions: getAdminExtensions,
       getCurrentExtensions: getCurrentExtensions,
       getExtensionsById: getExtensionsById,
       setExtensions: setExtensions,
