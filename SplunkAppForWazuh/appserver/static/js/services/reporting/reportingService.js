@@ -86,6 +86,7 @@ define(['../module', 'jquery'], function(module, $) {
                 .getElementsByTagName('span')[1].innerHTML
             : ' '
 
+          const timeZone = new Date().getTimezoneOffset()
           const data = {
             images,
             tableResults,
@@ -101,7 +102,8 @@ define(['../module', 'jquery'], function(module, $) {
             tables: appliedFilters.tables,
             pdfName: tab,
             section: isAgents ? 'agents' : 'overview',
-            isAgents
+            isAgents,
+            timeZone
           }
           await this.genericReq('POST', '/report/generate', {
             data: JSON.stringify(data)
@@ -240,6 +242,8 @@ define(['../module', 'jquery'], function(module, $) {
           const packagesTable = { fields: packagesKeys, rows: packagesData }
           tableResults['Packages'] = packagesTable
 
+          const timeZone = new Date().getTimezoneOffset()
+
           const data = {
             images: [],
             tableResults,
@@ -248,7 +252,8 @@ define(['../module', 'jquery'], function(module, $) {
             queryFilters: '',
             metrics: {},
             pdfName: 'agents-inventory',
-            isAgents
+            isAgents,
+            timeZone
           }
 
           await this.genericReq('POST', '/report/generate', {
