@@ -92,11 +92,17 @@ define(['../module', 'jquery'], function(module, $) {
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
-        const reportingUrl = this.navigationService.updateURLParameter(window.location.href,'currentTab','mg-reporting')
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-        this.notification.showSuccessToast(
-          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
-        )
+        try{
+          const reportingUrl = this.navigationService.updateURLParameter(window.location.href,'currentTab','mg-reporting')
+          this.notification.showSuccessToast(
+            `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+          )
+        }catch(error){
+          this.notification.showSuccessToast(
+            'Success. Go to Management ->  Reporting'
+          )
+        }
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
