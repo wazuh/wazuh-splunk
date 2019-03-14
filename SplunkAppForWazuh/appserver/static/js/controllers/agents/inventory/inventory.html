@@ -14,7 +14,7 @@
       <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
     </div>
     <!-- Report button -->
-    <md-button  ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz" ng-click="startVis2Png()" aria-label="Generate report button">
+    <md-button  ng-if="reportingEnabled" ng-disabled="loadingReporting" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-click="startVis2Png()" aria-label="Generate report button">
       <i class="fa fa-fw fa-print" aria-hidden="true"></i>
       <md-tooltip md-direction="left" class="wz-tooltip">
         Generate report
@@ -22,6 +22,10 @@
     </md-button>
   </div>
 
+  <!-- Loading report-->
+  <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner"
+    aria-hidden="true"></i></div>
+  
   <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">

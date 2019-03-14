@@ -1,4 +1,4 @@
-define(['../module', 'jquery'], function (module, $) {
+define(['../module', 'jquery'], function(module, $) {
   'use strict'
   class ReportingService {
     constructor(
@@ -61,15 +61,15 @@ define(['../module', 'jquery'], function (module, $) {
         const images = await this.vis2png.checkArray(vizz)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
-          }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+        }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
         //Search time range
         const timeRange = document
           .getElementById('timePicker')
           .getElementsByTagName('span')[1].innerHTML
           ? document
-            .getElementById('timePicker')
-            .getElementsByTagName('span')[1].innerHTML
+              .getElementById('timePicker')
+              .getElementsByTagName('span')[1].innerHTML
           : ' '
 
         const data = {
@@ -133,7 +133,7 @@ define(['../module', 'jquery'], function (module, $) {
             Manager: agent[0].data.data.manager,
             OS: `${agent[0].data.data.os.name} ${
               agent[0].data.data.os.codename
-              } ${agent[0].data.data.os.version}`,
+            } ${agent[0].data.data.os.version}`,
             dateAdd: agent[0].data.data.dateAdd,
             lastKeepAlive: agent[0].data.data.lastKeepAlive,
             group: agent[0].data.data.group.toString()
@@ -143,9 +143,7 @@ define(['../module', 'jquery'], function (module, $) {
         }
 
         //Network interfaces
-        const netiface = await this.apiReq(
-          `/syscollector/${agentId}/netiface`
-        )
+        const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
         const networkInterfaceData = netiface.data.data.items.map(i => {
           i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
@@ -159,12 +157,7 @@ define(['../module', 'jquery'], function (module, $) {
 
         //Network ports
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
-        const networkPortsKeys = [
-          'Local IP',
-          'Local Port',
-          'State',
-          'Protocol'
-        ]
+        const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
         const networkPortsData = ports.data.data.items.map(p => {
           p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
           return [p.local.ip, p.local.port, p.state, p.protocol]
@@ -206,15 +199,8 @@ define(['../module', 'jquery'], function (module, $) {
         tableResults['Processes'] = processesTable
 
         //Packages
-        const packages = await this.apiReq(
-          `/syscollector/${agentId}/packages`
-        )
-        const packagesKeys = [
-          'Name',
-          'Architecture',
-          'Version',
-          'Description'
-        ]
+        const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
+        const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
         const packagesData = packages.data.data.items.map(p => {
           return [p.name, p.architecture, p.version, p.description]
         })
