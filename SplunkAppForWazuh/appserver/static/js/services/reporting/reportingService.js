@@ -77,14 +77,16 @@ define(['../module', 'jquery'], function(module, $) {
             isAgents ? 'agents' : 'overview'
           }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
+          let timeRange
+
           //Search time range
-          const timeRange = document
+          try {
+          timeRange = document
             .getElementById('timePicker')
             .getElementsByTagName('span')[1].innerHTML
-            ? document
-                .getElementById('timePicker')
-                .getElementsByTagName('span')[1].innerHTML
-            : ' '
+          } catch (error) {
+            timeRange = false
+          }
 
           const timeZone = new Date().getTimezoneOffset()
           const data = {
@@ -247,7 +249,7 @@ define(['../module', 'jquery'], function(module, $) {
           const data = {
             images: [],
             tableResults,
-            timeRange: '',
+            timeRange: false,
             sectionTitle: 'Inventory Data',
             queryFilters: '',
             metrics: {},
