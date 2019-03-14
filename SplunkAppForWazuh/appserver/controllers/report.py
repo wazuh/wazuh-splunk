@@ -107,7 +107,6 @@ class report(controllers.BaseController):
             clean_images = jsonbak.dumps(data['images'])
             clean_images.replace("'", "\"")
             data['images'] = jsonbak.loads(clean_images)
-            today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             #Get filters and other information
             filters = data['queryFilters']
@@ -116,6 +115,9 @@ class report(controllers.BaseController):
             section_title = data['sectionTitle']
             metrics = data['metrics']
             tables = data['tableResults']
+            time_diff = data['timeZone']
+            today = datetime.datetime.utcnow() - datetime.timedelta(minutes=time_diff)
+            today = today.strftime('%Y.%m.%d %H:%M')
             if metrics:
                 metrics = jsonbak.loads(metrics)
             agent_data = data['isAgents']
@@ -140,9 +142,11 @@ class report(controllers.BaseController):
                 pdf.set_fill_color(93, 188, 210)
                 pdf.set_text_color(255,255,255)
                 pdf.set_font('Arial', '', 10)
-                pdf.cell(0, 5, ' Search time range: ' + time_range , 0, 0, 'L', 1)
-                pdf.ln(5)
-                pdf.cell(0, 5, ' Filters:' + filters , 0, 0, 'L', 1)
+                if time_range:
+                    pdf.cell(0, 5, ' Search time range: ' + time_range , 0, 0, 'L', 1)
+                    pdf.ln(5)
+                if filters:
+                    pdf.cell(0, 5, ' Filters:' + filters , 0, 0, 'L', 1)
             #Check if is agent, print agent info
             if agent_data and agent_data != 'inventory':
                 self.print_agent_info(agent_data, pdf)
