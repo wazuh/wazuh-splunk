@@ -32,7 +32,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
             const tmpNode = $('#' + currentValue + ' .panel-body')
             const noResults = $('#' + currentValue + ' .panel-body .alert')
             let error = false
-            if(noResults.length > 0){
+            if (noResults.length > 0) {
               error = true
             }
 
@@ -54,20 +54,23 @@ define(['../module', 'domToImg'], function(app, domToImg) {
 
             try {
               if (!classes.includes('table')) {
-                const tmpResult = await domToImg.toPng(error ? noResults[0] : tmpNode[0], {
-                  width: tmpNode.width(),
-                  height: tmpNode.height()
-                })
+                const tmpResult = await domToImg.toPng(
+                  error ? noResults[0] : tmpNode[0],
+                  {
+                    width: tmpNode.width(),
+                    height: tmpNode.height()
+                  }
+                )
                 if (tmpResult === 'data:,') {
                   return Promise.reject('Impossible fetch visualizations')
                 }
-                  this.rawArray.push({
-                    element: tmpResult,
-                    width: error ? -1 : tmpNode.width(),
-                    height: tmpNode.height(),
-                    id: currentValue,
-                    title: title
-                  })
+                this.rawArray.push({
+                  element: tmpResult,
+                  width: error ? -1 : tmpNode.width(),
+                  height: tmpNode.height(),
+                  id: currentValue,
+                  title: title
+                })
               }
             } catch (error) {} // eslint-disable-line
 

@@ -93,12 +93,16 @@ define(['../module', 'jquery'], function(module, $) {
           data: JSON.stringify(data)
         })
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-        try{
-          const reportingUrl = this.navigationService.updateURLParameter(window.location.href,'currentTab','mg-reporting')
+        try {
+          const reportingUrl = this.navigationService.updateURLParameter(
+            window.location.href,
+            'currentTab',
+            'mg-reporting'
+          )
           this.notification.showSuccessToast(
             `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
           )
-        }catch(error){
+        } catch (error) {
           this.notification.showSuccessToast(
             'Success. Go to Management ->  Reporting'
           )
@@ -116,7 +120,7 @@ define(['../module', 'jquery'], function(module, $) {
         }
       }
     }
-    
+
     async reportInventoryData(agentId) {
       try {
         let tableResults = {}
