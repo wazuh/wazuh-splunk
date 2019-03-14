@@ -1,4 +1,4 @@
-define(['../module', 'jquery'], function (module, $) {
+define(['../module', 'jquery'], function(module, $) {
   'use strict'
   class ReportingService {
     constructor(
@@ -42,13 +42,24 @@ define(['../module', 'jquery'], function (module, $) {
      */
     betweenDates() {
       try {
-        let { earliest_time, latest_time } = JSON.parse(localStorage.getItem('searchTimeRange'))
+        let { earliest_time, latest_time } = JSON.parse(
+          localStorage.getItem('searchTimeRange')
+        )
         earliest_time = parseFloat(earliest_time)
         latest_time = parseFloat(latest_time)
-        if (isNaN(earliest_time) || !earliest_time || isNaN(latest_time) || !latest_time) {
+        if (
+          isNaN(earliest_time) ||
+          !earliest_time ||
+          isNaN(latest_time) ||
+          !latest_time
+        ) {
           return false
         }
-        if ((Number.isInteger(earliest_time) || this.isFloat(earliest_time) && Number.isInteger(latest_time) || this.isFloat(latest_time))) {
+        if (
+          Number.isInteger(earliest_time) ||
+          (this.isFloat(earliest_time) && Number.isInteger(latest_time)) ||
+          this.isFloat(latest_time)
+        ) {
           return this.formatBetweenDates(earliest_time, latest_time)
         }
       } catch (error) {
@@ -61,7 +72,7 @@ define(['../module', 'jquery'], function (module, $) {
      */
     formatBetweenDates(earliest, latest) {
       try {
-        //Remove milliseconds and multiply per 1000 to get a milliseconds date format 
+        //Remove milliseconds and multiply per 1000 to get a milliseconds date format
         earliest = Math.trunc(earliest) * 1000
         latest = Math.trunc(latest) * 1000
         const eDate = this.formatDate(earliest)
@@ -75,16 +86,19 @@ define(['../module', 'jquery'], function (module, $) {
     /**
      * Formats dates in YYYY-MM-DD HH:MM:SS format
      */
-    formatDate(date){
+    formatDate(date) {
       try {
         const d = new Date(date)
         const year = d.getFullYear()
-        const month = ((d.getMonth() + 1) < 10 ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1))
+        const month =
+          d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1
         const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()
         const hour = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()
-        const minute = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()
-        const second = d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds()
-        const dateFormatted = `${year}-${month}-${day} ${hour}:${minute}:${second}` 
+        const minute =
+          d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()
+        const second =
+          d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds()
+        const dateFormatted = `${year}-${month}-${day} ${hour}:${minute}:${second}`
         return dateFormatted
       } catch (error) {
         return date
@@ -136,15 +150,17 @@ define(['../module', 'jquery'], function (module, $) {
           const images = await this.vis2png.checkArray(vizz)
           const name = `wazuh-${
             isAgents ? 'agents' : 'overview'
-            }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+          }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
           let timeRange
 
           //Search time range
           try {
-            timeRange = this.betweenDates() || 
-            document.getElementById('timePicker')
-              .getElementsByTagName('span')[1].innerHTML
+            timeRange =
+              this.betweenDates() ||
+              document
+                .getElementById('timePicker')
+                .getElementsByTagName('span')[1].innerHTML
           } catch (error) {
             timeRange = false
           }
@@ -211,7 +227,17 @@ define(['../module', 'jquery'], function (module, $) {
             ])
 
             const agentInfo = agent[0].data.data
-            const { name, id, ip, version, manager, os, dateAdd, lastKeepAlive, group } = agentInfo
+            const {
+              name,
+              id,
+              ip,
+              version,
+              manager,
+              os,
+              dateAdd,
+              lastKeepAlive,
+              group
+            } = agentInfo
 
             isAgents = {
               ID: id,
