@@ -28,9 +28,11 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
     ).
 - Restart agents ([#556](https://github.com/wazuh/wazuh-splunk/pull/556)).
 - Discover function on each section ([#529](https://github.com/wazuh/wazuh-splunk/pull/529)).
-- Can pined filters ([#529](https://github.com/wazuh/wazuh-splunk/pull/529)).
+- Can pined filters (
+    [#529](https://github.com/wazuh/wazuh-splunk/pull/529)
+    [#618](https://github.com/wazuh/wazuh-splunk/pull/618)).
 - Expand visualizations on the dashboard ([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).
-- Reporting as extension ([#585](https://github.com/wazuh/wazuh-splunk/pull/585)).
+- Reporting as admin extension ([#585](https://github.com/wazuh/wazuh-splunk/pull/585)).
 - Delete rules, decoders and CDB lists files ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
 - Prevent overwrite a existing file ([#589](https://github.com/wazuh/wazuh-splunk/pull/589)).
 - Unescape back slash for JSON raw content ([#599](https://github.com/wazuh/wazuh-splunk/pull/599)).
@@ -49,6 +51,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
     [#614](https://github.com/wazuh/wazuh-splunk/pull/614)
     ).
 - Cabability to expand visualizations ([#567](https://github.com/wazuh/wazuh-splunk/pull/567)).
+- Set the browser time zone to the report ([#619](https://github.com/wazuh/wazuh-splunk/pull/619)).
 
 
 ### Changed
