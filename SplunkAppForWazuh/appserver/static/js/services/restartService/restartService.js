@@ -1,6 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$restartService', function (
+  module.service('$restartService', function(
     $requestService,
     $notificationService
   ) {
@@ -43,7 +43,9 @@ define(['../module'], function (module) {
             .apiReq('/cluster/restart', {}, 'PUT')
             .then(result => {
               if (result && result.data && result.data.error !== 0) {
-                throw result.data.message || result.data.error || 'Cannot restart the cluster.'
+                throw result.data.message ||
+                  result.data.error ||
+                  'Cannot restart the cluster.'
               }
             })
             .catch(error => {
@@ -93,14 +95,12 @@ define(['../module'], function (module) {
       }
     }
 
-    const checkConfig = async (node) => {
+    const checkConfig = async node => {
       try {
-        const check = await $requestService.apiReq(`${node}/configuration/validation`)
-        if (
-          check &&
-          check.data &&
-          !check.data.error
-        ) {
+        const check = await $requestService.apiReq(
+          `${node}/configuration/validation`
+        )
+        if (check && check.data && !check.data.error) {
           if (check.data.data.status === 'OK') {
             return 'OK'
           } else {
@@ -112,7 +112,9 @@ define(['../module'], function (module) {
             }
           }
         } else {
-          return Promise.reject(check.data.message || 'Cannot check configuration.')
+          return Promise.reject(
+            check.data.message || 'Cannot check configuration.'
+          )
         }
       } catch (error) {
         return Promise.reject(error || 'Bad configuration, restart aborted.')
