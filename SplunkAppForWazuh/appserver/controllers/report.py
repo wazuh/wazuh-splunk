@@ -103,7 +103,6 @@ class report(controllers.BaseController):
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data']
             data = jsonbak.loads(json_acceptable_string)
-            self.logger.info("timeZONE "+str(data['timeZone']))
             #Replace "'" in images
             clean_images = jsonbak.dumps(data['images'])
             clean_images.replace("'", "\"")
