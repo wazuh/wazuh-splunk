@@ -107,7 +107,6 @@ class report(controllers.BaseController):
             clean_images = jsonbak.dumps(data['images'])
             clean_images.replace("'", "\"")
             data['images'] = jsonbak.loads(clean_images)
-            today = datetime.datetime.now().strftime('%Y.%m.%d %H:%M')
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             #Get filters and other information
             filters = data['queryFilters']
@@ -116,6 +115,9 @@ class report(controllers.BaseController):
             section_title = data['sectionTitle']
             metrics = data['metrics']
             tables = data['tableResults']
+            time_diff = data['timeZone']
+            today = datetime.datetime.utcnow() - datetime.timedelta(minutes=time_diff)
+            today = today.strftime('%Y.%m.%d %H:%M')
             if metrics:
                 metrics = jsonbak.loads(metrics)
             agent_data = data['isAgents']
