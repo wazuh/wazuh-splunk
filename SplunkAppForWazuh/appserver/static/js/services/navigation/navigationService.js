@@ -71,6 +71,30 @@ define(['../module'], function(module) {
         : this.$state.go('settings.api') // redirects to settings.api if no previous states were visited
     }
 
+    /**
+     * Returns the current url with updated parameter
+     * @param {*} url 
+     * @param {*} param - paramater to be updated
+     * @param {*} paramVal - new value of param
+     */
+    updateURLParameter(url, param, paramVal){
+      var newAdditionalURL = "";
+      var tempArray = url.split("?");
+      var baseURL = tempArray[0];
+      var additionalURL = tempArray[1];
+      var temp = "";
+      if (additionalURL) {
+          tempArray = additionalURL.split("&");
+          for (var i=0; i<tempArray.length; i++){
+              if(tempArray[i].split('=')[0] != param){
+                  newAdditionalURL += temp + tempArray[i];
+                  temp = "&";
+              }
+          }
+      }
+      var rows_txt = temp + "" + param + "=" + paramVal;
+      return baseURL + "?" + newAdditionalURL + rows_txt;
+  }
     /* *
      * Redirects the user to the tab specified in the url (index?currentTab=)
      * if no tab is specified it redirects to the last state visited

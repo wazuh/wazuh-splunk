@@ -6,7 +6,8 @@ define(['../module', 'jquery'], function (module, $) {
       vis2png,
       $currentDataService,
       $requestService,
-      $notificationService
+      $notificationService,
+      $navigationService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
@@ -14,6 +15,7 @@ define(['../module', 'jquery'], function (module, $) {
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
+      this.navigationService = $navigationService
     }
 
     /**
@@ -90,9 +92,10 @@ define(['../module', 'jquery'], function (module, $) {
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
+        const reportingUrl = this.navigationService.updateURLParameter(window.location.href,'currentTab','mg-reporting')
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.notification.showSuccessToast(
-          'Success. Go to Management -> Reporting'
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
         )
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
@@ -107,7 +110,7 @@ define(['../module', 'jquery'], function (module, $) {
         }
       }
     }
-
+    
     async reportInventoryData(agentId) {
       try {
         let tableResults = {}
