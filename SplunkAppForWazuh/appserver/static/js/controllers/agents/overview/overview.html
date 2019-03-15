@@ -147,8 +147,7 @@
                   Available groups:
               </div>
               <div class="wz-word-break" flex ng-if="!groups || !groups.length">
-                  No more groups available. Create a new group at <a ng-href="#/manager//?_g=()&tab=groups">Configuration
-                      > Groups</a>.
+                  No more groups available. Create a new group at <span ><a ui-sref="mg-groups">Management > Groups</a>.</span>
               </div>
           </div>
           <div ng-if="agent.group && editGroup && !addingGroupToAgent && groups && groups.length" class="wz-margin-top-4">
