@@ -10,12 +10,10 @@
     </md-card>
   </div>
   <!-- Headline -->
-  <div layout="column" layout-padding>
-    <div ng-if="agent && agent.id !== '000'">
+  <div ng-if="agent && agent.id !== '000'" layout="column" layout-padding>
       <span class="font-size-18"> <i class="fa fa-fw fa-cog" aria-hidden="true"></i> Configuration</span>
       <span ng-if="isSynchronized" class="wz-agent-status-indicator small teal">SYNCHRONIZED</span>
       <span ng-if="!isSynchronized" class="wz-agent-status-indicator small red">NOT SYNCHRONIZED</span>
-    </div>
   </div>
   <!-- End headline -->
 
@@ -70,7 +68,7 @@
             </tr>
             <tr class="striped" ng-click="switchConfigTab('global-configuration', [{component:'com',configuration:'logging'}])">
               <td>Global configuration</td>
-              <td>ogging settings that apply to the agent</td>
+              <td>Logging settings that apply to the agent</td>
             </tr>
             <tr ng-click="switchConfigTab('client', [{component:'agent',configuration:'client'}])">
               <td>Client configuration</td>
@@ -182,7 +180,7 @@
             </tr>
             <tr ng-click="switchConfigTab('integrity-monitoring',[{component:'syscheck',configuration:'syscheck'}])">
               <td>Integrity monitoring</td>
-              <td>Identify changes in content, permissions, ownership, and attributes of files</td>
+              <td>Identify changes in content, permissions, ownership and attributes of files</td>
             </tr>
             <tr class="striped" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])" ng-if="!agent || agent.id === '000'">
               <td>Agentless</td>

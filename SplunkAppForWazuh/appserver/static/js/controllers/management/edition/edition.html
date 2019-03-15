@@ -13,7 +13,7 @@
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
     <button style="height: 30px;" ng-if="isAdmin" ui-sref="mg-conf" class='btn btn-info wz-margin-left-10'>Cancel</button>
-    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='saveOssecConfig()'
+    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors || saveIncomplete || restartInProgress' ng-click='saveOssecConfig()'
       class='btn wz-button pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && isAdmin'>
         <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>

@@ -586,10 +586,10 @@ kbn-vis .vis-container {
 }
 .wz-dev-column-separator{
   width: 14px;
-  margin-top: 25px;
+  margin-top: 20px;
   background: #dddddd;
   float: left;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 125px);
   cursor: ew-resize;
   text-align: center;
   display:block!important;
@@ -600,7 +600,7 @@ kbn-vis .vis-container {
 }
 
 .wz-dev-column-separator span {
-  height: calc(100vh - 110px);
+  height: calc(100vh - 125px);
   display: table-cell;
   vertical-align: middle;
 }
@@ -610,7 +610,7 @@ kbn-vis .vis-container {
   min-width: calc(20% - 7px);
   max-width: calc(80% - 7px);
   float: left;
-  height: calc(100vh - 85px);
+  height: calc(100vh - 105px);
 }
 
 #wz-dev-right-column{
@@ -618,7 +618,8 @@ kbn-vis .vis-container {
   min-width: calc(20% - 7px);
   max-width: calc(80% - 7px);
   float: left;
-  height: calc(100vh - 85px);
+  margin-top: 3px;
+  height: calc(100vh - 110px);
 }
 
 .wz-question-dev-color {
@@ -1040,7 +1041,7 @@ span.wrong {
 }
 
 .configuration-margin-top{
-  height: calc(100vh - 300px);
+  height: calc(100vh - 225);
 }
 
 .boldText {

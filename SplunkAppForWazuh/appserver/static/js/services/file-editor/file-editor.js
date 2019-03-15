@@ -73,13 +73,19 @@ define(['../module'], function(module) {
     async checkConfiguration(node) {
       try {
         const check = await this.apiReq(`/${node}/configuration/validation`)
-        if (check.data.data.status !== 'OK') {
-          const errObj = {}
-          errObj['badConfig'] = true
-          errObj['errMsg'] = [...new Set(check.data.data.details)]
-          return Promise.reject(errObj)
+        if (check && check.data && !check.data.error) {
+          if (check.data.data.status !== 'OK') {
+            const errObj = {}
+            errObj['badConfig'] = true
+            errObj['errMsg'] = [...new Set(check.data.data.details)]
+            return Promise.reject(errObj)
+          } else {
+            return 'Configuration saved.'
+          }
         } else {
-          return 'Configuration saved.'
+          return Promise.reject(
+            check.data.message || 'Cannot check configuration.'
+          )
         }
       } catch (error) {
         return Promise.reject(error)

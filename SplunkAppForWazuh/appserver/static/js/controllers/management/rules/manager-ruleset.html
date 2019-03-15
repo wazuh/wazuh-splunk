@@ -22,7 +22,7 @@
     <div flex class="height-40 wz-margin-right-15">
       <div layout="row">
         <!-- Show decoders -->
-        <span ng-if="rulesetFiles" class="back-arrow" aria-label="Back to rules list"
+        <span ng-if="rulesetFiles" class="back-arrow cursor-pointer" aria-label="Back to rules list"
           ng-click="switchFiles()">
           <i class="fa fa-fw fa-arrow-left ng-scope" aria-hidden="true"></i>
           <md-tooltip md-direction="right" class="wz-tooltip">
@@ -48,7 +48,7 @@
         Manage rules files
       </span>
       <span flex="" class="flex"></span>
-      <md-switch ng-if="!rulesetFiles" class="wz-switch" aria-label="Only custom rules" ng-model="localFilter">
+      <md-switch ng-if="!rulesetFiles" class="wz-switch" aria-label="Only custom rules" ng-model="$parent.localFilter">
         <div class="md-label">Only custom rules</div>
       </md-switch>
     </md-card-actions>

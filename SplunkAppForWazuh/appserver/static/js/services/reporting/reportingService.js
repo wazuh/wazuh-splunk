@@ -6,7 +6,8 @@ define(['../module', 'jquery'], function(module, $) {
       vis2png,
       $currentDataService,
       $requestService,
-      $notificationService
+      $notificationService,
+      $navigationService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
@@ -14,20 +15,7 @@ define(['../module', 'jquery'], function(module, $) {
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-    }
-
-    /**
-     * Checks if report extension is enablad
-     */
-    async reportIsEnabled() {
-      try {
-        const id = this.currentDataService.getApi()['_key']
-        const result = await this.currentDataService.getExtensionsById(id)
-        const status = result.reporting === 'true' ? true : false
-        return status
-      } catch (err) {
-        return true
-      }
+      this.navigationService = $navigationService
     }
 
     /**
@@ -121,81 +109,79 @@ define(['../module', 'jquery'], function(module, $) {
       isAgents = false
     ) {
       try {
-        const enabled = await this.reportIsEnabled()
-        if (enabled) {
-          metrics = JSON.stringify(metrics)
-          this.$rootScope.$broadcast('loadingReporting', { status: true })
-          if (this.vis2png.isWorking()) {
-            this.notification.showSimpleToast('Report in progress')
-            return
-          }
-          if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-
-          this.vis2png.clear()
-
-          for (const item of vizz) {
-            const tmpHTMLElement = $(`#${item}`)
-            this.vis2png.assignHTMLItem(item, tmpHTMLElement)
-          }
-
-          this.vis2png.clear()
-
-          for (const item of vizz) {
-            const tmpHTMLElement = $(`#${item}`)
-            this.vis2png.assignHTMLItem(item, tmpHTMLElement)
-          }
-
-          const appliedFilters = this.currentDataService.getSerializedFilters()
-
-          const images = await this.vis2png.checkArray(vizz)
-          const name = `wazuh-${
-            isAgents ? 'agents' : 'overview'
-          }-${tab}-${(Date.now() / 1000) | 0}.pdf`
-
-          let timeRange
-
-          //Search time range
-          try {
-            timeRange =
-              this.betweenDates() ||
-              document
-                .getElementById('timePicker')
-                .getElementsByTagName('span')[1].innerHTML
-          } catch (error) {
-            timeRange = false
-          }
-
-          const timeZone = new Date().getTimezoneOffset()
-          const data = {
-            images,
-            tableResults,
-            sectionTitle,
-            timeRange,
-            queryFilters,
-            metrics,
-            name,
-            title: isAgents ? `Agents ${tab}` : `Overview ${tab}`,
-            filters: appliedFilters.filters,
-            time: appliedFilters.time,
-            searchBar: appliedFilters.searchBar,
-            tables: appliedFilters.tables,
-            pdfName: tab,
-            section: isAgents ? 'agents' : 'overview',
-            isAgents,
-            timeZone
-          }
-          await this.genericReq('POST', '/report/generate', {
-            data: JSON.stringify(data)
-          })
-          if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-          this.notification.showSuccessToast(
-            'Success. Go to Management -> Reporting'
-          )
-          this.$rootScope.$broadcast('loadingReporting', { status: false })
+        metrics = JSON.stringify(metrics)
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        if (this.vis2png.isWorking()) {
+          this.notification.showSimpleToast('Report in progress')
           return
-        } else {
-          this.notification.showWarningToast('Reporting service disabled.')
         }
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+
+        this.vis2png.clear()
+
+        for (const item of vizz) {
+          const tmpHTMLElement = $(`#${item}`)
+          this.vis2png.assignHTMLItem(item, tmpHTMLElement)
+        }
+
+        const appliedFilters = this.currentDataService.getSerializedFilters()
+
+        const images = await this.vis2png.checkArray(vizz)
+        const name = `wazuh-${
+          isAgents ? 'agents' : 'overview'
+        }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+
+        let timeRange
+
+        //Search time range
+        try {
+          timeRange =
+            this.betweenDates() ||
+            document
+              .getElementById('timePicker')
+              .getElementsByTagName('span')[1].innerHTML
+        } catch (error) {
+          timeRange = false
+        }
+
+        const timeZone = new Date().getTimezoneOffset()
+        const data = {
+          images,
+          tableResults,
+          sectionTitle,
+          timeRange,
+          queryFilters,
+          metrics,
+          name,
+          title: isAgents ? `Agents ${tab}` : `Overview ${tab}`,
+          filters: appliedFilters.filters,
+          time: appliedFilters.time,
+          searchBar: appliedFilters.searchBar,
+          tables: appliedFilters.tables,
+          pdfName: tab,
+          section: isAgents ? 'agents' : 'overview',
+          isAgents,
+          timeZone
+        }
+        await this.genericReq('POST', '/report/generate', {
+          data: JSON.stringify(data)
+        })
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        try {
+          const reportingUrl = this.navigationService.updateURLParameter(
+            window.location.href,
+            'currentTab',
+            'mg-reporting'
+          )
+          this.notification.showSuccessToast(
+            `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+          )
+        } catch (error) {
+          this.notification.showSuccessToast(
+            'Success. Go to Management ->  Reporting'
+          )
+        }
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
         this.$rootScope.reportBusy = false
@@ -211,155 +197,136 @@ define(['../module', 'jquery'], function(module, $) {
 
     async reportInventoryData(agentId) {
       try {
-        const enabled = await this.reportIsEnabled()
-        if (enabled) {
-          let tableResults = {}
-          let isAgents
-          this.$rootScope.$broadcast('loadingReporting', { status: true })
-          //Get agent info and formating tables
-          try {
-            const agent = await Promise.all([
-              this.apiReq(`/agents/${agentId}`),
-              this.apiReq(`/syscheck/${agentId}/last_scan`),
-              this.apiReq(`/rootcheck/${agentId}/last_scan`),
-              this.apiReq(`/syscollector/${agentId}/hardware`),
-              this.apiReq(`/syscollector/${agentId}/os`)
-            ])
+        let tableResults = {}
+        let isAgents
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        //Get agent info and formating tables
+        try {
+          const agent = await Promise.all([
+            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/syscheck/${agentId}/last_scan`),
+            this.apiReq(`/rootcheck/${agentId}/last_scan`),
+            this.apiReq(`/syscollector/${agentId}/hardware`),
+            this.apiReq(`/syscollector/${agentId}/os`)
+          ])
 
-            const agentInfo = agent[0].data.data
-            const {
-              name,
-              id,
-              ip,
-              version,
-              manager,
-              os,
-              dateAdd,
-              lastKeepAlive,
-              group
-            } = agentInfo
+          const agentInfo = agent[0].data.data
+          const {
+            name,
+            id,
+            ip,
+            version,
+            manager,
+            os,
+            dateAdd,
+            lastKeepAlive,
+            group
+          } = agentInfo
 
-            isAgents = {
-              ID: id,
-              Name: name,
-              IP: ip,
-              Version: version,
-              Manager: manager,
-              OS: `${os.name} ${os.codename} ${os.version}`,
-              dateAdd: dateAdd,
-              lastKeepAlive: lastKeepAlive,
-              group: group.toString()
-            }
-          } catch (error) {
-            isAgents = 'inventory'
+          isAgents = {
+            ID: id,
+            Name: name,
+            IP: ip,
+            Version: version,
+            Manager: manager,
+            OS: `${os.name} ${os.codename} ${os.version}`,
+            dateAdd: dateAdd,
+            lastKeepAlive: lastKeepAlive,
+            group: group.toString()
           }
-
-          //Network interfaces
-          const netiface = await this.apiReq(
-            `/syscollector/${agentId}/netiface`
-          )
-          const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
-          const networkInterfaceData = netiface.data.data.items.map(i => {
-            i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
-            return [i.name, i.mac, i.state, i.mtu, i.type]
-          })
-          const networkInterfaceTable = {
-            fields: networkInterfaceKeys,
-            rows: networkInterfaceData
-          }
-          tableResults['Network interfaces'] = networkInterfaceTable
-
-          //Network ports
-          const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
-          const networkPortsKeys = [
-            'Local IP',
-            'Local Port',
-            'State',
-            'Protocol'
-          ]
-          const networkPortsData = ports.data.data.items.map(p => {
-            p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
-            return [p.local.ip, p.local.port, p.state, p.protocol]
-          })
-          const networkPortsTable = {
-            fields: networkPortsKeys,
-            rows: networkPortsData
-          }
-          tableResults['Network ports'] = networkPortsTable
-
-          //Network addresses
-          const netaddr = await this.apiReq(`/syscollector/${agentId}/netaddr`)
-          const networkAdressessKeys = [
-            'Interface',
-            'Address',
-            'Netmask',
-            'Protocol',
-            'Broadcast'
-          ]
-          const networkAdressessData = netaddr.data.data.items.map(n => {
-            return [n.iface, n.address, n.netmask, n.proto, n.broadcast]
-          })
-          const networkAdressessTable = {
-            fields: networkAdressessKeys,
-            rows: networkAdressessData
-          }
-          tableResults['Network addresses'] = networkAdressessTable
-
-          //Processes
-          const processes = await this.apiReq(
-            `/syscollector/${agentId}/processes`
-          )
-          const processesKeys = ['Name', 'Euser', 'Nice', 'State']
-          const processesData = processes.data.data.items.map(n => {
-            n.nice = n.nice ? n.nice.toString() : 'undefined'
-            return [n.name, n.euser, n.nice, n.state]
-          })
-          const processesTable = { fields: processesKeys, rows: processesData }
-          tableResults['Processes'] = processesTable
-
-          //Packages
-          const packages = await this.apiReq(
-            `/syscollector/${agentId}/packages`
-          )
-          const packagesKeys = [
-            'Name',
-            'Architecture',
-            'Version',
-            'Description'
-          ]
-          const packagesData = packages.data.data.items.map(p => {
-            return [p.name, p.architecture, p.version, p.description]
-          })
-          const packagesTable = { fields: packagesKeys, rows: packagesData }
-          tableResults['Packages'] = packagesTable
-
-          const timeZone = new Date().getTimezoneOffset()
-
-          const data = {
-            images: [],
-            tableResults,
-            timeRange: false,
-            sectionTitle: 'Inventory Data',
-            queryFilters: '',
-            metrics: {},
-            pdfName: 'agents-inventory',
-            isAgents,
-            timeZone
-          }
-
-          await this.genericReq('POST', '/report/generate', {
-            data: JSON.stringify(data)
-          })
-
-          if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-          this.notification.showSuccessToast(
-            'Success. Go to Management -> Reporting'
-          )
-          this.$rootScope.$broadcast('loadingReporting', { status: false })
-          return
-        } else {
-          this.notification.showWarningToast('Reporting service disabled.')
+        } catch (error) {
+          isAgents = 'inventory'
         }
+
+        //Network interfaces
+        const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
+        const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
+        const networkInterfaceData = netiface.data.data.items.map(i => {
+          i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
+          return [i.name, i.mac, i.state, i.mtu, i.type]
+        })
+        const networkInterfaceTable = {
+          fields: networkInterfaceKeys,
+          rows: networkInterfaceData
+        }
+        tableResults['Network interfaces'] = networkInterfaceTable
+
+        //Network ports
+        const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
+        const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
+        const networkPortsData = ports.data.data.items.map(p => {
+          p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
+          return [p.local.ip, p.local.port, p.state, p.protocol]
+        })
+        const networkPortsTable = {
+          fields: networkPortsKeys,
+          rows: networkPortsData
+        }
+        tableResults['Network ports'] = networkPortsTable
+
+        //Network addresses
+        const netaddr = await this.apiReq(`/syscollector/${agentId}/netaddr`)
+        const networkAdressessKeys = [
+          'Interface',
+          'Address',
+          'Netmask',
+          'Protocol',
+          'Broadcast'
+        ]
+        const networkAdressessData = netaddr.data.data.items.map(n => {
+          return [n.iface, n.address, n.netmask, n.proto, n.broadcast]
+        })
+        const networkAdressessTable = {
+          fields: networkAdressessKeys,
+          rows: networkAdressessData
+        }
+        tableResults['Network addresses'] = networkAdressessTable
+
+        //Processes
+        const processes = await this.apiReq(
+          `/syscollector/${agentId}/processes`
+        )
+        const processesKeys = ['Name', 'Euser', 'Nice', 'State']
+        const processesData = processes.data.data.items.map(n => {
+          n.nice = n.nice ? n.nice.toString() : 'undefined'
+          return [n.name, n.euser, n.nice, n.state]
+        })
+        const processesTable = { fields: processesKeys, rows: processesData }
+        tableResults['Processes'] = processesTable
+
+        //Packages
+        const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
+        const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
+        const packagesData = packages.data.data.items.map(p => {
+          return [p.name, p.architecture, p.version, p.description]
+        })
+        const packagesTable = { fields: packagesKeys, rows: packagesData }
+        tableResults['Packages'] = packagesTable
+
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          tableResults,
+          timeRange: false,
+          sectionTitle: 'Inventory Data',
+          queryFilters: '',
+          metrics: {},
+          pdfName: 'agents-inventory',
+          isAgents,
+          timeZone
+        }
+
+        await this.genericReq('POST', '/report/generate', {
+          data: JSON.stringify(data)
+        })
+
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        this.notification.showSuccessToast(
+          'Success. Go to Management -> Reporting'
+        )
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        return
       } catch (error) {
         this.notification.showErrorToast('Reporting error')
       }

@@ -195,7 +195,11 @@ class report(controllers.BaseController):
                 #Insert images
                 for img in images:
                     #Change width and heigh
-                    if img['width'] <= 550:
+                    if img['width'] == -1:
+                        w = 0
+                        h = 0
+                        x_img = 80
+                    elif img['width'] <= 550:
                         w = 118
                         h = 65
                         x_img = 40
