@@ -377,6 +377,14 @@
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10" ng-show="currentConfig['syscheck-syscheck'].syscheck.whodata">
+            <wz-config-item label="Restart audit" value="currentConfig['syscheck-syscheck'].syscheck.whodata.restart_audit"></wz-config-item>
+            <wz-config-item label="Startup Healthcheck" value="currentConfig['syscheck-syscheck'].syscheck.whodata.startup_healthcheck"></wz-config-item>
+          </div>
+          <div class="wz-padding-top-10" ng-show="!currentConfig['syscheck-syscheck'].syscheck.whodata">
+              <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> No audit keys were found. Visit the documentation on 
+              <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syscheck.html#whodata">this link</a> to enable it.
+          </div>
+           <div class="wz-padding-top-10" ng-show="currentConfig['syscheck-syscheck'].syscheck.whodata.audit_key">
             <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Keys</th>
@@ -387,11 +395,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div class="wz-padding-top-10" ng-show="!currentConfig['syscheck-syscheck'].syscheck.whodata">
-            <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> No audit keys were found. Visit the
-            documentation on <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syscheck.html#whodata">this
-              link</a> to enable it.
           </div>
           <!-- End configuration block -->
         </md-card-content>

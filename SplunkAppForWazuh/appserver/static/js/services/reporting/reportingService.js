@@ -1,4 +1,4 @@
-define(['../module', 'jquery'], function(module, $) {
+define(['../module', 'jquery'], function (module, $) {
   'use strict'
   class ReportingService {
     constructor(
@@ -16,6 +16,81 @@ define(['../module', 'jquery'], function(module, $) {
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
       this.navigationService = $navigationService
+    }
+
+    /**
+     * Checks if is a float
+     */
+    isFloat(n) {
+      return Number(n) === n && n % 1 !== 0
+    }
+
+    /**
+     * Checks if the search time range is between two dates
+     */
+    betweenDates() {
+      try {
+        let { earliest_time, latest_time } = JSON.parse(
+          localStorage.getItem('searchTimeRange')
+        )
+        earliest_time = parseFloat(earliest_time)
+        latest_time = parseFloat(latest_time)
+        if (
+          isNaN(earliest_time) ||
+          !earliest_time ||
+          isNaN(latest_time) ||
+          !latest_time
+        ) {
+          return false
+        }
+        if (
+          Number.isInteger(earliest_time) ||
+          (this.isFloat(earliest_time) && Number.isInteger(latest_time)) ||
+          this.isFloat(latest_time)
+        ) {
+          return this.formatBetweenDates(earliest_time, latest_time)
+        }
+      } catch (error) {
+        return false
+      }
+    }
+
+    /**
+     * Formats dates in milliseconds to a human readable format
+     */
+    formatBetweenDates(earliest, latest) {
+      try {
+        //Remove milliseconds and multiply per 1000 to get a milliseconds date format
+        earliest = Math.trunc(earliest) * 1000
+        latest = Math.trunc(latest) * 1000
+        const eDate = this.formatDate(earliest)
+        const lDate = this.formatDate(latest)
+        return `${eDate}  -  ${lDate}`
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+
+    /**
+     * Formats dates in YYYY-MM-DD HH:MM:SS format
+     */
+    formatDate(date) {
+      try {
+        const d = new Date(date)
+        const year = d.getFullYear()
+        const month =
+          d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1
+        const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()
+        const hour = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()
+        const minute =
+          d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()
+        const second =
+          d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds()
+        const dateFormatted = `${year}-${month}-${day} ${hour}:${minute}:${second}`
+        return dateFormatted
+      } catch (error) {
+        return date
+      }
     }
 
     /**
@@ -49,29 +124,27 @@ define(['../module', 'jquery'], function(module, $) {
           this.vis2png.assignHTMLItem(item, tmpHTMLElement)
         }
 
-        this.vis2png.clear()
-
-        for (const item of vizz) {
-          const tmpHTMLElement = $(`#${item}`)
-          this.vis2png.assignHTMLItem(item, tmpHTMLElement)
-        }
-
         const appliedFilters = this.currentDataService.getSerializedFilters()
 
         const images = await this.vis2png.checkArray(vizz)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
-        }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+          }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+
+        let timeRange
 
         //Search time range
-        const timeRange = document
-          .getElementById('timePicker')
-          .getElementsByTagName('span')[1].innerHTML
-          ? document
+        try {
+          timeRange =
+            this.betweenDates() ||
+            document
               .getElementById('timePicker')
               .getElementsByTagName('span')[1].innerHTML
-          : ' '
+        } catch (error) {
+          timeRange = false
+        }
 
+        const timeZone = new Date().getTimezoneOffset()
         const data = {
           images,
           tableResults,
@@ -87,7 +160,8 @@ define(['../module', 'jquery'], function(module, $) {
           tables: appliedFilters.tables,
           pdfName: tab,
           section: isAgents ? 'agents' : 'overview',
-          isAgents
+          isAgents,
+          timeZone
         }
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
@@ -135,25 +209,39 @@ define(['../module', 'jquery'], function(module, $) {
             this.apiReq(`/syscollector/${agentId}/hardware`),
             this.apiReq(`/syscollector/${agentId}/os`)
           ])
+
+          const agentInfo = agent[0].data.data
+          const {
+            name,
+            id,
+            ip,
+            version,
+            manager,
+            os,
+            dateAdd,
+            lastKeepAlive,
+            group
+          } = agentInfo
+
           isAgents = {
-            ID: agent[0].data.data.id,
-            Name: agent[0].data.data.name,
-            IP: agent[0].data.data.ip,
-            Version: agent[0].data.data.version,
-            Manager: agent[0].data.data.manager,
-            OS: `${agent[0].data.data.os.name} ${
-              agent[0].data.data.os.codename
-            } ${agent[0].data.data.os.version}`,
-            dateAdd: agent[0].data.data.dateAdd,
-            lastKeepAlive: agent[0].data.data.lastKeepAlive,
-            group: agent[0].data.data.group.toString()
+            ID: id,
+            Name: name,
+            IP: ip,
+            Version: version,
+            Manager: manager,
+            OS: `${os.name} ${os.codename} ${os.version}`,
+            dateAdd: dateAdd,
+            lastKeepAlive: lastKeepAlive,
+            group: group.toString()
           }
         } catch (error) {
           isAgents = 'inventory'
         }
 
         //Network interfaces
-        const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
+        const netiface = await this.apiReq(
+          `/syscollector/${agentId}/netiface`
+        )
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
         const networkInterfaceData = netiface.data.data.items.map(i => {
           i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
@@ -167,7 +255,12 @@ define(['../module', 'jquery'], function(module, $) {
 
         //Network ports
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
-        const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
+        const networkPortsKeys = [
+          'Local IP',
+          'Local Port',
+          'State',
+          'Protocol'
+        ]
         const networkPortsData = ports.data.data.items.map(p => {
           p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
           return [p.local.ip, p.local.port, p.state, p.protocol]
@@ -209,23 +302,33 @@ define(['../module', 'jquery'], function(module, $) {
         tableResults['Processes'] = processesTable
 
         //Packages
-        const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
-        const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
+        const packages = await this.apiReq(
+          `/syscollector/${agentId}/packages`
+        )
+        const packagesKeys = [
+          'Name',
+          'Architecture',
+          'Version',
+          'Description'
+        ]
         const packagesData = packages.data.data.items.map(p => {
           return [p.name, p.architecture, p.version, p.description]
         })
         const packagesTable = { fields: packagesKeys, rows: packagesData }
         tableResults['Packages'] = packagesTable
 
+        const timeZone = new Date().getTimezoneOffset()
+
         const data = {
           images: [],
           tableResults,
-          timeRange: '',
+          timeRange: false,
           sectionTitle: 'Inventory Data',
           queryFilters: '',
           metrics: {},
           pdfName: 'agents-inventory',
-          isAgents
+          isAgents,
+          timeZone
         }
 
         await this.genericReq('POST', '/report/generate', {
