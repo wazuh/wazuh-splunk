@@ -25,7 +25,11 @@ define(['../module'], function(module) {
           {},
           'DELETE'
         )
-        return result
+        if (result && result.data && result.data.data && !result.data.error) {
+          return result.data.data
+        } else {
+          throw new Error(result.data.message)
+        }
       } catch (error) {
         return Promise.reject(error)
       }
