@@ -349,6 +349,10 @@ define([
           listeners.wazuhSearch(parameters, instance, search)
         )
 
+        $scope.$on('wazuhSort', (event, parameters) =>
+          $scope.sort(parameters.field)
+        )
+
         $scope.$on('wazuhRemoveFilter', (event, parameters) =>
           listeners.wazuhRemoveFilter(
             parameters,
