@@ -121,7 +121,7 @@ define([
           if ($scope.customColumns) {
             $('#wz_table').colResizable({
               liveDrag: true,
-              minWidth: 100,
+              minWidth: 75,
               partialRefresh: true,
               draggingClass: false
             })
@@ -138,6 +138,7 @@ define([
         $window.onresize = () => {
           if (resizing) return
           resizing = true
+          $('#wz_table').colResizable({ disable: true })
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
