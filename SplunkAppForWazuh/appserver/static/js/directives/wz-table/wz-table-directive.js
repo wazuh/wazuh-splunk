@@ -121,7 +121,7 @@ define([
           if ($scope.customColumns) {
             $('#wz_table').colResizable({
               liveDrag: true,
-              minWidth: 100,
+              minWidth: 75,
               partialRefresh: true,
               draggingClass: false
             })
