@@ -400,6 +400,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     async addMultipleAgents(toggle) {
       try {
+        if (toggle) this.scope.errorsEditingGroup = false
         this.scope.addingAgents = toggle
         if (toggle && !this.scope.availableAgents.loaded) {
           this.scope.availableAgents = {
@@ -463,6 +464,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     async saveAddAgents() {
+      this.scope.errorsEditingGroup = false
       const itemsToSave = this.getItemsToSave()
       const failedIds = []
 
@@ -496,8 +498,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
         }
 
         if (failedIds.length) {
+          this.scope.errorsEditingGroup = failedIds
           this.notification.showWarningToast(
-            `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
+            `Warning. Group has been updated but an error has occurred.`
           )
         } else {
           this.notification.showSuccessToast('Success. Group has been updated')
@@ -647,6 +650,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * Navigates to files
      */
     goBackFiles() {
+      this.scope.errorsEditingGroup = false
       this.scope.groupsSelectedTab = 'files'
       this.scope.addingAgents = false
       this.scope.editingAgents = false
@@ -661,6 +665,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * Navigates to groups
      */
     goBackGroups() {
+      this.scope.errorsEditingGroup = false
       this.scope.currentGroup = false
       this.scope.lookingGroup = false
       this.scope.editingFile = false
