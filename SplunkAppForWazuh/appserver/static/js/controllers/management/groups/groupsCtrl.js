@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (controllers) {
+define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
   class Groups {
     /**
@@ -506,8 +506,11 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
         if (failedIds.length) {
           const failedErrors = []
-          failedIds.forEach((id) => {
-            failedErrors.push({ id: (id || {}).id, message: ((id || {}).error || {}).message })
+          failedIds.forEach(id => {
+            failedErrors.push({
+              id: (id || {}).id,
+              message: ((id || {}).error || {}).message
+            })
           })
           const groupedFailedIds = this.groupBy(failedErrors, 'message')
           this.scope.errorsEditingGroup = groupedFailedIds
@@ -515,7 +518,9 @@ define(['../../module', 'FileSaver'], function (controllers) {
             `Warning. Group has been updated but an error has occurred.`
           )
         } else {
-          this.notification.showSuccessToast(response.data.data.msg || 'Success. Group has been updated')
+          this.notification.showSuccessToast(
+            response.data.data.msg || 'Success. Group has been updated'
+          )
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
@@ -719,8 +724,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
       for (; i < collection.length; i++) {
         val = collection[i][property]
         index = values.indexOf(val)
-        if (index > -1)
-          result[index].push(collection[i])
+        if (index > -1) result[index].push(collection[i])
         else {
           values.push(val)
           result.push([collection[i]])
