@@ -69,7 +69,7 @@ define([
         nodes,
         groups
       ] = parsedResult
-      
+
       this.scope.noAgents = summary.Total === 1 ? true : false
       this.scope.agentsCountActive = summary.Active - 1
       this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
@@ -125,7 +125,9 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.noAgentsImg = `${this.baseUrl}static/app/SplunkAppForWazuh/css/images/no-agents.png`
+      this.scope.noAgentsImg = `${
+        this.baseUrl
+      }static/app/SplunkAppForWazuh/css/images/no-agents.png`
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
       this.scope.isClusterEnabled =
