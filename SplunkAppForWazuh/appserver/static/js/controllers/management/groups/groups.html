@@ -129,8 +129,8 @@
         <div class='wzXmlEditorError' ng-show='errorsEditingGroup'>
           <md-card flex="" class="no-margin-left wz-md-card _md flex lateral-margin-15">
             <md-list role="list" class="mdListXmlError">
-            <md-list-item style="color:#ff645c !important; margin-bottom: -30px;" ng-repeat="err in errorsEditingGroup track by $index">
-              Agent({{err.id}}) - {{err.error.message}}
+            <md-list-item style="color:#ff645c !important; margin-bottom: -30px;" ng-repeat="groupErr in errorsEditingGroup track by $index">
+              Agents (<span ng-repeat="err in groupErr">{{err.id}}{{$last ? '):&nbsp;' : ',&nbsp;'}}</span> {{groupErr[0].message}}
             </md-list-item>
             </md-list>
           </md-card>

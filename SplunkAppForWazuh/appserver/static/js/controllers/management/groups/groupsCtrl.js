@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(controllers) {
+define(['../../module', 'FileSaver'], function (controllers) {
   'use strict'
   class Groups {
     /**
@@ -505,12 +505,17 @@ define(['../../module', 'FileSaver'], function(controllers) {
         }
 
         if (failedIds.length) {
-          this.scope.errorsEditingGroup = failedIds
+          const failedErrors = []
+          failedIds.forEach((id) => {
+            failedErrors.push({ id: (id || {}).id, message: ((id || {}).error || {}).message })
+          })
+          const groupedFailedIds = this.groupBy(failedErrors, 'message')
+          this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
             `Warning. Group has been updated but an error has occurred.`
           )
         } else {
-          this.notification.showSuccessToast(response.data.data.msg ||'Success. Group has been updated')
+          this.notification.showSuccessToast(response.data.data.msg || 'Success. Group has been updated')
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
@@ -698,6 +703,30 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.notification.showErrorToast('Error showing file ')
       }
       return
+    }
+
+    /**
+     * Group by any key
+     * @param {Obj} collection
+     * @param {Obj} property
+     */
+    groupBy(collection, property) {
+      let i = 0,
+        val,
+        index,
+        values = [],
+        result = []
+      for (; i < collection.length; i++) {
+        val = collection[i][property]
+        index = values.indexOf(val)
+        if (index > -1)
+          result[index].push(collection[i])
+        else {
+          values.push(val)
+          result.push([collection[i]])
+        }
+      }
+      return result
     }
   }
   controllers.controller('groupsCtrl', Groups)
