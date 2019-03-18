@@ -40,8 +40,10 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler
+      $groupHandler,
+      BASE_URL
     ) {
+      this.baseUrl = BASE_URL
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
@@ -123,6 +125,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.noAgentsImg = `${this.baseUrl}static/app/SplunkAppForWazuh/css/images/no-agents.png`
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
       this.scope.isClusterEnabled =
