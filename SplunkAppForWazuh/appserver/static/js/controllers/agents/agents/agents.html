@@ -2,7 +2,12 @@
 <div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
 
     <div ng-if="noAgents">
-  
+        <div class="md-padding text-center wz-margin-top-40">
+            <img class="wz-margin-top-40" src="'/static/app/SplunkAppForWazuh/css/images/no-agents.png'">
+            <h3 class="euiTitle wzEuiTitle wz-margin-bottom-25 wz-margin-top-16">There are no registered agents yet</h3>
+            <a target="_blank" ng-href="https://documentation.wazuh.com/current/user-manual/agents/index.html">Take
+                a look at how you can register agents <i class="fa fa-info-circle" aria-hidden="true"></i></a>
+        </div>
     </div>
   
     <div ng-if="!noAgents">
@@ -96,5 +101,3 @@
   
   
   </div>
-  
-  
