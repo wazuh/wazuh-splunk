@@ -67,7 +67,8 @@ define([
         nodes,
         groups
       ] = parsedResult
-
+      
+      this.scope.noAgents = summary.Total === 1 ? true : false
       this.scope.agentsCountActive = summary.Active - 1
       this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
       const os = platforms
