@@ -505,11 +505,8 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
 
         if (failedIds.length) {
-          const failedErrors = []
-          failedIds.forEach((id) => {
-            failedErrors.push({ id: (id || {}).id, message: ((id || {}).error || {}).message })
-          })
-          const groupedFailedIds = this.groupBy(failedErrors, 'message')
+          const failedErrors = failedIds.map(item => ({ id: (item || {}).id, message: ((item || {}).error || {}).message }))
+          const groupedFailedIds = this.groupBy(failedErrors, 'message') || false
           this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
             `Warning. Group has been updated but an error has occurred.`
@@ -708,25 +705,24 @@ define(['../../module', 'FileSaver'], function (controllers) {
     /**
      * Group by any key
      * @param {Obj} collection
-     * @param {Obj} property
+     * @param {String} property
      */
     groupBy(collection, property) {
-      let i = 0,
-        val,
-        index,
-        values = [],
-        result = []
-      for (; i < collection.length; i++) {
-        val = collection[i][property]
-        index = values.indexOf(val)
-        if (index > -1)
-          result[index].push(collection[i])
-        else {
-          values.push(val)
-          result.push([collection[i]])
+      try {
+        const values = []
+        const result = []
+        for (const item of collection) {
+          const index = values.indexOf(item[property])
+          if (index > -1) result[index].push(item)
+          else {
+            values.push(item[property])
+            result.push([item])
+          }
         }
+        return result.length ? result : false
+      } catch (error) {
+        return false
       }
-      return result
     }
   }
   controllers.controller('groupsCtrl', Groups)
