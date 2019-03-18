@@ -163,6 +163,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
             this.notification.showSuccessToast(
               `Success. Group ${name} has been created`
             )
+            // refresh the table when a new group is created
+            this.scope.search = term => {
+              this.scope.$broadcast('wazuhSearch', { term })
+            }
           } catch (error) {
             this.notification.showErrorToast(`${error.message || error}`)
           }
