@@ -509,7 +509,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
           const groupedFailedIds = this.groupBy(failedErrors, 'message') || false
           this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
-            `Warning. Group has been updated but an error has occurred.`
+            `Group has been updated but an error has occurred with ${failedIds.length} agents`
           )
         } else {
           this.notification.showSuccessToast(response.data.data.msg || 'Success. Group has been updated')
