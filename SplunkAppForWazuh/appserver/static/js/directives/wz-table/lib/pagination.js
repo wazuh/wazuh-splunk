@@ -22,7 +22,10 @@ define([], function() {
         ) {
           $scope.currentPage++
         }
-        if (($scope.pagedItems[currentPage || $scope.currentPage] || []).includes(null)
+        if (
+          ($scope.pagedItems[currentPage || $scope.currentPage] || []).includes(
+            null
+          )
         ) {
           const copy = $scope.currentPage
           $scope.wazuhTableLoading = true

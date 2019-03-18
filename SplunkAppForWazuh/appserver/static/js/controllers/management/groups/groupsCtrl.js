@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (controllers) {
+define(['../../module', 'FileSaver'], function(controllers) {
   'use strict'
   class Groups {
     /**
@@ -505,14 +505,22 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
 
         if (failedIds.length) {
-          const failedErrors = failedIds.map(item => ({ id: (item || {}).id, message: ((item || {}).error || {}).message }))
-          const groupedFailedIds = this.groupBy(failedErrors, 'message') || false
+          const failedErrors = failedIds.map(item => ({
+            id: (item || {}).id,
+            message: ((item || {}).error || {}).message
+          }))
+          const groupedFailedIds =
+            this.groupBy(failedErrors, 'message') || false
           this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
-            `Group has been updated but an error has occurred with ${failedIds.length} agents`
+            `Group has been updated but an error has occurred with ${
+              failedIds.length
+            } agents`
           )
         } else {
-          this.notification.showSuccessToast(response.data.data.msg || 'Success. Group has been updated')
+          this.notification.showSuccessToast(
+            response.data.data.msg || 'Success. Group has been updated'
+          )
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
