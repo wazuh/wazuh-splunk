@@ -471,33 +471,36 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.errorsEditingGroup = false
       const itemsToSave = this.getItemsToSave()
       const failedIds = []
+      let response
 
       try {
         this.scope.multipleSelectorLoading = true
+        // Adds agents to a group
         if (itemsToSave.addedIds.length) {
-          const addResponse = await this.apiReq(
+          response = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
             { ids: itemsToSave.addedIds },
             'POST'
           )
-          if (addResponse.data.error !== 0) {
-            throw new Error(addResponse.data.error)
+          if (response.data.error !== 0) {
+            throw new Error(response.data.error)
           }
-          if (addResponse.data.data.failed_ids) {
-            failedIds.push(...addResponse.data.data.failed_ids)
+          if (response.data.data.failed_ids) {
+            failedIds.push(...response.data.data.failed_ids)
           }
         }
+        // Delete agents from a group
         if (itemsToSave.deletedIds.length) {
-          const deleteResponse = await this.apiReq(
+          response = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
             { ids: itemsToSave.deletedIds },
             'DELETE'
           )
-          if (deleteResponse.data.error !== 0) {
-            throw new Error(deleteResponse.data.error)
+          if (response.data.error !== 0) {
+            throw new Error(response.data.error)
           }
-          if (deleteResponse.data.data.failed_ids) {
-            failedIds.push(...deleteResponse.data.data.failed_ids)
+          if (response.data.data.failed_ids) {
+            failedIds.push(...response.data.data.failed_ids)
           }
         }
 
@@ -507,7 +510,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             `Warning. Group has been updated but an error has occurred.`
           )
         } else {
-          this.notification.showSuccessToast('Success. Group has been updated')
+          this.notification.showSuccessToast(response.data.data.msg ||'Success. Group has been updated')
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
