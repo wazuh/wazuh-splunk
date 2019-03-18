@@ -138,6 +138,7 @@ define([
         $window.onresize = () => {
           if (resizing) return
           resizing = true
+          $('#wz_table').colResizable({ disable: true })
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
