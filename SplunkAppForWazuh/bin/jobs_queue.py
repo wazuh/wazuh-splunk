@@ -20,7 +20,7 @@ import splunk
 from splunk import entity, rest
 
 
-class Queue():
+class JobsQueue():
     """Handle queue endpoints"""
 
     def __init__(self):
@@ -40,8 +40,30 @@ class Queue():
         except Exception as e:
             self.logger.error("Error in queue module constructor: %s" % (e))
 
+    def insert_job(self, job, session_key=False):
+        """Insert a job.
+
+        Parameters
+        ----------
+        dic : job
+            The job information
+        str : session_key
+            The authorized session key
+
+        """            
+        try:
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            job = jsonbak.dumps(job)
+            result = self.session.post(kvstoreUri, data=job, headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error(
+                'Error inserting a job on JobsQueue module: %s ' % (e))
+            return jsonbak.dumps({"error": str(e)})
+
     def get_jobs(self, session_key=False):
-        """Get all Jobs.
+        """Get all jobs.
 
         Parameters
         ----------
@@ -57,5 +79,5 @@ class Queue():
             return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error(
-                'Error returning the jobs queue Queue module: %s ' % (e))
+                'Error getting the jobs queue on JobsQueue module: %s ' % (e))
             return jsonbak.dumps({"error": str(e)})

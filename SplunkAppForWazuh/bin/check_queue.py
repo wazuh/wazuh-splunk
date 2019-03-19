@@ -18,7 +18,7 @@ import datetime
 import jsonbak
 import requestsbak
 import sys
-from queue import Queue
+from jobs_queue import JobsQueue
 
 
 class CheckQueue():
@@ -29,7 +29,7 @@ class CheckQueue():
         self.now = time.time()  # Get the date in seconds
         self.session = requestsbak.Session()
         self.auth_key = sys.stdin.readline().strip()
-        self.q = Queue()
+        self.q = JobsQueue()
 
     def check_jobs(self):
         jobs = self.q.get_jobs(self.auth_key)

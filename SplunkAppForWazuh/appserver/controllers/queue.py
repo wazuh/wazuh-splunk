@@ -52,7 +52,7 @@ class Queue(controllers.BaseController):
             now = time.time()
             exec_time = now + float(kwargs['delay'])
             del kwargs['delay']
-            job = {"request": kwargs, "exec_time": exec_time, "added": now}
+            job = {"job": kwargs, "added": now, "exec_time": exec_time, "done": 0}
             self.queue.insert_job(job)
             return jsonbak.dumps({"data": "Job added to the queue.", "error": 0})
         except Exception as e:
