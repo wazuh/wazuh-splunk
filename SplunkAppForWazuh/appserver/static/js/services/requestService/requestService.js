@@ -86,7 +86,8 @@ define(['../module'], function(module) {
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
-        const result = await httpReq(`POST`, `/api/request`, payload)
+        const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
+        const result  = await httpReq('POST', backPoint, payload)
         return result
       } catch (err) {
         return Promise.reject(err)
