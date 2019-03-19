@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Wazuh app - API backend module.
+
+Copyright (C) 2015-2019 Wazuh, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Find more information about this on the LICENSE file.
+"""
+
+import jsonbak
+import splunk.appserver.mrsparkle.controllers as controllers
+from splunk.appserver.mrsparkle.lib.decorators import expose_page
+from db import database
+from log import log
+from jobs_queue import JobsQueue
+
+import time
+
+
+class Queue(controllers.BaseController):
+
+    """Queue class.
+
+    Handle Jobs queue methods
+    """
+
+    def __init__(self):
+        """Constructor."""
+        try:
+            self.queue = JobsQueue()
+            self.logger = log()
+            controllers.BaseController.__init__(self)
+        except Exception as e:
+            self.logger.error(
+                "Error in Jobs queue module constructor: %s" % (e))
+
+    @expose_page(must_login=False, methods=['POST'])
+    def add_job(self, **kwargs):
+        """Add job to the queue.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Request parameters
+        """
+        try:
+            now = time.time()
+            exec_time = now + float(kwargs['delay'])
+            del kwargs['delay']
+            job = {"request": kwargs, "exec_time": exec_time, "added": now}
+            self.queue.insert_job(job)
+            return jsonbak.dumps({"data": "Job added to the queue.", "error": 0})
+        except Exception as e:
+            self.logger.error("Error adding job: %s" % (e))
+            return jsonbak.dumps({'error': str(e)})
