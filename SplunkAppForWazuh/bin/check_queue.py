@@ -33,13 +33,13 @@ class CheckQueue():
 
     def check_jobs(self):
         jobs = self.q.get_jobs(self.auth_key)
-        undo_jobs = self.undo_jobs(jobs)
-        #Check time for undo jobs and exec if it's neccesary
+        undone_jobs = self.undone_jobs(jobs)
+        #Check time for undone jobs and exec if it's neccesary
 
-    def undo_jobs(self, jobs):
+    def undone_jobs(self, jobs):
         jobs = jsonbak.loads(jobs)
-        undo_jobs = filter(lambda j: j['done'] == False, jobs)
-        return undo_jobs
+        undone_jobs = filter(lambda j: j['done'] == False, jobs)
+        return undone_jobs
 
 
 if __name__ == '__main__':
