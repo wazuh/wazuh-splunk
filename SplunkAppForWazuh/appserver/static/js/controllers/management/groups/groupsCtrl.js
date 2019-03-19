@@ -261,6 +261,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * @param {Boolean} firstLoad
      */
     async loadGroup(group, firstLoad) {
+      this.scope.load = true
       try {
         if (!firstLoad) this.scope.lookingGroup = true
         const count = await this.apiReq(`/agents/groups/${group.name}/files`, {
@@ -274,6 +275,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (error) {
         this.notification.showErrorToast('Cannot load group data')
       }
+      this.scope.load = false
       return
     }
 
