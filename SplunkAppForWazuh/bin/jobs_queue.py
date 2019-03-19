@@ -80,4 +80,4 @@ class JobsQueue():
         except Exception as e:
             self.logger.error(
                 'Error getting the jobs queue on JobsQueue module: %s ' % (e))
-            return jsonbak.dumps({"error": str(e)})
+            raise e

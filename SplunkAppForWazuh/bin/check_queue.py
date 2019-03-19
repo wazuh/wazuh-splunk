@@ -33,7 +33,19 @@ class CheckQueue():
 
     def check_jobs(self):
         jobs = self.q.get_jobs(self.auth_key)
+        undo_jobs = self.undo_jobs(jobs)
+        #Check time for undo jobs and exec if it's neccesary
+
+    def undo_jobs(self, jobs):
+        jobs = jsonbak.loads(jobs)
+        undo_jobs = filter(lambda j: j['done'] == False, jobs)
+        return undo_jobs
+
 
 if __name__ == '__main__':
-    cq = CheckQueue()
-    cq.check_jobs()
+    try:
+        cq = CheckQueue()
+        cq.check_jobs()
+    except Exception as e:
+        log().error(
+            'Error checking the jobs queue on CheckQueue module: %s ' % (e))
