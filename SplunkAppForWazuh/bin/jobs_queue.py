@@ -50,17 +50,45 @@ class JobsQueue():
         str : session_key
             The authorized session key
 
-        """            
+        """
         try:
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             job = jsonbak.dumps(job)
-            result = self.session.post(kvstoreUri, data=job, headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            result = self.session.post(kvstoreUri, data=job, headers={
+                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error(
-                'Error inserting a job on JobsQueue module: %s ' % (e))
+                'Error inserting a job in JobsQueue module: %s ' % (e))
             return jsonbak.dumps({"error": str(e)})
+
+    def update_job(self, job, session_key=False):
+        """Update an already inserted API.
+
+        Parameters
+        ----------
+        obj : dict
+            The API to edit.
+
+        """
+        try:
+            if not '_key' in job:
+                raise Exception('Missing Key')
+            id = job['_key']
+            del job['_key']
+            job = jsonbak.dumps(job)
+            kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            result = self.session.post(kvstoreUri, data=job, headers={
+                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            if '_key' in result.keys() and result['_key'] == id:
+                return 'Job updated.'
+            else:
+                raise Exception('Job cannot be updated.')
+        except Exception as e:
+            self.logger.error("Error updating in JobsQueue module: %s" % (e))
+            raise e
 
     def get_jobs(self, session_key=False):
         """Get all jobs.
@@ -70,7 +98,7 @@ class JobsQueue():
         str : session_key
             The authorized session key
 
-        """        
+        """
         try:
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
@@ -79,5 +107,5 @@ class JobsQueue():
             return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error(
-                'Error getting the jobs queue on JobsQueue module: %s ' % (e))
+                'Error getting the jobs queue in JobsQueue module: %s ' % (e))
             raise e

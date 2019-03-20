@@ -54,13 +54,12 @@ class CheckQueue():
 
     def exec_job(self, job):
         try:
-            job_key = job['_key']
             req = job['job']
             method = 'GET'
 
             # Checks if are missing params
             if 'id' not in req or 'endpoint' not in req:
-                raise 'Missing ID or endpoint'
+                raise Exception('Missing ID or endpoint')
             if req['method'] and req['method'] != 'GET':
                 method = req['method']
                 del req['method']
@@ -86,17 +85,17 @@ class CheckQueue():
                 request = self.session.delete(
                     url + endpoint, data=req, auth=auth,
                     verify=verify).json()
-    
-            # if result has not errors: 
-            self.mark_as_done(job_key)
+            
+            if request['error'] == 0:
+                self.mark_as_done(job)
+            else:
+                raise Exception('Job cannot be executed properly.')
             return request
-
         except Exception as e:
             self.logger.error(
-                'Error executing the job on CheckQueue module: {}'.format(e))
-            raise e
+                'Error executing the job in CheckQueue module: {}'.format(e))
 
-    def mark_as_done(self, job_key):
+    def mark_as_done(self, job):
         """Update the job and mark as done.
 
         Parameters
@@ -104,6 +103,20 @@ class CheckQueue():
         str: job_key
             The job key in the kvStore
         """
+        try:
+            job['done'] = True
+            self.q.update_job(job, self.auth_key)
+        except Exception as e:
+            self.logger.error('Error updating the job in CheckQueue module: {}'.format(e))    
+
+    def remove_job(self, job_key):
+        """Remove the job of the queue.
+
+        Parameters
+        ----------
+        str: job_key
+            The job key in the kvStore
+        """        
         pass
 
 
@@ -140,4 +153,4 @@ if __name__ == '__main__':
         cq.init()
     except Exception as e:
         log().error(
-            'Error checking the jobs queue on CheckQueue module: {}'.format(e))
+            'Error checking the jobs queue in CheckQueue module: {}'.format(e))
