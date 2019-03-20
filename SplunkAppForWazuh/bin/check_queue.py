@@ -19,6 +19,7 @@ import jsonbak
 import requestsbak
 import sys
 from jobs_queue import JobsQueue
+from db import database
 
 
 class CheckQueue():
@@ -30,6 +31,7 @@ class CheckQueue():
         self.session = requestsbak.Session()
         self.auth_key = sys.stdin.readline().strip()
         self.q = JobsQueue()
+        self.db = database()
 
     def init(self):
         jobs = self.q.get_jobs(self.auth_key)
@@ -51,9 +53,86 @@ class CheckQueue():
                 self.exec_job(job)
 
     def exec_job(self, job):
-        job_key = job['_key']
-        req = job['job']
-        #Job to execute
+        try:
+            job_key = job['_key']
+            req = job['job']
+            method = 'GET'
+
+            # Checks if are missing params
+            if 'id' not in req or 'endpoint' not in req:
+                raise 'Missing ID or endpoint'
+            if req['method'] and req['method'] != 'GET':
+                method = req['method']
+                del req['method']
+
+            api_id = req['id']
+            url, auth, verify = self.get_api_credentials(api_id)
+            endpoint = req['endpoint']
+
+            # Checks methods
+            if method == 'GET':
+                request = self.session.get(
+                    url + endpoint, params=req, auth=auth,
+                    verify=verify).json()
+            if method == 'POST':
+                request = self.session.post(
+                        url + endpoint, data=req, auth=auth,
+                        verify=verify).json()
+            if method == 'PUT':
+                request = self.session.put(
+                    url + endpoint, data=req, auth=auth,
+                    verify=verify).json()
+            if method == 'DELETE':
+                request = self.session.delete(
+                    url + endpoint, data=req, auth=auth,
+                    verify=verify).json()
+    
+            # if result has not errors: 
+            self.mark_as_done(job_key)
+            return request
+
+        except Exception as e:
+            self.logger.error(
+                'Error executing the job on CheckQueue module: {}'.format(e))
+            raise e
+
+    def mark_as_done(self, job_key):
+        """Update the job and mark as done.
+
+        Parameters
+        ----------
+        str: job_key
+            The job key in the kvStore
+        """
+        pass
+
+
+    def get_api_credentials(self, api_id):
+        """Get API credentials.
+
+        Parameters
+        ----------
+        str: api_id
+            The API id
+        """
+        try:
+            api = self.db.get(api_id, self.auth_key)
+            api = jsonbak.loads(api)
+            if api:
+                opt_username = api['data']["userapi"]
+                opt_password = api['data']["passapi"]
+                opt_base_url = api['data']["url"]
+                opt_base_port = api['data']["portapi"]
+                url = str(opt_base_url) + ":" + str(opt_base_port)
+                auth = requestsbak.auth.HTTPBasicAuth(
+                    opt_username, opt_password)
+                verify = False
+                return url, auth, verify
+            else:
+                raise Exception('API not found')
+        except Exception as e:
+            raise e
+
 
 if __name__ == '__main__':
     try:
