@@ -34,25 +34,60 @@ class CheckQueue():
         self.db = database()
 
     def init(self):
-        jobs = self.q.get_jobs(self.auth_key)
-        undone_jobs = self.get_undone_jobs(jobs)
-        self.check_undone_jobs(undone_jobs)
+        """Inits the jobs
+        """
+        try:
+            jobs = self.q.get_jobs(self.auth_key)
+            #undone_jobs = self.get_undone_jobs(jobs)
+            # self.check_undone_jobs(undone_jobs)
+            jobs = jsonbak.loads(jobs)
+            self.check_undone_jobs(jobs)
+        except Exception as e:
+            self.logger.error(
+                'Error at init in the CheckQueue module: {}'.format(e))
 
     def get_undone_jobs(self, jobs):
-        jobs = jsonbak.loads(jobs)
+        """Gets the undone jobs
+
+        Parameters
+        ----------
+        str: jobs
+            A dictionary in string format with the jobs
+        """
+
         try:
+            jobs = jsonbak.loads(jobs)
             undone_jobs = filter(lambda j: j['done'] == False, jobs)
         except TypeError as e:
             undone_jobs = []
-            self.logger.error('Error filtering the fields: {}'.format(e))
+            self.logger.error(
+                'Error filtering the fields in the CheckQueue module: {}'.format(e))
         return undone_jobs
 
     def check_undone_jobs(self, jobs):
-        for job in jobs:
-            if job['exec_time'] < self.now:
-                self.exec_job(job)
+        """Check the undone jobs
+
+        Parameters
+        ----------
+        dic: jobs
+            A dictionary with the undone jobs
+        """
+        try:
+            for job in jobs:
+                if job['exec_time'] < self.now:
+                    self.exec_job(job)
+        except Exception as e:
+            self.logger.error(
+                'Error checking undone jobs the fields in the CheckQueue module: {}'.format(e))
 
     def exec_job(self, job):
+        """Exec the passed job
+
+        Parameters
+        ----------
+        dic: job
+            A dictionary with the job
+        """
         try:
             req = job['job']
             method = 'GET'
@@ -60,7 +95,7 @@ class CheckQueue():
             # Checks if are missing params
             if 'id' not in req or 'endpoint' not in req:
                 raise Exception('Missing ID or endpoint')
-            if req['method'] and req['method'] != 'GET':
+            if 'method' in req.keys() and req['method'] != 'GET':
                 method = req['method']
                 del req['method']
 
@@ -75,8 +110,8 @@ class CheckQueue():
                     verify=verify).json()
             if method == 'POST':
                 request = self.session.post(
-                        url + endpoint, data=req, auth=auth,
-                        verify=verify).json()
+                    url + endpoint, data=req, auth=auth,
+                    verify=verify).json()
             if method == 'PUT':
                 request = self.session.put(
                     url + endpoint, data=req, auth=auth,
@@ -85,9 +120,10 @@ class CheckQueue():
                 request = self.session.delete(
                     url + endpoint, data=req, auth=auth,
                     verify=verify).json()
-            
+
             if request['error'] == 0:
-                self.mark_as_done(job)
+                # self.mark_as_done(job)
+                self.remove_job(job['_key'])
             else:
                 raise Exception('Job cannot be executed properly.')
             return request
@@ -107,7 +143,8 @@ class CheckQueue():
             job['done'] = True
             self.q.update_job(job, self.auth_key)
         except Exception as e:
-            self.logger.error('Error updating the job in CheckQueue module: {}'.format(e))    
+            self.logger.error(
+                'Error updating the job in CheckQueue module: {}'.format(e))
 
     def remove_job(self, job_key):
         """Remove the job of the queue.
@@ -116,9 +153,12 @@ class CheckQueue():
         ----------
         str: job_key
             The job key in the kvStore
-        """        
-        pass
-
+        """
+        try:
+            self.q.remove_job(job_key, self.auth_key)
+        except Exception as e:
+            self.logger.error(
+                'Error removing the job in CheckQueue module: {}'.format(e))
 
     def get_api_credentials(self, api_id):
         """Get API credentials.
@@ -153,4 +193,4 @@ if __name__ == '__main__':
         cq.init()
     except Exception as e:
         log().error(
-            'Error checking the jobs queue in CheckQueue module: {}'.format(e))
+            'Error at main function in CheckQueue module: {}'.format(e))

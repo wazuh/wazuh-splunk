@@ -90,6 +90,33 @@ class JobsQueue():
             self.logger.error("Error updating in JobsQueue module: %s" % (e))
             raise e
 
+    def remove_job(self, _key, session_key=False):
+        """Remove an API.
+
+        Parameters
+        ----------
+        obj : dict
+            The API to be removed.
+
+        """
+        try:
+            if not _key:
+                raise Exception('Missing ID in remove JobQueue module')
+            kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            result = self.session.delete(kvstoreUri, headers={
+                                         "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False)
+            if result.status_code == 200:
+                return 'Job removed.'
+            else:
+                msg = jsonbak.loads(result.text)
+                text = msg['messages'][0]['text']
+                raise Exception(text)
+        except Exception as e:
+            self.logger.error(
+                "Error removing a Job in JobsQueue module: %s" % (e))
+            raise e
+
     def get_jobs(self, session_key=False):
         """Get all jobs.
 
