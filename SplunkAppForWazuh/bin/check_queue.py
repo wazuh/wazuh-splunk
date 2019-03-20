@@ -31,21 +31,34 @@ class CheckQueue():
         self.auth_key = sys.stdin.readline().strip()
         self.q = JobsQueue()
 
-    def check_jobs(self):
+    def init(self):
         jobs = self.q.get_jobs(self.auth_key)
-        undone_jobs = self.undone_jobs(jobs)
-        #Check time for undone jobs and exec if it's neccesary
+        undone_jobs = self.get_undone_jobs(jobs)
+        self.check_undone_jobs(undone_jobs)
 
-    def undone_jobs(self, jobs):
+    def get_undone_jobs(self, jobs):
         jobs = jsonbak.loads(jobs)
-        undone_jobs = filter(lambda j: j['done'] == False, jobs)
+        try:
+            undone_jobs = filter(lambda j: j['done'] == False, jobs)
+        except TypeError as e:
+            undone_jobs = []
+            self.logger.error('Error filtering the fields: {}'.format(e))
         return undone_jobs
 
+    def check_undone_jobs(self, jobs):
+        for job in jobs:
+            if job['exec_time'] < self.now:
+                self.exec_job(job)
+
+    def exec_job(self, job):
+        job_key = job['_key']
+        req = job['job']
+        #Job to execute
 
 if __name__ == '__main__':
     try:
         cq = CheckQueue()
-        cq.check_jobs()
+        cq.init()
     except Exception as e:
         log().error(
-            'Error checking the jobs queue on CheckQueue module: %s ' % (e))
+            'Error checking the jobs queue on CheckQueue module: {}'.format(e))
