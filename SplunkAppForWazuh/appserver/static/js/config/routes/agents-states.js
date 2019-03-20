@@ -17,6 +17,16 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('agents')
           },
           resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ],
             agentData: [
               '$requestService',
               '$state',

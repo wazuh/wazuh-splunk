@@ -1,103 +1,118 @@
 <!-- End loading ring -->
 <div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
 
-    <div ng-if="noAgents">
-        <div class="md-padding text-center wz-margin-top-40">
-            <img class="wz-margin-top-40" ng-src="{{noAgentsImg}}">
-            <h3 class="euiTitle wzEuiTitle wz-margin-bottom-25 wz-margin-top-16">There are no registered agents yet</h3>
-            <a target="_blank" ng-href="https://documentation.wazuh.com/current/user-manual/agents/index.html">Take
-                a look at how you can register agents <i class="fa fa-info-circle" aria-hidden="true"></i></a>
-        </div>
-    </div>
-  
-    <div ng-if="!noAgents">
-      <div layout="row" layout-align="space-between stretch">
-        <md-card flex class="no-margin-left wz-md-card">
-          <md-card-content>
-            <span class="wz-headline-title">Status</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row">
-              <div flex layout="column">
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Active</p>
-                  <p class="wz-text-right color-grey">{{agentsCountActive}}</p>
-                </div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Disconnected</p>
-                  <p class="wz-text-right color-grey">{{agentsCountDisconnected}}</p>
-                </div>
+
+  <div ng-if="!noAgents">
+    <div layout="row" layout-align="space-between stretch">
+      <md-card flex class="no-margin-left wz-md-card">
+        <md-card-content>
+          <span class="wz-headline-title">Status</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div layout="row">
+            <div flex layout="column">
+              <div layout="row" class="wz-padding-top-10">
+                <p flex="50">Active</p>
+                <p class="wz-text-right color-grey">{{agentsCountActive}}</p>
               </div>
-              <div flex layout="column">
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Never connected</p>
-                  <p class="wz-text-right color-grey">{{agentsCountNeverConnected}}</p>
-                </div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Agents coverage</p>
-                  <p ng-if="agentsCoverity" class="wz-text-right color-grey">{{(agentsCoverity | number:2)}}%</p>
-                  <p ng-if="!agentsCoverity" class="wz-text-right color-grey">0</p>
-                </div>
+              <div layout="row" class="wz-padding-top-10">
+                <p flex="50">Disconnected</p>
+                <p class="wz-text-right color-grey">{{agentsCountDisconnected}}</p>
               </div>
             </div>
-          </md-card-content>
-        </md-card>
-        <md-card flex class="no-margin-right wz-md-card">
-          <md-card-content>
-            <span class="wz-headline-title">Top</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-padding-top-10">
-              <p flex="35" class="manager-status-subtitle">Last registered agent</p>
-              <p ng-if="lastAgent.id !== '000'" class="wz-text-right wz-text-bold wz-text-link"
-                ng-click="showAgent(lastAgent)">{{lastAgent.name}}
-                <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
-                  Click to open this agent
-                </md-tooltip>
-              </p>
-              <p ng-if="lastAgent.id === '000'" class="wz-text-right wz-text-bold wz-text-link">{{lastAgent.name}}
-                (manager)
-                <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
-                  Click to open this agent
-                </md-tooltip>
-              </p>
+            <div flex layout="column">
+              <div layout="row" class="wz-padding-top-10">
+                <p flex="50">Never connected</p>
+                <p class="wz-text-right color-grey">{{agentsCountNeverConnected}}</p>
+              </div>
+              <div layout="row" class="wz-padding-top-10">
+                <p flex="50">Agents coverage</p>
+                <p ng-if="agentsCoverity" class="wz-text-right color-grey">{{(agentsCoverity | number:2)}}%</p>
+                <p ng-if="!agentsCoverity" class="wz-text-right color-grey">0</p>
+              </div>
             </div>
-            <div layout="row" class="wz-padding-top-10">
-              <p flex="35" class="manager-status-subtitle">Higher activity</p>
-              <p ng-show='!loadingSearch' class="wz-text-right wz-text-bold wz-text-link"
-                ng-click="showAgent(mostActiveAgent)">{{mostActiveAgent}}
-                <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
-                  Click to open this agent
-                </md-tooltip>
-              </p>
-              <md-progress-circular class="wz-text-right" md-mode="indeterminate" ng-show="loadingSearch">
-              </md-progress-circular>
-            </div>
-          </md-card-content>
-        </md-card>
-      </div>
-  
-      <!-- Search bar -->
-      <div ng-if="!loading  " layout="row" layout-align="space-between stretch">
-        <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
-      </div>
-  
-  
-      <md-card class="wz-md-card no-margin-sides">
-        <!-- Table -->
-        <div ng-if="!loading" layout="row" class="wz-margin-10">
-          <wazuh-table flex path="'/agents'" custom-columns="true"
-            keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', 'dateAdd', 'lastKeepAlive']"
-            allow-click="true" rows-per-page="17"></wazuh-table>
-        </div>
-  
-        <!-- Download CSV -->
-        <div layout="row" class="ruleset-csv-formater">
-          <span flex></span>
-          <a class="small" id="btnDownload" ng-click="downloadCsv()">Formatted
-            <i aria-hidden="true" class="fa fa-download"></i>
-          </a>
-        </div>
+          </div>
+        </md-card-content>
+      </md-card>
+      <md-card flex class="no-margin-right wz-md-card">
+        <md-card-content>
+          <span class="wz-headline-title">Top</span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div layout="row" class="wz-padding-top-10">
+            <p flex="35" class="manager-status-subtitle">Last registered agent</p>
+            <p ng-if="lastAgent.id !== '000'" class="wz-text-right wz-text-bold wz-text-link"
+              ng-click="showAgent(lastAgent)">{{lastAgent.name}}
+              <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+                Click to open this agent
+              </md-tooltip>
+            </p>
+            <p ng-if="lastAgent.id === '000'" class="wz-text-right wz-text-bold wz-text-link">{{lastAgent.name}}
+              (manager)
+              <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+                Click to open this agent
+              </md-tooltip>
+            </p>
+          </div>
+          <div layout="row" class="wz-padding-top-10">
+            <p flex="35" class="manager-status-subtitle">Higher activity</p>
+            <p ng-show='!loadingSearch' class="wz-text-right wz-text-bold wz-text-link"
+              ng-click="showAgent(mostActiveAgent)">{{mostActiveAgent}}
+              <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+                Click to open this agent
+              </md-tooltip>
+            </p>
+            <md-progress-circular class="wz-text-right" md-mode="indeterminate" ng-show="loadingSearch">
+            </md-progress-circular>
+          </div>
+        </md-card-content>
       </md-card>
     </div>
-  
-  
+
+    <!-- Search bar -->
+    <div ng-if="!loading && !registerNewAgent " layout="row" layout-align="space-between stretch">
+      <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
+    </div>
+
+
+    <md-card ng-if="!registerNewAgent" class="wz-md-card no-margin-sides">
+      <md-card-actions layout="row" layout-align="end center"
+        class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-register-agent">
+        <a ng-click="registerNewAgents(true)">Register new agent <i aria-hidden="true" class="fa fa-plus"></i></a>
+        <span flex></span>
+      </md-card-actions>
+      <!-- Table -->
+      <div ng-if="!loading" layout="row" class="wz-margin-10">
+        <wazuh-table flex path="'/agents'" custom-columns="true"
+          keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', 'dateAdd', 'lastKeepAlive']"
+          allow-click="true" rows-per-page="17"></wazuh-table>
+      </div>
+
+      <!-- Download CSV -->
+      <div layout="row" class="ruleset-csv-formater">
+        <span flex></span>
+        <a class="small" id="btnDownload" ng-click="downloadCsv()">Formatted
+          <i aria-hidden="true" class="fa fa-download"></i>
+        </a>
+      </div>
+    </md-card>
   </div>
+
+
+  <div ng-if="noAgents || registerNewAgent">
+    <div ng-if="!registerNewAgent" class="md-padding text-center wz-margin-top-40">
+      <img class="wz-margin-top-40" ng-src="{{noAgentsImg}}">
+      <h3 class="euiTitle wzEuiTitle wz-margin-bottom-25 wz-margin-top-16">There are no registered agents yet</h3>
+      <a target="_blank" ng-href="https://documentation.wazuh.com/current/user-manual/agents/index.html">Take
+        a look at how you can register agents <i class="fa fa-info-circle" aria-hidden="true"></i></a>
+    </div>
+    <div ng-class="registerNewAgent ? ['wz-md-card', 'registerNewAgent', 'md-padding-h'] : ''">
+      <div id="content" layout="row" class="wz-padding-bottom-14" ng-show="registerNewAgent">
+        <md-button class="md-icon-button md-icon-button-back wz-padding-right-16 btn btn-info" aria-label="Back to list"
+          tooltip="Back" tooltip-placement="bottom" ng-click="registerNewAgents(false)"><i class="fa fa-fw fa-arrow-left"
+            aria-hidden="true"></i></md-button>
+        <h1 class="font-size-18 wz-margin-top-16"> Register new agent</h1>
+      </div>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <wz-register-agent reload="reloadList()"></wz-register-agent>
+    </div>
+  </div>
+</div>

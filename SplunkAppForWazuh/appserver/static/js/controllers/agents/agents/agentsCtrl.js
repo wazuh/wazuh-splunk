@@ -26,6 +26,7 @@ define([
      * @param {Object} $state
      * @param {Object} $notificationService
      * @param {Object} $requestService
+     * @param {Object} isAdmin
      * @param {Object} agentData
      */
 
@@ -38,6 +39,7 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
+      isAdmin,
       agentData,
       $mdDialog,
       $groupHandler,
@@ -58,6 +60,7 @@ define([
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
+      this.scope.isAdmin = isAdmin
       const parsedResult = agentData.map(item =>
         item && item.data && item.data.data ? item.data.data : false
       )
@@ -138,6 +141,7 @@ define([
       this.scope.node_name = 'all'
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
+      this.scope.registerNewAgents = (flag) => this.registerNewAgents(flag)
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
@@ -165,6 +169,11 @@ define([
       }
       return
     }
+
+    registerNewAgents(flag) {
+      this.scope.registerNewAgent = flag;
+    }
+
 
     /**
      * Launches the query
@@ -204,6 +213,10 @@ define([
         )
       }
     }
+
+  
+
+
   }
   app.controller('agentsCtrl', Agents)
 })
