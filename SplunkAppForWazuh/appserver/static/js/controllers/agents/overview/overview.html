@@ -25,7 +25,7 @@
         <i class="fa fa-fw fa-tv" aria-hidden="true"></i> {{ agent.name || '-' }}
       </span>
       <span flex="" class="flex"></span>
-      <button class="btn wz-button pull-right ng-scope wz-margin-right-10" ng-click='openDiscover()' tooltip="Discover">Discover<i
+      <button class="btn wz-button pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)' tooltip="Discover">Discover<i
           class="fa fa-fw fa-compass" aria-hidden="true"></i></button>
       <!-- Restart button -->
       <div ng-show="!confirmingRestart">

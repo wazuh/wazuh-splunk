@@ -28,13 +28,14 @@ define(['../module'], function(directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
 
-        $scope.openDiscover = () => {
+        $scope.openDiscover = (agentId) => {
           $scope.menuNavItem = 'discover'
           $scope.$broadcast('stateChanged', 'discover')
           if (!$scope.$$phase) $scope.$digest()
           const index = $currentDataService.getIndex().index || 'wazuh'
           //Generate url
           let url = `${BASE_URL}/app/search/search?q=index=${index}`
+          url = agentId ? `${url} agent.id=${agentId}` : url
           localStorage.setItem('urlDiscover', url)
           $state.go('discover', { fromDashboard: false })
         }
