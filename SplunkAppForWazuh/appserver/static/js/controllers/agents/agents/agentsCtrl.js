@@ -141,7 +141,8 @@ define([
       this.scope.node_name = 'all'
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.registerNewAgents = (flag) => this.registerNewAgents(flag)
+      this.scope.registerNewAgents = flag => this.registerNewAgents(flag)
+      this.scope.reloadList = () => this.reloadList()
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
@@ -171,9 +172,12 @@ define([
     }
 
     registerNewAgents(flag) {
-      this.scope.registerNewAgent = flag;
+      this.scope.registerNewAgent = flag
     }
 
+    reloadList() {
+      this.scope.$broadcast('wazuhSearch', { term: '' })
+    }
 
     /**
      * Launches the query
@@ -213,10 +217,6 @@ define([
         )
       }
     }
-
-  
-
-
   }
   app.controller('agentsCtrl', Agents)
 })

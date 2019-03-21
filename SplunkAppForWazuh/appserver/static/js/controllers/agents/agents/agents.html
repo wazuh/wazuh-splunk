@@ -74,7 +74,7 @@
 
 
     <md-card ng-if="!registerNewAgent" class="wz-md-card no-margin-sides">
-      <md-card-actions layout="row" layout-align="end center"
+      <md-card-actions ng-if="isAdmin" layout="row" layout-align="end center"
         class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-register-agent">
         <a ng-click="registerNewAgents(true)">Register new agent <i aria-hidden="true" class="fa fa-plus"></i></a>
         <span flex></span>
@@ -105,13 +105,16 @@
         a look at how you can register agents <i class="fa fa-info-circle" aria-hidden="true"></i></a>
     </div>
     <div ng-class="registerNewAgent ? ['wz-md-card', 'registerNewAgent', 'md-padding-h'] : ''">
-      <div id="content" layout="row" class="wz-padding-bottom-14" ng-show="registerNewAgent">
-        <md-button class="md-icon-button md-icon-button-back wz-padding-right-16 btn btn-info" aria-label="Back to list"
-          tooltip="Back" tooltip-placement="bottom" ng-click="registerNewAgents(false)"><i class="fa fa-fw fa-arrow-left"
-            aria-hidden="true"></i></md-button>
-        <h1 class="font-size-18 wz-margin-top-16"> Register new agent</h1>
+      <div id="content" layout="row" class="wz-padding-top-10" ng-show="registerNewAgent">
+        <md-button class="md-icon-button" aria-label="Back to list" ng-click="registerNewAgents(false)">
+          <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+          <md-tooltip md-direction="bottom" class="wz-tooltip">
+            Back to list
+          </md-tooltip>
+        </md-button>
+        <h1 class="font-size-18 wz-margin-top-16 wz-padding-left-8"> Register new agent</h1>
       </div>
-      <md-divider class="wz-margin-top-10"></md-divider>
+      <md-divider ng-show="registerNewAgent" class="wz-margin-top-10"></md-divider>
       <wz-register-agent reload="reloadList()"></wz-register-agent>
     </div>
   </div>
