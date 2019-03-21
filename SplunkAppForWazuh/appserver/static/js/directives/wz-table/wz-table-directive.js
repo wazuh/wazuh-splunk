@@ -95,6 +95,7 @@ define([
             : 'Empty results for this table.'
 
         $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
+
         $scope.updateColumns = key => {
           $('#wz_table').colResizable({ disable: true })
           const str = key
@@ -114,6 +115,7 @@ define([
               $scope.keys.push(key)
             }
           }
+          updateStoredKeys($scope.keys)
           init().then(() => $scope.setColResizable())
         }
 
@@ -122,6 +124,7 @@ define([
             $('#wz_table').colResizable({
               liveDrag: true,
               minWidth: 100,
+              postbackSafe: true,
               partialRefresh: true,
               draggingClass: false
             })
@@ -162,6 +165,30 @@ define([
             $scope,
             state
           )
+
+        const getStoredKeys = () => {
+          if ($scope.customColumns) {
+            if (sessionStorage[$scope.path]) {
+              $scope.keys = sessionStorage[$scope.path].split(';')
+              //$scope.updateColumns()
+            } else {
+              updateStoredKeys($scope.keys)
+            }
+            $scope.$applyAsync()
+          }
+        }
+
+        const updateStoredKeys = keys => {
+          if ($scope.customColumns) {
+            let stringKeys = keys[0]
+            for (var i = 1; i < keys.length; i++) {
+              let tmp = keys[i].value || keys[i]
+              stringKeys += ';' + tmp
+            }
+            sessionStorage[$scope.path] = stringKeys
+            $scope.$applyAsync()
+          }
+        }
 
         /**
          * Fetchs data from API
@@ -292,6 +319,7 @@ define([
           try {
             $scope.error = false
             await fetch()
+            getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
@@ -539,11 +567,20 @@ define([
          * Show a checkbox for each key to show or hide it
          */
         const cleanKeys = () => {
-          $scope.cleanKeys = {}
-          $scope.keys.map(key => {
-            const k = key.value || key
-            $scope.cleanKeys[k] = true
-          })
+          if ($scope.customColumns && sessionStorage[$scope.path]) {
+            $scope.cleanKeys = {}
+            $scope.keys.map(key => {
+              const k = key.value || key
+              let storedKeys = sessionStorage[$scope.path].split(';')
+              $scope.cleanKeys[k] = storedKeys.indexOf(k) !== -1
+            })
+          } else {
+            $scope.cleanKeys = {}
+            $scope.keys.map(key => {
+              const k = key.value || key
+              $scope.cleanKeys[k] = true
+            })
+          }
         }
 
         cleanKeys()
