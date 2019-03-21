@@ -75,6 +75,7 @@ define([
         this.scope.editKey = (key, value) => this.editKey(key, value)
         this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
         this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
+        this.scope.firstPage = () => this.firstPage()
 
         // Edit cdb lists
         this.scope.currentList = {
@@ -161,6 +162,11 @@ define([
       } catch (error) {
         this.notification.showErrorToast('Error adding entry.')
       }
+    }
+
+    firstPage() {
+      this.scope.setPage(1);
+      this.scope.prevPage();
     }
 
     /**
