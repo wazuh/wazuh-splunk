@@ -23,7 +23,8 @@ define([
   LinearChart,
   Table,
   TimePicker,
-  RawTableDataService
+  RawTableDataService,
+  BASE_URL
 ) {
   'use strict'
 
@@ -72,6 +73,8 @@ define([
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
+      this.baseUrl = BASE_URL
+      this.scope.noScansPng = `${this.baseUrl}/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
