@@ -89,6 +89,12 @@
           </wazuh-table>
         </div>
       </md-card-content>
+      <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
+        <span flex></span>
+          <a class="small" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/packages', 'agent-' + agent.id + '-packages.csv')">Formatted
+          <i aria-hidden="true" class="fa fa-download"></i>
+        </a>
+      </div>
     </md-card>
   </div>
 
@@ -112,9 +118,14 @@
           <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows'" path="'/syscollector/' + agent.id + '/processes'"
             row-sizes="[10,8,6]" extra-limit="100" keys="['name','euser','nice','state']">
           </wazuh-table>
-
         </div>
       </md-card-content>
+      <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
+        <span flex></span>
+        <a class="small" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/processes', 'agent-' + agent.id + '-processes.csv')">Formatted
+          <i aria-hidden="true" class="fa fa-download"></i>
+        </a>
+      </div>
     </md-card>
   </div>
 

@@ -1231,3 +1231,9 @@ th.w-350 {
   margin-top: -30px;
   height: 30px;
 }
+
+.formatted-div-inventory {
+  margin-right: -10px;
+  margin-left: -10px;
+  margin-bottom: -8px;
+}
