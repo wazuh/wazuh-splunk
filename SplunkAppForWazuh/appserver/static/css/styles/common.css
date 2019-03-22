@@ -1246,3 +1246,21 @@ th.w-350 {
 .wz-no-padding-bottom {
   padding-bottom: 0px !important;
 }
+
+#wz-progress {
+  margin: 5px 0;
+  width: 100%;
+  background-color: #ddd;
+  margin: 20px;
+  margin-bottom: -5px;
+  height: 30px;
+}
+
+ #wz-progress-bar {
+  color: white;
+  font-weight: bold;
+  height: 20px;
+  padding: 5px;
+  background-color: #0079a5;
+  white-space: nowrap;
+} 
