@@ -583,6 +583,13 @@ define([
           }
         }
 
+        /**
+         * Launch an event to open the discover with the agent id
+         */
+        $scope.launchAgentDiscover = agentId => {
+          $scope.$emit('openDiscover', agentId)
+        }
+
         cleanKeys()
 
         $scope.getEquivalence = key => {

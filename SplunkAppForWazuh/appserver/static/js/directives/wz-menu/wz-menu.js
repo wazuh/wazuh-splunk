@@ -40,6 +40,10 @@ define(['../module'], function(directives) {
           $state.go('discover', { fromDashboard: false })
         }
 
+        $scope.$on('openDiscover', (event, data) => {
+          $scope.openDiscover(data)
+        })
+
         const checkLastState = (prefix, state) => {
           if (
             ($navigationService.getLastState() &&
