@@ -38,9 +38,9 @@
   <!-- Alerts visualizations -->
   <div ng-show="!showPolicies && !showPolicyChecks">
 
-    <div layout="row" layout-padding class="wz-padding-top-0">
+    <div layout="row" class="wz-padding-top-0 sca-switch-div">
       <span flex></span>
-      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-shield"></i>
+      <button ng-click="switchVisualizations()" class="btn-invisible-sca"><i class="fa fa-fw fa-shield"></i>
         Show
         policies</button>
     </div>
@@ -139,9 +139,9 @@
 
   <!-- Policies list -->
   <div ng-show="showPolicies && !showPolicyChecks">
-    <div layout="row" layout-padding class="wz-padding-top-0">
+    <div layout="row" class="wz-padding-top-0 wz-padding-20">
       <span flex></span>
-      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-area-chart"></i>
+      <button ng-click="switchVisualizations()" class="btn-invisible-sca"><i class="fa fa-fw fa-area-chart"></i>
         Show alerts</button>
     </div>
 
