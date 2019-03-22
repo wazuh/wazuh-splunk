@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class FilterService {
@@ -137,17 +137,36 @@ define(['../module'], function(module) {
     /**
      * Sets the filters empty
      */
-    cleanFilters(cleanAgentsPinedFilters = false) {
+    cleanFilters() {
+      let filters = []
       try {
-        let filters = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
           filters = filters.filter(fil => fil.pined)
+          filters = JSON.stringify(filters)
+          window.localStorage.setItem('filters', filters)
         }
-        if (cleanAgentsPinedFilters) {
-          filters = filters.filter(
-            fil => !Object.keys(fil)[0].startsWith('agent.')
+      } catch (err) {
+        delete window.localStorage.filters // In case of error, delete all filters
+      }
+
+    }
+
+    /**
+     * Sets the filters empty
+     */
+    cleanAgentsPinedFilters() {
+      try {
+        let filters = []
+        let pined = []
+        if (window.localStorage.filters) {
+          filters = JSON.parse(window.localStorage.filters)
+          pined  = filters.filter(fil => fil.pined)
+          filters = filters.filter(fil => !fil.pined)
+          pined = pined.filter(
+            pin => !Object.keys(pin)[0].startsWith('agent.')
           )
+          filters.push(...pined)
         }
         filters = JSON.stringify(filters)
         window.localStorage.setItem('filters', filters)
