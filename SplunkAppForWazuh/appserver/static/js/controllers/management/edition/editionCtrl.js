@@ -83,6 +83,7 @@ define(['../../module'], function(controllers) {
 
     changeNode(node) {
       this.editNode(node)
+      this.scope.restartAndApply = false
     }
 
     saveOssecConfig() {
