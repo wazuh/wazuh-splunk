@@ -48,7 +48,7 @@ define(['../module'], function(module) {
             result.data.error ||
             'Cannot restart the cluster.'
         }
-        return 'Cluster restart in progress, it will take up to 15 seconds.'
+        return 'Cluster restart in progress, it will take up to 30 seconds.'
       } catch (error) {
         throw new Error('Cannot restart the cluster.')
       }
