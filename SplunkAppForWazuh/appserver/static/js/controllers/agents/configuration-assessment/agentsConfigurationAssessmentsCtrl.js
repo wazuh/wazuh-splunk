@@ -24,7 +24,6 @@ define([
   Table,
   TimePicker,
   RawTableDataService,
-  BASE_URL
 ) {
   'use strict'
 
@@ -55,7 +54,8 @@ define([
       $notificationService,
       $csvRequestService,
       $tableFilterService,
-      reportingEnabled
+      reportingEnabled,
+      BASE_URL
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
