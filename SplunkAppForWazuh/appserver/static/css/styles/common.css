@@ -1239,6 +1239,10 @@ th.w-350 {
 }
 
 .agent-details-box{
-  padding: 10px 0 0 0;
+  padding: 10px 0 0 10px;
   font-size: 14px;
+}
+
+.wz-no-padding-bottom {
+  padding-bottom: 0px !important;
 }

@@ -95,9 +95,10 @@ define([
             : 'Empty results for this table.'
 
         $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
+        $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = key => {
-          $('#wz_table').colResizable({ disable: true })
+          $(`#table${$scope.scapepath}`).colResizable({ disable: true })
           const str = key
           const cleanArray = $scope.keys.map(item => item.value || item)
           if (cleanArray.includes(str)) {
@@ -121,7 +122,7 @@ define([
 
         $scope.setColResizable = () => {
           if ($scope.customColumns) {
-            $('#wz_table').colResizable({
+            $(`#table${$scope.scapepath}`).colResizable({
               liveDrag: true,
               minWidth: 100,
               postbackSafe: true,
@@ -170,7 +171,6 @@ define([
           if ($scope.customColumns) {
             if (sessionStorage[$scope.path]) {
               $scope.keys = sessionStorage[$scope.path].split(';')
-              //$scope.updateColumns()
             } else {
               updateStoredKeys($scope.keys)
             }
@@ -185,7 +185,7 @@ define([
               let tmp = keys[i].value || keys[i]
               stringKeys += ';' + tmp
             }
-            sessionStorage[$scope.path] = stringKeys
+            sessionStorage[$scope.path] = stringKeys || ''
             $scope.$applyAsync()
           }
         }

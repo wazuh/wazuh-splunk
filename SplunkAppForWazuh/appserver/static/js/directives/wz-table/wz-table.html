@@ -27,7 +27,7 @@
 
 <!-- Table -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="!isPolicyMonitoring() && !isSyschecks()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="table{{scapepath}}">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size } && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -196,7 +196,7 @@
 
 <!-- Table for configuration assessment -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isPolicyMonitoring()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }  && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -273,7 +273,7 @@
 
 <!-- Table for syschecks -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isSyschecks()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size} && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
