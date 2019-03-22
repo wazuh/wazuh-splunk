@@ -1237,3 +1237,8 @@ th.w-350 {
   margin-left: -10px;
   margin-bottom: -8px;
 }
+
+.agent-details-box{
+  padding: 10px 0 0 0;
+  font-size: 14px;
+}
