@@ -10,7 +10,7 @@
     </md-card>
   </div>
   <!-- Headline -->
-  <div ng-if="agent && agent.id !== '000'" layout="column" layout-padding>
+  <div ng-if="agent && agent.id !== '000'" layout-padding>
       <span class="font-size-18"> <i class="fa fa-fw fa-cog" aria-hidden="true"></i> Configuration</span>
       <span ng-if="isSynchronized" class="wz-agent-status-indicator small teal">SYNCHRONIZED</span>
       <span ng-if="!isSynchronized" class="wz-agent-status-indicator small red">NOT SYNCHRONIZED</span>

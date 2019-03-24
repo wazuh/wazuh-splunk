@@ -1159,6 +1159,7 @@ div.inline {
 
 .table-resizable >thead th:not(:first-child){
   border-left: 1px dashed #dfeff8;
+  min-width: 75px;
 }
 
 .table-conf {
@@ -1213,4 +1214,9 @@ th.w-350 {
   margin-top: 4px;
   margin-right: 12px;
   margin-left: 5px;
+}
+
+.lateral-margin-15 {
+  margin-left: 15px;
+  margin-right: 15px;
 }
