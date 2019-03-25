@@ -177,6 +177,8 @@ define([
 
     reloadList() {
       this.scope.$broadcast('wazuhSearch', { term: '' })
+      if(this.scope.noAgents)
+        this.scope.noAgents = false
     }
 
     /**
