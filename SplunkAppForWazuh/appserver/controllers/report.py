@@ -418,6 +418,9 @@ class report(controllers.BaseController):
             for wf in wide_fields:
                 sizes_arr = []
                 parts = int(math.ceil(sizes[wf]) / wide_size)
+                #Ensure minimun one part
+                if not parts:
+                    parts = 1
                 for _ in range(parts):
                     sizes_arr.append(wide_size)
                 sizes[wf] = sizes_arr
