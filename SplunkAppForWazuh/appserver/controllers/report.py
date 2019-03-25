@@ -21,7 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 import base64
 from fpdf import FPDF
-
+import math
 
 class PDF(FPDF):
     def header(self):
@@ -252,17 +252,22 @@ class report(controllers.BaseController):
                         pdf.set_text_color(255,255,255)
                         sizes_field = self.calculate_table_width(pdf, tables[key])
                         count = 0
+                        #Table head
                         for field in tables[key]['fields']:
                             if rows_count > 60:
                                 pdf.add_page()
                                 pdf.ln(12)
                                 rows_count = 0
                             if field != 'sparkline':
-                                width = sizes_field[count]
+                                x = 0
+                                #Check if the with is splitted in several rows
+                                w = sizes_field[count]
+                                width = w[0] if isinstance(w, list) else w
                                 pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                                 count = count + 1
                         pdf.ln()
                         pdf.set_text_color(93, 188, 210)
+                        #Table rows
                         for row in tables[key]['rows']:
                             count = 0
                             if rows_count > 55:
@@ -271,8 +276,12 @@ class report(controllers.BaseController):
                                 rows_count = 0
                             rows_count = rows_count + 1
                             for value in row:
+                                #Check that is not sparkline(sparkline field is an array)
                                 if not isinstance(value, list):
-                                    width = sizes_field[count]
+                                    #Check if the with is splitted in several rows
+                                    w = sizes_field[count]
+                                    width = w[0] if isinstance(w, list) else w
+                                    value = self.cut_value(width, value) if isinstance(w, list) else value
                                     pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
                                     count = count + 1
                             pdf.ln()
@@ -284,6 +293,40 @@ class report(controllers.BaseController):
             self.logger.error("Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
+
+    #Cut value string
+    def cut_value(self, width, value_string):
+        num_characters = int(math.ceil(width / 1.30))
+        value_splitted = list(str(value_string))
+        if len(value_splitted) > num_characters:
+            final_string_arr = value_splitted[0:num_characters]
+            final_string_arr.append('...')
+            final_string = ''.join(str(e) for e in final_string_arr)
+            return str(final_string)
+        else:
+            return value_string
+
+    #Sum arr of numbers
+    def sum_numbers_arr(self, arr):
+        total = 0
+        for i in arr:
+            total = total + i
+        return total
+    
+    #Sum dic of numbers
+    def sum_numbers_dic(self, dic):
+        total = 0
+        for key in dic.keys():
+            total = total + dic[key]
+        return total
+
+    #Excludes fields from dic
+    def exclude_fields(self, fields, dic):
+        dic_to_exclude = dic.copy()
+        for f in fields:
+            del dic_to_exclude[f]
+        return dic_to_exclude
+
 
     #Check if tables are not empties
     def tables_have_info(self, tables):
@@ -326,7 +369,24 @@ class report(controllers.BaseController):
             diff = diff / keys_num
             for key in sizes.keys(): # Sum the proporcional width difference to the fields
                 sizes[key] = sizes[key] + diff
-        return self.sort_table_sizes(table['fields'], sizes)
+        # Check if the row is more wide and calculates the width
+        elif total_width > 190:
+            wide_fields = []
+            for key in sizes.keys():
+                if sizes[key] > 60:
+                    wide_fields.append(key)
+            fields_to_sum = self.exclude_fields(wide_fields, sizes)
+            total_width_narrow_fields = self.sum_numbers_dic(fields_to_sum)
+            remaining_width = 190 - total_width_narrow_fields
+            wide_size = remaining_width / len(wide_fields)
+            for wf in wide_fields:
+                sizes_arr = []
+                parts = int(math.ceil(sizes[wf]) / wide_size)
+                for _ in range(parts):
+                    sizes_arr.append(wide_size)
+                sizes[wf] = sizes_arr
+        sizes = self.sort_table_sizes(table['fields'], sizes)
+        return sizes
     
     #Print agent info
     def print_agent_info(self, agent_info, pdf):
