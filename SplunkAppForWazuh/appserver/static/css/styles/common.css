@@ -1264,8 +1264,23 @@ th.w-350 {
   padding: 5px;
   background-color: #0079a5;
   white-space: nowrap;
-} 
+}
+
 .lateral-margin-15 {
   margin-left: 15px;
   margin-right: 15px;
+}
+
+.input-new-group {
+  height: 20px !important;
+  font-size: 12px !important;
+  margin: 5px !important;
+}
+
+.save-group-button {
+  margin: 5px -1px!important;
+  border: none !important;
+  background-color: #e4f2f5 !important;
+  color: #0079a5 !important;
+  font-weight: bold !important;
 }

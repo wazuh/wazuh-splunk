@@ -19,19 +19,8 @@
       <div layout="row">
         <span class="font-size-18">
           <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-        <span ng-if='adminMode' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i
-            class="fa fa-fw fa-plus-circle"></i></span>
       </div>
-      <div layout="row" ng-if="addingGroup" ng-if='adminMode'>
-        <input placeholder="Group name..." ng-model="groupToBeAdded" type="text"
-          class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-          aria-invalid="false">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton addGroupBtn height-20"
-          ng-click="createGroup(groupToBeAdded)">
-          <span class="fa fa-save fa-fw" aria-hidden="true"></span>
-        </button>
-      </div>
-      <div layout="row" ng-if="!addingGroup">
+      <div layout="row">
         <span class="md-subheader">List and check your groups, its agents and files</span>
       </div>
     </div>
@@ -41,7 +30,7 @@
       <!-- MD5 Sums and Details cards -->
 
       <div layout="row" class="md-padding-h wz-width-100" ng-if="lookingGroup">
-        <md-button class="md-icon-button"  style="margin: 10px !important;"ng-if="lookingGroup" aria-label="Back"
+        <md-button class="md-icon-button" style="margin: 10px !important;" ng-if="lookingGroup" aria-label="Back"
           ng-click="goBackGroups()"><i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
           <md-tooltip md-direction="bottom" class="wz-tooltip">Go back</md-tooltip>
         </md-button>
@@ -137,14 +126,17 @@
         <div class='wzXmlEditorError' ng-show='errorsEditingGroup'>
           <md-card flex="" class="no-margin-left wz-md-card _md flex lateral-margin-15">
             <md-list role="list" class="mdListXmlError">
-            <md-list-item style="color:#ff645c !important; margin-bottom: -30px;" ng-repeat="groupErr in errorsEditingGroup track by $index">
-              Agents (<span ng-repeat="err in groupErr">{{err.id}}{{$last ? '):&nbsp;' : ',&nbsp;'}}</span> {{groupErr[0].message}}
-            </md-list-item>
+              <md-list-item style="color:#ff645c !important; margin-bottom: -30px;"
+                ng-repeat="groupErr in errorsEditingGroup track by $index">
+                Agents (<span ng-repeat="err in groupErr">{{err.id}}{{$last ? '):&nbsp;' : ',&nbsp;'}}</span>
+                {{groupErr[0].message}}
+              </md-list-item>
             </md-list>
           </md-card>
         </div>
 
-        <div layout="row" class="wz-margin-left-16" ng-if="lookingGroup && currentGroup && !addingAgents && !editingFile && !file && adminMode">
+        <div layout="row" class="wz-margin-left-16"
+          ng-if="lookingGroup && currentGroup && !addingAgents && !editingFile && !file && adminMode">
           <button ng-if="lookingGroup && groupsSelectedTab==='files'" ng-click='editGroupAgentConfig(currentGroup)'
             class='btn wz-button'><i aria-hidden='true' class='fa fa-fw fa-pencil'></i>
             Edit group configuration
@@ -157,6 +149,25 @@
 
         <!-- Groups table -->
         <md-card class="wz-md-card">
+          <!-- Add a new group -->
+          <md-card-actions layout="row" layout-align="end center"
+            class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+            <span ng-if="!addingGroup" class="wz-color-text cursor-pointer" ng-click="switchAddingGroup()">Add new group</span>
+            <div layout="row" ng-if="addingGroup && adminMode">
+              <input class="input-new-group" placeholder="Group name..." ng-model="groupToBeAdded" type="text"
+                class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+                aria-invalid="false">
+              <button aria-label="Search" class="save-group-button height-20"
+                ng-click="createGroup(groupToBeAdded)">
+                <i class="fa fa-save fa-fw" aria-hidden="true"></i>
+              </button>
+              <button aria-label="Search" class="save-group-button height-20"
+                ng-click="switchAddingGroup()">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+            <span flex="" class="flex"></span>
+          </md-card-actions>
           <md-card-contents>
             <div layout="row" ng-if="!lookingGroup" class="md-padding">
               <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'"
@@ -212,7 +223,7 @@
               </div>
 
             </div>
-              <!-- End CSV Download button section for group files -->
+            <!-- End CSV Download button section for group files -->
           </md-card-contents>
         </md-card>
 
