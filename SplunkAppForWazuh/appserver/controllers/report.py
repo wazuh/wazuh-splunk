@@ -281,9 +281,17 @@ class report(controllers.BaseController):
                                     #Check if the with is splitted in several rows
                                     w = sizes_field[count]
                                     width = w[0] if isinstance(w, list) else w
-                                    value = self.cut_value(width, value) if isinstance(w, list) else value
-                                    pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
-                                    count = count + 1
+                                    value = self.split_string(width, value) if isinstance(w, list) else value
+                                    if value and isinstance(value, list):
+                                        x = pdf.get_x()
+                                        for v in value:
+                                            pdf.set_x(x)
+                                            pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
+                                            count = count + 1
+                                            pdf.ln()
+                                    else:
+                                        pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                        count = count + 1
                             pdf.ln()
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
@@ -303,6 +311,34 @@ class report(controllers.BaseController):
             final_string_arr.append('...')
             final_string = ''.join(str(e) for e in final_string_arr)
             return str(final_string)
+        else:
+            return value_string
+    
+    #Split the string 
+    def split_string(self, width, value_string):
+        splitted_str = []
+        num_characters = int(math.ceil(width / 1.30))
+        value_splitted = list(str(value_string))
+        if len(value_splitted) > num_characters:
+            parts = int(math.ceil((float(len(value_splitted) / float(num_characters)))))
+            i = 0
+            c = 0
+            num_characters = num_characters / 2
+            for _ in range(parts):
+                c = c + 1
+                num_characters = num_characters * 2
+                string_arr = value_splitted[i:num_characters]
+                if len(string_arr) > 0 and c < parts:
+                    string_arr.append('-')
+                if string_arr:
+                    string = ''.join(str(e) for e in string_arr)
+                    splitted_str.append(string)
+                i = i + num_characters
+            #Clean possible "-" in the last string
+            last_str = splitted_str[-1]
+            if last_str.endswith("-"):
+                splitted_str[-1] = last_str[:-1]
+            return splitted_str
         else:
             return value_string
 
