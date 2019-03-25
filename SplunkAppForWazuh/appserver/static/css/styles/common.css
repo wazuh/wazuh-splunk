@@ -1275,6 +1275,7 @@ th.w-350 {
   height: 20px !important;
   font-size: 12px !important;
   margin: 5px !important;
+  border: none !important;
 }
 
 .save-group-button {
