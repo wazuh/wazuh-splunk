@@ -121,7 +121,7 @@ define([
           if ($scope.customColumns) {
             $('#wz_table').colResizable({
               liveDrag: true,
-              minWidth: 100,
+              minWidth: 75,
               partialRefresh: true,
               draggingClass: false
             })
@@ -138,6 +138,7 @@ define([
         $window.onresize = () => {
           if (resizing) return
           resizing = true
+          $('#wz_table').colResizable({ disable: true })
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
@@ -349,6 +350,10 @@ define([
           listeners.wazuhSearch(parameters, instance, search)
         )
 
+        $scope.$on('wazuhSort', (event, parameters) =>
+          $scope.sort(parameters.field)
+        )
+
         $scope.$on('wazuhRemoveFilter', (event, parameters) =>
           listeners.wazuhRemoveFilter(
             parameters,
@@ -420,9 +425,12 @@ define([
         $scope.confirmRemoveAgent = async agent => {
           try {
             const group = instance.path.split('/').pop()
-            await $groupHandler.removeAgentFromGroup(group, agent)
+            const result = await $groupHandler.removeAgentFromGroup(
+              group,
+              agent
+            )
             $notificationService.showSuccessToast(
-              `Success. Agent ${agent} has been removed from ${group}`
+              result || `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)

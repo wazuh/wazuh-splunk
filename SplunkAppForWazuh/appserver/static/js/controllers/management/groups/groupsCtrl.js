@@ -163,6 +163,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
             this.notification.showSuccessToast(
               `Success. Group ${name} has been created`
             )
+            // refresh the table when a new group is created
+            this.scope.search = term => {
+              this.scope.$broadcast('wazuhSearch', { term })
+            }
           } catch (error) {
             this.notification.showErrorToast(`${error.message || error}`)
           }
@@ -257,6 +261,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * @param {Boolean} firstLoad
      */
     async loadGroup(group, firstLoad) {
+      this.scope.load = true
       try {
         if (!firstLoad) this.scope.lookingGroup = true
         const count = await this.apiReq(`/agents/groups/${group.name}/files`, {
@@ -270,6 +275,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (error) {
         this.notification.showErrorToast('Cannot load group data')
       }
+      this.scope.load = false
       return
     }
 
@@ -400,6 +406,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     async addMultipleAgents(toggle) {
       try {
+        if (toggle) this.scope.errorsEditingGroup = false
         this.scope.addingAgents = toggle
         if (toggle && !this.scope.availableAgents.loaded) {
           this.scope.availableAgents = {
@@ -463,44 +470,59 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     async saveAddAgents() {
+      this.scope.errorsEditingGroup = false
       const itemsToSave = this.getItemsToSave()
       const failedIds = []
+      let response
 
       try {
         this.scope.multipleSelectorLoading = true
+        // Adds agents to a group
         if (itemsToSave.addedIds.length) {
-          const addResponse = await this.apiReq(
+          response = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
             { ids: itemsToSave.addedIds },
             'POST'
           )
-          if (addResponse.data.error !== 0) {
-            throw new Error(addResponse.data.error)
+          if (response.data.error !== 0) {
+            throw new Error(response.data.error)
           }
-          if (addResponse.data.data.failed_ids) {
-            failedIds.push(...addResponse.data.data.failed_ids)
+          if (response.data.data.failed_ids) {
+            failedIds.push(...response.data.data.failed_ids)
           }
         }
+        // Delete agents from a group
         if (itemsToSave.deletedIds.length) {
-          const deleteResponse = await this.apiReq(
+          response = await this.apiReq(
             `/agents/group/${this.scope.currentGroup.name}`,
             { ids: itemsToSave.deletedIds },
             'DELETE'
           )
-          if (deleteResponse.data.error !== 0) {
-            throw new Error(deleteResponse.data.error)
+          if (response.data.error !== 0) {
+            throw new Error(response.data.error)
           }
-          if (deleteResponse.data.data.failed_ids) {
-            failedIds.push(...deleteResponse.data.data.failed_ids)
+          if (response.data.data.failed_ids) {
+            failedIds.push(...response.data.data.failed_ids)
           }
         }
 
         if (failedIds.length) {
+          const failedErrors = failedIds.map(item => ({
+            id: (item || {}).id,
+            message: ((item || {}).error || {}).message
+          }))
+          const groupedFailedIds =
+            this.groupBy(failedErrors, 'message') || false
+          this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
-            `Warning. Group has been updated but an error has occurred with the following agents ${failedIds}`
+            `Group has been updated but an error has occurred with ${
+              failedIds.length
+            } agents`
           )
         } else {
-          this.notification.showSuccessToast('Success. Group has been updated')
+          this.notification.showSuccessToast(
+            response.data.data.msg || 'Success. Group has been updated'
+          )
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
@@ -647,6 +669,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * Navigates to files
      */
     goBackFiles() {
+      this.scope.errorsEditingGroup = false
       this.scope.groupsSelectedTab = 'files'
       this.scope.addingAgents = false
       this.scope.editingAgents = false
@@ -661,6 +684,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * Navigates to groups
      */
     goBackGroups() {
+      this.scope.errorsEditingGroup = false
       this.scope.currentGroup = false
       this.scope.lookingGroup = false
       this.scope.editingFile = false
@@ -686,6 +710,29 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.notification.showErrorToast('Error showing file ')
       }
       return
+    }
+
+    /**
+     * Group by any key
+     * @param {Obj} collection
+     * @param {String} property
+     */
+    groupBy(collection, property) {
+      try {
+        const values = []
+        const result = []
+        for (const item of collection) {
+          const index = values.indexOf(item[property])
+          if (index > -1) result[index].push(item)
+          else {
+            values.push(item[property])
+            result.push([item])
+          }
+        }
+        return result.length ? result : false
+      } catch (error) {
+        return false
+      }
     }
   }
   controllers.controller('groupsCtrl', Groups)

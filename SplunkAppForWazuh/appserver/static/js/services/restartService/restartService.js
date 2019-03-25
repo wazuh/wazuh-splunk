@@ -38,25 +38,19 @@ define(['../module'], function(module) {
     const restartCluster = async () => {
       try {
         await checkConfig('/cluster')
-        setTimeout(() => {
-          $requestService
-            .apiReq('/cluster/restart', {}, 'PUT')
-            .then(result => {
-              if (result && result.data && result.data.error !== 0) {
-                throw result.data.message ||
-                  result.data.error ||
-                  'Cannot restart the cluster.'
-              }
-            })
-            .catch(error => {
-              $notificationService.showErrorToast(
-                error || 'Cannot restart the cluster.'
-              )
-            })
-        }, 15000)
-        return 'Cluster restart in progress, it will take up to 15 seconds.'
+        const result = await $requestService.apiReq(
+          '/cluster/restart',
+          { delay: 15 },
+          'PUT'
+        )
+        if (result && result.data && result.data.error !== 0) {
+          throw result.data.message ||
+            result.data.error ||
+            'Cannot restart the cluster.'
+        }
+        return 'Cluster restart in progress, it will take up to 30 seconds.'
       } catch (error) {
-        throw new Error('Cannot restart the cluster.')
+        throw new Error('Cannot restart the cluster.: ' + error)
       }
     }
 
