@@ -103,11 +103,16 @@ define(['../../module', '../../../utils/config-handler'], function(
         )
       this.$scope.switchWodle = wodleName =>
         this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)
-      this.$scope.switchConfigurationTab = configurationTab =>
+      this.$scope.switchConfigurationTab = async configurationTab => {
+        if (configurationTab === 'welcome') {
+          this.$scope.isSynchronized = await this.checkAgentSync()
+        }
         this.configurationHandler.switchConfigurationTab(
           configurationTab,
           this.$scope
         )
+      }
+
       this.$scope.switchConfigurationSubTab = configurationSubTab =>
         this.configurationHandler.switchConfigurationSubTab(
           configurationSubTab,
@@ -149,6 +154,20 @@ define(['../../module', '../../../utils/config-handler'], function(
     showInfo() {
       this.$scope.showingInfo = !this.$scope.showingInfo
       this.$scope.$applyAsync()
+    }
+
+    /**
+     * Checks if the agent is synchronized
+     */
+    async checkAgentSync() {
+      try {
+        const sync = await this.apiReq.apiReq(
+          `/agents/${this.$scope.agent.id}/group/is_sync`
+        )
+        return sync.data.data.synced
+      } catch (error) {
+        return false
+      }
     }
   }
 

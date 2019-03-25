@@ -109,12 +109,13 @@ class database():
             self.logger.error('Error returning all API rows in DB module: %s ' % (e))
             return jsonbak.dumps({"error": str(e)})
 
-    def get(self, id):
+    def get(self, id, session_key=False):
         try:
             if not id:
                 raise Exception('Missing ID')
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
-            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:
             self.logger.error("Error getting an API in DB module : %s" % (e))
