@@ -25,8 +25,8 @@
         <i class="fa fa-fw fa-tv" aria-hidden="true"></i> {{ agent.name || '-' }}
       </span>
       <span flex="" class="flex"></span>
-      <button class="btn wz-button pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)' tooltip="Discover">Discover<i
-          class="fa fa-fw fa-compass" aria-hidden="true"></i></button>
+      <button class="btn wz-button pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
+        tooltip="Discover">Discover<i class="fa fa-fw fa-compass" aria-hidden="true"></i></button>
       <!-- Restart button -->
       <div ng-show="!confirmingRestart">
         <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
@@ -49,114 +49,117 @@
       </button>
     </div>
     <div layout="row" layout-padding class="wz-no-padding">
-        <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
-          <md-card-content class="agent-details-box">
-            <div
-              class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>ID</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description">{{ agent.id || '-' }}</p>
+      <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
+        <md-card-content class="agent-details-box">
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>ID</p>
                 </div>
+                <p class="boldText euiText--small euiStat__description">{{ agent.id || '-' }}</p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>IP</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description">{{ agent.ip || '-'}}</p>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>IP</p>
                 </div>
+                <p class="boldText euiText--small euiStat__description">{{ agent.ip || '-'}}</p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>Version</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description">{{ agent.version || '-'}}</p>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Version</p>
                 </div>
+                <p class="boldText euiText--small euiStat__description">{{ agent.version || '-'}}</p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>OS</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description">{{ agentOS || '-'}}</p>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>OS</p>
                 </div>
+                <p class="boldText euiText--small euiStat__description">{{ agentOS || '-'}}</p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>Registration date</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description">{{agent.dateAdd || '-'}}</p>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Registration date</p>
                 </div>
+                <p class="boldText euiText--small euiStat__description">{{agent.dateAdd || '-'}}</p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>Last keep alive</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description">{{agent.lastKeepAlive || '-' }}</p>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Last keep alive</p>
                 </div>
+                <p class="boldText euiText--small euiStat__description">{{agent.lastKeepAlive || '-' }}</p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>Last syscheck scan</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description" ng-if="agent.syscheck.inProgress">Scan
-                    in progress</p>
-                  <p class="boldText euiText--small euiStat__description" ng-if="!agent.syscheck.inProgress">{{agent.syscheck.end
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Last syscheck scan</p>
+                </div>
+                <p class="boldText euiText--small euiStat__description" ng-if="agent.syscheck.inProgress">Scan
+                  in progress</p>
+                <p class="boldText euiText--small euiStat__description" ng-if="!agent.syscheck.inProgress">{{agent.syscheck.end
                               || '-'}} <md-tooltip
-                      ng-if="!agent.syscheck.inProgress && agent.syscheck.start && agent.syscheck.end" md-direction="bottom"
-                      class="wz-tooltip">
-                      Start time: {{ agent.syscheck.start || '-'}} <br>
-                      End time: {{ agent.syscheck.end || '-'}} <br>
-                      Duration time: {{ agent.syscheck.duration +' minutes' || '-'}}
-                    </md-tooltip>
-                  </p>
-                </div>
+                    ng-if="!agent.syscheck.inProgress && agent.syscheck.start && agent.syscheck.end"
+                    md-direction="bottom" class="wz-tooltip">
+                    Start time: {{ agent.syscheck.start || '-'}} <br>
+                    End time: {{ agent.syscheck.end || '-'}} <br>
+                    Duration time: {{ agent.syscheck.duration +' minutes' || '-'}}
+                  </md-tooltip>
+                </p>
               </div>
-              <div class="euiFlexItem euiFlexItem">
-                <div class="euiStat euiStat--leftAligned">
-                  <div class="euiText euiText--small euiStat__description">
-                    <p>Last rootcheck scan</p>
-                  </div>
-                  <p class="boldText euiText--small euiStat__description" ng-if="agent.rootcheck.inProgress">Scan
-                    in progress</p>
-                  <p class="boldText euiText--small euiStat__description" ng-if="!agent.rootcheck.inProgress">{{agent.rootcheck.end
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Last rootcheck scan</p>
+                </div>
+                <p class="boldText euiText--small euiStat__description" ng-if="agent.rootcheck.inProgress">Scan
+                  in progress</p>
+                <p class="boldText euiText--small euiStat__description" ng-if="!agent.rootcheck.inProgress">{{agent.rootcheck.end
                               || '-'}}
-                    <md-tooltip ng-if="!agent.rootcheck.inProgress && agent.rootcheck.start && agent.rootcheck.end"
-                      md-direction="bottom" class="wz-tooltip">
-                      Start time: {{ agent.rootcheck.start || '-'}} <br>
-                      End time: {{ agent.rootcheck.end || '-'}} <br>
-                      Duration time: {{ agent.rootcheck.duration +' minutes' || '-'}}
-                    </md-tooltip>
-                  </p>
-                </div>
+                  <md-tooltip ng-if="!agent.rootcheck.inProgress && agent.rootcheck.start && agent.rootcheck.end"
+                    md-direction="bottom" class="wz-tooltip">
+                    Start time: {{ agent.rootcheck.start || '-'}} <br>
+                    End time: {{ agent.rootcheck.end || '-'}} <br>
+                    Duration time: {{ agent.rootcheck.duration +' minutes' || '-'}}
+                  </md-tooltip>
+                </p>
               </div>
+            </div>
           </div>
-      </md-card-content>
-  </md-card>
-</div>
-<div layout="row" layout-padding>
-  <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0" ng-if="agent.group">
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+  <!-- End headline -->
+
+  <div layout="row" layout-padding>
+    <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
       <md-card-content>
 
-          <div layout="row" >
-              <span class="font-size-16">Groups <i ng-if='adminMode' tooltip="Add group" ng-click="switchGroupEdit()"
-                      class="wz-text-bold wz-text-link-add fa fa-fw" ng-class="!addingGroupToAgent ? 'fa-plus-circle' : 'fa-minus-circle'"></i></span>
+        <div layout="row" ng-if="agent.group">
+          <span class="font-size-16">Groups <i ng-if='adminMode' tooltip="Add group" ng-click="switchGroupEdit()"
+              class="wz-text-bold wz-text-link-add fa fa-fw"
+              ng-class="!addingGroupToAgent ? 'fa-plus-circle' : 'fa-minus-circle'"></i></span>
+        </div>
+        <md-divider ng-if="agent.group" class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-margin-top-10" ng-if="agent.group && editGroup && !addingGroupToAgent">
+          <div class="wz-word-break" flex ng-if="groups && groups.length">
+            Available groups:
           </div>
-          <md-divider ng-if="agent.group" class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-margin-top-10" ng-if="agent.group && editGroup && !addingGroupToAgent">
-              <div class="wz-word-break" flex ng-if="groups && groups.length">
-                  Available groups:
-              </div>
-              <div class="wz-word-break" flex ng-if="!groups || !groups.length">
-                  No more groups available. Create a new group at <span ><a ui-sref="mg-groups">Management > Groups</a>.</span>
-              </div>
+          <div class="wz-word-break" flex ng-if="!groups || !groups.length">
+            No more groups available. Create a new group at <span><a ui-sref="mg-groups">Management > Groups</a>.</span>
           </div>
         </div>
         <div ng-if="agent.group && editGroup && !addingGroupToAgent && groups && groups.length" class="wz-margin-top-4">
