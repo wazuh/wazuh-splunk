@@ -271,6 +271,7 @@ class report(controllers.BaseController):
                         #Table rows
                         for row in tables[key]['rows']:
                             first_field = True
+                            bigger_y = 0
                             rh = 4 # Row heigth
                             count = 0
                             if rows_count > 55:
@@ -289,21 +290,25 @@ class report(controllers.BaseController):
                                             x = pdf.get_x()
                                             first_field = False
                                             y = pdf.get_y()
+                                            reset_y = y
+                                            bigger_y = y
+                                        else:
+                                            y = reset_y
                                         rows_count = rows_count + len(value)
                                         for v in value:
                                             pdf.set_xy(x, y)
                                             pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
                                             y = y + rh
                                         x = x + width
-                                        y = y - (len(value) * rh)
+                                        bigger_y = y if y > bigger_y else bigger_y
                                     else:
                                         pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
                                         y = pdf.get_y()
-                                    pdf.line(10, y, 200, y)
                                     count = count + 1
                             rows_count = rows_count + 1
-                            y = pdf.get_y() + rh
+                            y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
                             pdf.set_xy(10, y)
+                            pdf.line(10, y, 200, y)
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
