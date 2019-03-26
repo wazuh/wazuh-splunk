@@ -287,11 +287,10 @@ class report(controllers.BaseController):
                                         for v in value:
                                             pdf.set_x(x)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
-                                            count = count + 1
                                             pdf.ln()
                                     else:
                                         pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
-                                        count = count + 1
+                                    count = count + 1
                             rows_count = rows_count + 1
                             pdf.ln()
             #Save pdf
