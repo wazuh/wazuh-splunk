@@ -267,6 +267,7 @@ class report(controllers.BaseController):
                                 count = count + 1
                         pdf.ln()
                         pdf.set_text_color(93, 188, 210)
+                        pdf.set_draw_color(93, 188, 210)
                         #Table rows
                         for row in tables[key]['rows']:
                             first_field = True
@@ -292,11 +293,12 @@ class report(controllers.BaseController):
                                             pdf.set_xy(x, y)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
                                             y = y + 4
-                                        pdf.ln()
                                         x = x + width
                                         y = y - (len(value) * 4)
                                     else:
                                         pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                        y = pdf.get_y()
+                                    pdf.line(10, y, 200, y)
                                     count = count + 1
                             rows_count = rows_count + 1
                             pdf.ln()
@@ -311,7 +313,7 @@ class report(controllers.BaseController):
 
     #Cut value string
     def cut_value(self, width, value_string):
-        num_characters = int(math.ceil(width / 1.30))
+        num_characters = int(math.ceil(width / 1.50))
         value_splitted = list(str(value_string))
         if len(value_splitted) > num_characters:
             final_string_arr = value_splitted[0:num_characters]
@@ -324,7 +326,7 @@ class report(controllers.BaseController):
     #Split the string 
     def split_string(self, width, value_string):
         splitted_str = []
-        num_characters = int(math.ceil(width / 1.55)) # Number of characters to split the string
+        num_characters = int(math.ceil(width / 1.50)) # Number of characters to split the string
         sm = num_characters # Var to sum and advance in the arr indexes
         value_splitted = list(str(value_string))
         if len(value_splitted) > num_characters:
