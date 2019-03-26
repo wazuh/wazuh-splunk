@@ -269,6 +269,7 @@ class report(controllers.BaseController):
                         pdf.set_text_color(93, 188, 210)
                         #Table rows
                         for row in tables[key]['rows']:
+                            first_field = True
                             count = 0
                             if rows_count > 55:
                                 pdf.add_page()
@@ -276,7 +277,6 @@ class report(controllers.BaseController):
                                 rows_count = 0
                             for value in row:
                                 #Check that is not sparkline(sparkline field is an array)
-                                first_field = True
                                 if not isinstance(value, list):
                                     #Check if the with is splitted in several rows
                                     w = sizes_field[count]
@@ -286,14 +286,15 @@ class report(controllers.BaseController):
                                         if first_field:
                                             x = pdf.get_x()
                                             first_field = False
-                                        y = pdf.get_y()
+                                            y = pdf.get_y()
                                         rows_count = rows_count + len(value)
                                         for v in value:
                                             pdf.set_xy(x, y)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
                                             y = y + 4
-                                            pdf.ln()
+                                            #pdf.ln()
                                         x = x + width
+                                        y = y - (len(value) * 4)
                                     else:
                                         pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
                                     count = count + 1
