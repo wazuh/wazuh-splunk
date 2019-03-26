@@ -271,6 +271,7 @@ class report(controllers.BaseController):
                         #Table rows
                         for row in tables[key]['rows']:
                             first_field = True
+                            rh = 4 # Row heigth
                             count = 0
                             if rows_count > 55:
                                 pdf.add_page()
@@ -291,17 +292,18 @@ class report(controllers.BaseController):
                                         rows_count = rows_count + len(value)
                                         for v in value:
                                             pdf.set_xy(x, y)
-                                            pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
-                                            y = y + 4
+                                            pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
+                                            y = y + rh
                                         x = x + width
-                                        y = y - (len(value) * 4)
+                                        y = y - (len(value) * rh)
                                     else:
-                                        pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                        pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
                                         y = pdf.get_y()
                                     pdf.line(10, y, 200, y)
                                     count = count + 1
                             rows_count = rows_count + 1
-                            pdf.ln()
+                            y = pdf.get_y() + rh
+                            pdf.set_xy(10, y)
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
