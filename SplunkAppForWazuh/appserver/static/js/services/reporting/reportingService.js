@@ -323,7 +323,7 @@ define(['../module', 'jquery'], function(module, $) {
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         this.notification.showSuccessToast(
-          'Success. Go to Management -> Reporting'
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
         )
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
