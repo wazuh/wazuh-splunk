@@ -276,13 +276,16 @@ class report(controllers.BaseController):
                                 rows_count = 0
                             for value in row:
                                 #Check that is not sparkline(sparkline field is an array)
+                                first_field = True
                                 if not isinstance(value, list):
                                     #Check if the with is splitted in several rows
                                     w = sizes_field[count]
                                     width = w[0] if isinstance(w, list) else w
                                     value = self.split_string(width, value) if isinstance(w, list) else value
                                     if value and isinstance(value, list):
-                                        x = pdf.get_x()
+                                        if first_field:
+                                            x = pdf.get_x()
+                                            first_field = False
                                         y = pdf.get_y()
                                         rows_count = rows_count + len(value)
                                         for v in value:
@@ -290,6 +293,7 @@ class report(controllers.BaseController):
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
                                             y = y + 4
                                             pdf.ln()
+                                        x = x + width
                                     else:
                                         pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
                                     count = count + 1
