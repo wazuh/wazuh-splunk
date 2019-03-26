@@ -283,10 +283,12 @@ class report(controllers.BaseController):
                                     value = self.split_string(width, value) if isinstance(w, list) else value
                                     if value and isinstance(value, list):
                                         x = pdf.get_x()
+                                        y = pdf.get_y()
                                         rows_count = rows_count + len(value)
                                         for v in value:
-                                            pdf.set_x(x)
+                                            pdf.set_xy(x, y)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
+                                            y = y + 4
                                             pdf.ln()
                                     else:
                                         pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
