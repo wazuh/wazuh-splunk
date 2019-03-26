@@ -272,6 +272,7 @@ class report(controllers.BaseController):
                         for row in tables[key]['rows']:
                             first_field = True
                             bigger_y = 0
+                            reset_y = False
                             rh = 4 # Row heigth
                             count = 0
                             if rows_count > 55:
@@ -302,6 +303,8 @@ class report(controllers.BaseController):
                                         x = x + width
                                         bigger_y = y if y > bigger_y else bigger_y
                                     else:
+                                        if reset_y:
+                                            pdf.set_xy(pdf.get_x(), reset_y)
                                         pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
                                         y = pdf.get_y()
                                     count = count + 1
