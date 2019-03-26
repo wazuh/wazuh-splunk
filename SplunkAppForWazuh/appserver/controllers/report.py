@@ -292,7 +292,7 @@ class report(controllers.BaseController):
                                             pdf.set_xy(x, y)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
                                             y = y + 4
-                                            pdf.ln()
+                                        pdf.ln()
                                         x = x + width
                                         y = y - (len(value) * 4)
                                     else:
