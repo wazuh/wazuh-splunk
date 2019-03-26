@@ -292,7 +292,7 @@ class report(controllers.BaseController):
                                             pdf.set_xy(x, y)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
                                             y = y + 4
-                                            #pdf.ln()
+                                            pdf.ln()
                                         x = x + width
                                         y = y - (len(value) * 4)
                                     else:
@@ -324,23 +324,23 @@ class report(controllers.BaseController):
     #Split the string 
     def split_string(self, width, value_string):
         splitted_str = []
-        num_characters = int(math.ceil(width / 1.30))
+        num_characters = int(math.ceil(width / 1.55)) # Number of characters to split the string
+        sm = num_characters # Var to sum and advance in the arr indexes
         value_splitted = list(str(value_string))
         if len(value_splitted) > num_characters:
             parts = int(math.ceil((float(len(value_splitted) / float(num_characters)))))
-            i = 0
-            c = 0
-            num_characters = num_characters / 2
+            i = 0 # Position in the array
+            c = 0 # For count the parts travelled
             for _ in range(parts):
                 c = c + 1
-                num_characters = num_characters * 2
                 string_arr = value_splitted[i:num_characters]
+                i = num_characters
+                num_characters = num_characters + sm
                 if len(string_arr) > 0 and c < parts:
                     string_arr.append('-')
                 if string_arr:
                     string = ''.join(str(e) for e in string_arr)
-                    splitted_str.append(string)
-                i = i + num_characters
+                    splitted_str.append(string) 
             #Clean possible "-" in the last string
             last_str = splitted_str[-1]
             if last_str.endswith("-"):
