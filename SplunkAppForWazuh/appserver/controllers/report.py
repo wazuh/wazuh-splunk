@@ -241,7 +241,7 @@ class report(controllers.BaseController):
                         pdf.set_font('Arial', '', 14)
                         if rows_count > 60:
                             pdf.add_page()
-                            pdf.ln(12)
+                            pdf.ln(18)
                             rows_count = 0
                         pdf.cell(0 , 5, table_title, 0, 1, 'L')
                         rows_count = rows_count + 5
@@ -256,7 +256,7 @@ class report(controllers.BaseController):
                         for field in tables[key]['fields']:
                             if rows_count > 60:
                                 pdf.add_page()
-                                pdf.ln(12)
+                                pdf.ln(15)
                                 rows_count = 0
                             if field != 'sparkline':
                                 x = 0
@@ -272,9 +272,8 @@ class report(controllers.BaseController):
                             count = 0
                             if rows_count > 55:
                                 pdf.add_page()
-                                pdf.ln(12)
+                                pdf.ln(15)
                                 rows_count = 0
-                            rows_count = rows_count + 1
                             for value in row:
                                 #Check that is not sparkline(sparkline field is an array)
                                 if not isinstance(value, list):
@@ -284,6 +283,7 @@ class report(controllers.BaseController):
                                     value = self.split_string(width, value) if isinstance(w, list) else value
                                     if value and isinstance(value, list):
                                         x = pdf.get_x()
+                                        rows_count = rows_count + len(value)
                                         for v in value:
                                             pdf.set_x(x)
                                             pdf.cell(width, 4, str(v), 0, 0, 'L', 0)
@@ -292,6 +292,7 @@ class report(controllers.BaseController):
                                     else:
                                         pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
                                         count = count + 1
+                            rows_count = rows_count + 1
                             pdf.ln()
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
