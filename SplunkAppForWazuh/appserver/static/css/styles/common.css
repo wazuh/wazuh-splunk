@@ -1286,6 +1286,10 @@ th.w-350 {
   font-weight: bold !important;
 }
 
-.no-border {
-  border: none;
+tfoot.no-border tr {
+  border: none !important;
+}
+
+tfoot.no-border tr td {
+  border: none !important;
 }
