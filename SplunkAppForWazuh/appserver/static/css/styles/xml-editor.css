@@ -55,3 +55,9 @@
     padding-bottom: 25px;
     padding-top: 0px;
 }
+.extraHeaderInfo{
+    background: #ecf6fb;
+    border-top: 1px solid #dfeff8 !important;
+    color: #0079a5 !important;
+    padding: 12px 15px;
+} 

@@ -126,6 +126,10 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.$on('editFile', (ev, params) => {
         this.editFile(params.file, params.path)
       })
+
+      this.scope.$on('performRestart', () => {
+        this.restart()
+      });
     }
 
     /**
@@ -370,6 +374,9 @@ define(['../../module', 'FileSaver'], function(app) {
         this.notification.showSimpleToast(result)
       } catch (error) {
         this.notification.showErrorToast(error)
+        this.scope.$broadcast('restartError', { error: error })
+
+        
       }
     }
 

@@ -155,7 +155,7 @@
     <!-- End related decoders section -->
     <!-- XML editor for decoder -->
     <div ng-show="editingFile">
-      <div layout="row" class="md-padding">
+      <div layout="row" class="md-padding wz-padding-top-0">
         <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
             aria-hidden="true"></i>
           <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
@@ -169,20 +169,6 @@
           <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
             XML format error</span>
         </button>
-
-        <!-- Restart if saved without errors-->
-        <span class="flex"></span>
-        <div ng-show="restartAndApply" style="padding-right: 15px;">
-          <span>Do you want to restart to apply configuration?</span>
-          <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
-            <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-          </button>
-          <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-            class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-          </button>
-        </div>
-        <!-- End restart button -->
 
       </div>
       <div class="wzXmlEditorDivContent" style="height: calc(100vh - 280px);" ng-if="fetchedXML">
