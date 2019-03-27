@@ -149,7 +149,7 @@
         <!-- Groups table -->
         <md-card class="wz-md-card">
           <!-- Add a new group -->
-          <md-card-actions layout="row" layout-align="end center"
+          <md-card-actions layout="row" layout-align="end center" ng-if="!lookingGroup"
             class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
             <span ng-if="!addingGroup" class="wz-color-text cursor-pointer" ng-click="switchAddingGroup()">Add new group</span>
             <div layout="row" ng-if="addingGroup && adminMode">

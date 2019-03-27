@@ -135,6 +135,7 @@ define([
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
+      this.scope.reloadList = () => this.reloadList()
     }
 
     /**
@@ -198,6 +199,14 @@ define([
         )
       }
     }
+
+    /**
+     * Reload list of agents
+     */
+    reloadList() {
+      this.scope.$broadcast('wazuhSearch', { term: '' });
+    }
+
   }
   app.controller('agentsCtrl', Agents)
 })

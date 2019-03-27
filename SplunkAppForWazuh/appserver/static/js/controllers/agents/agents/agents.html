@@ -64,6 +64,10 @@
   <!-- Search bar -->
   <div ng-if="!loading" layout="row" layout-align="space-between stretch">
     <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
+    <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10 wz-margin-top-17" ng-click="reloadList()">
+        <i class="fa fa-refresh" aria-hidden="true"></i>
+        <span>Refresh</span>
+    </button>
   </div>
 
 

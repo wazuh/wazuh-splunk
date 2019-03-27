@@ -75,8 +75,8 @@
         <div layout="row" class="wz-margin-top-10">
           <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
             aria-invalid="false" wz-enter="search(packageSearch,'packages')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(packageSearch,'packages')">
-            <span class="fa fa-search" aria-hidden="true"></span>
+          <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(packageSearch,'packages')">
+              <span>Search</span>
           </button>
         </div>
 
@@ -107,8 +107,8 @@
         <div layout="row" class="wz-margin-top-10">
           <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
             aria-invalid="false" wz-enter="search(processSearch,'processes')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
-            <span class="fa fa-search" aria-hidden="true"></span>
+          <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(processSearch,'processes')">
+              <span>Search</span>
           </button>
         </div>
         <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
