@@ -51,7 +51,7 @@
 
   <!-- Edit button -->
   <div layout="row" ng-if="!editingFile">
-    <button ng-if="currentDecoder.file && isLocal && adminMode" ng-click="editDecoder(currentDecoder.file)" class="btn wz-button btn-ruleset ng-scope"><i
+    <button ng-if="currentDecoder.file && isLocal && adminMode" ng-click="editDecoder(currentDecoder.file)" class="btn wz-button-empty btn-ruleset ng-scope"><i
         aria-hidden="true" class="fa fa-fw fa-pencil"></i>
       Edit {{currentDecoder.file}}
     </button>
@@ -160,8 +160,8 @@
             aria-hidden="true"></i>
           <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
         </button>
-        <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</span>
-        <button ng-if="adminMode" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='saveDecoderConfig(currentDecoder.file)' class='btn wz-button pull-right wz-margin-left-10'>
+        <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</span>
+        <button ng-if="adminMode" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='saveDecoderConfig(currentDecoder.file)' class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='!xmlHasErrors && adminMode'>
             <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
               aria-hidden='true'></i>
@@ -174,11 +174,11 @@
         <span class="flex"></span>
         <div ng-show="restartAndApply" style="padding-right: 15px;">
           <span>Do you want to restart to apply configuration?</span>
-          <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+          <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
             <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
           </button>
           <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-            class='btn wz-button pull-right wz-margin-left-10'>
+            class='btn wz-button-empty pull-right wz-margin-left-10'>
             <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
           </button>
         </div>

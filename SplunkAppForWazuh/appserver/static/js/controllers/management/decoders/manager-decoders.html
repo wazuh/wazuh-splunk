@@ -97,9 +97,9 @@
 <!-- XML editor for add new decoder file-->
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
-      class='btn wz-button pull-right wz-margin-left-10'>
+      class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'>
         <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
         Save file</span>
@@ -113,11 +113,11 @@
     <!-- Restart if saved without errors-->
     <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
       <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
         <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
       <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button pull-right wz-margin-left-10'>
+        class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
     </div>
@@ -134,9 +134,9 @@
 <!-- XML editor for edit file-->
 <div ng-if="editingRulesetFile">
   <div layout="row" class="md-padding">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info wz-margin-left-5'>Cancel</button>
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel wz-margin-left-5'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
-      class='btn wz-button pull-right wz-margin-left-10'>
+      class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
           aria-hidden='true'></i>
         Save file</span>
@@ -148,11 +148,11 @@
     <!-- Restart if saved without errors-->
     <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
       <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
+      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
         <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
       <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button pull-right wz-margin-left-10'>
+        class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
     </div>

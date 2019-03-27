@@ -14,9 +14,9 @@
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
     <button style="height: 30px;" ng-if="isAdmin" ui-sref="mg-conf"
-      class='btn btn-info wz-margin-left-10'>Cancel</button>
+      class='btn wz-button-cancel wz-margin-left-10'>Cancel</button>
     <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors || saveIncomplete || restartInProgress'
-      ng-click='saveOssecConfig()' class='btn wz-button pull-right wz-margin-left-10'>
+      ng-click='saveOssecConfig()' class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && isAdmin'>
         <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
           aria-hidden='true'></i>
@@ -31,15 +31,15 @@
     <div ng-show="restartAndApply" style="padding-right: 15px;">
       <span>Do you want to restart {{editingNode}} to apply configuration?</span>
       <button style="height: 30px;" ng-if="isAdmin" ng-click="closeRestartConfirmation()"
-        class='btn btn-info pull-right wz-margin-left-10'>
+        class='btn wz-button-cancel pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
       <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button pull-right wz-margin-left-10'>
+        class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
       <button style="height: 30px;" ng-if="isAdmin && clusterEnabled"
-        ng-click="restart(editingNode); closeRestartConfirmation()" class='btn wz-button pull-right wz-margin-left-10'>
+        ng-click="restart(editingNode); closeRestartConfirmation()" class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
     </div>
@@ -48,12 +48,12 @@
     <div style="padding-right: 15px;" ng-show="!restartAndApply">
       <div ng-show="!confirmingRestart">
         <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()"
-          ng-disabled="restartInProgress" class='btn wz-button pull-right wz-margin-left-10'>
+          ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
             {{editingNode}}</span>
         </button>
         <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()"
-          ng-disabled="restartInProgress" class='btn wz-button pull-right wz-margin-left-10'>
+          ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
             {{editingNode}}</span>
         </button>
@@ -61,15 +61,15 @@
       <div ng-show="confirmingRestart">
         <span style="padding-top: 8px;">The {{editingNode}} will be restarted.</span>
         <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
-          class='btn btn-info pull-right wz-margin-left-10'>
+          class='btn wz-button-cancel pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
         </button>
         <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
-          class='btn wz-button pull-right wz-margin-left-10'>
+          class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
         </button>
         <button style="height: 30px;" ng-if="isAdmin && clusterEnabled" ng-click="restart(editingNode); switchRestart()"
-          class='btn wz-button pull-right wz-margin-left-10'>
+          class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
         </button>
       </div>
@@ -80,7 +80,7 @@
 
   <div layout="row" class="wz-margin-left-10" ng-if="restartingBar">
     <button style="height: 30px; margin-top:20px;" ng-if="isAdmin" ui-sref="mg-conf"
-      class='btn btn-info wz-margin-left-10'>Cancel</button>
+      class='btn wz-button-cancel wz-margin-left-10'>Cancel</button>
     <div id="wz-progress">
       <div id="wz-progress-bar" style="width:{{blockEditioncounter}}%">Restarting cluster
         {{blockEditioncounter}}%</div>
@@ -95,11 +95,11 @@
         class="input input-dropdown"></select>
 
       <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="restart()"
-        ng-disabled="restartInProgress" class='btn wz-button pull-right wz-margin-left-10'>
+        ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh '></i>Restart {{editingNode}}</span>
       </button>
       <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="restart(editingNode)"
-        ng-disabled="restartInProgress" class='btn wz-button pull-right wz-margin-left-10'>
+        ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh '></i>Restart {{editingNode}}</span>
       </button>
 
