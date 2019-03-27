@@ -110,6 +110,8 @@ define(['../../module'], function (controllers) {
 
     async restart(node = false) {
       try {
+        this.scope.$broadcast('removeRestartMsg', {});
+
         if (this.clusterInfo.clusterEnabled) this.showRestartingProgressBar()
         this.scope.restartInProgress = true
         let result = ''

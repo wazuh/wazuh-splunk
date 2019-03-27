@@ -109,7 +109,7 @@
 
 <!-- XML editor for add new rule file-->
 <div ng-if="addingNewFile">
-  <div layout="row" class="md-padding">
+  <div layout="row" class="md-padding  wz-padding-top-0">
     <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
       class='btn wz-button-empty pull-right wz-margin-left-10'>
@@ -123,19 +123,6 @@
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
       style="margin-left: 10px;" ng-change="enableSave()">
 
-    <!-- Restart if saved without errors-->
-    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
-      <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
-    <!-- End restart button -->
-
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
@@ -147,7 +134,7 @@
 
 <!-- XML editor for edit file-->
 <div ng-if="editingRulesetFile">
-  <div layout="row" class="md-padding">
+  <div layout="row" class="md-padding wz-padding-top-0">
     <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel wz-margin-left-5'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
       class='btn wz-button-empty pull-right wz-margin-left-10'>
@@ -158,19 +145,6 @@
         XML format error</span>
     </button>
     <span class="flex"></span>
-
-    <!-- Restart if saved without errors-->
-    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
-      <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
-    <!-- End restart button -->
 
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
