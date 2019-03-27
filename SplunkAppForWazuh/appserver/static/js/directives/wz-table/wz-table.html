@@ -170,7 +170,7 @@
       </tr>
     </tbody>
     <tfoot>
-      <td colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+      <td class="no-border" colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}} seconds)</span>
         <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">
@@ -247,7 +247,7 @@
       </tr>
     </tbody>
     <tfoot>
-      <td colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+      <td class="no-border" colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}} seconds)</span>
         <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">
@@ -309,7 +309,7 @@
       </tr>
     </tbody>
     <tfoot>
-      <td colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+      <td class="no-border" colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}} seconds)</span>
         <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">

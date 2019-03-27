@@ -1285,3 +1285,7 @@ th.w-350 {
   color: #0079a5 !important;
   font-weight: bold !important;
 }
+
+.no-border {
+  border: none;
+}
