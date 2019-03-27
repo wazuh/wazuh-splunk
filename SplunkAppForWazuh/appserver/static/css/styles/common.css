@@ -1294,6 +1294,26 @@ tfoot.no-border tr td {
   border: none !important;
 }
 
+.less-12-mr {
+  margin-right: -12px;
+}
+
+.less-15-m {
+  margin: -15px;
+}
+
+.less-15-side {
+  margin: 0px 15px 0px 15px;
+}
+
+.less-25-side {
+  margin: 0px 25px 0px 25px;
+}
+
+.wz-margin-right-600 {
+  margin-right: 600px;
+}
+
 /* New buttons style */
 .wz-button-empty {
   background: white !important;

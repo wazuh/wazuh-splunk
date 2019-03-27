@@ -76,7 +76,7 @@
   color: gray;
 }
 .wz-search-filter-bar-input {
-  border: none;
+  border: none !important;
   padding: 5px;
   width: auto;
   margin-left: 5px;

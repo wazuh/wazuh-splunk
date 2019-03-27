@@ -99,12 +99,12 @@
               <p class="color-f9">{{messageError}}</p>
             </div>
             <div layout="row" layout-align="center center">
-              <md-button ng-if='!edit' ng-click='submitApiForm()' type="submit" class="wz-button-empty md-raised md-primary" aria-label="Save API button">
+              <button ng-if='!edit' ng-click='submitApiForm()' type="submit" class="btn wz-button-empty" aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save Wazuh API entry
-              </md-button>
-              <md-button ng-if='edit' ng-click='updateEntry()' type="submit" class="wz-button-empty md-raised md-primary" aria-label="Save API button">
+              </button>
+              <button ng-if='edit' ng-click='updateEntry()' type="submit" class="btn wz-button-empty" aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update Wazuh API entry
-              </md-button>
+              </button>
             </div>
           </form>
           <!-- End add API form -->
