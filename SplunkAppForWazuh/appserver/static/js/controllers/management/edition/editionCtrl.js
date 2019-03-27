@@ -112,7 +112,6 @@ define(['../../module'], function (controllers) {
       try {
         this.scope.$broadcast('removeRestartMsg', {});
 
-        if (this.clusterInfo.clusterEnabled) this.showRestartingProgressBar()
         this.scope.restartInProgress = true
         let result = ''
         if (this.clusterInfo.clusterEnabled && node) {
@@ -120,11 +119,13 @@ define(['../../module'], function (controllers) {
         } else {
           result = await this.restartService.restart()
         }
+        if (this.clusterInfo.clusterEnabled) this.showRestartingProgressBar()
         this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
         this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
+        this.scope.$broadcast('restartError', { error: error })
       }
     }
 
