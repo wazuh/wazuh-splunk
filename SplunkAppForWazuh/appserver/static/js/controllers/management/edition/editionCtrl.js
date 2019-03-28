@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class Edition {
@@ -110,7 +110,7 @@ define(['../../module'], function (controllers) {
 
     async restart(node = false) {
       try {
-        this.scope.$broadcast('removeRestartMsg', {});
+        this.scope.$broadcast('removeRestartMsg', {})
 
         this.scope.restartInProgress = true
         let result = ''

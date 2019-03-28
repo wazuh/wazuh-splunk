@@ -28,7 +28,7 @@ define(['../module'], function(directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
 
-        $scope.openDiscover = (agentId) => {
+        $scope.openDiscover = agentId => {
           $scope.menuNavItem = 'discover'
           $scope.$broadcast('stateChanged', 'discover')
           if (!$scope.$$phase) $scope.$digest()

@@ -129,7 +129,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
       this.scope.$on('performRestart', () => {
         this.restart()
-      });
+      })
     }
 
     /**
@@ -375,8 +375,6 @@ define(['../../module', 'FileSaver'], function(app) {
       } catch (error) {
         this.notification.showErrorToast(error)
         this.scope.$broadcast('restartError', { error: error })
-
-        
       }
     }
 

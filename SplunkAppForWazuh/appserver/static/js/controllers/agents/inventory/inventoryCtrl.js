@@ -64,7 +64,6 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     $onInit() {
       try {
-
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
@@ -179,10 +178,7 @@ define(['../../module', 'FileSaver'], function(module) {
           'Your download should begin automatically...'
         )
         const currentApi = this.api['_key']
-        const output = await this.csvReq.fetch(
-          path,
-          currentApi
-        )
+        const output = await this.csvReq.fetch(path, currentApi)
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
         return

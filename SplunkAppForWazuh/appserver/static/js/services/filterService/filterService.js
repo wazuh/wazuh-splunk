@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class FilterService {
@@ -149,7 +149,6 @@ define(['../module'], function (module) {
       } catch (err) {
         delete window.localStorage.filters // In case of error, delete all filters
       }
-
     }
 
     /**
@@ -161,11 +160,9 @@ define(['../module'], function (module) {
         let pined = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          pined  = filters.filter(fil => fil.pined)
+          pined = filters.filter(fil => fil.pined)
           filters = filters.filter(fil => !fil.pined)
-          pined = pined.filter(
-            pin => !Object.keys(pin)[0].startsWith('agent.')
-          )
+          pined = pined.filter(pin => !Object.keys(pin)[0].startsWith('agent.'))
           filters.push(...pined)
         }
         filters = JSON.stringify(filters)

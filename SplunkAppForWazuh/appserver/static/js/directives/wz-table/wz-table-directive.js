@@ -121,16 +121,18 @@ define([
         }
 
         $scope.setColResizable = () => {
-          if ($scope.customColumns) {
-            $(`#table${$scope.scapepath}`).colResizable({
-              liveDrag: true,
-              minWidth: 100,
-              postbackSafe: true,
-              partialRefresh: true,
-              draggingClass: false
-            })
-            $scope.$applyAsync()
-          }
+          try {
+            if ($scope.customColumns) {
+              $(`#table${$scope.scapepath}`).colResizable({
+                liveDrag: true,
+                minWidth: 100,
+                postbackSafe: true,
+                partialRefresh: true,
+                draggingClass: false
+              })
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
         }
 
         /**
@@ -169,26 +171,30 @@ define([
           )
 
         const getStoredKeys = () => {
-          if ($scope.customColumns) {
-            if (sessionStorage[$scope.path]) {
-              $scope.keys = sessionStorage[$scope.path].split(';')
-            } else {
-              updateStoredKeys($scope.keys)
+          try {
+            if ($scope.customColumns) {
+              if (sessionStorage[$scope.path]) {
+                $scope.keys = sessionStorage[$scope.path].split(';')
+              } else {
+                updateStoredKeys($scope.keys)
+              }
+              $scope.$applyAsync()
             }
-            $scope.$applyAsync()
-          }
+          } catch (error) {} // eslint-disable-line
         }
 
         const updateStoredKeys = keys => {
-          if ($scope.customColumns) {
-            let stringKeys = keys[0]
-            for (var i = 1; i < keys.length; i++) {
-              let tmp = keys[i].value || keys[i]
-              stringKeys += ';' + tmp
+          try {
+            if ($scope.customColumns) {
+              let stringKeys = keys[0]
+              for (var i = 1; i < keys.length; i++) {
+                let tmp = keys[i].value || keys[i]
+                stringKeys += ';' + tmp
+              }
+              sessionStorage[$scope.path] = stringKeys || ''
+              $scope.$applyAsync()
             }
-            sessionStorage[$scope.path] = stringKeys || ''
-            $scope.$applyAsync()
-          }
+          } catch (error) {} // eslint-disable-line
         }
 
         /**

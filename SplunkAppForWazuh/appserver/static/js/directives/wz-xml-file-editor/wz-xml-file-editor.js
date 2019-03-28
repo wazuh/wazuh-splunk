@@ -238,9 +238,9 @@ define([
         )
 
         $scope.doRestart = () => {
-          $scope.restartBtn = false;
-          $scope.$emit('performRestart', {});
-        };
+          $scope.restartBtn = false
+          $scope.$emit('performRestart', {})
+        }
 
         const init = (data = false) => {
           try {
@@ -264,7 +264,7 @@ define([
         })
 
         $scope.$on('restartError', (ev, params) => {
-          if(params.error.message){
+          if (params.error.message) {
             $scope.showErrorMessages = true
             $scope.errorInfo = params.error.message.split('(')
           }
@@ -275,9 +275,9 @@ define([
         })
 
         $scope.$on('removeRestartMsg', () => {
-          $scope.restartBtn = false;
-          $scope.$applyAsync();
-        });
+          $scope.restartBtn = false
+          $scope.$applyAsync()
+        })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
       },

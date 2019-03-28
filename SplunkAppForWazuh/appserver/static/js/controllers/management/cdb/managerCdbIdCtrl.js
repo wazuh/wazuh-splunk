@@ -165,8 +165,8 @@ define([
     }
 
     firstPage() {
-      this.scope.setPage(1);
-      this.scope.prevPage();
+      this.scope.setPage(1)
+      this.scope.prevPage()
     }
 
     /**
