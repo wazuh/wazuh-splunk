@@ -133,6 +133,23 @@ class api(controllers.BaseController):
         except Exception as e:
             raise e
 
+    def format_cdb_list_content(self, dic):
+        """Format the response of custom CDB list.
+
+        Parameters
+        ----------
+        dic : dic
+            A dic with the response.
+        """    
+        try:
+            items = dic["data"]["items"][0]
+            dic["data"]["items"] = [{"items": items}]
+            return dic
+        except Exception as e:
+            self.logger.error("Error formating CDB list: %s" % (e))
+            raise e
+
+
     @expose_page(must_login=False, methods=['POST'])
     def request(self, **kwargs):
         """Make requests to the Wazuh API as a proxy backend.
@@ -249,7 +266,11 @@ class api(controllers.BaseController):
                 verify=verify).json()
             if ('items' in request['data'] and
                     len(request['data']['items']) > 0):
-                final_obj = request["data"]["items"]
+                if "?path=etc/list" in opt_endpoint:
+                    formatted = self.format_cdb_list_content(request)
+                    final_obj = formatted["data"]["items"]
+                else :
+                    final_obj = request["data"]["items"]
                 if isinstance(final_obj, list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)

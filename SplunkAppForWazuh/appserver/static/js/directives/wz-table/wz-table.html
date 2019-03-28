@@ -27,7 +27,7 @@
 
 <!-- Table -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="!isPolicyMonitoring() && !isSyschecks()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed; " id="table{{scapepath}}">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size } && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -82,7 +82,7 @@
           </md-tooltip>
         </td>
         <td ng-if="path === '/agents'" ng-click="$event.stopPropagation()" class="cursor-default action-btn-td">
-          <p ng-click="clickAction(item, 'discover'); $event.stopPropagation()" class="fa fa-fw fa-compass cursor-pointer"></p>
+          <i ng-click="launchAgentDiscover(item.id); $event.stopPropagation()" class="fa fa-fw fa-compass cursor-pointer"></i>
           <md-tooltip>Open Discover panel for this agent"</md-tooltip>
           <i ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()" class="fa fa-fw fa-wrench cursor-pointer"></i>
           <md-tooltip>Open Configuration for this agent"</md-tooltip>
@@ -169,7 +169,7 @@
         </td>
       </tr>
     </tbody>
-    <tfoot>
+    <tfoot class="no-border">
       <td colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}} seconds)</span>
         <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
@@ -196,7 +196,7 @@
 
 <!-- Table for configuration assessment -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isPolicyMonitoring()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size }  && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -246,7 +246,7 @@
         </td>
       </tr>
     </tbody>
-    <tfoot>
+    <tfoot class="no-border">
       <td colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}} seconds)</span>
         <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
@@ -273,7 +273,7 @@
 
 <!-- Table for syschecks -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isSyschecks()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="wz_table">
+  <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
     <thead class="wz-text-bold">
       <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left" ng-class="{ 'cursor-pointer' : !key.nosortable, 'col-lg-1' : !key.size, 'col-lg-{{key.size}}' : key.size} && getWitdh(key.value || key)"
         ng-click="!key.nosortable && sort(key)">
@@ -308,7 +308,7 @@
         </td>
       </tr>
     </tbody>
-    <tfoot>
+    <tfoot class="no-border">
       <td colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}} seconds)</span>
         <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">

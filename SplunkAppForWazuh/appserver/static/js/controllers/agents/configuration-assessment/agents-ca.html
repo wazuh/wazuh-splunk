@@ -17,13 +17,13 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-      <md-button ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz || loadingReporting"
-        ng-click="startVis2Png()" aria-label="Generate report button">
-        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="left" class="wz-tooltip">
-          Generate report
-        </md-tooltip>
-      </md-button>
+        <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
+          aria-label="Generate report button">
+          <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+          <md-tooltip md-direction="left" class="wz-tooltip">
+            Generate report
+          </md-tooltip>
+        </button>
       <wz-discover breadcrumbs="{section: 'Agents', subSection: 'Configuration assessment', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>
@@ -38,9 +38,9 @@
   <!-- Alerts visualizations -->
   <div ng-show="!showPolicies && !showPolicyChecks">
 
-    <div layout="row" layout-padding class="wz-padding-top-0">
+    <div layout="row" class="wz-padding-top-0 sca-switch-div">
       <span flex></span>
-      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-shield"></i>
+      <button ng-click="switchVisualizations()" class="btn-invisible-sca"><i class="fa fa-fw fa-shield"></i>
         Show
         policies</button>
     </div>
@@ -139,9 +139,9 @@
 
   <!-- Policies list -->
   <div ng-show="showPolicies && !showPolicyChecks">
-    <div layout="row" layout-padding class="wz-padding-top-0">
+    <div layout="row" class="wz-padding-top-0 wz-padding-20">
       <span flex></span>
-      <button ng-click="switchVisualizations()" class="btn pull-right wz-button"><i class="fa fa-fw fa-area-chart"></i>
+      <button ng-click="switchVisualizations()" class="btn-invisible-sca"><i class="fa fa-fw fa-area-chart"></i>
         Show alerts</button>
     </div>
 
@@ -166,7 +166,20 @@
         <md-card-content>
           <span class="wz-headline-title"><i class="fa fa-fw fa-shield"></i> Configuration assessment</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <p ng-if="configAssess.length === 0">No policies configured.</p>
+          <!--<p ng-if="configAssess.length === 0"></p>No policies configured.</p>-->
+          <div layout="column" class="md-padding-h" ng-if="configAssess.length === 0">
+              <div class="md-padding text-center">
+                  <img class="wz-margin-top-17" ng-src="{{noScansPng}}" style="width: 10%; max-width: 175px;">
+                  <h3 class="euiTitle wzEuiTitle wz-margin-bottom-10 wz-margin-top-16">There are no scans
+                      available</h3>
+              </div>
+              <div class="md-padding text-center wz-margin-top-10">
+                  <a target="_blank" ng-href="https://documentation.wazuh.com/current/user-manual/registering/index.html">
+                      <span>Discover in our documentation what are the configuration assessment scans and how to
+                          carry them out.</span>
+                      <i class="fa fa-info-circle" aria-hidden="true"></i></a>
+              </div>
+          </div>
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle" ng-if="configAssess.length > 0">
             <thead>
               <th>Policy</th>

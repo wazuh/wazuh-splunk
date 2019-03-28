@@ -41,7 +41,7 @@
   display: flex;
 }
 .wz-tags > ul li .grouped {
-  background: #d9d9d9;
+  background: #e4f2f5;
   border-radius: 3px;
   padding: 3px;
   height: 30px;
@@ -49,12 +49,13 @@
   display: flex;
 }
 .wz-tag-item {
-  color: white;
+  color: #0079a5;
   border-radius: 3px;
   display: inline-block;
   padding: 3px 5px;
-  background: #0079a5;
+  background: white;
   margin: 1px 3px;
+  border: solid 1px #0079a5 !important;
 }
 .wz-tag-item-connector {
   font-size: 10px;
@@ -76,7 +77,7 @@
   color: gray;
 }
 .wz-search-filter-bar-input {
-  border: none;
+  border: none !important;
   padding: 5px;
   width: auto;
   margin-left: 5px;

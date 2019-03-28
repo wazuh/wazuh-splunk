@@ -135,6 +135,7 @@ define([
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
+      this.scope.reloadList = () => this.reloadList()
     }
 
     /**
@@ -197,6 +198,13 @@ define([
           err.message || 'Error fetching agent data'
         )
       }
+    }
+
+    /**
+     * Reload list of agents
+     */
+    reloadList() {
+      this.scope.$broadcast('wazuhSearch', { term: '' })
     }
   }
   app.controller('agentsCtrl', Agents)

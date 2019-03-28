@@ -14,7 +14,7 @@
 <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="decoders">Decoders</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">CDB Lists</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists</md-nav-item>
 </md-nav-bar>
 
 
@@ -36,8 +36,8 @@
           aria-invalid="false" wz-enter="search(customSearch)">
         <input ng-if="rulesetFiles" flex placeholder="Filter decoders files..." ng-model="customSearch" type="text"
           class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-32" ng-click="search(customSearch)">
-          <span class="fa fa-search" aria-hidden="true"></span>
+        <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(customSearch)">
+            <span>Search</span>
         </button>
       </div>
     </div>
@@ -45,7 +45,7 @@
   <md-card class="wz-md-card">
     <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
       <!-- Show files and button to add a new file -->
-      <a ng-if="rulesetFiles" ng-click="addNewFile()">Add new decoders file <i aria-hidden="true" class="fa fa-plus"></i></a>
+      <a ng-if="rulesetFiles" ng-click="addNewFile()">Add new decoders file</a>
       <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
         Manage decoders files
       </span>
@@ -82,8 +82,8 @@
       </div>
       <div layout="row" class="ruleset-csv-formater">
         <span flex></span>
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">Formatted
-          <i aria-hidden="true" class="fa fa-download"></i>
+        <a class="small" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">
+          <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
         </a>
       </div>
     </md-card-contents>
@@ -96,10 +96,10 @@
 
 <!-- XML editor for add new decoder file-->
 <div ng-if="addingNewFile">
-  <div layout="row" class="md-padding">
+  <div layout="row" class="md-padding  wz-padding-top-0">
     <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
-      class='btn wz-button pull-right wz-margin-left-10'>
+      class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'>
         <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
         Save file</span>
@@ -110,18 +110,6 @@
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
       style="margin-left: 10px;" ng-change="enableSave()">
 
-    <!-- Restart if saved without errors-->
-    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
-      <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
-    <!-- End restart button -->
 
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
@@ -133,10 +121,10 @@
 
 <!-- XML editor for edit file-->
 <div ng-if="editingRulesetFile">
-  <div layout="row" class="md-padding">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info wz-margin-left-5'>Cancel</button>
+  <div layout="row" class="md-padding wz-padding-top-0">
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel wz-margin-left-5'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
-      class='btn wz-button pull-right wz-margin-left-10'>
+      class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
           aria-hidden='true'></i>
         Save file</span>
@@ -144,19 +132,6 @@
         XML format error</span>
     </button>
     <span class="flex"></span>
-
-    <!-- Restart if saved without errors-->
-    <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
-      <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn btn-info pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
-    <!-- End restart button -->
 
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">

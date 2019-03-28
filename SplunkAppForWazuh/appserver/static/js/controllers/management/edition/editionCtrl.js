@@ -14,7 +14,8 @@ define(['../../module'], function(controllers) {
       $notificationService,
       clusterInfo,
       $fileEditor,
-      $restartService
+      $restartService,
+      $interval
     ) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
@@ -23,6 +24,7 @@ define(['../../module'], function(controllers) {
       this.clusterInfo = clusterInfo
       this.fileEditor = $fileEditor
       this.restartService = $restartService
+      this.interval = $interval
     }
     /**
      * On controller loads
@@ -54,6 +56,9 @@ define(['../../module'], function(controllers) {
         }
         this.scope.isAdmin = this.isAdmin
 
+        /**
+         *  Listeners
+         */
         this.scope.$on('configSavedSuccessfully', () => {
           this.scope.restartAndApply = true
         })
@@ -83,6 +88,7 @@ define(['../../module'], function(controllers) {
 
     changeNode(node) {
       this.editNode(node)
+      this.scope.restartAndApply = false
     }
 
     saveOssecConfig() {
@@ -104,6 +110,8 @@ define(['../../module'], function(controllers) {
 
     async restart(node = false) {
       try {
+        this.scope.$broadcast('removeRestartMsg', {})
+
         this.scope.restartInProgress = true
         let result = ''
         if (this.clusterInfo.clusterEnabled && node) {
@@ -111,12 +119,31 @@ define(['../../module'], function(controllers) {
         } else {
           result = await this.restartService.restart()
         }
+        if (this.clusterInfo.clusterEnabled) this.showRestartingProgressBar()
         this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
         this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
+        this.scope.$broadcast('restartError', { error: error })
       }
+    }
+
+    showRestartingProgressBar() {
+      this.scope.blockEditioncounter = 0
+      this.scope.restartingBar = true
+      this.scope.$applyAsync()
+      this.interval(
+        () => {
+          this.scope.blockEditioncounter++
+          if (this.scope.blockEditioncounter === 100) {
+            this.scope.restartingBar = false
+            this.scope.$applyAsync()
+          }
+        },
+        333,
+        100
+      )
     }
 
     switchRestart() {

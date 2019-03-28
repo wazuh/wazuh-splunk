@@ -218,7 +218,7 @@ define([
           } index=wazuh-monitoring-3x`
         }
 
-        this.spanTime = '1h'
+        this.spanTime = '15m'
         this.vizz.push(
           new LinearChart(
             `agentStatusHistory`,

@@ -16,7 +16,7 @@
   <!-- End headline -->
 
   <!-- Filters and Realtime button section -->
-  <div ng-show="!loading" layout="row" layout-align="start start" class="wz-margin-left-10">
+  <div ng-show="!loading" layout="row" layout-align="start start" class="wz-margin-left-10 wz-margin-right-600 less-25-side">
 
     <select class="input input-dropdown" flex id="levelBox" ng-disabled="realtime" ng-model="type_log" placeholder="Log level"
       class="md-no-underline" ng-change="filter({name:'type_log',value:type_log})" aria-label="Logs level">
@@ -44,29 +44,29 @@
       <div class="md-label">Descending sort</div>
     </md-switch>
 
-    <!-- White space between filters and Realtime button -->
-    <span flex></span>
 
-    <md-button ng-if="!realtime" class="wz-button md-raised md-primary wz-margin-right-15" style='margin-top:-4px;'
+  </div>
+
+  <div layout="row" class="less-15-side">
+    <!-- Search and play realtime buttons -->
+    <input flex placeholder="Filter logs..." ng-model="custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-top-4 height-36 wz-margin-left-10"
+      aria-invalid="false" wz-enter="search(custom_search)">
+      <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-5" ng-click="search(custom_search)">
+          <span>Search</span>
+      </button>
+
+      <button ng-if="!realtime" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-right-10 wz-margin-5"
       ng-click="playRealtime()" aria-label="Play realtime button">
       <i class="fa fa-play fa-fw" aria-hidden="true"></i>
       Play realtime
-    </md-button>
-    <md-button ng-if="realtime" class="wz-button md-raised md-primary wz-margin-right-15" style='margin-top:-4px;'
+    </button>
+
+    <button ng-if="realtime" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-right-10 wz-margin-5"
       ng-click="stopRealtime()" aria-label="Stop realtime button">
       <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
       Stop realtime
-    </md-button>
-  </div>
-
-  <div layout="row">
-
-    <input flex placeholder="Filter logs..." ng-model="custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-top-4 height-36 wz-margin-left-10"
-      aria-invalid="false" wz-enter="search(custom_search)">
-    <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-36 wz-margin-top-4 wz-margin-right-16"
-      ng-click="search(custom_search)">
-      <span class="fa fa-search" aria-hidden="true"></span>
     </button>
+
   </div>
   <!-- End Filters and Realtime button section -->
 

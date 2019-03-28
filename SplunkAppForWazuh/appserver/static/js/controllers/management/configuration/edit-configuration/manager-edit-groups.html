@@ -22,7 +22,7 @@
   <!-- MD5 Sums and Details cards -->
 
   <div layout="row" class="md-padding-h wz-width-100" ng-if="lookingGroup">
-    <md-button class="md-icon-button wz-circle-back-button" ng-if="lookingGroup" aria-label="Back" ng-click="goBackGroups()"><i
+    <md-button class="md-icon-button" ng-if="lookingGroup" aria-label="Back" ng-click="goBackGroups()"><i
         class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
       <md-tooltip md-direction="bottom" class="wz-tooltip">Go back</md-tooltip>
     </md-button>
@@ -64,13 +64,13 @@
   <!-- End group actions -->
   <!-- XML editor for group agents -->
   <div ng-show="editingFile">
-    <div layout="row" class="md-padding">
+    <div layout="row" class="md-padding wz-padding-top-0">
       <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
           aria-hidden="true"></i>
         <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
       </button>
-      <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
-      <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn wz-button pull-right wz-margin-left-10'>
+      <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
+      <button ng-if="adminMode" ng-disabled='xmlHasErrors' ng-click='doSaveGroupAgentConfig()' class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='!xmlHasErrors && adminMode'><i aria-hidden='true' class='fa fa-fw fa-save wz-margin-left-10'></i>Save
           file</span>
         <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
@@ -87,9 +87,9 @@
 
   <div ng-if="!editingFile">
     <div layout="row" class="md-padding" ng-if="lookingGroup && currentGroup && addingAgents">
-      <button ng-click='addMultipleAgents(false)' class='btn btn-info'>
+      <button ng-click='addMultipleAgents(false)' class='btn wz-button-cancel'>
         Cancel</button>
-      <button ng-hide='moreThan500' ng-click='saveAddAgents()' class='btn wz-button wz-margin-left-8 wz-margin-left-5'><i
+      <button ng-hide='moreThan500' ng-click='saveAddAgents()' class='btn wz-button-empty wz-margin-left-8 wz-margin-left-5'><i
           aria-hidden='true' class='fa fa-fw fa-save'></i>
         Apply changes</button>
       <span class='error-msg' ng-show='moreThan500'><i class="fa fa-exclamation-triangle"></i> It is not
@@ -101,10 +101,9 @@
       <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
         ng-model="custom_search" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-100"
         aria-invalid="false" wz-enter="search(custom_search)">
-      <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-40" style='height:32px !important;'
-        ng-click="search(custom_search)">
-        <span class="fa fa-search" aria-hidden="true"></span>
-      </button>
+        <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10" ng-click="search(customSearch)">
+            <span>Search</span>
+        </button>
     </div>
     <!-- End search bar -->
 

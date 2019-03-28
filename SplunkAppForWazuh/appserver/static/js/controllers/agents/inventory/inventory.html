@@ -13,13 +13,14 @@
     <div ng-if="agent && agent.status">
       <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
     </div>
+    <span flex class="flex"></span>
     <!-- Report button -->
-    <md-button  ng-if="reportingEnabled" ng-disabled="loadingReporting" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-click="startVis2Png()" aria-label="Generate report button">
+    <button  ng-if="reportingEnabled" ng-disabled="loadingReporting" md-no-ink class="btn wz-button-empty wz-button-report" ng-click="startVis2Png()" aria-label="Generate report button">
       <i class="fa fa-fw fa-print" aria-hidden="true"></i>
       <md-tooltip md-direction="left" class="wz-tooltip">
         Generate report
       </md-tooltip>      
-    </md-button>
+    </button>
   </div>
 
   <!-- Loading report-->
@@ -75,8 +76,8 @@
         <div layout="row" class="wz-margin-top-10">
           <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
             aria-invalid="false" wz-enter="search(packageSearch,'packages')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(packageSearch,'packages')">
-            <span class="fa fa-search" aria-hidden="true"></span>
+          <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(packageSearch,'packages')">
+              <span>Search</span>
           </button>
         </div>
 
@@ -89,6 +90,12 @@
           </wazuh-table>
         </div>
       </md-card-content>
+      <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
+        <span flex></span>
+          <a class="small" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/packages', 'agent-' + agent.id + '-packages.csv')">
+            <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+        </a>
+      </div>
     </md-card>
   </div>
 
@@ -101,8 +108,8 @@
         <div layout="row" class="wz-margin-top-10">
           <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
             aria-invalid="false" wz-enter="search(processSearch,'processes')">
-          <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(processSearch,'processes')">
-            <span class="fa fa-search" aria-hidden="true"></span>
+          <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(processSearch,'processes')">
+              <span>Search</span>
           </button>
         </div>
         <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
@@ -112,9 +119,15 @@
           <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows'" path="'/syscollector/' + agent.id + '/processes'"
             row-sizes="[10,8,6]" extra-limit="100" keys="['name','euser','nice','state']">
           </wazuh-table>
-
         </div>
       </md-card-content>
+      <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
+        <span flex></span>
+          
+        <a class="small" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/processes', 'agent-' + agent.id + '-processes.csv')">
+          <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+        </a>
+      </div>
     </md-card>
   </div>
 
@@ -193,7 +206,7 @@
           addresses scan available</span>
       </md-card-content>
       <md-card-content class="wz-margin-bottom-40-inv" ng-if="syscollector.netaddr && syscollector.netaddr.items.length">
-        <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network addresses</span>
+        <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network settings</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <wazuh-table flex path="'/syscollector/' + agent.id + '/netaddr'" row-sizes="[4]" keys="['iface', 'address', 'netmask', 'proto', 'broadcast']">
         </wazuh-table>

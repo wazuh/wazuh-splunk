@@ -64,6 +64,10 @@
   <!-- Search bar -->
   <div ng-if="!loading" layout="row" layout-align="space-between stretch">
     <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
+    <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10 wz-margin-top-17" ng-click="reloadList()">
+        <i class="fa fa-refresh" aria-hidden="true"></i>
+        <span>Refresh</span>
+    </button>
   </div>
 
 
@@ -77,8 +81,8 @@
     <!-- Download CSV -->
     <div layout="row" class="ruleset-csv-formater">
       <span flex></span>
-      <a class="small" id="btnDownload" ng-click="downloadCsv()">Formatted
-        <i aria-hidden="true" class="fa fa-download"></i>
+      <a class="small" id="btnDownload" ng-click="downloadCsv()">
+        <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
       </a>
     </div>
   </md-card>

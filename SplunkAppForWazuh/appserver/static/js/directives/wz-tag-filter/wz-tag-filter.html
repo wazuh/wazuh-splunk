@@ -31,7 +31,7 @@
         Remove all filters
       </md-tooltip>
     </span>
-    <div id='wz-search-filter-bar-autocomplete' class='wz-search-filter-bar-autocomplete' ng-show='isAutocomplete && autocompleteContent.list.length > 0'>
+    <div id='wz-search-filter-bar-autocomplete' class='wz-search-filter-bar-autocomplete wz-always-top' ng-show='isAutocomplete && autocompleteContent.list.length > 0'>
       <p><b>{{autocompleteContent.title}}</b></p>
       <ul id='wz-search-filter-bar-autocomplete-list'>
         <li ng-repeat='element in autocompleteContent.list track by $index' ng-mousedown='autocompleteContent.isKey ? addTagKey(element) : addTagValue(element)'>

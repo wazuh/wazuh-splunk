@@ -72,8 +72,12 @@ define(['../module'], function(module) {
       return $filterService.pinFilter(filter)
     }
 
-    const cleanFilters = cleanAgentsPinedFilters => {
-      return $filterService.cleanFilters(cleanAgentsPinedFilters)
+    const cleanFilters = () => {
+      return $filterService.cleanFilters()
+    }
+
+    const cleanAgentsPinedFilters = () => {
+      return $filterService.cleanAgentsPinedFilters()
     }
 
     const update = register => {
@@ -212,6 +216,7 @@ define(['../module'], function(module) {
       removeFilter: removeFilter,
       pinFilter: pinFilter,
       cleanFilters: cleanFilters,
+      cleanAgentsPinedFilters: cleanAgentsPinedFilters,
       getFilters: getFilters,
       update: update,
       getIndex: getIndex,

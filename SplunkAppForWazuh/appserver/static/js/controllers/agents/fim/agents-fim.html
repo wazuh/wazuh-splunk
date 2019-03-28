@@ -19,13 +19,13 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-      <md-button md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
+      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
         aria-label="Generate report button">
         <i class="fa fa-fw fa-print" aria-hidden="true"></i>
         <md-tooltip md-direction="left" class="wz-tooltip">
           Generate report
         </md-tooltip>
-      </md-button>
+      </button>
       <wz-discover breadcrumbs="{section: 'Agents', subSection: 'File integrity monitoring', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>
@@ -168,8 +168,8 @@
           <div layout="row" class="wz-margin-top-10">
             <input flex placeholder="Filter registry..." ng-model="registrySearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
               aria-invalid="false" wz-enter="search(registrySearch,{name:'type',value:'registry'})">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(registrySearch,{name:'type',value:'registry'})">
-              <span class="fa fa-search" aria-hidden="true"></span>
+            <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10" ng-click="search(registrySearch,{name:'type',value:'registry'})">
+                <span>Search</span>
             </button>
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
@@ -199,8 +199,8 @@
           <div layout="row" class="wz-margin-top-10">
             <input flex placeholder="Filter files..." ng-model="filesSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
               aria-invalid="false" wz-enter="search(filesSearch,{name:'type',value:'file'})">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(filesSearch,{name:'type',value:'file'})">
-              <span class="fa fa-search" aria-hidden="true"></span>
+            <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch,{name:'type',value:'file'})">
+                <span>Search</span>
             </button>
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
@@ -225,8 +225,8 @@
           <div layout="row" class="wz-margin-top-10">
             <input flex placeholder="Filter files..." ng-model="filesSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
               aria-invalid="false" wz-enter="search(filesSearch)">
-            <button type="submit" aria-label="Search" class="kuiLocalSearchButton height-30" ng-click="search(filesSearch)">
-              <span class="fa fa-search" aria-hidden="true"></span>
+            <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
+                <span>Search</span>
             </button>
           </div>
           <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">

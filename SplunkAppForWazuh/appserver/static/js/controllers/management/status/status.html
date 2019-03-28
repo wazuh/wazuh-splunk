@@ -23,16 +23,16 @@
     <span class="flex"></span>
     <!-- Restart button -->
     <button ng-show="!confirmingRestart" style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress"
-      class='btn wz-button pull-right wz-margin-left-10'>
+      class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
         {{clusterEnabled ? "cluster" : "manager"}}</span>
     </button>
     <div ng-show="confirmingRestart" style="display: flex; float:right;">
       <span style="padding-top: 8px;">The {{clusterEnabled ? "cluster" : "manager"}} will be restarted.</span>
-      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn btn-info pull-right wz-margin-left-10'>
+      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
-      <button style="height: 30px;" ng-if="isAdmin" ng-click="restart(); switchRestart" class='btn wz-button pull-right wz-margin-left-10'>
+      <button style="height: 30px;" ng-if="isAdmin" ng-click="restart(); switchRestart" class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
     </div>

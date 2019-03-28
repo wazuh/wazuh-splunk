@@ -54,7 +54,8 @@ define([
       $notificationService,
       $csvRequestService,
       $tableFilterService,
-      reportingEnabled
+      reportingEnabled,
+      BASE_URL
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
@@ -72,6 +73,10 @@ define([
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
+      this.baseUrl = BASE_URL
+      this.scope.noScansPng = `${
+        this.baseUrl
+      }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
@@ -177,7 +182,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } |  stats count(data.sca.check.rationale) as Count by data.sca.check.rationale,data.sca.check.remediation | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required"  | table Reason,"Change Required",Count`,
+          } cluster.name=wazuh index=wazuh rule.groups{}=sca agent.id=004 | stats count(data.sca.check.rationale) as Count by data.sca.check.rationale, data.sca.check.remediation, data.sca.check.id | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required", data.sca.check.id as "Check ID"  | table "Check ID", "Reason", "Change Required", "Count"`,
           'alertsSummary',
           this.scope
         ),

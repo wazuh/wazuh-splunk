@@ -95,8 +95,10 @@ define([
             : 'Empty results for this table.'
 
         $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
+        $scope.scapepath = $scope.path.split('/').join('')
+
         $scope.updateColumns = key => {
-          $('#wz_table').colResizable({ disable: true })
+          $(`#table${$scope.scapepath}`).colResizable({ disable: true })
           const str = key
           const cleanArray = $scope.keys.map(item => item.value || item)
           if (cleanArray.includes(str)) {
@@ -114,19 +116,23 @@ define([
               $scope.keys.push(key)
             }
           }
+          updateStoredKeys($scope.keys)
           init().then(() => $scope.setColResizable())
         }
 
         $scope.setColResizable = () => {
-          if ($scope.customColumns) {
-            $('#wz_table').colResizable({
-              liveDrag: true,
-              minWidth: 75,
-              partialRefresh: true,
-              draggingClass: false
-            })
-            $scope.$applyAsync()
-          }
+          try {
+            if ($scope.customColumns) {
+              $(`#table${$scope.scapepath}`).colResizable({
+                liveDrag: true,
+                minWidth: 100,
+                postbackSafe: true,
+                partialRefresh: true,
+                draggingClass: false
+              })
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
         }
 
         /**
@@ -163,6 +169,33 @@ define([
             $scope,
             state
           )
+
+        const getStoredKeys = () => {
+          try {
+            if ($scope.customColumns) {
+              if (sessionStorage[$scope.path]) {
+                $scope.keys = sessionStorage[$scope.path].split(';')
+              } else {
+                updateStoredKeys($scope.keys)
+              }
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
+        }
+
+        const updateStoredKeys = keys => {
+          try {
+            if ($scope.customColumns) {
+              let stringKeys = keys[0]
+              for (var i = 1; i < keys.length; i++) {
+                let tmp = keys[i].value || keys[i]
+                stringKeys += ';' + tmp
+              }
+              sessionStorage[$scope.path] = stringKeys || ''
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
+        }
 
         /**
          * Fetchs data from API
@@ -293,6 +326,7 @@ define([
           try {
             $scope.error = false
             await fetch()
+            getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
@@ -547,11 +581,27 @@ define([
          * Show a checkbox for each key to show or hide it
          */
         const cleanKeys = () => {
-          $scope.cleanKeys = {}
-          $scope.keys.map(key => {
-            const k = key.value || key
-            $scope.cleanKeys[k] = true
-          })
+          if ($scope.customColumns && sessionStorage[$scope.path]) {
+            $scope.cleanKeys = {}
+            $scope.keys.map(key => {
+              const k = key.value || key
+              let storedKeys = sessionStorage[$scope.path].split(';')
+              $scope.cleanKeys[k] = storedKeys.indexOf(k) !== -1
+            })
+          } else {
+            $scope.cleanKeys = {}
+            $scope.keys.map(key => {
+              const k = key.value || key
+              $scope.cleanKeys[k] = true
+            })
+          }
+        }
+
+        /**
+         * Launch an event to open the discover with the agent id
+         */
+        $scope.launchAgentDiscover = agentId => {
+          $scope.$emit('openDiscover', agentId)
         }
 
         cleanKeys()

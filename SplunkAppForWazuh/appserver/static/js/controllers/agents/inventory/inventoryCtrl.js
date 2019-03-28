@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module', 'FileSaver'], function(module) {
   'use strict'
   class Inventory {
     /**
@@ -29,7 +29,9 @@ define(['../../module'], function(module) {
       $notificationService,
       $scope,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      $currentDataService,
+      $csvRequestService
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
@@ -44,6 +46,8 @@ define(['../../module'], function(module) {
       this.processesDate = {}
       this.netaddrResponse = false
       this.reportingService = $reportingService
+      this.api = $currentDataService.getApi()
+      this.csvReq = $csvRequestService
     }
 
     /**
@@ -60,6 +64,7 @@ define(['../../module'], function(module) {
      */
     $onInit() {
       try {
+        this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
@@ -162,6 +167,25 @@ define(['../../module'], function(module) {
       } catch (error) {
         throw new Error(error.message || error)
       }
+    }
+
+    /**
+     * Exports the table in CSV format
+     */
+    async downloadCsv(path, name) {
+      try {
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
+        const currentApi = this.api['_key']
+        const output = await this.csvReq.fetch(path, currentApi)
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, name) // eslint-disable-line
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Error downloading CSV')
+      }
+      return
     }
   }
   // Logs controller

@@ -199,6 +199,7 @@ define([
               } else {
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
+                $scope.restartBtn = true
                 $notificationService.showSuccessToast(
                   'Configuration saved successfully.'
                 )
@@ -211,7 +212,7 @@ define([
               $scope.showErrorMessages = true
               $scope.errorInfo = error.errMsg
               $notificationService.showWarningToast(
-                'Configuration saved, but found erros.'
+                'Configuration saved, but some errors were found.'
               )
             } else {
               $notificationService.showErrorToast(
@@ -236,6 +237,11 @@ define([
           }
         )
 
+        $scope.doRestart = () => {
+          $scope.restartBtn = false
+          $scope.$emit('performRestart', {})
+        }
+
         const init = (data = false) => {
           try {
             $scope.xmlCodeBox.setValue(autoFormat(data || $scope.data))
@@ -257,8 +263,20 @@ define([
           }
         })
 
+        $scope.$on('restartError', (ev, params) => {
+          if (params.error.message) {
+            $scope.showErrorMessages = true
+            $scope.errorInfo = params.error.message.split('(')
+          }
+        })
+
         $scope.xmlCodeBox.on('change', () => {
           checkXmlParseError()
+        })
+
+        $scope.$on('removeRestartMsg', () => {
+          $scope.restartBtn = false
+          $scope.$applyAsync()
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))

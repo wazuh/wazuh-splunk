@@ -1,11 +1,18 @@
-define(['../module', 'jquery'], function (app, $) {
+define(['../module', 'jquery'], function(app, $) {
   'use strict'
 
   class Discover {
     /**
      * Class Discover
      */
-    constructor($scope, $state, $stateParams, $document, $currentDataService, $notificationService) {
+    constructor(
+      $scope,
+      $state,
+      $stateParams,
+      $document,
+      $currentDataService,
+      $notificationService
+    ) {
       this.scope = $scope
       this.state = $state
       this.stateParams = $stateParams
@@ -106,7 +113,11 @@ define(['../module', 'jquery'], function (app, $) {
       try {
         const firstChar = str.substring(0, 1)
         const lastChar = str.substring(str.length - 1)
-        if (firstChar === '"' || firstChar === "'" && lastChar === '"' || lastChar === "'") {
+        if (
+          firstChar === '"' ||
+          (firstChar === "'" && lastChar === '"') ||
+          lastChar === "'"
+        ) {
           const cleanStr = str.substring(1, str.length - 1)
           return cleanStr
         } else {
