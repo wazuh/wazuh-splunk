@@ -44,7 +44,8 @@ define([
       pollingState,
       $reportingService,
       $rootScope,
-      reportingEnabled
+      reportingEnabled,
+      awsExtensionEnabled
     ) {
       this.currentDataService = $currentDataService
       this.rootScope = $rootScope
@@ -52,6 +53,7 @@ define([
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.reportingService = $reportingService
+      this.scope.awsExtensionEnabled = awsExtensionEnabled
       this.apiReq = $requestService.apiReq
       this.tableResults = {}
       this.timePicker = new TimePicker(

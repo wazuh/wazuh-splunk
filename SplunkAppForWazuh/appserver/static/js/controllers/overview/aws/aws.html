@@ -22,6 +22,13 @@
     <!-- Loading report-->
     <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
   
+  <!-- Security information management navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'aws'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-general" name="general">Security events</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-fim" name="fim">Integrity monitoring</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="aws">Amazon AWS</md-nav-item>
+  </md-nav-bar>
+
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
 

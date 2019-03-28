@@ -88,6 +88,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            awsExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('aws')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -123,6 +133,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            awsExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('aws')
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
