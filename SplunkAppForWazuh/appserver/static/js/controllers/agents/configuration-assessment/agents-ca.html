@@ -17,13 +17,13 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-      <md-button ng-if="reportingEnabled" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-disabled="loadingVizz || loadingReporting"
-        ng-click="startVis2Png()" aria-label="Generate report button">
-        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="left" class="wz-tooltip">
-          Generate report
-        </md-tooltip>
-      </md-button>
+        <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
+          aria-label="Generate report button">
+          <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+          <md-tooltip md-direction="left" class="wz-tooltip">
+            Generate report
+          </md-tooltip>
+        </button>
       <wz-discover breadcrumbs="{section: 'Agents', subSection: 'Configuration assessment', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}"></wz-discover>
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>

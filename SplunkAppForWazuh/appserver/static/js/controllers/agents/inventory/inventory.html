@@ -13,13 +13,14 @@
     <div ng-if="agent && agent.status">
       <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
     </div>
+    <span flex class="flex"></span>
     <!-- Report button -->
-    <md-button  ng-if="reportingEnabled" ng-disabled="loadingReporting" md-no-ink class="md-icon-button small wz-no-margin-padding" ng-click="startVis2Png()" aria-label="Generate report button">
+    <button  ng-if="reportingEnabled" ng-disabled="loadingReporting" md-no-ink class="btn wz-button-empty wz-button-report" ng-click="startVis2Png()" aria-label="Generate report button">
       <i class="fa fa-fw fa-print" aria-hidden="true"></i>
       <md-tooltip md-direction="left" class="wz-tooltip">
         Generate report
       </md-tooltip>      
-    </md-button>
+    </button>
   </div>
 
   <!-- Loading report-->

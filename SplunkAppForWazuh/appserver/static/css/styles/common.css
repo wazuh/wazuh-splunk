@@ -1342,3 +1342,19 @@ tfoot.no-border tr td {
   background-color: #e4e4e4 !important;
   color: black !important;
 }
+
+.wz-button-report {
+  margin-right: 5px;
+  height: 32px;
+  margin-top: 5px;
+}
+
+.wz-div-discover {
+  width:80px;
+  padding-top:10px;
+  cursor:pointer;
+  white-space: nowrap;
+  margin-right: 25px;
+  margin-top: -5px;
+}
+
