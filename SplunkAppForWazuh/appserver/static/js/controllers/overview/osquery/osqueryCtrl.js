@@ -27,10 +27,12 @@ define([
       $notificationService,
       osquery,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.osquery = osquery
       this.state = $state
       this.currentDataService = $currentDataService
