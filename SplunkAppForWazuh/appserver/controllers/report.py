@@ -21,7 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 import base64
 from fpdf import FPDF
-
+import math
 
 class PDF(FPDF):
     def header(self):
@@ -241,7 +241,7 @@ class report(controllers.BaseController):
                         pdf.set_font('Arial', '', 14)
                         if rows_count > 60:
                             pdf.add_page()
-                            pdf.ln(12)
+                            pdf.ln(18)
                             rows_count = 0
                         pdf.cell(0 , 5, table_title, 0, 1, 'L')
                         rows_count = rows_count + 5
@@ -252,30 +252,66 @@ class report(controllers.BaseController):
                         pdf.set_text_color(255,255,255)
                         sizes_field = self.calculate_table_width(pdf, tables[key])
                         count = 0
+                        #Table head
                         for field in tables[key]['fields']:
                             if rows_count > 60:
                                 pdf.add_page()
-                                pdf.ln(12)
+                                pdf.ln(15)
                                 rows_count = 0
                             if field != 'sparkline':
-                                width = sizes_field[count]
+                                x = 0
+                                #Check if the with is splitted in several rows
+                                w = sizes_field[count]
+                                width = w[0] if isinstance(w, list) else w
                                 pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                                 count = count + 1
                         pdf.ln()
                         pdf.set_text_color(93, 188, 210)
+                        pdf.set_draw_color(93, 188, 210)
+                        #Table rows
                         for row in tables[key]['rows']:
+                            first_field = True
+                            bigger_y = 0
+                            reset_y = False
+                            rh = 4 # Row heigth
                             count = 0
                             if rows_count > 55:
                                 pdf.add_page()
-                                pdf.ln(12)
+                                pdf.ln(15)
                                 rows_count = 0
-                            rows_count = rows_count + 1
                             for value in row:
+                                #Check that is not sparkline(sparkline field is an array)
                                 if not isinstance(value, list):
-                                    width = sizes_field[count]
-                                    pdf.cell(width, 4, str(value), 0, 0, 'L', 0)
+                                    #Check if the with is splitted in several rows
+                                    w = sizes_field[count]
+                                    width = w[0] if isinstance(w, list) else w
+                                    value = self.split_string(width, value) if isinstance(w, list) else value
+                                    if value and isinstance(value, list):
+                                        if first_field:
+                                            x = pdf.get_x()
+                                            first_field = False
+                                            y = pdf.get_y()
+                                            reset_y = y
+                                            bigger_y = y
+                                        else:
+                                            y = reset_y
+                                        rows_count = rows_count + len(value)
+                                        for v in value:
+                                            pdf.set_xy(x, y)
+                                            pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
+                                            y = y + rh
+                                        x = x + width
+                                        bigger_y = y if y > bigger_y else bigger_y
+                                    else:
+                                        if reset_y:
+                                            pdf.set_xy(pdf.get_x(), reset_y)
+                                        pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
+                                        y = pdf.get_y()
                                     count = count + 1
-                            pdf.ln()
+                            rows_count = rows_count + 1
+                            y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
+                            pdf.set_xy(10, y)
+                            pdf.line(10, y, 200, y)
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
             #Delete the images
@@ -284,6 +320,68 @@ class report(controllers.BaseController):
             self.logger.error("Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
+
+    #Cut value string
+    def cut_value(self, width, value_string):
+        num_characters = int(math.ceil(width / 1.50))
+        value_splitted = list(str(value_string))
+        if len(value_splitted) > num_characters:
+            final_string_arr = value_splitted[0:num_characters]
+            final_string_arr.append('...')
+            final_string = ''.join(str(e) for e in final_string_arr)
+            return str(final_string)
+        else:
+            return value_string
+    
+    #Split the string 
+    def split_string(self, width, value_string):
+        splitted_str = []
+        num_characters = int(math.ceil(width / 1.50)) # Number of characters to split the string
+        sm = num_characters # Var to sum and advance in the arr indexes
+        value_splitted = list(str(value_string))
+        if len(value_splitted) > num_characters:
+            parts = int(math.ceil((float(len(value_splitted) / float(num_characters)))))
+            i = 0 # Position in the array
+            c = 0 # For count the parts travelled
+            for _ in range(parts):
+                c = c + 1
+                string_arr = value_splitted[i:num_characters]
+                i = num_characters
+                num_characters = num_characters + sm
+                if len(string_arr) > 0 and c < parts:
+                    string_arr.append('-')
+                if string_arr:
+                    string = ''.join(str(e) for e in string_arr)
+                    splitted_str.append(string) 
+            #Clean possible "-" in the last string
+            last_str = splitted_str[-1]
+            if last_str.endswith("-"):
+                splitted_str[-1] = last_str[:-1]
+            return splitted_str
+        else:
+            return value_string
+
+    #Sum arr of numbers
+    def sum_numbers_arr(self, arr):
+        total = 0
+        for i in arr:
+            total = total + i
+        return total
+    
+    #Sum dic of numbers
+    def sum_numbers_dic(self, dic):
+        total = 0
+        for key in dic.keys():
+            total = total + dic[key]
+        return total
+
+    #Excludes fields from dic
+    def exclude_fields(self, fields, dic):
+        dic_to_exclude = dic.copy()
+        for f in fields:
+            del dic_to_exclude[f]
+        return dic_to_exclude
+
 
     #Check if tables are not empties
     def tables_have_info(self, tables):
@@ -326,7 +424,27 @@ class report(controllers.BaseController):
             diff = diff / keys_num
             for key in sizes.keys(): # Sum the proporcional width difference to the fields
                 sizes[key] = sizes[key] + diff
-        return self.sort_table_sizes(table['fields'], sizes)
+        # Check if the row is more wide and calculates the width
+        elif total_width > 190:
+            wide_fields = []
+            for key in sizes.keys():
+                if sizes[key] > 60:
+                    wide_fields.append(key)
+            fields_to_sum = self.exclude_fields(wide_fields, sizes)
+            total_width_narrow_fields = self.sum_numbers_dic(fields_to_sum)
+            remaining_width = 190 - total_width_narrow_fields
+            wide_size = remaining_width / len(wide_fields)
+            for wf in wide_fields:
+                sizes_arr = []
+                parts = int(math.ceil(sizes[wf]) / wide_size)
+                #Ensure minimun one part
+                if not parts:
+                    parts = 1
+                for _ in range(parts):
+                    sizes_arr.append(wide_size)
+                sizes[wf] = sizes_arr
+        sizes = self.sort_table_sizes(table['fields'], sizes)
+        return sizes
     
     #Print agent info
     def print_agent_info(self, agent_info, pdf):
