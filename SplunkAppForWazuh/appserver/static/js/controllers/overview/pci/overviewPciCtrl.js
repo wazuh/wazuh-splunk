@@ -33,10 +33,12 @@ define([
       $state,
       $reportingService,
       pciTabs,
-      reportingEnabled
+      reportingEnabled,
+      gdprExtensionEnabled
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.state = $state
       this.scope.pciTabs = pciTabs ? pciTabs : false
       this.reportingService = $reportingService

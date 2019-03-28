@@ -22,10 +22,12 @@ define([
       $state,
       $reportingService,
       gdprTabs,
-      reportingEnabled
+      reportingEnabled,
+      pciExtensionEnabled
     ) {
       this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled
+      this.scope.reportingEnabled = reportingEnabled,
+      this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.state = $state
       this.getFilters = $currentDataService.getSerializedFilters
       this.reportingService = $reportingService
