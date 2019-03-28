@@ -321,12 +321,16 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 }
 
 /* Special fix to make Kibana search bar similar to the rest from the app */
-
-.kuiLocalSearchInput,
-.kuiLocalSearchInput:focus {
+.kuiLocalSearchInput{
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
   border: 1px solid #D9D9D9 !important;
 }
+
+.kuiLocalSearchInput:focus {
+  border:none !important;
+  border-bottom: 1px solid rgb(64, 136, 231) !important;
+}
+
 
 /* Custom loading ring styles */
 
@@ -485,6 +489,10 @@ div.uil-ring-css {
 .wz-input-container input.md-input-invalid.md-input,
 .wz-input-container input.ng-invalid.ng-touched {
   border-color: rgba(0,0,0,0.12) !important;
+}
+
+.wz-input-container input.ng-invalid.ng-touched {
+  border-color: rgba(59, 70, 226, 0.904) !important;
 }
 
 .wz-autocomplete md-autocomplete-wrap {
@@ -1358,3 +1366,8 @@ tfoot.no-border tr td {
   margin-top: -5px;
 }
 
+
+input:focus {
+  height: 30px;
+  border-bottom: 2px solid #4198ec !important;
+}
