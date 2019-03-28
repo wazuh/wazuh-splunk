@@ -37,12 +37,14 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.state = $state
       this.reportingService = $reportingService
+      this.scope.extensions = extensions
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(

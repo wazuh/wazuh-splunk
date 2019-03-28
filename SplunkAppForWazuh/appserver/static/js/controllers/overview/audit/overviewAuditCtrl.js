@@ -33,10 +33,12 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.state = $state
       this.tableResults = {}
       this.reportingService = $reportingService

@@ -22,10 +22,12 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.urlTokenModel = $urlTokenModel
       this.state = $state
       this.reportingService = $reportingService
@@ -39,7 +41,7 @@ define([
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-
+        console.log("ext ", this.scope.extensions)
       this.scope.expandArray = [false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
