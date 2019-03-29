@@ -53,7 +53,8 @@ class api(controllers.BaseController):
                 url = str(opt_base_url) + ":" + str(opt_base_port)
                 auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
                 verify = False
-                return url, auth, verify
+                cluster_enabled = True if api['data']['filterType'] == "cluster.name" else False
+                return url, auth, verify, cluster_enabled
             else:
                 raise Exception('API not found')
         except Exception as e:
@@ -150,6 +151,36 @@ class api(controllers.BaseController):
             raise e
 
 
+    def check_daemons(self, url, auth, verify, cluster_enabled):
+        """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
+
+        Parameters
+        ----------
+        url: str
+        auth: str
+        verify: str
+        cluster_enabled: bool
+        """
+        try:
+            opt_endpoint = "/manager/status"
+            daemons_status = self.session.get(
+                    url + opt_endpoint, auth=auth,
+                    verify=verify).json()
+            if not daemons_status['error']:
+                d = daemons_status['data']
+                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                if cluster_enabled:
+                    daemons['clusterd'] = d['wazuh-clusterd']
+                values = list(daemons.values())
+                if 'stopped' in values:
+                    return False
+                else:
+                    return True
+        except Exception as e:
+            self.logger.error("Error checking daemons: %s" % (e))
+            raise e
+
+
     @expose_page(must_login=False, methods=['POST'])
     def request(self, **kwargs):
         """Make requests to the Wazuh API as a proxy backend.
@@ -174,10 +205,11 @@ class api(controllers.BaseController):
                 method = kwargs['method']
                 del kwargs['method']
             the_id = kwargs['id']
-            url,auth,verify = self.get_credentials(the_id)
+            url, auth, verify, cluster_enabled = self.get_credentials(the_id)
             opt_endpoint = kwargs["endpoint"]
             del kwargs['id']
             del kwargs['endpoint']
+            daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
             if method == 'GET':
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, auth=auth,
