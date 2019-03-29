@@ -81,6 +81,7 @@ define(['../module'], function(directives) {
         }
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', () => {
+          event.stopPropagation()
           update()
         })
 

@@ -101,6 +101,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
       this.scope.$on('updateGroupInformation', async (event, parameters) => {
         try {
+          event.stopPropagation()
           if (this.scope.currentGroup) {
             const result = await Promise.all([
               await this.apiReq(`/agents/groups/${parameters.group}`, {

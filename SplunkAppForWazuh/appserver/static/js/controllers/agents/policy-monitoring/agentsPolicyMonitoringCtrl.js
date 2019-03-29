@@ -86,7 +86,8 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

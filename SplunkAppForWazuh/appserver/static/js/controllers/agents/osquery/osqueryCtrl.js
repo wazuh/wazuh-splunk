@@ -77,7 +77,8 @@ define([
       )
       this.scope.osqueryWodle = null
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

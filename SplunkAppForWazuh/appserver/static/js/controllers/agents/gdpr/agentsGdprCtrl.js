@@ -86,7 +86,8 @@ define([
         }
       })
       this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

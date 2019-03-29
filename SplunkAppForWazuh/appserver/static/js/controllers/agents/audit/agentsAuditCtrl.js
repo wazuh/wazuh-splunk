@@ -96,7 +96,8 @@ define([
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
       this.filters = this.currentDataService.getSerializedFilters()
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
       this.scope.$on('barFilter', () => {
