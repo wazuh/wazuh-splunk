@@ -125,7 +125,6 @@ define(['../../module'], function(controllers) {
       } catch (error) {
         this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
-        this.scope.$broadcast('restartError', { error: error })
       }
     }
 
