@@ -647,6 +647,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -838,6 +848,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }

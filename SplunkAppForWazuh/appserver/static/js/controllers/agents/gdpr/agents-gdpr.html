@@ -32,6 +32,12 @@
     <!-- Loading report-->
     <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
     
+  <!-- Regulatory Compliance navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'gdpr'">
+      <md-nav-item ng-if="pciExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pci" name="pcidss">PCI DSS</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="gdpr">GDPR</md-nav-item>
+    </md-nav-bar>  
+
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
   <div layout="row" layout-align="center stretch">

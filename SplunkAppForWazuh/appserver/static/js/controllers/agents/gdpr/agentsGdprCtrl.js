@@ -36,10 +36,12 @@ define([
       agent,
       $reportingService,
       gdprTabs,
-      reportingEnabled
+      reportingEnabled,
+      pciExtensionEnabled
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService

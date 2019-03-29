@@ -33,6 +33,12 @@
     <!-- Loading report-->
     <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
   
+  <!-- Regulatory Compliance navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'pcidss'">
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="pcidss">PCI DSS</md-nav-item>
+      <md-nav-item ng-if="gdprExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-gdpr" name="gdpr">GDPR</md-nav-item>
+    </md-nav-bar>
+
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
   <!-- first row  -->
