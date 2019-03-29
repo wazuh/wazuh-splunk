@@ -1,4 +1,4 @@
-<md-content flex layout-align="start">
+<md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding>
     <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
@@ -30,6 +30,15 @@
   
     <!-- Loading report-->
     <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
+
+  <!-- Auditing and Policy Monitoring navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'openscap'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pm" name="pm">Policy monitoring</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-ca" name="sca">Configuration assessment</md-nav-item>
+    <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-audit" name="audit">System auditing</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="openscap">OpenSCAP</md-nav-item>
+    <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-ciscat" name="ciscat">CIS-CAT</md-nav-item>
+  </md-nav-bar> 
 
   <!-- Wazuh filters bar -->
   <wazuh-bar></wazuh-bar>

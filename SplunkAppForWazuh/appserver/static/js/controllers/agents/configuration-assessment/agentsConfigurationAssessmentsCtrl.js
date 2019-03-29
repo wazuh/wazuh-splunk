@@ -55,12 +55,14 @@ define([
       $csvRequestService,
       $tableFilterService,
       reportingEnabled,
-      BASE_URL
+      BASE_URL,
+      extensions
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
       this.state = $state

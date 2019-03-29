@@ -34,7 +34,8 @@ define([
       $currentDataService,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -48,6 +49,7 @@ define([
       }
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',

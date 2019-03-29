@@ -51,12 +51,14 @@ define([
       $state,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.reportingService = $reportingService
       this.tableResults = {}
       this.urlTokenModel = $urlTokenModel
