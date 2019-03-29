@@ -47,11 +47,13 @@ define([
       $state,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled
+      this.scope.reportingEnabled = reportingEnabled,
+      this.scope.extensions = extensions
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`

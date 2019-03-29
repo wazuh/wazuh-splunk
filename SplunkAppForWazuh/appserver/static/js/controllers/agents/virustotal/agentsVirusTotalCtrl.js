@@ -26,7 +26,8 @@ define([
       $currentDataService,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -34,6 +35,7 @@ define([
       this.tableResults = {}
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
         `{"rule.groups{}":"virustotal", "implicit":true}`

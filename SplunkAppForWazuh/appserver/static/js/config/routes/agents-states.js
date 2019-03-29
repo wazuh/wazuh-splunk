@@ -255,6 +255,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -389,6 +399,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
@@ -914,6 +934,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
