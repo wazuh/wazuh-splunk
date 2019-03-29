@@ -1,4 +1,4 @@
-<md-content layout="column">
+<md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
   <div layout="row" layout-padding>
     <div>
@@ -27,6 +27,14 @@
   <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner"
     aria-hidden="true"></i></div>
   
+
+  <!-- Security information management navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'inventory'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-general" name="general">Security events</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-fim" name="fim">Integrity monitoring</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory">Inventory data</md-nav-item>
+  </md-nav-bar>  
+
   <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">
