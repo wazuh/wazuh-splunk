@@ -5,7 +5,7 @@
 </div>
 <!-- XML editor for ossec.conf -->
 <div ng-show="editingNode">
-  <div layout="row" class="wz-margin-left-10" ng-if="!restartingBar">
+  <div layout="row" class="wz-margin-left-10">
     <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
       ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled"
       class="input input-dropdown"></select>
@@ -76,15 +76,6 @@
     </div>
     <!-- End restart button -->
 
-  </div>
-
-  <div layout="row" class="wz-margin-left-10" ng-if="restartingBar">
-    <button style="height: 30px; margin-top:20px;" ng-if="isAdmin" ui-sref="mg-conf"
-      class='btn wz-button-cancel wz-margin-left-10'>Cancel</button>
-    <div id="wz-progress">
-      <div id="wz-progress-bar" style="width:{{blockEditioncounter}}%">Restarting cluster
-        {{blockEditioncounter}}%</div>
-    </div>
   </div>
 
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 260px)">

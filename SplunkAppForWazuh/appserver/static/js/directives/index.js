@@ -13,5 +13,6 @@ define([
   './wz-xml-file-editor/wz-xml-file-editor',
   './wz-multiple-selector/wz-multiple-selector',
   './wz-config-viewer/wz-config-viewer',
-  './wz-discover/wz-discover'
+  './wz-discover/wz-discover',
+  './wz-head-toaster/wz-head-toaster'
 ], function() {})

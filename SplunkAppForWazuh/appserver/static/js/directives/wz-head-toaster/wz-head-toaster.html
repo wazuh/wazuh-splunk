@@ -1,0 +1,34 @@
+<div ng-if="showHeadToaster">
+  <div ng-if="messageType === 'info'" flex class="euiCallOut flex ht-info">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="fa fa-info" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+    </div>
+  </div>
+  <div ng-if="messageType === 'warning'" flex class="euiCallOut flex ht-warning">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="fa fa-exclamation" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+    </div>
+  </div>
+  <div ng-if="messageType === 'success'" flex class="euiCallOut flex ht-success">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="fa fa-check" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+    </div>
+  </div>
+  <div ng-if="messageType === 'error'" flex class="euiCallOut flex ht-error">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="fa fa-times" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+    </div>
+  </div>
+</div>

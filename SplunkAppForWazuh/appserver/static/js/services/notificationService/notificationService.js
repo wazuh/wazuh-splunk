@@ -1,6 +1,6 @@
 define(['../module'], function(module) {
   'use strict'
-  module.service('$notificationService', function($mdToast) {
+  module.service('$notificationService', function($mdToast, $rootScope) {
     let last = {
       bottom: true,
       top: false,
@@ -92,11 +92,17 @@ define(['../module'], function(module) {
         })
       }
     }
+
+    const showHeadToaster = (type, msg, delay=false) => {
+      $rootScope.$broadcast('showHeadToaster' , {type, msg, delay})
+    }
+
     return {
       showSimpleToast: showSimpleToast,
       showErrorToast: showErrorToast,
       showSuccessToast: showSuccessToast,
-      showWarningToast: showWarningToast
+      showWarningToast: showWarningToast,
+      showHeadToaster: showHeadToaster
     }
   })
 })

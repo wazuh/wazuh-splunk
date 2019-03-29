@@ -1366,8 +1366,41 @@ tfoot.no-border tr td {
   margin-top: -5px;
 }
 
-
 input:focus {
   height: 30px;
   border-bottom: 2px solid #4198ec !important;
+}
+
+/* Head toaster */
+
+.ht-info{
+  height: 50px !important;
+  background-color: rgb(228, 242, 245) !important;
+  border-left: solid 3px !important;
+  border-color:rgb(0, 121, 165) !important;
+  color: #006193 !important;
+}
+
+.ht-success {
+  height: 50px !important;
+  background-color: rgb(228, 245, 236) !important;
+  border-left: solid 3px !important;
+  border-color: #00f56d !important;
+  color: #08a74e !important;
+}
+
+.ht-warning {
+  height: 50px !important;
+  background-color: #fef6e6 !important;
+  border-left: solid 3px !important;
+  border-color: #F5A700 !important;
+  color: #936400 !important;
+}
+
+.ht-error{
+  height: 50px !important;
+  background-color: rgb(245, 228, 228) !important;
+  border-left: solid 3px !important;
+  border-color: #f50000 !important;
+  color: #930000 !important;
 }
