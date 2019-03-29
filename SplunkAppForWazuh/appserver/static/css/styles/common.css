@@ -1376,3 +1376,36 @@ input:focus {
 .wz-nowrap {
   white-space: nowrap;
 }
+
+#timePicker button {
+  min-width: 100% !important;
+  border: solid 1px #0079bb !important;
+  color: #0079bb !important;
+  background: white !important;
+}
+
+#timePicker button:hover {
+  background: #e4f2f5 !important;
+}
+
+#dropDownInput button {
+  min-width: 100% !important;
+  border: solid 1px #0079bb !important;
+  color: #0079bb !important;
+  background: white !important;
+  }
+
+#dropDownInput button:hover {
+  background: #e4f2f5 !important;
+}
+
+#dropDownInputAgent button {
+  min-width: 100% !important;
+  border: solid 1px #0079bb !important;
+  color: #0079bb !important;
+  background: white !important;
+  }
+
+#dropDownInputAgent button:hover {
+  background: #e4f2f5 !important;
+}
