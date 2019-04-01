@@ -113,6 +113,7 @@ define([
       this.scope.goNodes = () => this.goNodes()
 
       this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
+        event.stopPropagation()
         try {
           if (this.checkStatus()) {
             this.scope.currentNode = parameters.node

@@ -150,11 +150,13 @@ define([
         )
       ]
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

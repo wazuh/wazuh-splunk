@@ -68,7 +68,8 @@ define([
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

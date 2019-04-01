@@ -33,6 +33,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
       this.scope.$on('scrolledToBottom', (ev, parameters) => {
+        ev.stopPropagation()
         if (!this.scope.realtime)
           this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
       })
@@ -54,6 +55,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
         this.scope.sort = () => this.sort()
         this.scope.$on('wazuhFetched', (ev, params) => {
+          ev.stopPropagation()
           this.scope.XMLContent = this.parseLogsToText(params.items)
           this.scope.$broadcast('XMLContentReady', {
             data: this.scope.XMLContent

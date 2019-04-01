@@ -110,24 +110,29 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.saveFile = file => this.saveFile(file)
 
-      this.scope.$on('configSavedSuccessfully', () => {
+      this.scope.$on('configSavedSuccessfully', (event) => {
+        event.stopPropagation()
         this.scope.overwrite = false
         this.scope.restartAndApply = true
       })
-      this.scope.$on('saveComplete', () => {
+      this.scope.$on('saveComplete', (event) => {
+        event.stopPropagation()
         this.scope.saveIncomplete = false
       })
-      this.scope.$on('fileAlreadyExists', () => {
+      this.scope.$on('fileAlreadyExists', (event) => {
+        event.stopPropagation()
         this.scope.saveIncomplete = false
         this.scope.overwrite = true
         this.scope.$applyAsync()
       })
 
       this.scope.$on('editFile', (ev, params) => {
+        ev.stopPropagation()
         this.editFile(params.file, params.path)
       })
 
-      this.scope.$on('performRestart', () => {
+      this.scope.$on('performRestart', (event) => {
+        event.stopPropagation()
         this.restart()
       })
     }

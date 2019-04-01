@@ -53,11 +53,13 @@ define([
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', (event) => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

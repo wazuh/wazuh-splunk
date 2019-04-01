@@ -41,6 +41,7 @@ define(['../module'], function(directives) {
         }
 
         $scope.$on('openDiscover', (event, data) => {
+          event.stopPropagation()
           $scope.openDiscover(data)
         })
 

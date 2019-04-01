@@ -59,10 +59,12 @@ define(['../../module'], function(controllers) {
         /**
          *  Listeners
          */
-        this.scope.$on('configSavedSuccessfully', () => {
+        this.scope.$on('configSavedSuccessfully', (event) => {
+          event.stopPropagation()
           this.scope.restartAndApply = true
         })
-        this.scope.$on('saveComplete', () => {
+        this.scope.$on('saveComplete', (event) => {
+          event.stopPropagation()
           this.scope.saveIncomplete = false
         })
       } catch (error) {
