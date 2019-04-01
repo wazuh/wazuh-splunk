@@ -27,11 +27,14 @@ define(['../module'], function (directives) {
               setTimeout(() => { 
                 $scope.showHeadToaster = false
                 $scope.showSpinner = false
+                $scope.$applyAsync()
                }, 5000)
             }
+            $scope.$applyAsync()
           } catch (error) {
             $scope.showHeadToaster = false
             $scope.showSpinner = false
+            $scope.$applyAsync()
           }
         })
 

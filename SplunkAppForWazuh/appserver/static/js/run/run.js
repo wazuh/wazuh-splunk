@@ -1,4 +1,4 @@
-define(['./module'], function(module) {
+define(['./module'], function (module) {
   'use strict'
   module.run([
     '$rootScope',
@@ -6,7 +6,7 @@ define(['./module'], function(module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
-    function(
+    function (
       $rootScope,
       $state,
       $transitions,
@@ -27,14 +27,18 @@ define(['./module'], function(module) {
           )
           $currentDataService.addFilter(
             `{"index":"${
-              $currentDataService.getIndex().index
+            $currentDataService.getIndex().index
             }", "implicit":true}`
           )
         } catch (err) {
-          $rootScope.$broadcast('loading', { status: false })
-          if (state != 'settings.api')
-            $rootScope.$broadcast('stateChanged', 'settings')
-          $state.go('settings.api')
+          if (err === 3099) {
+            $rootScope.$broadcast('showHeadToaster', {type: 'warning', msg: 'Wazuh is not ready yet.', delay: true})
+          } else {
+            $rootScope.$broadcast('loading', { status: false })
+            if (state != 'settings.api')
+              $rootScope.$broadcast('stateChanged', 'settings')
+            $state.go('settings.api')
+          }
         }
       }
 

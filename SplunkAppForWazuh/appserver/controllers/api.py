@@ -210,6 +210,8 @@ class api(controllers.BaseController):
             del kwargs['id']
             del kwargs['endpoint']
             daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
+            if not daemons_ready:
+                return jsonbak.dumps({"error": 3099, "message": "Wazuh is not ready yet."})
             if method == 'GET':
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, auth=auth,

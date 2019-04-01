@@ -227,7 +227,11 @@ define(['../module'], function(module) {
             checkConnectionEndpoint
           )
           if (result.data.status === 400 || result.data.error) {
-            throw new Error('Unreachable API.')
+            if (result.data.error === 3099) {
+              return Promise.reject(3099)
+            }else { 
+              throw new Error('Unreachable API.')
+            }
           }
           return result
         }

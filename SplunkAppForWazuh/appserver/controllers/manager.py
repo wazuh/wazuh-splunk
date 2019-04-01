@@ -22,6 +22,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
+from api import api
 
 
 def getSelfConfStanza(file, stanza):
@@ -53,7 +54,8 @@ def diff_keys_dic_update_api(kwargs_dic):
     try:
         diff = []
         kwargs_dic_keys = kwargs_dic.keys()
-        dic_keys = ['_key', 'url', 'portapi', 'userapi', 'passapi','filterName', 'filterType', 'managerName']
+        dic_keys = ['_key', 'url', 'portapi', 'userapi',
+                    'passapi', 'filterName', 'filterType', 'managerName']
         for key in dic_keys:
             if key not in kwargs_dic_keys:
                 diff.append(key)
@@ -73,35 +75,9 @@ class manager(controllers.BaseController):
             self.db = database()
             self.session = requestsbak.Session()
             self.session.trust_env = False
+            self.api = api()
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
-
-    @expose_page(must_login=False, methods=['GET'])
-    def check_connection(self, **kwargs):
-        """Check API connection.
-
-        Parameters
-        ----------
-        kwargs : dict
-            The request's parameters
-
-        """
-        try:
-            opt_username = kwargs["user"]
-            opt_password = kwargs["pass"]
-            opt_base_url = kwargs["ip"]
-            opt_base_port = kwargs["port"]
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            check_api_response = self.session.get(
-                url, auth=auth, timeout=8, verify=verify
-            ).json()
-            result = jsonbak.dumps(check_api_response)
-        except Exception as e:
-            self.logger.error("Cannot connect to API : %s" % (e))
-            return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
-        return result
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -236,7 +212,8 @@ class manager(controllers.BaseController):
         try:
 
             record = kwargs
-            keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName', 'filterType', 'filterName']
+            keys_list = ['url', 'portapi', 'userapi', 'passapi',
+                         'managerName', 'filterType', 'filterName']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
                 parsed_data = jsonbak.dumps({'result': key})
@@ -314,3 +291,46 @@ class manager(controllers.BaseController):
             self.logger.error("Get_log_lines endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
+
+    @expose_page(must_login=False, methods=['GET'])
+    def check_connection(self, **kwargs):
+        """Check API connection.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            opt_username = kwargs["user"]
+            opt_password = kwargs["pass"]
+            opt_base_url = kwargs["ip"]
+            opt_base_port = kwargs["port"]
+            url = opt_base_url + ":" + opt_base_port
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+            request_manager = self.session.get(
+                url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()           
+            request_cluster = self.session.get(
+                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()           
+            request_cluster_name = self.session.get(
+                url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()           
+            output = {}
+            daemons_ready = self.api.check_daemons(url, auth, verify, False)
+            # Pass the cluster status instead of always False
+            if not daemons_ready:
+                raise Exception("Daemons are not ready yet.")
+            output['managerName'] = request_manager['data']
+            output['clusterMode'] = request_cluster['data']
+            output['clusterName'] = request_cluster_name['data']
+            del kwargs['pass']
+            result = jsonbak.dumps(output) 
+        except Exception as e:
+            if not daemons_ready:
+                self.logger.error("Cannot connect to API; Wazuh is not ready yet.")
+                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh is not ready yet."})
+            else:
+                self.logger.error("Cannot connect to API : %s" % (e))
+                return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
+        return result
