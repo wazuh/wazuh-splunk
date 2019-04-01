@@ -26,6 +26,7 @@ define(['../module'], function (module) {
             wazuhReady = false
           }
           if (wazuhReady) {
+            this.tries = 10
             this.rootScope.wazuhNotReadyYet = false
             this.rootScope.wazuhCouldNotBeRecovered = false
             this.rootScope.$applyAsync()
