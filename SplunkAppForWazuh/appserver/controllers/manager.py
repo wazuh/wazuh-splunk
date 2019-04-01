@@ -94,18 +94,10 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            request_manager = self.session.get(
-                url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()
-            request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
-            request_cluster_name = self.session.get(
-                url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()
-            output = {}
-            output['managerName'] = request_manager['data']
-            output['clusterMode'] = request_cluster['data']
-            output['clusterName'] = request_cluster_name['data']
-            del kwargs['pass']
-            result = jsonbak.dumps(output)
+            check_api_response = self.session.get(
+                url, auth=auth, timeout=8, verify=verify
+            ).json()
+            result = jsonbak.dumps(check_api_response)
         except Exception as e:
             self.logger.error("Cannot connect to API : %s" % (e))
             return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
