@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class OverviewWelcome {
@@ -10,12 +10,17 @@ define(['../../module'], function(controllers) {
      */
     constructor($scope, agentsInfo, extensions) {
       this.scope = $scope
-      this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
-      this.scope.agentsCountActive = agentsInfo.data.data.Active - 1
-      this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
-      this.scope.agentsCountNeverConnected =
-        agentsInfo.data.data['Never Connected']
-      this.extensions = extensions
+      try {
+        this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
+        this.scope.agentsCountActive = agentsInfo.data.data.Active - 1
+        this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
+        this.scope.agentsCountNeverConnected =
+          agentsInfo.data.data['Never Connected']
+      } catch (error) {}
+
+      try {
+        this.extensions = extensions
+      } catch (error) {}
     }
 
     /**
