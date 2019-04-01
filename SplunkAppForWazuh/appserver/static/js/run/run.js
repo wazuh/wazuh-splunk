@@ -32,7 +32,7 @@ define(['./module'], function (module) {
           )
         } catch (err) {
           if (err === 3099) {
-            $rootScope.$broadcast('showHeadToaster', {type: 'warning', msg: 'Wazuh is not ready yet.', delay: true})
+            $rootScope.$broadcast('wazuhNotReadyYet', {})
           } else {
             $rootScope.$broadcast('loading', { status: false })
             if (state != 'settings.api')

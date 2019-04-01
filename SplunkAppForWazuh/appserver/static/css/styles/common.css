@@ -1338,6 +1338,21 @@ tfoot.no-border tr td {
   color: rgb(0, 121, 165) !important;
 }
 
+.wz-button-empty-yellow {
+  background: white !important;
+  border-color: #a9600a !important;
+  color: #a9600a !important;
+  font-weight: 400 !important;
+  border-width: 1px !important;
+}
+
+.wz-button-empty-yellow.active,
+.wz-button-empty-yellow:not([disabled]):hover,
+.wz-button-empty-yellow-flat:not([disabled]):hover {
+  background-color: rgb(228, 242, 245) !important;
+  color: #a9600a !important;
+}
+
 .wz-button-cancel {
   background: white !important;
   border-color: black !important;

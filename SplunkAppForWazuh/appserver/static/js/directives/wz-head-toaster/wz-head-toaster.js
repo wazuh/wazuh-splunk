@@ -15,22 +15,25 @@ define(['../module'], function (directives) {
     return {
       controller: function (
         $scope,
+        $checkDaemonsService
       ) {
-        //Listens for show toaster
+        // Listen for show toaster
         $scope.$on('showHeadToaster', (event, data) => {
           try {
-            $scope.messageType = data.type
-            $scope.message = data.msg
-            $scope.showHeadToaster = true  
-            if (data.delay) {
-              $scope.showSpinner = true
-              setTimeout(() => { 
-                $scope.showHeadToaster = false
-                $scope.showSpinner = false
-                $scope.$applyAsync()
-               }, 5000)
+            if (!$scope.wazuhNotReadyYet) {
+              $scope.messageType = data.type
+              $scope.message = data.msg
+              $scope.showHeadToaster = true
+              if (data.delay) {
+                $scope.showSpinner = true
+                setTimeout(() => {
+                  $scope.showHeadToaster = false
+                  $scope.showSpinner = false
+                  $scope.$applyAsync()
+                }, 5000)
+              }
+              $scope.$applyAsync()
             }
-            $scope.$applyAsync()
           } catch (error) {
             $scope.showHeadToaster = false
             $scope.showSpinner = false
@@ -38,9 +41,16 @@ define(['../module'], function (directives) {
           }
         })
 
+        // Listen for wazuh not ready event
         $scope.$on('wazuhNotReadyYet', (event, data) => {
-          //Create logic
+          $checkDaemonsService.makePing()
         })
+
+        // Bind function to button to launche ping to check Wazuh daemons again
+        $scope.checkWazuhAgain = () => {
+          $checkDaemonsService.makePing()
+        }
+
       },
       templateUrl:
         BASE_URL +

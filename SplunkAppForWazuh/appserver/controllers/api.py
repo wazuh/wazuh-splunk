@@ -182,6 +182,27 @@ class api(controllers.BaseController):
 
 
     @expose_page(must_login=False, methods=['POST'])
+    def wazuh_ready(self, **kwargs):
+        """Endpoint to check daemons status.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Request parameters
+        """
+        try:
+            if 'id' not in kwargs:
+                return jsonbak.dumps({'error': 'Missing API ID.'})
+            the_id = kwargs['id']
+            url, auth, verify, cluster_enabled = self.get_credentials(the_id)
+            daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
+            msg = "Wazuh is now ready." if daemons_ready else "Wazuh not ready yet."
+            return jsonbak.dumps({"status": "200", "ready": daemons_ready, "message": msg})
+        except Exception as e:
+            self.logger.error("Error checking daemons: %s" % (e))
+            return jsonbak.dumps({"status": "200", "ready": False, "message": "Error getting the Wazuh daemons status."})
+
+    @expose_page(must_login=False, methods=['POST'])
     def request(self, **kwargs):
         """Make requests to the Wazuh API as a proxy backend.
 
@@ -211,7 +232,7 @@ class api(controllers.BaseController):
             del kwargs['endpoint']
             daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
             if not daemons_ready:
-                return jsonbak.dumps({"error": 3099, "message": "Wazuh is not ready yet."})
+                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             if method == 'GET':
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, auth=auth,

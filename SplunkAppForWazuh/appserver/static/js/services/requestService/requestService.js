@@ -1,7 +1,7 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
-  module.service('$requestService', function(
+  module.service('$requestService', function (
     $http,
     $apiIndexStorageService,
     $q
@@ -94,6 +94,23 @@ define(['../module'], function(module) {
       }
     }
 
+    const wazuhIsReady = async () => {
+      try {
+        $http.defaults.headers.post['Content-Type'] =
+          'application/x-www-form-urlencoded'
+        const currentApi = $apiIndexStorageService.getApi()
+        const id =
+          currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
+        const endpoint = '/api/wazuh_ready'
+        const method = 'GET'
+        const payload = { id, method }
+        const result = await httpReq('POST', endpoint, payload)
+        return result
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
     const sendConfiguration = async (url, content) => {
       try {
         const result = await apiReq(
@@ -146,7 +163,8 @@ define(['../module'], function(module) {
       apiReq: apiReq,
       httpReq: httpReq,
       sendConfiguration: sendConfiguration,
-      getConfiguration: getConfiguration
+      getConfiguration: getConfiguration,
+      wazuhIsReady: wazuhIsReady
     }
     return service
   })

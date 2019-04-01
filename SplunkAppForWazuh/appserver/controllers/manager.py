@@ -328,8 +328,8 @@ class manager(controllers.BaseController):
             result = jsonbak.dumps(output) 
         except Exception as e:
             if not daemons_ready:
-                self.logger.error("Cannot connect to API; Wazuh is not ready yet.")
-                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh is not ready yet."})
+                self.logger.error("Cannot connect to API; Wazuh not ready yet.")
+                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             else:
                 self.logger.error("Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
