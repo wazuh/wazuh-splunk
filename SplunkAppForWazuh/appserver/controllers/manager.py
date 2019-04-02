@@ -314,8 +314,13 @@ class manager(controllers.BaseController):
             request_manager = self.session.get(
                 url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()           
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()  
-            cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
+            self.logger.info("resques_cluster: "+str(request_cluster))  
+            # Try to get cluster is enabled if the request fail set to false
+            try:
+                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+            except Exception as e:
+                cluster_enabled = False
             request_cluster_name = self.session.get(
                 url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()           
             output = {}
