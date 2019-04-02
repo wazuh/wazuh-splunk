@@ -307,6 +307,7 @@ class manager(controllers.BaseController):
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
+            cluster_enabled = kwargs["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
@@ -317,7 +318,7 @@ class manager(controllers.BaseController):
             request_cluster_name = self.session.get(
                 url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()           
             output = {}
-            daemons_ready = self.api.check_daemons(url, auth, verify, False)
+            daemons_ready = self.api.check_daemons(url, auth, verify, cluster_enabled)
             # Pass the cluster status instead of always False
             if not daemons_ready:
                 raise Exception("Daemons are not ready yet.")

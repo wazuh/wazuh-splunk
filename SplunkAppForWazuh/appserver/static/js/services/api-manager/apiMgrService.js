@@ -219,9 +219,10 @@ define(['../module'], function(module) {
           // Encode user and password, this prevent fails with special charsets
           const user = encodeURIComponent(api.userapi)
           const pass = encodeURIComponent(api.passapi)
+          const clusterEnabled = api.filterType === 'cluster.name'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${api.portapi}&user=${user}&pass=${pass}`
+          }&port=${api.portapi}&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
