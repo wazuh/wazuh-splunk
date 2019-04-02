@@ -336,7 +336,7 @@ define([
             }, 100)
           } catch (error) {
             $scope.wazuhTableLoading = false
-            $scope.error = `Error while init table. ${error.message || error}.`
+            $scope.error = `Error while init table.`
             $notificationService.showErrorToast(
               `Error while init table. ${error.message || error}`
             )
