@@ -22,7 +22,7 @@
     </select>
     <span class="flex"></span>
     <!-- Restart button -->
-    <button ng-show="!confirmingRestart" style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress"
+    <button ng-show="!confirmingRestart" style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress || wazuhNotReadyYet"
       class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
         {{clusterEnabled ? "cluster" : "manager"}}</span>
