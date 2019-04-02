@@ -307,18 +307,20 @@ class manager(controllers.BaseController):
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
-            cluster_enabled = kwargs["cluster"] == "true"
+            opt_cluster = kwargs["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             request_manager = self.session.get(
                 url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()           
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()           
+                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()  
+            cluster_enabled = request_cluster['data']['enabled'] == 'yes'
             request_cluster_name = self.session.get(
                 url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()           
             output = {}
-            daemons_ready = self.api.check_daemons(url, auth, verify, cluster_enabled)
+            check_cluster = True if opt_cluster and cluster_enabled else False
+            daemons_ready = self.api.check_daemons(url, auth, verify, check_cluster)
             # Pass the cluster status instead of always False
             if not daemons_ready:
                 raise Exception("Daemons are not ready yet.")
