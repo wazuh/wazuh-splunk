@@ -172,7 +172,7 @@ class api(controllers.BaseController):
                 if cluster_enabled:
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
-                wazuh_ready = len(set(values)) and values[0] == "running" # Checks all the status are equals, and running
+                wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
                 return wazuh_ready
         except Exception as e:
             self.logger.error("Error checking daemons: %s" % (e))
