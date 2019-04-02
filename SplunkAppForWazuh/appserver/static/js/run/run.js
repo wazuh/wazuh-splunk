@@ -30,6 +30,9 @@ define(['./module'], function (module) {
             $currentDataService.getIndex().index
             }", "implicit":true}`
           )
+          // If change the state and do not receive an error the two below code lines clear the warning message
+          $rootScope.wazuhNotReadyYet = false
+          $rootScope.wazuhCouldNotBeRecovered = false
         } catch (err) {
           if (err === 3099) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})
