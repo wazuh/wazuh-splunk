@@ -13,7 +13,7 @@ define(['../module'], function(module) {
           return await restartManager()
         }
       } catch (error) {
-        throw error
+        return Promise.reject(error)
       }
     }
 
@@ -31,7 +31,7 @@ define(['../module'], function(module) {
           throw 'Cannot send restart signal to the manager.'
         }
       } catch (error) {
-        throw new Error(error)
+        return Promise.reject(error)
       }
     }
 
@@ -50,7 +50,7 @@ define(['../module'], function(module) {
         }
         return 'Cluster restart in progress, it will take up to 30 seconds.'
       } catch (error) {
-        throw new Error('Cannot restart the cluster.: ' + error)
+        return Promise.reject('Cannot restart the cluster.: ' + error)
       }
     }
 
@@ -74,7 +74,7 @@ define(['../module'], function(module) {
           return `Cluster disabled, cannot send the restart signal to ${node}, the manager is going to restart.`
         }
       } catch (error) {
-        throw new Error(error || `Cannot restart the node ${node}`)
+        return Promise.reject(error || `Cannot restart the node ${node}`)
       }
     }
 
