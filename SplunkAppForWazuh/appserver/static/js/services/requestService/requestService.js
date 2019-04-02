@@ -4,7 +4,8 @@ define(['../module'], function (module) {
   module.service('$requestService', function (
     $http,
     $apiIndexStorageService,
-    $q
+    $q, 
+    $rootScope
   ) {
     /**
      * Generated and returns the browser base URL + Splunk Port
@@ -88,6 +89,10 @@ define(['../module'], function (module) {
         }
         const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
         const result = await httpReq('POST', backPoint, payload)
+        if (result.data.error && result.data.error === 3099) {
+          console.log("error 3099 found!")
+          $rootScope.$broadcast('wazuhNotReadyYet', {})
+        }
         return result
       } catch (err) {
         return Promise.reject(err)
