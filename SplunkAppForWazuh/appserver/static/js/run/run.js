@@ -37,6 +37,7 @@ define(['./module'], function (module) {
         } catch (err) {
           if (err === 3099) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})
+            toPrimaryState(state)
           } else {
             $rootScope.$broadcast('loading', { status: false })
             if (state != 'settings.api')
@@ -103,21 +104,21 @@ define(['./module'], function (module) {
           $currentDataService.cleanFilters()
         }
 
-        if (to.includes('agent') || to.includes('ag-')) {
+        if (to.startsWith('agent') || to.startsWith('ag-')) {
           if (
             from !== 'agents' &&
-            !from.includes('agent') &&
-            !from.includes('ag-') &&
+            !from.startsWith('agent') &&
+            !from.startsWith('ag-') &&
             from !== 'discover'
           ) {
             $currentDataService.cleanAgentsPinedFilters()
           }
           $rootScope.$broadcast('stateChanged', 'agents')
-        } else if (to.includes('ow-')) {
+        } else if (to.startsWith('ow-')) {
           $rootScope.$broadcast('stateChanged', 'overview')
-        } else if (to.includes('mg-')) {
+        } else if (to.startsWith('mg-')) {
           $rootScope.$broadcast('stateChanged', 'manager')
-        } else if (to.includes('settings')) {
+        } else if (to.startsWith('settings')) {
           $rootScope.$broadcast('stateChanged', 'settings')
         }
       })
@@ -131,6 +132,20 @@ define(['./module'], function (module) {
           $state.reload()
         }
       })
+
+      // When access to a state and Wazuh is not ready is detected, this funcion checks if is a secondary state, if it is, go to primary state
+      const toPrimaryState = (to) => {
+        if (to.startsWith('ag-') || to.startsWith('agent-')) {
+          $state.go('agents')
+          $rootScope.$broadcast('stateChanged', 'agents')
+        } else if (to.startsWith('ow-')) {
+          $state.go('overview')
+          $rootScope.$broadcast('stateChanged', 'overview')
+        } else if (to.startsWith('mg-')) {
+          $state.go('manager')
+          $rootScope.$broadcast('stateChanged', 'manager')
+        }
+      }
     }
   ])
 })
