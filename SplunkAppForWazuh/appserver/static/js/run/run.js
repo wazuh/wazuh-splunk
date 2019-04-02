@@ -30,7 +30,8 @@ define(['./module'], function (module) {
             $currentDataService.getIndex().index
             }", "implicit":true}`
           )
-          // If change the state and do not receive an error the two below code lines clear the warning message
+          // If change the primary state and do not receive an error the two below code lines clear the warning message
+          window.localStorage.setItem('wazuhIsReady', 'true')
           $rootScope.wazuhNotReadyYet = false
           $rootScope.wazuhCouldNotBeRecovered = false
         } catch (err) {
@@ -44,6 +45,24 @@ define(['./module'], function (module) {
           }
         }
       }
+
+      // Check secondary states when Wazuh is not ready to prevent change the state
+      $transitions.onBefore({}, async trans => {
+        const to = trans.to().name
+        if (
+          to !== 'overview' &&
+          to !== 'manager' &&
+          to !== 'agents' &&
+          to !== 'dev-tools' &&
+          to !== 'discover' &&
+          !to.startsWith('settings')
+        ) {
+          const wazuhIsReady = window.localStorage.getItem('wazuhIsReady') === 'true'
+          if (!wazuhIsReady) {
+            return false
+          }
+        }
+      })
 
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })

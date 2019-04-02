@@ -14,6 +14,7 @@ define(['../module'], function (module) {
       try {
         if (this.busy) return
         this.busy = true
+        window.localStorage.setItem('wazuhIsReady', 'false')
         this.rootScope.wazuhCouldNotBeRecovered = false
         this.rootScope.wazuhNotReadyYet = true
         let wazuhReady = false
@@ -30,6 +31,7 @@ define(['../module'], function (module) {
             this.rootScope.wazuhNotReadyYet = false
             this.rootScope.wazuhCouldNotBeRecovered = false
             this.rootScope.$applyAsync()
+            window.localStorage.setItem('wazuhIsReady', 'true')
             break
           }
         }
