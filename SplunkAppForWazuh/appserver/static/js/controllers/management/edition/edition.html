@@ -48,12 +48,12 @@
     <div style="padding-right: 15px;" ng-show="!restartAndApply">
       <div ng-show="!confirmingRestart">
         <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()"
-          ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
+          ng-disabled="restartInProgress || saveIncomplete" class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
             {{editingNode}}</span>
         </button>
         <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()"
-          ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
+          ng-disabled="restartInProgress || saveIncomplete" class='btn wz-button-empty pull-right wz-margin-left-10'>
           <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
             {{editingNode}}</span>
         </button>
