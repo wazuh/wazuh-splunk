@@ -35,7 +35,7 @@ define(['./module'], function (module) {
           $rootScope.wazuhNotReadyYet = false
           $rootScope.wazuhCouldNotBeRecovered = false
         } catch (err) {
-          if (err === 3099) {
+          if (err instanceof Object && err.message && err.message.includes('ERROR3099')) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})
             toPrimaryState(state)
           } else {
@@ -124,6 +124,7 @@ define(['./module'], function (module) {
       })
 
       $transitions.onError({}, async trans => {
+        console.error("ERROR IN TRANS")
         const err = trans.error()
         if (
           trans.to().name != 'settings.api' &&
@@ -144,6 +145,7 @@ define(['./module'], function (module) {
         } else if (to.startsWith('mg-')) {
           $state.go('manager')
           $rootScope.$broadcast('stateChanged', 'manager')
+        } else {
         }
       }
     }

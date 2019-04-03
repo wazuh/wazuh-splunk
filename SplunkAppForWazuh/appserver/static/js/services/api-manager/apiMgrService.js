@@ -229,7 +229,7 @@ define(['../module'], function(module) {
           )
           if (result.data.status === 400 || result.data.error) {
             if (result.data.error === 3099) {
-              return Promise.reject(3099)
+              throw new Error('ERROR3099 - Wazuh not ready yet.')
             }else { 
               throw new Error('Unreachable API.')
             }

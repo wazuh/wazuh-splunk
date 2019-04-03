@@ -51,9 +51,7 @@ define(['../module'], function(module) {
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+                } catch (err) {}
               }
             ]
           }

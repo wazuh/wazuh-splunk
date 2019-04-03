@@ -36,7 +36,7 @@ define(['../module'], function (module) {
     let showWarningToast = text => showSimpleToast(text, 3)
 
     let showSimpleToast = (text, type) => {
-      
+
       if (!wazuhIsNotReady(text)) {
         let pinTo = getToastPosition()
         if (type === 1) {
@@ -101,12 +101,9 @@ define(['../module'], function (module) {
 
     const wazuhIsNotReady = (text) => {
       try {
-        if (text instanceof Object) {
-          const msg = text.message
-          if (msg.includes('ERROR3099')) {
-            $rootScope.$broadcast('wazuhNotReadyYet', {})
-            return true
-          }
+        if (text instanceof Object && text.message.includes('ERROR3099')) {
+          $rootScope.$broadcast('wazuhNotReadyYet', {})
+          return true
         } else {
           if (text.includes('ERROR3099')) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})

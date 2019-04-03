@@ -40,9 +40,7 @@ define(['../module'], function(module) {
                 try {
                   const result = await $requestService.apiReq('/agents/summary')
                   return result
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+                } catch (err) {}
               }
             ],
             extensions: [

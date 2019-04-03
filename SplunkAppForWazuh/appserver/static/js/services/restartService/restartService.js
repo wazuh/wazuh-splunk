@@ -1,8 +1,7 @@
 define(['../module'], function(module) {
   'use strict'
   module.service('$restartService', function(
-    $requestService,
-    $notificationService
+    $requestService
   ) {
     const restart = async () => {
       try {
