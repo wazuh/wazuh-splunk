@@ -22,6 +22,7 @@ from db import database
 from log import log
 from splunk.clilib import cli_common as cli
 from requirements import pci_requirements,gdpr_requirements
+import time
 
 class api(controllers.BaseController):
     
@@ -151,7 +152,47 @@ class api(controllers.BaseController):
             raise e
 
 
-    def check_daemons(self, url, auth, verify, cluster_enabled):
+    def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
+        try:
+            socket_errors = (1013, 1014, 1017, 1018, 1019)
+            if method == 'GET':
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+            if method == 'POST':
+                if 'origin' in kwargs:
+                    if kwargs['origin'] == 'xmleditor':
+                        headers = {'Content-Type': 'application/xml'} 
+                    elif kwargs['origin'] == 'json':
+                        headers = {'Content-Type':  'application/json'} 
+                    elif kwargs['origin'] == 'raw':
+                        headers = {'Content-Type':  'application/octet-stream'} 
+                    kwargs = str(kwargs['content'])
+                    request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
+                else:
+                    request = self.session.post(
+                        url + opt_endpoint, data=kwargs, auth=auth,
+                        verify=verify).json()
+            if method == 'PUT':
+                request = self.session.put(
+                    url + opt_endpoint, data=kwargs, auth=auth,
+                    verify=verify).json()
+            if method == 'DELETE':
+                request = self.session.delete(
+                    url + opt_endpoint, data=kwargs, auth=auth,
+                    verify=verify).json()
+            if request['error'] and request['error'] in socket_errors:
+                if counter > 0:
+                    time.sleep(0.5)
+                    return self.make_request(method, url, opt_endpoint, kwargs, auth, verify, counter - 1)
+                else:                    
+                    raise Exception("Tried to execute %s %s three times with no success, aborted." % (method, opt_endpoint))
+            return request
+        except Exception as e:
+            self.logger.error("Error while requesting to Wazuh API: %s" % (e))
+            raise e
+
+    def check_daemons(self, url, auth, verify, check_cluster):
         """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
 
         Parameters
@@ -162,6 +203,14 @@ class api(controllers.BaseController):
         cluster_enabled: bool
         """
         try:
+            request_cluster = self.session.get(
+                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
+            # Try to get cluster is enabled if the request fail set to false
+            try:
+                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+            except Exception as e:
+                cluster_enabled = False
+            cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
                     url + opt_endpoint, auth=auth,
@@ -169,7 +218,7 @@ class api(controllers.BaseController):
             if not daemons_status['error']:
                 d = daemons_status['data']
                 daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
-                if cluster_enabled:
+                if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
                 wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
@@ -231,32 +280,7 @@ class api(controllers.BaseController):
             daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
             if not daemons_ready:
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
-            if method == 'GET':
-                request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
-                    verify=verify).json()
-            if method == 'POST':
-                if 'origin' in kwargs:
-                    if kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml'} 
-                    elif kwargs['origin'] == 'json':
-                        headers = {'Content-Type':  'application/json'} 
-                    elif kwargs['origin'] == 'raw':
-                        headers = {'Content-Type':  'application/octet-stream'} 
-                    kwargs = str(kwargs['content'])
-                    request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
-                else:
-                    request = self.session.post(
-                        url + opt_endpoint, data=kwargs, auth=auth,
-                        verify=verify).json()
-            if method == 'PUT':
-                request = self.session.put(
-                    url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify).json()
-            if method == 'DELETE':
-                request = self.session.delete(
-                    url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify).json()
+            request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
             result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))

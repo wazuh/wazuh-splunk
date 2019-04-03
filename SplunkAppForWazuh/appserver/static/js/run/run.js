@@ -124,7 +124,6 @@ define(['./module'], function (module) {
       })
 
       $transitions.onError({}, async trans => {
-        console.error("ERROR IN TRANS")
         const err = trans.error()
         if (
           trans.to().name != 'settings.api' &&
