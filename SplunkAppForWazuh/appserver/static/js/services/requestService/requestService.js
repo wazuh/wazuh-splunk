@@ -95,7 +95,7 @@ define(['../module'], function (module) {
           result.data.error &&
           result.data.error === 3099
         ) {
-          $rootScope.$broadcast('wazuhNotReadyYet', {})
+          throw new Error('ERROR3099 - Wazuh not ready yet.')
         }
         return result
       } catch (err) {
