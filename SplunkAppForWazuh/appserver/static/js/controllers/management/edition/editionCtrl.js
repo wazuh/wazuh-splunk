@@ -121,30 +121,12 @@ define(['../../module'], function(controllers) {
         } else {
           result = await this.restartService.restart()
         }
-        if (this.clusterInfo.clusterEnabled) this.showRestartingProgressBar()
         this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
         this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
       }
-    }
-
-    showRestartingProgressBar() {
-      this.scope.blockEditioncounter = 0
-      this.scope.restartingBar = true
-      this.scope.$applyAsync()
-      this.interval(
-        () => {
-          this.scope.blockEditioncounter++
-          if (this.scope.blockEditioncounter === 100) {
-            this.scope.restartingBar = false
-            this.scope.$applyAsync()
-          }
-        },
-        333,
-        100
-      )
     }
 
     switchRestart() {
