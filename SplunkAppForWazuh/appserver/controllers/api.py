@@ -204,7 +204,7 @@ class api(controllers.BaseController):
         """
         try:
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'

@@ -312,11 +312,11 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             request_manager = self.session.get(
-                url + '/agents/000?select=name', auth=auth, timeout=8, verify=verify).json()           
+                url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify).json()           
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=8, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
             request_cluster_name = self.session.get(
-                url + '/cluster/node', auth=auth, timeout=8, verify=verify).json()           
+                url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
             output = {}
             daemons_ready = self.api.check_daemons(url, auth, verify, opt_cluster)
             # Pass the cluster status instead of always False
