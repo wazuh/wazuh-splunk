@@ -24,6 +24,9 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
     </div>
   </div>
   <div ng-if="messageType === 'warning'" flex class="euiCallOut flex ht-warning">
@@ -32,6 +35,9 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
     </div>
   </div>
   <div ng-if="messageType === 'success'" flex class="euiCallOut flex ht-success">
@@ -40,14 +46,20 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
     </div>
   </div>
   <div ng-if="messageType === 'error'" flex class="euiCallOut flex ht-error">
     <div class="euiCallOutHeader" layout="row">
-      <i class="wz-padding-top-2 fa fa-times" aria-hidden="true"></i>
+      <i class="wz-padding-top-2 fa fa-exclamation-circle" aria-hidden="true"></i>
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
     </div>
   </div>
 </div>

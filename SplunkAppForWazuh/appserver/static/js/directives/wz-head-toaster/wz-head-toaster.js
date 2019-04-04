@@ -45,6 +45,7 @@ define(['../module'], function (directives) {
         // Listen for wazuh not ready event
         $scope.$on('wazuhNotReadyYet', (event, data) => {
           let msg = false
+          $scope.showHeadToaster = false
           if (data && data.msg) {
               msg = data.msg
           }
@@ -54,6 +55,11 @@ define(['../module'], function (directives) {
         // Bind function to button to launche ping to check Wazuh daemons again
         $scope.checkWazuhAgain = () => {
           $checkDaemonsService.makePing()
+        }
+
+        // Close the head toaster
+        $scope.closeToaster = () => {
+          $scope.showHeadToaster = false
         }
 
       },

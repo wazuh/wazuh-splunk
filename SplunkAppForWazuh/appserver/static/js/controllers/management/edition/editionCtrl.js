@@ -131,7 +131,8 @@ define(['../../module'], function(controllers) {
         //this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.notification.showErrorToast(error)
+        this.rootScope.$broadcast('showHeadToaster', {type: 'error', msg: error || `Cannot restart.`, delay: false, spinner: false})
+        //this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
       }
     }
