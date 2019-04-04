@@ -336,7 +336,7 @@ define([
             }, 100)
           } catch (error) {
             $scope.wazuhTableLoading = false
-            $scope.error = `Error while init table. ${error.message || error}.`
+            $scope.error = `Error while init table.`
             $notificationService.showErrorToast(
               `Error while init table. ${error.message || error}`
             )
@@ -357,11 +357,23 @@ define([
         $scope.range = (size, start, end) =>
           pagination.range(size, start, end, $scope.gap)
         $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async currentPage =>
-          pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-        $scope.setPage = function(page = false) {
+        $scope.nextPage = async (currentPage, last) =>
+          pagination.nextPage(
+            currentPage,
+            $scope,
+            $notificationService,
+            fetch,
+            last
+          )
+        $scope.setPage = function(page = false, last = false, first = false) {
           $scope.currentPage = page || this.n
-          $scope.nextPage(this.n)
+          if (!first) {
+            $scope.nextPage(this.n, last)
+          }
+        }
+        $scope.firstPage = () => {
+          $scope.setPage(1, false, true)
+          $scope.prevPage()
         }
 
         /**

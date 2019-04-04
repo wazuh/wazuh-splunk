@@ -1338,6 +1338,66 @@ tfoot.no-border tr td {
   color: rgb(0, 121, 165) !important;
 }
 
+.wz-button-empty-yellow {
+  background: white !important;
+  border-color: #a9600a !important;
+  color: #a9600a !important;
+  font-weight: 400 !important;
+  border-width: 1px !important;
+}
+
+.wz-button-empty-yellow.active,
+.wz-button-empty-yellow:not([disabled]):hover,
+.wz-button-empty-yellow-flat:not([disabled]):hover {
+  background-color: rgb(228, 242, 245) !important;
+  color: #a9600a !important;
+}
+
+.wz-button-empty-green {
+  background: white !important;
+  border-color: #08a74e !important;
+  color: #08a74e !important;
+  font-weight: 400 !important;
+  border-width: 1px !important;
+}
+
+.wz-button-empty-green.active,
+.wz-button-empty-green:not([disabled]):hover,
+.wz-button-empty-green-flat:not([disabled]):hover {
+  background-color: rgb(228, 242, 245) !important;
+  color: #08a74e !important;
+}
+
+.wz-button-empty-red {
+  background: white !important;
+  border-color: #930000 !important;
+  color: #930000 !important;
+  font-weight: 400 !important;
+  border-width: 1px !important;
+}
+
+.wz-button-empty-red.active,
+.wz-button-empty-red:not([disabled]):hover,
+.wz-button-empty-red-flat:not([disabled]):hover {
+  background-color: rgb(228, 242, 245) !important;
+  color: #930000 !important;
+}
+
+.wz-button-empty-blue {
+  background: white !important;
+  border-color: #006193 !important;
+  color: #006193 !important;
+  font-weight: 400 !important;
+  border-width: 1px !important;
+}
+
+.wz-button-empty-blue.active,
+.wz-button-empty-blue:not([disabled]):hover,
+.wz-button-empty-blue-flat:not([disabled]):hover {
+  background-color: rgb(228, 242, 245) !important;
+  color: #006193 !important;
+}
+
 .wz-button-cancel {
   background: white !important;
   border-color: black !important;
@@ -1365,7 +1425,6 @@ tfoot.no-border tr td {
   margin-right: 25px;
   margin-top: -5px;
 }
-
 
 input:focus {
   height: 30px;
@@ -1416,4 +1475,37 @@ input:focus {
 
 .dd-rules {
   margin: 3px !important;
+/* Head toaster */
+}
+
+.ht-info{
+  height: 50px !important;
+  background-color: rgb(228, 242, 245) !important;
+  border-left: solid 3px !important;
+  border-color:rgb(0, 121, 165) !important;
+  color: #006193 !important;
+}
+
+.ht-success {
+  height: 50px !important;
+  background-color: rgb(228, 245, 236) !important;
+  border-left: solid 3px !important;
+  border-color: #00f56d !important;
+  color: #08a74e !important;
+}
+
+.ht-warning {
+  height: 50px !important;
+  background-color: #fef6e6 !important;
+  border-left: solid 3px !important;
+  border-color: #F5A700 !important;
+  color: #936400 !important;
+}
+
+.ht-error{
+  height: 50px !important;
+  background-color: rgb(245, 228, 228) !important;
+  border-left: solid 3px !important;
+  border-color: #f50000 !important;
+  color: #930000 !important;
 }

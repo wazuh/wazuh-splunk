@@ -263,13 +263,6 @@ define([
           }
         })
 
-        $scope.$on('restartError', (ev, params) => {
-          if (params.error.message) {
-            $scope.showErrorMessages = true
-            $scope.errorInfo = params.error.message.split('(')
-          }
-        })
-
         $scope.xmlCodeBox.on('change', () => {
           checkXmlParseError()
         })

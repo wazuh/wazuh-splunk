@@ -53,6 +53,9 @@
         Manage rules files
       </span>
       <span flex="" class="flex"></span>
+      <md-switch ng-if="rulesetFiles" class="wz-switch" aria-label="Editable files" ng-model="$parent.localFilter">
+        <div class="md-label">Editable files</div>
+      </md-switch>
       <md-switch ng-if="!rulesetFiles" class="wz-switch" aria-label="Only custom rules" ng-model="$parent.localFilter">
         <div class="md-label">Only custom rules</div>
       </md-switch>
@@ -98,7 +101,10 @@
           path="'/rules'" keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
-        <wazuh-table custom-columns="true"  admin-mode="adminMode" ng-if="rulesetFiles" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
+        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/rules/files'"
+          keys="['file']" rows-per-page="[16,13,11]">
+        </wazuh-table>
+        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/rules/files'" implicit-filter="[{ name:'path',value: 'etc/rules'}]"
           keys="['file']" rows-per-page="[16,13,11]">
         </wazuh-table>
       </div>

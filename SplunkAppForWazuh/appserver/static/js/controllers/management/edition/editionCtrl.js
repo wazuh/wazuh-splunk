@@ -15,7 +15,8 @@ define(['../../module'], function(controllers) {
       clusterInfo,
       $fileEditor,
       $restartService,
-      $interval
+      $interval,
+      $rootScope
     ) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
@@ -25,6 +26,7 @@ define(['../../module'], function(controllers) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.interval = $interval
+      this.rootScope = $rootScope
     }
     /**
      * On controller loads
@@ -67,6 +69,7 @@ define(['../../module'], function(controllers) {
           event.stopPropagation()
           this.scope.saveIncomplete = false
         })
+        
       } catch (error) {
         this.notification.showErrorToast(error)
       }
@@ -121,31 +124,28 @@ define(['../../module'], function(controllers) {
         } else {
           result = await this.restartService.restart()
         }
-        if (this.clusterInfo.clusterEnabled) this.showRestartingProgressBar()
-        this.notification.showSimpleToast(result)
+        if (result.startsWith('Restarting cluster')) {
+          this.rootScope.$broadcast('showHeadToaster', {
+            type: 'info',
+            msg: result,
+            delay: true,
+            spinner: false
+          })
+        } else {
+          this.rootScope.$broadcast('wazuhNotReadyYet', { msg: result })
+        }
+        //this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.notification.showErrorToast(error)
+        this.rootScope.$broadcast('showHeadToaster', {
+          type: 'error',
+          msg: error || `Cannot restart.`,
+          delay: false,
+          spinner: false
+        })
+        //this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
-        this.scope.$broadcast('restartError', { error: error })
       }
-    }
-
-    showRestartingProgressBar() {
-      this.scope.blockEditioncounter = 0
-      this.scope.restartingBar = true
-      this.scope.$applyAsync()
-      this.interval(
-        () => {
-          this.scope.blockEditioncounter++
-          if (this.scope.blockEditioncounter === 100) {
-            this.scope.restartingBar = false
-            this.scope.$applyAsync()
-          }
-        },
-        333,
-        100
-      )
     }
 
     switchRestart() {

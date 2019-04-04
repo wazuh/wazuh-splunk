@@ -54,6 +54,9 @@
       <md-switch ng-if="!rulesetFiles" class="wz-switch" aria-label="Only custom decoders" ng-model="$parent.localFilter">
         <div class="md-label">Only custom decoders</div>
       </md-switch>
+      <md-switch ng-if="rulesetFiles" class="wz-switch" aria-label="Editable files" ng-model="$parent.localFilter">
+        <div class="md-label">Editable files</div>
+      </md-switch>
     </md-card-actions>
     <md-card-contents>
       <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
@@ -77,7 +80,10 @@
           path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
-        <wazuh-table custom-columns="true"  admin-mode="adminMode" ng-if="rulesetFiles" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: 'etc/decoders'}]"
+        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/decoders/files'"
+          keys="['file']" rows-per-page="[16,13,11]">
+        </wazuh-table>
+        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/decoders/files'" implicit-filter="[{ name:'path',value: 'etc/decoders'}]"
           keys="['file']" rows-per-page="[16,13,11]">
         </wazuh-table>
       </div>
@@ -98,7 +104,7 @@
 <!-- XML editor for add new decoder file-->
 <div ng-if="addingNewFile">
   <div layout="row" class="md-padding  wz-padding-top-0">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn btn-info'>Cancel</button>
+    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
     <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
       class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='!xmlHasErrors && adminMode'>

@@ -56,53 +56,58 @@ define([
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
-      const parsedResult = agentData.map(item =>
-        item && item.data && item.data.data ? item.data.data : false
-      )
-      let [
-        summary,
-        lastAgent,
-        platforms,
-        versions,
-        nodes,
-        groups
-      ] = parsedResult
 
-      this.scope.agentsCountActive = summary.Active - 1
-      this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
-      const os = platforms
-        ? platforms.items.map(item => item.os).filter(item => !!item)
-        : false
-      versions = versions
-        ? versions.items.map(item => item.version).filter(item => !!item)
-        : false
-      nodes =
-        nodes && nodes.items
-          ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+      try {
+        const parsedResult = agentData.map(item =>
+          item && item.data && item.data.data ? item.data.data : false
+        )
+        let [
+          summary,
+          lastAgent,
+          platforms,
+          versions,
+          nodes,
+          groups
+        ] = parsedResult
+
+        this.scope.agentsCountActive = summary.Active - 1
+        this.scope.lastAgent = lastAgent.items[0]
+          ? lastAgent.items[0]
+          : 'Unknown'
+        const os = platforms
+          ? platforms.items.map(item => item.os).filter(item => !!item)
           : false
-      groups = groups
-        ? groups.items.map(item => item.name).filter(item => !!item)
-        : false
-      this.scope.agentsCountDisconnected = summary.Disconnected
-      this.scope.agentsCountNeverConnected = summary['Never connected']
-      const agentsCountTotal = summary.Total - 1
-      this.scope.agentsCoverity = agentsCountTotal
-        ? (this.scope.agentsCountActive / agentsCountTotal) * 100
-        : 0
+        versions = versions
+          ? versions.items.map(item => item.version).filter(item => !!item)
+          : false
+        nodes =
+          nodes && nodes.items
+            ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+            : false
+        groups = groups
+          ? groups.items.map(item => item.name).filter(item => !!item)
+          : false
+        this.scope.agentsCountDisconnected = summary.Disconnected
+        this.scope.agentsCountNeverConnected = summary['Never connected']
+        const agentsCountTotal = summary.Total - 1
+        this.scope.agentsCoverity = agentsCountTotal
+          ? (this.scope.agentsCountActive / agentsCountTotal) * 100
+          : 0
 
-      this.scope.searchBarModel = {
-        name: [],
-        status: ['Active', 'Disconnected', 'Never connected'],
-        group: groups ? groups : [],
-        version: versions ? versions : [],
-        'os.platform': os ? os.map(x => x.platform) : [],
-        'os.version': os ? os.map(x => x.version) : [],
-        'os.name': os ? os.map(x => x.name) : []
-      }
+        this.scope.searchBarModel = {
+          name: [],
+          status: ['Active', 'Disconnected', 'Never connected'],
+          group: groups ? groups : [],
+          version: versions ? versions : [],
+          'os.platform': os ? os.map(x => x.platform) : [],
+          'os.version': os ? os.map(x => x.version) : [],
+          'os.name': os ? os.map(x => x.name) : []
+        }
 
-      if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
-        this.scope.searchBarModel.node_name = nodes || []
-      }
+        if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
+          this.scope.searchBarModel.node_name = nodes || []
+        }
+      } catch (error) {} //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
@@ -185,7 +190,7 @@ define([
             !agentInfo.data.data ||
             agentInfo.data.error
           ) {
-            throw Error('Error')
+            throw Error('Error fetching agent data')
           }
           if (agentInfo.data.data.id !== '000') {
             this.state.go(`agent-overview`, { id: agentInfo.data.data.id })

@@ -88,6 +88,31 @@ define(['../module'], function(module) {
         }
         const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
         const result = await httpReq('POST', backPoint, payload)
+        if (
+          result &&
+          result.data &&
+          result.data.error &&
+          result.data.error === 3099
+        ) {
+          throw new Error('ERROR3099 - Wazuh not ready yet.')
+        }
+        return result
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    const wazuhIsReady = async (opts = null) => {
+      try {
+        $http.defaults.headers.post['Content-Type'] =
+          'application/x-www-form-urlencoded'
+        const currentApi = $apiIndexStorageService.getApi()
+        const id =
+          currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
+        const endpoint = '/api/wazuh_ready'
+        const method = 'GET'
+        const payload = { id, method }
+        const result = await httpReq('POST', endpoint, payload)
         return result
       } catch (err) {
         return Promise.reject(err)
@@ -146,7 +171,8 @@ define(['../module'], function(module) {
       apiReq: apiReq,
       httpReq: httpReq,
       sendConfiguration: sendConfiguration,
-      getConfiguration: getConfiguration
+      getConfiguration: getConfiguration,
+      wazuhIsReady: wazuhIsReady
     }
     return service
   })

@@ -1,0 +1,65 @@
+<div ng-if="wazuhNotReadyYet">
+  <div flex class="euiCallOut flex ht-warning">
+    <!-- While trying to recover wazuh -->
+    <div ng-if="!wazuhCouldNotBeRecovered" class="euiCallOutHeader" layout="row">
+      <i class="wz-padding-top-2 fa fa-exclamation-triangle" aria-hidden="true"></i>
+      <span>{{notReadyMsg || "Wazuh not ready yet."}}</span>
+      <span flex></span>
+      <i class="wz-padding-top-2 fa fa-spinner fa-spin" aria-hidden="true"></i>
+    </div>
+    <!-- Wazuh could not be recovered -->
+    <div ng-if="wazuhCouldNotBeRecovered" class="euiCallOutHeader" layout="row">
+        <i class="wz-padding-top-2 fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <span>Wazuh could not be recovered.</span>
+        <span flex></span>
+        <button ng-click="checkWazuhAgain()" style="margin-top: -7px;" class="btn wz-button-empty-yellow">Try again</button>
+      </div>
+  </div>
+</div>
+
+<div ng-if="showHeadToaster && !wazuhNotReadyYet">
+  <div ng-if="messageType === 'info'" flex class="euiCallOut flex ht-info">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="wz-padding-top-2 fa fa-info" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    </div>
+  </div>
+  <div ng-if="messageType === 'warning'" flex class="euiCallOut flex ht-warning">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="wz-padding-top-2 fa fa-exclamation-triangle" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    </div>
+  </div>
+  <div ng-if="messageType === 'success'" flex class="euiCallOut flex ht-success">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="wz-padding-top-2 fa fa-check" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    </div>
+  </div>
+  <div ng-if="messageType === 'error'" flex class="euiCallOut flex ht-error">
+    <div class="euiCallOutHeader" layout="row">
+      <i class="wz-padding-top-2 fa fa-exclamation-circle" aria-hidden="true"></i>
+      <span>{{message}}</span>
+      <span flex></span>
+      <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <span ng-if="!showSpinner" ng-click="closeToaster()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    </div>
+  </div>
+</div>
