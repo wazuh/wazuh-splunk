@@ -32,10 +32,11 @@
             Back to decoders
           </md-tooltip>
         </span>
-        <input ng-if="!rulesetFiles" flex placeholder="Filter decoders..." ng-model="customSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <input  id="search-input-rules" ng-if="!rulesetFiles" flex placeholder="Filter decoders..." ng-model="customSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <input ng-if="rulesetFiles" flex placeholder="Filter decoders files..." ng-model="customSearch" type="text"
+        <input  id="search-input-rules" ng-if="rulesetFiles" flex placeholder="Filter decoders files..." ng-model="customSearch" type="text"
           class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false" wz-enter="search(customSearch)">
+        <wz-add-filter-chip id-input="search-input-rules" options="[{label: 'File', value: 'file'}, {label: 'Path', value: 'path'}]"></wz-add-filter-chip>
         <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(customSearch)">
             <span>Search</span>
         </button>
@@ -55,7 +56,7 @@
       </md-switch>
     </md-card-actions>
     <md-card-contents>
-      <md-chips class="wz-chips" readonly="true" ng-show="appliedFilters.length">
+      <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
         <md-chip class="wz-chip" ng-show="includesFilter('file')">
           <span>File: {{ getFilter('file') }}
             <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
@@ -109,8 +110,6 @@
 
     <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
       style="margin-left: 10px;" ng-change="enableSave()">
-
-
   </div>
   <div class="wzXmlEditorDivContent" style="height: calc(100vh - 300px);" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"

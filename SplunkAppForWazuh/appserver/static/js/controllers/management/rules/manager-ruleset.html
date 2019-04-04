@@ -29,10 +29,15 @@
             Back to rules
           </md-tooltip>
         </span>
-        <input ng-if="!rulesetFiles" placeholder="Filter rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <input id="search-input-rules" ng-if="!rulesetFiles" placeholder="Filter rules..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput id="search-input-rules" ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <input ng-if="rulesetFiles" placeholder="Filter rules files..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <input id="search-input-rules" ng-if="rulesetFiles" placeholder="Filter rules files..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
           aria-invalid="false" wz-enter="search(customSearch)">
+        <wz-add-filter-chip id-input="search-input-rules" options="[{label: 'File', value: 'file'},
+          {label: 'Path', value: 'path'}, {label: 'Level', value: 'level'},
+          {label: 'Group', value: 'group'}, {label: 'PCI control', value: 'pci'},
+          {label: 'GDPR', value: 'gdpr'}]">
+        </wz-add-filter-chip>
         <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(customSearch)">
             <span>Search</span>
         </button>

@@ -1,0 +1,36 @@
+/* -------------------------------------------------------------------------- */
+/* ------------------ Wazuh add chip filter stylesheet ---------------------- */
+/* -------------------------------------------------------------------------- */
+
+.open-chips{
+    position: relative;
+    right: 20px;
+    width: 0;
+}
+
+.chips-dropdown{
+    width: 200px;
+    position: absolute;
+    margin-left: -200px;
+    margin-top: 12px;
+}
+
+.chips-dropdown .dropdown-menu{
+    display: block !important;
+}
+
+.ui-select-choices-row-inner {
+    cursor: pointer;
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.filter-icon {
+    margin-top: 8px !important;
+    color: #00445a !important;
+}
