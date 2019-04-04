@@ -1,4 +1,4 @@
-define(['../../module', '../../../utils/config-handler'], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
@@ -10,65 +10,107 @@ define(['../../module', '../../../utils/config-handler'], function(
       $requestService,
       $beautifierJson,
       $notificationService,
-      isAdmin
+      isAdmin,
+      clusterInfo
     ) {
-      this.$scope = $scope
-      this.errorHandler = $notificationService
+      this.scope = $scope
+      this.notification = $notificationService
       this.apiReq = $requestService
-      this.$scope.load = false
-      this.$scope.isArray = Array.isArray
+      this.scope.load = false
+      this.scope.isArray = Array.isArray
       this.configurationHandler = new ConfigHandler(
         this.apiReq,
         $beautifierJson,
-        this.errorHandler
+        this.notification
       )
-      this.$scope.currentConfig = null
-      this.$scope.configurationTab = ''
-      this.$scope.configurationSubTab = ''
-      this.$scope.integrations = {}
-      this.$scope.selectedItem = 0
-      this.$scope.isAdmin = isAdmin
+      this.scope.currentConfig = null
+      this.scope.configurationTab = ''
+      this.scope.configurationSubTab = ''
+      this.scope.integrations = {}
+      this.scope.selectedItem = 0
+      this.scope.isAdmin = isAdmin
+      this.clusterInfo = clusterInfo
     }
 
     $onInit() {
-      this.$scope.goToEdition = true
-      this.$scope.showingInfo = false
-      this.$scope.showInfo = () => this.showInfo()
-      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
-      this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
-      this.$scope.isString = item => typeof item === 'string'
-      this.$scope.hasSize = obj =>
-        obj && typeof obj === 'object' && Object.keys(obj).length
-      this.$scope.switchConfigTab = (configurationTab, sections) =>
-        this.configurationHandler.switchConfigTab(
-          configurationTab,
-          sections,
-          this.$scope
-        )
-      this.$scope.switchWodle = wodleName =>
-        this.configurationHandler.switchWodle(wodleName, this.$scope)
-      this.$scope.switchConfigurationTab = configurationTab =>
-        this.configurationHandler.switchConfigurationTab(
-          configurationTab,
-          this.$scope
-        )
-      this.$scope.switchConfigurationSubTab = configurationSubTab =>
-        this.configurationHandler.switchConfigurationSubTab(
-          configurationSubTab,
-          this.$scope
-        )
-      this.$scope.updateSelectedItem = i => (this.$scope.selectedItem = i)
-      this.$scope.getIntegration = list =>
-        this.configurationHandler.getIntegration(list, this.$scope)
+      try {
+        if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
+          this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
+          if (this.clusterInfo.clusterEnabled) {
+            this.scope.selectedNode = this.clusterInfo.nodes.data.data.items[0].name
+            this.scope.nodes = this.clusterInfo.nodes.data.data.items
+          }
+          this.getNodeConfig(this.scope.selectedNode)
+        } else {
+          this.getNodeConfig()
+        }
+        
+        this.scope.goToEdition = true
+        this.scope.showingInfo = false
+        this.scope.showInfo = () => this.showInfo()
+        this.scope.getXML = () => this.configurationHandler.getXML(this.scope)
+        this.scope.getJSON = () => this.configurationHandler.getJSON(this.scope)
+        this.scope.isString = item => typeof item === 'string'
+        this.scope.changeNode = node => this.changeNode(node)
+        this.scope.hasSize = obj =>
+          obj && typeof obj === 'object' && Object.keys(obj).length
+        this.scope.switchConfigTab = (configurationTab, sections) =>
+          this.configurationHandler.switchConfigTab(
+            configurationTab,
+            sections,
+            this.scope
+          )
+        this.scope.switchWodle = wodleName =>
+          this.configurationHandler.switchWodle(wodleName, this.scope)
+        this.scope.switchConfigurationTab = configurationTab =>
+          this.configurationHandler.switchConfigurationTab(
+            configurationTab,
+            this.scope
+          )
+        this.scope.switchConfigurationSubTab = configurationSubTab =>
+          this.configurationHandler.switchConfigurationSubTab(
+            configurationSubTab,
+            this.scope
+          )
+        this.scope.updateSelectedItem = i => (this.scope.selectedItem = i)
+        this.scope.getIntegration = list =>
+          this.configurationHandler.getIntegration(list, this.scope)
+      } catch (error) {
+        this.notification.showErrorToast(error)
+      }
+
     }
 
     /**
      * Show or hide sidebar with info
      */
     showInfo() {
-      this.$scope.showingInfo = !this.$scope.showingInfo
-      this.$scope.$applyAsync()
+      this.scope.showingInfo = !this.scope.showingInfo
+      this.scope.$applyAsync()
     }
+
+    /**
+     * Gets the node configuration
+     * 
+     * @param {String} node 
+     */
+    async getNodeConfig(node) {
+      try {
+       this.notification.showSimpleToast(`Selected node: ${node}`)
+      } catch (error) {
+        this.notification.showErrorToast(`Error editing node: ${error}`)
+      }
+    }
+
+    /**
+     * Changes the selected node
+     * 
+     * @param {String} node 
+     */
+    changeNode(node) {
+      this.getNodeConfig(node)
+    }
+
   }
 
   controllers.controller('configurationCtrl', ConfigurationController)

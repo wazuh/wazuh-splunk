@@ -305,6 +305,35 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            clusterInfo: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const info = {}
+                  const clusterStatus = await $requestService.apiReq(
+                    '/cluster/status'
+                  )
+                  if (
+                    clusterStatus.data.data.enabled === 'yes' &&
+                    clusterStatus.data.data.running === 'yes'
+                  ) {
+                    const nodesList = await $requestService.apiReq(
+                      '/cluster/nodes'
+                    )
+                    Object.assign(info, {
+                      clusterEnabled: true,
+                      nodes: nodesList
+                    })
+                  } else {
+                    Object.assign(info, { clusterEnabled: false })
+                  }
+                  return info
+                } catch (error) {
+                  return false
+                }
+              }
             ]
           }
         })
