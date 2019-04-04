@@ -1,7 +1,7 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
-  module.service('$requestService', function (
+  module.service('$requestService', function(
     $http,
     $apiIndexStorageService,
     $q,

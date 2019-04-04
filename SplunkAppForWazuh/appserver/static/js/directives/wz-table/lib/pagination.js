@@ -34,13 +34,13 @@ define([], function() {
             await fetch({ offset: currentNonNull.length })
           } else {
             while (currentNonNull.length < $scope.items.length) {
-              await fetch({ offset: currentNonNull.length });
-              currentNonNull = $scope.items.filter(item => !!item);
+              await fetch({ offset: currentNonNull.length })
+              currentNonNull = $scope.items.filter(item => !!item)
             }
           }
           $scope.wazuhTableLoading = false
           $scope.currentPage = copy
-          $scope.$applyAsync();
+          $scope.$applyAsync()
         }
       } catch (error) {
         $scope.wazuhTableLoading = false

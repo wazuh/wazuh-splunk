@@ -358,11 +358,17 @@ define([
           pagination.range(size, start, end, $scope.gap)
         $scope.prevPage = () => pagination.prevPage($scope)
         $scope.nextPage = async (currentPage, last) =>
-          pagination.nextPage(currentPage, $scope, $notificationService, fetch, last)
-        $scope.setPage = function(page = false, last=false, first = false) {
+          pagination.nextPage(
+            currentPage,
+            $scope,
+            $notificationService,
+            fetch,
+            last
+          )
+        $scope.setPage = function(page = false, last = false, first = false) {
           $scope.currentPage = page || this.n
-          if(!first){
-            $scope.nextPage(this.n, last)          
+          if (!first) {
+            $scope.nextPage(this.n, last)
           }
         }
         $scope.firstPage = () => {

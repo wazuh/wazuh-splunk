@@ -222,7 +222,9 @@ define(['../module'], function(module) {
           const clusterEnabled = api.filterType === 'cluster.name'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${api.portapi}&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
+          }&port=${
+            api.portapi
+          }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
@@ -230,7 +232,7 @@ define(['../module'], function(module) {
           if (result.data.status === 400 || result.data.error) {
             if (result.data.error === 3099) {
               throw new Error('ERROR3099 - Wazuh not ready yet.')
-            }else { 
+            } else {
               throw new Error('Unreachable API.')
             }
           }

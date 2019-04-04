@@ -263,7 +263,6 @@ define([
           }
         })
 
-
         $scope.xmlCodeBox.on('change', () => {
           checkXmlParseError()
         })

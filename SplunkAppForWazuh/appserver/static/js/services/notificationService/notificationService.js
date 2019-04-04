@@ -1,6 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$notificationService', function ($mdToast, $rootScope) {
+  module.service('$notificationService', function($mdToast, $rootScope) {
     let last = {
       bottom: true,
       top: false,
@@ -36,7 +36,6 @@ define(['../module'], function (module) {
     let showWarningToast = text => showSimpleToast(text, 3)
 
     let showSimpleToast = (text, type) => {
-
       if (!wazuhIsNotReady(text)) {
         let pinTo = getToastPosition()
         if (type === 1) {
@@ -99,7 +98,7 @@ define(['../module'], function (module) {
       $rootScope.$broadcast('showHeadToaster', { type, msg, delay })
     }
 
-    const wazuhIsNotReady = (text) => {
+    const wazuhIsNotReady = text => {
       try {
         if (text instanceof Object && text.message.includes('ERROR3099')) {
           $rootScope.$broadcast('wazuhNotReadyYet', {})

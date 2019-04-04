@@ -9,14 +9,11 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wzHeadToaster', function (BASE_URL) {
+  directives.directive('wzHeadToaster', function(BASE_URL) {
     return {
-      controller: function (
-        $scope,
-        $checkDaemonsService
-      ) {
+      controller: function($scope, $checkDaemonsService) {
         // Listen for show toaster
         $scope.$on('showHeadToaster', (event, data) => {
           // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
@@ -47,7 +44,7 @@ define(['../module'], function (directives) {
           let msg = false
           $scope.showHeadToaster = false
           if (data && data.msg) {
-              msg = data.msg
+            msg = data.msg
           }
           $checkDaemonsService.makePing(msg)
         })
@@ -61,7 +58,6 @@ define(['../module'], function (directives) {
         $scope.closeToaster = () => {
           $scope.showHeadToaster = false
         }
-
       },
       templateUrl:
         BASE_URL +

@@ -1,8 +1,6 @@
 define(['../module'], function(module) {
   'use strict'
-  module.service('$restartService', function(
-    $requestService
-  ) {
+  module.service('$restartService', function($requestService) {
     const restart = async () => {
       try {
         const clusterEnabled = await clusterIsEnabled()

@@ -1,4 +1,4 @@
-define(['./module'], function (module) {
+define(['./module'], function(module) {
   'use strict'
   module.run([
     '$rootScope',
@@ -6,7 +6,7 @@ define(['./module'], function (module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
-    function (
+    function(
       $rootScope,
       $state,
       $transitions,
@@ -27,7 +27,7 @@ define(['./module'], function (module) {
           )
           $currentDataService.addFilter(
             `{"index":"${
-            $currentDataService.getIndex().index
+              $currentDataService.getIndex().index
             }", "implicit":true}`
           )
           // If change the primary state and do not receive an error the two below code lines clear the warning message
@@ -35,7 +35,11 @@ define(['./module'], function (module) {
           $rootScope.wazuhNotReadyYet = false
           $rootScope.wazuhCouldNotBeRecovered = false
         } catch (err) {
-          if (err instanceof Object && err.message && err.message.includes('ERROR3099')) {
+          if (
+            err instanceof Object &&
+            err.message &&
+            err.message.includes('ERROR3099')
+          ) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})
             toPrimaryState(state)
           } else {
@@ -58,7 +62,8 @@ define(['./module'], function (module) {
           to !== 'discover' &&
           !to.startsWith('settings')
         ) {
-          const wazuhIsReady = window.localStorage.getItem('wazuhIsReady') === 'true'
+          const wazuhIsReady =
+            window.localStorage.getItem('wazuhIsReady') === 'true'
           if (!wazuhIsReady) {
             return false
           }
@@ -134,7 +139,7 @@ define(['./module'], function (module) {
       })
 
       // When access to a state and Wazuh is not ready is detected, this funcion checks if is a secondary state, if it is, go to primary state
-      const toPrimaryState = (to) => {
+      const toPrimaryState = to => {
         if (to.startsWith('ag-') || to.startsWith('agent-')) {
           $state.go('agents')
           $rootScope.$broadcast('stateChanged', 'agents')

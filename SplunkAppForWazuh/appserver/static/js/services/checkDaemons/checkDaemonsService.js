@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   class checkDaemonsService {
@@ -48,7 +48,6 @@ define(['../module'], function (module) {
 
       this.busy = false
     }
-
   }
 
   module.service('$checkDaemonsService', checkDaemonsService)

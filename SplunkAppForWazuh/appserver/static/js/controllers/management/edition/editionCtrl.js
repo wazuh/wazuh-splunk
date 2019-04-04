@@ -65,7 +65,7 @@ define(['../../module'], function(controllers) {
         /*this.scope.$on('configSavedSuccessfully', () => {
           this.scope.restartAndApply = true
         })*/
-        
+
         this.scope.$on('saveComplete', () => {
           this.scope.saveIncomplete = false
         })
@@ -124,14 +124,24 @@ define(['../../module'], function(controllers) {
           result = await this.restartService.restart()
         }
         if (result.startsWith('Restarting cluster')) {
-          this.rootScope.$broadcast('showHeadToaster', {type: 'info', msg: result, delay: true, spinner: false})
+          this.rootScope.$broadcast('showHeadToaster', {
+            type: 'info',
+            msg: result,
+            delay: true,
+            spinner: false
+          })
         } else {
-          this.rootScope.$broadcast('wazuhNotReadyYet', {msg: result})
+          this.rootScope.$broadcast('wazuhNotReadyYet', { msg: result })
         }
         //this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.rootScope.$broadcast('showHeadToaster', {type: 'error', msg: error || `Cannot restart.`, delay: false, spinner: false})
+        this.rootScope.$broadcast('showHeadToaster', {
+          type: 'error',
+          msg: error || `Cannot restart.`,
+          delay: false,
+          spinner: false
+        })
         //this.notification.showErrorToast(error)
         this.scope.restartInProgress = false
       }

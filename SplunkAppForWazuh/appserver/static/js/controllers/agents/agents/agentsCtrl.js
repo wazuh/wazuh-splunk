@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function (app, SearchHandler) {
+], function(app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -71,7 +71,9 @@ define([
         ] = parsedResult
 
         this.scope.agentsCountActive = summary.Active - 1
-        this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
+        this.scope.lastAgent = lastAgent.items[0]
+          ? lastAgent.items[0]
+          : 'Unknown'
         const os = platforms
           ? platforms.items.map(item => item.os).filter(item => !!item)
           : false
@@ -102,7 +104,6 @@ define([
           'os.name': os ? os.map(x => x.name) : []
         }
       } catch (error) {}
-
 
       if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
         this.scope.searchBarModel.node_name = nodes || []
