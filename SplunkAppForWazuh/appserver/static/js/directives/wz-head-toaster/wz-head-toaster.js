@@ -19,13 +19,14 @@ define(['../module'], function (directives) {
       ) {
         // Listen for show toaster
         $scope.$on('showHeadToaster', (event, data) => {
+          // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
           try {
             if (!$scope.wazuhNotReadyYet) {
               $scope.messageType = data.type
               $scope.message = data.msg
               $scope.showHeadToaster = true
               if (data.delay) {
-                $scope.showSpinner = true
+                $scope.showSpinner = data.spinner
                 setTimeout(() => {
                   $scope.showHeadToaster = false
                   $scope.showSpinner = false

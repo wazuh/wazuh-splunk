@@ -123,7 +123,11 @@ define(['../../module'], function(controllers) {
         } else {
           result = await this.restartService.restart()
         }
-        this.rootScope.$broadcast('wazuhNotReadyYet', {msg: result})
+        if (result.startsWith('Restarting cluster')) {
+          this.rootScope.$broadcast('showHeadToaster', {type: 'info', msg: result, delay: true, spinner: false})
+        } else {
+          this.rootScope.$broadcast('wazuhNotReadyYet', {msg: result})
+        }
         //this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
