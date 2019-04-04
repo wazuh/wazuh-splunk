@@ -359,12 +359,14 @@ define([
         $scope.prevPage = () => pagination.prevPage($scope)
         $scope.nextPage = async (currentPage, last) =>
           pagination.nextPage(currentPage, $scope, $notificationService, fetch, last)
-        $scope.setPage = function(page = false, last=false) {
+        $scope.setPage = function(page = false, last=false, first = false) {
           $scope.currentPage = page || this.n
-          $scope.nextPage(this.n, last)
+          if(!first){
+            $scope.nextPage(this.n, last)          
+          }
         }
         $scope.firstPage = () => {
-          $scope.setPage(1)
+          $scope.setPage(1, false, true)
           $scope.prevPage()
         }
 
