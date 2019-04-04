@@ -294,7 +294,7 @@ define(['../module'], function(module) {
       try {
         const api = await select(id) //Before update cluster or not cluster
         await checkRawConnection(api)
-        const apiSaved = { ...api } // eslint-disable-line
+        const apiSaved = { ...api } //eslint-disable-line
         const updatedApi = await updateApiFilter(api)
         let equal = true
         Object.keys(updatedApi).forEach(key => {

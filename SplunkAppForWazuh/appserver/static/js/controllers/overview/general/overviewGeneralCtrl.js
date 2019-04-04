@@ -230,7 +230,7 @@ define([
                 this.clusName
               } index=wazuh-monitoring-3x`
             }
-          } catch (error) {}
+          } catch (error) {} //eslint-disable-line
 
           this.spanTime = '15m'
           this.vizz.push(

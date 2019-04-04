@@ -20,7 +20,7 @@ define(['../module'], function(module) {
             agentData: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async $requestService => {
                 try {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
@@ -51,7 +51,7 @@ define(['../module'], function(module) {
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
-                } catch (err) {}
+                } catch (err) {} //eslint-disable-line
               }
             ]
           }

@@ -16,11 +16,11 @@ define(['../../module'], function(controllers) {
         this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
         this.scope.agentsCountNeverConnected =
           agentsInfo.data.data['Never Connected']
-      } catch (error) {}
+      } catch (error) {} //eslint-disable-line
 
       try {
         this.extensions = extensions
-      } catch (error) {}
+      } catch (error) {} //eslint-disable-line
     }
 
     /**

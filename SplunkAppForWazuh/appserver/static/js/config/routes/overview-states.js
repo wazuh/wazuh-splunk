@@ -36,11 +36,11 @@ define(['../module'], function(module) {
             agentsInfo: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async $requestService => {
                 try {
                   const result = await $requestService.apiReq('/agents/summary')
                   return result
-                } catch (err) {}
+                } catch (err) {} //eslint-disable-line
               }
             ],
             extensions: [

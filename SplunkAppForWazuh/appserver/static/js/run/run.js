@@ -149,7 +149,6 @@ define(['./module'], function(module) {
         } else if (to.startsWith('mg-')) {
           $state.go('manager')
           $rootScope.$broadcast('stateChanged', 'manager')
-        } else {
         }
       }
     }

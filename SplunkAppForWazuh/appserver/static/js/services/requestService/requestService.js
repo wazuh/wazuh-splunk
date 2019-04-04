@@ -4,8 +4,7 @@ define(['../module'], function(module) {
   module.service('$requestService', function(
     $http,
     $apiIndexStorageService,
-    $q,
-    $rootScope
+    $q
   ) {
     /**
      * Generated and returns the browser base URL + Splunk Port
@@ -103,7 +102,7 @@ define(['../module'], function(module) {
       }
     }
 
-    const wazuhIsReady = async () => {
+    const wazuhIsReady = async (opts = null) => {
       try {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'

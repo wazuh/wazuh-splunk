@@ -103,11 +103,11 @@ define([
           'os.version': os ? os.map(x => x.version) : [],
           'os.name': os ? os.map(x => x.name) : []
         }
-      } catch (error) {}
 
-      if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
-        this.scope.searchBarModel.node_name = nodes || []
-      }
+        if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
+          this.scope.searchBarModel.node_name = nodes || []
+        }
+      } catch (error) {} //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
