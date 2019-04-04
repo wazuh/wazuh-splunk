@@ -1409,3 +1409,11 @@ input:focus {
 #dropDownInputAgent button:hover {
   background: #e4f2f5 !important;
 }
+
+.dl-rules {
+  margin: 5px 0px!important;
+}
+
+.dd-rules {
+  margin: 3px !important;
+}
