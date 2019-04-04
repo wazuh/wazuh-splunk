@@ -43,7 +43,11 @@ define(['../module'], function (directives) {
 
         // Listen for wazuh not ready event
         $scope.$on('wazuhNotReadyYet', (event, data) => {
-          $checkDaemonsService.makePing()
+          let msg = false
+          if (data && data.msg) {
+              msg = data.msg
+          }
+          $checkDaemonsService.makePing(msg)
         })
 
         // Bind function to button to launche ping to check Wazuh daemons again

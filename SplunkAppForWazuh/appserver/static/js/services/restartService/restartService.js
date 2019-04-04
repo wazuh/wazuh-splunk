@@ -25,7 +25,7 @@ define(['../module'], function(module) {
           'PUT'
         )
         if (result && result.data && !result.data.error) {
-          return 'Restart signal sended successfully to the manager.'
+          return 'Restarting manager.'
         } else {
           throw 'Cannot send restart signal to the manager.'
         }
@@ -47,7 +47,7 @@ define(['../module'], function(module) {
             result.data.error ||
             'Cannot restart the cluster.'
         }
-        return 'Cluster restart in progress, it will take up to 30 seconds.'
+        return 'Restarting cluster, it will take up to 30 seconds.'
       } catch (error) {
         return Promise.reject('Cannot restart the cluster.: ' + error)
       }
@@ -64,13 +64,13 @@ define(['../module'], function(module) {
             'PUT'
           )
           if (result && result.data && !result.data.error) {
-            return `Restart signal sended successfully to the node ${node}.`
+            return `Restarting the node ${node}.`
           } else {
             throw `Cannot send restart signal to the node ${node}.`
           }
         } else {
           await restartManager()
-          return `Cluster disabled, cannot send the restart signal to ${node}, the manager is going to restart.`
+          return `Restarting manager because cluster is disabled and cannot send the restart signal to ${node}.`
         }
       } catch (error) {
         return Promise.reject(error || `Cannot restart the node ${node}`)

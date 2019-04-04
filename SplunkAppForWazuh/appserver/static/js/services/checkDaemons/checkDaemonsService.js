@@ -10,11 +10,12 @@ define(['../module'], function (module) {
       this.busy = false
     }
 
-    async makePing() {
+    async makePing(msg = false) {
       try {
         if (this.busy) return
         this.busy = true
         window.localStorage.setItem('wazuhIsReady', 'false')
+        this.rootScope.notReadyMsg = msg
         this.rootScope.wazuhCouldNotBeRecovered = false
         this.rootScope.wazuhNotReadyYet = true
         let wazuhReady = false

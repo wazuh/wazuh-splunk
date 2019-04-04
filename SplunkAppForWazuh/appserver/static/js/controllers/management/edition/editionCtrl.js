@@ -15,7 +15,8 @@ define(['../../module'], function(controllers) {
       clusterInfo,
       $fileEditor,
       $restartService,
-      $interval
+      $interval,
+      $rootScope
     ) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
@@ -25,6 +26,7 @@ define(['../../module'], function(controllers) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.interval = $interval
+      this.rootScope = $rootScope
     }
     /**
      * On controller loads
@@ -121,7 +123,8 @@ define(['../../module'], function(controllers) {
         } else {
           result = await this.restartService.restart()
         }
-        this.notification.showSimpleToast(result)
+        this.rootScope.$broadcast('wazuhNotReadyYet', {msg: result})
+        //this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
         this.notification.showErrorToast(error)
