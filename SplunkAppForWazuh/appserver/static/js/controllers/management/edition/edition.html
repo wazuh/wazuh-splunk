@@ -7,7 +7,7 @@
 <div ng-show="editingNode">
   <div layout="row" class="wz-margin-left-10">
     <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-      ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled"
+      ng-change="changeNode(selectedNode.name)" style="margin:0 5px;" ng-if="isAdmin && clusterEnabled"
       class="input input-dropdown wz-button-empty"></select>
     <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i
         class="fa fa-fw fa-close" aria-hidden="true"></i>
@@ -78,7 +78,7 @@
 
   </div>
 
-  <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 260px)">
+  <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 210px)">
     <wz-xml-file-editor style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode"
       valid-fn='xmlIsValid(valid)'>
       <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
