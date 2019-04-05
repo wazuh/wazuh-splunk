@@ -1,4 +1,4 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'active-response'" ng-init="switchConfigurationSubTab('active-response')">
+<div flex="auto" layout="column" ng-if="configurationTab === 'active-response' && (agent && agent.id !== '000')" ng-init="switchConfigurationSubTab('active-response')">
 
   <!-- Headline -->
   <div layout="column" layout-padding>
@@ -10,7 +10,7 @@
   <!-- End headline -->
 
   <!-- Commands & Active response navigation bar -->
-  <md-nav-bar ng-if="!agent || agent.id === '000'" class="wz-nav-bar" md-selected-nav-item="configurationSubTab"
+  <md-nav-bar ng-if="agent && agent.id !== '000'" class="wz-nav-bar" md-selected-nav-item="configurationSubTab"
     nav-bar-aria-label="Active response navigation links">
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('active-response')" name="active-response">Active
       response</md-nav-item>
