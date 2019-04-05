@@ -227,6 +227,7 @@ define([
           $document[0].getElementById('xml_box'),
           {
             lineNumbers: true,
+            lineWrapping: true,
             matchClosing: true,
             matchBrackets: true,
             mode: 'text/xml',
