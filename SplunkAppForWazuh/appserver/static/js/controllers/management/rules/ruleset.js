@@ -113,7 +113,6 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.$on('configSavedSuccessfully', (event) => {
         event.stopPropagation()
         this.scope.overwrite = false
-        this.scope.restartAndApply = true
       })
       this.scope.$on('saveComplete', (event) => {
         event.stopPropagation()
@@ -383,13 +382,6 @@ define(['../../module', 'FileSaver'], function(app) {
     }
 
     /**
-     * Closes the confirm of restart message
-     */
-    closeRestartConfirmation() {
-      this.scope.restartAndApply = false
-    }
-
-    /**
      * Enables save button
      */
     enableSave() {
@@ -404,7 +396,6 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.editingFile = false
       this.scope.addingNewFile = false
       this.scope.overwrite = false
-      this.scope.restartAndApply = false
       this.scope.fetchedXML = ''
     }
 

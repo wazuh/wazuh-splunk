@@ -16,7 +16,8 @@ define(['../../module'], function(controllers) {
       $fileEditor,
       $restartService,
       $interval,
-      $rootScope
+      $rootScope,
+      $state
     ) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
@@ -27,13 +28,13 @@ define(['../../module'], function(controllers) {
       this.restartService = $restartService
       this.interval = $interval
       this.rootScope = $rootScope
+      this.state = $state
     }
     /**
      * On controller loads
      */
     $onInit() {
       try {
-        this.scope.restartAndApply = false
         this.scope.restartInProgress = false
         this.scope.editingNode = false
         this.scope.editNode = nodeName => this.editNode(nodeName)
@@ -61,17 +62,16 @@ define(['../../module'], function(controllers) {
         /**
          *  Listeners
          */
-        this.scope.$on('configSavedSuccessfully', (event) => {
-          event.stopPropagation()
-          this.scope.restartAndApply = true
-        })
+
         this.scope.$on('saveComplete', (event) => {
           event.stopPropagation()
           this.scope.saveIncomplete = false
         })
         
       } catch (error) {
+        console.error("ERROR WHEN INIT MANAGER CONFIG EDITION ", error)
         this.notification.showErrorToast(error)
+        this.state.go('manager')
       }
     }
 
@@ -93,7 +93,6 @@ define(['../../module'], function(controllers) {
 
     changeNode(node) {
       this.editNode(node)
-      this.scope.restartAndApply = false
     }
 
     saveOssecConfig() {
@@ -153,9 +152,6 @@ define(['../../module'], function(controllers) {
       this.scope.$applyAsync()
     }
 
-    closeRestartConfirmation() {
-      this.scope.restartAndApply = false
-    }
   }
 
   controllers.controller('editionCtrl', Edition)

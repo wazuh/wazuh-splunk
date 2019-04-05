@@ -258,6 +258,7 @@ define([
         init()
 
         $scope.$on('fetchedFile', (ev, params) => {
+          $scope.restartBtn = false
           if (!firstTime) {
             init(params.data)
           }

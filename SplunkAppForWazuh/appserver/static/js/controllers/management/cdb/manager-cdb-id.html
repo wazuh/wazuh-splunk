@@ -33,19 +33,6 @@
           aria-hidden='true'></i>Save</span>
     </button>
 
-    <!-- Restart if saved without errors-->
-    <span class="flex"></span>
-    <div ng-show="restartAndApply" style="padding-right: 15px;">
-      <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()"
-        class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled"
-        ng-click="restart(); closeRestartConfirmation()" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
     <!-- End restart button -->
 
   </div>
