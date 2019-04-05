@@ -42,15 +42,15 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('global-configuration', [{component:'analysis',configuration:'global'},{component:'request',configuration:'remote'},{component:'com',configuration:'logging'}])">
               <td>Global configuration</td>
               <td>Global and remote settings</td>
             </tr>
-            <tr ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('cluster', [{component:'com',configuration:'cluster'}])">
               <td>Cluster</td>
               <td>Master node configuration</td>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('registration-service', [{component:'auth',configuration:'auth'}])">
               <td>Registration service</td>
               <td>Automatic agent registration using service</td>
             </tr>
@@ -66,19 +66,19 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('global-configuration', [{component:'com',configuration:'logging'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('global-configuration', [{component:'com',configuration:'logging'}])">
               <td>Global configuration</td>
               <td>Logging settings that apply to the agent</td>
             </tr>
-            <tr ng-click="switchConfigTab('client', [{component:'agent',configuration:'client'}])">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('client', [{component:'agent',configuration:'client'}])">
               <td>Client configuration</td>
               <td>Settings related to the connection with the manager</td>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('client-buffer', [{component:'agent',configuration:'buffer'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('client-buffer', [{component:'agent',configuration:'buffer'}])">
               <td>Anti-flooding settings</td>
               <td>Agent bucket parameters to avoid event flooding</td>
             </tr>
-            <tr ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('alerts',[{component:'agent',configuration:'labels'}])">
               <td>Labels</td>
               <td>User-defined information about the agent included in alerts</td>
             </tr>
@@ -94,11 +94,11 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('alerts',[{component:'analysis',configuration:'alerts'},{component:'analysis',configuration:'labels'},{component:'mail',configuration:'alerts'},{component:'monitor',configuration:'reports'}, {component:'csyslog',configuration:'csyslog'}])">
               <td>Alerts</td>
               <td>Settings related to the alerts and their format</td>
             </tr>
-            <tr ng-click="switchConfigTab('integrations',[{component:'integrator',configuration:'integration'}])">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('integrations',[{component:'integrator',configuration:'integration'}])">
               <td>Integrations</td>
               <td>Slack, VirusTotal and PagerDuty integrations with external APIs</td>
             </tr>
@@ -114,15 +114,15 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}])">
               <td>Policy monitoring</td>
               <td>Configuration to ensure compliance with security policies, standards and hardening guides</td>
             </tr>
-            <tr ng-click="switchWodle('open-scap')">
+            <tr class="cursor-pointer" ng-click="switchWodle('open-scap')">
               <td>OpenSCAP</td>
               <td>Configuration assessment and automation of compliance monitoring using SCAP checks</td>
             </tr>
-            <tr class="striped" ng-click="switchWodle('cis-cat')">
+            <tr class="striped cursor-pointer" ng-click="switchWodle('cis-cat')">
               <td>CIS-CAT</td>
               <td>Configuration assessment using CIS scanner and SCAP checks</td>
             </tr>
@@ -138,27 +138,27 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchWodle('vulnerability-detector')" ng-if="!agent || agent.id === '000'">
+            <tr class="striped cursor-pointer" ng-click="switchWodle('vulnerability-detector')" ng-if="!agent || agent.id === '000'">
               <td>Vulnerabilities</td>
               <td>Discover what applications are affected by well-known vulnerabilities</td>
             </tr>
-            <tr ng-click="switchWodle('osquery')">
+            <tr class="cursor-pointer" ng-click="switchWodle('osquery')">
               <td>Osquery</td>
               <td>Expose an operating system as a high-performance relational database</td>
             </tr>
-            <tr class="striped" ng-click="switchWodle('syscollector')">
+            <tr class="striped cursor-pointer" ng-click="switchWodle('syscollector')">
               <td>Inventory data</td>
               <td>Gather relevant information about system OS, hardware and packages</td>
             </tr>
-            <tr ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])" ng-if="!agent || agent.id === '000'">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('active-response',[{component:'analysis',configuration:'command'},{component:'analysis',configuration:'active_response'}])" ng-if="!agent || agent.id === '000'">
               <td>Active response</td>
               <td>Active threat addressing by inmmediate response</td>
             </tr>
-            <tr ng-click="switchConfigTab('active-response',[{component:'com',configuration:'active-response'}])" ng-if="agent && agent.id !== '000'">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('active-response',[{component:'com',configuration:'active-response'}])" ng-if="agent && agent.id !== '000'">
               <td>Active response</td>
               <td>Active threat addressing by inmmediate response</td>
             </tr>
-            <tr class="striped" ng-click="switchWodle('command')">
+            <tr class="striped cursor-pointer" ng-click="switchWodle('command')">
               <td>Commands</td>
               <td>Configuration options of the Command wodle</td>
             </tr>
@@ -174,15 +174,15 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('log-collection',[{component:'logcollector',configuration:'localfile'},{component:'logcollector',configuration:'socket'}])">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('log-collection',[{component:'logcollector',configuration:'localfile'},{component:'logcollector',configuration:'socket'}])">
               <td>Log collection</td>
               <td>Log analysis from text files, Windows events or syslog outputs</td>
             </tr>
-            <tr ng-click="switchConfigTab('integrity-monitoring',[{component:'syscheck',configuration:'syscheck'}])">
+            <tr class="cursor-pointer" ng-click="switchConfigTab('integrity-monitoring',[{component:'syscheck',configuration:'syscheck'}])">
               <td>Integrity monitoring</td>
               <td>Identify changes in content, permissions, ownership and attributes of files</td>
             </tr>
-            <tr class="striped" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])" ng-if="!agent || agent.id === '000'">
+            <tr class="striped cursor-pointer" ng-click="switchConfigTab('agentless',[{component:'agentless',configuration:'agentless'}])" ng-if="!agent || agent.id === '000'">
               <td>Agentless</td>
               <td>Run integrity checks on devices such as routers, firewalls or switches</td>
             </tr>
@@ -198,7 +198,7 @@
               <th class="w-350">Name</th>
               <th>Description</th>
             </tr>
-            <tr class="striped" ng-click="switchWodle('aws-s3')">
+            <tr class="striped cursor-pointer" ng-click="switchWodle('aws-s3')">
               <td>Amazon S3</td>
               <td>Security events related to Amazon AWS services, collected directly via AWS API</td>
             </tr>
