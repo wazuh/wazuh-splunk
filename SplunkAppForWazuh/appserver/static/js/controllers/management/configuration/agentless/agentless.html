@@ -17,7 +17,7 @@
   <div flex="auto" layout="row" ng-if="!load">
 
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['agentless-agentless']" ng-if="currentConfig['agentless-agentless'] && isString(currentConfig['agentless-agentless'])"></wz-no-config>
+    <wz-no-config flex error="currentConfig['agentless-agentless']" ng-if="(currentConfig['agentless-agentless'] && isString(currentConfig['agentless-agentless'])) || !currentConfig['agentless-agentless']"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
