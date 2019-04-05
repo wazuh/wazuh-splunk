@@ -12,7 +12,7 @@
         <i class="wz-padding-top-2 fa fa-exclamation-triangle" aria-hidden="true"></i>
         <span>Wazuh could not be recovered.</span>
         <span flex></span>
-        <button ng-click="checkWazuhAgain()" style="margin-top: -7px;" class="btn wz-button-empty-yellow">Try again</button>
+        <button ng-click="checkWazuhAgain()" style="margin-top: -7px;" class="btn wz-button-empty-yellow cursor-pointer">Try again</button>
       </div>
   </div>
 </div>
@@ -24,7 +24,7 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-      <span ng-if="!showSpinner" ng-click="closeToaster()">
+      <span ng-if="!showSpinner" ng-click="closeToaster()" class="cursor-pointer">
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     </div>
@@ -35,7 +35,7 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-      <span ng-if="!showSpinner" ng-click="closeToaster()">
+      <span ng-if="!showSpinner" ng-click="closeToaster()" class="cursor-pointer">
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     </div>
@@ -46,7 +46,7 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-      <span ng-if="!showSpinner" ng-click="closeToaster()">
+      <span ng-if="!showSpinner" ng-click="closeToaster()" class="cursor-pointer">
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     </div>
@@ -57,7 +57,7 @@
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-      <span ng-if="!showSpinner" ng-click="closeToaster()">
+      <span ng-if="!showSpinner" ng-click="closeToaster()" class="cursor-pointer">
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     </div>

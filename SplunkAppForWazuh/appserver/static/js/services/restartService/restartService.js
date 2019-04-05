@@ -62,16 +62,16 @@ define(['../module'], function(module) {
             'PUT'
           )
           if (result && result.data && !result.data.error) {
-            return `Restarting the node ${node}.`
+            return `Restarting the node: ${node}.`
           } else {
-            throw `Cannot send restart signal to the node ${node}.`
+            throw `Cannot send restart signal to the node: ${node}.`
           }
         } else {
           await restartManager()
           return `Restarting manager because cluster is disabled and cannot send the restart signal to ${node}.`
         }
       } catch (error) {
-        return Promise.reject(error || `Cannot restart the node ${node}`)
+        return Promise.reject(error || `Cannot restart the node: ${node}`)
       }
     }
 

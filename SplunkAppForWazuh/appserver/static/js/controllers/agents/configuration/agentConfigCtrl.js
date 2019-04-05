@@ -99,7 +99,8 @@ define(['../../module', '../../../utils/config-handler'], function(
           configurationTab,
           sections,
           this.$scope,
-          this.id
+          this.id, // Send the agent id
+          false // Send node as false
         )
       this.$scope.switchWodle = wodleName =>
         this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)

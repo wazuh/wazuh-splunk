@@ -1400,15 +1400,15 @@ tfoot.no-border tr td {
 
 .wz-button-cancel {
   background: white !important;
-  border-color: black !important;
-  color: black !important;
+  border-color: #5c6773 !important;
+  color: #5c6773 !important;
 }
 
 .wz-button-cancel.active,
 .wz-button-cancel:not([disabled]):hover,
 .wz-button-cancel-flat:not([disabled]):hover {
   background-color: #e4e4e4 !important;
-  color: black !important;
+  color: #5c6773 !important;
 }
 
 .wz-button-report {
@@ -1508,4 +1508,13 @@ input:focus {
   border-left: solid 3px !important;
   border-color: #f50000 !important;
   color: #930000 !important;
+}
+
+.wz-full-width {
+  width: 100% !important;
+}
+
+.conf-node-selector {
+  margin-top: 5px !important;
+  margin-right: 50px !important;
 }

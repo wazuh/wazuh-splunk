@@ -18,7 +18,7 @@
   <div flex="auto" layout="row" ng-if="!load">
 
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['integrator-integration']" ng-if="currentConfig['integrator-integration'] && isString(currentConfig['integrator-integration'])"></wz-no-config>
+    <wz-no-config flex error="currentConfig['integrator-integration']" ng-if="(currentConfig['integrator-integration'] && isString(currentConfig['integrator-integration'])) || !currentConfig['integrator-integration']"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->

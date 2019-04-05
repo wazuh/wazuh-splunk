@@ -1,7 +1,8 @@
 <div flex="auto" layout="column" ng-init="switchConfigurationTab('welcome')">
   <div layout="row" layout-align="start center">
 
-    <div ng-if='!currentAgent'>
+    <!-- Breadcrumbs for nodes configuration -->
+    <div ng-if='!currentAgent' class="wz-full-width">
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
       <div layout="row" layout-padding>
@@ -19,9 +20,16 @@
           <span> / </span>
           <span>{{ configurationTab }}</span>
         </div>
+        <span flex class="flex"></span>
+        <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
+          ng-change="changeNode(selectedNode.name)" ng-if="isAdmin && clusterEnabled"
+          class="input input-dropdown conf-node-selector wz-button-empty"></select>
       </div>
       <!-- End breadcrumbs -->
     </div>
+
+
+    <!-- Breadcrumbs for agents configuration -->
     <div ng-if='currentAgent'>
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
@@ -34,7 +42,8 @@
             ({{currentAgent.id}})</span>
         </div>
         <div ng-if="currentAgent.status">
-          <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)" aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
+          <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)"
+            aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
         </div>
         <span> / </span>
         <!-- Welcome section -->

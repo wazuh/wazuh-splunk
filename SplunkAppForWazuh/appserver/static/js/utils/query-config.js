@@ -6,11 +6,13 @@
  */
 define([], function() {
   'use strict'
-  return async function queryConfig(agentId, sections, apiReq) {
+  return async function queryConfig(sections, apiReq, agentId = false, node = false) {
     try {
       if (
-        !agentId ||
+        agentId &&
         typeof agentId !== 'string' ||
+        node &&
+        typeof node !== 'string' ||
         !sections ||
         !sections.length ||
         typeof sections !== 'object' ||
@@ -30,9 +32,25 @@ define([], function() {
         ) {
           throw new Error('Invalid section')
         }
-        const partialResult = await apiReq.apiReq(
-          `/agents/${agentId}/config/${component}/${configuration}`
-        )
+
+        // Gets manager, node or agent config
+        let partialResult = {}
+        if (agentId && !node) {
+          partialResult = await apiReq.apiReq(
+            `/agents/${agentId}/config/${component}/${configuration}`
+          )
+        } else if (!agentId && node) {
+          partialResult = await apiReq.apiReq(
+            `/cluster/${node}/config/${component}/${configuration}` 
+          )
+        } else if (!agentId && !node) {
+          partialResult = await apiReq.apiReq(
+            `/manager/config/${component}/${configuration}`
+          )
+        } else {
+          throw new Error('Invalid host instance.')
+        }
+
         result[`${component}-${configuration}`] = partialResult.data.data
         if (partialResult.data.error) {
           result[`${component}-${configuration}`] = partialResult.data.message

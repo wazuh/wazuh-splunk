@@ -39,7 +39,7 @@ define([
      * @param {string} configurationTab The configuration tab to open
      * @param {Array<object>} sections Array that includes sections to be fetched
      */
-    async switchConfigTab(configurationTab, sections, $scope, agentId = false) {
+    async switchConfigTab(configurationTab, sections, $scope, agentId = false, node =  false) {
       try {
         $scope.load = true
         $scope.currentConfig = null
@@ -48,9 +48,10 @@ define([
         $scope.configurationSubTab = false
         $scope.configurationTab = configurationTab
         const currentConfigReq = await queryConfig(
-          agentId || '000',
           sections,
-          this.apiReq
+          this.apiReq,
+          agentId,
+          node
         )
         $scope.currentConfig = currentConfigReq
         if (sections[0].component === 'integrator') {
@@ -76,7 +77,7 @@ define([
           $scope.integrations = {}
         }
         $scope.load = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
         this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
@@ -88,7 +89,7 @@ define([
      * Switchs to a wodle section
      * @param {string} wodleName The wodle to open
      */
-    async switchWodle(wodleName, $scope, agentId = false) {
+    async switchWodle(wodleName, $scope, agentId = false, node = false) {
       try {
         $scope.load = true
         $scope.currentConfig = null
@@ -98,9 +99,10 @@ define([
         $scope.configurationTab = wodleName
 
         $scope.currentConfig = await queryConfig(
-          agentId || '000',
           [{ component: 'wmodules', configuration: 'wmodules' }],
-          this.apiReq
+          this.apiReq,
+          agentId,
+          node
         )
 
         // Filter by provided wodleName
@@ -124,7 +126,7 @@ define([
         }
 
         $scope.load = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
         this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
@@ -143,7 +145,7 @@ define([
       $scope.JSONContent = false
       $scope.configurationSubTab = false
       $scope.configurationTab = configurationTab
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -155,7 +157,7 @@ define([
       $scope.XMLContent = false
       $scope.JSONContent = false
       $scope.configurationSubTab = configurationSubTab
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -177,7 +179,7 @@ define([
           $scope.XMLContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -199,7 +201,7 @@ define([
           $scope.JSONContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     reset($scope) {
