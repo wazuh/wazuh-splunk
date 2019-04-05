@@ -19,6 +19,7 @@ define(['../module'], function(directives) {
           // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
           try {
             if (!$scope.wazuhNotReadyYet) {
+              $scope.showHeadRestartToaster = false
               $scope.messageType = data.type
               $scope.message = data.msg
               $scope.showHeadToaster = true
@@ -39,10 +40,27 @@ define(['../module'], function(directives) {
           }
         })
 
+        // Listen for show restart toaster
+        $scope.$on('showHeadRestartToaster', (event, data) => {
+          // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
+          try {            
+            if (!$scope.wazuhNotReadyYet) {
+              $scope.showHeadToaster = false
+              $scope.message = data.msg
+              $scope.showHeadRestartToaster = true
+              $scope.$applyAsync()
+            }
+          } catch (error) {
+            $scope.showHeadRestartToaster = false
+            $scope.$applyAsync()
+          }
+        })
+
         // Listen for wazuh not ready event
         $scope.$on('wazuhNotReadyYet', (event, data) => {
           let msg = false
           $scope.showHeadToaster = false
+          $scope.showHeadRestartToaster = false
           if (data && data.msg) {
             msg = data.msg
           }
@@ -56,7 +74,10 @@ define(['../module'], function(directives) {
 
         // Close the head toaster
         $scope.closeToaster = () => {
+          console.log("closeToaster")
           $scope.showHeadToaster = false
+          $scope.showHeadRestartToaster = false
+          $scope.$applyAsync()
         }
       },
       templateUrl:

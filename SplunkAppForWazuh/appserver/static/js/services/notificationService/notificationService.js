@@ -98,6 +98,10 @@ define(['../module'], function(module) {
       $rootScope.$broadcast('showHeadToaster', { type, msg, delay })
     }
 
+    const showHeadRestartToaster = (msg) => {
+      $rootScope.$broadcast('showHeadRestartToaster', {msg})
+    }
+
     const wazuhIsNotReady = text => {
       try {
         if (text instanceof Object && text.message.includes('ERROR3099')) {
@@ -119,7 +123,8 @@ define(['../module'], function(module) {
       showErrorToast: showErrorToast,
       showSuccessToast: showSuccessToast,
       showWarningToast: showWarningToast,
-      showHeadToaster: showHeadToaster
+      showHeadToaster: showHeadToaster,
+      showHeadRestartToaster:showHeadRestartToaster
     }
   })
 })

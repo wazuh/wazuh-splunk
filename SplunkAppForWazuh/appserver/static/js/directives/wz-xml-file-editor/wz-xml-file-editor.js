@@ -199,7 +199,11 @@ define([
               } else {
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
-                $scope.restartBtn = true
+                // check if it is a cluster should be restart the cluster instead of the manager
+                const msg = params.node 
+                  ? `Changes will not take effect until restart the node: ${params.node}.`
+                  : 'Changes will not take effect until restart the manager.'
+                $notificationService.showHeadRestartToaster(msg)
                 $notificationService.showSuccessToast(
                   'Configuration saved successfully.'
                 )
