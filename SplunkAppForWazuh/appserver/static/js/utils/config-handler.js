@@ -77,7 +77,7 @@ define([
           $scope.integrations = {}
         }
         $scope.load = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
         this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
@@ -126,7 +126,7 @@ define([
         }
 
         $scope.load = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
         this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
@@ -145,7 +145,7 @@ define([
       $scope.JSONContent = false
       $scope.configurationSubTab = false
       $scope.configurationTab = configurationTab
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -157,7 +157,7 @@ define([
       $scope.XMLContent = false
       $scope.JSONContent = false
       $scope.configurationSubTab = configurationSubTab
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -179,7 +179,7 @@ define([
           $scope.XMLContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -201,7 +201,7 @@ define([
           $scope.JSONContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     reset($scope) {
