@@ -40,9 +40,9 @@ define(['../../module', '../../../utils/config-handler'], function (
             this.scope.selectedNode = this.clusterInfo.nodes.data.data.items[0].name
             this.scope.nodes = this.clusterInfo.nodes.data.data.items
           }
-          this.getNodeConfig(this.scope.selectedNode)
+          this.changeNode(this.scope.selectedNode)
         } else {
-          this.getNodeConfig()
+          this.scope.selectedNode = false // If cluster is disabled there is not a node selected
         }
         
         this.scope.goToEdition = true
@@ -58,7 +58,9 @@ define(['../../module', '../../../utils/config-handler'], function (
           this.configurationHandler.switchConfigTab(
             configurationTab,
             sections,
-            this.scope
+            this.scope,
+            false, //Send agent.id as false
+            this.scope.selectedNode // Send selected node
           )
         this.scope.switchWodle = wodleName =>
           this.configurationHandler.switchWodle(wodleName, this.scope)
@@ -90,25 +92,13 @@ define(['../../module', '../../../utils/config-handler'], function (
     }
 
     /**
-     * Gets the node configuration
-     * 
-     * @param {String} node 
-     */
-    async getNodeConfig(node) {
-      try {
-       this.notification.showSimpleToast(`Selected node: ${node}`)
-      } catch (error) {
-        this.notification.showErrorToast(`Error editing node: ${error}`)
-      }
-    }
-
-    /**
      * Changes the selected node
      * 
      * @param {String} node 
      */
     changeNode(node) {
-      this.getNodeConfig(node)
+      this.scope.selectedNode = node
+      this.notification.showSimpleToast(`Node selected: ${node}`)
     }
 
   }
