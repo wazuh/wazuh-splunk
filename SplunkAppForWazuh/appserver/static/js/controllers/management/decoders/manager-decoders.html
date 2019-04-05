@@ -36,7 +36,7 @@
           aria-invalid="false" wz-enter="search(customSearch)">
         <input  id="search-input-rules" ng-if="rulesetFiles" flex placeholder="Filter decoders files..." ng-model="customSearch" type="text"
           class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false" wz-enter="search(customSearch)">
-        <wz-add-filter-chip id-input="search-input-rules" options="[{label: 'File', value: 'file'}, {label: 'Path', value: 'path'}]"></wz-add-filter-chip>
+        <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules" options="[{label: 'File', value: 'file'}, {label: 'Path', value: 'path'}]"></wz-add-filter-chip>
         <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(customSearch)">
             <span>Search</span>
         </button>
@@ -59,7 +59,7 @@
       </md-switch>
     </md-card-actions>
     <md-card-contents>
-      <md-chips class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
+      <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
         <md-chip class="wz-chip" ng-show="includesFilter('file')">
           <span>File: {{ getFilter('file') }}
             <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
