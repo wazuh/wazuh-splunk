@@ -81,7 +81,7 @@ define(['../module'], function(directives) {
           if (!$scope.$$phase) $scope.$digest()
         }
         // Listens for changes in the selected API
-        $scope.$on('updatedAPI', () => {
+        $scope.$on('updatedAPI', (event) => {
           event.stopPropagation()
           update()
         })
