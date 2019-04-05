@@ -27,25 +27,8 @@
     </button>
     <span class="flex"></span>
 
-    <!-- Restart if saved without errors-->
-    <div ng-show="restartAndApply" style="padding-right: 15px;">
-      <span>Do you want to restart {{editingNode}} to apply configuration?</span>
-      <button style="height: 30px;" ng-if="isAdmin" ng-click="closeRestartConfirmation()"
-        class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-        class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-      <button style="height: 30px;" ng-if="isAdmin && clusterEnabled"
-        ng-click="restart(editingNode); closeRestartConfirmation()" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
-
     <!-- Restart button -->
-    <div style="padding-right: 15px;" ng-show="!restartAndApply">
+    <div style="padding-right: 15px;">
       <div ng-show="!confirmingRestart">
         <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()"
           ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button-empty pull-right wz-margin-left-10'>

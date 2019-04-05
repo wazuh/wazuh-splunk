@@ -92,7 +92,6 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
 
     async closeEditingFile() {
       try {
-        this.scope.restartAndApply = false
         //Refresh decoder info
         const result = await this.requestService.apiReq(
           `/decoders/${this.scope.currentDecoder.name}`

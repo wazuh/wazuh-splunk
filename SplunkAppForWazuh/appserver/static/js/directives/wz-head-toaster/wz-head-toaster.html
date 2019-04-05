@@ -20,7 +20,7 @@
 <div ng-if="showHeadToaster && !wazuhNotReadyYet">
   <div ng-if="messageType === 'info'" flex class="euiCallOut flex ht-info">
     <div class="euiCallOutHeader" layout="row">
-      <i class="wz-padding-top-2 fa fa-info" aria-hidden="true"></i>
+      <i class="wz-padding-top-2 fa fa-info-circle" aria-hidden="true"></i>
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
@@ -42,7 +42,7 @@
   </div>
   <div ng-if="messageType === 'success'" flex class="euiCallOut flex ht-success">
     <div class="euiCallOutHeader" layout="row">
-      <i class="wz-padding-top-2 fa fa-check" aria-hidden="true"></i>
+      <i class="wz-padding-top-2 fa fa-check-circle" aria-hidden="true"></i>
       <span>{{message}}</span>
       <span flex></span>
       <i ng-if="showSpinner" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
