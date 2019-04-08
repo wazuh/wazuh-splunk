@@ -19,7 +19,7 @@
       </md-tooltip>
     </md-button>
     <!-- Decoder title -->
-    <h1 class="md-headline wz-headline">{{currentDecoder.name}}</h1>
+    <h1 class="font-size-20">{{currentDecoder.name}}</h1>
   </div>
   <!-- End back button, title and status indicator -->
 
@@ -165,7 +165,7 @@
           <span ng-show='!xmlHasErrors && adminMode'>
             <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
               aria-hidden='true'></i>
-            Saves file</span>
+            Save file</span>
           <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
             XML format error</span>
         </button>

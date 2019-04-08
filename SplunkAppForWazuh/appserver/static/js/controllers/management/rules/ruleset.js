@@ -234,6 +234,7 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {String} term
      */
     search(term) {
+      let clearInput = true;
       if (!term) term = ''
       if (
         this.view === 'ruleset' &&
@@ -312,8 +313,14 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
       } else {
+        clearInput = false;
         this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
       }
+      if(clearInput){
+        const searchBar = $('#search-input-rules');
+        searchBar.val('');
+      }
+      this.scope.$applyAsync()
       this.applyCustomFilters()
       return
     }
