@@ -82,6 +82,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     initialize() {
       this.scope.rulesetFiles = false
+      this.setInitialCustomFilters()
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
         : delete window.localStorage.decoders
@@ -313,6 +314,7 @@ define(['../../module', 'FileSaver'], function(app) {
       } else {
         this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
       }
+      this.applyCustomFilters()
       return
     }
 
@@ -352,9 +354,62 @@ define(['../../module', 'FileSaver'], function(app) {
             }
           })
         }
+        this.applyCustomFilters()
         return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
       } catch (err) {
         this.notification.showErrorToast('Error removing the filter')
+      }
+    }
+
+    /**
+     * Gets the path from the state name
+     */
+    getPathFromState() {
+      try {
+        const state = window.sessionStorage.getItem('params')
+        if (state === 'mg-rules') {
+          return 'etc/rules'
+        } else if (state === 'mg-decoders') {
+          return 'etc/decoders'
+        }
+        return false
+      } catch (error) {
+        return false
+      }
+    }
+
+    /**
+     * Sets initial filters
+     */
+    setInitialCustomFilters() {
+      try {
+        const path = this.getPathFromState()  
+        if (path) {
+          this.scope.appliedCustomFilters = [{ name:'path',value: path}]  
+        }      
+      } catch (error) {
+        this.notification.showErrorToast('Cannot initialize custom filters.')
+      }
+    }
+
+    /**
+     * Adds or remove filters for the local rules or decoders
+     */
+    applyCustomFilters() {
+      try {
+        const path = this.getPathFromState()        
+        if (path) {
+          this.scope.appliedCustomFilters = [{ name:'path',value: path}]
+          const restFilters = this.scope.appliedFilters.filter(
+            item => item.name !== 'path'
+          )
+          Array.prototype.push.apply(
+            this.scope.appliedCustomFilters, 
+            restFilters
+          )
+        }
+      } catch (error) {
+        this.notification.showErrorToast('Cannot apply filter for custom rules or decoders files.')
       }
     }
 
