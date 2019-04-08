@@ -10,9 +10,9 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(app) {
+define(['../module'], function (app) {
   'use strict'
-  app.directive('wzTagFilter', function(BASE_URL) {
+  app.directive('wzTagFilter', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -57,7 +57,7 @@ define(['../module'], function(app) {
                 value: obj,
                 type: isFilter ? 'filter' : 'search'
               }
-              const idxSearch = $scope.tagList.find(function(x) {
+              const idxSearch = $scope.tagList.find(function (x) {
                 return x.type === 'search'
               })
               if (!isFilter && idxSearch) {
@@ -70,12 +70,12 @@ define(['../module'], function(app) {
                 )
               }
               if (
-                !$scope.tagList.find(function(x) {
+                !$scope.tagList.find(function (x) {
                   return (
                     x.type === 'filter' &&
                     x.key === tag.key &&
                     x.value.value.toUpperCase() ===
-                      tag.value.value.toUpperCase()
+                    tag.value.value.toUpperCase()
                   )
                 })
               ) {
@@ -134,6 +134,7 @@ define(['../module'], function(app) {
                 }
               }
             })
+            $scope.$applyAsync();
             $scope.queryFn({ q: queryObj.query, search: queryObj.search })
           } catch (error) {
             $notificationService.showErrorToast(error, 'Error in query request')
@@ -151,7 +152,7 @@ define(['../module'], function(app) {
                   value:
                     (
                       ((($scope.connectors || [])[index] || {}).subgroup || [])[
-                        idx
+                      idx
                       ] || {}
                     ).value || ','
                 })
@@ -175,14 +176,12 @@ define(['../module'], function(app) {
             $scope.connectors[parentIdx].value = ';'
           } else {
             if (idx !== undefined) {
-              const value = $scope.connectors[parentIdx].subgroup[idx].value
-              $scope.connectors[parentIdx].subgroup[idx].value =
-                value === ';' ? ',' : ';'
+              $scope.connectors[parentIdx].subgroup[idx].value = ","
             } else {
               const value = $scope.connectors[parentIdx].value
               $scope.connectors[parentIdx].value = value === ';' ? ',' : ';'
+              buildQuery($scope.groupedTagList)
             }
-            buildQuery($scope.groupedTagList)
           }
         }
 
@@ -279,14 +278,14 @@ define(['../module'], function(app) {
               }
             }
           } else {
-            const model = $scope.dataModel.find(function(x) {
+            const model = $scope.dataModel.find(function (x) {
               return x.key === $scope.newTag.split(':')[0].trim()
             })
 
             if (model) {
               $scope.autocompleteContent.list = [
                 ...new Set(
-                  model.list.filter(function(x) {
+                  model.list.filter(function (x) {
                     return x
                       .toUpperCase()
                       .includes(term[1].trim().toUpperCase())
@@ -341,7 +340,7 @@ define(['../module'], function(app) {
           secondPart = ('000' + secondPart.toString(36)).slice(-3)
           return firstPart + secondPart
         }
-        $('#wz-search-filter-bar-input').bind('keydown', function(e) {
+        $('#wz-search-filter-bar-input').bind('keydown', function (e) {
           let $current = $(
             '#wz-search-filter-bar-autocomplete-list li.selected'
           )
@@ -387,6 +386,7 @@ define(['../module'], function(app) {
             }
           }
         })
+        $('#wz-search-filter-bar-input').attr('autocomplete', 'off')
         load()
       },
       templateUrl:
