@@ -13,6 +13,11 @@ require.config({
     ngMaterial: 'js/libs/material',
     ngRoute: 'js/libs/router',
 
+    // Angular Chart
+    moment: 'js/libs/moment',
+    chart: 'js/libs/chart',
+    angularChart: 'js/libs/angular-chart',
+
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
 
@@ -46,6 +51,14 @@ require.config({
     ngRoute: {
       exports: 'ngRoute',
       deps: ['angular']
+    },
+    chart: {
+      exports: 'chart',
+      deps: ['angular']
+    },
+    angularChart: {
+      exports: 'angularChart',
+      deps: ['angular', 'chart']
     }
   },
 

@@ -21,7 +21,7 @@
 	  ? (module.exports = factory())
 	  : typeof define === 'function' && define.amd
 	  ? define(factory)
-	  : (global.CodeMirror = factory());
+	  : (global.ColResizable = factory());
   })(this, function() {
 	'use strict';
 	

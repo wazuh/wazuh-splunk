@@ -8,7 +8,9 @@ define([
   './controllers/index',
   './filters/index',
   './run/index',
-  './config/index'
+  './config/index',
+  'chart',
+  'angularChart'
 ], function(ng) {
   'use strict'
   return ng.module('wazuhApp', [
