@@ -200,10 +200,11 @@ define([
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
                 // check if it is a cluster should be restart the cluster instead of the manager
-                const msg = params.node 
-                  ? `Changes will not take effect until restart the node: ${params.node}.`
-                  : 'Changes will not take effect until restart the manager.'
-                $notificationService.showHeadRestartToaster(msg)
+                const node = params.node ? params.node : false
+                const msg = node 
+                  ? `Changes will not take effect until restart the node: ${node}.`
+                  : 'Changes will not take effect until restart Wazuh.'
+                $notificationService.showHeadRestartToaster(msg, node)
                 $notificationService.showSuccessToast(
                   'Configuration saved successfully.'
                 )

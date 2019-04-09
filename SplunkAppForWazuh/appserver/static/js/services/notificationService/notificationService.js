@@ -98,8 +98,8 @@ define(['../module'], function(module) {
       $rootScope.$broadcast('showHeadToaster', { type, msg, delay })
     }
 
-    const showHeadRestartToaster = (msg) => {
-      $rootScope.$broadcast('showHeadRestartToaster', {msg})
+    const showHeadRestartToaster = (msg, node = false) => {
+      $rootScope.$broadcast('showHeadRestartToaster', {msg, node})
     }
 
     const wazuhIsNotReady = text => {

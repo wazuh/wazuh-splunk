@@ -13,9 +13,13 @@ define(['../module'], function(directives) {
   'use strict'
   directives.directive('wzHeadToaster', function(BASE_URL) {
     return {
-      controller: function($scope, $checkDaemonsService) {
+      controller: function($scope, $checkDaemonsService, $restartService) {
         // Listen for show toaster
         $scope.$on('showHeadToaster', (event, data) => {
+          showHeadToaster(data)
+        })
+
+        const showHeadToaster = data => {
           // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
           try {
             if (!$scope.wazuhNotReadyYet) {
@@ -38,15 +42,19 @@ define(['../module'], function(directives) {
             $scope.showSpinner = false
             $scope.$applyAsync()
           }
-        })
+        }
 
         // Listen for show restart toaster
         $scope.$on('showHeadRestartToaster', (event, data) => {
-          // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
+          showHeadRestartToaster(data)
+        })
+
+        const showHeadRestartToaster = data => {
           try {            
             if (!$scope.wazuhNotReadyYet) {
               $scope.showHeadToaster = false
               $scope.message = data.msg
+              $scope.node = data.node
               $scope.showHeadRestartToaster = true
               $scope.$applyAsync()
             }
@@ -54,7 +62,7 @@ define(['../module'], function(directives) {
             $scope.showHeadRestartToaster = false
             $scope.$applyAsync()
           }
-        })
+        }
 
         // Listen for wazuh not ready event
         $scope.$on('wazuhNotReadyYet', (event, data) => {
@@ -74,10 +82,29 @@ define(['../module'], function(directives) {
 
         // Close the head toaster
         $scope.closeToaster = () => {
-          console.log("closeToaster")
           $scope.showHeadToaster = false
           $scope.showHeadRestartToaster = false
           $scope.$applyAsync()
+        }
+
+        // Restars the manager, cluster or node
+        $scope.restartWazuh = node => restartWazuh(node)
+
+        const restartWazuh = async (node = false) => { 
+          try {
+            let result = ''
+            if (node) {
+              result = await $restartService.restartNode(node)
+            } else {
+              result = await $restartService.restart()
+            }
+            $scope.closeToaster()
+            const data = {type:'info', msg:result, delay:true, spinner:true}
+            showHeadToaster(data)
+          } catch (error) {
+            const data = {type:'error', msg:error, delay:false, spinner:false}
+            showHeadToaster(data)
+          }
         }
       },
       templateUrl:
