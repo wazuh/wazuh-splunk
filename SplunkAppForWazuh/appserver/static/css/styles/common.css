@@ -41,6 +41,15 @@
   hyphens: auto;
 } 
 
+.md-toolbar-tools .md-button:not(.wz-menu-settings) {
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 50px;
+  border-radius: 0;
+  line-height: 50px!important;
+  padding: 0px 16px;
+  margin: 0px;
+}
 
 .addGroupInput {
   max-height: 20px !important;
@@ -54,6 +63,13 @@
 
 .min-height-300 {
   min-height: 300px;
+}
+
+.btns-separator{
+  width: 0px;
+  height: 40px;
+  border: 1px solid #f2f4f5;
+  margin: 0px 9px;
 }
 
 .agreeBtn {
@@ -222,7 +238,9 @@ md-dialog .md-actions, md-dialog md-dialog-actions{
   border: none!important;
 }
 
-
+.md-padding-h{
+  padding: 0 16px;
+}
 
 md-dialog .md-button.md-primary:not(.md-cancel-button){
   color: #ffffff;
@@ -1148,16 +1166,21 @@ div.inline {
   margin-left: -16px;
   margin-right: -16px;
   margin-top: -16px;
-  padding-top: 15px;
+  margin-bottom: 10px;
+  padding-top: 16px;
 }
 
 .showing-checks {
-  margin-right: 36px;
+  margin-right: 15px;
+  margin-top: 5px
 }
 
 .not-showing-checks {
-  margin-bottom: -25px;
-  margin-right: 20px;
+  margin-bottom: -21px;
+  margin-right: 0px;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 100;
 }
 
 .no-margin-sides {

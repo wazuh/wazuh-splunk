@@ -22,7 +22,6 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
-from api import api
 
 
 def getSelfConfStanza(file, stanza):
@@ -75,7 +74,6 @@ class manager(controllers.BaseController):
             self.db = database()
             self.session = requestsbak.Session()
             self.session.trust_env = False
-            self.api = api()
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
 
@@ -318,7 +316,7 @@ class manager(controllers.BaseController):
             request_cluster_name = self.session.get(
                 url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
             output = {}
-            daemons_ready = self.api.check_daemons(url, auth, verify, opt_cluster)
+            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
             # Pass the cluster status instead of always False
             if not daemons_ready:
                 raise Exception("Daemons are not ready yet.")
@@ -335,3 +333,38 @@ class manager(controllers.BaseController):
                 self.logger.error("Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
         return result
+
+    def check_daemons(self, url, auth, verify, check_cluster):
+        """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
+
+        Parameters
+        ----------
+        url: str
+        auth: str
+        verify: str
+        cluster_enabled: bool
+        """
+        try:
+            request_cluster = self.session.get(
+                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+            # Try to get cluster is enabled if the request fail set to false
+            try:
+                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+            except Exception as e:
+                cluster_enabled = False
+            cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
+            opt_endpoint = "/manager/status"
+            daemons_status = self.session.get(
+                    url + opt_endpoint, auth=auth,
+                    verify=verify).json()
+            if not daemons_status['error']:
+                d = daemons_status['data']
+                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                if cc:
+                    daemons['clusterd'] = d['wazuh-clusterd']
+                values = list(daemons.values())
+                wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
+                return wazuh_ready
+        except Exception as e:
+            self.logger.error("Error checking daemons: %s" % (e))
+            raise e

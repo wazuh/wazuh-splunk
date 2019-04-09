@@ -254,9 +254,9 @@ define([
             setTimeout(() => {
               $scope.xmlCodeBox.refresh()
             }, 1)
-            autoFormat()
+            //autoFormat()
           } catch (error) {
-            $notificationService.showSimpleToast('Fetching original file')
+            $notificationService.showErrorToast('Error fetching xml content.')
           }
         }
 

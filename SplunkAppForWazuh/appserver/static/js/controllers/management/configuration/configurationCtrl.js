@@ -151,9 +151,8 @@ define(['../../module', '../../../utils/config-handler'], function (
           )
         }
         this.scope.$applyAsync()
-        this.notification.showSimpleToast(`Node selected: ${node}`)  
+        //this.notification.showSimpleToast(`Node selected: ${node}`)  
       } catch (error) {
-        console.error("ee ", error)
         this.notification.showErrorToast(error || `Cannot load ${node} configuration.`)
       }
       

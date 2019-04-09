@@ -17,19 +17,19 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">Lists</md-nav-item>
 </md-nav-bar>
 
-<div ng-if="!addingNewFile">
-  <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
-    <div flex class="height-40 wz-margin-right-15">
+<div ng-if="!addingNewFile" class="md-padding-h">
+  <div ng-show="!loading" layout="row" layout-align="start center">
+    <div flex>
       <div layout="row">
-        <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput height-40"
           aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(customSearch)">
+        <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10" ng-click="search(customSearch)">
             <span>Search</span>
         </button>
       </div>
     </div>
   </div>
-  <md-card class="wz-md-card">
+  <md-card class="wz-md-card no-margin-sides">
     <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
       <a ng-click="addNewFile()">Add new list</a>
       <span flex="" class="flex"></span>

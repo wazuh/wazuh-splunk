@@ -27,7 +27,6 @@ define([
       isAdmin,
       $cdbEditor,
       cdbInfo,
-      $filter,
       $restartService
     ) {
       super(
@@ -47,7 +46,6 @@ define([
       this.notification = $notificationService
       this.pagination = pagination
       this.checkGap = checkGap
-      this.filter = $filter
       this.restartService = $restartService
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
@@ -118,7 +116,6 @@ define([
           this.scope.currentPage = n
           this.scope.nextPage(n)
         }
-        this.scope.filterContent = filter => this.filterContent(filter)
 
         this.scope.restart = () => this.restart()
         this.scope.closeRestartConfirmation = () =>
@@ -126,11 +123,6 @@ define([
       } catch (error) {
         this.notification.showErrorToast('Error editing CDB list')
       }
-    }
-
-    async filterContent(filter) {
-      this.scope.items = this.filter('filter')(this.contentToFilter, filter)
-      this.initPagination()
     }
 
     async fetchFile(fileName, path) {

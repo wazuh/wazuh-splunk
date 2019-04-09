@@ -69,7 +69,6 @@ define(['../../module'], function(controllers) {
         })
         
       } catch (error) {
-        console.error("ERROR WHEN INIT MANAGER CONFIG EDITION ", error)
         this.notification.showErrorToast(error)
         this.state.go('manager')
       }

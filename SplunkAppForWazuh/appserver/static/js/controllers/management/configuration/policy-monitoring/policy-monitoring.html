@@ -1,4 +1,4 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring'" ng-init="switchConfigurationSubTab('pm-general')">
+<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca'" ng-init="switchConfigurationSubTab('pm-general')">
 
   <!-- Headline -->
   <div layout="column" layout-padding>
@@ -27,7 +27,7 @@
   <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Policy monitoring navigation links">
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
-    <md-nav-item ng-if="currentAgent" class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-ca')" name="pm-ca">Configuration
+    <md-nav-item ng-if="currentAgent" class="wz-nav-item" md-nav-click="switchWodle('sca'); switchConfigurationSubTab('pm-ca')" name="pm-ca">Configuration
       assessment</md-nav-item>
   </md-nav-bar>
   <!-- End Policy monitoring navigation bar -->
@@ -46,11 +46,11 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['syscheck-rootcheck'] && !isString(currentConfig['syscheck-rootcheck']) && currentConfig['syscheck-rootcheck'].rootcheck">
+    <div class="configuration-margin-top" flex layout="column" ng-if="(currentConfig['syscheck-rootcheck'] && !isString(currentConfig['syscheck-rootcheck']) && currentConfig['syscheck-rootcheck'].rootcheck) || (currentConfig['sca'] && !isString(currentConfig['sca']))">
 
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && !currentConfig['syscheck-rootcheck'].rootcheck.system_audit"></wz-no-config>
+      <wz-no-config flex error="'not-present'" ng-if="(configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && !currentConfig['syscheck-rootcheck'].rootcheck.system_audit) || (configurationSubTab === 'pm-ca' && !currentConfig['sca'])"></wz-no-config>
       <!-- End no configuration section -->
 
       <!-- The main card will all the settings -->
@@ -176,13 +176,13 @@
           <div layout="row" style="padding-left: 20%; margin-bottom:30px;">
             <div class="wz-padding-top-10" style="width:100%">
               <!-- content -->
-              <wz-config-item label="Configuration assessment status" value="currentConfig['wmodules-wmodules']['wmodules'][4]['sca'].enabled === 'yes' ? 'enabled' : 'disabled'">
+              <wz-config-item label="Configuration assessment status" value="currentConfig['sca'].enabled === 'yes' ? 'enabled' : 'disabled'">
               </wz-config-item>
-              <wz-config-item label="Interval" value="currentConfig['wmodules-wmodules']['wmodules'][4]['sca'].interval">
+              <wz-config-item label="Interval" value="currentConfig['sca'].interval">
               </wz-config-item>
-              <wz-config-item label="Scan on start" value="currentConfig['wmodules-wmodules']['wmodules'][4]['sca'].scan_on_start">
+              <wz-config-item label="Scan on start" value="currentConfig['sca'].scan_on_start">
               </wz-config-item>
-              <wz-config-item label="Skip nfs" value="currentConfig['wmodules-wmodules']['wmodules'][4]['sca'].skip_nfs">
+              <wz-config-item label="Skip nfs" value="currentConfig['sca'].skip_nfs">
               </wz-config-item>
               <!-- end content -->
             </div>
@@ -190,7 +190,7 @@
           <!-- End configuration block -->
 
           <!-- Policies block -->
-          <div ng-if="currentConfig['wmodules-wmodules']['wmodules'][4]['sca'].enabled === 'yes'">
+          <div ng-if="currentConfig['sca'].enabled === 'yes'">
             <div layout="row" layout-align="start center">
               <div>
                 <span class="font-size-16">Policies</span>
@@ -207,7 +207,7 @@
                   <th class="wz-text-left">Name</th>
                 </thead>
                 <tbody>
-                  <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['wmodules-wmodules']['wmodules'][4]['sca'].policies">
+                  <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['sca'].policies">
                     <td>
                       <span>{{policy}}</span>
                     </td>
