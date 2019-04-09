@@ -406,14 +406,12 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()        
         if (path) {
-          this.scope.appliedCustomFilters = [{ name:'path',value: path}]
+          const filters = [{ name:'path',value: path}]
           const restFilters = this.scope.appliedFilters.filter(
             item => item.name !== 'path'
           )
-          Array.prototype.push.apply(
-            this.scope.appliedCustomFilters, 
-            restFilters
-          )
+          filters.push(...restFilters)
+          this.scope.appliedCustomFilters = filters
         }
       } catch (error) {
         this.notification.showErrorToast('Cannot apply filter for custom rules or decoders files.')
