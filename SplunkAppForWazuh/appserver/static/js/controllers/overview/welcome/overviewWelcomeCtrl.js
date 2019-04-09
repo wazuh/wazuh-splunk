@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class OverviewWelcome {
@@ -16,11 +16,12 @@ define(['../../module'], function(controllers) {
         this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
         this.scope.agentsCountNeverConnected =
           agentsInfo.data.data['Never Connected']
-      } catch (error) {} //eslint-disable-line
+        this.loadCharts();
+      } catch (error) { } //eslint-disable-line
 
       try {
         this.extensions = extensions
-      } catch (error) {} //eslint-disable-line
+      } catch (error) { } //eslint-disable-line
     }
 
     /**
@@ -34,6 +35,35 @@ define(['../../module'], function(controllers) {
           : (this.scope[key] = null)
       )
       if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    /**
+ * Load custom charts 
+ */
+    loadCharts() {
+      let allCharts = [];
+      const chart1 = new Chart(document.getElementById("overviewWelcome1"),
+        {
+          type: "doughnut",
+          data: {
+            labels: ["Active", "Disconnected", "Never connected"],
+            datasets: [
+              {
+                backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
+              }
+            ]
+          },
+          options: {
+            cutoutPercentage: 65
+          }
+        });
+      setTimeout(function () {
+        allCharts.push(chart1);
+        allCharts.forEach(function (chart) {
+          chart.update();
+        });
+      }, 250);
     }
   }
   controllers.controller('overviewWelcomeCtrl', OverviewWelcome)

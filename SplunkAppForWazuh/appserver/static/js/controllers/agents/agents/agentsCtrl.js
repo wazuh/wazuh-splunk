@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function(app, SearchHandler) {
+], function (app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -93,7 +93,7 @@ define([
         this.scope.agentsCoverity = agentsCountTotal
           ? (this.scope.agentsCountActive / agentsCountTotal) * 100
           : 0
-
+        this.loadCharts();
         this.scope.searchBarModel = {
           name: [],
           status: ['Active', 'Disconnected', 'Never connected'],
@@ -107,7 +107,7 @@ define([
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
-      } catch (error) {} //eslint-disable-line
+      } catch (error) { } //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
@@ -167,10 +167,97 @@ define([
     }
 
     /**
-     * Launches the query
-     * @param {String} query
-     * @param {String} search
+     * Load custom charts 
      */
+    loadCharts() {
+      const options2 = {
+        segmentShowStroke: false,
+        cutoutPercentage: 80,
+        tooltips: {
+          enabled: false
+        },
+        legend: {
+          display: false
+        },
+        title: {
+          display: false
+        },
+        scales: {
+          yAxes: [
+            {
+              display: false
+            }
+          ],
+          xAxes: [
+            {
+              display: false
+            }
+          ]
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true,
+          easing: "linear"
+        }
+      };
+
+      let allCharts = [];
+      const chart1 = new Chart(document.getElementById("agentsPreview1"),
+        {
+          type: "doughnut",
+          data: {
+            labels: ["Active", "Disconnected", "Never connected"],
+            datasets: [
+              {
+                backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
+              }
+            ]
+          },
+          options: {
+            cutoutPercentage: 65,
+            legend: {
+              display: true,
+              position: "left",
+              labels: {
+                boxWidth: 20,
+                padding: 15,
+                fontColor: '#000',
+                usePointStyle: true
+              }
+            }
+          }
+        });
+      const chart2 = new Chart(document.getElementById("agentsPreview2"),
+        {
+          type: "doughnut",
+          data: {
+            labels: "",
+            datasets: [
+              {
+                backgroundColor: ['rgb(0, 68, 90)', '#DCDCDC'],
+                data: [this.scope.agentsCoverity, 100 - this.scope.agentsCoverity],
+              }
+            ]
+          },
+          options: options2
+        });
+      setTimeout(function () {
+        allCharts.push(chart1);
+        allCharts.push(chart2);
+
+        allCharts.forEach(function (chart) {
+          chart.update();
+        });
+
+      }, 250);
+    }
+
+    /**
+ * Launches the query
+ * @param {String} query
+ * @param {String} search
+ */
     query(query, search) {
       this.scope.$broadcast('wazuhQuery', { query, search })
     }
