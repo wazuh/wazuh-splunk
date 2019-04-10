@@ -79,7 +79,6 @@ define([
         $scope.load = false
         $scope.$applyAsync()
       } catch (error) {
-        this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
       }
       return
