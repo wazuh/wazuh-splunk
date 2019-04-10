@@ -1,4 +1,5 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca'" ng-init="switchConfigurationSubTab('pm-general')">
+<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca' || configurationSubTab === 'pm-unix' || configurationSubTab === 'pm-general'"
+   ng-init="switchConfigurationSubTab('pm-general')">
 
   <!-- Headline -->
   <div layout="column" layout-padding>
@@ -25,8 +26,10 @@
 
   <!-- Policy monitoring navigation bar -->
   <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Policy monitoring navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
     <md-nav-item ng-if="currentAgent" class="wz-nav-item" md-nav-click="switchWodle('sca'); switchConfigurationSubTab('pm-ca')" name="pm-ca">Configuration
       assessment</md-nav-item>
   </md-nav-bar>
