@@ -40,7 +40,8 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler
+      $groupHandler,
+      $chartService
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -56,6 +57,7 @@ define([
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
+      this.chartService = $chartService
 
       try {
         const parsedResult = agentData.map(item =>
@@ -202,46 +204,35 @@ define([
       };
 
       let allCharts = [];
-      const chart1 = new Chart(document.getElementById("agentsPreview1"),
+      const chart1 = this.chartService.buildChart(
+        document.getElementById("agentsPreview1"),
+        "doughnut",
+        ["Active", "Disconnected", "Never connected"],
+        [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
         {
-          type: "doughnut",
-          data: {
-            labels: ["Active", "Disconnected", "Never connected"],
-            datasets: [
-              {
-                backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
-                data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
-              }
-            ]
-          },
-          options: {
-            cutoutPercentage: 65,
-            legend: {
-              display: true,
-              position: "left",
-              labels: {
-                boxWidth: 20,
-                padding: 15,
-                fontColor: '#000',
-                usePointStyle: true
-              }
+          cutoutPercentage: 65,
+          legend: {
+            display: true,
+            position: "left",
+            labels: {
+              boxWidth: 20,
+              padding: 15,
+              fontColor: '#000',
+              usePointStyle: true
             }
           }
-        });
-      const chart2 = new Chart(document.getElementById("agentsPreview2"),
-        {
-          type: "doughnut",
-          data: {
-            labels: "",
-            datasets: [
-              {
-                backgroundColor: ['rgb(0, 68, 90)', '#DCDCDC'],
-                data: [this.scope.agentsCoverity, 100 - this.scope.agentsCoverity],
-              }
-            ]
-          },
-          options: options2
-        });
+        },
+        ['#46BFBD', '#F7464A', '#949FB1']
+      );
+      const chart2 = this.chartService.buildChart(
+        document.getElementById("agentsPreview2"),
+        "doughnut",
+        [],
+        [this.scope.agentsCoverity, 100 - this.scope.agentsCoverity],
+        options2,
+        ['rgb(0, 68, 90)', '#DCDCDC']
+      );
+
       setTimeout(function () {
         allCharts.push(chart1);
         allCharts.push(chart2);
