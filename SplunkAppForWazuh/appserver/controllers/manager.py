@@ -364,7 +364,6 @@ class manager(controllers.BaseController):
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
                 wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
-                self.logger.info("DAEMONS ON MANAGER: "+str(wazuh_ready))
                 return wazuh_ready
         except Exception as e:
             self.logger.error("Error checking daemons: %s" % (e))

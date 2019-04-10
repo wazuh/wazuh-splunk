@@ -49,7 +49,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         this.filters = []
       }
 
-      this.scope.ruleInfo = ruleInfo.data.data.items[0]
+      //Check if the rule is overwrited
+      if (ruleInfo.data.data.totalItems > 1) {
+        ruleInfo = ruleInfo.data.data.items.filter(rule => rule.details.overwrite)
+        this.scope.ruleInfo = ruleInfo[0]
+      } else {
+        this.scope.ruleInfo = ruleInfo.data.data.items[0]
+      }
       if (
         !(Object.keys((this.scope.ruleInfo || {}).details || {}) || []).length
       ) {
@@ -100,7 +106,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         if (result.data.data.totalItems === 0) {
           this.state.go('mg-rules')
         }
-        this.scope.ruleInfo = result.data.data.items[0]
+        //Check if the rule is overwrited
+        if (result.data.data.totalItems > 1) {
+          result = result.data.data.items.filter(rule => rule.details.overwrite)
+          this.scope.ruleInfo = result[0]
+        } else {
+          this.scope.ruleInfo = result.data.data.items[0]
+        }
       } catch (error) {
         this.state.go('mg-rules')
       }

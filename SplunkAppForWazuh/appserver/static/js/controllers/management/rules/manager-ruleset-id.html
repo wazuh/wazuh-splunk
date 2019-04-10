@@ -135,7 +135,7 @@
         <!-- End groups section -->
 
         <!-- PCI section -->
-        <md-card ng-if="ruleInfo.pci.length > 0 || ruleInfo.gdpr.length > 0 && !editingFile" flex class="wz-md-card">
+        <md-card ng-if="(ruleInfo.pci.length > 0 || ruleInfo.gdpr.length > 0) && !editingFile" flex class="wz-md-card">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">
               <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> Compliance
