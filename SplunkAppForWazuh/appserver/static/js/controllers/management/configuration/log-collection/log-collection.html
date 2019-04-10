@@ -100,8 +100,14 @@
   </div>
   <!-- End main content section -->
 
-  <!-- This section is the right sidenav content -->
-  <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
+    <!-- This section is the right sidenav content -->
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
     <md-list>
       <md-subheader>More info about this section</md-subheader>
       <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/log-data-collection/index.html">Log
@@ -185,7 +191,13 @@
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
-    <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
         <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/log-data-collection/log-data-configuration.html#using-multiple-outputs">Using
