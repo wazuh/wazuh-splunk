@@ -423,6 +423,14 @@ div.uil-ring-css {
   margin-left: 20px;
 }
 
+.wz-margin-left--10 {
+  margin-left: -10px;
+}
+
+.text-black { 
+  color: black !important;
+}
+
 .wz-margin-12 {
   margin: 12px;
 }
@@ -433,6 +441,10 @@ div.uil-ring-css {
 
 .wz-margin-top-0 {
   margin-top: 0px !important;
+}
+
+.wz-margin-bottom--15 {
+  margin-bottom: -15px !important;
 }
 
 .wz-width-85 {
@@ -452,8 +464,8 @@ div.uil-ring-css {
 .wz-button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(0, 85, 113) !important;
-  border-color: rgb(0, 85, 113) !important;
+  background-color: rgb(0, 121, 165) !important;
+  border-color: rgb(0, 121, 165) !important;
 }
 
 .wz-button-flat {
@@ -465,7 +477,9 @@ div.uil-ring-css {
 .wz-button.active,
 .wz-button:not([disabled]):hover,
 .wz-button-flat:not([disabled]):hover {
-  background-color: rgb(0, 121, 165) !important;
+  background-color: rgb(0, 85, 113) !important;
+  border-color: rgb(0, 85, 113) !important;
+  text-decoration: underline !important;
   color: white !important;
 }
 
@@ -950,6 +964,17 @@ md-dialog{
   background-color: #ffffff !important;
   color: #005571!important;
 }
+
+.edit-cancel-button {
+  border: none !important;
+  color: rgb(0, 121, 165) !important;
+  background: white !important;
+}
+
+.edit-cancel-button:hover {
+  text-decoration: underline !important;
+}
+
 
 .md-title {
   color: #1a1a1a;
@@ -1544,4 +1569,15 @@ input:focus {
 .conf-node-selector {
   margin-top: 5px !important;
   margin-right: 50px !important;
+}
+
+.settings-edit-ossec {
+  margin-right: -10px !important;
+  margin-top: -2px !important;
+  margin-left: 5px !important;
+}
+
+.node-will-be-restarted {
+  color: #0079a5 !important;
+  line-height: 2 !important;
 }

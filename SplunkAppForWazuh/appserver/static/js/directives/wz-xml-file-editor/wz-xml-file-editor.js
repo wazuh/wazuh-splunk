@@ -200,9 +200,17 @@ define([
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
                 $scope.restartBtn = true
-                $notificationService.showSuccessToast(
-                  'Configuration saved successfully.'
-                )
+                let msg = null
+                if (params.file === 'ossec.conf') {
+                  if (params.node) {
+                    msg = `Succes. Node(${params.node}) configuration has been updated.`
+                  } else {
+                    msg = 'Succes. Manager configuration has been updated.'
+                  }
+                } else {
+                  msg = 'Configuration saved successfully.'
+                }
+                $notificationService.showSuccessToast(msg)
               }
             }
             //$scope.closeFn()
