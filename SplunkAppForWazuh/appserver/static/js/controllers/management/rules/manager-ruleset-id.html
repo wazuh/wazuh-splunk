@@ -12,6 +12,16 @@
   <!-- End headline -->
   <div flex layout="column">
 
+    <!-- Nav bar -->
+    <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav" md-selected-nav-item="'rules'">
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules
+      </md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
+      </md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists
+      </md-nav-item>
+    </md-nav-bar>
+
     <!-- Back button and title -->
     <div layout="row" layout-align="start center">
       <!-- Back button -->

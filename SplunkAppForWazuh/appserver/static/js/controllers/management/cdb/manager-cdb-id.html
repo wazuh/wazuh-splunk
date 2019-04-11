@@ -9,6 +9,17 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
+
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav" md-selected-nav-item="'cdbList'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists
+    </md-nav-item>
+  </md-nav-bar>
+
   <!-- Headline -->
   <div ng-show="!loading" layout="column" layout-padding>
     <span class="font-size-18">

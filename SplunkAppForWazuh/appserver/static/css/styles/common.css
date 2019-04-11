@@ -431,6 +431,12 @@ div.uil-ring-css {
   color: black !important;
 }
 
+.wz-ruleset-subnav {
+  margin: 15px;
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
 .wz-margin-12 {
   margin: 12px;
 }
