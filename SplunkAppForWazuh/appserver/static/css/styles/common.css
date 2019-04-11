@@ -1617,3 +1617,8 @@ input:focus {
   font-weight: bold !important;
   color: #006bb4 !important;
 }
+
+.wz-margin-side-20 {
+  margin-left: 20px !important;
+  margin-right: 20px !important;
+}

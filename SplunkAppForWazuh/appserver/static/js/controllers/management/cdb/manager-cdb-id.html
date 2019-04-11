@@ -11,7 +11,8 @@
   </div>
 
   <!-- Nav bar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav" md-selected-nav-item="'cdbList'">
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav"
+    md-selected-nav-item="'cdbList'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules
     </md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
@@ -20,15 +21,8 @@
     </md-nav-item>
   </md-nav-bar>
 
-  <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> CDB Lists</span>
-    <span>Review all your current rules, decoders and cdb lists</span>
-  </div>
-  <!-- End headline -->
   <!-- Back button and title -->
-  <div layout="row" layout-align="start center">
+  <div layout="row" layout-align="start center" class="font-size-20">
     <!-- Back button -->
     <md-button class="md-icon-button" aria-label="Back to CDB lists" ui-sref='mg-cdb'>
       <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
@@ -36,29 +30,38 @@
         Back to CDB lists
       </md-tooltip>
     </md-button>
-    <span>Editing&nbsp; </span>
     <span class="wz-text-bold">{{currentList.details.file}}</span>
+  </div>
+
+  <!--Metrics-->
+  <div layout="row" class="wz-margin-9 wz-margin-side-20" ng-if="!cdbctrl.addingNewFile">
+    <md-card flex class="wz-metric-color">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div flex="50" class="wz-text-truncatable flex-50">Name: <span
+            class="wz-text-bold wz-text-link">audit-keys</span></div>
+        <div flex="50" class="wz-text-truncatable flex-50">Path: <span
+            class="wz-text-bold wz-text-link">etc/lists</span></div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row">
     <button ng-if="adminMode" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
-      class='btn wz-button-empty pull-right wz-margin-left-10'>
+      class='btn wz-button pull-right wz-margin-left-10 wz-margin-left-20'>
       <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-          aria-hidden='true'></i>Save</span>
+          aria-hidden='true'></i>Save list</span>
     </button>
-
-    <!-- End restart button -->
-
   </div>
   <!-- End back button, title and status indicator -->
 
   <!-- Table with CDB List info -->
   <div layout="column" layout-align="start">
-    <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;">
-      <input placeholder="Filter cdb content..." type="text" flex
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
-        ng-model="cdbContent">
-    </div>
     <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
       <md-card flex class="wz-md-card">
-        <md-card-content style="min-height: calc(100vh - 355px)">
+        <md-card-content style="min-height: calc(100vh - 390px)">
+          <input placeholder="Filter entries..." type="text" flex
+            class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
+            ng-model="cdbContent" style="width:100%;">
           <table class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <thead class="wz-text-bold">
               <th class="wz-text-left">Key</th>
@@ -173,7 +176,8 @@
         </md-card-content>
         <div layout="row" class="ruleset-csv-formater">
           <span flex></span>
-          <a class="small" id="btnDownload" ng-click="downloadCsv('/lists?path=' + currentList.details.path + '/' + currentList.details.file, currentList.details.file + '.csv')">
+          <a class="small" id="btnDownload"
+            ng-click="downloadCsv('/lists?path=' + currentList.details.path + '/' + currentList.details.file, currentList.details.file + '.csv')">
             <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
           </a>
         </div>
