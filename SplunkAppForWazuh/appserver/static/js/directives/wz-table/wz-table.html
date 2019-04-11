@@ -206,14 +206,14 @@
               <a href ng-click="firstPage()">First</a>
             </li>
             <li ng-show="currentPage" class="md-padding">
-              <a href ng-click="prevPage()">« Prev</a>
+              <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
             </li>
             <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
               ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage()" class="md-padding">
               <a href ng-bind="n + 1">1</a>
             </li>
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-              <a href ng-click="nextPage()">Next »</a>
+              <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
             </li>
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
               <a href ng-click="setPage(pagedItems.length - 1,  true)">Last</a>
@@ -294,7 +294,7 @@
               <a href ng-click="firstPage()">First</a>
             </li>
             <li ng-show="currentPage" class="md-padding">
-              <a href ng-click="prevPage()">« Prev</a>
+              <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
             </li>
 
             <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
@@ -303,7 +303,7 @@
             </li>
 
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-              <a href ng-click="nextPage()">Next »</a>
+              <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
             </li>
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
               <a href ng-click="setPage(pagedItems.length - 1,  true)">Last</a>
@@ -367,7 +367,7 @@
               <a href ng-click="firstPage()">First</a>
             </li>
             <li ng-show="currentPage" class="md-padding">
-              <a href ng-click="prevPage()">« Prev</a>
+              <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
             </li>
 
             <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
@@ -376,7 +376,7 @@
             </li>
 
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-              <a href ng-click="nextPage()">Next »</a>
+              <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
             </li>
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
               <a href ng-click="setPage(pagedItems.length - 1,  true)">Last</a>
