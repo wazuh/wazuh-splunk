@@ -691,7 +691,7 @@ kbn-vis .vis-container {
 .wz-card-actions {
   margin: 0 !important;
   border-top: 1px solid #D9D9D9 !important;
-  background-color: rgb(228, 242, 245);
+  background-color: #dfeff8;
 }
 
 .wz-select-input {
