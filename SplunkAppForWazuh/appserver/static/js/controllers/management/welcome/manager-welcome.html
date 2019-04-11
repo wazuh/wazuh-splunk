@@ -1,18 +1,4 @@
 <div flex layout="column" layout-align="start stretch">
-  <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
-      <span class="wz-text-link cursor-pointer">Management</span>
-      <span> / Welcome </span>
-    </div>
-    <div flex></div>
-    <div style="margin-right:7px;" id='input1'></div>
-  </div>
-  <!-- Headline -->
-  <div layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-server" aria-hidden="true"></i> Management</span>
-  </div>
-  <!-- End headline -->
 
   <!-- Wazuh management card -->
 
@@ -20,7 +6,7 @@
     <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Administration</h3>
+          <h3 class="euiTitle" style="font-weight:400 !important;">Administration</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/ruleset.png'" sub-title="'Ruleset'" ui-sref='mg-rules'
@@ -36,7 +22,7 @@
       </div>
       <div class="euiFlexItem">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Status and reports</h3>
+          <h3 class="euiTitle" style="font-weight:400 !important;">Status and reports</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'" sub-title="'Status'"

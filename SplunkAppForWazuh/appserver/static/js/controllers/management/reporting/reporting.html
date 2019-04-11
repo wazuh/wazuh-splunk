@@ -37,15 +37,19 @@
     </md-card>
   </div>
   <!-- End no reports section -->
-
-  <div layout="row" ng-show="!loading && pagedItems && pagedItems.length">
-    <md-button class="wz-report-refresh-btn" ng-click="load()"><i class="fa fa-fw fa-refresh"></i> Refresh</md-button>
+  <div layout="row" layout-padding  ng-show="!loading && pagedItems && pagedItems.length" style="padding-left: 10px; padding-right: 10px;">
+      <span class="flex"></span>
+      <!-- Refresh button -->
+      <md-button style="height: 30px; padding-top: 4px;" ng-click="load()"
+        class='wz-margin-left-10'>
+        <span ><i class="fa fa-fw fa-refresh"></i> Refresh</span>
+  </md-button>
   </div>
   <div layout="row" ng-show="!loading && pagedItems && pagedItems.length">
     <md-card flex class="wz-md-card">
       <md-card-content>
         <div layout="row" class="wz-padding-top-10">
-          <table class="table table-striped table-condensed" id="wz_table">
+          <table class="table table-striped table-condensed" style="margin-bottom:0;" id="wz_table">
             <thead class="wz-text-bold">
               <th class="wz-text-left">File</th>
               <th class="wz-text-left">Size</th>
@@ -67,7 +71,7 @@
                 </td>
               </tr>
             </tbody>
-            <tfoot>
+            <tfoot class="no-border">
               <td colspan="6">
                 <div class="pagination pull-right">
                   <ul layout="row">
