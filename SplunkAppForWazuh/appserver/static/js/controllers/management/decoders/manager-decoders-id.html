@@ -79,7 +79,7 @@
       <!-- Details section -->
       <md-card flex class="wz-md-card" ng-if="!editingFile">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">
+          <span class="wz-headline-title wz-margin-left--10">
             <i class="fa fa-fw fa-info" aria-hidden="true"></i> Details</span>
           <md-divider class="wz-margin-top-10"></md-divider>
 
@@ -98,7 +98,7 @@
       <!-- Regex section -->
       <md-card flex class="wz-md-card" ng-if="isArray(currentDecoder.details.regex) && !editingFile">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">
+          <span class="wz-headline-title wz-margin-left--10">
             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i> Regex</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div ng-repeat="item in currentDecoder.details.regex">
@@ -117,7 +117,7 @@
       <!-- Match section -->
       <md-card flex class="wz-md-card" ng-if="isArray(currentDecoder.details.match) && !editingFile">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">
+          <span class="wz-headline-title wz-margin-left--10">
             <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Match</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div ng-repeat="item in currentDecoder.details.match">
@@ -132,7 +132,7 @@
       <!-- Prematch section -->
       <md-card flex class="wz-md-card" ng-if="isArray(currentDecoder.details.prematch) && !editingFile">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">
+          <span class="wz-headline-title wz-margin-left--10">
             <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Prematch</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div ng-repeat="item in currentDecoder.details.prematch">
