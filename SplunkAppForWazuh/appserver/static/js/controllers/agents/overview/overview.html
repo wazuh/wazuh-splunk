@@ -8,8 +8,6 @@
       <span> / </span>
       <span ng-if="!agent.error" class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
       <span ng-if="agent.error">Unknown agent</span>
-      <span> / </span>
-      <span>Welcome</span>
     </div>
     <div ng-if="agent.status">
       <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
