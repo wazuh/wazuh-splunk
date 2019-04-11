@@ -57,13 +57,13 @@
         <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()"
           ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button pull-right'>
           <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
-            aria-hidden='true'></i></i>Restart
+            aria-hidden='true'></i>Restart
             {{editingNode}}</span>
         </button>
         <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()"
           ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button pull-right'>
           <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
-            aria-hidden='true'></i></i>Restart
+            aria-hidden='true'></i>Restart
             {{editingNode}}</span>
         </button>
       </div>
