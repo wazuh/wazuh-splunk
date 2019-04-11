@@ -1,6 +1,6 @@
 <div flex="auto" layout="column" ng-if="configurationTab === 'welcome'">
-  <div ng-if="agent && agent.id !== '000'" layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="agent.group">
-    <md-card flex class="wz-metric-color wz-md-card">
+  <div ng-if="agent && agent.id !== '000'" layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9" ng-if="agent.group">
+    <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-word-break" flex ng-if="agent.group">
           Groups: <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{

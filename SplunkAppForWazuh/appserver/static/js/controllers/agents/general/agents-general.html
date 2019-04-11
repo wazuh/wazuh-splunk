@@ -43,8 +43,8 @@
   <wazuh-bar></wazuh-bar>
   <!-- first row  -->
   <!-- Agent information section -->
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="agentInfo && !agentInfo.error">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9" ng-if="agentInfo && !agentInfo.error">
+    <md-card flex class="wz-metric-color wz-no-padding">
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>
           Name:
@@ -75,8 +75,8 @@
       </md-card-content>
     </md-card>
   </div>
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="!agentInfo.error && agentInfo.group">
-    <md-card flex class="wz-metric-color wz-md-card">
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9 wz-margin-top-0 " ng-if="!agentInfo.error && agentInfo.group">
+    <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-word-break" flex ng-if="agentInfo.group">
           Groups: <span ng-repeat="group in agentInfo.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{ group }}&nbsp;</span>
@@ -84,8 +84,8 @@
       </md-card-content>
     </md-card>
   </div>
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="!agentInfo.error">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
+  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9 wz-margin-top-0 " ng-if="!agentInfo.error">
+    <md-card flex class="wz-metric-color wz-no-padding">
       <md-card-content layout="row" class="wz-padding-metric">
         <div class="wz-text-truncatable" flex>Last keep alive:
           <span class="wz-text-bold"> {{agentInfo.lastKeepAlive || 'Unknown' }}</span>

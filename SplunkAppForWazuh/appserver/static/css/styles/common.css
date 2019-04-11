@@ -427,6 +427,14 @@ div.uil-ring-css {
   margin: 12px;
 }
 
+.wz-margin-9 {
+  margin: 9px !important;
+}
+
+.wz-margin-top-0 {
+  margin-top: 0px !important;
+}
+
 .wz-width-85 {
   min-width: 85px;
   width: 85px;
@@ -552,10 +560,6 @@ div.uil-ring-css {
 
 .grey {
   background-color: grey;
-}
-
-.wz-metric-color {
-  background-color: rgb(228, 242, 245);
 }
 
 .wz-background-transparent {

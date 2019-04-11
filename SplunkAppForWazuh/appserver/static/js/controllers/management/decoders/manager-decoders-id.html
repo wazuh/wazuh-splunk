@@ -24,8 +24,8 @@
   <!-- End back button, title and status indicator -->
 
   <!-- Decoder information ribbon -->
-  <div layout="row" ng-if="!editingFile">
-    <md-card flex class="wz-metric-color wz-md-card">
+  <div layout="row" ng-if="!editingFile" class="wz-margin-9">
+    <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div flex="20" ng-if="currentDecoder.position || currentDecoder.position == 0" class="wz-text-truncatable">Position:
           <span class="wz-text-bold">{{currentDecoder.position}}</span>

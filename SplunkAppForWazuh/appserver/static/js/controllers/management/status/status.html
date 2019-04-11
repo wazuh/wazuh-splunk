@@ -73,8 +73,8 @@
   <!-- End daemons status section -->
 
   <!-- Agents status section -->
-  <div ng-show="!load && !clusterError" layout="row" layout-align="start center" ng-if="!load">
-    <md-card flex class="wz-metric-color wz-md-card">
+  <div ng-show="!load && !clusterError" layout="row" layout-align="start center" ng-if="!load" class="wz-margin-9">
+    <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div flex class="wz-text-truncatable">Total agents:
           <span class="wz-text-bold">{{agentsCountTotal}}</span>
