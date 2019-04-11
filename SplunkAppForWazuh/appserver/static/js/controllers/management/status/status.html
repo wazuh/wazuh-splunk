@@ -18,14 +18,14 @@
   
 
   <!-- Cluster nodes if cluster is enable -->
-  <div style="padding-left: 10px; padding-right: 10px;">
+  <div layout="row" layout-padding style="padding-left: 10px; padding-right: 10px;">
     <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId"
       ng-change="changeNode(nodeId)" aria-label="Select node">
       <option ng-repeat="node in nodes" value="{{node.name}}">{{node.name}}</option>
     </select>
     <span class="flex"></span>
     <!-- Restart button -->
-    <button ng-show="!confirmingRestart" style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress || wazuhNotReadyYet"
+    <button ng-show="!confirmingRestart" style="height: 30px; padding-top: 4px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress || wazuhNotReadyYet"
       class='btn wz-button-empty pull-right wz-margin-left-10'>
       <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
         aria-hidden='true'></i>Restart

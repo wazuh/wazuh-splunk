@@ -1,39 +1,39 @@
 <!-- Cards for main monitoring section -->
-<div layout-align="start stretch" ng-show="isClusterEnabled && isClusterRunning">
+<div flex layout="column" layout-align="start stretch" ng-show="isClusterEnabled && isClusterRunning">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
+  <div layout="row" >
     <!-- Main monitoring section -->
-    <div ng-if="!showConfig && !showNodes && !currentNode">
+    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="!showConfig && !showNodes && !currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span>Monitoring</span>
+      <span>Cluster</span>
       <span> / </span>
       <span>{{ currentApi }}</span>
     </div>
     <!-- Overview section -->
-    <div ng-if="showConfig && !currentNode">
+    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="showConfig && !currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Monitoring</span>
+      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='reset()'>{{ currentApi }}</span>
       <span> / Overview</span>
     </div>
     <!-- The nodes list -->
-    <div ng-if="showNodes && !currentNode">
+    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="showNodes && !currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Monitoring</span>
+      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='reset()'>{{ currentApi }}</span>
       <span> / </span>
       <span>Nodes</span>
     </div>
     <!-- Single node section -->
-    <div ng-if="currentNode">
+    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Monitoring</span>
+      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='reset()'>{{ currentApi }}</span>
       <span> / </span>
@@ -44,6 +44,7 @@
     <div flex></div>
     <div style="margin-right:7px;" id='timePicker'></div>    
   </div>
+</div>
   <!-- End breadcrumbs -->
    <!-- Nav bar -->
 <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
@@ -308,7 +309,7 @@
   </div>
   
   <div layout="column" ng-if="showNodes && !currentNode">
-    <div layout="row" class='wz-padding-5'>
+    <div layout="row" class='wz-padding-5 wz-padding-left-15 wz-padding-right-15'>
       <input placeholder="Filter nodes..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
         aria-invalid="false" wz-enter="search(custom_search)">
       <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(custom_search)">
@@ -319,7 +320,6 @@
       <wazuh-table flex path="'/cluster/nodes'" keys="['name','version','ip','type']" allow-click="true"></wazuh-table>
     </div>
   </div>
-</div>
 <!-- End cards for main monitoring section -->
 
 <div flex layout="column" ng-show="!isClusterEnabled || !isClusterRunning">
