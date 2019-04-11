@@ -7,13 +7,16 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
-  <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> Logs</span>
-    <span>Review the logs of all Wazuh manager daemons</span>
-  </div>
-  <!-- End headline -->
+
+</div>
+  
+  <!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting</md-nav-item>
+</md-nav-bar>
 
   <!-- Filters and Realtime button section -->
   <div ng-show="!loading" layout="row" layout-align="start start" class="wz-margin-left-10 wz-margin-right-600 less-25-side">
@@ -87,5 +90,3 @@
       <i aria-hidden="true" class="fa fa-fw fa-download"></i>
     </a>
   </div>
-
-</div>

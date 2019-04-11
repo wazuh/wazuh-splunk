@@ -44,6 +44,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     $onInit() {
       try {
+        this.scope.selectedNavTab = 'logs'
         this.scope.search = term => this.search(term)
         this.scope.filter = term => this.filter(term)
         this.scope.changeNode = node => this.changeNode(node)

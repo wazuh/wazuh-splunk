@@ -27,6 +27,7 @@ define(['../../module'], function(controllers) {
      * On controller loads
      */
     $onInit() {
+      this.scope.selectedNavTab = 'logs'
       const keys = Object.keys(this.extensions)
       keys.map(key =>
         this.extensions[key] === 'true'

@@ -104,6 +104,7 @@ define([
      * On controller load
      */
     $onInit() {
+      this.scope.selectedNavTab = 'monitoring'
       this.scope.currentApi =
         this.currentApi.clusterName || this.currentApi.managerName
       this.scope.search = term => this.search(term)

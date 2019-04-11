@@ -45,12 +45,13 @@
     <div style="margin-right:7px;" id='timePicker'></div>    
   </div>
   <!-- End breadcrumbs -->
-  <!-- Headline -->
-  <div layout="column" layout-padding>
-    <span class="font-size-18"><i class="fa fa-fw fa-search" aria-hidden="true"></i> Monitoring</span>
-    <span class="md-subheader">Visualize your Wazuh cluster nodes and its agents</span>
-  </div>
-  <!-- End headline -->
+   <!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting</md-nav-item>
+</md-nav-bar>
   <div ng-show='!showConfig && !showNodes'>
     <div layout='row'>
       <!-- Overview card -->
@@ -329,17 +330,19 @@
       <div>
         <span class="wz-text-link cursor-pointer" ui-sref='manager' >Management</span>
         <span> / </span>
-        <span>Monitoring</span>
+        <span>Cluster</span>
       </div>
     </div>
   </div>
   <!-- End cluster disabled breadcrumbs -->
-  <!-- Headline -->
-  <div layout="column" layout-padding>
-    <span class="font-size-18"><i class="fa fa-fw fa-search" aria-hidden="true"></i> Monitoring</span>
-    <span class="md-subheader">Visualize your Wazuh cluster nodes and its agents</span>
-  </div>
-  <!-- End headline -->
+   <!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting</md-nav-item>
+</md-nav-bar>
+
   
   <!-- Cluster disabled section -->
   <div flex layout="row" layout-align="start start" ng-if="!isClusterEnabled">

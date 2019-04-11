@@ -5,14 +5,17 @@
       <span>/ Status </span>
     </div>
   </div>
+  
+</div>
 
-  <!-- Headline -->
-  <div ng-show="!load" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Status</span>
-    <span class="md-subheader">Check the status of all Wazuh manager daemons</span>
-  </div>
-  <!-- End headline -->
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting</md-nav-item>
+  </md-nav-bar>
+  
 
   <!-- Cluster nodes if cluster is enable -->
   <div style="padding-left: 10px; padding-right: 10px;">
@@ -184,4 +187,3 @@
     </md-card>
     <!-- End last registered agent section -->
   </div>
-</div>

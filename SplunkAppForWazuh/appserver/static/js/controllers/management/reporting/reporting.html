@@ -12,12 +12,16 @@
   </div>
   <!-- End loading ring -->
 
-  <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18"><i class="fa fa-fw fa-file-text" aria-hidden="true"></i> Reporting</span>
-    <span class="md-subheader">List and download all the Wazuh app reports</span>
-  </div>
-  <!-- End headline -->
+</div>
+
+   <!-- Nav bar -->
+<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster</md-nav-item>
+  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting</md-nav-item>
+</md-nav-bar>
+
 
   <!-- No reports section -->
   <div layout="row" layout-align="start start" ng-show="(!pagedItems || !pagedItems.length)">
@@ -88,5 +92,3 @@
       </md-card-content>
     </md-card>
   </div>
-
-</div>
