@@ -1584,3 +1584,21 @@ input:focus {
   color: #0079a5 !important;
   line-height: 2 !important;
 }
+
+.wc-sub-title {
+  font-weight: 100 !important;
+  font-size: 18px !important;
+}
+
+.wc-title {
+  font-weight: 100 !important;
+  font-size: 21px !important;
+}
+
+.wz-wc-item:hover {
+  background: #fafcfe;
+}
+
+.wz-wc-item:hover h4 {
+  text-decoration: underline;
+}

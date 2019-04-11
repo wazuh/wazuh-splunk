@@ -15,7 +15,7 @@ define(['../module'], function(directives) {
     return {
       restrict: 'E',
       scope: {
-        title: '=title',
+        subTitle: '=subTitle',
         description: '=description',
         logo: '=logo',
         switchTab: '&',
