@@ -610,7 +610,7 @@ define([
           if (!firstTime) {
             const output = await this.request.apiReq(path, JSONraw, method)
             const result =
-              output.data && output.data.data && !output.data.error
+              output.data 
                 ? JSON.stringify((output || {}).data || {}, null, 2).replace(
                     /\\\\/g,
                     '\\'
