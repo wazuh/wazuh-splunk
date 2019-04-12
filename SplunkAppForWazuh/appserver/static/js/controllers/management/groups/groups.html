@@ -131,7 +131,7 @@
             <!-- CSV Download button section for groups -->
             <div layout="row" class="ruleset-csv-formater" ng-if="!lookingGroup">
               <span flex></span>
-              <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups', groups.csv)">
+              <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups', groups.csv)">
                 <i aria-hidden="true" class="fa fa-fw fa-download"></i>&nbsp;Formatted
               </a>
             </div>
@@ -148,7 +148,7 @@
               <!-- CSV Download button section for group agents -->
               <div layout="row" class="ruleset-csv-formater" ng-if="lookingGroup && groupsSelectedTab==='agents'">
                 <span flex></span>
-                <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name, groups.csv)">
+                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name, groups.csv)">
                   <i aria-hidden="true" class="fa fa-fw fa-download"></i>&nbsp;Formatted
                 </a>
               </div>
@@ -164,7 +164,7 @@
               <!-- CSV Download button section for group files-->
               <div layout="row" class="ruleset-csv-formater" ng-if="lookingGroup && groupsSelectedTab==='files' && !file">
                 <span flex></span>
-                <a class="small" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files', groups.csv)">Formatted
+                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files', groups.csv)">Formatted
                   <i aria-hidden="true" class="fa fa-fw fa-download"></i>
                 </a>
               </div>

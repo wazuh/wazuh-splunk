@@ -1650,6 +1650,10 @@ input:focus {
   vertical-align: middle!important;
 }
 
+.formatted-color {
+  color: #1278b0 !important;
+}
+
 
 /* Loading bar */
 
