@@ -407,6 +407,10 @@ div.uil-ring-css {
   top: -3px;
 }
 
+.wz-margin-20 {
+  margin: 20px;
+}
+
 .wz-margin-top-4 {
   margin-top: 4px;
 }
@@ -1681,3 +1685,4 @@ input:focus {
     95% {left: 120%;}
     to {left: 100%;}
 }
+

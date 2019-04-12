@@ -57,10 +57,15 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.sort = () => this.sort()
         this.scope.$on('wazuhFetched', (ev, params) => {
           ev.stopPropagation()
-          this.scope.XMLContent = this.parseLogsToText(params.items)
-          this.scope.$broadcast('XMLContentReady', {
-            data: this.scope.XMLContent
-          })
+          this.scope.emptyResults = false
+          if (params.items.length < 1) {
+            this.scope.emptyResults = true
+          } else {
+            this.scope.XMLContent = this.parseLogsToText(params.items)
+            this.scope.$broadcast('XMLContentReady', {
+              data: this.scope.XMLContent
+            })
+          }         
           this.scope.$applyAsync()
         })
       } catch (err) {
