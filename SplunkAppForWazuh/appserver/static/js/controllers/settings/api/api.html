@@ -67,8 +67,8 @@
 
         <!-- Add API button section -->
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
-          <button ng-show='!edit' ng-click='addNewApiClick()' class="btn wz-button-empty" aria-label="Add new API button">
-            <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new Wazuh API entry
+          <button ng-show='!edit && apiList.length > 0' ng-click='addNewApiClick()' class="btn wz-button" aria-label="Add new API button">
+            <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i> Add new
           </button>
         </div>
         <!-- End add API button section -->
@@ -99,11 +99,11 @@
               <p class="color-f9">{{messageError}}</p>
             </div>
             <div layout="row" layout-align="center center">
-              <button ng-if='!edit' ng-click='submitApiForm()' type="submit" class="btn wz-button-empty" aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save Wazuh API entry
+              <button ng-if='!edit' ng-click='submitApiForm()' type="submit" class="btn wz-button" aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
               </button>
-              <button ng-if='edit' ng-click='updateEntry()' type="submit" class="btn wz-button-empty" aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update Wazuh API entry
+              <button ng-if='edit' ng-click='updateEntry()' type="submit" class="btn wz-button" aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update
               </button>
             </div>
           </form>
