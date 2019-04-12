@@ -13,17 +13,25 @@
       <div class="loader" ng-show="loadingRing"></div>
     </div>
 
-    <!-- Headline -->
-    <div ng-show="!loadingRing" layout="column" layout-padding ng-if="!currentGroup || !currentGroup.name">
-      <div layout="row">
-        <span class="font-size-18">
-          <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
+      <!-- Headline -->
+      <div ng-show="!loadingRing" layout="column" layout-padding ng-if="!currentGroup || !currentGroup.name">
+        <div layout="row">
+          <span class="font-size-18">
+            <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
+          <span ng-if='adminMode' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i class="fa fa-fw fa-plus-circle"></i></span>
+        </div>
+        <div layout="row" ng-if="addingGroup" ng-if='adminMode'>
+          <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+            aria-invalid="false">
+          <button type="submit" aria-label="Search" class="kuiLocalSearchButton addGroupBtn height-20" ng-click="createGroup(groupToBeAdded)">
+            <span class="fa fa-save fa-fw" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div layout="row" ng-if="!addingGroup">
+          <span>List and check your groups, its agents and files</span>
+        </div>
       </div>
-      <div layout="row">
-        <span>List and check your groups, its agents and files</span>
-      </div>
-    </div>
-    <!-- End headline -->
+      <!-- End headline -->
 
     <div flex layout="column" layout-align="start stretch" ng-show="!load">
       <!-- MD5 Sums and Details cards -->
@@ -112,22 +120,6 @@
 
         <!-- Groups table -->
         <md-card class="wz-md-card no-margin-sides" ng-if="!addingAgents || !lookingGroup">
-          <!-- Add a new group -->
-          <md-card-actions layout="row" layout-align="end center" ng-if="!lookingGroup" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-            <span ng-if="!addingGroup" class="wz-color-text cursor-pointer" ng-click="switchAddingGroup()">Add new
-              group</span>
-            <div layout="row" ng-if="addingGroup && adminMode">
-              <input class="input-new-group" placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-                aria-invalid="false">
-              <button aria-label="Search" class="save-group-button height-20" ng-click="createGroup(groupToBeAdded)">
-                <i class="fa fa-save fa-fw" aria-hidden="true"></i>
-              </button>
-              <button aria-label="Search" class="save-group-button height-20" ng-click="switchAddingGroup()">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </button>
-            </div>
-            <span flex="" class="flex"></span>
-          </md-card-actions>
           <md-card-contents>
             <div layout="row" ng-if="!lookingGroup" class="md-padding">
               <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'"
