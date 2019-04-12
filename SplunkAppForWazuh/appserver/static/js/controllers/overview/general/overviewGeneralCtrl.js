@@ -150,18 +150,18 @@ define([
           'alertsVizz',
           this.scope
         ),
-        new LinearChart(
-          'alertsEvoTop10Agents',
+        new PieChart(
+          'alertsEvoTop5Agents',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=1h limit=10 useother=f count by agent.name`,
-          'alertsEvoTop10Agents',
+          } cluster.name=wazuh index=wazuh  sourcetype=wazuh | stats count by agent.name`,
+          'alertsEvoTop5Agents',
           this.scope
         ),
         new PieChart(
-          'top10ruleGroups',
-          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=10`,
-          'top10ruleGroups',
+          'top5ruleGroups',
+          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=5`,
+          'top5ruleGroups',
           this.scope
         ),
         new Table(
