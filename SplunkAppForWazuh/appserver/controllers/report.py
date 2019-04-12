@@ -26,15 +26,15 @@ import math
 class PDF(FPDF):
     def header(self):
         # Logo
-        self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 40)
+        self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 15)
         self.set_font('Arial', '', 11)
-        self.set_text_color(93, 188, 210)
+        self.set_text_color(75, 179, 204)
         #Contact info
         self.cell(150) #Move to the right
-        self.cell(0, 5, 'info@wazuh.com')
+        self.cell(0, 5, 'info@wazuh.com', 0, 0, 'R')
         self.ln() #Break line
         self.cell(150) #Move to the right
-        self.cell(0, 5, 'https://wazuh.com')
+        self.cell(0, 5, 'https://wazuh.com', 0, 0, 'R')
 
     # Page footer
     def footer(self):
@@ -42,7 +42,7 @@ class PDF(FPDF):
         self.year = datetime.datetime.now().strftime('%Y')
         self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
-        self.set_text_color(93, 188, 210)
+        self.set_text_color(75, 179, 204)
         self.set_font('Arial', 'B', 8)
         # Page number
         self.cell(100, 10, self.copyright, 0, 0, 'L')
@@ -129,7 +129,7 @@ class report(controllers.BaseController):
             pdf.add_page()
             pdf.ln(20)
             #Color WazuhBlue
-            pdf.set_text_color(93, 188, 210)
+            pdf.set_text_color(75, 179, 204)
             # Title Arial Bold 20
             pdf.set_font('Arial', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
@@ -139,7 +139,7 @@ class report(controllers.BaseController):
             #Filters and search time range
             if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
                 pdf.ln(7)
-                pdf.set_fill_color(93, 188, 210)
+                pdf.set_fill_color(75, 179, 204)
                 pdf.set_text_color(255,255,255)
                 pdf.set_font('Arial', '', 10)
                 if time_range:
@@ -183,7 +183,7 @@ class report(controllers.BaseController):
                 count = 0
                 n_images = len(saved_images)
                 # Set top margin checking if metrics exist
-                pdf.set_text_color(93, 188, 210)
+                pdf.set_text_color(75, 179, 204)
                 pdf.set_font('Arial', '', 14)
                 if metrics_exists:
                     y_img = y_img + 10
@@ -237,7 +237,7 @@ class report(controllers.BaseController):
                         table_title = key
                         pdf.ln(10)
                         #Table title
-                        pdf.set_text_color(93, 188, 210)
+                        pdf.set_text_color(75, 179, 204)
                         pdf.set_font('Arial', '', 14)
                         if rows_count > 60:
                             pdf.add_page()
@@ -248,7 +248,7 @@ class report(controllers.BaseController):
                         pdf.ln()
                         #Table content
                         pdf.set_font('Arial', '', 8)
-                        pdf.set_fill_color(93, 188, 210)
+                        pdf.set_fill_color(75, 179, 204)
                         pdf.set_text_color(255,255,255)
                         sizes_field = self.calculate_table_width(pdf, tables[key])
                         count = 0
@@ -266,8 +266,8 @@ class report(controllers.BaseController):
                                 pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
                                 count = count + 1
                         pdf.ln()
-                        pdf.set_text_color(93, 188, 210)
-                        pdf.set_draw_color(93, 188, 210)
+                        pdf.set_text_color(91, 91, 91)
+                        pdf.set_draw_color(75, 179, 204)
                         #Table rows
                         for row in tables[key]['rows']:
                             first_field = True
@@ -470,18 +470,18 @@ class report(controllers.BaseController):
             fields[key] = fields[key] + diff
         #Set color and print th
         pdf.set_font('Arial', '', 8)
-        pdf.set_fill_color(93, 188, 210)
+        pdf.set_fill_color(75, 179, 204)
         pdf.set_text_color(255,255,255)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
         pdf.ln()
         #Change text color and print tr
-        pdf.set_text_color(93, 188, 210)
+        pdf.set_text_color(75, 179, 204)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(agent_info[key]), 0, 0, 'L', 0)
         #Print the rest of the agent information
         pdf.ln(5)
-        pdf.set_text_color(169, 169, 169)
+        pdf.set_text_color(91, 91, 91)
         pdf.cell(0,6, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
         pdf.ln()
         pdf.cell(0,6, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
