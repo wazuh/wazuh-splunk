@@ -123,7 +123,7 @@
           <md-card-contents>
             <div layout="row" ng-if="!lookingGroup" class="md-padding">
               <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'"
-                keys="['name','count','mergedSum']" allow-click="true" row-sizes="[14,12,10]">
+                keys="['name','count','mergedSum']" allow-click="true" row-sizes="[20,15,10]">
               </wazuh-table>
             </div>
             <!-- End groups table -->
@@ -141,7 +141,7 @@
               <!-- Group agents table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup" class="md-padding">
                 <wazuh-table admin-mode='adminMode' flex path="'/agents/groups/' + currentGroup.name" keys="['id','name','ip','status','os.name','os.version','version']"
-                  allow-click="true" row-sizes="[14,12,10]" empty-results="'No agents were added to this group.'" />
+                  allow-click="true" row-sizes="[20,15,10]" custom-columns="true" empty-results="'No agents were added to this group.'" />
               </div>
               <!-- End Group agents table -->
 

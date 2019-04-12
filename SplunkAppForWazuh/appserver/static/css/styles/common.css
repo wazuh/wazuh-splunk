@@ -103,7 +103,7 @@
 }
 
 .groupContentViewer {
-  height: calc('100vh - 550px');
+  height: calc(100vh - 345px) !important;
   min-height: 300px;
 } 
 
@@ -1158,6 +1158,10 @@ span.wrong {
 
 .table-width-id{
   width: 20px !important;
+}
+
+.table-width-filename{
+  width: 250px !important;
 }
 
 .daemons-card {

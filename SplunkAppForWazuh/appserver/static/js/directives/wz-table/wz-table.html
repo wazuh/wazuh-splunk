@@ -47,7 +47,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="clickAction(item)">
-        <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
+        <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id', 'table-width-filename': key.value === 'filename' }"
           ng-if="path !== '/decoders' && path !== '/rules'" class="wz-text-truncatable-ellipsis">
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
@@ -150,7 +150,7 @@
               class="fa fa-fw fa-pencil cursor-pointer" tooltip="Edit this group configuration" tooltip-placement="left"
               aria-hidden="true"></i>
             <md-tooltip md-direction="bottom" class="wz-tooltip">
-              Edit this group
+              Edit this group configuration
             </md-tooltip>
           </span>
           <span class="wz-padding-left-8" ng-if="removingGroup !== item.name && item.name === 'default'">-</span>
