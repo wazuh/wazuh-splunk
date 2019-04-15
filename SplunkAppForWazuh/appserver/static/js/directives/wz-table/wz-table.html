@@ -330,7 +330,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="expandItem(item)">
-        <td ng-repeat="key in keys | filter: showKey">
+        <td class="wz-text-truncatable-ellipsis" ng-repeat="key in keys | filter: showKey">
           <span>
             {{
             parseValue(key,item)
