@@ -8,6 +8,7 @@
 @import "table_decorations.css";
 @import "layout.css";
 @import "common.css";
+@import "jquery-ui.css";
 @import "kbn.css";
 @import "component.css";
 @import "typography.css";

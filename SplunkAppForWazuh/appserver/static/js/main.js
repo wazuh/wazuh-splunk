@@ -21,14 +21,14 @@ require.config({
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
 
-    // COL RESIZABLE
-    colResizable: 'js/libs/col-resizable/col-resizable',
-
     // File saver
     FileSaver: 'js/libs/file-saver/file-saver',
 
     // dom-to-image
-    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image'
+    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image',
+
+    // JqueryUI
+    JqueryUI: 'js/libs/jquery-ui'
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim

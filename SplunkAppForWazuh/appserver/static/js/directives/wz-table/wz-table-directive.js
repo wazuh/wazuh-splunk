@@ -30,7 +30,7 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap',
-  'colResizable'
+  'JqueryUI'
 ], function(
   app,
   calcTableRows,
@@ -123,12 +123,15 @@ define([
         $scope.setColResizable = () => {
           try {
             if ($scope.customColumns) {
-              $(`#table${$scope.scapepath}`).colResizable({
-                liveDrag: true,
-                minWidth: 100,
-                postbackSafe: true,
-                partialRefresh: true,
-                draggingClass: false
+              $(`#table${$scope.scapepath} th`).resizable({
+                handles: 'e',
+                minWidth: 75,
+                start: () => {
+                  $scope.resizingColumns = true
+                },
+                end: () => {
+                  $scope.resizingColumns = false
+                }
               })
               $scope.$applyAsync()
             }
@@ -142,7 +145,7 @@ define([
         let doit
         let resizing = false
         $window.onresize = () => {
-          if (resizing) return
+          if (resizing || $scope.resizingColumns) return
           resizing = true
           $('#wz_table').colResizable({ disable: true })
           clearTimeout(doit)
@@ -150,7 +153,10 @@ define([
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
             $scope.itemsPerPage = $scope.rowsPerPage
             init()
-              .then(() => (resizing = false))
+              .then(() => {
+                $scope.setColResizable()
+                resizing = false
+              })
               .catch(() => (resizing = false))
           }, 150)
         }
