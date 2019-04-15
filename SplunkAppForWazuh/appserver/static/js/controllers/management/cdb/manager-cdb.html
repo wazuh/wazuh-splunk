@@ -187,7 +187,7 @@
             <tfoot>
               <td colspan="3">
                 <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items</span>
-                <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+                <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
                   <ul layout="row">
                     <li ng-show="currentPage" class="md-padding">
                       <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
