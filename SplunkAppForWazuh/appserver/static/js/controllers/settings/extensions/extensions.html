@@ -26,7 +26,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="PCI DSS extension switch" ng-model="extensions.pci" ng-change="toggleExtension('pci',extensions.pci)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.pci" switch-change="toggleExtension('pci',!extensions.pci)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -52,7 +52,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="GDPR extension switch" ng-model="extensions.gdpr" ng-change="toggleExtension('gdpr',extensions.gdpr)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.gdpr" switch-change="toggleExtension('gdpr',!extensions.gdpr)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -76,7 +76,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="Audit extension switch" ng-model="extensions.audit" ng-change="toggleExtension('audit',extensions.audit)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.audit" switch-change="toggleExtension('audit',!extensions.audit)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -100,7 +100,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="Open SCAP extension switch" ng-model="extensions.oscap" ng-change="toggleExtension('oscap',extensions.oscap)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.oscap" switch-change="toggleExtension('oscap',!extensions.oscap)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -124,7 +124,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="CIS-CAT extension switch" ng-model="extensions.ciscat" ng-change="toggleExtension('ciscat',extensions.ciscat)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.ciscat" switch-change="toggleExtension('ciscat',!extensions.ciscat)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -147,7 +147,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="Osquery extension switch" ng-model="extensions.osquery" ng-change="toggleExtension('osquery',extensions.osquery)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.osquery" switch-change="toggleExtension('osquery',!extensions.osquery)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -170,7 +170,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="AWS extension switch" ng-model="extensions.aws" ng-change="toggleExtension('aws',extensions.aws)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.aws" switch-change="toggleExtension('aws',!extensions.aws)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -194,8 +194,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="VirusTotal extension switch" ng-model="extensions.virustotal"
-            ng-change="toggleExtension('virustotal',extensions.virustotal)"></md-switch>
+            <wz-kbn-switch switch-model="extensions.virustotal" switch-change="toggleExtension('virustotal',!extensions.virustotal)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
@@ -219,7 +218,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="Reporting" ng-model="extensions.reporting" ng-change="toggleExtension('reporting',extensions.reporting)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.reporting" switch-change="toggleExtension('reporting',!extensions.reporting)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">

@@ -15,5 +15,6 @@ define([
   './wz-config-viewer/wz-config-viewer',
   './wz-discover/wz-discover',
   './wz-add-filter-chip/wz-add-filter-chip',
-  './wz-head-toaster/wz-head-toaster'
+  './wz-head-toaster/wz-head-toaster',
+  './wz-kbn-switch/wz-kbn-switch'
 ], function() {})
