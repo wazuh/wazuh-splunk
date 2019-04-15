@@ -47,7 +47,7 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       this.agent = agent
-      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expandArray = [false, false, false, false, false,false,false,false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
@@ -117,6 +117,22 @@ define([
           this.scope
         ),
         new PieChart(
+          'top5GDPR',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.gdpr{} | sort count DESC`,
+          'top5GDPR',
+          this.scope
+        ),
+        new PieChart(
+          'rulesVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by rule.description | sort count DESC`,
+          'rulesVizz',
+          this.scope
+        ),
+        new PieChart(
           'agentsVizz',
           `${
             this.filters
@@ -180,6 +196,8 @@ define([
           [
             'gdprRequirementsVizz',
             'groupsVizz',
+            'top5GDPR',
+            'rulesVizz',
             'agentsVizz',
             'requirementsByAgentVizz',
             'alertsSummaryVizz'
