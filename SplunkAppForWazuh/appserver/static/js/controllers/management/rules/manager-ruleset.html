@@ -53,12 +53,8 @@
         Manage rules files
       </span>
       <span flex="" class="flex"></span>
-      <md-switch ng-if="rulesetFiles" class="wz-switch" aria-label="Editable files" ng-model="$parent.localFilter">
-        <div class="md-label">Editable files</div>
-      </md-switch>
-      <md-switch ng-if="!rulesetFiles" class="wz-switch" aria-label="Only custom rules" ng-model="$parent.localFilter">
-        <div class="md-label">Only custom rules</div>
-      </md-switch>
+      <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files"></wz-kbn-switch>
+      <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Only custom rules"></wz-kbn-switch>
     </md-card-actions>
     <md-card-contents>
       <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">

@@ -218,7 +218,7 @@
         </div>
         <span flex></span>
         <div layout="row" class="wz-padding-top-10">
-          <md-switch class="wz-switch" aria-label="Reporting" ng-model="extensions.reporting" ng-change="toggleExtension('reporting',extensions.reporting)"></md-switch>
+          <wz-kbn-switch switch-model="extensions.reporting" switch-change="toggleExtension('reporting',extensions.reporting)"></wz-kbn-switch>
         </div>
       </md-card-content>
       <md-card-actions layout="row" layout-align="end center" class="wz-card-actions">
