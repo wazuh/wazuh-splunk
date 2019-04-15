@@ -67,7 +67,7 @@ define([
       this.agent = agent
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
-      this.scope.expandArray = [false, false, false, false, false, false]
+      this.scope.expandArray = [false, false, false, false, false, false,false]
       this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&
@@ -140,6 +140,14 @@ define([
           'agentsSummaryVizz',
           this.scope
         ),
+        new Table(
+          'groupsSummaryVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count by rule.groups{} | sort rule.level DESC | rename rule.groups{} as "Group", count as Count`,
+          'groupsSummaryVizz',
+          this.scope
+        ),
         new RawTableDataService(
           'alertsSummaryTable',
           `${
@@ -149,6 +157,16 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
+        ),
+        new RawTableDataService(
+          'groupsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count by rule.groups{} | sort rule.level DESC | rename rule.groups{} as "Group", count as Count`,
+          'groupsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Groups Summary'
         )
       ]
 
@@ -265,7 +283,8 @@ define([
               'top5PCIreqVizz',
               'alertLevelEvoVizz',
               'alertsVizz',
-              'agentsSummaryVizz'
+              'agentsSummaryVizz',
+              'groupsSummaryVizz'
             ],
             this.reportMetrics,
             this.tableResults,
