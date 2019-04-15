@@ -4,6 +4,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/table/table',
+  '../../../services/visualizations/map/map',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
@@ -12,6 +13,7 @@ define([
   AreaChart,
   ColumnChart,
   Table,
+  Map,
   TimePicker,
   RawTableDataService
 ) {
@@ -149,6 +151,14 @@ define([
           '$result$',
           this.scope,
           'Top 5 Rules'
+        ),
+        new Map(
+          'map',
+          `${
+            this.filters
+          } sourcetype=wazuh | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
+          'map',
+          this.scope
         )
       ]
 
@@ -174,6 +184,7 @@ define([
             'regionsVizz',
             'eventsBySourceVizz',
             'eventsByS3BucketsVizz',
+            'map',
             'top5Buckets',
             'top5Rules'
           ],
