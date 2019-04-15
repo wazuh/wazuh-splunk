@@ -47,11 +47,50 @@
     <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
     <!-- first row  -->
     <div id="row1" layout="row">
+
+    <div flex="25">
+      <!-- first row - first vis -->
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card-content layout='column'>
+          <span class="wz-headline-title">Most active users
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'topUserOwnersElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div layout-fill id='topUserOwnersElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex="25">
+      <!-- first row - second vis -->
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[9]}">
+        <md-card-content layout='column'>
+          <span class="wz-headline-title">Actions
+            <span class="wz-text-link" style="float:right;" ng-click="expand(9,'topActions')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div layout-fill id='topActions'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex="50">
+      <!-- first row - third vis -->
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Events
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'eventsOverTimeElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='eventsOverTimeElement'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+    <div id="row2" layout="row">
       <div flex="33">
         <!-- first row - first vis -->
         <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top new files
+            <span class="wz-headline-title">Files added
               <span class="wz-text-link" style="float:right;" ng-click="expand(6,'topNewFiles')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
@@ -63,7 +102,7 @@
         <!-- first row - second vis -->
         <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top modified files
+            <span class="wz-headline-title">Files modified
               <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topModifiedFiles')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
@@ -75,7 +114,7 @@
         <!-- first row - third vis -->
         <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top deleted files
+            <span class="wz-headline-title">Files deleted
               <span class="wz-text-link" style="float:right;" ng-click="expand(8,'topDeletedFiles')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
@@ -84,75 +123,12 @@
         </md-card>
       </div>
     </div>
-    <!-- second row  -->
-    <div id="row2" layout="row">
-      <div flex="50">
-        <!-- second row - first vis -->
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Events over time
-              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'eventsOverTimeElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='eventsOverTimeElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
-      <div flex="25">
-        <!-- second row - second vis -->
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-          <md-card-content layout='column'>
-            <span class="wz-headline-title">Top user owners
-              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'topUserOwnersElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout-fill id='topUserOwnersElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
-      <div flex="25">
-        <!-- second row - third vis -->
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top group owners
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topGroupOwnersElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topGroupOwnersElement'></div>
-          </md-card-content>
-        </md-card>
-      </div>
-    </div>
 
     <!-- third row  -->
     <div id="row3" layout='row'>
-      <!-- third row - first vis -->
-      <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top file changes
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'topFileChangesElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='topFileChangesElement'></div>
-        </md-card-content>
-      </md-card>
-      <!-- second row - second vis -->
-      <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Root user file changes
-            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'rootUserFileChangesElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='rootUserFileChangesElement'></div>
-        </md-card-content>
-      </md-card>
-    </div>
-
-    <!-- fourth row  -->
-    <div id="row4" layout='row'>
       <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Events summary
+          <span class="wz-headline-title">Alerts summary
             <span class="wz-text-link" style="float:right;" ng-click="expand(5,'eventsSummaryElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>

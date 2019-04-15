@@ -127,6 +127,14 @@ define([
           this.scope
         ),
         new PieChart(
+          'topActions',
+          `${
+            this.filters
+          } sourcetype="wazuh" | stats count by "syscheck.event"`,
+          'topActions',
+          this.scope
+        ),
+        new PieChart(
           'topFileChangesElement',
           `${
             this.filters
@@ -225,6 +233,7 @@ define([
             'topDeletedFiles',
             'eventsOverTimeElement',
             'topGroupOwnersElement',
+            'topActions',
             'topUserOwnersElement',
             'topFileChangesElement',
             'rootUserFileChangesElement',
