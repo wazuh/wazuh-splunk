@@ -1,7 +1,7 @@
 <md-content flex layout="column" layout-align="end">
-  <div layout="row" class="layout-row layout-align-end">
+  <div layout="row" class="wz-height-35">
     <div class='wz-margin-left-10 wz-margin-top-12'>
-      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+        <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
       <span> / PCI-DSS </span>
     </div>
     <div flex></div>
@@ -24,7 +24,7 @@
   <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
 
   <!-- Regulatory Compliance navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'pcidss'">
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'pcidss'">
       <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="pcidss">PCI DSS</md-nav-item>
       <md-nav-item ng-if="gdprExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-gdpr" name="gdpr">GDPR</md-nav-item>
     </md-nav-bar>

@@ -1,7 +1,7 @@
 <md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
@@ -9,9 +9,9 @@
       <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>Inventory data</span>
-    </div>
-    <div ng-if="agent && agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent && agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
     <span flex class="flex"></span>
     <!-- Report button -->
@@ -29,7 +29,7 @@
   
 
   <!-- Security information management navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'inventory'">
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'inventory'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-general" name="general">Security events</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-fim" name="fim">Integrity monitoring</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory">Inventory data</md-nav-item>

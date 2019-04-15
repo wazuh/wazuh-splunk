@@ -1,7 +1,7 @@
 <md-content flex layout="column" layout-align="end">
-  <div layout="row" class="layout-row layout-align-end">
+  <div layout="row" class="wz-height-35">
     <div class='wz-margin-left-10 wz-margin-top-12'>
-      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+        <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
       <span> / Policy monitoring </span>
     </div>
     <div flex></div>
@@ -23,7 +23,7 @@
     <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
   
   <!-- Auditing and Policy Monitoring navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'pm'">
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'pm'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="pm">Policy monitoring</md-nav-item>
     <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-audit" name="audit">System auditing</md-nav-item>
     <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-os" name="openscap">OpenSCAP</md-nav-item>

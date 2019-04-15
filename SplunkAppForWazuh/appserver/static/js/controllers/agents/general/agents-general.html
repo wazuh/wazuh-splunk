@@ -1,8 +1,7 @@
 <md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agentInfo.error" ui-sref='agent-overview({id:agentInfo.id})' class="wz-text-link cursor-pointer">{{agentInfo.name}}
@@ -10,9 +9,9 @@
         <span ng-if="agentInfo.error">Unknown agent</span>
       <span> / </span>
       <span>General</span>
-    </div>
-    <div ng-if="agentInfo.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agentInfo.status)" aria-label="Agent status indicator">{{formatAgentStatus(agentInfo.status)}}</span>
+      <span ng-if="agentInfo.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agentInfo.status)" aria-label="Agent status indicator">{{formatAgentStatus(agentInfo.status)}}</span>
+      </span>
     </div>
     <div flex></div>
     <!-- Report button -->
@@ -33,7 +32,7 @@
     <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
   
   <!-- Security information management navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'general'">
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left no-margin-left" md-selected-nav-item="'general'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="general">Security events</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-fim" name="fim">Integrity monitoring</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-inventory" name="inventory">Inventory data</md-nav-item>
@@ -42,87 +41,29 @@
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
   <!-- first row  -->
-  <!-- Agent information section -->
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9" ng-if="agentInfo && !agentInfo.error">
-    <md-card flex class="wz-metric-color wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Name:
-          <span class="wz-text-bold">{{ agentInfo.name }}</span>
-          <md-tooltip ng-if="agentInfo.name.length" md-direction="bottom" class="wz-tooltip">
-            Full name: {{ agentInfo.name  || 'Unknown'}}
-          </md-tooltip>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          IP:
-          <span class="wz-text-bold">{{ agentInfo.ip  || 'Unknown'}}</span>
-        </div>
-        <!--  <div class="wz-text-truncatable" flex ng-if="agentInfo.group">
-          Group:
-          <span class="wz-text-bold" ng-click="goGroups(agentInfo.group)">{{ agentInfo.group }}</span>
-        </div> -->
-        <div class="wz-text-truncatable" flex ng-if="agentInfo.version">
-          Version:
-          <span class="wz-text-bold">{{ agentInfo.version  || 'Unknown'}}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          OS:
-          <span class="wz-text-bold">{{ agentInfo.agentOS  || 'Unknown'}}</span>
-          <md-tooltip ng-if="agentInfo.agentOS.length" md-direction="bottom" class="wz-tooltip">
-            Full OS name: {{ agentInfo.agentOS  || 'Unknown'}}
-          </md-tooltip>
-        </div>
+  
+<div id="row1" layout="row">
+    <!-- first row - first vis - Alert level evolution -->
+    <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Alert level evolution
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertLevelEvoVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+        </span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='alertLevelEvoVizz'></div>
+      </md-card-content>
+    </md-card>
+    <!-- first row - second vis - Alerts-->
+    <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title">Alerts
+          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+        </span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id='alertsVizz'></div>
       </md-card-content>
     </md-card>
   </div>
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9 wz-margin-top-0 " ng-if="!agentInfo.error && agentInfo.group">
-    <md-card flex class="wz-metric-color">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-word-break" flex ng-if="agentInfo.group">
-          Groups: <span ng-repeat="group in agentInfo.group" class="wz-text-bold wz-text-link" ng-click="goGroups(group)">{{ group }}&nbsp;</span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0 wz-margin-9 wz-margin-top-0 " ng-if="!agentInfo.error">
-    <md-card flex class="wz-metric-color wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>Last keep alive:
-          <span class="wz-text-bold"> {{agentInfo.lastKeepAlive || 'Unknown' }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>Registration date:
-          <span class="wz-text-bold"> {{agentInfo.dateAdd || 'Unknown'}}</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="agentInfo.syscheck.inProgress">Last syscheck scan:
-          <span class="wz-text-bold"> Scan in progress</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="!agentInfo.syscheck.inProgress">Last syscheck scan:
-          <span class="wz-text-bold"> {{agentInfo.syscheck.end || 'Unknown'}}</span>
-          <md-tooltip ng-if="!agentInfo.syscheck.inProgress && agentInfo.syscheck.start && agentInfo.syscheck.end" md-direction="bottom"
-          class="wz-tooltip">
-          Start time: {{ agentInfo.syscheck.start || 'Unknown'}}
-          <br> End time: {{ agentInfo.syscheck.end || 'Unknown'}}
-          <br> Duration time: {{ agentInfo.syscheck.duration +' minutes' || 'Unknown'}}
-        </md-tooltip>
-      </div>
-      <div class="wz-text-truncatable" flex ng-if="agentInfo.rootcheck.inProgress">Last rootcheck scan:
-        <span class="wz-text-bold"> Scan in progress</span>
-      </div>
-      <div class="wz-text-truncatable" flex ng-if="!agentInfo.rootcheck.inProgress">Last rootcheck scan:
-        <span class="wz-text-bold"> {{agentInfo.rootcheck.end || 'Unknown'}}</span>
-        <md-tooltip ng-if="!agentInfo.rootcheck.inProgress && agentInfo.rootcheck.start && agentInfo.rootcheck.end" md-direction="bottom"
-        class="wz-tooltip">
-        Start time: {{ agentInfo.rootcheck.start || 'Unknown'}}
-        <br> End time: {{ agentInfo.rootcheck.end || 'Unknown'}}
-        <br> Duration time: {{ agentInfo.rootcheck.duration +' minutes' || 'Unknown'}}
-      </md-tooltip>
-    </div>
-  </md-card-content>
-</md-card>
-</div>
-<!-- End agent information section -->
-
-<!-- second row  -->
 
 <!-- third row  -->
 <div id="row3" layout='row'>
@@ -139,7 +80,7 @@
   <!-- third row - second vis -->
   <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
     <md-card-content class="wazuh-column">
-      <span class="wz-headline-title">Top 5 groups
+      <span class="wz-headline-title">Top 5 rule groups
         <span class="wz-text-link" style="float:right;" ng-click="expand(1,'top5GroupsVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
       </span>
       <md-divider class="wz-margin-top-10"></md-divider>
@@ -159,28 +100,6 @@
 </div>
 
 
-<div id="row2" layout="row">
-  <!-- second row - first vis -->
-  <md-card flex="40" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-    <md-card-content class="wazuh-column">
-      <span class="wz-headline-title">Alert level evolution
-        <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertLevelEvoVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-      </span>
-      <md-divider class="wz-margin-top-10"></md-divider>
-      <div id='alertLevelEvoVizz'></div>
-    </md-card-content>
-  </md-card>
-  <!-- second row - second vis -->
-  <md-card flex="60" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-    <md-card-content class="wazuh-column">
-      <span class="wz-headline-title">Alerts
-        <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-      </span>
-      <md-divider class="wz-margin-top-10"></md-divider>
-      <div id='alertsVizz'></div>
-    </md-card-content>
-  </md-card>
-</div>
 
 
 <!-- fourth row  -->

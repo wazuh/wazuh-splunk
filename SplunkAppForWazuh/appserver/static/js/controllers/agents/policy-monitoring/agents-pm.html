@@ -1,8 +1,7 @@
 <md-content flex layout="column" layout-align="start">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
@@ -10,9 +9,9 @@
       <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>Policy monitoring</span>
-    </div>
-    <div ng-if="agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
     <div flex></div>
     <!-- Report button -->
@@ -33,7 +32,7 @@
   <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
 
   <!-- Auditing and Policy Monitoring navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'pm'">
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'pm'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="pm">Policy monitoring</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-ca" name="sca">SCA</md-nav-item>
     <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-audit" name="audit">System auditing</md-nav-item>

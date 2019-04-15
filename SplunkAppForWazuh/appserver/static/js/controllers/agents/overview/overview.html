@@ -1,9 +1,8 @@
 <div flex layout="column" layout-align="start stretch">
 
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
