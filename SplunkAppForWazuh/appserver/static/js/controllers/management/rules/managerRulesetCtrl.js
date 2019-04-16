@@ -50,7 +50,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
       this.scope.selectedNavTab = 'rules'
 
-      this.scope.$on('loadedTable', (event) => {
+      this.scope.$on('loadedTable', event => {
         event.stopPropagation()
         try {
           if (window.localStorage.ruleset) {

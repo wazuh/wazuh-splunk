@@ -479,6 +479,34 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // =========== Docker listener =========== //
+        .state('ow-docker', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/docker/overview-docker.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-docker')
+          },
+          controller: 'dockerCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
     }
   ])
 })

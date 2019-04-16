@@ -8,6 +8,7 @@ define([
   './general/agentsGeneralCtrl',
   './inventory/inventoryCtrl',
   './osquery/osqueryCtrl',
+  './docker/agentsDockerCtrl',
   './overview/agentsOverviewCtrl',
   './pcidss/agentsPciCtrl',
   './policy-monitoring/agentsPolicyMonitoringCtrl',

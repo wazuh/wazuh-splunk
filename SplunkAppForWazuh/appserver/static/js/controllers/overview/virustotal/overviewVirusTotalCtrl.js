@@ -35,7 +35,7 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
@@ -145,12 +145,12 @@ define([
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })

@@ -6,6 +6,7 @@ define([
   './virustotal/overviewVirusTotalCtrl',
   './aws/awsCtrl',
   './osquery/osqueryCtrl',
+  './docker/dockerCtrl',
   './scap/overviewOpenScapCtrl',
   './gdpr/overviewGdprCtrl',
   './pci/overviewPciCtrl',

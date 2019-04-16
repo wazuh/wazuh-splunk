@@ -198,7 +198,7 @@
         colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
           seconds)</span>
-        <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+        <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">
             <li ng-show="currentPage > 0" class="md-padding">
               <a href ng-click="firstPage()">First</a>
@@ -286,7 +286,7 @@
         colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
           seconds)</span>
-        <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+        <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">
             <li ng-show="currentPage > 0" class="md-padding">
               <a href ng-click="firstPage()">First</a>
@@ -330,7 +330,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="expandItem(item)">
-        <td ng-repeat="key in keys | filter: showKey">
+        <td class="wz-text-truncatable-ellipsis" ng-repeat="key in keys | filter: showKey">
           <span>
             {{
             parseValue(key,item)
@@ -359,7 +359,7 @@
         colspan="{{ (path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
         <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
           seconds)</span>
-        <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+        <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">
             <li ng-show="currentPage > 0" class="md-padding">
               <a href ng-click="firstPage()">First</a>

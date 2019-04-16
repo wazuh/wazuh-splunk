@@ -1,22 +1,28 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function(
+  app,
+  PieChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  RawTableDataService
+) {
   'use strict'
 
-  class Osquery {
+  class Docker {
     /**
-     * Class Osquery
+     * Class Docker
      * @param {*} $urlTokenModel
      * @param {*} $scope
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $notificationService
-     * @param {*} osquery
      * @param {*} $reportingService
      */
     constructor(
@@ -25,7 +31,6 @@ define([
       $currentDataService,
       $state,
       $notificationService,
-      osquery,
       $reportingService,
       reportingEnabled,
       extensions
@@ -33,17 +38,15 @@ define([
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.osquery = osquery
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService.addFilter(
-        `{"rule.groups{}":"osquery", "implicit":true}`
+        `{"rule.groups{}":"docker", "implicit":true}`
       )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
-      this.scope.osqueryWodle = false
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
@@ -63,64 +66,55 @@ define([
       )
       this.notification = $notificationService
       this.vizz = [
+        //`${this.filters} sourcetype=wazuh | timechart span=1h count`,
         /**
          * Visualizations
          */
-        new AreaChart(
-          'alertsOverTime',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertsOverTime',
+        new PieChart(
+          'top5images',
+          `${this.filters} sourcetype=wazuh | stats count by data.docker.id`,
+          'top5images',
           this.scope
         ),
-        new AreaChart(
-          'alertsEvolution',
+        new LinearChart(
+          'eventsOcurred',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'alertsEvolution',
+          } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
+          'eventsOcurred',
           this.scope
         ),
         new PieChart(
-          'mostCommonEvents',
-          `${this.filters} sourcetype=wazuh  | top data.osquery.name limit=5`,
-          'mostCommonEvents',
+          'top5actions',
+          `${this.filters} sourcetype=wazuh  | top data.docker.Action limit=5`,
+          'top5actions',
           this.scope
         ),
         new Table(
-          'topPacks',
+          'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-          'topPacks',
+          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Name, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          'alertsSummary',
           this.scope
         ),
-        new Table(
-          'topRules',
+        new LinearChart(
+          'resourceUsage',
           `${
             this.filters
-          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'topRules',
+          } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
+          'resourceUsage',
           this.scope
         ),
         new RawTableDataService(
-          'topRulesTable',
+          'alertsSummaryRawTable',
           `${
             this.filters
-          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'topRulesTableToken',
+          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Name, data.docker.Action as Action, timestamp as Date, count as Count`,
+          'alertsSummaryRawTableToken',
           '$result$',
           this.scope,
-          'Top 5 Rules'
-        ),
-        new RawTableDataService(
-          'topPacksTable',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-          'topPacksTableToken',
-          '$result$',
-          this.scope,
-          'Top 5 Packs'
+          'Alerts summary'
         )
       ]
 
@@ -129,16 +123,10 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'ow-osquery',
-          'Osquery',
+          'ow-docker',
+          'Docker',
           this.filters,
-          [
-            'alertsOverTime',
-            'mostCommonEvents',
-            'alertsEvolution',
-            'topPacks',
-            'topRules'
-          ],
+          ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
           {}, //Metrics
           this.tableResults
         )
@@ -176,16 +164,7 @@ define([
     /**
      * On controller loads
      */
-    $onInit() {
-      try {
-        const wodles = this.osquery.data.data.wmodules
-        this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
-      } catch (err) {
-        this.notification.showErrorToast(
-          'Cannot load wodle configuration. Osquery is not configured.'
-        )
-      }
-    }
+    $onInit() {}
 
     /**
      * Get filters and launches search
@@ -219,5 +198,5 @@ define([
     }
   }
 
-  app.controller('osqueryCtrl', Osquery)
+  app.controller('dockerCtrl', Docker)
 })
