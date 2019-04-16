@@ -12,9 +12,13 @@
 
 define([
   '../../module',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
 ], function(
   app,
+  PieChart,
+  AreaChart,
   TimePicker,
 ) {
   'use strict'
@@ -56,7 +60,6 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
-      this.scope.showPolicies = false
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
@@ -99,10 +102,10 @@ define([
       }
 
       this.filters = this.currentDataService.getSerializedFilters()
-      /*this.timePicker = new TimePicker(
+      this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      )*/
+      )
 
       this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
@@ -113,6 +116,36 @@ define([
         event.stopPropagation()
         this.launchSearches()
       })
+
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'resultDistribution',
+          `${
+            this.filters
+          }  rule.groups{}="sca" | stats count by data.sca.check.result `,
+          'resultDistribution',
+          this.scope
+        ),
+        new AreaChart(
+          'resultsOverTime',
+          `${
+            this.filters
+          }  rule.groups{}="sca" | timechart span=1h count by data.sca.check.result`,
+          'resultsOverTime',
+          this.scope
+        ),
+        new AreaChart(
+          'alertLevelEvolution',
+          `${
+            this.filters
+          }  rule.groups{}="sca" | timechart span=1h count by rule.level`,
+          'alertLevelEvolution',
+          this.scope
+        )
+      ]
 
       // Set agent info
       try {
@@ -140,14 +173,9 @@ define([
           'Configuration assessment',
           this.filters,
           [
+            'resultDistribution',
             'alertsOverTime',
-            'top5CISPassed',
-            'top5CISCSCPassed',
-            'top5PCIDSSPassed',
-            'top5CISFailed',
-            'top5CISCSCFailed',
-            'top5PCIDSSFailed',
-            'alertsSummary'
+            'alertLevelEvolution'
           ],
           {}, //Metrics,
           this.tableResults,
@@ -179,13 +207,12 @@ define([
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        //this.timePicker.destroy()
-        //this.vizz.map(vizz => vizz.destroy())
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
       })
     }
 
     $onInit() {
-      this.scope.showPolicies = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
@@ -255,15 +282,6 @@ define([
     }
 
     /**
-     * Switches between alerts visualizations and policies
-     */
-    switchVisualizations() {
-      this.scope.showPolicies = !this.scope.showPolicies
-      this.scope.showPolicyChecks = name
-      this.scope.$applyAsync()
-    }
-
-    /**
      * Loads policies checks
      */
     async loadPolicyChecks(id, name) {
@@ -296,13 +314,6 @@ define([
       })
     }
 
-    /**
-     * Back to configuration assessment from a policy checks
-     */
-    backToConfAssess() {
-      this.scope.showPolicyChecks = false
-      this.scope.showPolicies = true
-    }
   }
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
 })
