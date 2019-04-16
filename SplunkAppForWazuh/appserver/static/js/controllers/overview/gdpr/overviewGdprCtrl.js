@@ -6,7 +6,15 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
+], function(
+  app,
+  LinearChart,
+  ColumnChart,
+  PieChart,
+  Table,
+  TimePicker,
+  Dropdown
+) {
   'use strict'
   class OverviewGDPR {
     /**

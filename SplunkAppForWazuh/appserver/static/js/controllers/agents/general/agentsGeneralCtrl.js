@@ -67,7 +67,7 @@ define([
       this.agent = agent
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
-      this.scope.expandArray = [false, false, false, false, false, false,false]
+      this.scope.expandArray = [false, false, false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&

@@ -20,7 +20,7 @@ define(['../module'], function(directives) {
         switchChange: '&',
         switchText: '@switchText'
       },
-      controller(){},
+      controller() {},
       templateUrl:
         BASE_URL +
         '/static/app/SplunkAppForWazuh/js/directives/wz-kbn-switch/wz-kbn-switch.html'
