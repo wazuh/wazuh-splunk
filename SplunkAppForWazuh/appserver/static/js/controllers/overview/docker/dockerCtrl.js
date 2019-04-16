@@ -5,7 +5,14 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, LinearChart, Table, TimePicker, RawTableDataService) {
+], function(
+  app,
+  PieChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  RawTableDataService
+) {
   'use strict'
 
   class Docker {
@@ -40,12 +47,12 @@ define([
       )
       this.getFilters = this.currentDataService.getSerializedFilters
       this.filters = this.getFilters()
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -119,12 +126,7 @@ define([
           'ow-docker',
           'Docker',
           this.filters,
-          [
-            'top5images',
-            'eventsOcurred',
-            'top5actions',
-            'resourceUsage',
-          ],
+          ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
           {}, //Metrics
           this.tableResults
         )

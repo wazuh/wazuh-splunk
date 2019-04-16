@@ -17,7 +17,14 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, PieChart, LinearChart, Table, TimePicker, RawTableDataService) {
+], function(
+  app,
+  PieChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  RawTableDataService
+) {
   'use strict'
 
   class DockerAgents {
@@ -73,12 +80,12 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -97,7 +104,7 @@ define([
         new LinearChart(
           'eventsOcurred',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
           'eventsOcurred',
           this.scope
@@ -111,7 +118,7 @@ define([
         new Table(
           'alertsSummary',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Name, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
           'alertsSummary',
           this.scope
@@ -119,7 +126,7 @@ define([
         new LinearChart(
           'resourceUsage',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
           'resourceUsage',
           this.scope
@@ -127,7 +134,7 @@ define([
         new RawTableDataService(
           'alertsSummaryRawTable',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Name, data.docker.Action as Action, timestamp as Date, count as Count`,
           'alertsSummaryRawTableToken',
           '$result$',
@@ -152,7 +159,6 @@ define([
       } catch (error) {
         this.agentReportData = false
       }
-
 
       // Set agent info
       try {
@@ -179,12 +185,7 @@ define([
           'ag-docker',
           'Docker',
           this.filters,
-          [
-            'top5images',
-            'eventsOcurred',
-            'top5actions',
-            'resourceUsage',
-          ],
+          ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
           {}, //Metrics
           this.tableResults,
           this.agentReportData

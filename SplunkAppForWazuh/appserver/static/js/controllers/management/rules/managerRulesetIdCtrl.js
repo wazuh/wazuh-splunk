@@ -51,7 +51,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
       //Check if the rule is overwrited
       if (ruleInfo.data.data.totalItems > 1) {
-        ruleInfo = ruleInfo.data.data.items.filter(rule => rule.details.overwrite)
+        ruleInfo = ruleInfo.data.data.items.filter(
+          rule => rule.details.overwrite
+        )
         this.scope.ruleInfo = ruleInfo[0]
       } else {
         this.scope.ruleInfo = ruleInfo.data.data.items[0]

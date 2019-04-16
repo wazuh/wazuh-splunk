@@ -143,7 +143,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           .then(() => this.scope.editGroupAgentConfig())
       })
 
-      this.scope.$on('saveComplete', (event) => {
+      this.scope.$on('saveComplete', event => {
         event.stopPropagation()
         this.scope.saveIncomplete = false
       })

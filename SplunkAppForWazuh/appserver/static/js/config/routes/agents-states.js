@@ -1016,7 +1016,7 @@ define(['../module'], function(module) {
               }
             ]
           }
-        })        
+        })
     }
   ])
 })

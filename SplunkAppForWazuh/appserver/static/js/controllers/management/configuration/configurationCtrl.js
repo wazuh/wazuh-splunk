@@ -1,4 +1,4 @@
-define(['../../module', '../../../utils/config-handler'], function (
+define(['../../module', '../../../utils/config-handler'], function(
   controllers,
   ConfigHandler
 ) {
@@ -50,7 +50,7 @@ define(['../../module', '../../../utils/config-handler'], function (
         } else {
           this.scope.selectedNode = false // If cluster is disabled there is not a node selected
         }
-        
+
         this.scope.goToEdition = true
         this.scope.showingInfo = false
         this.scope.showInfo = () => this.showInfo()
@@ -81,19 +81,19 @@ define(['../../module', '../../../utils/config-handler'], function (
             this.scope,
             false, //Send agent.id as false
             this.scope.selectedNode // Send selected node
-            )
+          )
         }
-          
+
         this.scope.switchConfigurationTab = configurationTab => {
           this.currentConfigTab = false
           this.currentSections = false
           this.currentSubTab = false
-          this.currentWodle = false  
+          this.currentWodle = false
           this.configurationHandler.switchConfigurationTab(
             configurationTab,
             this.scope
           )
-        }          
+        }
 
         this.scope.switchConfigurationSubTab = configurationSubTab => {
           this.currentSubTab = configurationSubTab
@@ -108,7 +108,6 @@ define(['../../module', '../../../utils/config-handler'], function (
       } catch (error) {
         this.notification.showErrorToast(error)
       }
-
     }
 
     /**
@@ -121,8 +120,8 @@ define(['../../module', '../../../utils/config-handler'], function (
 
     /**
      * Changes the selected node
-     * 
-     * @param {String} node 
+     *
+     * @param {String} node
      */
     changeNode(node) {
       try {
@@ -141,8 +140,8 @@ define(['../../module', '../../../utils/config-handler'], function (
             this.scope,
             false, //Send agent.id as false
             node // Send selected node
-            )
-        } 
+          )
+        }
         // If the current config tab or wodle have sub tabs, this initializes the nav bar and loads the data
         if (this.currentSubTab) {
           this.configurationHandler.switchConfigurationSubTab(
@@ -151,13 +150,13 @@ define(['../../module', '../../../utils/config-handler'], function (
           )
         }
         this.scope.$applyAsync()
-        //this.notification.showSimpleToast(`Node selected: ${node}`)  
+        //this.notification.showSimpleToast(`Node selected: ${node}`)
       } catch (error) {
-        this.notification.showErrorToast(error || `Cannot load ${node} configuration.`)
+        this.notification.showErrorToast(
+          error || `Cannot load ${node} configuration.`
+        )
       }
-      
     }
-
   }
 
   controllers.controller('configurationCtrl', ConfigurationController)

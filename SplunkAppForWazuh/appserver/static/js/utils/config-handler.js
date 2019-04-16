@@ -39,7 +39,13 @@ define([
      * @param {string} configurationTab The configuration tab to open
      * @param {Array<object>} sections Array that includes sections to be fetched
      */
-    async switchConfigTab(configurationTab, sections, $scope, agentId = false, node =  false) {
+    async switchConfigTab(
+      configurationTab,
+      sections,
+      $scope,
+      agentId = false,
+      node = false
+    ) {
       try {
         $scope.load = true
         $scope.currentConfig = null
