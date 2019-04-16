@@ -81,4 +81,18 @@
 
     </div>
 
+    <!-- Third row -->
+    <div layout="row" layout-align="center stretch" class="height-390">
+      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alerts summary
+            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsSummary')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='alertsSummary'></div>
+        </md-card-content>
+      </md-card>
+      </md-card>
+    </div>
+
 </md-content>

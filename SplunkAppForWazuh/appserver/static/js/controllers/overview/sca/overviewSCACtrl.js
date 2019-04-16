@@ -14,11 +14,13 @@ define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
 ], function(
   app,
   PieChart,
   AreaChart,
+  Table,
   TimePicker,
 ) {
   'use strict'
@@ -112,12 +114,20 @@ define([
           'resultsOverTime',
           this.scope
         ),
-        new AreaChart(
+        new AreaChart( 
           'alertLevelEvolution',
           `${
             this.filters
           } | timechart span=1h count by rule.level`,
           'alertLevelEvolution',
+          this.scope
+        ),
+        new Table(
+          'alertsSummary',
+          `${
+            this.filters
+          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count`,
+          'alertsSummary',
           this.scope
         )
       ]
@@ -132,7 +142,8 @@ define([
           [
             'resultDistribution',
             'alertsOverTime',
-            'alertLevelEvolution'
+            'alertLevelEvolution',
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
