@@ -25,7 +25,8 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         getxml: '&',
         jsoncontent: '=',
         xmlcontent: '=',
-        hideHeader: '='
+        hideHeader: '=',
+        noLocal: '='
       }
       this.templateUrl =
         BASE_URL +
