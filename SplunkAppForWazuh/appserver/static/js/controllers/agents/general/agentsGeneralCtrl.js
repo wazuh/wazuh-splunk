@@ -136,7 +136,7 @@ define([
           'agentsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
@@ -144,7 +144,7 @@ define([
           'groupsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh | stats count by rule.groups{} | sort rule.level DESC | rename rule.groups{} as "Group", count as Count`,
+          } sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
           'groupsSummaryVizz',
           this.scope
         ),
@@ -152,7 +152,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -162,7 +162,7 @@ define([
           'groupsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh | stats count by rule.groups{} | sort rule.level DESC | rename rule.groups{} as "Group", count as Count`,
+          } sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
           'groupsSummaryTableToken',
           '$result$',
           this.scope,

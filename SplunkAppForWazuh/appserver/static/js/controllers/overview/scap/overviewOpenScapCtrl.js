@@ -191,7 +191,7 @@ define([
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -199,7 +199,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
