@@ -128,7 +128,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
       this.scope.$on('editFile', (ev, params) => {
         ev.stopPropagation()
-        this.editFile(params.file, params.path)
+        this.editFile(params.file, params.path, params.readOnly)
       })
 
       this.scope.$on('performRestart', (event) => {
@@ -472,12 +472,13 @@ define(['../../module', 'FileSaver'], function(app) {
      * Open xml editior box
      * @param {String} file
      */
-    async editFile(file, path) {
+    async editFile(file, path, readOnly = false) {
       try {
         this.scope.editingRulesetFile = {
           file,
           path: `${path}/${file}`
         }
+        // TODO checks if readOnly true only get the file and do not permit the edition
         this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
         this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
