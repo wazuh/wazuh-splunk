@@ -5,26 +5,30 @@
       <span>/ Status </span>
     </div>
   </div>
+  
+</div>
 
-  <!-- Headline -->
-  <div ng-show="!load" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-heartbeat" aria-hidden="true"></i> Status</span>
-    <span class="md-subheader">Check the status of all Wazuh manager daemons</span>
-  </div>
-  <!-- End headline -->
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting</md-nav-item>
+  </md-nav-bar>
+  
 
   <!-- Cluster nodes if cluster is enable -->
-  <div style="padding-left: 10px; padding-right: 10px;">
+  <div layout="row" layout-padding style="padding-left: 10px; padding-right: 10px;">
     <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId"
       ng-change="changeNode(nodeId)" aria-label="Select node">
       <option ng-repeat="node in nodes" value="{{node.name}}">{{node.name}}</option>
     </select>
     <span class="flex"></span>
     <!-- Restart button -->
-    <button ng-show="!confirmingRestart" style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress || wazuhNotReadyYet"
+    <button ng-show="!confirmingRestart" style="height: 30px; padding-top: 4px;" ng-if="isAdmin" ng-click="switchRestart()" ng-disabled="restartInProgress || wazuhNotReadyYet"
       class='btn wz-button-empty pull-right wz-margin-left-10'>
-      <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-refresh wz-margin-left-10'></i>Restart
+      <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
+        aria-hidden='true'></i>Restart
         {{clusterEnabled ? "cluster" : "manager"}}</span>
     </button>
     <div ng-show="confirmingRestart" style="display: flex; float:right;">
@@ -38,10 +42,10 @@
     </div>
   </div>
 
-  <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="load">
-    <div></div>
-  </div>
+<!-- Loading bar -->
+<div class="loader-bar" ng-show="load">
+  <div class="loader"></div>
+</div>
 
 
   <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
@@ -73,8 +77,8 @@
   <!-- End daemons status section -->
 
   <!-- Agents status section -->
-  <div ng-show="!load && !clusterError" layout="row" layout-align="start center" ng-if="!load">
-    <md-card flex class="wz-metric-color wz-md-card">
+  <div ng-show="!load && !clusterError" layout="row" layout-align="start center" ng-if="!load" class="wz-margin-9">
+    <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div flex class="wz-text-truncatable">Total agents:
           <span class="wz-text-bold">{{agentsCountTotal}}</span>
@@ -184,4 +188,3 @@
     </md-card>
     <!-- End last registered agent section -->
   </div>
-</div>

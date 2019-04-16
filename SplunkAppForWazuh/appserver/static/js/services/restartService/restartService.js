@@ -62,7 +62,7 @@ define(['../module'], function(module) {
             'PUT'
           )
           if (result && result.data && !result.data.error) {
-            return `Restarting the node: ${node}.`
+            return `Restarting node ${node}, please wait.`
           } else {
             throw `Cannot send restart signal to the node: ${node}.`
           }

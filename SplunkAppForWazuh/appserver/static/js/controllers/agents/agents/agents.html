@@ -1,5 +1,11 @@
 <!-- End loading ring -->
-<div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
+<div
+  flex
+  ng-if="!loading"
+  class="md-padding"
+  layout="column"
+  layout-align="start space-around"
+>
   <div layout="row" layout-align="space-between stretch">
     <md-card flex class="no-margin-left wz-md-card">
       <md-card-content>
@@ -9,21 +15,27 @@
           <div flex layout="column">
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Active</p>
-              <p class="wz-text-right color-grey">{{agentsCountActive}}</p>
+              <p class="wz-text-right color-grey">{{ agentsCountActive }}</p>
             </div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Disconnected</p>
-              <p class="wz-text-right color-grey">{{agentsCountDisconnected}}</p>
+              <p class="wz-text-right color-grey">
+                {{ agentsCountDisconnected }}
+              </p>
             </div>
           </div>
           <div flex layout="column">
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Never connected</p>
-              <p class="wz-text-right color-grey">{{agentsCountNeverConnected}}</p>
+              <p class="wz-text-right color-grey">
+                {{ agentsCountNeverConnected }}
+              </p>
             </div>
             <div layout="row" class="wz-padding-top-10">
               <p flex="50">Agents coverage</p>
-              <p ng-if="agentsCoverity" class="wz-text-right color-grey">{{(agentsCoverity | number:2)}}%</p>
+              <p ng-if="agentsCoverity" class="wz-text-right color-grey">
+                {{ agentsCoverity | number: 2 }}%
+              </p>
               <p ng-if="!agentsCoverity" class="wz-text-right color-grey">0</p>
             </div>
           </div>
@@ -36,26 +48,56 @@
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-padding-top-10">
           <p flex="35" class="manager-status-subtitle">Last registered agent</p>
-          <p ng-if="lastAgent.id !== '000'" class="wz-text-right wz-text-bold wz-text-link" ng-click="showAgent(lastAgent)">{{lastAgent.name}}
-            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+          <p
+            ng-if="lastAgent.id !== '000'"
+            class="wz-text-right wz-text-bold wz-text-link"
+            ng-click="showAgent(lastAgent)"
+          >
+            {{ lastAgent.name }}
+            <md-tooltip
+              ng-if="lastAgent.id !== '000'"
+              md-direction="right"
+              class="wz-tooltip"
+            >
               Click to open this agent
             </md-tooltip>
           </p>
-          <p ng-if="lastAgent.id === '000'" class="wz-text-right wz-text-bold wz-text-link">{{lastAgent.name}}
+          <p
+            ng-if="lastAgent.id === '000'"
+            class="wz-text-right wz-text-bold wz-text-link"
+          >
+            {{ lastAgent.name }}
             (manager)
-            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+            <md-tooltip
+              ng-if="lastAgent.id !== '000'"
+              md-direction="right"
+              class="wz-tooltip"
+            >
               Click to open this agent
             </md-tooltip>
           </p>
         </div>
         <div layout="row" class="wz-padding-top-10">
           <p flex="35" class="manager-status-subtitle">Higher activity</p>
-          <p ng-show='!loadingSearch' class="wz-text-right wz-text-bold wz-text-link" ng-click="showAgent(mostActiveAgent)">{{mostActiveAgent}}
-            <md-tooltip ng-if="lastAgent.id !== '000'" md-direction="right" class="wz-tooltip">
+          <p
+            ng-show="!loadingSearch"
+            class="wz-text-right wz-text-bold wz-text-link"
+            ng-click="showAgent(mostActiveAgent)"
+          >
+            {{ mostActiveAgent }}
+            <md-tooltip
+              ng-if="lastAgent.id !== '000'"
+              md-direction="right"
+              class="wz-tooltip"
+            >
               Click to open this agent
             </md-tooltip>
           </p>
-          <md-progress-circular class="wz-text-right" md-mode="indeterminate" ng-show="loadingSearch"></md-progress-circular>
+          <md-progress-circular
+            class="wz-text-right"
+            md-mode="indeterminate"
+            ng-show="loadingSearch"
+          ></md-progress-circular>
         </div>
       </md-card-content>
     </md-card>
@@ -63,29 +105,53 @@
 
   <!-- Search bar -->
   <div ng-if="!loading" layout="row" layout-align="space-between stretch">
-    <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
-    <button type="submit" aria-label="Search" class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15" ng-click="reloadList()">
-        <i class="fa fa-refresh" aria-hidden="true"></i>
-        <span>Refresh</span>
+    <wz-tag-filter
+      flex
+      path="'/agents'"
+      query-fn="query(q, search)"
+      fields-model="searchBarModel"
+    ></wz-tag-filter>
+    <button
+      type="submit"
+      aria-label="Search"
+      class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15"
+      ng-click="reloadList()"
+    >
+      <i class="fa fa-refresh" aria-hidden="true"></i>
+      <span>Refresh</span>
     </button>
   </div>
-
 
   <md-card class="wz-md-card no-margin-sides wz-margin-top-15">
     <!-- Table -->
     <div ng-if="!loading" layout="row" class="wz-margin-10">
-      <wazuh-table flex path="'/agents'" custom-columns="true" keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', 'dateAdd', 'lastKeepAlive']"
-        allow-click="true" rows-per-page="17"></wazuh-table>
+      <wazuh-table
+        flex
+        path="'/agents'"
+        custom-columns="true"
+        keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', 'dateAdd', 'lastKeepAlive']"
+        allow-click="true"
+        rows-per-page="17"
+      ></wazuh-table>
     </div>
 
     <!-- Download CSV -->
     <div layout="row" class="ruleset-csv-formater">
       <span flex></span>
-      <a class="small" id="btnDownload" ng-click="downloadCsv()">
-        <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+      <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv()">
+        <svg
+          class="euiIcon euiIcon--medium"
+          focusable="false"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"
+          ></path></svg
+        >&nbsp;Formatted
       </a>
     </div>
   </md-card>
-
-
 </div>

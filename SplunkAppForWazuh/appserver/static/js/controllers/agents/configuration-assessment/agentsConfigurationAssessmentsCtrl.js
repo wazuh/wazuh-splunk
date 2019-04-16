@@ -12,18 +12,10 @@
 
 define([
   '../../module',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
-  PieChart,
-  LinearChart,
-  Table,
   TimePicker,
-  RawTableDataService
 ) {
   'use strict'
 
@@ -107,10 +99,10 @@ define([
       }
 
       this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
+      /*this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      )
+      )*/
 
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
@@ -121,86 +113,6 @@ define([
         event.stopPropagation()
         this.launchSearches()
       })
-
-      this.vizz = [
-        /**
-         * Visualizations
-         */
-        new LinearChart(
-          'alertsOverTime',
-          `${
-            this.filters
-          } data.sca.type="summary"  | timechart count by data.sca.policy_id`,
-          'alertsOverTime',
-          this.scope
-        ),
-        new PieChart(
-          'top5CISPassed',
-          `${
-            this.filters
-          } data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
-          'top5CISPassed',
-          this.scope
-        ),
-        new PieChart(
-          'top5CISCSCPassed',
-          `${
-            this.filters
-          }  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
-          'top5CISCSCPassed',
-          this.scope
-        ),
-        new PieChart(
-          'top5PCIDSSPassed',
-          `${
-            this.filters
-          }  data.sca.check.result="passed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
-          'top5PCIDSSPassed',
-          this.scope
-        ),
-        new PieChart(
-          'top5CISFailed',
-          `${
-            this.filters
-          }  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis | sort -total | head 5`,
-          'top5CISFailed',
-          this.scope
-        ),
-        new PieChart(
-          'top5CISCSCFailed',
-          `${
-            this.filters
-          }  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.cis_csc | sort -total | head 5`,
-          'top5CISCSCFailed',
-          this.scope
-        ),
-        new PieChart(
-          'top5PCIDSSFailed',
-          `${
-            this.filters
-          }  data.sca.check.result="failed" | stats count(data.sca.check.result) as total by data.sca.check.compliance.pci_dss | sort -total | head 5`,
-          'top5PCIDSSFailed',
-          this.scope
-        ),
-        new Table(
-          'alertsSummary',
-          `${
-            this.filters
-          } cluster.name=wazuh index=wazuh rule.groups{}=sca agent.id=004 | stats count(data.sca.check.rationale) as Count by data.sca.check.rationale, data.sca.check.remediation, data.sca.check.id | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required", data.sca.check.id as "Check ID"  | table "Check ID", "Reason", "Change Required", "Count"`,
-          'alertsSummary',
-          this.scope
-        ),
-        new RawTableDataService(
-          'alertsSummaryTable',
-          `${
-            this.filters
-          } |  stats count(data.sca.check.rationale) as Count by data.sca.check.rationale,data.sca.check.remediation | sort - Count | rename data.sca.check.rationale AS Reason, data.sca.check.remediation AS "Change Required"  | table Reason,"Change Required",Count`,
-          'alertsSummaryTableToken',
-          '$result$',
-          this.scope,
-          'Alerts Summary'
-        )
-      ]
 
       // Set agent info
       try {
@@ -267,12 +179,13 @@ define([
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
+        //this.timePicker.destroy()
+        //this.vizz.map(vizz => vizz.destroy())
       })
     }
 
     $onInit() {
+      this.scope.showPolicies = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()

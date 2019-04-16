@@ -40,23 +40,22 @@
           <span> / </span>
           <span ui-sref='agent-overview({id:currentAgent.id})' class="wz-text-link cursor-pointer">{{currentAgent.name}}
             ({{currentAgent.id}})</span>
+          <span> / </span>
+          <!-- Welcome section -->
+            <span ng-if="configurationTab === 'welcome'">Configuration</span>
+          <!-- First-level section -->
+          <span ng-if="configurationTab !== 'welcome'">
+            <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+            <span> / </span>
+            <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
+          </span>
+        <div flex></div>
         </div>
+        <!-- Agent status -->
         <div ng-if="currentAgent.status">
           <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)"
             aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
         </div>
-        <span> / </span>
-        <!-- Welcome section -->
-        <div ng-if="configurationTab === 'welcome'">
-          <span>Configuration</span>
-        </div>
-        <!-- First-level section -->
-        <div ng-if="configurationTab !== 'welcome'">
-          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
-          <span> / </span>
-          <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
-        </div>
-        <div flex></div>
       </div>
     </div>
     <!-- Separator -->

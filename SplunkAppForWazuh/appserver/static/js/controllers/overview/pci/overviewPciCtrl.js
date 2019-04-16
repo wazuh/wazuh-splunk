@@ -1,5 +1,6 @@
 define([
   '../../module',
+  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
@@ -8,6 +9,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  LinearChart,
   ColumnChart,
   PieChart,
   Table,
@@ -90,12 +92,12 @@ define([
           'pciReqVizz',
           this.scope
         ),
-        new PieChart(
-          'groupsVizz',
+        new LinearChart(
+          'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups{}`,
-          'groupsVizz',
+          } sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{}`,
+          'evoVizz',
           this.scope
         ),
         new PieChart(

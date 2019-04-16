@@ -25,7 +25,10 @@ define(['../module'], function(directives) {
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
-              prettyFilters.push(`${key}:${filter[key]}`)
+              const cleanKey = key.replace('{}','')
+              if (key !== 'index') {
+                prettyFilters.push(`${cleanKey}:${filter[key]}`) 
+              }
             }
           }
           return prettyFilters

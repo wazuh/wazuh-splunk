@@ -1,10 +1,12 @@
 define([
   '../../module',
+  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function(app, ColumnChart, PieChart, TimePicker, Dropdown) {
+], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
   'use strict'
   class OverviewGDPR {
     /**
@@ -81,12 +83,12 @@ define([
           'gdprRequirements',
           this.scope
         ),
-        new PieChart(
-          'groupsViz',
+        new LinearChart(
+          'evoViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups{}`,
-          'groupsViz',
+          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{}`,
+          'evoViz',
           this.scope
         ),
         new PieChart(
@@ -105,7 +107,7 @@ define([
           'requirementsByAgents',
           this.scope
         ),
-        new ColumnChart(
+        new Table(
           'alertsSummaryViz',
           `${
             this.filters

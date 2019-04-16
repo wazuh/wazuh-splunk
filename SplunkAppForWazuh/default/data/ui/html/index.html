@@ -26,15 +26,11 @@
 
   <div class='empty-body-class wz-white-background' ng-controller='mainCtrl'>
     <wz-menu></wz-menu>
-    <div ng-show='loading' class='uil-ring-css'>
-      <div></div>
-    </div>
+    <!-- Loading bar -->
+    <div class="loader-bar" ng-show="loading">
+  <div class="loader"></div>
+</div>
     <div ng-show='!loading' ui-view class='wz-white-background'>
-      <!-- Loading ring -->
-      <!-- <div class='uil-ring-css'>
-        <div></div>
-      </div> -->
-      <!-- End loading ring -->
     </div>
   </div>
 

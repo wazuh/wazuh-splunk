@@ -1,4 +1,5 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca'" ng-init="switchConfigurationSubTab('pm-general')">
+<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca' || configurationSubTab === 'pm-unix' || configurationSubTab === 'pm-general'"
+   ng-init="switchConfigurationSubTab('pm-general')">
 
   <!-- Headline -->
   <div layout="column" layout-padding>
@@ -18,24 +19,26 @@
     && isString(currentConfig['syscheck-rootcheck']))"
         class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Configuration to ensure compliance with security policies, standards and hardening
+    <span>Configuration to ensure compliance with security policies, standards and hardening
       guides</span>
   </div>
   <!-- End headline -->
 
   <!-- Policy monitoring navigation bar -->
   <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Policy monitoring navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
     <md-nav-item ng-if="currentAgent" class="wz-nav-item" md-nav-click="switchWodle('sca'); switchConfigurationSubTab('pm-ca')" name="pm-ca">Configuration
       assessment</md-nav-item>
   </md-nav-bar>
   <!-- End Policy monitoring navigation bar -->
 
-  <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="load">
-    <div></div>
-  </div>
+<!-- Loading bar -->
+<div class="loader-bar" ng-show="load">
+  <div class="loader"></div>
+</div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
@@ -233,7 +236,13 @@
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
-    <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
         <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/anomalies-detection/index.html">Anomaly

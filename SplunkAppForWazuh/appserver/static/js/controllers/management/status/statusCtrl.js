@@ -56,6 +56,7 @@ define(['../../module'], function(controllers) {
      * On controller loads
      */
     $onInit() {
+      this.scope.selectedNavTab = 'status'
       this.scope.confirmingRestart = false
       this.scope.isAdmin = this.isAdmin
       this.scope.switchRestart = () => this.switchRestart()

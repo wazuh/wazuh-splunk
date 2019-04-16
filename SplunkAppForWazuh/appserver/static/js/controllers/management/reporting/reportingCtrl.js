@@ -26,6 +26,7 @@ define(['../../module'], function(app) {
      * On controller loads
      */
     $onInit() {
+      this.scope.selectedNavTab = 'reporting'
       this.scope.setPage = n => this.setPage(n)
       this.scope.nextPage = n => this.nextPage(n)
       this.scope.prevPage = () => this.prevPage()

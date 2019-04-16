@@ -441,5 +441,8 @@ table span.badge {
 }
 
 .wz-metric-color {
-  background-color: #e4f2f5;
+  margin: 0 !important;
+  background-color: #ecf6fb !important;
+  border: 1px solid #dfeff8 !important;
+  box-shadow: none !important;
 }
