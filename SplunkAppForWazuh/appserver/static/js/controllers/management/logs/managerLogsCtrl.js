@@ -65,7 +65,7 @@ define(['../../module', 'FileSaver'], function(app) {
             this.scope.$broadcast('XMLContentReady', {
               data: this.scope.XMLContent
             })
-          }         
+          }
           this.scope.$applyAsync()
         })
       } catch (err) {

@@ -49,8 +49,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         this.filters = []
       }
 
-      //Check if the rule is overwritted       
-      const response = (((ruleInfo || {}).data || {}).data || {}).items || []  
+      //Check if the rule is overwritted
+      const response = (((ruleInfo || {}).data || {}).data || {}).items || []
       if (response.length) {
         const result = response.filter(rule => rule.details.overwrite)
         this.scope.ruleInfo = result.length ? result[0] : response[0]
@@ -108,7 +108,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
           this.state.go('mg-rules')
         }
         //Check if the rule is overwritted
-        const response = (((ruleReloaded || {}).data || {}).data || {}).items || []
+        const response =
+          (((ruleReloaded || {}).data || {}).data || {}).items || []
         if (response.length) {
           const result = response.filter(rule => rule.details.overwrite)
           this.scope.ruleInfo = result.length ? result[0] : response[0]

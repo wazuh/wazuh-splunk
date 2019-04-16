@@ -118,7 +118,11 @@
           <!--NO icon -->
           <i ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
             aria-hidden="true" style="color: #0079a5;font-size: 17px;">
-            -
+            <i class="fa fa-eye cursor-pointer" aria-hidden="true" ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path, true)">
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  View file content
+              </md-tooltip>
+            </i>
           </i>
           <div ng-if="(item.file && removingFile === item.file) || (item.name && removingFile === item.name)"
             class="confirmEmbedBubble">

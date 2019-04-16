@@ -28,7 +28,6 @@
   }
 }(function (angular, Chart) {
   'use strict';
-console.log("loaded chart")
   Chart.defaults.global.multiTooltipTemplate = '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>';
   Chart.defaults.global.tooltips.mode = 'label';
   Chart.defaults.global.elements.line.borderWidth = 2;
