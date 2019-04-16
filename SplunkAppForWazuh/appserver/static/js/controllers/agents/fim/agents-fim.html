@@ -44,7 +44,10 @@
   <!-- Wazuh filters bar -->
   <wazuh-bar></wazuh-bar>
   <div ng-show='!showFiles'>
-    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show files</span>
+    <div class="wz-margin-right-15 wz-text-align-right">
+      <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
+      <span class='wz-text-link' ng-click='show()'>Show files</span>
+    </div>
     <!-- first row  -->
     <div id="row1" layout="row">
 
@@ -140,8 +143,10 @@
   </div>
 
   <div ng-show='showFiles'>
-    <span class='wz-text-link' ng-click='show()' style="margin-left:96%;">Show alerts</span>
-
+    <div class="wz-margin-right-15 wz-text-align-right">
+      <i class="fa fa-fw fa-area-chart formatted-color"></i>&nbsp;
+      <span class='wz-text-link' ng-click='show()'>Show alerts</span>
+    </div>
     <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
       <md-card flex="" class="wz-md-card _md flex">
         <md-card-content>
