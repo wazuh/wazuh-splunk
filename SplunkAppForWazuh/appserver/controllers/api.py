@@ -95,12 +95,16 @@ class api(controllers.BaseController):
                             for bucket in wmod["aws-s3"]["buckets"]:
                                 bucket["access_key"] = hide
                                 bucket["secret_key"] = hide
+                        if "services" in wmod["aws-s3"]:
+                            for service in wmod["aws-s3"]["services"]:
+                                service["access_key"] = hide
+                                service["secret_key"] = hide
             # Remove integrations keys
             if "integration" in res:
                 for integ in res["integration"]:
                     integ["api_key"] = hide
             response["data"] = res
-            return jsonbak.dumps(response)
+            return response
         except Exception as e:
             raise e
 
@@ -187,7 +191,7 @@ class api(controllers.BaseController):
                     return self.make_request(method, url, opt_endpoint, kwargs, auth, verify, counter - 1)
                 else:                    
                     raise Exception("Tried to execute %s %s three times with no success, aborted." % (method, opt_endpoint))
-            return request
+            return self.clean_keys(request)
         except Exception as e:
             self.logger.error("Error while requesting to Wazuh API: %s" % (e))
             raise e
