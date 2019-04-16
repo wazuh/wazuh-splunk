@@ -1,0 +1,84 @@
+<md-content flex layout="column" layout-align="start">
+  <!-- Breadcrumbs -->
+  <div layout="row" class="wz-height-35">
+    <div class='wz-margin-left-10 wz-margin-top-12'>
+        <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+      <span> / Security Configuration Assessment </span>
+    </div>
+    <div flex></div>
+    <!-- Report button -->
+    <div style="display:flex; padding-right: 10px;">
+      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
+        aria-label="Generate report button">
+        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Generate report
+        </md-tooltip>
+      </button>
+        <wz-discover breadcrumbs="{section: 'Overview', subSection: 'Configuration Assessment', ref: 'overview'}"></wz-discover>
+      </div>
+      <div style="margin-right:7px;" id='timePicker'></div>
+    </div>
+
+  <!-- Loading report-->
+  <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
+
+ 
+  <!-- Auditing and Policy Monitoring navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'sca'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pm" name="pm">Policy monitoring
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="sca">SCA</md-nav-item>
+    <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-audit" name="audit">System auditing</md-nav-item>
+    <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-os" name="openscap">OpenSCAP</md-nav-item>
+    <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-ciscat" name="ciscat">CIS-CAT</md-nav-item>
+  </md-nav-bar>
+
+  <!-- Wazuh filters bar -->
+  <wazuh-bar></wazuh-bar>
+
+  <!-- Alerts visualizations -->
+  <div>
+
+    <!-- First row -->
+    <div layout="row" layout-align="center stretch" class="height-390">
+      <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Results distribution
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'resultDistribution')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='resultDistribution'></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Results over time
+            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'resultsOverTime')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='resultsOverTime'></div>
+        </md-card-content>
+      </md-card>
+
+    </div>
+
+    <!-- Second row -->
+    <div layout="row" layout-align="center stretch" class="height-390">
+      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alert Level Evolution
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertLevelEvolution')"><i class="fa fa-fw fa-expand"></i></span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='alertLevelEvolution'></div>
+        </md-card-content>
+      </md-card>
+      </md-card>
+
+    </div>
+
+</md-content>

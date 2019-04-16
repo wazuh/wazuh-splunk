@@ -126,6 +126,33 @@ define(['../module'], function(module) {
               }
             ]
           }
+        })// Overview - SCA Security Configuration Assessment
+        .state('ow-sca', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/sca/overview-sca.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-sca')
+          },
+          controller: 'overviewSCACtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - FIM
         .state('ow-fim', {

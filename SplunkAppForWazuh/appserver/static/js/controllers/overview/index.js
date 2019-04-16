@@ -11,5 +11,6 @@ define([
   './pci/overviewPciCtrl',
   './ciscat/ciscatCtrl',
   './policy-monitoring/overviewPolicyMonitoringCtrl',
-  './vulnerabilities/overviewVulnerabilitiesCtrl'
+  './vulnerabilities/overviewVulnerabilitiesCtrl',
+  './sca/overviewSCACtrl'
 ], function() {})
