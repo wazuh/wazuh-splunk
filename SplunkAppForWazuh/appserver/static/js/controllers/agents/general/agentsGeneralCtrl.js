@@ -67,7 +67,7 @@ define([
       this.agent = agent
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
-      this.scope.expandArray = [false, false, false, false, false, false,false]
+      this.scope.expandArray = [false, false, false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&
@@ -86,12 +86,12 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })

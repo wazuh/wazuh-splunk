@@ -58,7 +58,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', (event) => {
+      this.scope.$on('loadedTable', event => {
         event.stopPropagation()
         try {
           if (window.localStorage.decoders) {

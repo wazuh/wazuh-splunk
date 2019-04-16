@@ -6,7 +6,15 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input'
-], function(app, LinearChart, ColumnChart, PieChart, Table, TimePicker, Dropdown) {
+], function(
+  app,
+  LinearChart,
+  ColumnChart,
+  PieChart,
+  Table,
+  TimePicker,
+  Dropdown
+) {
   'use strict'
   class OverviewGDPR {
     /**
@@ -28,20 +36,20 @@ define([
       pciExtensionEnabled
     ) {
       this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled,
-      this.scope.pciExtensionEnabled = pciExtensionEnabled
+      ;(this.scope.reportingEnabled = reportingEnabled),
+        (this.scope.pciExtensionEnabled = pciExtensionEnabled)
       this.state = $state
       this.getFilters = $currentDataService.getSerializedFilters
       this.reportingService = $reportingService
       this.tableResults = {}
       this.filters = this.getFilters()
       this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })

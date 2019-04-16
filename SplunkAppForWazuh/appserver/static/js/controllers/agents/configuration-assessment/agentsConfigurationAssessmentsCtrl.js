@@ -14,13 +14,8 @@ define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/inputs/time-picker',
-], function(
-  app,
-  PieChart,
-  AreaChart,
-  TimePicker,
-) {
+  '../../../services/visualizations/inputs/time-picker'
+], function(app, PieChart, AreaChart, TimePicker) {
   'use strict'
 
   class AgentsCA {
@@ -107,12 +102,12 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -172,11 +167,7 @@ define([
           'agents-ca',
           'Configuration assessment',
           this.filters,
-          [
-            'resultDistribution',
-            'alertsOverTime',
-            'alertLevelEvolution'
-          ],
+          ['resultDistribution', 'alertsOverTime', 'alertLevelEvolution'],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
@@ -313,7 +304,6 @@ define([
         }
       })
     }
-
   }
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
 })

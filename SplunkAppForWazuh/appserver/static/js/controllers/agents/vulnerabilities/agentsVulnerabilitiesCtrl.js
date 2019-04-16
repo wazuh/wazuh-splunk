@@ -52,8 +52,8 @@ define([
     ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled,
-      this.scope.extensions = extensions
+      ;(this.scope.reportingEnabled = reportingEnabled),
+        (this.scope.extensions = extensions)
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
@@ -84,12 +84,12 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })

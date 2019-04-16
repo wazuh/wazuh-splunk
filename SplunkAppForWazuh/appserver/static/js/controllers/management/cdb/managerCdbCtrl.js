@@ -103,8 +103,8 @@ define([
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', (event) => {
-        event.stopPropagation()        
+      this.scope.$on('loadedTable', event => {
+        event.stopPropagation()
         try {
           if (window.localStorage.cdb) {
             const parsedFilter = JSON.parse(window.localStorage.cdb)

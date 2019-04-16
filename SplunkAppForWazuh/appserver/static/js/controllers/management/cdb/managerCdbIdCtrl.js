@@ -105,7 +105,7 @@ define([
         this.scope.range = (size, start, end) =>
           this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-        this.scope.nextPage = async currentPage => 
+        this.scope.nextPage = async currentPage =>
           this.pagination.nextPage(
             currentPage,
             this.scope,
@@ -202,7 +202,10 @@ define([
         delete this.scope.currentList.list[key]
         this.scope.removingEntry = false
         this.refreshCdbList()
-        currentPage = this.scope.pagedItems.length - 1 >= currentPage ? currentPage : currentPage - 1
+        currentPage =
+          this.scope.pagedItems.length - 1 >= currentPage
+            ? currentPage
+            : currentPage - 1
         this.scope.setPage(currentPage)
       } catch (error) {
         this.notification.showErrorToast('Error deleting entry.')

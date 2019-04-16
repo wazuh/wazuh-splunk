@@ -10,24 +10,22 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wzAddFilterChip', function (BASE_URL) {
+  directives.directive('wzAddFilterChip', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         idInput: '@',
         options: '='
       },
-      controller(
-        $scope
-      ) {
-        $scope.showDropdown = false;
+      controller($scope) {
+        $scope.showDropdown = false
         $scope.select = chip => {
-          $scope.showDropdown = false;
-          const searchBar = $(`#${$scope.idInput}`);
-          searchBar.val(`${chip.value}: `);
-          searchBar.focus();
+          $scope.showDropdown = false
+          const searchBar = $(`#${$scope.idInput}`)
+          searchBar.val(`${chip.value}: `)
+          searchBar.focus()
         }
       },
       templateUrl:

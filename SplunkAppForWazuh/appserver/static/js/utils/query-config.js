@@ -6,13 +6,16 @@
  */
 define([], function() {
   'use strict'
-  return async function queryConfig(sections, apiReq, agentId = false, node = false) {
+  return async function queryConfig(
+    sections,
+    apiReq,
+    agentId = false,
+    node = false
+  ) {
     try {
       if (
-        agentId &&
-        typeof agentId !== 'string' ||
-        node &&
-        typeof node !== 'string' ||
+        (agentId && typeof agentId !== 'string') ||
+        (node && typeof node !== 'string') ||
         !sections ||
         !sections.length ||
         typeof sections !== 'object' ||
@@ -41,7 +44,7 @@ define([], function() {
           )
         } else if (!agentId && node) {
           partialResult = await apiReq.apiReq(
-            `/cluster/${node}/config/${component}/${configuration}` 
+            `/cluster/${node}/config/${component}/${configuration}`
           )
         } else if (!agentId && !node) {
           partialResult = await apiReq.apiReq(

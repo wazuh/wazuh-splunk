@@ -41,7 +41,7 @@ define([
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-        console.log("ext ", this.scope.extensions)
+      console.log('ext ', this.scope.extensions)
       this.scope.expandArray = [false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
@@ -99,12 +99,12 @@ define([
         )
       ]
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })

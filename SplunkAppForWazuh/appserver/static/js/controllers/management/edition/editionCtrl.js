@@ -63,11 +63,10 @@ define(['../../module'], function(controllers) {
          *  Listeners
          */
 
-        this.scope.$on('saveComplete', (event) => {
+        this.scope.$on('saveComplete', event => {
           event.stopPropagation()
           this.scope.saveIncomplete = false
         })
-        
       } catch (error) {
         this.notification.showErrorToast(error)
         this.state.go('manager')
@@ -150,7 +149,6 @@ define(['../../module'], function(controllers) {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
       this.scope.$applyAsync()
     }
-
   }
 
   controllers.controller('editionCtrl', Edition)

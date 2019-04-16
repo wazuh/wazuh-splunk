@@ -47,7 +47,16 @@ define([
       this.reportingService = $reportingService
       this.tableResults = {}
       this.agent = agent
-      this.scope.expandArray = [false, false, false, false, false,false,false,false]
+      this.scope.expandArray = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
       this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
@@ -86,12 +95,12 @@ define([
         }
       })
       this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
