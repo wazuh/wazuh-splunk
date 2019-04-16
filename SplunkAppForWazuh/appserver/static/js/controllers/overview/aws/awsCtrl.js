@@ -156,7 +156,7 @@ define([
           'map',
           `${
             this.filters
-          } sourcetype=wazuh | geostats latfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat" longfield="data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon" count`,
+          } sourcetype=wazuh | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
           'map',
           this.scope
         )
