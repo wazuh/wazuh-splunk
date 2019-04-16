@@ -280,6 +280,10 @@
               current-tab="'osquery'"
               description="'Osquery allows to expose an operating system as a high-performance relational database.'">
           </wz-welcome-card>
+          <wz-welcome-card ng-if="docker" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/docker.png'" 
+            sub-title="'Docker listener'" ui-sref='ag-docker' current-tab="'docker'" 
+            description="'Collects events on Docker containers such as starting, stopping or pausing.'">
+          </wz-welcome-card>
           </div>
         </div>
       </div>

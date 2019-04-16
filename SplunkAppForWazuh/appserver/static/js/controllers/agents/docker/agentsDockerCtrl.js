@@ -1,49 +1,70 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, Table, AreaChart, TimePicker, RawTableDataService) {
+], function(
+  app,
+  PieChart,
+  LinearChart,
+  Table,
+  TimePicker,
+  RawTableDataService
+) {
   'use strict'
 
-  class AgentsVirusTotal {
+  class DockerAgents {
     /**
-     * Class Virus Total
+     * Class Agents Docker
      * @param {Object} $urlTokenModel
      * @param {Object} $state
      * @param {Object} $scope
      * @param {Object} $currentDataService
+     * @param {Object} $notificationService
      * @param {Object} agent
      * @param {*} $reportingService
      */
 
     constructor(
       $urlTokenModel,
-      $state,
       $scope,
-      $currentDataService,
       agent,
+      $notificationService,
+      $currentDataService,
+      $state,
       $reportingService,
       reportingEnabled,
       extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
-      this.reportingService = $reportingService
-      this.tableResults = {}
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      //Add filer for VirusTotal
+      this.urlTokenModel = $urlTokenModel
+      this.notification = $notificationService
+      this.tableResults = {}
+      this.reportingService = $reportingService
       this.currentDataService.addFilter(
-        `{"rule.groups{}":"virustotal", "implicit":true}`
+        `{"rule.groups{}":"docker", "implicit":true}`
       )
-      this.agent = agent
       this.scope.expandArray = [false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
-
+      this.agent = agent
       if (
         this.agent &&
         this.agent.data &&
@@ -53,15 +74,11 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.urlTokenModel = $urlTokenModel
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
@@ -74,78 +91,74 @@ define([
       })
 
       this.vizz = [
+        //`${this.filters} sourcetype=wazuh | timechart span=1h count`,
         /**
          * Visualizations
          */
-        new AreaChart(
-          'eventsOverTimeElement',
-          `${this.filters}  | timechart span=12h count by rule.id`,
-          'eventsOverTimeElement',
+        new PieChart(
+          'top5images',
+          `${this.filters} sourcetype=wazuh | stats count by data.docker.id`,
+          'top5images',
           this.scope
         ),
-        new Table(
-          'eventsSummaryElement',
+        new LinearChart(
+          'eventsOcurred',
           `${
             this.filters
-          } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-          'eventsSummaryElement',
-          this.scope
-        ),
-        new Table(
-          'top5Rules',
-          `${
-            this.filters
-          } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5Rules',
+          } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
+          'eventsOcurred',
           this.scope
         ),
         new PieChart(
-          'alertsVolume',
-          `${
-            this.filters
-          } | stats count by rule.description | rename "rule.description" as "Description"`,
-          'alertsVolume',
+          'top5actions',
+          `${this.filters} sourcetype=wazuh  | top data.docker.Action limit=5`,
+          'top5actions',
           this.scope
         ),
         new Table(
-          'filesAffected',
+          'alertsSummary',
           `${
             this.filters
-          }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-          'filesAffected',
+          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Name, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          'alertsSummary',
+          this.scope
+        ),
+        new LinearChart(
+          'resourceUsage',
+          `${
+            this.filters
+          } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
+          'resourceUsage',
           this.scope
         ),
         new RawTableDataService(
-          'eventsSummaryTable',
+          'alertsSummaryRawTable',
           `${
             this.filters
-          } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-          'eventsSummaryTableToken',
+          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Name, data.docker.Action as Action, timestamp as Date, count as Count`,
+          'alertsSummaryRawTableToken',
           '$result$',
           this.scope,
-          'Events Summary'
-        ),
-        new RawTableDataService(
-          'top5RulesTable',
-          `${
-            this.filters
-          } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5RulesTableToken',
-          '$result$',
-          this.scope,
-          'Top 5 Rules'
-        ),
-        new RawTableDataService(
-          'filesAffectedTable',
-          `${
-            this.filters
-          }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-          'filesAffectedTableToken',
-          '$result$',
-          this.scope,
-          'Files Affected'
+          'Alerts summary'
         )
       ]
+
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
+      }
 
       // Set agent info
       try {
@@ -169,17 +182,11 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-virustotal',
-          'VirusTotal',
+          'ag-docker',
+          'Docker',
           this.filters,
-          [
-            'alertsVolume',
-            'eventsSummaryElement',
-            'eventsOverTimeElement',
-            'top5Rules',
-            'filesAffected'
-          ],
-          this.reportMetrics,
+          ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
+          {}, //Metrics
           this.tableResults,
           this.agentReportData
         )
@@ -194,7 +201,6 @@ define([
         }).length
         if (this.vizzReady) {
           this.scope.loadingVizz = false
-          this.setReportMetrics()
         } else {
           this.vizz.map(v => {
             if (v.constructor.name === 'RawTableData') {
@@ -206,7 +212,7 @@ define([
         if (!this.scope.$$phase) this.scope.$digest()
       })
 
-      /**
+      /*
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
@@ -223,6 +229,7 @@ define([
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
           : { error: true }
+
       this.scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.scope.formatAgentStatus = agentStatus => {
@@ -238,17 +245,6 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
-    }
-
-    /**
-     * Set report metrics
-     */
-    setReportMetrics() {
-      this.reportMetrics = {
-        'Files added': this.scope.filesAdded,
-        'Files modified': this.scope.filesModified,
-        'Files deleted': this.scope.filesDeleted
-      }
     }
 
     expand(i, id) {
@@ -274,7 +270,6 @@ define([
       })
     }
   }
-  app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)
-})
 
-//data.virustotal.source.file
+  app.controller('agentsDockerCtrl', DockerAgents)
+})

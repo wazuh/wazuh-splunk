@@ -179,7 +179,7 @@ define(['../module'], function(module) {
     /**
      * Checks if an extension is enabled
      */
-    const extensionIsEnabled = async (ext) => {
+    const extensionIsEnabled = async ext => {
       try {
         const extensions = await getCurrentExtensions()
         return extensions[ext] === 'true'
