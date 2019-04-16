@@ -966,6 +966,57 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // =========== Docker listener =========== //
+        .state('ag-docker', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/docker/agents-docker.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-docker')
+          },
+          controller: 'agentsDockerCtrl',
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })        
     }
   ])
 })
