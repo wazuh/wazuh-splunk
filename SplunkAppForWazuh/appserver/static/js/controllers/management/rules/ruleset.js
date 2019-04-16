@@ -457,6 +457,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.addingNewFile = false
       this.scope.overwrite = false
       this.scope.fetchedXML = ''
+      this.scope.XMLContent = false
     }
 
     /**
@@ -474,13 +475,20 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async editFile(file, path, readOnly = false) {
       try {
-        this.scope.editingRulesetFile = {
-          file,
-          path: `${path}/${file}`
+        if (readOnly) {
+          this.scope.XMLContent = await this.fetchFileContent(`${path}/${file}`, readOnly)
+          this.scope.$broadcast('XMLContentReady', {
+            data: this.scope.XMLContent
+          })
+          this.scope.fileName = file
+        } else {
+          this.scope.editingRulesetFile = {
+            file,
+            path: `${path}/${file}`
+          }
+          this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
+          this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
         }
-        // TODO checks if readOnly true only get the file and do not permit the edition
-        this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
-        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
         this.notification.showErrorToast(error.message || error)
@@ -505,7 +513,20 @@ define(['../../module', 'FileSaver'], function(app) {
      * Fetchs file content
      * @param {String} file
      */
-    async fetchFileContent(file) {
+    async fetchFileContent(file, readOnly = false) {
+      try {
+        const result = await this.fileEditor.getConfiguration(file, null, null, readOnly)
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Fetchs readable file content
+     * @param {String} file
+     */
+    async fetchReadableFileContent(file) {
       try {
         const result = await this.fileEditor.getConfiguration(file)
         return result

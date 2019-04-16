@@ -17,7 +17,7 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists</md-nav-item>
 </md-nav-bar>
 
-<div ng-if="!addingNewFile && !editingRulesetFile" class="md-padding-h">
+<div ng-if="!addingNewFile && !editingRulesetFile && !XMLContent" class="md-padding-h">
   <div ng-show="!loading" layout="row" layout-align="start center">
     <div flex>
       <div layout="row">
@@ -160,4 +160,15 @@
       valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
     </wz-xml-file-editor>
   </div>
+</div>
+
+<!-- XML viewer -->
+<div ng-show="XMLContent">
+  <div layout="row" layout-align="start center" class="layout-align-start-center layout-row">
+    <a class="md-icon-button md-button md-ink-ripple" aria-label="Back to rules" ng-click="closeEditingFile()">
+      <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+    </a>
+    <h1 class="font-size-18">{{fileName}}</h1>
+  </div>
+  <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true"/>
 </div>

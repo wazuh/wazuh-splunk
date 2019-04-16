@@ -523,7 +523,7 @@ define([
         /**
          * Edits a file
          */
-        $scope.editFile = (file, path, readOnly = False) => {
+        $scope.editFile = (file, path, readOnly = false) => {
           $scope.$emit('editFile', { file, path, readOnly })
         }
 
