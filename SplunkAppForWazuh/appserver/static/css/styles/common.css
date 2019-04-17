@@ -1701,3 +1701,21 @@ input:focus {
     to {left: 100%;}
 }
 
+
+/* eui spinner */
+
+.euiLoadingSpinner--medium {
+  width: 16px;
+  height: 16px;
+  border-width: 1px;
+}
+.euiLoadingSpinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: solid 2px #D3DAE6;
+  border-color: #006BB4 #D3DAE6 #D3DAE6 #D3DAE6;
+  -webkit-animation: euiLoadingSpinner .6s infinite linear;
+  animation: euiLoadingSpinner .6s infinite linear;
+}
