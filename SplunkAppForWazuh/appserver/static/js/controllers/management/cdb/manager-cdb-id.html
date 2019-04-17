@@ -96,8 +96,12 @@
                 ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
                 <td class="td-align-middle">{{item[0]}}</td>
                 <td class="td-align-middle">
-                  <input ng-show="editingKey === item[0]" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;" ng-model="editingNewValue">
-                  <span ng-show="!editingKey || editingKey !== item[0]">{{item[1]}}</span>
+                  <div ng-show="editingKey === item[0]">
+                    <input  type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;" ng-model="editingNewValue">
+                  </div>
+                  <div ng-show="!editingKey || editingKey !== item[0]">
+                    <span >{{item[1]}}</span>
+                  </div>
                 </td>
                 <td class="action-btn-td td-align-middle">
                   <div ng-hide="!adminMode">
