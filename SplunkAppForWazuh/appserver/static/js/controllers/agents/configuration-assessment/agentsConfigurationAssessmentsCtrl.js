@@ -40,7 +40,6 @@ define([
       $currentDataService,
       agent,
       configAssess,
-      $reportingService,
       $requestService,
       $notificationService,
       $csvRequestService,
@@ -56,7 +55,6 @@ define([
       this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
       this.state = $state
-      this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
@@ -112,94 +110,11 @@ define([
         this.launchSearches()
       })
 
-      this.vizz = [
-        /**
-         * Visualizations
-         */
-        new PieChart(
-          'resultDistribution',
-          `${
-            this.filters
-          }  rule.groups{}="sca" | stats count by data.sca.check.result `,
-          'resultDistribution',
-          this.scope
-        ),
-        new AreaChart(
-          'resultsOverTime',
-          `${
-            this.filters
-          }  rule.groups{}="sca" | timechart span=1h count by data.sca.check.result`,
-          'resultsOverTime',
-          this.scope
-        ),
-        new AreaChart(
-          'alertLevelEvolution',
-          `${
-            this.filters
-          }  rule.groups{}="sca" | timechart span=1h count by rule.level`,
-          'alertLevelEvolution',
-          this.scope
-        )
-      ]
-
-      // Set agent info
-      try {
-        this.agentReportData = {
-          ID: this.agent.data.data.id,
-          Name: this.agent.data.data.name,
-          IP: this.agent.data.data.ip,
-          Version: this.agent.data.data.version,
-          Manager: this.agent.data.data.manager,
-          OS: this.agent.data.data.os.name,
-          dateAdd: this.agent.data.data.dateAdd,
-          lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
-        }
-      } catch (error) {
-        this.agentReportData = false
-      }
-
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'agents-ca',
-          'Configuration assessment',
-          this.filters,
-          ['resultDistribution', 'alertsOverTime', 'alertLevelEvolution'],
-          {}, //Metrics,
-          this.tableResults,
-          this.agentReportData
-        )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
       })
     }
 
@@ -280,6 +195,14 @@ define([
       this.scope.policyId = id
       const agentId = this.agent.data.data.id
       this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
+    }
+
+    /**
+     * 
+     * Backs to config assessment
+     */
+    backToConfAssess() {
+      this.scope.showPolicyChecks = false
     }
 
     expand(i, id) {
