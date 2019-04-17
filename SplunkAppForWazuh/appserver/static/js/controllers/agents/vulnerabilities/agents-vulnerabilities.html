@@ -66,7 +66,7 @@
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alerts severity over time
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'alertsSeverityOverTimeVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'alertsSeverityOverTimeVizz')"><wz-svg icon="expand"></wz-svg></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsSeverityOverTimeVizz'></div>
@@ -75,7 +75,7 @@
     <md-card flex="40" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Most common rules
-          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'commonRules')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'commonRules')"><wz-svg icon="expand"></wz-svg></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='commonRules'></div>
@@ -86,7 +86,7 @@
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Most common CVEs
-          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'commonCves')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'commonCves')"><wz-svg icon="expand"></wz-svg></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='commonCves'></div>
@@ -95,7 +95,7 @@
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Severity distribution
-          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'severityDistribution')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'severityDistribution')"><wz-svg icon="expand"></wz-svg></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='severityDistribution'></div>
@@ -104,7 +104,7 @@
     <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Commonly affected packages
-          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'commonlyAffectedPackVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'commonlyAffectedPackVizz')"><wz-svg icon="expand"></wz-svg></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='commonlyAffectedPackVizz'></div>
@@ -115,7 +115,7 @@
     <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
       <md-card-content class="wazuh-column">
         <span class="wz-headline-title">Alerts summary
-          <span class="wz-text-link" style="float:right;" ng-click="expand(5,'alertsSummaryVizz')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-text-link" style="float:right;" ng-click="expand(5,'alertsSummaryVizz')"><wz-svg icon="expand"></wz-svg></span>
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div id='alertsSummaryVizz'></div>
