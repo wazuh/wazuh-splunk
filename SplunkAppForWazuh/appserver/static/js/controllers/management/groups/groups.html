@@ -87,9 +87,11 @@
 
         <!-- Search bar -->
         <div layout="row" ng-if="!addingAgents && !file">
-          <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
-            ng-model="custom_search" type="text" class="kuiLocalSearchInput height-40 wz-width-100" aria-invalid="false"
-            wz-enter="search(custom_search)">
+          <label class="wz-icon-loupe">
+            <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
+              ng-model="custom_search" type="text" class="kuiLocalSearchInput height-40 wz-width-100" aria-invalid="false"
+              wz-enter="search(custom_search)">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10" ng-click="search(custom_search)">
             <span>Search</span>
           </button>

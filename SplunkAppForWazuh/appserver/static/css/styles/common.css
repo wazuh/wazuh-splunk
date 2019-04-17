@@ -1750,3 +1750,26 @@ input:focus {
   margin-left:10px;
   margin-top:12px;
 }
+
+
+
+label.wz-icon-loupe {
+  position: relative;
+  width:100%;
+}
+
+label.wz-icon-loupe:before  {
+  content: "";
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  width: 20px;
+  height: 40px;
+  background: url(/static/app/SplunkAppForWazuh/css/images/loupe.png) no-repeat;
+  background-size: 18px;
+}
+
+label.wz-icon-loupe  input {
+  padding: 0px 35px !important;
+  width:100%;
+}

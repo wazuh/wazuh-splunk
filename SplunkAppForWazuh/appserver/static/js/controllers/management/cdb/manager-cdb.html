@@ -21,8 +21,10 @@
   <div ng-show="!loading" layout="row" layout-align="start center">
     <div flex>
       <div layout="row">
-        <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput height-40"
-          aria-invalid="false" wz-enter="search(customSearch)">
+        <label class="wz-icon-loupe">
+          <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput height-40"
+            aria-invalid="false" wz-enter="search(customSearch)">
+        </label>
         <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10" ng-click="search(customSearch)">
             <span>Search</span>
         </button>

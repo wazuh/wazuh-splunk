@@ -28,10 +28,13 @@
           </md-tooltip>
           <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
         </button>
-        <input id="search-input-rules" ng-if="!rulesetFiles" placeholder="Filter rules..." ng-model="customSearch" type="text"
-          flex class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-        <input id="search-input-rules" ng-if="rulesetFiles" placeholder="Filter rules files..." ng-model="customSearch"
-          type="text" flex class="kuiLocalSearchInput wz-margin-left-20 height-40" aria-invalid="false" wz-enter="search(customSearch)">
+        
+        <label class="wz-icon-loupe">
+          <input id="search-input-rules" ng-if="!rulesetFiles" placeholder="Filter rules..." ng-model="customSearch" type="text"
+            flex class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+          <input id="search-input-rules" ng-if="rulesetFiles" placeholder="Filter rules files..." ng-model="customSearch"
+            type="text" flex class="kuiLocalSearchInput wz-margin-left-20 height-40" aria-invalid="false" wz-enter="search(customSearch)">
+        </label>
         <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules" options="[{label: 'File', value: 'file'},
           {label: 'Path', value: 'path'}, {label: 'Level', value: 'level'},
           {label: 'Group', value: 'group'}, {label: 'PCI control', value: 'pci'},
