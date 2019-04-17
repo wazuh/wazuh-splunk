@@ -1,11 +1,11 @@
-<div flex="auto" layout="column" ng-init="switchConfigurationTab('welcome')">
-  <div layout="row" layout-align="start center">
+<div flex="auto" ng-init="switchConfigurationTab('welcome')">
+  <div">
 
     <!-- Breadcrumbs for nodes configuration -->
     <div ng-if='!currentAgent' class="wz-full-width">
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
-      <div layout="row" layout-padding>
+      <div layout="row" class="wz-breadcrumb-margin" ng-class="{'wz-height-20':configurationTab !== 'welcome' }">
         <!-- Welcome section -->
         <div ng-if="configurationTab === 'welcome'">
           <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
@@ -33,7 +33,7 @@
     <div ng-if='currentAgent'>
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
-      <div layout="row" layout-padding>
+      <div layout="row"  class="wz-breadcrumb-margin" >
         <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
         <div>
           <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
@@ -52,7 +52,7 @@
         <div flex></div>
         </div>
         <!-- Agent status -->
-        <div ng-if="currentAgent.status">
+        <div ng-if="currentAgent.status" style="margin-left: 5px;">
           <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)"
             aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
         </div>

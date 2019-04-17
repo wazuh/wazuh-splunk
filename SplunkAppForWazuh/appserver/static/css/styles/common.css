@@ -464,6 +464,9 @@ div.uil-ring-css {
 .wz-height-35 {
   height: 35px !important;
 }
+.wz-height-20 {
+  height: 20px !important;
+}
 
 .wz-width-85 {
   min-width: 85px;
@@ -1740,4 +1743,10 @@ input:focus {
 /* Do not show the last resize th */ 
 .table-resizable > thead th:last-child .ui-resizable-handle {
   display: none !important;
+}
+
+
+.wz-breadcrumb-margin{
+  margin-left:10px;
+  margin-top:12px;
 }

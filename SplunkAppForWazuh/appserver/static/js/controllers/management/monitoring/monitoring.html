@@ -3,7 +3,7 @@
   <!-- Breadcrumbs -->
   <div layout="row" >
     <!-- Main monitoring section -->
-    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="!showConfig && !showNodes && !currentNode">
+    <div class='wz-breadcrumb-margin' ng-if="!showConfig && !showNodes && !currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
       <span>Cluster</span>
@@ -11,7 +11,7 @@
       <span>{{ currentApi }}</span>
     </div>
     <!-- Overview section -->
-    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="showConfig && !currentNode">
+    <div class='wz-breadcrumb-margin' ng-if="showConfig && !currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
@@ -20,7 +20,7 @@
       <span> / Overview</span>
     </div>
     <!-- The nodes list -->
-    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="showNodes && !currentNode">
+    <div class='wz-breadcrumb-margin' ng-if="showNodes && !currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
@@ -30,7 +30,7 @@
       <span>Nodes</span>
     </div>
     <!-- Single node section -->
-    <div class='wz-margin-left-10 wz-margin-top-12' ng-if="currentNode">
+    <div class='wz-breadcrumb-margin' ng-if="currentNode">
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / </span>
       <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
