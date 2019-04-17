@@ -56,9 +56,12 @@
 
 <div layout="row" class="less-15-side">
   <!-- Search and play realtime buttons -->
-  <input flex placeholder="Filter logs..." ng-model="custom_search" type="text"
-    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-top-4 height-36 wz-margin-left-10"
-    aria-invalid="false" wz-enter="search(custom_search)">
+  
+  <label class="wz-icon-loupe">
+    <input flex placeholder="Filter logs..." ng-model="custom_search" type="text"
+      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-top-4 height-36 wz-margin-left-10"
+      aria-invalid="false" wz-enter="search(custom_search)">
+  </label>
   <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-5"
     ng-click="search(custom_search)">
     <span>Search</span>

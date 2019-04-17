@@ -82,8 +82,10 @@
         <span class="color-grey pull-right">Last scan: {{syscollector.packagesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
-            aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          <label class="wz-icon-loupe">
+            <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
+              aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(packageSearch,'packages')">
               <span>Search</span>
           </button>
@@ -114,8 +116,10 @@
         <span class="color-grey pull-right">Last scan: {{syscollector.processesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
-            aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          <label class="wz-icon-loupe">
+            <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
+              aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(processSearch,'processes')">
               <span>Search</span>
           </button>
