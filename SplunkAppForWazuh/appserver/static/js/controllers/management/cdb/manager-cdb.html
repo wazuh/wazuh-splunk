@@ -118,15 +118,15 @@
             <tbody>
               <!-- Add new key tr -->
               <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
-                <td>
-                  <input placeholder="New key" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                <td class="td-align-middle">
+                  <input placeholder="New key" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;"
                     ng-model="newKey">
                 </td>
-                <td>
-                  <input placeholder="New value" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                <td class="td-align-middle">
+                  <input placeholder="New value" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;"
                     ng-model="newValue">
                 </td>
-                <td>
+                <td class="td-align-middle">
                   <button class="btn btn-as-i" ng-disabled="!newKey" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
                       <wz-svg icon="plus" color="#0079a5"></wz-svg>
                     <md-tooltip md-direction="left" class="wz-tooltip">
