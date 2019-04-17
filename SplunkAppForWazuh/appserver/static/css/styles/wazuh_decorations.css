@@ -126,7 +126,7 @@
 }
 
 .wz-margin-left-10 {
-  margin-left: 10px;
+  margin-left: 10px !important;
 }
 
 .wz-margin-left-16 {

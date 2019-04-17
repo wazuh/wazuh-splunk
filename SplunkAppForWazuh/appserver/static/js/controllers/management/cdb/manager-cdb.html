@@ -144,12 +144,9 @@
                 </td>
                 <td class="action-btn-td">
                   <div ng-hide="!adminMode">
-                    <span ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]" ng-click="setEditingKey(item[0], item[1])"
-                      class="fa fa-fw fa-pencil cursor-pointer">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Edit
-                      </md-tooltip>
-                    </span>
+                    <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]" ng-click="setEditingKey(item[0], item[1])"
+                      icon="pencil">
+                    </wz-svg>
                     <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer" ng-click="cancelEditingKey()">
                       <md-tooltip md-direction="left" class="wz-tooltip">
                         Cancel
@@ -161,12 +158,10 @@
                         Apply
                       </md-tooltip>
                     </span>
-                    <i ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]" ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
-                      class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Remove this entry
-                      </md-tooltip>
-                    </i>
+
+                    <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]" ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
+                    icon="trash" svg-tooltip="Remove this entry">
+                    </wz-svg>
 
                     <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
                       <div layout="row">
