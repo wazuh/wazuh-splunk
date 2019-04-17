@@ -435,7 +435,7 @@ div.uil-ring-css {
 }
 
 .wz-margin-left-20 {
-  margin-left: 20px;
+  margin-left: 20px !important;
 }
 
 .wz-margin-left--10 {

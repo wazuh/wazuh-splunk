@@ -11,7 +11,8 @@
   </div>
 
   <!-- Nav bar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav" md-selected-nav-item="'decoders'">
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav"
+    md-selected-nav-item="'decoders'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules
     </md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
@@ -66,7 +67,8 @@
   <!-- Edit button -->
   <div layout="row" ng-if="!editingFile">
     <button ng-if="currentDecoder.file && isLocal && adminMode" ng-click="editDecoder(currentDecoder.file)"
-      class="btn wz-button-empty btn-ruleset ng-scope"><wz-svg icon="pencil"></wz-svg>
+      class="btn wz-button-empty btn-ruleset ng-scope">
+      <wz-svg icon="pencil"></wz-svg>
       Edit {{currentDecoder.file}}
     </button>
   </div>
@@ -147,11 +149,13 @@
     </div>
 
     <!-- Related decoders section -->
+    <h1 class="md-headline wz-headline wz-margin-10">
+      <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders
+    </h1>
     <md-card class="wz-md-card" ng-if="currentDecoder && !editingFile">
       <md-card-contents>
         <div layout="row">
-          <h1 class="md-headline wz-headline">
-            <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders</h1>
+
         </div>
         <div layout="row" class="md-padding">
           <wazuh-table custom-columns="true" flex path="'/decoders'"
