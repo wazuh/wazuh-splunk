@@ -73,26 +73,26 @@
             <p flex="15">{{entry.userapi}}</p>
             <p flex="20">
               
-              <span ng-click="selectManager(entry['_key'])" class="cursor-pointer" aria-hidden="true" style="color:#717911;">
+              <span ng-click="selectManager(entry['_key'])" class="cursor-pointer" aria-hidden="true">
                   <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.86.86 0 0 0-.792.511l-1.33 2.924-3.128.446c-.71.102-1.001.976-.496 1.487l2.313 2.336-.563 3.268A.877.877 0 0 0 4.864 14c.142 0 .289-.036.429-.116L8 12.342l2.707 1.542c.14.08.287.116.43.116a.877.877 0 0 0 .859-1.027l-.563-3.269 2.313-2.336c.505-.511.214-1.385-.496-1.487l-3.128-.446-1.33-2.923A.86.86 0 0 0 8 2m0 1c.073 0 .095.049.104.07l1.267 2.783.162.356.387.055 2.978.425c.017.002.071.01.095.08a.116.116 0 0 1-.029.126l-2.202 2.226-.259.261.063.362.535 3.112c.007.04 0 .07-.023.098a.127.127 0 0 1-.091.046.106.106 0 0 1-.055-.016l-2.578-1.469L8 11.314l-.354.201-2.579 1.469a.103.103 0 0 1-.054.016.127.127 0 0 1-.091-.046c-.023-.028-.03-.058-.024-.098l.536-3.112.063-.362-.259-.261-2.202-2.226a.116.116 0 0 1-.029-.126.108.108 0 0 1 .094-.08l2.98-.425.386-.055.162-.356 1.267-2.786C7.905 3.05 7.927 3 8 3"></path></svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Set as default Manager
                 </md-tooltip>
               </span>
-              <span ng-click="removeManager(entry)" class="cursor-pointer" aria-hidden="true" style="color:#da2062;">
-                  <svg class="euiIcon euiIcon--medium euiIcon--danger" focusable="false" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16"><defs><path id="trash-a" d="M11 3h5v1H0V3h5V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2zm-7.056 8H7v1H4.1l.392 2.519c.042.269.254.458.493.458h6.03c.239 0 .451-.189.493-.458l1.498-9.576H14l-1.504 9.73c-.116.747-.74 1.304-1.481 1.304h-6.03c-.741 0-1.365-.557-1.481-1.304l-1.511-9.73H9V5.95H3.157L3.476 8H8v1H3.632l.312 2zM6 3h4V1H6v2z"></path></defs><use xlink:href="#trash-a"></use></svg>
+              <span ng-click="removeManager(entry)" class="cursor-pointer" aria-hidden="true">
+                  <wz-svg icon="trash" color="#da2062"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Remove manager
                 </md-tooltip>
               </span>
-              <span ng-click="checkManager(entry)" class="cursor-pointer" aria-hidden="true" style="color:#595d65;">
-                  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M11.228 2.942a.5.5 0 1 1-.538.842A5 5 0 1 0 13 8a.5.5 0 1 1 1 0 6 6 0 1 1-2.772-5.058zM14 1.5v3A1.5 1.5 0 0 1 12.5 6h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 1 1 1 0z"></path></svg>
+              <span ng-click="checkManager(entry)" class="cursor-pointer" aria-hidden="true">
+                  <wz-svg icon="refresh" color="#595d65"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Check API connection
                 </md-tooltip>
               </span>
-              <span ng-click="editEntry(entry)" class="cursor-pointer" aria-hidden="true" style="color:#0b3b98;">
-                  <svg class="euiIcon euiIcon--medium euiIcon--primary" focusable="false" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16"><defs><path id="pencil-a" d="M12.148 3.148L11 2l-9 9v3h3l9-9-1.144-1.144-8.002 7.998a.502.502 0 0 1-.708 0 .502.502 0 0 1 0-.708l8.002-7.998zM11 1c.256 0 .512.098.707.293l3 3a.999.999 0 0 1 0 1.414l-9 9A.997.997 0 0 1 5 15H2a1 1 0 0 1-1-1v-3c0-.265.105-.52.293-.707l9-9A.997.997 0 0 1 11 1zM5 14H2v-3l3 3z"></path></defs><use xlink:href="#pencil-a"></use></svg>
+              <span ng-click="editEntry(entry)" class="cursor-pointer" aria-hidden="true">
+                  <wz-svg icon="pencil" color="#0b3b98"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Edit API
                 </md-tooltip>
