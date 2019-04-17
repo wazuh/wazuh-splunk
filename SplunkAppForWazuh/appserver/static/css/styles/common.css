@@ -1094,6 +1094,18 @@ md-toast {
   padding-right: 40px !important;
 }
 
+.wz-text-truncatable {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;        
+}
+
+.wz-text-truncatable-container {
+  overflow: hidden;
+  width: auto;
+  display: grid;
+}
+
 span.pass {
   background-color: green !important;
   color: white !important;
@@ -1157,7 +1169,7 @@ span.wrong {
 }
 
 .table-width-id{
-  width: 20px !important;
+  width: 40px !important;
 }
 
 .table-width-filename{
@@ -1664,6 +1676,10 @@ input:focus {
 
 .wz-text-align-right {
   text-align: right;
+}
+
+.table-condensed  td {
+  padding: 5px !important;
 }
 
 /* Loading bar */

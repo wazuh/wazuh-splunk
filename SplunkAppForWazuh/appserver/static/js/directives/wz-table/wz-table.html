@@ -48,38 +48,43 @@
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="clickAction(item)">
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id', 'table-width-filename': key.value === 'filename' }"
-          ng-if="path !== '/decoders' && path !== '/rules'" class="wz-text-truncatable-ellipsis">
+          ng-if="path !== '/decoders' && path !== '/rules'" >
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
-          <div ng-if="key !== 'id'">{{
-            parseValue(key,item)
-            }}</div>
+          <div ng-if="key !== 'id'" class="wz-text-truncatable-container">
+            <span class="wz-text-truncatable">
+              {{parseValue(key,item)}}
+            </span>
+          </div>
           <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom"
             class="wz-tooltip">
             {{ parseValue(key,item) }}
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
-          ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)"
-          class="wz-text-truncatable-ellipsis">
+          ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)">
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
-          <div ng-if="key !== 'id'">{{
-            parseValue(key,item)
-            }}</div>
+          <div ng-if="key !== 'id'" class="wz-text-truncatable-container">
+            <span class="wz-text-truncatable">
+              {{parseValue(key,item)}}
+            </span>
+          </div>
           <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom"
             class="wz-tooltip">
             {{ parseValue(key,item) }}
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
-          ng-if="path === '/decoders'" class="wz-text-truncatable-ellipsis">
+          ng-if="path === '/decoders'" >
           <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
-            <div class="table-width-id" ng-if="key === 'id'">{{
-              parseValue(key,item)
-              }}</div>
+            <div class="table-width-id wz-text-truncatable-container" ng-if="key === 'id'">
+              <span class="wz-text-truncatable">
+                {{parseValue(key,item)}}
+              </span>
+            </div>
             <div ng-if="key !== 'id'">{{
               parseValue(key,item)
               }}</div>
@@ -134,8 +139,7 @@
           class="cursor-default action-btn-td" class="wz-text-truncatable">
           <wz-svg ng-if="removingGroup !== item.name && item.name !== 'default'"
             ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
-            icon="trash" color="#0079a5" svg-tooltip="Remove this group"
-          ></wz-svg>
+            icon="trash" color="#0079a5" svg-tooltip="Remove this group"></wz-svg>
           <wz-svg ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()"
             icon="pencil" color="#0079a5" svg-tooltip="Edit this group configuration">
           </wz-svg>
@@ -314,7 +318,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="expandItem(item)">
-        <td class="wz-text-truncatable-ellipsis" ng-repeat="key in keys | filter: showKey">
+        <td  ng-repeat="key in keys | filter: showKey">
           <span>
             {{
             parseValue(key,item)
