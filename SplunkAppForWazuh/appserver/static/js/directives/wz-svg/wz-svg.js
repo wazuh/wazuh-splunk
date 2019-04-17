@@ -17,7 +17,8 @@ define(['../module'], function (directives) {
       restrict: 'E',
       scope: {
         icon: '@',
-        color: '@'
+        color: '@',
+        svgTooltip: '@'
       },
       controller(){},
       templateUrl:
