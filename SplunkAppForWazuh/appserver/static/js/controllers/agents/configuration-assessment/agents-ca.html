@@ -32,6 +32,15 @@
   <div text-align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner"
       aria-hidden="true"></i></div>
 
+  <!-- Auditing and Policy Monitoring navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'sca'">
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pm"name="pm">Policy monitoring</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="sca">SCA</md-nav-item>
+      <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-audit" name="audit">System auditing</md-nav-item>
+      <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-os" name="openscap">OpenSCAP</md-nav-item>
+      <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-ciscat" name="ciscat">CIS-CAT</md-nav-item>
+    </md-nav-bar> 
+
   <!-- Policies list -->
   <div ng-show="!showPolicyChecks">
 

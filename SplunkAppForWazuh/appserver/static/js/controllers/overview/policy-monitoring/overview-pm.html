@@ -25,6 +25,7 @@
   <!-- Auditing and Policy Monitoring navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'pm'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="pm">Policy monitoring</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-sca" name="sca">SCA</md-nav-item>
     <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-audit" name="audit">System auditing</md-nav-item>
     <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-os" name="openscap">OpenSCAP</md-nav-item>
     <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-ciscat" name="ciscat">CIS-CAT</md-nav-item>
