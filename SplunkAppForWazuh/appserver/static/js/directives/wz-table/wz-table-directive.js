@@ -98,7 +98,6 @@ define([
         $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = key => {
-          $(`#table${$scope.scapepath}`).colResizable({ disable: true })
           const str = key
           const cleanArray = $scope.keys.map(item => item.value || item)
           if (cleanArray.includes(str)) {
@@ -147,7 +146,6 @@ define([
         $window.onresize = () => {
           if (resizing || $scope.resizingColumns) return
           resizing = true
-          $('#wz_table').colResizable({ disable: true })
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
