@@ -82,7 +82,7 @@
                 <td class="td-align-middle">
                   <button class="btn btn-as-i" ng-disabled="!newKey"
                     ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
-                    <i class="fa fa-fw fa-plus action-btn-td"></i>
+                    <wz-svg icon="plus" color="#0079a5"></wz-svg>
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Add new entry
                     </md-tooltip>
@@ -99,12 +99,10 @@
                 </td>
                 <td class="action-btn-td td-align-middle">
                   <div ng-hide="!adminMode">
-                    <span ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
-                      ng-click="setEditingKey(item[0], item[1])" class="fa fa-fw fa-pencil cursor-pointer">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Edit
-                      </md-tooltip>
-                    </span>
+                    <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
+                      ng-click="setEditingKey(item[0], item[1])"
+                      icon="pencil" svg-tooltip="Edit">
+                    </wz-svg>
                     <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer"
                       ng-click="cancelEditingKey()">
                       <md-tooltip md-direction="left" class="wz-tooltip">
@@ -117,14 +115,10 @@
                         Apply
                       </md-tooltip>
                     </span>
-                    <i ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
+                    <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
                       ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
-                      class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Remove this entry
-                      </md-tooltip>
-                    </i>
-
+                      icon="trash" svg-tooltip="Remove this entry">
+                    </wz-svg>
                     <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
                       <div layout="row">
                         <span class="font-size-12 wz-padding-left-8">This entry will be
