@@ -23,12 +23,12 @@
       </span>
       <span flex="" class="flex"></span>
       <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
-        tooltip="Discover">Discover<i class="fa fa-fw fa-compass" aria-hidden="true"></i></button>
+        tooltip="Discover"><i class="fa fa-fw fa-compass" aria-hidden="true"></i>Discover</button>
       <!-- Restart button -->
       <div ng-show="!confirmingRestart">
         <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
           class="btn wz-button-empty pull-right ng-scope">
-          <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+          <span aria-hidden="false"><wz-svg icon="refresh"></wz-svg>
             Restart agent
           </span>
         </button>

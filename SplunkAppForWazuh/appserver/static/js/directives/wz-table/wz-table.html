@@ -18,7 +18,7 @@
       <md-tooltip md-direction="left" class="wz-tooltip">
           Show or hide columns
         </md-tooltip>
-    <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><i aria-hidden="true" class="fa fa-cog"></i>
+    <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><wz-svg icon="settings"></wz-svg>
     </span>
   </div>
 </div>
@@ -90,39 +90,30 @@
           </md-tooltip>
         </td>
         <td ng-if="path === '/agents'" ng-click="$event.stopPropagation()" class="cursor-default action-btn-td">
-          <i ng-click="launchAgentDiscover(item.id); $event.stopPropagation()"
-            class="fa fa-fw fa-compass cursor-pointer"></i>
-          <md-tooltip>Open Discover panel for this agent"</md-tooltip>
-          <i ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()"
-            class="fa fa-fw fa-wrench cursor-pointer"></i>
-          <md-tooltip>Open Configuration for this agent"</md-tooltip>
+          <wz-svg icon="compass" ng-click="launchAgentDiscover(item.id); $event.stopPropagation()" svg-tooltip="Open Discover panel for this agent">
+          </wz-svg>
+          <wz-svg icon="wrench" ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()" svg-tooltip="Open Configuration for this agent">
+          </wz-svg>          
         </td>
         <!-- Remove files -->
         <td ng-if="adminMode && (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
           <!-- Edit icon -->
-          <i ng-if="!removingFile && path !== '/lists/files' && (item.path === 'etc/rules' || item.path === 'etc/decoders')"
+          <wz-svg ng-if="!removingFile && path !== '/lists/files' && (item.path === 'etc/rules' || item.path === 'etc/decoders')"
             ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path)"
-            class="fa fa-fw fa-pencil cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
-            <md-tooltip md-direction="left" class="wz-tooltip">
-              Edit this file
-            </md-tooltip>
-          </i>
+            icon="pencil" svg-tooltip="Edit this file" color="#0079a5">
+          </wz-svg>
           <!--Remove icon -->
-          <i ng-if="!removingFile && (item.path === 'etc/rules' || item.path === 'etc/decoders' || path === '/lists/files')"
+          <wz-svg ng-if="!removingFile && (item.path === 'etc/rules' || item.path === 'etc/decoders' || path === '/lists/files')"
             ng-click="showConfirmRemoveFile($event, item.file || item.name); $event.stopPropagation()"
-            class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true" style="color: #0079a5;font-size: 17px;">
-            <md-tooltip md-direction="bottom" class="wz-tooltip">
-              Remove this file
-            </md-tooltip>
-          </i>
+            icon="trash" color="#0079a5" svg-tooltip="Remove this file">
+          </wz-svg>
           <!--NO icon -->
           <i ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
             aria-hidden="true" style="color: #0079a5;font-size: 17px;">
-            <i class="fa fa-eye cursor-pointer" aria-hidden="true" ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path, true)">
-              <md-tooltip md-direction="bottom" class="wz-tooltip">
-                  View file content
-              </md-tooltip>
-            </i>
+            <wz-svg ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
+              ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path, true)"
+              icon="eye" svg-tooltip="View file content" color="#0079a5">
+            </wz-svg>
           </i>
           <div ng-if="(item.file && removingFile === item.file) || (item.name && removingFile === item.name)"
             class="confirmEmbedBubble">
@@ -141,22 +132,14 @@
         <!-- End remove files-->
         <td ng-if="path === '/agents/groups' && adminMode " ng-click="$event.stopPropagation()"
           class="cursor-default action-btn-td" class="wz-text-truncatable">
-          <span>
-            <i ng-if="removingGroup !== item.name && item.name !== 'default'"
-              ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
-              class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true"></i>
-            <md-tooltip md-direction="bottom" class="wz-tooltip">
-              Remove this group
-            </md-tooltip>
-          </span>
-          <span>
-            <i ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()"
-              class="fa fa-fw fa-pencil cursor-pointer" tooltip="Edit this group configuration" tooltip-placement="left"
-              aria-hidden="true"></i>
-            <md-tooltip md-direction="bottom" class="wz-tooltip">
-              Edit this group configuration
-            </md-tooltip>
-          </span>
+          <wz-svg ng-if="removingGroup !== item.name && item.name !== 'default'"
+            ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
+            icon="trash" color="#0079a5" svg-tooltip="Remove this group"
+          ></wz-svg>
+          <wz-svg ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()"
+            icon="pencil" color="#0079a5" svg-tooltip="Edit this group configuration">
+          </wz-svg>
+
           <span class="wz-padding-left-8" ng-if="removingGroup !== item.name && item.name === 'default'">-</span>
           <div ng-if="removingGroup === item.name && item.name !== 'default'">
             <div layout="row">
@@ -172,14 +155,11 @@
           </div>
         <td ng-if="isLookingGroup() && adminMode " ng-click="$event.stopPropagation()"
           class="cursor-default action-btn-td">
-          <i ng-if="removingAgent !== item.id && adminMode"
+          <wz-svg ng-if="removingAgent !== item.id && adminMode"
             ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()"
-            class="fa fa-fw fa-trash cursor-pointer" tooltip="Remove this agent from the group" tooltip-placement="left"
-            aria-hidden="true">
-            <md-tooltip md-direction="right" class="wz-tooltip">
-              Remove agent
-            </md-tooltip>
-          </i>
+            icon="trash" color="#0079a5" svg-tooltip="Remove agent">
+          </wz-svg>
+
           <div ng-if="removingAgent === item.id" class="confirmEmbedBubble">
             <div layout="row">
               <span class="font-size-12 wz-padding-left-8">The agent {{item.id}} will be removed from

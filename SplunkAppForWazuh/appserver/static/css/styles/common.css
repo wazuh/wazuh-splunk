@@ -1719,3 +1719,9 @@ input:focus {
   -webkit-animation: euiLoadingSpinner .6s infinite linear;
   animation: euiLoadingSpinner .6s infinite linear;
 }
+
+
+/* Do not show the last resize th */ 
+.table-resizable > thead th:last-child .ui-resizable-handle {
+  display: none !important;
+}
