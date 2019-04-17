@@ -23,7 +23,9 @@
       </span>
       <span flex="" class="flex"></span>
       <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
-        tooltip="Discover"><i class="fa fa-fw fa-compass" aria-hidden="true"></i>Discover</button>
+        tooltip="Discover">
+        <wz-svg icon="compass"></wz-svg>
+        Discover</button>
       <!-- Restart button -->
       <div ng-show="!confirmingRestart">
         <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
