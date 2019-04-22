@@ -12,8 +12,7 @@ define([
   PieChart,
   Table,
   LinearChart,
-  TimePicker,
-  RawTableDataService
+  TimePicker
 ) {
   'use strict'
 
@@ -59,94 +58,54 @@ define([
         /**
          * Visualizations
          */
-        new PieChart(
-          'deletedFiles',
+
+        new LinearChart(
+          'alertsByActionOverTime',
           `${
             this.filters
-          } sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
-          'deletedFiles',
+          } sourcetype=wazuh rule.groups{}=syscheck  | timechart count by syscheck.event`,
+          'alertsByActionOverTime',
           this.scope
-        ),
-        new ColumnChart(
-          'whodataUsage',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck
-          | eval WHODATA=if(isnotnull('syscheck.audit.effective_user.id'), "WHODATA", "NOWHO")
-          | stats count BY WHODATA
-          | addcoltotals count labelfield=WHODATA label=Total
-          | where NOT WHODATA="NOWHO"`,
-          'whodataUsage',
-          this.scope
-        ),
+        ), 
         new PieChart(
-          'alertsVolume',
+          'top5Agents',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}=syscheck | eval SYSCHECK=if(isnotnull('syscheck.event'), "SYSCHECK", "NO")
-          | stats count BY SYSCHECK
-          | addcoltotals count labelfield=SYSCHECK label=Total
-          | where NOT SYSCHECK="NO"`,
-          'alertsVolume',
-          this.scope
-        ),
-        new PieChart(
-          'newFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
-          'newFiles',
-          this.scope
-        ),
-        new PieChart(
-          'modifiedFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
-          'modifiedFiles',
+          } sourcetype=wazuh rule.groups{}=syscheck  | top agent.name limit=5`,
+          'top5Agents',
           this.scope
         ),
         new LinearChart(
           'eventsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}=syscheck | timechart count`,
+          } sourcetype=wazuh rule.groups{}=syscheck  | timechart count`,
           'eventsSummary',
           this.scope
         ),
         new PieChart(
-          'topAgents',
+          'ruleDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}=syscheck  | top agent.name limit=10`,
-          'topAgents',
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 rule.description`,
+          'ruleDistribution',
+          this.scope
+        ),
+        new PieChart(
+          'topActions',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 syscheck.event`,
+          'topActions',
           this.scope
         ),
         new Table(
           'topUsers',
           `${
             this.filters
-          } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
           'topUsers',
           this.scope
-        ),
-        new RawTableDataService(
-          'topRulesTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}=syscheck |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'topRulesTableToken',
-          '$result$',
-          this.scope,
-          'Top rules'
-        ),
-        new RawTableDataService(
-          'topUsersTable',
-          `${
-            this.filters
-          } sourcetype=wazuh syscheck.audit.effective_user.id=* | top syscheck.audit.effective_user.name limit=5 | rename syscheck.audit.effective_user.name as Username, count as Count, percent as Percent`,
-          'topUsersTableToken',
-          '$result$',
-          this.scope,
-          'Top users'
         )
       ]
 
@@ -169,12 +128,11 @@ define([
           'File integrity monitoring',
           this.filters,
           [
-            'deletedFiles',
-            'newFiles',
-            'modifiedFiles',
-            'alertsVolume',
+            'alertsByActionOverTime',
+            'top5Agents',
             'eventsSummary',
-            'whodataUsage',
+            'ruleDistribution',
+            'topActions',
             'topUsers'
           ],
           {}, //Metrics
