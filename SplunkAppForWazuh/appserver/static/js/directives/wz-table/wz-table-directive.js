@@ -116,7 +116,6 @@ define([
             }
           }
           updateStoredKeys($scope.keys)
-          init().then(() => $scope.setColResizable())
         }
 
         $scope.setColResizable = () => {
