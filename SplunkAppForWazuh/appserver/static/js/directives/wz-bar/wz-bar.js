@@ -42,14 +42,23 @@ define(['../module'], function(directives) {
          * @returns {Boolean}
          */
         function filterStatic(filter) {
+          let keyStatic = false
           const key = filter.split(':')[0]
           const staticTrue = $currentDataService
             .getFilters()
             .filter(item => !!item.implicit)
-          const isIncluded = staticTrue.filter(
-            item => typeof item[key] !== 'undefined'
+          staticTrue.map(
+            item => {
+              let k = Object.keys(item)[0]
+              if (k.endsWith('{}')) {
+                k = k.substring(0, k.length - 2)
+              }
+              if (k === key) {
+                keyStatic = item['implicit']
+              }
+            }
           )
-          return !!isIncluded.length
+          return keyStatic
         }
 
         /**
