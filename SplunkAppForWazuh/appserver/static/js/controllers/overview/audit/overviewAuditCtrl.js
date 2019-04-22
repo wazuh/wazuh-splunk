@@ -134,7 +134,7 @@ define([
           'groupsElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top rule.groups{}`,
+          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
           'groupsElement',
           this.scope
         ),
@@ -142,23 +142,23 @@ define([
           'agentsElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top agent.name`,
+          } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
           'agentsElement',
           this.scope
         ),
         new PieChart(
-          'directoriesElement',
+          'commandsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}="audit" data.audit.directory.name=* | top data.audit.directory.name`,
-          'directoriesElement',
+          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
+          'commandsVizz',
           this.scope
         ),
         new PieChart(
           'filesElement',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top data.audit.file.name`,
+          } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
           'filesElement',
           this.scope
         ),
@@ -168,46 +168,6 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
           'alertsOverTimeElement',
-          this.scope
-        ),
-        new PieChart(
-          'fileReadAccess',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" rule.id=80784 | top data.audit.file.name`,
-          'fileReadAccessElement',
-          this.scope
-        ),
-        new PieChart(
-          'fileWriteAccess',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" rule.id=80781 | top data.audit.file.name`,
-          'fileWriteAccessElement',
-          this.scope
-        ),
-        new ColumnChart(
-          'commands',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top data.audit.command`,
-          'commandsElement',
-          this.scope
-        ),
-        new ColumnChart(
-          'createdFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" rule.id=80790 | top data.audit.file.name`,
-          'createdFilesElement',
-          this.scope
-        ),
-        new PieChart(
-          'removedFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" rule.id=80791 | top data.audit.file.name`,
-          'removedFilesElement',
           this.scope
         ),
         new Table(
@@ -248,14 +208,9 @@ define([
           [
             'groupsElement',
             'agentsElement',
-            'directoriesElement',
+            'commandsVizz',
             'filesElement',
             'alertsOverTimeElement',
-            'fileReadAccessElement',
-            'fileWriteAccessElement',
-            'commandsElement',
-            'createdFilesElement',
-            'removedFilesElement',
             'alertsSummaryElement'
           ],
           this.reportMetrics,
