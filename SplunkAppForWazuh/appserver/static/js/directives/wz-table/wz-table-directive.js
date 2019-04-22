@@ -106,16 +106,19 @@ define([
               $scope.keys.splice(idx, 1)
             }
           } else {
+            let originalKey = $scope.originalkeys.filter(k => k.key.value === key)
+            originalKey = originalKey[0].key
+
             const originalIdx = $scope.originalkeys.findIndex(
-              item => item === key
+              item => item.key === originalKey
             )
             if (originalIdx >= 0) {
-              $scope.keys.splice(originalIdx, 0, key)
+              $scope.keys.splice(originalIdx, 0, originalKey)
             } else {
-              $scope.keys.push(key)
+              $scope.keys.push(originalKey)
             }
           }
-          updateStoredKeys($scope.keys)
+          //updateStoredKeys($scope.keys)
         }
 
         $scope.setColResizable = () => {
@@ -173,6 +176,7 @@ define([
             state
           )
 
+        /* Deprecated at the moment  
         const getStoredKeys = () => {
           try {
             if ($scope.customColumns) {
@@ -199,6 +203,7 @@ define([
             }
           } catch (error) {} // eslint-disable-line
         }
+        */
 
         /**
          * Fetchs data from API
@@ -329,7 +334,7 @@ define([
           try {
             $scope.error = false
             await fetch()
-            getStoredKeys()
+            //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
