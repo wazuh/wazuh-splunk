@@ -67,32 +67,48 @@ define([
          * Visualizations
          */
         new AreaChart(
-          'alertsOverTime',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertsOverTime',
-          this.scope
-        ),
-        new AreaChart(
-          'alertsEvolution',
+          'alertsPacksOverTime',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'alertsEvolution',
+          } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          'alertsPacksOverTime',
           this.scope
         ),
         new PieChart(
-          'mostCommonEvents',
-          `${this.filters} sourcetype=wazuh  | top data.osquery.name limit=5`,
-          'mostCommonEvents',
+          'topOsqueryAdded',
+          `${this.filters} sourcetype=wazuh data.osquery.action="added"  | top data.osquery.name limit=5`,
+          'topOsqueryAdded',
+          this.scope
+        ),
+        new PieChart(
+          'topOsqueryRemoved',
+          `${this.filters} sourcetype=wazuh data.osquery.action="removed"  | top data.osquery.name limit=5`,
+          'topOsqueryRemoved',
+          this.scope
+        ),
+        new PieChart(
+          'mostCommonPacks',
+          `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
+          'mostCommonPacks',
           this.scope
         ),
         new Table(
-          'topPacks',
+          'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-          'topPacks',
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummary',
           this.scope
+        ),
+        new Table(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         ),
         new Table(
           'topRules',
@@ -102,6 +118,7 @@ define([
           'topRules',
           this.scope
         ),
+        
         new RawTableDataService(
           'topRulesTable',
           `${
@@ -111,16 +128,6 @@ define([
           '$result$',
           this.scope,
           'Top 5 Rules'
-        ),
-        new RawTableDataService(
-          'topPacksTable',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-          'topPacksTableToken',
-          '$result$',
-          this.scope,
-          'Top 5 Packs'
         )
       ]
 
@@ -133,10 +140,12 @@ define([
           'Osquery',
           this.filters,
           [
-            'alertsOverTime',
-            'mostCommonEvents',
+            'alertsPacksOverTime',
+            'topOsqueryAdded',
+            'topOsqueryRemoved',
+            'mostCommonPacks',
             'alertsEvolution',
-            'topPacks',
+            'alertsSummary',
             'topRules'
           ],
           {}, //Metrics
