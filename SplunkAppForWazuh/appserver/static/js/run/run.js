@@ -73,6 +73,10 @@ define(['./module'], function(module) {
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
+        const from = trans.from().name
+        if (to !== from) {
+          $currentDataService.cleanFilters()
+        }
         if (
           to != 'settings.about' &&
           to != 'settings.extensions' &&
@@ -100,14 +104,6 @@ define(['./module'], function(module) {
           $rootScope.$broadcast('stateChanged', to)
         }
         //Select secondary states
-        if (
-          to === 'overview' ||
-          to === 'agents' ||
-          to === 'agent-overview' ||
-          to === 'manager'
-        ) {
-          $currentDataService.cleanFilters()
-        }
 
         if (to.startsWith('agent') || to.startsWith('ag-')) {
           if (
