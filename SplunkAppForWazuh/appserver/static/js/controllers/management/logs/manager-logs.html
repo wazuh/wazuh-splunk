@@ -23,7 +23,7 @@
 
 <!-- Filters and Realtime button section -->
 <div ng-show="!loading" layout="row" layout-align="start start"
-  class="wz-margin-left-10 wz-margin-right-600 less-25-side">
+  class="wz-margin-left-10 wz-margin-right-600 less-25-side" style="margin-left: 25px !important;">
 
 
   <select class="input input-dropdown " flex id="categoryBox" ng-disabled="realtime"
@@ -67,17 +67,21 @@
     <span>Search</span>
   </button>
 
-  <button ng-if="!realtime" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-right-10 wz-margin-5"
-    ng-click="playRealtime()" aria-label="Play realtime button">
-    <i class="fa fa-play fa-fw" aria-hidden="true"></i>
-    Play realtime
-  </button>
+  <div ng-show="!realtime" class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
+    <button class="btn height-32 wz-button-empty "
+      ng-click="playRealtime()" aria-label="Play realtime button">
+      <i class="fa fa-play fa-fw" aria-hidden="true"></i>
+      Play realtime
+    </button>
+  </div>
 
-  <button ng-if="realtime" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-right-10 wz-margin-5"
-    ng-click="stopRealtime()" aria-label="Stop realtime button">
-    <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
-    Stop realtime
-  </button>
+  <div ng-show="realtime" class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
+    <button class="btn height-32 wz-button-empty "
+      ng-click="stopRealtime()" aria-label="Stop realtime button">
+      <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
+      Stop realtime
+    </button>
+  </div>
 
 </div>
 <!-- End Filters and Realtime button section -->
