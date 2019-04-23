@@ -1790,3 +1790,7 @@ label.wz-icon-loupe  input {
   list-style-type: none !important;
   margin-left: 0px !important;
 }
+
+.orange {
+  color: #ff9999;
+}

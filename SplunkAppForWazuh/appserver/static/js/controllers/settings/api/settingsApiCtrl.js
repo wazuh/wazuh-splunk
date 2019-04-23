@@ -225,6 +225,7 @@ define(['../../module'], function(controllers) {
      */
     async submitApiForm() {
       try {
+        this.scope.validatingError = []
         if (this.savingApi) {
           this.notification.showWarningToast('Please, wait for success message')
           return
@@ -283,7 +284,12 @@ define(['../../module'], function(controllers) {
      * @param {String} url
      */
     validUrl(url) {
-      return this.urlRegEx.test(url) || this.urlRegExIP.test(url)
+      if (this.urlRegEx.test(url) || this.urlRegExIP.test(url)) {
+        return true
+      } else {
+        this.scope.validatingError.push('Invalid url format')
+        return false
+      }
     }
 
     /**
@@ -291,7 +297,12 @@ define(['../../module'], function(controllers) {
      * @param {String} port
      */
     validPort(port) {
-      return this.portRegEx.test(port)
+      if (this.portRegEx.test(port)) {
+        return true
+      } else {
+        this.scope.validatingError.push('Invalid port format')
+        return false
+      }
     }
 
     /**
@@ -299,7 +310,12 @@ define(['../../module'], function(controllers) {
      * @param {String} user
      */
     validUsername(user) {
-      return this.userRegEx.test(user)
+      if (this.userRegEx.test(user)) {
+        return true
+      } else {
+        this.scope.validatingError.push('Invalid username format, it must have a length between 3 and 100 characters.')
+        return false
+      }
     }
 
     /**
@@ -307,7 +323,12 @@ define(['../../module'], function(controllers) {
      * @param {String} pass
      */
     validPassword(pass) {
-      return this.passRegEx.test(pass)
+      if (this.passRegEx.test(pass)) {
+        return true
+      } else {
+        this.scope.validatingError.push('Invalid password format, it must have a length between 3 and 100 characters.')
+        return false
+      }
     }
 
     /**
