@@ -98,7 +98,7 @@ define([
         $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = key => {
-          const str = key
+          const str = $scope.keyEquivalence.key || key
           const cleanArray = $scope.keys.map(item => item.value || item)
           if (cleanArray.includes(str)) {
             const idx = cleanArray.indexOf(str)
@@ -106,7 +106,7 @@ define([
               $scope.keys.splice(idx, 1)
             }
           } else {
-            let originalKey = $scope.originalkeys.filter(k => k.key.value === key)
+            let originalKey = $scope.originalkeys.filter(k => k.key.value === str)
             originalKey = originalKey[0].key
 
             const originalIdx = $scope.originalkeys.findIndex(
