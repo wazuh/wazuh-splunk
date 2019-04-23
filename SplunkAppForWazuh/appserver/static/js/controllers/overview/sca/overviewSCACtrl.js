@@ -181,6 +181,7 @@ define([
     }
 
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()

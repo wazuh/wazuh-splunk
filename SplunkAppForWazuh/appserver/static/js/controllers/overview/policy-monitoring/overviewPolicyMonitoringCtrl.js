@@ -97,63 +97,68 @@ define([
           'Alerts Summary'
         )
       ]
+    }
 
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
-
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'overview-pm',
-          'Policity monitoring',
-          this.filters,
-          [
-            'elementOverTime',
-            'cisRequirements',
-            'topPciDss',
-            'eventsPerAgent',
-            'alertsSummary'
-          ],
-          {}, //Metrics
-          this.tableResults
-        )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
+    $onInit() {
+      try {
+        this.scope.loadingVizz = true
+        this.scope.$on('deletedFilter', event => {
+          event.stopPropagation()
+          this.launchSearches()
+        })
+  
+        this.scope.$on('barFilter', event => {
+          event.stopPropagation()
+          this.launchSearches()
+        })
+        /**
+         * On controller destroy
+         */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map(vizz => vizz.destroy())
+        })
+  
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'overview-pm',
+            'Policity monitoring',
+            this.filters,
+            [
+              'elementOverTime',
+              'cisRequirements',
+              'topPciDss',
+              'eventsPerAgent',
+              'alertsSummary'
+            ],
+            {}, //Metrics
+            this.tableResults
+          )
+  
+        this.scope.$on('loadingReporting', (event, data) => {
+          this.scope.loadingReporting = data.status
+        })
+  
+        this.scope.$on('checkReportingStatus', () => {
+          this.vizzReady = !this.vizz.filter(v => {
+            return v.finish === false
+          }).length
+          if (this.vizzReady) {
+            this.scope.loadingVizz = false
+          } else {
+            this.vizz.map(v => {
+              if (v.constructor.name === 'RawTableData') {
+                this.tableResults[v.name] = v.results
+              }
+            })
+            this.scope.loadingVizz = true
+          }
+          if (!this.scope.$$phase) this.scope.$digest()
+        })
+      } catch (error) {}
     }
 
     /**

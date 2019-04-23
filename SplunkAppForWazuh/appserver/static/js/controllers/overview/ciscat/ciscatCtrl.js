@@ -234,6 +234,7 @@ define([
      */
     $onInit() {
       this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
+      this.scope.loadingVizz = true
 
       /**
        * On controller destroy
