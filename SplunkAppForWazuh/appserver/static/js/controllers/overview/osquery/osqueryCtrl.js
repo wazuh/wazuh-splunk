@@ -130,7 +130,16 @@ define([
           'Top 5 Rules'
         )
       ]
+    }
 
+    /**
+     * On controller loads
+     */
+    $onInit() {
+      try {
+        this.scope.loadingVizz = true
+        const wodles = this.osquery.data.data.wmodules
+        this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
       /**
        * Generates report
        */
@@ -180,15 +189,6 @@ define([
         this.timePicker.destroy()
         this.vizz.map(vizz => vizz.destroy())
       })
-    }
-
-    /**
-     * On controller loads
-     */
-    $onInit() {
-      try {
-        const wodles = this.osquery.data.data.wmodules
-        this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
       } catch (err) {
         this.notification.showErrorToast(
           'Cannot load wodle configuration. Osquery is not configured.'

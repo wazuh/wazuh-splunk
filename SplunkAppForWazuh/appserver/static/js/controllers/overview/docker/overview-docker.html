@@ -36,75 +36,82 @@
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
 
-  <!-- first row  -->
-  <div id="row2" layout="row">
-    <!-- first row - first vis -->
-    <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 images
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5images')">
-            <wz-svg icon="expand"></wz-svg>
-          </span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='top5images'></div>
-      </md-card-content>
-    </md-card>
-    <!-- first row - second vis -->
-    <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Top 5 events
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5actions')">
-            <wz-svg icon="expand"></wz-svg>
-          </span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='top5actions'></div>
-      </md-card-content>
-    </md-card>
-    <!-- first row - third vis -->
-    <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Resource usage over time
-          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'resourceUsage')">
-            <wz-svg icon="expand"></wz-svg>
-          </span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='resourceUsage'></div>
-      </md-card-content>
-    </md-card>
+  <div ng-show="loadingVizz">
+    <div align='center'>
+      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+    </div>
   </div>
-
-  <!-- second row  -->
-  <div id="row2" layout="row">
-    <!-- second row - first vis -->
-    <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Events ocurred evolution
-          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'eventsOcurred')">
-            <wz-svg icon="expand"></wz-svg>
+  <div ng-show="!loadingVizz">
+    <!-- first row  -->
+    <div id="row2" layout="row">
+      <!-- first row - first vis -->
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 images
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5images')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
           </span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='eventsOcurred'></div>
-      </md-card-content>
-    </md-card>
-  </div>
-
-  <!-- third row  -->
-  <div id="row3" layout="row">
-    <!-- third row - first vis -->
-    <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts summary
-          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsSummary')">
-            <wz-svg icon="expand"></wz-svg>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5images'></div>
+        </md-card-content>
+      </md-card>
+      <!-- first row - second vis -->
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 events
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5actions')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
           </span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id='alertsSummary'></div>
-      </md-card-content>
-    </md-card>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5actions'></div>
+        </md-card-content>
+      </md-card>
+      <!-- first row - third vis -->
+      <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Resource usage over time
+            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'resourceUsage')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='resourceUsage'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <!-- second row  -->
+    <div id="row2" layout="row">
+      <!-- second row - first vis -->
+      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Events ocurred evolution
+            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'eventsOcurred')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='eventsOcurred'></div>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <!-- third row  -->
+    <div id="row3" layout="row">
+      <!-- third row - first vis -->
+      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alerts summary
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsSummary')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='alertsSummary'></div>
+        </md-card-content>
+      </md-card>
+    </div>
   </div>
 </md-content>

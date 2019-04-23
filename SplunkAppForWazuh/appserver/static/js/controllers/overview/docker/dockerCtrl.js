@@ -164,7 +164,9 @@ define([
     /**
      * On controller loads
      */
-    $onInit() {}
+    $onInit() {
+      this.scope.loadingVizz = true
+    }
 
     /**
      * Get filters and launches search
