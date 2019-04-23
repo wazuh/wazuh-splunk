@@ -93,7 +93,8 @@ md-dialog-actions button {
 }
 
 .wz-white-background {
-  background-color:white !important;
+  /*background-color:white !important;*/
+  background-color: #fafafa;
 }
 /* Custom switch styles */
 

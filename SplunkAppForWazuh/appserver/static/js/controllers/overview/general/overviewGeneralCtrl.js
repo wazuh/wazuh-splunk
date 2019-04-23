@@ -190,6 +190,7 @@ define([
      */
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary`)
