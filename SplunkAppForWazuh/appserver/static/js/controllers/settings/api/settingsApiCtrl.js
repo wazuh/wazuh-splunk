@@ -87,8 +87,13 @@ define(['../../module'], function(controllers) {
         const index = this.scope.apiList.indexOf(entry)
         if (index > -1) {
           await this.currentDataService.remove(entry)
+          const usedApi = this.currentDataService.getApi()
+          if (entry._key === usedApi._key) {
+            this.currentDataService.removeCurrentApi()
+          } 
           this.scope.apiList.splice(index, 1)
           this.notification.showSuccessToast('Manager was removed')
+          this.scope.$emit('updatedAPI', () => {})
         }
       } catch (err) {
         this.notification.showErrorToast(
