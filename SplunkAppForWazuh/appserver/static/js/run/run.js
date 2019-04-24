@@ -74,7 +74,7 @@ define(['./module'], function(module) {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
         const from = trans.from().name
-        if (to !== from) {
+        if (to !== from && from !== 'discover') {
           $currentDataService.cleanFilters()
         }
         if (
