@@ -25,23 +25,25 @@
       <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
         tooltip="Discover">
         <wz-svg icon="compass"></wz-svg>
-        Discover</button>
+        Discover
+      </button>
       <!-- Restart button -->
       <div ng-show="confirmingRestart" style="text-align: right;">
-          <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
-          <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
-            class='btn wz-button-cancel pull-right wz-margin-left-10'>
-            <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-          </button>
-          <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
-            class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-          </button>
-        </div>
+        <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
+        <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+          class='btn wz-button-cancel pull-right wz-margin-left-10'>
+          <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+        </button>
+        <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
+          class='btn wz-button-empty pull-right wz-margin-left-10'>
+          <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+        </button>
+      </div>
       <div ng-show="!confirmingRestart">
         <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
           class="btn wz-button-empty pull-right ng-scope">
-          <span aria-hidden="false"><wz-svg icon="refresh"></wz-svg>
+          <span aria-hidden="false">
+            <wz-svg icon="refresh"></wz-svg>
             Restart agent
           </span>
         </button>
@@ -89,7 +91,7 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Registration date</p>
                 </div>
-                <p class="euiText--small euiStat__description">{{agent.dateAdd || '-'}}</p>
+                <p class="euiText--small euiStat__description">{{offsetTimestamp('', agent.dateAdd) || '-'}}</p>
               </div>
             </div>
             <div class="euiFlexItem euiFlexItem">
@@ -97,7 +99,7 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Last keep alive</p>
                 </div>
-                <p class="euiText--small euiStat__description">{{agent.lastKeepAlive || '-' }}</p>
+                <p class="euiText--small euiStat__description">{{offsetTimestamp('', agent.lastKeepAlive) || '-'}}</p>
               </div>
             </div>
             <div class="euiFlexItem euiFlexItem">
@@ -105,15 +107,15 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Last syscheck scan</p>
                 </div>
-                <p class="euiText--small euiStat__description" ng-if="agent.syscheck.inProgress">Scan
+                <p class="euiText--small euiStat__description" ng-if="syscheck.inProgress">Scan
                   in progress</p>
-                <p class="euiText--small euiStat__description" ng-if="!agent.syscheck.inProgress">{{agent.syscheck.end
-                              || '-'}} <md-tooltip
-                    ng-if="!agent.syscheck.inProgress && agent.syscheck.start && agent.syscheck.end"
+                <p class="euiText--small euiStat__description" ng-if="!syscheck.inProgress">
+                  {{offsetTimestamp('', syscheck.end) || '-'}}
+                  <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
                     md-direction="bottom" class="wz-tooltip">
-                    Start time: {{ agent.syscheck.start || '-'}} <br>
-                    End time: {{ agent.syscheck.end || '-'}} <br>
-                    Duration time: {{ agent.syscheck.duration +' minutes' || '-'}}
+                    Start time: {{ offsetTimestamp('', syscheck.start) || '-'}} <br>
+                    End time: {{ offsetTimestamp('', syscheck.end) || '-'}} <br>
+                    Duration time: {{syscheck.duration +' minutes' || '-'}}
                   </md-tooltip>
                 </p>
               </div>
@@ -148,9 +150,8 @@
       <md-card-content>
 
         <div layout="row" ng-if="agent.group">
-          <span class="font-size-17">Groups 
-            <wz-svg ng-if='adminMode' ng-click="switchGroupEdit()" 
-              svg-tooltip="Add group" icon="plus" color="#0079a5">
+          <span class="font-size-17">Groups
+            <wz-svg ng-if='adminMode' ng-click="switchGroupEdit()" svg-tooltip="Add group" icon="plus" color="#0079a5">
             </wz-svg>
           </span>
         </div>
@@ -180,7 +181,8 @@
           </div>
         </div>
         <div layout="row" ng-if="agent.group" class="wz-word-break wz-padding-top-10">
-          <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link font-size-15" ng-click="goGroups(agent,$index)">{{
+          <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link font-size-15"
+            ng-click="goGroups(agent,$index)">{{
                   group
                   }}&nbsp;</span>
         </div>
@@ -236,15 +238,17 @@
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem"
-              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" sub-title="'Policy monitoring'"
-              ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+              sub-title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'"
               description="'Configuration to ensure compliance with security policies, standards and hardening guides'">
             </wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/sca.png'"
-              sub-title="'Security Configuration Assessment'" ui-sref='ag-ca({id:aoc.agent.id})' current-tab="'conf-assess'"
-              description="'Scan your assets as part of a configuration assessment audit.'"></wz-welcome-card>
+              sub-title="'Security Configuration Assessment'" ui-sref='ag-ca({id:aoc.agent.id})'
+              current-tab="'conf-assess'" description="'Scan your assets as part of a configuration assessment audit.'">
+            </wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-              sub-title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
+              sub-title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux"
+              current-tab="'audit'"
               description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'">
             </wz-welcome-card>
             <wz-welcome-card ng-if="oscap && isLinux" class="euiFlexItem"
@@ -282,11 +286,12 @@
               logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'" sub-title="'Osquery'" ui-sref='ag-osquery'
               current-tab="'osquery'"
               description="'Osquery allows to expose an operating system as a high-performance relational database.'">
-          </wz-welcome-card>
-          <wz-welcome-card ng-if="docker" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/docker.png'" 
-            sub-title="'Docker listener'" ui-sref='ag-docker' current-tab="'docker'" 
-            description="'Collects events on Docker containers such as starting, stopping or pausing.'">
-          </wz-welcome-card>
+            </wz-welcome-card>
+            <wz-welcome-card ng-if="docker" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/docker.png'" sub-title="'Docker listener'"
+              ui-sref='ag-docker' current-tab="'docker'"
+              description="'Collects events on Docker containers such as starting, stopping or pausing.'">
+            </wz-welcome-card>
           </div>
         </div>
       </div>
