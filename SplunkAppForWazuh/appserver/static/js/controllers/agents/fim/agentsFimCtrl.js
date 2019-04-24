@@ -278,6 +278,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.show()
       this.scope.show = () => this.show()
       this.scope.agent =

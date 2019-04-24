@@ -205,6 +205,7 @@ define([
      */
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         this.agentInfo = {
           name: this.agent[0].data.data.name,
           id: this.agent[0].data.data.id,
