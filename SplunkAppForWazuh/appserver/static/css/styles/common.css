@@ -996,7 +996,7 @@ md-dialog{
 .edit-cancel-button {
   border: none !important;
   color: rgb(0, 121, 165) !important;
-  background: white !important;
+  background: #fafafa !important;
 }
 
 .edit-cancel-button:hover {
