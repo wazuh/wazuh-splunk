@@ -31,7 +31,8 @@ define(['../../module', 'FileSaver'], function(module) {
       $reportingService,
       reportingEnabled,
       $currentDataService,
-      $csvRequestService
+      $csvRequestService, 
+      $dateDiffService
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
@@ -48,6 +49,7 @@ define(['../../module', 'FileSaver'], function(module) {
       this.reportingService = $reportingService
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
     }
 
     /**
@@ -64,6 +66,7 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     $onInit() {
       try {
+        this.setBrowserOffset("2019/04/24 10:59:03")
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
@@ -116,6 +119,8 @@ define(['../../module', 'FileSaver'], function(module) {
           this.scope.loadingReporting = data.status
         })
 
+        this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
+
         return
       } catch (error) {
         this.notification.showErrorToast(error.message || error)
@@ -162,7 +167,8 @@ define(['../../module', 'FileSaver'], function(module) {
             ? this.processesDate.items[0].scan_time
             : 'Unknown'
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        console.log("tss ", this.scope.syscollector)
+        this.scope.$applyAsync()
         return
       } catch (error) {
         throw new Error(error.message || error)
