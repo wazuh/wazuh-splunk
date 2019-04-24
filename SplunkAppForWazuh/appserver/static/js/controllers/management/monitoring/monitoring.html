@@ -318,14 +318,14 @@
 </div>
 
 <div layout="column" ng-if="showNodes && !currentNode">
-  <div layout="row" class='wz-padding-5 wz-padding-left-15 wz-padding-right-15'>
+  <div layout="row" class='wz-padding-5 wz-padding-left-15 wz-padding-right-25'>
 
     <label class="wz-icon-loupe">
       <input placeholder="Filter nodes..." ng-model="custom_search" type="text" flex
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
+        class="kuiLocalSearchInput height-40 ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
         wz-enter="search(custom_search)">
     </label>
-    <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr"
+    <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr"
       ng-click="search(custom_search)">
       <span>Search</span>
     </button>

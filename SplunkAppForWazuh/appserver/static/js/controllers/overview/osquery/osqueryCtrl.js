@@ -153,7 +153,6 @@ define([
             'topOsqueryAdded',
             'topOsqueryRemoved',
             'mostCommonPacks',
-            'alertsEvolution',
             'alertsSummary',
             'topRules'
           ],
