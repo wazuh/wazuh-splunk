@@ -100,7 +100,7 @@ define([
           'alertsSummary',
           this.scope
         ),
-        new Table(
+        new RawTableDataService(
           'alertsSummaryTable',
           `${
             this.filters
