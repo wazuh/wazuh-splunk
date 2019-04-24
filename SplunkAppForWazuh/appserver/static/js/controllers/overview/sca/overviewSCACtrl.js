@@ -12,12 +12,14 @@
 
 define([
   '../../module',
+  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
 ], function(
   app,
+  ColumnChart,
   PieChart,
   AreaChart,
   Table,
@@ -97,7 +99,7 @@ define([
       this.vizz = [
         /**
          * Visualizations
-         */
+         */ 
         new PieChart(
           'resultDistribution',
           `${
@@ -106,12 +108,28 @@ define([
           'resultDistribution',
           this.scope
         ),
-        new AreaChart(
-          'resultsOverTime',
+        new ColumnChart(
+          'resultDistributionByPolicy',
           `${
             this.filters
-          } | timechart span=1h count by data.sca.check.result`,
-          'resultsOverTime',
+          } | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed  by data.sca.policy`,
+          'resultDistributionByPolicy',
+          this.scope
+        ),
+        new PieChart(
+          'top5Passed',
+          `${
+            this.filters
+          }  data.sca.check.result="passed"  | top limit=5 data.sca.check.title`,
+          'top5Passed',
+          this.scope
+        ),
+        new PieChart(
+          'top5Failed',
+          `${
+            this.filters
+          }  data.sca.check.result="failed"  | top limit=5 data.sca.check.title`,
+          'top5Failed',
           this.scope
         ),
         new AreaChart( 
@@ -142,7 +160,9 @@ define([
           [
             'resultDistribution',
             'alertsOverTime',
-            'alertLevelEvolution',
+            'resultDistributionByPolicy',
+            'top5Failed',
+            'top5Passed',
             'alertsSummary'
           ],
           {}, //Metrics,
