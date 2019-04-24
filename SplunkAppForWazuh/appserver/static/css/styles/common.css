@@ -1547,7 +1547,6 @@ input:focus {
 }
 
 #dropDownInput button {
-  min-width: 100% !important;
   border: solid 1px #0079bb !important;
   color: #0079bb !important;
   background: white !important;
