@@ -46,7 +46,8 @@ define([
       $tableFilterService,
       reportingEnabled,
       BASE_URL,
-      extensions
+      extensions,
+      $dateDiffService
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
@@ -61,7 +62,17 @@ define([
       this.configAssess = configAssess
       this.notification = $notificationService
       this.api = $currentDataService.getApi()
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
       this.csvReq = $csvRequestService
+      
+      this.scope.offsetTimestamp = (text, time) => {
+        try {
+          return text + this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
+
       this.wzTableFilter = $tableFilterService
       this.baseUrl = BASE_URL
       this.scope.noScansPng = `${

@@ -82,7 +82,7 @@
                 <td ng-click="loadPolicyChecks(policy.policy_id, policy.name)" class="wz-text-link cursor-pointer">
                   {{policy.name}}</td>
                 <td>{{policy.description}}</td>
-                <td>{{policy.end_scan}}</td>
+                <td>{{offsetTimestamp('', policy.end_scan)}}</td>
                 <td>{{policy.fail}}</td>
                 <td>{{policy.pass}}</td>
                 <td>{{policy.score}}%</td>
