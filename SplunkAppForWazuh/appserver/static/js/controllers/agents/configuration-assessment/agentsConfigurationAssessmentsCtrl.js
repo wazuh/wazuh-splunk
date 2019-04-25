@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, TimePicker) {
+], function (app, PieChart, TimePicker) {
   'use strict'
 
   class AgentsCA {
@@ -65,7 +65,7 @@ define([
       this.baseUrl = BASE_URL
       this.scope.noScansPng = `${
         this.baseUrl
-      }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
+        }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
@@ -117,11 +117,11 @@ define([
         new PieChart(
           'resultDistribution',
           `${
-            this.filters
+          this.filters
           }  rule.groups{}="sca" | stats count by data.sca.policy,data.sca.check.result `,
           'resultDistribution',
           this.scope,
-          {'trellisEnabled' : true}
+          { 'trellisEnabled': true }
         )
       ]
 
@@ -170,6 +170,36 @@ define([
         this.formatAgentStatus(agentStatus)
 
       this.scope.refreshScans = () => this.refreshScans()
+
+
+      this.scope.loadCharts = (policy) => {
+        setTimeout(function () {
+          const chart = new Chart(document.getElementById(policy.policy_id),
+            {
+              type: "doughnut",
+              data: {
+                labels: ["pass", "fail", "not applicable"],
+                datasets: [
+                  {
+                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                    data: [policy.pass, policy.fail, policy.invalid],
+                  }
+                ]
+              },
+              options: {
+                cutoutPercentage: 85,
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+                tooltips: {
+                  displayColors: false
+                }
+              }
+            });
+          chart.update();
+        }, 250);
+      }
     }
 
     /**
