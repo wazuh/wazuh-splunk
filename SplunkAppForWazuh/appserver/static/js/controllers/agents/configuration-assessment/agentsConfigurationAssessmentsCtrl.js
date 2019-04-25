@@ -13,9 +13,8 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, TimePicker) {
+], function(app, PieChart, TimePicker) {
   'use strict'
 
   class AgentsCA {
@@ -110,11 +109,44 @@ define([
         this.launchSearches()
       })
 
+
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'resultDistribution',
+          `${
+            this.filters
+          }  rule.groups{}="sca" | stats count by data.sca.policy,data.sca.check.result `,
+          'resultDistribution',
+          this.scope,
+          {'trellisEnabled' : true}
+        )
+      ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'agents-ca',
+          'Configuration assessment',
+          this.filters,
+          [
+            'resultDistribution'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
+
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
       })
     }
 
@@ -136,6 +168,7 @@ define([
         this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus =>
         this.formatAgentStatus(agentStatus)
+
     }
 
     /**
@@ -212,7 +245,7 @@ define([
       )
       this.scope.expandArray[i]
         ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
+        : vis.css('height', '280px')
 
       let vis_header = $('.wz-headline-title')
       vis_header.dblclick(e => {
@@ -220,7 +253,7 @@ define([
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]
             ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
+            : vis.css('height', '280px')
           this.scope.$applyAsync()
         } else {
           e.preventDefault()

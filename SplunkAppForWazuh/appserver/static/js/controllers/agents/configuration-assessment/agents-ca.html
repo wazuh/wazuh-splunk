@@ -1,8 +1,8 @@
 <md-content flex layout="column" layout-align="start">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
+  <div layout="row" class="wz-height-35">
     <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
+    <div class='wz-breadcrumb-margin'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})'
@@ -11,10 +11,10 @@
       <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>Configuration assessment</span>
-    </div>
-    <div ng-if="agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
-        aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
+          aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
     <div flex></div>
     <!-- Report button -->
@@ -43,6 +43,20 @@
 
   <!-- Policies list -->
   <div ng-show="!showPolicyChecks">
+    <div>
+      <!-- First row -->
+      <div layout="row" layout-align="center stretch" style="height:360px;">
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Results distribution
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'resultDistribution')"><i class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='resultDistribution'></div>
+          </md-card-content>
+        </md-card>  
+      </div>
+    </div>
 
     <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8"
       ng-if="showPolicies && (!agent || !agent.os)">
