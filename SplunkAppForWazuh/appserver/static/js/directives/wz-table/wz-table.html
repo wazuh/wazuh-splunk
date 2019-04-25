@@ -234,11 +234,11 @@
         ng-click="expandPolicyMonitoringCheck(item)">
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
           <span ng-show="key === 'result'" class="no-wrap">
-            <p class="round status littleStat" ng-class="(item.result === 'passed') ? 'teal' : 'red'"></p>&nbsp;&nbsp;
+            <p class="round status littleStat" ng-class="item.result ? ((item.result === 'passed') ? 'teal' : 'red') : 'gray'"></p>&nbsp;&nbsp;
           </span>
           <span>
             {{
-            parseValue(key,item)
+            key === 'result' && !item.result ? item.status : parseValue(key,item)
             }}
           </span>
         </td>
