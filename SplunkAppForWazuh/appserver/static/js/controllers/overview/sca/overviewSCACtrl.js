@@ -13,6 +13,8 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/single-value',
+  '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
@@ -20,6 +22,8 @@ define([
 ], function(
   app,
   ColumnChart,
+  SingleValue,
+  GaugeChart,
   PieChart,
   AreaChart,
   Table,
@@ -100,6 +104,24 @@ define([
         /**
          * Visualizations
          */ 
+        new SingleValue(
+          'overallScore',
+          `${
+            this.filters
+          }  | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed | eval total=((passed/(failed+passed))*100) | eval total2=round(total,1) | eval total3=(total2 + "%") | table total3 `,
+          'overallScore',
+          this.scope
+        ),
+        new GaugeChart(
+          'prueba',
+          `${
+            this.filters
+          }  | stats values(data.sca.score) by data.sca.policy `,
+          'prueba',
+          { trellisEnabled : true,
+            gaugeType : 'radialGauge'},
+          this.scope
+        ),
         new PieChart(
           'resultDistribution',
           `${
@@ -158,6 +180,8 @@ define([
           'Configuration assessment',
           this.filters,
           [
+            'overallScore',
+            'prueba',
             'resultDistribution',
             'alertsOverTime',
             'resultDistributionByPolicy',
