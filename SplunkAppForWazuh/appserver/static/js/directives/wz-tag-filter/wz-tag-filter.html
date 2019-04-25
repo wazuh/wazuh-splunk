@@ -1,4 +1,4 @@
-<div id='wz-search-filter-bar' class='kuiLocalSearchInput'>
+<div id='wz-search-filter-bar' class='kuiLocalSearchInput' style="background-color:white;">
   <div class='wz-tags' ng-class='{focused: hasFocus}'>
     <span class='fa fa-search fa-search-margin' aria-hidden='true'></span>
     <ul class='tag-list'>
@@ -25,7 +25,7 @@
     </ul>
     <input id='wz-search-filter-bar-input' class='wz-search-filter-bar-input input' type='text' ng-model='newTag'
       ng-focus='showAutocomplete(true)' ng-blur='showAutocomplete(false)' placeholder='Add filter or search' ng-keyup='!autocompleteEnter && $event.keyCode == 13 ? addTag(true) : addSearchKey($event)' />
-    <span class='wz-tag-remove-button wz-padding-top-5 remove-filters cursor-pointer' ng-click='removeAll()'><i class="fa fa-trash"
+    <span ng-show="groupedTagList.length" class='wz-tag-remove-button wz-padding-top-5 remove-filters cursor-pointer' ng-click='removeAll()'><i class="fa fa-times"
         aria-hidden="true"></i>
       <md-tooltip md-direction="left" class="wz-tooltip">
         Remove all filters

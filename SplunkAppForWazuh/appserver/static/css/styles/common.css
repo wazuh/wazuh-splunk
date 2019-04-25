@@ -51,6 +51,13 @@
   margin: 0px;
 }
 
+.wz-menu-settings{
+  min-width: 30px;
+  border-radius: 100px;
+  margin-left: 5px;
+  margin-right: 5px !important;
+}
+
 .addGroupInput {
   max-height: 20px !important;
   max-width: 181px !important;
@@ -428,7 +435,7 @@ div.uil-ring-css {
 }
 
 .wz-margin-left-20 {
-  margin-left: 20px;
+  margin-left: 20px !important;
 }
 
 .wz-margin-left--10 {
@@ -463,6 +470,9 @@ div.uil-ring-css {
 
 .wz-height-35 {
   height: 35px !important;
+}
+.wz-height-20 {
+  height: 20px !important;
 }
 
 .wz-width-85 {
@@ -986,7 +996,7 @@ md-dialog{
 .edit-cancel-button {
   border: none !important;
   color: rgb(0, 121, 165) !important;
-  background: white !important;
+  background: #fafafa !important;
 }
 
 .edit-cancel-button:hover {
@@ -1094,6 +1104,18 @@ md-toast {
   padding-right: 40px !important;
 }
 
+.wz-text-truncatable {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;        
+}
+
+.wz-text-truncatable-container {
+  overflow: hidden;
+  width: auto;
+  display: grid;
+}
+
 span.pass {
   background-color: green !important;
   color: white !important;
@@ -1157,7 +1179,7 @@ span.wrong {
 }
 
 .table-width-id{
-  width: 20px !important;
+  width: 60px !important;
 }
 
 .table-width-filename{
@@ -1525,7 +1547,6 @@ input:focus {
 }
 
 #dropDownInput button {
-  min-width: 100% !important;
   border: solid 1px #0079bb !important;
   color: #0079bb !important;
   background: white !important;
@@ -1658,6 +1679,17 @@ input:focus {
   color: #1278b0 !important;
 }
 
+.switch-log {
+  margin: 5px 10px;
+}
+
+.wz-text-align-right {
+  text-align: right;
+}
+
+.table-condensed  td {
+  padding: 5px !important;
+}
 
 /* Loading bar */
 
@@ -1694,3 +1726,79 @@ input:focus {
     to {left: 100%;}
 }
 
+
+/* eui spinner */
+
+.euiLoadingSpinner--medium {
+  width: 16px;
+  height: 16px;
+  border-width: 1px;
+}
+.euiLoadingSpinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: solid 2px #D3DAE6;
+  border-color: #006BB4 #D3DAE6 #D3DAE6 #D3DAE6;
+  -webkit-animation: euiLoadingSpinner .6s infinite linear;
+  animation: euiLoadingSpinner .6s infinite linear;
+}
+
+
+/* Do not show the last resize th */ 
+.table-resizable > thead th:last-child .ui-resizable-handle {
+  display: none !important;
+}
+
+
+.wz-breadcrumb-margin{
+  margin-left:10px;
+  margin-top:12px;
+}
+
+
+
+label.wz-icon-loupe {
+  position: relative;
+  width:100%;
+}
+
+label.wz-icon-loupe:before  {
+  content: "";
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  width: 20px;
+  height: 40px;
+  background: url(/static/app/SplunkAppForWazuh/css/images/loupe.png) no-repeat;
+  background-size: 18px;
+}
+
+label.wz-icon-loupe  input {
+  padding: 0px 35px !important;
+  width:100%;
+}
+
+.float_warning-icon {
+  margin-bottom: 5px;
+  margin-right: -5px;
+}
+
+.noDot {
+  list-style-type: none !important;
+  margin-left: 0px !important;
+}
+
+.orange {
+  color: #ff9999;
+}
+
+.gray {
+  background-color: #5c6773 !important;
+}
+
+.center {
+  margin: 0 auto !important;
+  text-align: center !important;
+}

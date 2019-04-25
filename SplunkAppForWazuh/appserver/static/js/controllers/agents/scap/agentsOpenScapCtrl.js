@@ -75,6 +75,7 @@ define([
         false,
         false,
         false,
+        false,
         false
       ]
       this.scope.expand = (i, id) => this.expand(i, id)
@@ -96,8 +97,8 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh  rule.groups{}!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
-        'oscap.scan.profile.title',
+        } sourcetype=wazuh rule.groups{}!="syslog" data.oscap.scan.profile.title=* | stats count by data.oscap.scan.profile.title | sort data.oscap.scan.profile.title ASC|fields - count`,
+        'data.oscap.scan.profile.title',
         '$form.profile$',
         'dropDownInput',
         this.scope
@@ -118,9 +119,9 @@ define([
           `lastScapScore`,
           `${
             this.filters
-          } sourcetype=wazuh oscap.scan.score=* | stats latest(oscap.scan.score)`,
+          } sourcetype=wazuh data.oscap.scan.score=* | stats latest(data.oscap.scan.score)`,
           `latestScapScore`,
-          '$result.latest(oscap.scan.score)$',
+          '$result.latest(data.oscap.scan.score)$',
           'scapLastScore',
           this.submittedTokenModel,
           this.scope
@@ -129,9 +130,9 @@ define([
           `maxScapScore`,
           `${
             this.filters
-          } sourcetype=wazuh oscap.scan.score=* | stats max(oscap.scan.score)`,
+          } sourcetype=wazuh data.oscap.scan.score=* | stats max(data.oscap.scan.score)`,
           `maxScapScore`,
-          '$result.max(oscap.scan.score)$',
+          '$result.max(data.oscap.scan.score)$',
           'scapHighestScore',
           this.submittedTokenModel,
           this.scope
@@ -140,9 +141,9 @@ define([
           `scapLowest`,
           `${
             this.filters
-          } sourcetype=wazuh oscap.scan.score=* | stats min(oscap.scan.score)`,
+          } sourcetype=wazuh data.oscap.scan.score=* | stats min(data.oscap.scan.score)`,
           `minScapScore`,
-          '$result.min(oscap.scan.score)$',
+          '$result.min(data.oscap.scan.score)$',
           'scapLowestScore',
           this.submittedTokenModel,
           this.scope
@@ -152,18 +153,18 @@ define([
          * Visualizations
          */
         new PieChart(
-          'agentsVizz',
+          'top5Scans',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
-          'agentsVizz',
+          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.id`,
+          'top5Scans',
           this.scope
         ),
         new PieChart(
           'profilesVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.profile.title`,
+          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.profile.title`,
           'profilesVizz',
           this.scope
         ),
@@ -171,7 +172,7 @@ define([
           'contentVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top oscap.scan.content`,
+          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.content`,
           'contentVizz',
           this.scope
         ),
@@ -179,7 +180,7 @@ define([
           'severityVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top oscap.check.severity`,
+          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.severity`,
           'severityVizz',
           this.scope
         ),
@@ -187,31 +188,31 @@ define([
           'top5AgentsSHVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.scan.profile.title="$profile$" oscap.check.severity="high" | chart count by agent.name`,
+          } sourcetype=wazuh data.oscap.scan.profile.title="$profile$" data.oscap.check.severity="high" | chart count by agent.name`,
           'top5AgentsSHVizz',
           this.scope
         ),
         new PieChart(
-          'top10AleertsVizz',
+          'top5AlertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" rule.groups{}="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10AleertsVizz',
+          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}="oscap-result" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
+          'top5AlertsVizz',
           this.scope
         ),
         new PieChart(
-          'top10HRAlertsVizz',
+          'top5HRAlertsVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" rule.groups{}="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10HRAlertsVizz',
+          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}="oscap-result"  data.oscap.check.severity="high" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
+          'top5HRAlertsVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content`,
+          } sourcetype=wazuh data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, data.oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -219,7 +220,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh oscap.check.result="fail" oscap.scan.profile.title="$profile$" | stats count by agent.name, oscap.check.title, oscap.scan.profile.title, oscap.scan.id, oscap.scan.content | sort count DESC | rename agent.name as "Agent name", oscap.check.title as Title, oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", oscap.scan.content as Content`,
+          } sourcetype=wazuh data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -253,13 +254,13 @@ define([
           'Open SCAP',
           this.filters,
           [
-            'agentsVizz',
+            'top5Scans',
             'profilesVizz',
             'contentVizz',
             'severityVizz',
             'top5AgentsSHVizz',
-            'top10AleertsVizz',
-            'top10HRAlertsVizz',
+            'top5AlertsVizz',
+            'top5HRAlertsVizz',
             'alertsSummaryVizz'
           ],
           this.reportMetrics,
@@ -303,6 +304,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

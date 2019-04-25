@@ -47,7 +47,10 @@
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               sub-title="'Policy monitoring'" ui-sref='ow-pm' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/sca.png'"
+              sub-title="'Security Configuration Assessment'" ui-sref='ow-sca' current-tab="'conf-assess'"
+              description="'Scan your assets as part of a configuration assessment audit.'"></wz-welcome-card>
+              <wz-welcome-card ng-if="audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
               sub-title="'Audit'" ui-sref='ow-audit' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
             <wz-welcome-card ng-if="oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
               sub-title="'Open SCAP'" ui-sref='ow-os' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
@@ -69,7 +72,7 @@
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'" sub-title="'Vulnerabilities'"
             ui-sref='ow-vul' current-tab="'vuls'" description="'Discover what applications in your environment are affected by well-known vulnerabilities.'"></wz-welcome-card>
-          <wz-welcome-card ng-if="virustotal" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
+          <wz-welcome-card ng-if="virustotal" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'" sub-title="'VirusTotal'"
             title="'VirusTotal'" ui-sref='ow-virustotal' current-tab="'virustotal'" description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"></wz-welcome-card>
           <wz-welcome-card ng-if="osquery" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'"
             sub-title="'Osquery'" ui-sref='ow-osquery' current-tab="'osquery'" description="'Osquery allows to expose an operating system as a high-performance relational database.'"></wz-welcome-card>

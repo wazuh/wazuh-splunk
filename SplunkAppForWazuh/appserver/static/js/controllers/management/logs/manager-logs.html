@@ -1,6 +1,6 @@
 <div ng-cloak flex layout="column" class='wz-white-background'>
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
+    <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span> / Logs </span>
     </div>
@@ -23,7 +23,7 @@
 
 <!-- Filters and Realtime button section -->
 <div ng-show="!loading" layout="row" layout-align="start start"
-  class="wz-margin-left-10 wz-margin-right-600 less-25-side">
+  class="wz-margin-left-10 wz-margin-right-600 less-25-side" style="margin-left: 25px !important;">
 
 
   <select class="input input-dropdown " flex id="categoryBox" ng-disabled="realtime"
@@ -50,34 +50,38 @@
 
 
   <!-- Switch to sort by timestamp -->
-  <md-switch class="wz-switch wz-padding-left-15" aria-label="Descending sort" ng-model="sortFilter" ng-change="sort()">
-    <div class="md-label">Descending sort</div>
-  </md-switch>
-
+  <wz-kbn-switch class="switch-log" switch-model="sortFilter" switch-change="sort()" switch-text="Descending sort"></wz-kbn-switch>
 
 </div>
 
 <div layout="row" class="less-15-side">
   <!-- Search and play realtime buttons -->
-  <input flex placeholder="Filter logs..." ng-model="custom_search" type="text"
-    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-top-4 height-36 wz-margin-left-10"
-    aria-invalid="false" wz-enter="search(custom_search)">
+  
+  <label class="wz-icon-loupe wz-margin-left-10 wz-margin-top-4" style="margin-bottom: -11px;">
+    <input flex placeholder="Filter logs..." ng-model="custom_search" type="text"
+      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-36"
+      aria-invalid="false" wz-enter="search(custom_search)">
+  </label>
   <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-5"
     ng-click="search(custom_search)">
     <span>Search</span>
   </button>
 
-  <button ng-if="!realtime" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-right-10 wz-margin-5"
-    ng-click="playRealtime()" aria-label="Play realtime button">
-    <i class="fa fa-play fa-fw" aria-hidden="true"></i>
-    Play realtime
-  </button>
+  <div ng-show="!realtime" class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
+    <button class="btn height-32 wz-button-empty "
+      ng-click="playRealtime()" aria-label="Play realtime button">
+      <i class="fa fa-play fa-fw" aria-hidden="true"></i>
+      Play realtime
+    </button>
+  </div>
 
-  <button ng-if="realtime" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-right-10 wz-margin-5"
-    ng-click="stopRealtime()" aria-label="Stop realtime button">
-    <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
-    Stop realtime
-  </button>
+  <div ng-show="realtime" class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
+    <button class="btn height-32 wz-button-empty "
+      ng-click="stopRealtime()" aria-label="Stop realtime button">
+      <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
+      Stop realtime
+    </button>
+  </div>
 
 </div>
 <!-- End Filters and Realtime button section -->
@@ -109,9 +113,9 @@
       </div>
 </div>
 
-<div layout="row" class="wz-margin-top-10 wz-margin-right-20">
+<div layout="row" class="wz-margin-right-20">
   <span flex></span>
-  <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv()">Formatted
-    <i aria-hidden="true" class="fa fa-fw fa-download"></i>
+  <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv()">
+    <wz-svg icon="download"></wz-svg>&nbsp;Formatted
   </a>
 </div>

@@ -3,7 +3,10 @@
   <div class="loader" ></div>
 </div>
 <div ng-show="!error && !wazuh_table_loading" layout="row" class="wz-margin-top-17">
-  <input placeholder="Filter..." ng-model="searchTerm" ng-change="filterTable()" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid">
+  
+  <label class="wz-icon-loupe">
+    <input placeholder="Filter..." ng-model="searchTerm" ng-change="filterTable()" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid">
+  </label>
   <button class="kuiLocalSearchButton height-40"><span class="fa fa-search" aria-hidden="true"></span> </button>
 </div>
 <div ng-show="!error && !wazuh_table_loading && items.length">

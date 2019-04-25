@@ -109,7 +109,7 @@ define([
           'mostCommonActions',
           `${
             this.filters
-          } sourcetype=wazuh  | top "data.osquery.action" limit=5`,
+          } sourcetype=wazuh  | top data.osquery.action limit=5`,
           'mostCommonActions',
           this.scope
         ),
@@ -136,6 +136,24 @@ define([
           '$result$',
           this.scope,
           'Top Rules'
+        ),
+        new Table(
+          'alertsSummary',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummary',
+          this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         )
       ]
 
@@ -169,7 +187,8 @@ define([
             'alertsPacksOverTime',
             'mostCommonActions',
             'topRules',
-            'alertsOverTime'
+            'alertsOverTime',
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
@@ -210,6 +229,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

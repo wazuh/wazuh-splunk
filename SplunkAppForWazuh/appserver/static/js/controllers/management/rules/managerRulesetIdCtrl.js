@@ -49,14 +49,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         this.filters = []
       }
 
-      //Check if the rule is overwrited
-      if (ruleInfo.data.data.totalItems > 1) {
-        ruleInfo = ruleInfo.data.data.items.filter(
-          rule => rule.details.overwrite
-        )
-        this.scope.ruleInfo = ruleInfo[0]
+      //Check if the rule is overwritted
+      const response = (((ruleInfo || {}).data || {}).data || {}).items || []
+      if (response.length) {
+        const result = response.filter(rule => rule.details.overwrite)
+        this.scope.ruleInfo = result.length ? result[0] : response[0]
       } else {
-        this.scope.ruleInfo = ruleInfo.data.data.items[0]
+        this.scope.ruleInfo = false
       }
       if (
         !(Object.keys((this.scope.ruleInfo || {}).details || {}) || []).length
@@ -102,18 +101,20 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     async closeEditingFile() {
       try {
         //Refresh rule info
-        const result = await this.requestService.apiReq(
+        const ruleReloaded = await this.requestService.apiReq(
           `/rules/${this.scope.ruleInfo.id}`
         )
-        if (result.data.data.totalItems === 0) {
+        if (ruleReloaded.data.data.totalItems === 0) {
           this.state.go('mg-rules')
         }
-        //Check if the rule is overwrited
-        if (result.data.data.totalItems > 1) {
-          result = result.data.data.items.filter(rule => rule.details.overwrite)
-          this.scope.ruleInfo = result[0]
+        //Check if the rule is overwritted
+        const response =
+          (((ruleReloaded || {}).data || {}).data || {}).items || []
+        if (response.length) {
+          const result = response.filter(rule => rule.details.overwrite)
+          this.scope.ruleInfo = result.length ? result[0] : response[0]
         } else {
-          this.scope.ruleInfo = result.data.data.items[0]
+          this.scope.ruleInfo = false
         }
       } catch (error) {
         this.state.go('mg-rules')

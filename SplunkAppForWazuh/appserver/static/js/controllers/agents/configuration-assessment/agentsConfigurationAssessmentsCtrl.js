@@ -12,11 +12,9 @@
 
 define([
   '../../module',
-  '../../../services/visualizations/inputs/time-picker',
-], function(
-  app,
-  TimePicker,
-) {
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/inputs/time-picker'
+], function (app, PieChart, TimePicker) {
   'use strict'
 
   class AgentsCA {
@@ -41,7 +39,6 @@ define([
       $currentDataService,
       agent,
       configAssess,
-      $reportingService,
       $requestService,
       $notificationService,
       $csvRequestService,
@@ -56,9 +53,7 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
-      this.scope.showPolicies = false
       this.state = $state
-      this.reportingService = $reportingService
       this.tableResults = {}
       this.currentDataService = $currentDataService
       this.agent = agent
@@ -70,7 +65,7 @@ define([
       this.baseUrl = BASE_URL
       this.scope.noScansPng = `${
         this.baseUrl
-      }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
+        }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
@@ -99,10 +94,10 @@ define([
       }
 
       this.filters = this.currentDataService.getSerializedFilters()
-      /*this.timePicker = new TimePicker(
+      this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
-      )*/
+      )
 
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
@@ -114,22 +109,21 @@ define([
         this.launchSearches()
       })
 
-      // Set agent info
-      try {
-        this.agentReportData = {
-          ID: this.agent.data.data.id,
-          Name: this.agent.data.data.name,
-          IP: this.agent.data.data.ip,
-          Version: this.agent.data.data.version,
-          Manager: this.agent.data.data.manager,
-          OS: this.agent.data.data.os.name,
-          dateAdd: this.agent.data.data.dateAdd,
-          lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
-        }
-      } catch (error) {
-        this.agentReportData = false
-      }
+
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'resultDistribution',
+          `${
+          this.filters
+          }  rule.groups{}="sca" | stats count by data.sca.policy,data.sca.check.result `,
+          'resultDistribution',
+          this.scope,
+          { 'trellisEnabled': true }
+        )
+      ]
 
       /**
        * Generates report
@@ -140,52 +134,23 @@ define([
           'Configuration assessment',
           this.filters,
           [
-            'alertsOverTime',
-            'top5CISPassed',
-            'top5CISCSCPassed',
-            'top5PCIDSSPassed',
-            'top5CISFailed',
-            'top5CISCSCFailed',
-            'top5PCIDSSFailed',
-            'alertsSummary'
+            'resultDistribution'
           ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )
 
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
-        //this.timePicker.destroy()
-        //this.vizz.map(vizz => vizz.destroy())
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
       })
     }
 
     $onInit() {
-      this.scope.showPolicies = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
@@ -203,6 +168,38 @@ define([
         this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus =>
         this.formatAgentStatus(agentStatus)
+
+      this.scope.refreshScans = () => this.refreshScans()
+
+
+      this.scope.loadCharts = (policy) => {
+        setTimeout(function () {
+          const chart = new Chart(document.getElementById(policy.policy_id),
+            {
+              type: "doughnut",
+              data: {
+                labels: ["pass", "fail", "not applicable"],
+                datasets: [
+                  {
+                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                    data: [policy.pass, policy.fail, policy.invalid],
+                  }
+                ]
+              },
+              options: {
+                cutoutPercentage: 85,
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+                tooltips: {
+                  displayColors: false
+                }
+              }
+            });
+          chart.update();
+        }, 250);
+      }
     }
 
     /**
@@ -255,15 +252,6 @@ define([
     }
 
     /**
-     * Switches between alerts visualizations and policies
-     */
-    switchVisualizations() {
-      this.scope.showPolicies = !this.scope.showPolicies
-      this.scope.showPolicyChecks = name
-      this.scope.$applyAsync()
-    }
-
-    /**
      * Loads policies checks
      */
     async loadPolicyChecks(id, name) {
@@ -273,6 +261,14 @@ define([
       this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
     }
 
+    /**
+     * 
+     * Backs to config assessment
+     */
+    backToConfAssess() {
+      this.scope.showPolicyChecks = false
+    }
+
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
       let vis = $(
@@ -280,7 +276,7 @@ define([
       )
       this.scope.expandArray[i]
         ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
+        : vis.css('height', '280px')
 
       let vis_header = $('.wz-headline-title')
       vis_header.dblclick(e => {
@@ -288,7 +284,7 @@ define([
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]
             ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
+            : vis.css('height', '280px')
           this.scope.$applyAsync()
         } else {
           e.preventDefault()
@@ -297,11 +293,10 @@ define([
     }
 
     /**
-     * Back to configuration assessment from a policy checks
+     * Refresh SCA scans
      */
-    backToConfAssess() {
-      this.scope.showPolicyChecks = false
-      this.scope.showPolicies = true
+    refreshScans() {
+      this.state.reload()
     }
   }
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)

@@ -7,7 +7,9 @@
     <div class='wzMultipleSelectorLeft'>
       <div class='panel panel-primary' class="height-300">
         <div class='panel-heading text-center'>{{titleAvailableItems}}<span ng-click='doReload("left", availableFilter, true)'
-            class='pull-right cursor-pointer'><span class='fa fa-refresh' aria-hidden='true'></span></span></div>
+            class='pull-right cursor-pointer'>           
+            <wz-svg icon="refresh" color="rgb(0, 121, 165)" svg-tooltip="Refresh content"></wz-svg>
+          </span></div>
         <div class='panel-body' class="height-255">
           <div layout="row">
             <input placeholder='Filter...' ng-model='availableFilter' type='text' class='kuiLocalSearchInput wz-width-100' wz-enter='doReload("left", availableFilter, true)'

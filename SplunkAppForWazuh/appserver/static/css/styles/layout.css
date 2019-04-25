@@ -66,7 +66,7 @@
 }
 
 .wz-margin-left-10 {
-  margin-left: 10px;
+  margin-left: 10px !important;
 }
 
 .no-margin-left {
@@ -130,6 +130,9 @@
 
 .wz-padding-right-17 {
   padding-right: 17px;
+}
+.wz-padding-right-25 {
+  padding-right: 25px;
 }
 
 .wz-padding-metric {

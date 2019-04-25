@@ -1,7 +1,7 @@
 <div flex layout="column" class="mozilla-table-size-85 wz-white-background" ng-class="{'cursor-wait': multipleSelectorLoading}">
   <md-content flex layout="column" class="overflow-hidden wz-white-background">
     <div layout="row" class="layout-row layout-align-end wz-white-background">
-      <div class='wz-margin-left-10 wz-margin-top-12'>
+      <div class='wz-breadcrumb-margin'>
         <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management / </span>
         <span class="wz-text-link cursor-pointer" ng-click="goBackGroups()"> Groups </span>
         <span ng-if="currentGroup.name"> / {{currentGroup.name}} </span>
@@ -18,7 +18,7 @@
         <div layout="row">
           <span class="font-size-18">
             <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-          <span ng-if='adminMode' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><i class="fa fa-fw fa-plus-circle"></i></span>
+          <span ng-if='adminMode' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><wz-svg class="wz-margin-left-10" icon="plus"></wz-svg></span>
         </div>
         <div layout="row" ng-if="addingGroup" ng-if='adminMode'>
           <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
@@ -87,20 +87,22 @@
 
         <!-- Search bar -->
         <div layout="row" ng-if="!addingAgents && !file">
-          <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
-            ng-model="custom_search" type="text" class="kuiLocalSearchInput height-40 wz-width-100" aria-invalid="false"
-            wz-enter="search(custom_search)">
+          <label class="wz-icon-loupe">
+            <input placeholder="{{groupsSelectedTab==='files' ? 'Filter files...' : lookingGroup ? 'Filter agents...' : 'Filter groups...'}}"
+              ng-model="custom_search" type="text" class="kuiLocalSearchInput height-40 wz-width-100" aria-invalid="false"
+              wz-enter="search(custom_search)">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10" ng-click="search(custom_search)">
             <span>Search</span>
           </button>
           <div ng-if="(lookingGroup && groupsSelectedTab==='agents') || (lookingGroup && groupsSelectedTab==='files')"
             class="btns-separator"></div>
           <button ng-if="lookingGroup && groupsSelectedTab==='agents' && lookingGroup && currentGroup && adminMode"
-            ng-click='addMultipleAgents(true)' class='btn height-40 wz-button-empty'><i aria-hidden='true' class='fa fa-fw fa-plus-circle'></i>
+            ng-click='addMultipleAgents(true)' class='btn height-40 wz-button-empty'><wz-svg icon="plus"></wz-svg>
             Add or remove agents
           </button>
           <button ng-if="lookingGroup && groupsSelectedTab==='files' && lookingGroup && currentGroup && adminMode"
-            ng-click='editGroupAgentConfig(currentGroup)' class='btn height-40 wz-button-empty'><i aria-hidden='true' class='fa fa-fw fa-pencil'></i>
+            ng-click='editGroupAgentConfig(currentGroup)' class='btn height-40 wz-button-empty'><wz-svg icon="pencil"></wz-svg>
             Edit group configuration
           </button>
         </div>
@@ -132,7 +134,7 @@
             <div layout="row" class="ruleset-csv-formater" ng-if="!lookingGroup">
               <span flex></span>
               <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups', groups.csv)">
-                <i aria-hidden="true" class="fa fa-fw fa-download"></i>&nbsp;Formatted
+                <wz-svg icon="download"></wz-svg>&nbsp;Formatted
               </a>
             </div>
             <!-- End CSV Download button section for groups -->
@@ -149,7 +151,7 @@
               <div layout="row" class="ruleset-csv-formater" ng-if="lookingGroup && groupsSelectedTab==='agents'">
                 <span flex></span>
                 <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name, groups.csv)">
-                  <i aria-hidden="true" class="fa fa-fw fa-download"></i>&nbsp;Formatted
+                  <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                 </a>
               </div>
               <!-- End CSV Download button section for group agents -->
@@ -164,8 +166,8 @@
               <!-- CSV Download button section for group files-->
               <div layout="row" class="ruleset-csv-formater" ng-if="lookingGroup && groupsSelectedTab==='files' && !file">
                 <span flex></span>
-                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files', groups.csv)">Formatted
-                  <i aria-hidden="true" class="fa fa-fw fa-download"></i>
+                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files', groups.csv)">
+                  <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                 </a>
               </div>
 

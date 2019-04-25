@@ -66,8 +66,11 @@ define([
             $scope
           )
         } else if (sections[0].component === 'logcollector') {
-          const logcollector =
-            currentConfigReq['logcollector-localfile'].localfile
+          const logcollector = currentConfigReq['logcollector-localfile'].localfile
+          $scope.currentConfig['logcollector-localfile']['localfile-logs'] = 
+            logcollector.filter(log => log.logformat !== 'command' && log.logformat !== 'full_command')
+          $scope.currentConfig['logcollector-localfile']['localfile-commands'] = 
+            logcollector.filter(log => log.logformat === 'command' || log.logformat === 'full_command')
           logcollector.map(log => {
             const keys = Object.keys(log)
             if (

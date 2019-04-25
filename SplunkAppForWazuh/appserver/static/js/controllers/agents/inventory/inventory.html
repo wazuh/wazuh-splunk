@@ -1,7 +1,7 @@
 <md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-breadcrumb-margin'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
@@ -9,9 +9,9 @@
       <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>Inventory data</span>
-    </div>
-    <div ng-if="agent && agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent && agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
     <span flex class="flex"></span>
     <!-- Report button -->
@@ -24,12 +24,12 @@
   </div>
 
   <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner"
+  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
     aria-hidden="true"></i></div>
   
 
   <!-- Security information management navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'inventory'">
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'inventory'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-general" name="general">Security events</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-fim" name="fim">Integrity monitoring</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory">Inventory data</md-nav-item>
@@ -82,8 +82,10 @@
         <span class="color-grey pull-right">Last scan: {{syscollector.packagesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
-            aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          <label class="wz-icon-loupe" style="margin-bottom: -16px;">
+            <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
+              aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(packageSearch,'packages')">
               <span>Search</span>
           </button>
@@ -101,7 +103,7 @@
       <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
         <span flex></span>
           <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/packages', 'agent-' + agent.id + '-packages.csv')">
-            <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path></svg>&nbsp;Formatted
+            <wz-svg icon="download"></wz-svg>&nbsp;Formatted
         </a>
       </div>
     </md-card>
@@ -114,8 +116,10 @@
         <span class="color-grey pull-right">Last scan: {{syscollector.processesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
-            aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          <label class="wz-icon-loupe" style="margin-bottom: -16px;">
+            <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
+              aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(processSearch,'processes')">
               <span>Search</span>
           </button>
@@ -133,7 +137,7 @@
         <span flex></span>
           
         <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/processes', 'agent-' + agent.id + '-processes.csv')">
-          <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path></svg>&nbsp;Formatted
+          <wz-svg icon="download"></wz-svg>&nbsp;Formatted
         </a>
       </div>
     </md-card>

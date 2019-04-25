@@ -74,34 +74,42 @@ class api(controllers.BaseController):
     def clean_keys(self, response):
         """Hide sensible data from API response."""
         try:
-            res = response["data"]
             hide = "********"
-            # Remove agent key
-            if "internal_key" in res:
-                res["internal_key"] = hide
-            # Remove cluster key (/come/cluster)
-            if "node_type" in res and "key" in res:
-                res["key"] = hide
-            # Remove cluster key (/manager/configuration)
-            if "cluster" in res:
-                if "node_type" in res["cluster"] and "key" in res["cluster"]:
-                    res["cluster"]["key"] = hide
+            if "data" in response and type(response["data"]) == dict:
+                # Remove agent key
+                if "internal_key" in response["data"]:
+                    response["data"]["internal_key"] = hide
+                
+                # Remove cluster key (/come/cluster)
+                if "node_type" in response["data"]:
+                    if "key" in response["data"]:
+                        response["data"]["key"] = hide
+                
+                # Remove cluster key (/manager/configuration)
+                if "cluster" in response["data"]:
+                    if "node_type" in response["data"]["cluster"] and "key" in response["data"]["cluster"]:
+                        response["data"]["cluster"]["key"] = hide
+                
+                # Remove AWS keys
+                if "wmodules" in response["data"]:
+                    for wmod in response["data"]["wmodules"]:
+                        if "aws-s3" in wmod:
+                            if "buckets" in wmod["aws-s3"]:
+                                for bucket in wmod["aws-s3"]["buckets"]:
+                                    bucket["access_key"] = hide
+                                    bucket["secret_key"] = hide
+                            if "services" in wmod["aws-s3"]:
+                                for service in wmod["aws-s3"]["services"]:
+                                    service["access_key"] = hide
+                                    service["secret_key"] = hide
 
-            # Remove AWS keys
-            if "wmodules" in res:
-                for wmod in res["wmodules"]:
-                    if "aws-s3" in wmod:
-                        if "buckets" in wmod["aws-s3"]:
-                            for bucket in wmod["aws-s3"]["buckets"]:
-                                bucket["access_key"] = hide
-                                bucket["secret_key"] = hide
-            # Remove integrations keys
-            if "integration" in res:
-                for integ in res["integration"]:
-                    integ["api_key"] = hide
-            response["data"] = res
-            return jsonbak.dumps(response)
+                # Remove integrations keys
+                if "integration" in response["data"]:
+                    for integ in response["data"]["integration"]:
+                        integ["api_key"] = hide
+            return response
         except Exception as e:
+            self.logger.error("Error while cleaning keys in request response: %s" % (e))
             raise e
 
     def format_output(self, arr):
@@ -187,7 +195,7 @@ class api(controllers.BaseController):
                     return self.make_request(method, url, opt_endpoint, kwargs, auth, verify, counter - 1)
                 else:                    
                     raise Exception("Tried to execute %s %s three times with no success, aborted." % (method, opt_endpoint))
-            return request
+            return self.clean_keys(request)
         except Exception as e:
             self.logger.error("Error while requesting to Wazuh API: %s" % (e))
             raise e
@@ -332,7 +340,7 @@ class api(controllers.BaseController):
             opt_base_url = api["data"]["url"]
             opt_base_port = api["data"]["portapi"]
             opt_endpoint = kwargs['path']
-            url = opt_base_url + ":" + opt_base_port
+            url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             # init csv writer

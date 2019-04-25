@@ -127,6 +127,14 @@ define([
           this.scope
         ),
         new PieChart(
+          'topActions',
+          `${
+            this.filters
+          } sourcetype="wazuh" | stats count by "syscheck.event"`,
+          'topActions',
+          this.scope
+        ),
+        new PieChart(
           'topFileChangesElement',
           `${
             this.filters
@@ -225,6 +233,7 @@ define([
             'topDeletedFiles',
             'eventsOverTimeElement',
             'topGroupOwnersElement',
+            'topActions',
             'topUserOwnersElement',
             'topFileChangesElement',
             'rootUserFileChangesElement',
@@ -269,6 +278,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.show()
       this.scope.show = () => this.show()
       this.scope.agent =

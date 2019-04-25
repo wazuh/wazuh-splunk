@@ -1,6 +1,6 @@
 <div ng-cloak flex layout="column" class='wz-white-background'>
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
+    <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
       <span> / CDB Lists </span>
@@ -21,8 +21,10 @@
   <div ng-show="!loading" layout="row" layout-align="start center">
     <div flex>
       <div layout="row">
-        <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput height-40"
-          aria-invalid="false" wz-enter="search(customSearch)">
+        <label class="wz-icon-loupe">
+          <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput height-40"
+            aria-invalid="false" wz-enter="search(customSearch)">
+        </label>
         <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10" ng-click="search(customSearch)">
             <span>Search</span>
         </button>
@@ -75,7 +77,7 @@
       <div layout="row" class="ruleset-csv-formater">
         <span flex></span>
         <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/lists','cdb_lists.csv')">
-          <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path></svg>&nbsp;Formatted
+          <wz-svg icon="download"></wz-svg>&nbsp;Formatted
         </a>
       </div>
     </md-card-contents>
@@ -118,17 +120,17 @@
             <tbody>
               <!-- Add new key tr -->
               <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
-                <td>
-                  <input placeholder="New key" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                <td class="td-align-middle">
+                  <input placeholder="New key" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;"
                     ng-model="newKey">
                 </td>
-                <td>
-                  <input placeholder="New value" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                <td class="td-align-middle">
+                  <input placeholder="New value" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;"
                     ng-model="newValue">
                 </td>
-                <td>
+                <td class="td-align-middle">
                   <button class="btn btn-as-i" ng-disabled="!newKey" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
-                    <i class="fa fa-fw fa-plus action-btn-td"></i>
+                      <wz-svg icon="plus" color="#0079a5"></wz-svg>
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Add new entry
                     </md-tooltip>
@@ -139,17 +141,18 @@
               <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] track by $index" ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
                 <td>{{item[0]}}</td>
                 <td>
-                  <input ng-show="editingKey === item[0]" type="text" class="wz-input-text" ng-model="editingNewValue">
-                  <span ng-show="!editingKey || editingKey !== item[0]">{{item[1]}}</span>
+                  <div ng-show="editingKey === item[0]">
+                    <input  type="text" class="wz-input-text" ng-model="editingNewValue">
+                  </div>
+                  <div ng-show="!editingKey || editingKey !== item[0]">
+                    <span>{{item[1]}}</span>
+                  </div>
                 </td>
                 <td class="action-btn-td">
                   <div ng-hide="!adminMode">
-                    <span ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]" ng-click="setEditingKey(item[0], item[1])"
-                      class="fa fa-fw fa-pencil cursor-pointer">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Edit
-                      </md-tooltip>
-                    </span>
+                    <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]" ng-click="setEditingKey(item[0], item[1])"
+                      icon="pencil">
+                    </wz-svg>
                     <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer" ng-click="cancelEditingKey()">
                       <md-tooltip md-direction="left" class="wz-tooltip">
                         Cancel
@@ -161,12 +164,10 @@
                         Apply
                       </md-tooltip>
                     </span>
-                    <i ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]" ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
-                      class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Remove this entry
-                      </md-tooltip>
-                    </i>
+
+                    <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]" ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
+                    icon="trash" svg-tooltip="Remove this entry">
+                    </wz-svg>
 
                     <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
                       <div layout="row">

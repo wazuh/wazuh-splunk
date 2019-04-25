@@ -168,7 +168,7 @@ define([
           'agentsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
@@ -176,7 +176,7 @@ define([
           'agentsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryTableToken',
           '$result$',
           this.scope,
@@ -190,6 +190,7 @@ define([
      */
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary`)

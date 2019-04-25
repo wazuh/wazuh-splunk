@@ -1,17 +1,16 @@
 <div flex layout="column" layout-align="start stretch">
 
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-breadcrumb-margin'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
       <span ng-if="agent.error">Unknown agent</span>
-    </div>
-    <div ng-if="agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
-        aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
+          aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
   </div>
   <!-- End breadcrumbs -->
@@ -24,27 +23,29 @@
       </span>
       <span flex="" class="flex"></span>
       <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
-        tooltip="Discover">Discover<i class="fa fa-fw fa-compass" aria-hidden="true"></i></button>
+        tooltip="Discover">
+        <wz-svg icon="compass"></wz-svg>
+        Discover</button>
       <!-- Restart button -->
+      <div ng-show="confirmingRestart" style="text-align: right;">
+          <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
+          <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+            class='btn wz-button-cancel pull-right wz-margin-left-10'>
+            <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+          </button>
+          <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
+            class='btn wz-button-empty pull-right wz-margin-left-10'>
+            <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+          </button>
+        </div>
       <div ng-show="!confirmingRestart">
         <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
           class="btn wz-button-empty pull-right ng-scope">
-          <span aria-hidden="false"><i aria-hidden="true" class="fa fa-fw fa-refresh"></i>
+          <span aria-hidden="false"><wz-svg icon="refresh"></wz-svg>
             Restart agent
           </span>
         </button>
       </div>
-    </div>
-    <div ng-show="confirmingRestart" style="text-align: right;">
-      <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
-      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
-        class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
-        class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
     </div>
     <div layout="row" layout-padding class="wz-no-padding wz-margin-top-20">
       <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
@@ -147,9 +148,11 @@
       <md-card-content>
 
         <div layout="row" ng-if="agent.group">
-          <span class="font-size-17">Groups <i ng-if='adminMode' tooltip="Add group" ng-click="switchGroupEdit()"
-              class="wz-text-bold wz-text-link-add fa fa-fw agentField"
-              ng-class="!addingGroupToAgent ? 'fa-plus-circle' : 'fa-minus-circle'"></i></span>
+          <span class="font-size-17">Groups 
+            <wz-svg ng-if='adminMode' ng-click="switchGroupEdit()" 
+              svg-tooltip="Add group" icon="plus" color="#0079a5">
+            </wz-svg>
+          </span>
         </div>
         <md-divider ng-if="agent.group" class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10" ng-if="agent.group && editGroup && !addingGroupToAgent">

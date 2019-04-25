@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function (app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class Osquery {
@@ -67,110 +67,69 @@ define([
          * Visualizations
          */
         new AreaChart(
-          'alertsOverTime',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-          'alertsOverTime',
-          this.scope
-        ),
-        new AreaChart(
-          'alertsEvolution',
+          'alertsPacksOverTime',
           `${
-            this.filters
-          } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
-          'alertsEvolution',
+          this.filters
+          } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          'alertsPacksOverTime',
           this.scope
         ),
         new PieChart(
-          'mostCommonEvents',
-          `${this.filters} sourcetype=wazuh  | top data.osquery.name limit=5`,
-          'mostCommonEvents',
+          'topOsqueryAdded',
+          `${this.filters} sourcetype=wazuh data.osquery.action="added"  | top data.osquery.name limit=5`,
+          'topOsqueryAdded',
+          this.scope
+        ),
+        new PieChart(
+          'topOsqueryRemoved',
+          `${this.filters} sourcetype=wazuh data.osquery.action="removed"  | top data.osquery.name limit=5`,
+          'topOsqueryRemoved',
+          this.scope
+        ),
+        new PieChart(
+          'mostCommonPacks',
+          `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
+          'mostCommonPacks',
           this.scope
         ),
         new Table(
-          'topPacks',
+          'alertsSummary',
           `${
-            this.filters
-          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-          'topPacks',
+          this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+          this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         ),
         new Table(
           'topRules',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
         ),
+
         new RawTableDataService(
           'topRulesTable',
           `${
-            this.filters
+          this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRulesTableToken',
           '$result$',
           this.scope,
           'Top 5 Rules'
-        ),
-        new RawTableDataService(
-          'topPacksTable',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top "data.osquery.pack" limit=5 | rename data.osquery.pack as Pack, count as Count, percent as Percent`,
-          'topPacksTableToken',
-          '$result$',
-          this.scope,
-          'Top 5 Packs'
         )
       ]
-
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'ow-osquery',
-          'Osquery',
-          this.filters,
-          [
-            'alertsOverTime',
-            'mostCommonEvents',
-            'alertsEvolution',
-            'topPacks',
-            'topRules'
-          ],
-          {}, //Metrics
-          this.tableResults
-        )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
@@ -178,8 +137,57 @@ define([
      */
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         const wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'ow-osquery',
+            'Osquery',
+            this.filters,
+            [
+              'alertsPacksOverTime',
+              'topOsqueryAdded',
+              'topOsqueryRemoved',
+              'mostCommonPacks',
+              'alertsSummary',
+              'topRules'
+            ],
+            {}, //Metrics
+            this.tableResults
+          )
+
+        this.scope.$on('loadingReporting', (event, data) => {
+          this.scope.loadingReporting = data.status
+        })
+
+        this.scope.$on('checkReportingStatus', () => {
+          this.vizzReady = !this.vizz.filter(v => {
+            return v.finish === false
+          }).length
+          if (this.vizzReady) {
+            this.scope.loadingVizz = false
+          } else {
+            this.vizz.map(v => {
+              if (v.constructor.name === 'RawTableData') {
+                this.tableResults[v.name] = v.results
+              }
+            })
+            this.scope.loadingVizz = true
+          }
+          if (!this.scope.$$phase) this.scope.$digest()
+        })
+
+        /**
+         * On controller destroy
+         */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map(vizz => vizz.destroy())
+        })
       } catch (err) {
         this.notification.showErrorToast(
           'Cannot load wodle configuration. Osquery is not configured.'

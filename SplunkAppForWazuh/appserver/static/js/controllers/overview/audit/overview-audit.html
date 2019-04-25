@@ -1,175 +1,140 @@
 <md-content flex layout="column" layout-align="end">
-  <div layout="row" class="layout-row layout-align-end">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
       <span> / Audit </span>
     </div>
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-        <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report" ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()"
-          aria-label="Generate report button">
-          <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-          <md-tooltip md-direction="left" class="wz-tooltip">
-            Generate report
-          </md-tooltip>
-        </button>
-        <wz-discover breadcrumbs="{section: 'Overview', subSection: 'Audit', ref: 'overview'}"></wz-discover>
-      </div>
-      <div style="margin-right:7px;" id='timePicker'></div>
+      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
+        ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
+        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Generate report
+        </md-tooltip>
+      </button>
+      <wz-discover breadcrumbs="{section: 'Overview', subSection: 'Audit', ref: 'overview'}"></wz-discover>
     </div>
-  
-    <!-- Loading report-->
-    <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
-  
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+
+  <!-- Loading report-->
+  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
+      aria-hidden="true"></i></div>
+
   <!-- Auditing and Policy Monitoring navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'audit'">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-pm" name="pm">Policy monitoring</md-nav-item>
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'audit'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-pm" name="pm">Policy monitoring
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-sca" name="sca">SCA</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="audit">System auditing</md-nav-item>
-    <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-os" name="openscap">OpenSCAP</md-nav-item>
-    <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-ciscat" name="ciscat">CIS-CAT</md-nav-item>
+    <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-os" name="openscap">OpenSCAP</md-nav-item>
+    <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-ciscat" name="ciscat">CIS-CAT</md-nav-item>
   </md-nav-bar>
 
   <!-- Filter bar -->
   <wazuh-bar></wazuh-bar>
-  
-  <div layout="row"  class="wz-margin-9">
-    <md-card flex class="wz-metric-color">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>New files:
-          <span class="wz-text-bold" ng-bind="newFiles"></span>
-        </div>
-        <div class="wz-text-truncatable" flex>Read files:
-          <span class="wz-text-bold" ng-bind="readFiles"></span>
-        </div>
-        <div class="wz-text-truncatable" flex>Modified files:
-          <span class="wz-text-bold" ng-bind="filesModifiedToken"></span>
-        </div>
-        <div class="wz-text-truncatable" flex>Removed files:
-          <span class="wz-text-bold" ng-bind="filesDeleted"></span>
-        </div>
-      </md-card-content>
-    </md-card>
+
+  <div ng-show="loadingVizz">
+    <div align='center'>
+      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+    </div>
   </div>
-  
-  <div layout="row" layout-align="center stretch">
-    <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Groups
-          <span class="wz-text-link" style="float:right;" ng-click="expand(0,'groupsElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="groupsElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-    <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Agents
-          <span class="wz-text-link" style="float:right;" ng-click="expand(1,'agentsElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="agentsElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-    <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Directories
-          <span class="wz-text-link" style="float:right;" ng-click="expand(2,'directoriesElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="directoriesElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-    <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Files
-          <span class="wz-text-link" style="float:right;" ng-click="expand(3,'filesElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="filesElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-  </div>
-  
-  <div layout="row" layout-align="center stretch">
-    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts over time
-          <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsOverTimeElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="alertsOverTimeElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-  </div>
-  
-  <div layout="row" layout-align="center stretch">
-    <div flex layout-align="center stretch">
-      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">File read access
-            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'fileReadAccessElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="fileReadAccessElement" class="dashboard-element single" style="width: 100%"></div>
+  <div ng-show="!loadingVizz">
+    <div layout="row" class="wz-margin-9">
+      <md-card flex class="wz-metric-color">
+        <md-card-content layout="row" class="wz-padding-metric">
+          <div class="wz-text-truncatable" flex>New files:
+            <span class="wz-text-bold" ng-bind="newFiles"></span>
+          </div>
+          <div class="wz-text-truncatable" flex>Read files:
+            <span class="wz-text-bold" ng-bind="readFiles"></span>
+          </div>
+          <div class="wz-text-truncatable" flex>Modified files:
+            <span class="wz-text-bold" ng-bind="filesModifiedToken"></span>
+          </div>
+          <div class="wz-text-truncatable" flex>Removed files:
+            <span class="wz-text-bold" ng-bind="filesDeleted"></span>
+          </div>
         </md-card-content>
       </md-card>
     </div>
-    
-    <div flex layout-align="center stretch">
-      <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+
+    <div layout="row" layout-align="center stretch">
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">File write access
-            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'fileWriteAccessElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+          <span class="wz-headline-title">Groups
+            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'groupsElement')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="fileWriteAccessElement" class="dashboard-element single" style="width: 100%"></div>
+          <div id="groupsElement" class="dashboard-element single" style="width: 100%"></div>
         </md-card-content>
       </md-card>
-    </div>
-    
-    <div flex="60" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Agents
+            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'agentsElement')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="agentsElement" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Commands
-            <span class="wz-text-link" style="float:right;" ng-click="expand(7,'commandsElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'commandsVizz')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="commandsElement" class="dashboard-element single" style="width: 100%"></div>
+          <div id="commandsVizz" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Files
+            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'filesElement')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="filesElement" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
+    </div>
+
+    <div layout="row" layout-align="center stretch">
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alerts over time
+            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsOverTimeElement')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="alertsOverTimeElement" class="dashboard-element single" style="width: 100%"></div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div flex layout="row">
+      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[10]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Alerts summary
+            <span class="wz-text-link" style="float:right;" ng-click="expand(10,'alertsSummaryElement')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="alertsSummaryElement" class="dashboard-element single" style="width: 100%"></div>
         </md-card-content>
       </md-card>
     </div>
   </div>
-  <div layout="row" layout-align="center stretch">
-    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Created files
-          <span class="wz-text-link" style="float:right;" ng-click="expand(8,'createdFilesElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="createdFilesElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[9]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Removed files
-          <span class="wz-text-link" style="float:right;" ng-click="expand(9,'removedFilesElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="removedFilesElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <div flex layout="row">
-    <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[10]}">
-      <md-card-content class="wazuh-column">
-        <span class="wz-headline-title">Alerts summary
-          <span class="wz-text-link" style="float:right;" ng-click="expand(10,'alertsSummaryElement')"><svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path></svg></span>
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div id="alertsSummaryElement" class="dashboard-element single" style="width: 100%"></div>
-      </md-card-content>
-    </md-card>
-  </div>
-  
 </md-content>
