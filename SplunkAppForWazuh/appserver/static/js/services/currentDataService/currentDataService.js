@@ -200,6 +200,23 @@ define(['../module'], function(module) {
       }
     }
 
+    /**
+     * Get the current configuration 
+     */
+
+     const getCurrentConfiguration = async () => {
+      try {
+        const conf = await $requestService.httpReq(
+          `GET`,
+          `/manager/configuration`
+        )
+        return conf
+      } catch (error) {
+        return Promise.reject(error)
+      }
+     }
+
+
     /*
      * Gets reporting status
      */
@@ -243,6 +260,7 @@ define(['../module'], function(module) {
       getExtensions: getExtensions,
       getAdminExtensions: getAdminExtensions,
       getCurrentExtensions: getCurrentExtensions,
+      getCurrentConfiguration: getCurrentConfiguration,
       getExtensionsById: getExtensionsById,
       extensionIsEnabled: extensionIsEnabled,
       setExtensions: setExtensions,

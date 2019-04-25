@@ -135,6 +135,23 @@ class manager(controllers.BaseController):
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
+    def configuration(self, **kwargs):
+        """Obtain extension from file.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            stanza = getSelfConfStanza("config", "configuration")
+            data_temp = stanza
+        except Exception as e:
+            return jsonbak.dumps({'error': str(e)})
+        return data_temp
+
+    @expose_page(must_login=False, methods=['GET'])
     def app_info(self, **kwargs):
         """Obtain app information from file.
 

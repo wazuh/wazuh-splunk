@@ -119,6 +119,27 @@ define(['../module'], function(module) {
             ]
           }
         })
+        .state('settings.configuration', {
+          templateUrl:
+            '/static/app/SplunkAppForWazuh/js/controllers/settings/configuration/configuration.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('settings.configuration')
+          },
+          controller: 'settingsConfigCtrl',
+          resolve: {
+            configuration: [
+              '$state',
+              '$currentDataService',
+              async ($state, $currentDataService) => {
+                try {
+                  return await $currentDataService.getCurrentConfiguration()
+                } catch (err) {
+                  $state.reload()
+                }
+              }
+            ]
+          }
+        })
         .state('dev-tools', {
           templateUrl:
             BASE_URL +
