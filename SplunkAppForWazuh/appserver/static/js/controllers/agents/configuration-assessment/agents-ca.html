@@ -88,12 +88,13 @@
           <md-divider class="wz-margin-top-10"></md-divider>
           <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <thead>
-              <th>Policy</th>
-              <th>Description</th>
-              <th>Last scan</th>
-              <th>Fail</th>
-              <th>Pass</th>
-              <th>Score</th>
+              <th class="wz-nowrap">Policy</th>
+              <th class="wz-nowrap">Description</th>
+              <th class="wz-nowrap">Last scan</th>
+              <th class="wz-nowrap">Pass</th>
+              <th class="wz-nowrap">Fail</th>
+              <th class="wz-nowrap">Not applicable</th>
+              <th class="wz-nowrap">Score</th>
             </thead>
             <tbody>
               <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
@@ -101,8 +102,9 @@
                   {{policy.name}}</td>
                 <td>{{policy.description}}</td>
                 <td>{{policy.end_scan}}</td>
-                <td>{{policy.fail}}</td>
                 <td>{{policy.pass}}</td>
+                <td>{{policy.fail}}</td>
+                <td>{{policy.invalid}}</td>
                 <td>{{policy.score}}%</td>
               </tr>
             </tbody>
