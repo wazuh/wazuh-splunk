@@ -80,7 +80,7 @@ define([
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
-      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expandArray = [false, false, false, false, false,false,false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
 
@@ -113,11 +113,11 @@ define([
           this.scope
         ),
         new GaugeChart(
-          'prueba',
+          'scoreByPolicy',
           `${
             this.filters
-          }  | stats values(data.sca.score) by data.sca.policy `,
-          'prueba',
+          }  | stats values(data.sca.score) by data.sca.policy_id `,
+          'scoreByPolicy',
           { trellisEnabled : true,
             gaugeType : 'radialGauge'},
           this.scope
@@ -181,7 +181,7 @@ define([
           this.filters,
           [
             'overallScore',
-            'prueba',
+            'scoreByPolicy',
             'resultDistribution',
             'alertsOverTime',
             'resultDistributionByPolicy',
