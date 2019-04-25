@@ -67,7 +67,7 @@
               <tr ng-repeat="item in pagedItems[currentPage]">
                 <td>{{item.name}}</td>
                 <td>{{item.size / 1024 | number: 2}}KB</td>
-                <td>{{item.date}}</td>
+                <td>{{offsetTimestamp(item.date)}}</td>
                 <td>
                   <a ng-href="/static/app/SplunkAppForWazuh/{{item.name}}" flex class="wz-text-right" target="_blank">
                     <svg class="euiIcon euiIcon--medium euiButtonEmpty__icon" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
