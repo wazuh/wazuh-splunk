@@ -134,6 +134,7 @@ define(['../module'], function(app) {
                 }
               }
             })
+            $scope.$applyAsync()
             $scope.queryFn({ q: queryObj.query, search: queryObj.search })
           } catch (error) {
             $notificationService.showErrorToast(error, 'Error in query request')
@@ -175,14 +176,12 @@ define(['../module'], function(app) {
             $scope.connectors[parentIdx].value = ';'
           } else {
             if (idx !== undefined) {
-              const value = $scope.connectors[parentIdx].subgroup[idx].value
-              $scope.connectors[parentIdx].subgroup[idx].value =
-                value === ';' ? ',' : ';'
+              $scope.connectors[parentIdx].subgroup[idx].value = ','
             } else {
               const value = $scope.connectors[parentIdx].value
               $scope.connectors[parentIdx].value = value === ';' ? ',' : ';'
+              buildQuery($scope.groupedTagList)
             }
-            buildQuery($scope.groupedTagList)
           }
         }
 
@@ -387,6 +386,7 @@ define(['../module'], function(app) {
             }
           }
         })
+        $('#wz-search-filter-bar-input').attr('autocomplete', 'off')
         load()
       },
       templateUrl:

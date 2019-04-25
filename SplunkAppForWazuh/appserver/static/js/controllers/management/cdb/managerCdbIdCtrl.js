@@ -27,7 +27,6 @@ define([
       isAdmin,
       $cdbEditor,
       cdbInfo,
-      $filter,
       $restartService
     ) {
       super(
@@ -47,7 +46,6 @@ define([
       this.notification = $notificationService
       this.pagination = pagination
       this.checkGap = checkGap
-      this.filter = $filter
       this.restartService = $restartService
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
@@ -118,7 +116,6 @@ define([
           this.scope.currentPage = n
           this.scope.nextPage(n)
         }
-        this.scope.filterContent = filter => this.filterContent(filter)
 
         this.scope.restart = () => this.restart()
         this.scope.closeRestartConfirmation = () =>
@@ -126,11 +123,6 @@ define([
       } catch (error) {
         this.notification.showErrorToast('Error editing CDB list')
       }
-    }
-
-    async filterContent(filter) {
-      this.scope.items = this.filter('filter')(this.contentToFilter, filter)
-      this.initPagination()
     }
 
     async fetchFile(fileName, path) {
@@ -206,9 +198,15 @@ define([
 
     async confirmRemoveEntry(key) {
       try {
+        let currentPage = this.scope.currentPage
         delete this.scope.currentList.list[key]
         this.scope.removingEntry = false
         this.refreshCdbList()
+        currentPage =
+          this.scope.pagedItems.length - 1 >= currentPage
+            ? currentPage
+            : currentPage - 1
+        this.scope.setPage(currentPage)
       } catch (error) {
         this.notification.showErrorToast('Error deleting entry.')
       }
@@ -222,7 +220,6 @@ define([
 
     async saveList() {
       try {
-        this.scope.restartAndApply = false
         this.scope.saveIncomplete = true
         const fileName = this.scope.currentList.details.file
         const path = this.scope.currentList.details.path
@@ -235,7 +232,6 @@ define([
         this.contentToFilter = this.scope.items
         this.initPagination()
         this.notification.showSuccessToast('File saved successfully.')
-        this.scope.restartAndApply = true
         this.scope.saveIncomplete = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {

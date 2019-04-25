@@ -2,11 +2,11 @@
   <!-- Headline -->
   <div layout="column" layout-padding>
     <span class="font-size-18"><i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i> Wazuh Splunk plugin log messages</span>
-    <span class="md-subheader">Log file located at <span class="wz-text-monospace">/opt/splunk/var/log/splunk/SplunkAppForWazuh.log</span></span>
+    <span>Log file located at <span class="wz-text-monospace">/opt/splunk/var/log/splunk/SplunkAppForWazuh.log</span></span>
   </div>
 
   <div layout="row" ng-show="!loadingLogs">
-    <md-button class="wz-report-refresh-btn" ng-click="refreshLogs()"><i class="fa fa-fw fa-refresh"></i> Refresh</md-button>
+    <md-button class="wz-report-refresh-btn" ng-click="refreshLogs()"><wz-svg icon="refresh"></wz-svg> Refresh</md-button>
   </div>
 
   <!-- End headline -->

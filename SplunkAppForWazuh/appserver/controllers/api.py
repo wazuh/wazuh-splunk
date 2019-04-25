@@ -22,6 +22,7 @@ from db import database
 from log import log
 from splunk.clilib import cli_common as cli
 from requirements import pci_requirements,gdpr_requirements
+import time
 
 class api(controllers.BaseController):
     
@@ -53,7 +54,8 @@ class api(controllers.BaseController):
                 url = str(opt_base_url) + ":" + str(opt_base_port)
                 auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
                 verify = False
-                return url, auth, verify
+                cluster_enabled = True if api['data']['filterType'] == "cluster.name" else False
+                return url, auth, verify, cluster_enabled
             else:
                 raise Exception('API not found')
         except Exception as e:
@@ -72,34 +74,42 @@ class api(controllers.BaseController):
     def clean_keys(self, response):
         """Hide sensible data from API response."""
         try:
-            res = response["data"]
             hide = "********"
-            # Remove agent key
-            if "internal_key" in res:
-                res["internal_key"] = hide
-            # Remove cluster key (/come/cluster)
-            if "node_type" in res and "key" in res:
-                res["key"] = hide
-            # Remove cluster key (/manager/configuration)
-            if "cluster" in res:
-                if "node_type" in res["cluster"] and "key" in res["cluster"]:
-                    res["cluster"]["key"] = hide
+            if "data" in response and type(response["data"]) == dict:
+                # Remove agent key
+                if "internal_key" in response["data"]:
+                    response["data"]["internal_key"] = hide
+                
+                # Remove cluster key (/come/cluster)
+                if "node_type" in response["data"]:
+                    if "key" in response["data"]:
+                        response["data"]["key"] = hide
+                
+                # Remove cluster key (/manager/configuration)
+                if "cluster" in response["data"]:
+                    if "node_type" in response["data"]["cluster"] and "key" in response["data"]["cluster"]:
+                        response["data"]["cluster"]["key"] = hide
+                
+                # Remove AWS keys
+                if "wmodules" in response["data"]:
+                    for wmod in response["data"]["wmodules"]:
+                        if "aws-s3" in wmod:
+                            if "buckets" in wmod["aws-s3"]:
+                                for bucket in wmod["aws-s3"]["buckets"]:
+                                    bucket["access_key"] = hide
+                                    bucket["secret_key"] = hide
+                            if "services" in wmod["aws-s3"]:
+                                for service in wmod["aws-s3"]["services"]:
+                                    service["access_key"] = hide
+                                    service["secret_key"] = hide
 
-            # Remove AWS keys
-            if "wmodules" in res:
-                for wmod in res["wmodules"]:
-                    if "aws-s3" in wmod:
-                        if "buckets" in wmod["aws-s3"]:
-                            for bucket in wmod["aws-s3"]["buckets"]:
-                                bucket["access_key"] = hide
-                                bucket["secret_key"] = hide
-            # Remove integrations keys
-            if "integration" in res:
-                for integ in res["integration"]:
-                    integ["api_key"] = hide
-            response["data"] = res
-            return jsonbak.dumps(response)
+                # Remove integrations keys
+                if "integration" in response["data"]:
+                    for integ in response["data"]["integration"]:
+                        integ["api_key"] = hide
+            return response
         except Exception as e:
+            self.logger.error("Error while cleaning keys in request response: %s" % (e))
             raise e
 
     def format_output(self, arr):
@@ -150,34 +160,9 @@ class api(controllers.BaseController):
             raise e
 
 
-    @expose_page(must_login=False, methods=['POST'])
-    def request(self, **kwargs):
-        """Make requests to the Wazuh API as a proxy backend.
-
-        Parameters
-        ----------
-        kwargs : dict
-            Request parameters
-        """
+    def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
         try:
-            if 'id' not in kwargs or 'endpoint' not in kwargs:
-                return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
-            if 'method' not in kwargs:
-                method = 'GET'
-            elif kwargs['method'] == 'GET':
-                del kwargs['method']
-                method = 'GET'
-            else:
-                if str(self.getSelfAdminStanza()['admin']) != 'true':
-                    self.logger.error('Admin mode is disabled.')
-                    return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
-                method = kwargs['method']
-                del kwargs['method']
-            the_id = kwargs['id']
-            url,auth,verify = self.get_credentials(the_id)
-            opt_endpoint = kwargs["endpoint"]
-            del kwargs['id']
-            del kwargs['endpoint']
+            socket_errors = (1013, 1014, 1017, 1018, 1019)
             if method == 'GET':
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, auth=auth,
@@ -204,6 +189,106 @@ class api(controllers.BaseController):
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
+            if request['error'] and request['error'] in socket_errors:
+                if counter > 0:
+                    time.sleep(0.5)
+                    return self.make_request(method, url, opt_endpoint, kwargs, auth, verify, counter - 1)
+                else:                    
+                    raise Exception("Tried to execute %s %s three times with no success, aborted." % (method, opt_endpoint))
+            return self.clean_keys(request)
+        except Exception as e:
+            self.logger.error("Error while requesting to Wazuh API: %s" % (e))
+            raise e
+
+    def check_daemons(self, url, auth, verify, check_cluster):
+        """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
+
+        Parameters
+        ----------
+        url: str
+        auth: str
+        verify: str
+        cluster_enabled: bool
+        """
+        try:
+            request_cluster = self.session.get(
+                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+            # Try to get cluster is enabled if the request fail set to false
+            try:
+                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+            except Exception as e:
+                cluster_enabled = False
+            cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
+            opt_endpoint = "/manager/status"
+            daemons_status = self.session.get(
+                    url + opt_endpoint, auth=auth,
+                    verify=verify).json()
+            if not daemons_status['error']:
+                d = daemons_status['data']
+                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                if cc:
+                    daemons['clusterd'] = d['wazuh-clusterd']
+                values = list(daemons.values())
+                wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
+                return wazuh_ready
+        except Exception as e:
+            self.logger.error("Error checking daemons: %s" % (e))
+            raise e
+
+
+    @expose_page(must_login=False, methods=['POST'])
+    def wazuh_ready(self, **kwargs):
+        """Endpoint to check daemons status.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Request parameters
+        """
+        try:
+            if 'id' not in kwargs:
+                return jsonbak.dumps({'error': 'Missing API ID.'})
+            the_id = kwargs['id']
+            url, auth, verify, cluster_enabled = self.get_credentials(the_id)
+            daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
+            msg = "Wazuh is now ready." if daemons_ready else "Wazuh not ready yet."
+            return jsonbak.dumps({"status": "200", "ready": daemons_ready, "message": msg})
+        except Exception as e:
+            self.logger.error("Error checking daemons: %s" % (e))
+            return jsonbak.dumps({"status": "200", "ready": False, "message": "Error getting the Wazuh daemons status."})
+
+    @expose_page(must_login=False, methods=['POST'])
+    def request(self, **kwargs):
+        """Make requests to the Wazuh API as a proxy backend.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Request parameters
+        """
+        try:
+            if 'id' not in kwargs or 'endpoint' not in kwargs:
+                return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
+            if 'method' not in kwargs:
+                method = 'GET'
+            elif kwargs['method'] == 'GET':
+                del kwargs['method']
+                method = 'GET'
+            else:
+                if str(self.getSelfAdminStanza()['admin']) != 'true':
+                    self.logger.error('Admin mode is disabled.')
+                    return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
+                method = kwargs['method']
+                del kwargs['method']
+            the_id = kwargs['id']
+            url, auth, verify, cluster_enabled = self.get_credentials(the_id)
+            opt_endpoint = kwargs["endpoint"]
+            del kwargs['id']
+            del kwargs['endpoint']
+            daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
+            if not daemons_ready:
+                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
+            request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
             result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
@@ -255,7 +340,7 @@ class api(controllers.BaseController):
             opt_base_url = api["data"]["url"]
             opt_base_port = api["data"]["portapi"]
             opt_endpoint = kwargs['path']
-            url = opt_base_url + ":" + opt_base_port
+            url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             # init csv writer

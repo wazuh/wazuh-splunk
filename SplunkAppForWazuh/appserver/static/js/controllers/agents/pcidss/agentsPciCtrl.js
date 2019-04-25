@@ -35,7 +35,8 @@ define([
       agent,
       $reportingService,
       pciTabs,
-      reportingEnabled
+      reportingEnabled,
+      gdprExtensionEnabled
     ) {
       this.state = $state
       this.reportingService = $reportingService
@@ -43,6 +44,7 @@ define([
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.pciTabs = pciTabs ? pciTabs : false
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
@@ -50,11 +52,13 @@ define([
         this.urlTokenModel.handleValueChange
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -213,6 +217,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

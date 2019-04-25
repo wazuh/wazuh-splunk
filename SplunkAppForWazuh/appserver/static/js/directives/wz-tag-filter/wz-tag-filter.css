@@ -98,6 +98,10 @@
   font-weight: 700;
   padding: 10px;
 }
+.wz-search-filter-bar-autocomplete ul {
+  list-style: none!important;
+  margin: 0;
+}
 .wz-search-filter-bar-autocomplete ul li {
   color: white;
   padding: 0 10px;

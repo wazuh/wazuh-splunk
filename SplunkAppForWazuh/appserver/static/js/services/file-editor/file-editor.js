@@ -49,10 +49,12 @@ define(['../module'], function(module) {
       }
     }
 
-    async getConfiguration(file, dir, node) {
+    async getConfiguration(file, dir, node, readOnly = false) {
       try {
         let path = dir ? `${dir}/${file}` : file
-        path = path.startsWith('etc/') ? path : `etc/${path}`
+        if (!readOnly) {
+          path = path.startsWith('etc/') ? path : `etc/${path}`
+        }
         node = node ? `cluster/${node}` : 'manager'
         const url = `/${node}/files?path=${path}`
         const result = await this.getConfig(url)

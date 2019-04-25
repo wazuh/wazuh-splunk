@@ -66,7 +66,7 @@
 }
 
 .wz-margin-left-10 {
-  margin-left: 10px;
+  margin-left: 10px !important;
 }
 
 .no-margin-left {
@@ -75,6 +75,10 @@
 
 .wz-margin-bottom-10 {
   margin-bottom: 10px;
+}
+
+.wz-margin-bottom-15 {
+  margin-bottom: 15px;
 }
 
 .wz-margin-bottom-40 {
@@ -90,6 +94,10 @@
 
 .wz-padding-top-0 {
   padding-top: 0px !important;
+}
+
+.wz-padding-top-2 {
+  padding-top: 2px !important;
 }
 
 .wz-padding-top-5 {
@@ -116,8 +124,15 @@
   padding-right: 8px;
 }
 
+.wz-padding-right-15 {
+  padding-right: 15px;
+}
+
 .wz-padding-right-17 {
   padding-right: 17px;
+}
+.wz-padding-right-25 {
+  padding-right: 25px;
 }
 
 .wz-padding-metric {

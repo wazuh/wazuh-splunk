@@ -88,11 +88,13 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -122,6 +124,14 @@ define([
             this.filters
           } sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
           'topUserOwnersElement',
+          this.scope
+        ),
+        new PieChart(
+          'topActions',
+          `${
+            this.filters
+          } sourcetype="wazuh" | stats count by "syscheck.event"`,
+          'topActions',
           this.scope
         ),
         new PieChart(
@@ -223,6 +233,7 @@ define([
             'topDeletedFiles',
             'eventsOverTimeElement',
             'topGroupOwnersElement',
+            'topActions',
             'topUserOwnersElement',
             'topFileChangesElement',
             'rootUserFileChangesElement',
@@ -267,6 +278,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.show()
       this.scope.show = () => this.show()
       this.scope.agent =

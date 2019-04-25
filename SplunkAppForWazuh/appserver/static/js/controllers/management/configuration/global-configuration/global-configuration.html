@@ -5,7 +5,7 @@
     <div>
       <span class="font-size-18">Global configuration</span>
     </div>
-    <span class="md-subheader">Global and remote settings</span>
+    <span>Global and remote settings</span>
   </div>
   <!-- End headline -->
 
@@ -17,10 +17,10 @@
   </md-nav-bar>
   <!-- End global configuration navigation bar -->
 
-  <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="load">
-    <div></div>
-  </div>
+<!-- Loading bar -->
+<div class="loader-bar" ng-show="load">
+  <div class="loader"></div>
+</div>
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'global'">
 
@@ -88,19 +88,19 @@
 
             <wz-config-item label="Enable alerts sent by email" value="currentConfig['analysis-global'].global.email_notification">
             </wz-config-item>
-            <wz-config-item label="Sender address for email alerts" value="currentConfig['analysis-global'].global.email_from">
+            <wz-config-item label="Sender address for email alerts" value="currentConfig['mail-global'].global.email_from">
             </wz-config-item>
-            <wz-config-item label="Recipient address for email alerts " value="currentConfig['analysis-global'].global.email_to">
+            <wz-config-item is-array="true" label="Recipient address for email alerts " value="currentConfig['mail-global'].global.email_to">
             </wz-config-item>
-            <wz-config-item label="Reply-to address for email alerts" value="currentConfig['analysis-global'].global.email_reply_to">
+            <wz-config-item label="Reply-to address for email alerts" value="currentConfig['mail-global'].global._reply_to">
             </wz-config-item>
-            <wz-config-item label="Address for SMTP mail server" value="currentConfig['analysis-global'].global.smtp_server">
+            <wz-config-item label="Address for SMTP mail server" value="currentConfig['mail-global'].global.smtp_server">
             </wz-config-item>
-            <wz-config-item label="Maximum number of email alerts sent per hour" value="currentConfig['analysis-global'].global.email_maxperhour">
+            <wz-config-item label="Maximum number of email alerts sent per hour" value="currentConfig['mail-global'].global.email_maxperhour">
             </wz-config-item>
-            <wz-config-item label="File to read data from" value="currentConfig['analysis-global'].global.email_log_source">
+            <wz-config-item label="File to read data from" value="currentConfig['mail-global'].global.email_log_source">
             </wz-config-item>
-            <wz-config-item label="Name used for email alerts headers" value="currentConfig['analysis-global'].global.email_idsname">
+            <wz-config-item label="Name used for email alerts headers" value="currentConfig['mail-global'].global._idsname">
             </wz-config-item>
 
           </div>
@@ -160,7 +160,13 @@
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
-    <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
         <md-list-item ng-if="!agent || agent.id === '000'" target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/global.html">Global
@@ -252,7 +258,13 @@
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
-    <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
         <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/daemons/ossec-remoted.html">Remote

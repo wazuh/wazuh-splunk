@@ -36,16 +36,27 @@ define([
       agent,
       $reportingService,
       gdprTabs,
-      reportingEnabled
+      reportingEnabled,
+      pciExtensionEnabled
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.agent = agent
-      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expandArray = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
       this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
@@ -84,11 +95,13 @@ define([
         }
       })
       this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -110,6 +123,22 @@ define([
             this.filters
           } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups{}`,
           'groupsVizz',
+          this.scope
+        ),
+        new PieChart(
+          'top5GDPR',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.gdpr{} | sort count DESC`,
+          'top5GDPR',
+          this.scope
+        ),
+        new PieChart(
+          'rulesVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by rule.description | sort count DESC`,
+          'rulesVizz',
           this.scope
         ),
         new PieChart(
@@ -176,6 +205,8 @@ define([
           [
             'gdprRequirementsVizz',
             'groupsVizz',
+            'top5GDPR',
+            'rulesVizz',
             'agentsVizz',
             'requirementsByAgentVizz',
             'alertsSummaryVizz'
@@ -220,6 +251,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

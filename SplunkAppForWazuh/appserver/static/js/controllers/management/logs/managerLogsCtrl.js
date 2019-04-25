@@ -33,6 +33,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
       this.scope.$on('scrolledToBottom', (ev, parameters) => {
+        ev.stopPropagation()
         if (!this.scope.realtime)
           this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
       })
@@ -43,6 +44,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     $onInit() {
       try {
+        this.scope.selectedNavTab = 'logs'
         this.scope.search = term => this.search(term)
         this.scope.filter = term => this.filter(term)
         this.scope.changeNode = node => this.changeNode(node)
@@ -54,10 +56,16 @@ define(['../../module', 'FileSaver'], function(app) {
 
         this.scope.sort = () => this.sort()
         this.scope.$on('wazuhFetched', (ev, params) => {
-          this.scope.XMLContent = this.parseLogsToText(params.items)
-          this.scope.$broadcast('XMLContentReady', {
-            data: this.scope.XMLContent
-          })
+          ev.stopPropagation()
+          this.scope.emptyResults = false
+          if (params.items.length < 1) {
+            this.scope.emptyResults = true
+          } else {
+            this.scope.XMLContent = this.parseLogsToText(params.items)
+            this.scope.$broadcast('XMLContentReady', {
+              data: this.scope.XMLContent
+            })
+          }
           this.scope.$applyAsync()
         })
       } catch (err) {

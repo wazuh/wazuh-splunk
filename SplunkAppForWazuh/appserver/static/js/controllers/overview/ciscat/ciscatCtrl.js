@@ -30,10 +30,12 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.state = $state
       this.reportingService = $reportingService
       this.addFilter = $currentDataService.addFilter
@@ -50,11 +52,13 @@ define([
       this.scope.expandArray = [false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -230,6 +234,7 @@ define([
      */
     $onInit() {
       this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
+      this.scope.loadingVizz = true
 
       /**
        * On controller destroy

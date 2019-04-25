@@ -1,7 +1,7 @@
-<md-content layout="column">
+<md-content flex layout="column" layout-align="end">
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-breadcrumb-margin'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})' class="wz-text-link cursor-pointer">{{agent.name}}
@@ -9,9 +9,9 @@
       <span ng-if="agent.error">Unknown agent</span>
       <span> / </span>
       <span>Inventory data</span>
-    </div>
-    <div ng-if="agent && agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent && agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
     <span flex class="flex"></span>
     <!-- Report button -->
@@ -24,9 +24,17 @@
   </div>
 
   <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>Generating report<br><i class="fa fa-fw fa-spin fa-spinner"
+  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
     aria-hidden="true"></i></div>
   
+
+  <!-- Security information management navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'inventory'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-general" name="general">Security events</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-fim" name="fim">Integrity monitoring</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory">Inventory data</md-nav-item>
+  </md-nav-bar>  
+
   <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">
@@ -54,8 +62,8 @@
     </md-card>
   </div>
 
-  <div layout="row" class="inventory-metrics" ng-if="agent && agent.status === 'Active' && hasSize(syscollector) && hasSize(syscollector.hardware) && hasSize(syscollector.os)">
-    <md-card flex class="wz-metric-color wz-md-card">
+  <div layout="row" class="inventory-metrics wz-margin-9" ng-if="agent && agent.status === 'Active' && hasSize(syscollector) && hasSize(syscollector.hardware) && hasSize(syscollector.os)">
+    <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div flex="10">Cores: <span class="wz-text-bold">{{ syscollector.hardware.cpu.cores }}</span></div>
         <div flex="15">Memory: <span class="wz-text-bold">{{ (syscollector.hardware.ram.total / 1024) | number: 2 }}
@@ -74,8 +82,10 @@
         <span class="color-grey pull-right">Last scan: {{syscollector.packagesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
-            aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          <label class="wz-icon-loupe" style="margin-bottom: -16px;">
+            <input placeholder="Filter packages..." ng-model="packageSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
+              aria-invalid="false" wz-enter="search(packageSearch,'packages')">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(packageSearch,'packages')">
               <span>Search</span>
           </button>
@@ -92,8 +102,8 @@
       </md-card-content>
       <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
         <span flex></span>
-          <a class="small" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/packages', 'agent-' + agent.id + '-packages.csv')">
-            <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+          <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/packages', 'agent-' + agent.id + '-packages.csv')">
+            <wz-svg icon="download"></wz-svg>&nbsp;Formatted
         </a>
       </div>
     </md-card>
@@ -106,8 +116,10 @@
         <span class="color-grey pull-right">Last scan: {{syscollector.processesDate}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="row" class="wz-margin-top-10">
-          <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
-            aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          <label class="wz-icon-loupe" style="margin-bottom: -16px;">
+            <input placeholder="Filter processes..." ng-model="processSearch" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30 wz-width-100"
+              aria-invalid="false" wz-enter="search(processSearch,'processes')">
+          </label>
           <button type="submit" aria-label="Search" class="btn height-30 wz-button-empty wz-margin-left-10" ng-click="search(processSearch,'processes')">
               <span>Search</span>
           </button>
@@ -124,8 +136,8 @@
       <div layout="row" class="ruleset-csv-formater formatted-div-inventory">
         <span flex></span>
           
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/processes', 'agent-' + agent.id + '-processes.csv')">
-          <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+        <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/syscollector/' + agent.id + '/processes', 'agent-' + agent.id + '-processes.csv')">
+          <wz-svg icon="download"></wz-svg>&nbsp;Formatted
         </a>
       </div>
     </md-card>

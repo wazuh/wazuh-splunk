@@ -58,7 +58,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', () => {
+      this.scope.$on('loadedTable', event => {
+        event.stopPropagation()
         try {
           if (window.localStorage.decoders) {
             const parsedFilter = JSON.parse(window.localStorage.decoders)

@@ -47,11 +47,13 @@ define([
       $state,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled
+      ;(this.scope.reportingEnabled = reportingEnabled),
+        (this.scope.extensions = extensions)
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
@@ -82,11 +84,13 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -175,7 +179,7 @@ define([
           'alertsSummaryVizz',
           `${
             this.filters
-          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
+          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -274,6 +278,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

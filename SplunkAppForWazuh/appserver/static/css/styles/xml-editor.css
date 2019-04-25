@@ -37,9 +37,9 @@
 } 
 
 .wzXmlEditorDivContent {
-    width: calc(100vw - 40px);
+    width: calc(100vw - 32px);
     margin-left: auto;
-    margin-right: auto;
+    margin-right: 18px;
 }
 
 

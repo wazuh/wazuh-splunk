@@ -26,7 +26,8 @@ define([
       $currentDataService,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -34,6 +35,7 @@ define([
       this.tableResults = {}
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
         `{"rule.groups{}":"virustotal", "implicit":true}`
@@ -61,11 +63,13 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -215,6 +219,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

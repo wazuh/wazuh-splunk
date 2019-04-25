@@ -177,6 +177,18 @@ define(['../module'], function(module) {
     }
 
     /**
+     * Checks if an extension is enabled
+     */
+    const extensionIsEnabled = async ext => {
+      try {
+        const extensions = await getCurrentExtensions()
+        return extensions[ext] === 'true'
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
      * Get extension by for the current API id
      */
     const getCurrentExtensions = async () => {
@@ -232,6 +244,7 @@ define(['../module'], function(module) {
       getAdminExtensions: getAdminExtensions,
       getCurrentExtensions: getCurrentExtensions,
       getExtensionsById: getExtensionsById,
+      extensionIsEnabled: extensionIsEnabled,
       setExtensions: setExtensions,
       addApi: addApi,
       isAdmin: isAdmin,

@@ -46,12 +46,14 @@ define([
       $notificationService,
       $csvRequestService,
       $tableFilterService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
       this.state = $state
@@ -84,11 +86,13 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -214,6 +218,7 @@ define([
     }
 
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()

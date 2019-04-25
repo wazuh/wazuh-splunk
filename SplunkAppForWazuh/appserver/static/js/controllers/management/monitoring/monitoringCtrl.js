@@ -104,6 +104,7 @@ define([
      * On controller load
      */
     $onInit() {
+      this.scope.selectedNavTab = 'monitoring'
       this.scope.currentApi =
         this.currentApi.clusterName || this.currentApi.managerName
       this.scope.search = term => this.search(term)
@@ -113,6 +114,7 @@ define([
       this.scope.goNodes = () => this.goNodes()
 
       this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
+        event.stopPropagation()
         try {
           if (this.checkStatus()) {
             this.scope.currentNode = parameters.node

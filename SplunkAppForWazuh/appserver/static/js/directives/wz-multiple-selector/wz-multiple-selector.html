@@ -1,12 +1,15 @@
 <div flex class='row flex'>
-  <div class='uil-ring-css' ng-show='loading'>
-    <div></div>
-  </div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="loading">
+  <div class="loader"></div>
+</div>
   <div id='wzMultipleSelector' ng-show='!loading'>
     <div class='wzMultipleSelectorLeft'>
       <div class='panel panel-primary' class="height-300">
         <div class='panel-heading text-center'>{{titleAvailableItems}}<span ng-click='doReload("left", availableFilter, true)'
-            class='pull-right cursor-pointer'><span class='fa fa-refresh' aria-hidden='true'></span></span></div>
+            class='pull-right cursor-pointer'>           
+            <wz-svg icon="refresh" color="rgb(0, 121, 165)" svg-tooltip="Refresh content"></wz-svg>
+          </span></div>
         <div class='panel-body' class="height-255">
           <div layout="row">
             <input placeholder='Filter...' ng-model='availableFilter' type='text' class='kuiLocalSearchInput wz-width-100' wz-enter='doReload("left", availableFilter, true)'
@@ -15,7 +18,7 @@
                 <span>Search</span>
             </button>
           </div>
-          <select size='10' multiple ng-model='availableItem' ng-change='selectedElement=null;doCheckLimit()' class='wz-width-100'
+          <select size='10' multiple ng-model='availableItem' ng-change='selectedElement=null;doCheckLimit()' class='wz-width-100 height-200'
             ng-dblclick='moveItem(availableItem, availableItems, selectedItems,"a");availableItem=null'>
             <option ng-repeat='item in availableItems | orderBy:sort' ng-style='{"background-color":(item.type === "a" ? "#c6ffc6": item.type === "r" ? "#ffe7e7" : "")}'
               ng-value="{{item}}">{{item.key + " - " + item.value}}</option>
@@ -50,7 +53,7 @@
         <div class='panel-body' class="height-255">
           <input placeholder='Filter...' ng-model='selectedFilter' type='text' class='kuiLocalSearchInput wz-width-100' ng-change='selectedElement=null'
             style='padding: 8px 15px'>
-          <select size='10' multiple ng-model='selectedElement' ng-change='availableItem=null;doCheckLimit()' class='wz-width-100'
+          <select size='10' multiple ng-model='selectedElement' ng-change='availableItem=null;doCheckLimit()' class='wz-width-100 height-200'
             ng-dblclick='moveItem(selectedElement, selectedItems, availableItems,"r");selectedElement=null'>
             <option ng-repeat='item in selectedItems | filter: selectedFilter | orderBy:sort' ng-style='{"background-color":(item.type === "a" ? "#c6ffc6": item.type === "r" ? "#ffe7e7" : "")}'
               ng-value="{{item}}">{{item.key + " - " + item.value}}</option>

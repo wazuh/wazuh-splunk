@@ -30,7 +30,7 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap',
-  'colResizable'
+  'JqueryUI'
 ], function(
   app,
   calcTableRows,
@@ -98,37 +98,40 @@ define([
         $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = key => {
-          $(`#table${$scope.scapepath}`).colResizable({ disable: true })
-          const str = key
           const cleanArray = $scope.keys.map(item => item.value || item)
-          if (cleanArray.includes(str)) {
-            const idx = cleanArray.indexOf(str)
+          if (cleanArray.includes(key)) {
+            const idx = cleanArray.indexOf(key)
             if (idx > -1) {
               $scope.keys.splice(idx, 1)
             }
           } else {
+            let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+            originalKey = originalKey[0].key
+
             const originalIdx = $scope.originalkeys.findIndex(
-              item => item === key
+              item => item.key === originalKey
             )
             if (originalIdx >= 0) {
-              $scope.keys.splice(originalIdx, 0, key)
+              $scope.keys.splice(originalIdx, 0, originalKey)
             } else {
-              $scope.keys.push(key)
+              $scope.keys.push(originalKey)
             }
           }
-          updateStoredKeys($scope.keys)
-          init().then(() => $scope.setColResizable())
+          //updateStoredKeys($scope.keys)
         }
 
         $scope.setColResizable = () => {
           try {
             if ($scope.customColumns) {
-              $(`#table${$scope.scapepath}`).colResizable({
-                liveDrag: true,
-                minWidth: 100,
-                postbackSafe: true,
-                partialRefresh: true,
-                draggingClass: false
+              $(`#table${$scope.scapepath} th`).resizable({
+                handles: 'e',
+                minWidth: 75,
+                start: () => {
+                  $scope.resizingColumns = true
+                },
+                end: () => {
+                  $scope.resizingColumns = false
+                }
               })
               $scope.$applyAsync()
             }
@@ -142,15 +145,17 @@ define([
         let doit
         let resizing = false
         $window.onresize = () => {
-          if (resizing) return
+          if (resizing || $scope.resizingColumns) return
           resizing = true
-          $('#wz_table').colResizable({ disable: true })
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
             $scope.itemsPerPage = $scope.rowsPerPage
             init()
-              .then(() => (resizing = false))
+              .then(() => {
+                $scope.setColResizable()
+                resizing = false
+              })
               .catch(() => (resizing = false))
           }, 150)
         }
@@ -170,6 +175,7 @@ define([
             state
           )
 
+        /* Deprecated at the moment  
         const getStoredKeys = () => {
           try {
             if ($scope.customColumns) {
@@ -196,6 +202,7 @@ define([
             }
           } catch (error) {} // eslint-disable-line
         }
+        */
 
         /**
          * Fetchs data from API
@@ -326,7 +333,7 @@ define([
           try {
             $scope.error = false
             await fetch()
-            getStoredKeys()
+            //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
@@ -336,7 +343,7 @@ define([
             }, 100)
           } catch (error) {
             $scope.wazuhTableLoading = false
-            $scope.error = `Error while init table. ${error.message || error}.`
+            $scope.error = `Error while init table.`
             $notificationService.showErrorToast(
               `Error while init table. ${error.message || error}`
             )
@@ -357,11 +364,23 @@ define([
         $scope.range = (size, start, end) =>
           pagination.range(size, start, end, $scope.gap)
         $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async currentPage =>
-          pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-        $scope.setPage = function(page = false) {
+        $scope.nextPage = async (currentPage, last) =>
+          pagination.nextPage(
+            currentPage,
+            $scope,
+            $notificationService,
+            fetch,
+            last
+          )
+        $scope.setPage = function(page = false, last = false, first = false) {
           $scope.currentPage = page || this.n
-          $scope.nextPage(this.n)
+          if (!first) {
+            $scope.nextPage(this.n, last)
+          }
+        }
+        $scope.firstPage = () => {
+          $scope.setPage(1, false, true)
+          $scope.prevPage()
         }
 
         /**
@@ -505,8 +524,8 @@ define([
         /**
          * Edits a file
          */
-        $scope.editFile = (file, path) => {
-          $scope.$emit('editFile', { file, path })
+        $scope.editFile = (file, path, readOnly = false) => {
+          $scope.$emit('editFile', { file, path, readOnly })
         }
 
         /**

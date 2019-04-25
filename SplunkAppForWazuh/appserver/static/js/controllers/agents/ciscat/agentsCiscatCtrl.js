@@ -34,7 +34,8 @@ define([
       $currentDataService,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
@@ -48,6 +49,7 @@ define([
       }
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -258,6 +260,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -266,11 +269,13 @@ define([
         this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 

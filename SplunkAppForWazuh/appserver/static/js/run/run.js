@@ -30,17 +30,53 @@ define(['./module'], function(module) {
               $currentDataService.getIndex().index
             }", "implicit":true}`
           )
+          // If change the primary state and do not receive an error the two below code lines clear the warning message
+          window.localStorage.setItem('wazuhIsReady', 'true')
+          $rootScope.wazuhNotReadyYet = false
+          $rootScope.wazuhCouldNotBeRecovered = false
         } catch (err) {
-          $rootScope.$broadcast('loading', { status: false })
-          if (state != 'settings.api')
-            $rootScope.$broadcast('stateChanged', 'settings')
-          $state.go('settings.api')
+          if (
+            err instanceof Object &&
+            err.message &&
+            err.message.includes('ERROR3099')
+          ) {
+            $rootScope.$broadcast('wazuhNotReadyYet', {})
+            toPrimaryState(state)
+          } else {
+            $rootScope.$broadcast('loading', { status: false })
+            if (state != 'settings.api')
+              $rootScope.$broadcast('stateChanged', 'settings')
+            $state.go('settings.api')
+          }
         }
       }
+
+      // Check secondary states when Wazuh is not ready to prevent change the state
+      $transitions.onBefore({}, async trans => {
+        const to = trans.to().name
+        if (
+          to !== 'overview' &&
+          to !== 'manager' &&
+          to !== 'agents' &&
+          to !== 'dev-tools' &&
+          to !== 'discover' &&
+          !to.startsWith('settings')
+        ) {
+          const wazuhIsReady =
+            window.localStorage.getItem('wazuhIsReady') === 'true'
+          if (!wazuhIsReady) {
+            return false
+          }
+        }
+      })
 
       $transitions.onStart({}, async trans => {
         $rootScope.$broadcast('loading', { status: true })
         const to = trans.to().name
+        const from = trans.from().name
+        if (to !== from && from !== 'discover') {
+          $currentDataService.cleanFilters()
+        }
         if (
           to != 'settings.about' &&
           to != 'settings.extensions' &&
@@ -68,30 +104,22 @@ define(['./module'], function(module) {
           $rootScope.$broadcast('stateChanged', to)
         }
         //Select secondary states
-        if (
-          to === 'overview' ||
-          to === 'agents' ||
-          to === 'agent-overview' ||
-          to === 'manager'
-        ) {
-          $currentDataService.cleanFilters()
-        }
 
-        if (to.includes('agent') || to.includes('ag-')) {
+        if (to.startsWith('agent') || to.startsWith('ag-')) {
           if (
             from !== 'agents' &&
-            !from.includes('agent') &&
-            !from.includes('ag-') &&
+            !from.startsWith('agent') &&
+            !from.startsWith('ag-') &&
             from !== 'discover'
           ) {
             $currentDataService.cleanAgentsPinedFilters()
           }
           $rootScope.$broadcast('stateChanged', 'agents')
-        } else if (to.includes('ow-')) {
+        } else if (to.startsWith('ow-')) {
           $rootScope.$broadcast('stateChanged', 'overview')
-        } else if (to.includes('mg-')) {
+        } else if (to.startsWith('mg-')) {
           $rootScope.$broadcast('stateChanged', 'manager')
-        } else if (to.includes('settings')) {
+        } else if (to.startsWith('settings')) {
           $rootScope.$broadcast('stateChanged', 'settings')
         }
       })
@@ -105,6 +133,20 @@ define(['./module'], function(module) {
           $state.reload()
         }
       })
+
+      // When access to a state and Wazuh is not ready is detected, this funcion checks if is a secondary state, if it is, go to primary state
+      const toPrimaryState = to => {
+        if (to.startsWith('ag-') || to.startsWith('agent-')) {
+          $state.go('agents')
+          $rootScope.$broadcast('stateChanged', 'agents')
+        } else if (to.startsWith('ow-')) {
+          $state.go('overview')
+          $rootScope.$broadcast('stateChanged', 'overview')
+        } else if (to.startsWith('mg-')) {
+          $state.go('manager')
+          $rootScope.$broadcast('stateChanged', 'manager')
+        }
+      }
     }
   ])
 })

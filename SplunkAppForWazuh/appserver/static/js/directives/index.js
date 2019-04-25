@@ -13,5 +13,9 @@ define([
   './wz-xml-file-editor/wz-xml-file-editor',
   './wz-multiple-selector/wz-multiple-selector',
   './wz-config-viewer/wz-config-viewer',
-  './wz-discover/wz-discover'
+  './wz-discover/wz-discover',
+  './wz-svg/wz-svg',
+  './wz-add-filter-chip/wz-add-filter-chip',
+  './wz-head-toaster/wz-head-toaster',
+  './wz-kbn-switch/wz-kbn-switch'
 ], function() {})

@@ -36,13 +36,11 @@ define(['../module'], function(module) {
             agentsInfo: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async $requestService => {
                 try {
                   const result = await $requestService.apiReq('/agents/summary')
                   return result
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+                } catch (err) {} //eslint-disable-line
               }
             ],
             extensions: [
@@ -88,6 +86,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            awsExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('aws')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -106,6 +114,43 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })// Overview - SCA Security Configuration Assessment
+        .state('ow-sca', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/sca/overview-sca.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-sca')
+          },
+          controller: 'overviewSCACtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -123,6 +168,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            awsExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('aws')
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
@@ -156,6 +211,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -174,6 +239,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -191,6 +266,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
@@ -230,6 +315,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -268,6 +363,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -287,6 +392,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -304,6 +419,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
@@ -323,6 +448,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -340,6 +475,34 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ]
+          }
+        })
+        // =========== Docker listener =========== //
+        .state('ow-docker', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/docker/overview-docker.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-docker')
+          },
+          controller: 'dockerCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }

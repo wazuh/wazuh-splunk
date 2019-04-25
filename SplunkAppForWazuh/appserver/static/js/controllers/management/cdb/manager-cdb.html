@@ -1,6 +1,6 @@
 <div ng-cloak flex layout="column" class='wz-white-background'>
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
+    <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
       <span> / CDB Lists </span>
@@ -17,19 +17,21 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">Lists</md-nav-item>
 </md-nav-bar>
 
-<div ng-if="!addingNewFile">
-  <div ng-show="!loading" layout="row" layout-align="start center" class="md-padding">
-    <div flex class="height-40 wz-margin-right-15">
+<div ng-if="!addingNewFile" class="md-padding-h">
+  <div ng-show="!loading" layout="row" layout-align="start center">
+    <div flex>
       <div layout="row">
-        <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-          aria-invalid="false" wz-enter="search(customSearch)">
-        <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(customSearch)">
+        <label class="wz-icon-loupe">
+          <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex class="kuiLocalSearchInput height-40"
+            aria-invalid="false" wz-enter="search(customSearch)">
+        </label>
+        <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10" ng-click="search(customSearch)">
             <span>Search</span>
         </button>
       </div>
     </div>
   </div>
-  <md-card class="wz-md-card">
+  <md-card class="wz-md-card no-margin-sides">
     <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
       <a ng-click="addNewFile()">Add new list</a>
       <span flex="" class="flex"></span>
@@ -74,8 +76,8 @@
       </div>
       <div layout="row" class="ruleset-csv-formater">
         <span flex></span>
-        <a class="small" id="btnDownload" ng-click="downloadCsv('/lists','cdb_lists.csv')">
-          <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+        <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/lists','cdb_lists.csv')">
+          <wz-svg icon="download"></wz-svg>&nbsp;Formatted
         </a>
       </div>
     </md-card-contents>
@@ -103,17 +105,6 @@
       <!-- End save and cancel buttons-->
       <input placeholder="New CDB list file name..." type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10"
         aria-invalid="false" ng-model="currentList.details.file" ng-change="enableSave()">
-      <!-- Restart if saved without errors-->
-      <div ng-show="restartAndApply" style="padding-right: 15px; padding-left: 30px;">
-        <span>Do you want to restart to apply configuration?</span>
-        <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()" class='btn wz-button-cancel pull-right wz-margin-left-10'>
-          <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-        </button>
-        <button style="height: 30px;" ng-if="adminMode && !clusterEnabled" ng-click="restart(); closeRestartConfirmation()"
-          class='btn wz-button-empty pull-right wz-margin-left-10'>
-          <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-        </button>
-      </div>
       <!-- End restart button -->
     </div>
 
@@ -129,17 +120,17 @@
             <tbody>
               <!-- Add new key tr -->
               <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
-                <td>
-                  <input placeholder="New key" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                <td class="td-align-middle">
+                  <input placeholder="New key" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;"
                     ng-model="newKey">
                 </td>
-                <td>
-                  <input placeholder="New value" type="text" class="wz-input-text wz-border-none height-25" style="margin-bottom: 0 !important; height: 20px !important;"
+                <td class="td-align-middle">
+                  <input placeholder="New value" type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;"
                     ng-model="newValue">
                 </td>
-                <td>
+                <td class="td-align-middle">
                   <button class="btn btn-as-i" ng-disabled="!newKey" ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
-                    <i class="fa fa-fw fa-plus action-btn-td"></i>
+                      <wz-svg icon="plus" color="#0079a5"></wz-svg>
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Add new entry
                     </md-tooltip>
@@ -150,17 +141,18 @@
               <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] track by $index" ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
                 <td>{{item[0]}}</td>
                 <td>
-                  <input ng-show="editingKey === item[0]" type="text" class="wz-input-text" ng-model="editingNewValue">
-                  <span ng-show="!editingKey || editingKey !== item[0]">{{item[1]}}</span>
+                  <div ng-show="editingKey === item[0]">
+                    <input  type="text" class="wz-input-text" ng-model="editingNewValue">
+                  </div>
+                  <div ng-show="!editingKey || editingKey !== item[0]">
+                    <span>{{item[1]}}</span>
+                  </div>
                 </td>
                 <td class="action-btn-td">
                   <div ng-hide="!adminMode">
-                    <span ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]" ng-click="setEditingKey(item[0], item[1])"
-                      class="fa fa-fw fa-pencil cursor-pointer">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Edit
-                      </md-tooltip>
-                    </span>
+                    <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]" ng-click="setEditingKey(item[0], item[1])"
+                      icon="pencil">
+                    </wz-svg>
                     <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer" ng-click="cancelEditingKey()">
                       <md-tooltip md-direction="left" class="wz-tooltip">
                         Cancel
@@ -172,12 +164,10 @@
                         Apply
                       </md-tooltip>
                     </span>
-                    <i ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]" ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
-                      class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Remove this entry
-                      </md-tooltip>
-                    </i>
+
+                    <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]" ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
+                    icon="trash" svg-tooltip="Remove this entry">
+                    </wz-svg>
 
                     <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
                       <div layout="row">
@@ -198,10 +188,10 @@
             <tfoot>
               <td colspan="3">
                 <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items</span>
-                <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+                <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
                   <ul layout="row">
                     <li ng-show="currentPage" class="md-padding">
-                      <a href ng-click="prevPage()">« Prev</a>
+                      <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
                     </li>
 
                     <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) " ng-class="{'wz-text-active': n == currentPage}"
@@ -210,7 +200,7 @@
                     </li>
 
                     <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                      <a href ng-click="nextPage()">Next »</a>
+                      <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
                     </li>
                   </ul>
                 </div>

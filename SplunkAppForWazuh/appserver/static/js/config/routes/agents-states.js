@@ -20,7 +20,7 @@ define(['../module'], function(module) {
             agentData: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async $requestService => {
                 try {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
@@ -51,9 +51,7 @@ define(['../module'], function(module) {
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+                } catch (err) {} //eslint-disable-line
               }
             ]
           }
@@ -255,6 +253,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -390,6 +398,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -433,6 +451,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -475,6 +503,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
@@ -607,6 +645,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -649,6 +697,16 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }
@@ -716,6 +774,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -779,6 +847,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -822,6 +900,16 @@ define(['../module'], function(module) {
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
               }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -864,6 +952,67 @@ define(['../module'], function(module) {
               '$currentDataService',
               async $currentDataService => {
                 return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+        // =========== Docker listener =========== //
+        .state('ag-docker', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/docker/agents-docker.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-docker')
+          },
+          controller: 'agentsDockerCtrl',
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
               }
             ]
           }

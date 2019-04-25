@@ -200,9 +200,19 @@ define([
                 $scope.$emit('saveComplete', {})
                 $scope.$emit('configSavedSuccessfully', {})
                 $scope.restartBtn = true
-                $notificationService.showSuccessToast(
-                  'Configuration saved successfully.'
-                )
+                let msg = null
+                if (params.file === 'ossec.conf') {
+                  if (params.node) {
+                    msg = `Succes. Node(${
+                      params.node
+                    }) configuration has been updated.`
+                  } else {
+                    msg = 'Succes. Manager configuration has been updated.'
+                  }
+                } else {
+                  msg = 'Configuration saved successfully.'
+                }
+                $notificationService.showSuccessToast(msg)
               }
             }
             //$scope.closeFn()
@@ -227,6 +237,7 @@ define([
           $document[0].getElementById('xml_box'),
           {
             lineNumbers: true,
+            lineWrapping: true,
             matchClosing: true,
             matchBrackets: true,
             mode: 'text/xml',
@@ -249,24 +260,18 @@ define([
             setTimeout(() => {
               $scope.xmlCodeBox.refresh()
             }, 1)
-            autoFormat()
+            //autoFormat()
           } catch (error) {
-            $notificationService.showSimpleToast('Fetching original file')
+            $notificationService.showErrorToast('Error fetching xml content.')
           }
         }
 
         init()
 
         $scope.$on('fetchedFile', (ev, params) => {
+          $scope.restartBtn = false
           if (!firstTime) {
             init(params.data)
-          }
-        })
-
-        $scope.$on('restartError', (ev, params) => {
-          if (params.error.message) {
-            $scope.showErrorMessages = true
-            $scope.errorInfo = params.error.message.split('(')
           }
         })
 

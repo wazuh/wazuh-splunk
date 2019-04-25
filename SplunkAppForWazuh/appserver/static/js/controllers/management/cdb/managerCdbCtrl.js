@@ -103,7 +103,8 @@ define([
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', () => {
+      this.scope.$on('loadedTable', event => {
+        event.stopPropagation()
         try {
           if (window.localStorage.cdb) {
             const parsedFilter = JSON.parse(window.localStorage.cdb)
@@ -281,7 +282,6 @@ define([
             )
             if (result && result.data && result.data.error === 0) {
               this.notification.showSuccessToast('File saved successfully.')
-              this.scope.restartAndApply = true
               this.scope.saveIncomplete = false
               this.scope.$applyAsync()
             } else if (result.data.error === 1905) {

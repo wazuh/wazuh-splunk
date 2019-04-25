@@ -72,6 +72,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
       // Come from the pencil icon on the groups table
       this.scope.$on('openGroupFromList', (ev, parameters) => {
+        ev.stopPropagation()
         this.scope.editingFile = true
         this.scope.groupsSelectedTab = 'files'
         return this.scope
@@ -80,6 +81,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
+        event.stopPropagation()
         this.goBackToAgents()
         return this.loadGroup(parameters.group)
       })
@@ -90,6 +92,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
+        event.stopPropagation()
         if (
           ((parameters || {}).fileName || '').includes('agent.conf') &&
           this.scope.adminMode
@@ -101,6 +104,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
       this.scope.$on('updateGroupInformation', async (event, parameters) => {
         try {
+          event.stopPropagation()
           if (this.scope.currentGroup) {
             const result = await Promise.all([
               await this.apiReq(`/agents/groups/${parameters.group}`, {
@@ -131,6 +135,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       })
 
       this.scope.$on('openGroupFromList', (ev, parameters) => {
+        ev.stopPropagation()
         this.scope.editingFile = true
         this.scope.groupsSelectedTab = 'files'
         return this.scope
@@ -138,7 +143,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
           .then(() => this.scope.editGroupAgentConfig())
       })
 
-      this.scope.$on('saveComplete', () => {
+      this.scope.$on('saveComplete', event => {
+        event.stopPropagation()
         this.scope.saveIncomplete = false
       })
     }

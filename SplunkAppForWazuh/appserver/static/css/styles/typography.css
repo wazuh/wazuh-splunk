@@ -24,8 +24,8 @@
 }
 
 
-.wz-headline-title {
-  font-size: 15px;
+.wz-dev-headline-title {
+  font-size: 17px;
 }
 
 /* Override font size of md-headline class */
@@ -87,12 +87,32 @@
   text-overflow: ellipsis;
 }
 
+.font-size-15 {
+  font-size: 15px;
+}
+
+.font-size-16 {
+  font-size: 16px;
+}
+
 .font-size-16-pt {
   font-size: 16pt;
 }
 
+.font-size-17 {
+  font-size: 17px;
+}
+
 .font-size-18 {
   font-size: 18px;
+}
+
+.font-size-20 {
+  font-size: 20px;
+}
+
+.font-size-21 {
+  font-size: 21px;
 }
 
 .font-size-25 {

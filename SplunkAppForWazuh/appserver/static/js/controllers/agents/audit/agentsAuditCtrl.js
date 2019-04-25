@@ -51,12 +51,14 @@ define([
       $state,
       agent,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.reportingService = $reportingService
       this.tableResults = {}
       this.urlTokenModel = $urlTokenModel
@@ -94,10 +96,12 @@ define([
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
       this.filters = this.currentDataService.getSerializedFilters()
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -150,18 +154,12 @@ define([
           'groupsVizz',
           this.scope
         ),
-        new ColumnChart(
-          'agentsVizz',
-          `${this.filters} sourcetype=wazuh agent.name=* | top agent.name`,
-          'agentsVizz',
-          this.scope
-        ),
         new PieChart(
-          'directoriesVizz',
+          'commandsVizz',
           `${
             this.filters
-          } sourcetype=wazuh audit.directory.name=* | top audit.directory.name`,
-          'directoriesVizz',
+          } sourcetype=wazuh | top limit=5 data.audit.command`,
+          'commandsVizz',
           this.scope
         ),
         new PieChart(
@@ -178,44 +176,6 @@ define([
             this.filters
           } sourcetype=wazuh | timechart limit=10 count by rule.description`,
           'alertsOverTimeVizz',
-          this.scope
-        ),
-        new PieChart(
-          'fileReadAccessVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.id=80784 | top audit.file.name`,
-          'fileReadAccessVizz',
-          this.scope
-        ),
-        new PieChart(
-          'fileWriteAccessVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.id=80781 | top audit.file.name`,
-          'fileWriteAccessVizz',
-          this.scope
-        ),
-        new BarChart(
-          'comandsVizz',
-          `${this.filters} sourcetype=wazuh | top audit.command`,
-          'comandsVizz',
-          this.scope
-        ),
-        new BarChart(
-          'createdVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.id=80790 | top audit.file.name`,
-          'createdVizz',
-          this.scope
-        ),
-        new PieChart(
-          'removedFilesVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.id=80791 | top audit.file.name`,
-          'removedFilesVizz',
           this.scope
         ),
         new Table(
@@ -265,15 +225,9 @@ define([
           this.filters,
           [
             'groupsVizz',
-            'agentsVizz',
-            'directoriesVizz',
+            'commandsVizz',
             'filesVizz',
             'alertsOverTimeVizz',
-            'fileReadAccessVizz',
-            'fileWriteAccessVizz',
-            'comandsVizz',
-            'createdVizz',
-            'removedFilesVizz',
             'alertsSummaryVizz'
           ],
           this.reportMetrics,
@@ -316,6 +270,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data

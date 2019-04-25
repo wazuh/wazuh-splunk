@@ -50,7 +50,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
       this.scope.selectedNavTab = 'rules'
 
-      this.scope.$on('loadedTable', () => {
+      this.scope.$on('loadedTable', event => {
+        event.stopPropagation()
         try {
           if (window.localStorage.ruleset) {
             const parsedFilter = JSON.parse(window.localStorage.ruleset)

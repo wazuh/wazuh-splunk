@@ -177,12 +177,12 @@ define(['../../module'], function(app) {
                   if (!this.scope.$$phase) this.scope.$digest()
                 })
                 .catch(error => {
-                  if (!this.$scope.agent) {
+                  if (!this.scope.agent) {
                     if ((error || {}).status === -1) {
                       this.scope.emptyAgent = 'Wazuh API timeout.'
                     }
                   }
-                  this.$scope.editGroup = false
+                  this.scope.editGroup = false
                   this.scope.addingGroupToAgent = false
                   this.notification.showErrorToast(error.message || error)
                 })
@@ -247,7 +247,7 @@ define(['../../module'], function(app) {
         this.scope.load = false
         this.scope.adminMode = false
         this.notification.showErrorToast('Error loading agent data.')
-        if (!this.$scope.$$phase) this.$scope.$digest()
+        this.scope.$applyAsync()
       }
     }
 
@@ -297,7 +297,7 @@ define(['../../module'], function(app) {
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**

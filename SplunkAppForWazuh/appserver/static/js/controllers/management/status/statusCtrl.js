@@ -56,6 +56,7 @@ define(['../../module'], function(controllers) {
      * On controller loads
      */
     $onInit() {
+      this.scope.selectedNavTab = 'status'
       this.scope.confirmingRestart = false
       this.scope.isAdmin = this.isAdmin
       this.scope.switchRestart = () => this.switchRestart()
@@ -128,13 +129,11 @@ define(['../../module'], function(controllers) {
         }
         this.scope.daemons = this.objToArr(daemonResult[0].data.data)
         this.scope.managerInfo = daemonResult[1].data.data
-        this.scope.load = false
-        if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.scope.load = false
         this.scope.clusterError = err.message || err
-        if (!this.scope.$$phase) this.scope.$digest()
       }
+      this.scope.load = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     /**
@@ -158,13 +157,11 @@ define(['../../module'], function(controllers) {
         this.scope.totalRules = this.rules.totalItems
         this.scope.totalDecoders = this.decoders.totalItems
         this.scope.agentInfo = this.agentInfo
-        this.scope.load = false
-
-        if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.scope.load = false
         this.notification.showErrorToast(err.message || err)
       }
+      this.scope.load = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     /**
@@ -176,17 +173,15 @@ define(['../../module'], function(controllers) {
         this.scope.confirmingRestart = false
         const result = await this.restartService.restart()
         this.notification.showSimpleToast(result)
-        this.scope.restartInProgress = false
       } catch (error) {
         this.notification.showErrorToast(error)
         this.scope.confirmingRestart = false
-        this.scope.restartInProgress = false
       }
+      this.scope.restartInProgress = false
     }
 
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
-      this.scope.$applyAsync()
     }
   }
 

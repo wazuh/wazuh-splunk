@@ -7,7 +7,7 @@ define(['../module'], function(module) {
       this.$window = $window
       this.$location = $location
 
-      this.$window.onpopstate = function(event) {
+      this.$window.onpopstate = () => {
         try {
           let lastState = sessionStorage.history.split(',')
 

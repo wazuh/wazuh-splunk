@@ -1,10 +1,11 @@
-<div flex="auto" layout="column" ng-init="switchConfigurationTab('welcome')">
-  <div layout="row" layout-align="start center">
+<div flex="auto" ng-init="switchConfigurationTab('welcome')">
+  <div">
 
-    <div ng-if='!currentAgent'>
+    <!-- Breadcrumbs for nodes configuration -->
+    <div ng-if='!currentAgent' class="wz-full-width">
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
-      <div layout="row" layout-padding>
+      <div layout="row" class="wz-breadcrumb-margin" ng-class="{'wz-height-20':configurationTab !== 'welcome' }">
         <!-- Welcome section -->
         <div ng-if="configurationTab === 'welcome'">
           <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
@@ -19,35 +20,42 @@
           <span> / </span>
           <span>{{ configurationTab }}</span>
         </div>
+        <span flex class="flex"></span>
+        <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
+          ng-change="changeNode(selectedNode.name)" ng-if="isAdmin && clusterEnabled"
+          class="input input-dropdown conf-node-selector wz-button-empty"></select>
       </div>
       <!-- End breadcrumbs -->
     </div>
+
+
+    <!-- Breadcrumbs for agents configuration -->
     <div ng-if='currentAgent'>
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
-      <div layout="row" layout-padding>
+      <div layout="row"  class="wz-breadcrumb-margin" >
         <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
         <div>
           <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
           <span> / </span>
           <span ui-sref='agent-overview({id:currentAgent.id})' class="wz-text-link cursor-pointer">{{currentAgent.name}}
             ({{currentAgent.id}})</span>
-        </div>
-        <div ng-if="currentAgent.status">
-          <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)" aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
-        </div>
-        <span> / </span>
-        <!-- Welcome section -->
-        <div ng-if="configurationTab === 'welcome'">
-          <span>Configuration</span>
-        </div>
-        <!-- First-level section -->
-        <div ng-if="configurationTab !== 'welcome'">
-          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
           <span> / </span>
-          <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
-        </div>
+          <!-- Welcome section -->
+            <span ng-if="configurationTab === 'welcome'">Configuration</span>
+          <!-- First-level section -->
+          <span ng-if="configurationTab !== 'welcome'">
+            <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+            <span> / </span>
+            <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
+          </span>
         <div flex></div>
+        </div>
+        <!-- Agent status -->
+        <div ng-if="currentAgent.status" style="margin-left: 5px;">
+          <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(currentAgent.status)"
+            aria-label="Agent status indicator">{{formatAgentStatus(currentAgent.status)}}</span>
+        </div>
       </div>
     </div>
     <!-- Separator -->

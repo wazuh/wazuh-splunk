@@ -34,10 +34,12 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.state = $state
       this.reportingService = $reportingService
       this.tableResults = {}
@@ -102,62 +104,69 @@ define([
           'Top 5 Rules'
         )
       ]
+    }
 
+    $onInit() {
+      try {
+      this.scope.loadingVizz = true
       /**
        * Generates report
        */
       this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'overview-virustotal',
-          'VirusTotal',
-          this.filters,
-          [
-            'top5AgentsPositive',
-            'eventsSummary',
-            'top5AgentsNoPositive',
-            'alertsPerAgent',
-            'top5Rules'
-          ],
-          {}, //Metrics
-          this.tableResults
-        )
+      this.reportingService.startVis2Png(
+        'overview-virustotal',
+        'VirusTotal',
+        this.filters,
+        [
+          'top5AgentsPositive',
+          'eventsSummary',
+          'top5AgentsNoPositive',
+          'alertsPerAgent',
+          'top5Rules'
+        ],
+        {}, //Metrics
+        this.tableResults
+      )
 
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
+    this.scope.$on('loadingReporting', (event, data) => {
+      this.scope.loadingReporting = data.status
+    })
 
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
+    this.scope.$on('checkReportingStatus', () => {
+      this.vizzReady = !this.vizz.filter(v => {
+        return v.finish === false
+      }).length
+      if (this.vizzReady) {
+        this.scope.loadingVizz = false
+      } else {
+        this.vizz.map(v => {
+          if (v.constructor.name === 'RawTableData') {
+            this.tableResults[v.name] = v.results
+          }
+        })
+        this.scope.loadingVizz = true
+      }
+      if (!this.scope.$$phase) this.scope.$digest()
+    })
 
-      this.scope.$on('deletedFilter', () => {
-        this.launchSearches()
-      })
+    this.scope.$on('deletedFilter', event => {
+      event.stopPropagation()
+      this.launchSearches()
+    })
 
-      this.scope.$on('barFilter', () => {
-        this.launchSearches()
-      })
+    this.scope.$on('barFilter', event => {
+      event.stopPropagation()
+      this.launchSearches()
+    })
 
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
+    /**
+     * On controller destroy
+     */
+    this.scope.$on('$destroy', () => {
+      this.timePicker.destroy()
+      this.vizz.map(vizz => vizz.destroy())
+    })
+      } catch (error) {}
     }
 
     /**

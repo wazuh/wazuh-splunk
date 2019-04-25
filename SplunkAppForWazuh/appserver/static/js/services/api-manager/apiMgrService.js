@@ -219,15 +219,22 @@ define(['../module'], function(module) {
           // Encode user and password, this prevent fails with special charsets
           const user = encodeURIComponent(api.userapi)
           const pass = encodeURIComponent(api.passapi)
+          const clusterEnabled = api.filterType === 'cluster.name'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${api.portapi}&user=${user}&pass=${pass}`
+          }&port=${
+            api.portapi
+          }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
           )
           if (result.data.status === 400 || result.data.error) {
-            throw new Error('Unreachable API.')
+            if (result.data.error === 3099) {
+              throw new Error('ERROR3099 - Wazuh not ready yet.')
+            } else {
+              throw new Error('Unreachable API.')
+            }
           }
           return result
         }
@@ -287,7 +294,7 @@ define(['../module'], function(module) {
       try {
         const api = await select(id) //Before update cluster or not cluster
         await checkRawConnection(api)
-        const apiSaved = { ...api } // eslint-disable-line
+        const apiSaved = { ...api } //eslint-disable-line
         const updatedApi = await updateApiFilter(api)
         let equal = true
         Object.keys(updatedApi).forEach(key => {

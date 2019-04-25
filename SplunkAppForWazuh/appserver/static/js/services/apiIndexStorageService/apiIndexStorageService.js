@@ -96,7 +96,7 @@ define(['../module'], function(app) {
           let existentApi = false
           for (let i = 0; i < parsedExtensions.length; i++) {
             if (parsedExtensions[i].id === id) {
-              parsedExtensions[i] = { id: id, ...extensions } // eslint-disable-line
+              parsedExtensions[i] = { id: id, ...extensions } //eslint-disable-line
               existentApi = true
               break
             }

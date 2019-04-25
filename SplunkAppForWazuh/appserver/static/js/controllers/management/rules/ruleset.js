@@ -82,6 +82,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     initialize() {
       this.scope.rulesetFiles = false
+      this.setInitialCustomFilters()
       this.view === 'decoders'
         ? delete window.localStorage.ruleset
         : delete window.localStorage.decoders
@@ -110,24 +111,28 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
       this.scope.saveFile = file => this.saveFile(file)
 
-      this.scope.$on('configSavedSuccessfully', () => {
+      this.scope.$on('configSavedSuccessfully', event => {
+        event.stopPropagation()
         this.scope.overwrite = false
-        this.scope.restartAndApply = true
       })
-      this.scope.$on('saveComplete', () => {
+      this.scope.$on('saveComplete', event => {
+        event.stopPropagation()
         this.scope.saveIncomplete = false
       })
-      this.scope.$on('fileAlreadyExists', () => {
+      this.scope.$on('fileAlreadyExists', event => {
+        event.stopPropagation()
         this.scope.saveIncomplete = false
         this.scope.overwrite = true
         this.scope.$applyAsync()
       })
 
       this.scope.$on('editFile', (ev, params) => {
-        this.editFile(params.file, params.path)
+        ev.stopPropagation()
+        this.editFile(params.file, params.path, params.readOnly)
       })
 
-      this.scope.$on('performRestart', () => {
+      this.scope.$on('performRestart', event => {
+        event.stopPropagation()
         this.restart()
       })
     }
@@ -229,6 +234,7 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {String} term
      */
     search(term) {
+      let clearInput = true
       if (!term) term = ''
       if (
         this.view === 'ruleset' &&
@@ -307,8 +313,15 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
       } else {
+        clearInput = false
         this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
       }
+      if (clearInput) {
+        const searchBar = $('#search-input-rules')
+        searchBar.val('')
+      }
+      this.scope.$applyAsync()
+      this.applyCustomFilters()
       return
     }
 
@@ -348,9 +361,62 @@ define(['../../module', 'FileSaver'], function(app) {
             }
           })
         }
+        this.applyCustomFilters()
         return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
       } catch (err) {
         this.notification.showErrorToast('Error removing the filter')
+      }
+    }
+
+    /**
+     * Gets the path from the state name
+     */
+    getPathFromState() {
+      try {
+        const state = window.sessionStorage.getItem('params')
+        if (state === 'mg-rules') {
+          return 'etc/rules'
+        } else if (state === 'mg-decoders') {
+          return 'etc/decoders'
+        }
+        return false
+      } catch (error) {
+        return false
+      }
+    }
+
+    /**
+     * Sets initial filters
+     */
+    setInitialCustomFilters() {
+      try {
+        const path = this.getPathFromState()
+        if (path) {
+          this.scope.appliedCustomFilters = [{ name: 'path', value: path }]
+        }
+      } catch (error) {
+        this.notification.showErrorToast('Cannot initialize custom filters.')
+      }
+    }
+
+    /**
+     * Adds or remove filters for the local rules or decoders
+     */
+    applyCustomFilters() {
+      try {
+        const path = this.getPathFromState()
+        if (path) {
+          const filters = [{ name: 'path', value: path }]
+          const restFilters = this.scope.appliedFilters.filter(
+            item => item.name !== 'path'
+          )
+          filters.push(...restFilters)
+          this.scope.appliedCustomFilters = filters
+        }
+      } catch (error) {
+        this.notification.showErrorToast(
+          'Cannot apply filter for custom rules or decoders files.'
+        )
       }
     }
 
@@ -374,15 +440,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.notification.showSimpleToast(result)
       } catch (error) {
         this.notification.showErrorToast(error)
-        this.scope.$broadcast('restartError', { error: error })
       }
-    }
-
-    /**
-     * Closes the confirm of restart message
-     */
-    closeRestartConfirmation() {
-      this.scope.restartAndApply = false
     }
 
     /**
@@ -400,8 +458,8 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.editingFile = false
       this.scope.addingNewFile = false
       this.scope.overwrite = false
-      this.scope.restartAndApply = false
       this.scope.fetchedXML = ''
+      this.scope.XMLContent = false
     }
 
     /**
@@ -417,14 +475,25 @@ define(['../../module', 'FileSaver'], function(app) {
      * Open xml editior box
      * @param {String} file
      */
-    async editFile(file, path) {
+    async editFile(file, path, readOnly = false) {
       try {
-        this.scope.editingRulesetFile = {
-          file,
-          path: `${path}/${file}`
+        if (readOnly) {
+          this.scope.XMLContent = await this.fetchFileContent(
+            `${path}/${file}`,
+            readOnly
+          )
+          this.scope.$broadcast('XMLContentReady', {
+            data: this.scope.XMLContent
+          })
+          this.scope.fileName = file
+        } else {
+          this.scope.editingRulesetFile = {
+            file,
+            path: `${path}/${file}`
+          }
+          this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
+          this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
         }
-        this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
-        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
         this.notification.showErrorToast(error.message || error)
@@ -449,7 +518,25 @@ define(['../../module', 'FileSaver'], function(app) {
      * Fetchs file content
      * @param {String} file
      */
-    async fetchFileContent(file) {
+    async fetchFileContent(file, readOnly = false) {
+      try {
+        const result = await this.fileEditor.getConfiguration(
+          file,
+          null,
+          null,
+          readOnly
+        )
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Fetchs readable file content
+     * @param {String} file
+     */
+    async fetchReadableFileContent(file) {
       try {
         const result = await this.fileEditor.getConfiguration(file)
         return result

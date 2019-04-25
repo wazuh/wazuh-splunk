@@ -1,6 +1,6 @@
 <div ng-cloak flex layout="column" class='wz-white-background'>
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-margin-left-10 wz-margin-top-12'>
+    <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
       <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
       <span class="wz-text-link cursor-pointer" ui-sref='mg-cdb'> / CDB Lists</span>
@@ -9,15 +9,20 @@
     <div flex></div>
     <div style="margin-right:7px;" id='input1'></div>
   </div>
-  <!-- Headline -->
-  <div ng-show="!loading" layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-pencil-square-o" aria-hidden="true"></i> CDB Lists</span>
-    <span>Review all your current rules, decoders and cdb lists</span>
-  </div>
-  <!-- End headline -->
+
+  <!-- Nav bar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav"
+    md-selected-nav-item="'cdbList'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists
+    </md-nav-item>
+  </md-nav-bar>
+
   <!-- Back button and title -->
-  <div layout="row" layout-align="start center">
+  <div layout="row" layout-align="start center" class="font-size-20">
     <!-- Back button -->
     <md-button class="md-icon-button" aria-label="Back to CDB lists" ui-sref='mg-cdb'>
       <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
@@ -25,42 +30,40 @@
         Back to CDB lists
       </md-tooltip>
     </md-button>
-    <span>Editing&nbsp; </span>
     <span class="wz-text-bold">{{currentList.details.file}}</span>
+  </div>
+
+  <!--Metrics-->
+  <div layout="row" class="wz-margin-9 wz-margin-side-20" ng-if="!cdbctrl.addingNewFile">
+    <md-card flex class="wz-metric-color">
+      <md-card-content layout="row" class="wz-padding-metric">
+        <div flex="50" class="wz-text-truncatable flex-50">Name: <span
+            class="wz-text-bold wz-text-link">audit-keys</span></div>
+        <div flex="50" class="wz-text-truncatable flex-50">Path: <span
+            class="wz-text-bold wz-text-link">etc/lists</span></div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="row">
     <button ng-if="adminMode" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
-      class='btn wz-button-empty pull-right wz-margin-left-10'>
+      class='btn wz-button pull-right wz-margin-left-10 wz-margin-left-20'>
       <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-          aria-hidden='true'></i>Save</span>
+          aria-hidden='true'></i>Save list</span>
     </button>
-
-    <!-- Restart if saved without errors-->
-    <span class="flex"></span>
-    <div ng-show="restartAndApply" style="padding-right: 15px;">
-      <span>Do you want to restart to apply configuration?</span>
-      <button style="height: 30px;" ng-if="adminMode" ng-click="closeRestartConfirmation()"
-        class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-      </button>
-      <button style="height: 30px;" ng-if="adminMode && !clusterEnabled"
-        ng-click="restart(); closeRestartConfirmation()" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='adminMode'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-      </button>
-    </div>
-    <!-- End restart button -->
-
   </div>
   <!-- End back button, title and status indicator -->
 
   <!-- Table with CDB List info -->
   <div layout="column" layout-align="start">
-    <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;">
-      <input placeholder="Filter cdb content..." type="text" flex
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
-        ng-model="cdbContent" ng-change="filterContent(cdbContent)">
-    </div>
     <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
       <md-card flex class="wz-md-card">
-        <md-card-content style="min-height: calc(100vh - 355px)">
+        <md-card-content style="min-height: calc(100vh - 390px)">
+          <label class="wz-icon-loupe">
+          <input placeholder="Filter entries..." type="text" flex
+            class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
+            ng-model="cdbContent" style="width:100%;">
+          </label>
           <table class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
             <thead class="wz-text-bold">
               <th class="wz-text-left">Key</th>
@@ -69,19 +72,19 @@
             </thead>
             <tbody>
               <!-- Add new key tr -->
-              <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
-                <td>
-                  <input placeholder="New key" type="text" class="wz-input-text wz-border-none height-25"
-                    style="margin-bottom: 0 !important; height: 20px !important;" ng-model="newKey">
+              <tr class="wz-word-wrap">
+                <td class="td-align-middle">
+                  <input placeholder="New key" type="text" class="wz-height-35 wz-input-text"
+                    style="margin-bottom: 0 !important;" ng-model="newKey">
                 </td>
-                <td>
-                  <input placeholder="New value" type="text" class="wz-input-text wz-border-none height-25"
-                    style="margin-bottom: 0 !important; height: 20px !important;" ng-model="newValue">
+                <td class="td-align-middle">
+                  <input placeholder="New value" type="text" class="wz-height-35 wz-input-text"
+                    style="margin-bottom: 0 !important;" ng-model="newValue">
                 </td>
-                <td>
+                <td class="td-align-middle">
                   <button class="btn btn-as-i" ng-disabled="!newKey"
                     ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
-                    <i class="fa fa-fw fa-plus action-btn-td"></i>
+                    <wz-svg icon="plus" color="#0079a5"></wz-svg>
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Add new entry
                     </md-tooltip>
@@ -89,21 +92,23 @@
                 </td>
               </tr>
               <!-- End add new key tr -->
-              <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] track by $index"
+              <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] | filter: cdbContent track by $index"
                 ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
-                <td>{{item[0]}}</td>
-                <td>
-                  <input ng-show="editingKey === item[0]" type="text" class="wz-input-text" ng-model="editingNewValue">
-                  <span ng-show="!editingKey || editingKey !== item[0]">{{item[1]}}</span>
+                <td class="td-align-middle">{{item[0]}}</td>
+                <td class="td-align-middle">
+                  <div ng-show="editingKey === item[0]">
+                    <input  type="text" class="wz-height-35 wz-input-text" style="margin-bottom: 0 !important;" ng-model="editingNewValue">
+                  </div>
+                  <div ng-show="!editingKey || editingKey !== item[0]">
+                    <span >{{item[1]}}</span>
+                  </div>
                 </td>
-                <td class="action-btn-td">
+                <td class="action-btn-td td-align-middle">
                   <div ng-hide="!adminMode">
-                    <span ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
-                      ng-click="setEditingKey(item[0], item[1])" class="fa fa-fw fa-pencil cursor-pointer">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Edit
-                      </md-tooltip>
-                    </span>
+                    <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
+                      ng-click="setEditingKey(item[0], item[1])"
+                      icon="pencil" svg-tooltip="Edit">
+                    </wz-svg>
                     <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer"
                       ng-click="cancelEditingKey()">
                       <md-tooltip md-direction="left" class="wz-tooltip">
@@ -116,14 +121,10 @@
                         Apply
                       </md-tooltip>
                     </span>
-                    <i ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
+                    <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
                       ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
-                      class="fa fa-fw fa-trash cursor-pointer" aria-hidden="true">
-                      <md-tooltip md-direction="left" class="wz-tooltip">
-                        Remove this entry
-                      </md-tooltip>
-                    </i>
-
+                      icon="trash" svg-tooltip="Remove this entry">
+                    </wz-svg>
                     <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
                       <div layout="row">
                         <span class="font-size-12 wz-padding-left-8">This entry will be
@@ -143,7 +144,7 @@
             <tfoot>
               <td colspan="3">
                 <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items</span>
-                <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+                <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
                   <ul layout="row">
 
                     <li ng-show="currentPage > 0" class="md-padding">
@@ -151,7 +152,7 @@
                     </li>
 
                     <li ng-show="currentPage" class="md-padding">
-                      <a href ng-click="prevPage()">« Prev</a>
+                      <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
                     </li>
 
                     <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
@@ -160,10 +161,10 @@
                     </li>
 
                     <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                      <a href ng-click="nextPage()">Next »</a>
+                      <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
                     </li>
 
-                    <li ng-show="currentPage < pagedItems.length" class="md-padding">
+                    <li ng-show="currentPage + 1 < pagedItems.length" class="md-padding">
                       <a href ng-click="setPage(pagedItems.length - 1)">Last</a>
                     </li>
 
@@ -175,8 +176,9 @@
         </md-card-content>
         <div layout="row" class="ruleset-csv-formater">
           <span flex></span>
-          <a class="small" id="btnDownload" ng-click="downloadCsv('/lists?path=' + currentList.details.path + '/' + currentList.details.file, currentList.details.file + '.csv')">
-            <i aria-hidden="true" class="fa fa-download"></i>&nbsp;Formatted
+          <a class="small formatted-color" id="btnDownload"
+            ng-click="downloadCsv('/lists?path=' + currentList.details.path + '/' + currentList.details.file, currentList.details.file + '.csv')">
+            <wz-svg icon="download"></wz-svg>&nbsp;Formatted
           </a>
         </div>
       </md-card>

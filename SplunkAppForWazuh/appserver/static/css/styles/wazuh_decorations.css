@@ -126,7 +126,7 @@
 }
 
 .wz-margin-left-10 {
-  margin-left: 10px;
+  margin-left: 10px !important;
 }
 
 .wz-margin-left-16 {
@@ -170,7 +170,11 @@
 }
 
 .wz-margin-bottom-10 {
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
+}
+
+.wz-margin-top--20 {
+  margin-top: -20px !important;
 }
 
 /* Classes for custom shadows for dashboard cells */
@@ -441,5 +445,8 @@ table span.badge {
 }
 
 .wz-metric-color {
-  background-color: #e4f2f5;
+  margin: 0 !important;
+  background-color: #ecf6fb !important;
+  border: 1px solid #dfeff8 !important;
+  box-shadow: none !important;
 }
