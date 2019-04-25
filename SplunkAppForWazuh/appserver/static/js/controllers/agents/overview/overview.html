@@ -113,8 +113,8 @@
                   {{offsetTimestamp('', syscheck.end) || '-'}}
                   <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
                     md-direction="bottom" class="wz-tooltip">
-                    Start time: {{ offsetTimestamp('', syscheck.start) || '-'}} <br>
-                    End time: {{ offsetTimestamp('', syscheck.end) || '-'}} <br>
+                    Start time: {{offsetTimestamp('', syscheck.start) || '-'}} <br>
+                    End time: {{offsetTimestamp('', syscheck.end) || '-'}} <br>
                     Duration time: {{syscheck.duration +' minutes' || '-'}}
                   </md-tooltip>
                 </p>
@@ -125,15 +125,15 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Last rootcheck scan</p>
                 </div>
-                <p class="euiText--small euiStat__description" ng-if="agent.rootcheck.inProgress">Scan
+                <p class="euiText--small euiStat__description" ng-if="rootcheck.inProgress">Scan
                   in progress</p>
-                <p class="euiText--small euiStat__description" ng-if="!agent.rootcheck.inProgress">{{agent.rootcheck.end
+                <p class="euiText--small euiStat__description" ng-if="!rootcheck.inProgress">{{offsetTimestamp('', rootcheck.end)
                               || '-'}}
-                  <md-tooltip ng-if="!agent.rootcheck.inProgress && agent.rootcheck.start && agent.rootcheck.end"
+                  <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end"
                     md-direction="bottom" class="wz-tooltip">
-                    Start time: {{ agent.rootcheck.start || '-'}} <br>
-                    End time: {{ agent.rootcheck.end || '-'}} <br>
-                    Duration time: {{ agent.rootcheck.duration +' minutes' || '-'}}
+                    Start time: {{offsetTimestamp('', rootcheck.start) || '-'}} <br>
+                    End time: {{offsetTimestamp('', rootcheck.end) || '-'}} <br>
+                    Duration time: {{rootcheck.duration + ' minutes' || '-'}}
                   </md-tooltip>
                 </p>
               </div>
