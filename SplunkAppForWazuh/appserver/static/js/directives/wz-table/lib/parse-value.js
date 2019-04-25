@@ -47,7 +47,8 @@ define([], function() {
     key,
     item,
     instancePath,
-    $sce
+    $sce = null,
+    dateDiffService = null
   ) {
     if (
       (key === 'event' || (key.value && key.value === 'event')) &&
@@ -70,6 +71,17 @@ define([], function() {
         }
       }
     }
+
+    if (key.offset && dateDiffService) {
+      const date = (item || {})[key.value];
+      if (!item[`${key.value}offset`]) {
+        item[`${key.value}offset`] = date;
+      }
+      if (date) {
+        item[key.value] = dateDiffService.setBrowserOffset(item[`${key.value}offset`]);
+      }
+    }
+
     if (key === 'state' && instancePath.includes('processes')) {
       return ProcessEquivalence[item.state] || 'Unknown'
     }

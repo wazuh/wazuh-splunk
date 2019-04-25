@@ -72,7 +72,8 @@ define([
         $window,
         $groupHandler,
         $sce,
-        $fileEditor
+        $fileEditor,
+        $dateDiffService
       ) {
         /**
          * Init variables
@@ -323,7 +324,8 @@ define([
             key,
             item,
             instance.path,
-            $sce
+            $sce,
+            $dateDiffService
           )
 
         /**

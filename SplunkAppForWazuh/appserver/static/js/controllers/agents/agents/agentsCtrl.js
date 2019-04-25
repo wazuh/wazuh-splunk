@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function(app, SearchHandler) {
+], function (app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -40,7 +40,8 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler
+      $groupHandler, 
+      $dateDiffService
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -56,6 +57,7 @@ define([
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
 
       try {
         const parsedResult = agentData.map(item =>
@@ -107,7 +109,7 @@ define([
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
-      } catch (error) {} //eslint-disable-line
+      } catch (error) { } //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
@@ -141,6 +143,14 @@ define([
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
+
+      this.scope.offsetTimestamp = (text, time) => {
+        try {
+          return text + this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
     }
 
     /**
