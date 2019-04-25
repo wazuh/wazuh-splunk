@@ -248,6 +248,10 @@
         ng-repeat-end="">
         <td colspan="{{keys.length}}" style="border-top: none">
           <md-card>
+            <div layout="column" ng-if="!item.result" class="wz-margin-top-10 expandedDiv">
+                <span class="tSize16">Check not applicable due to:</span>
+                <p class="wz-margin-top-10 pExpanded">{{ item.reason }}</p>
+            </div>
             <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Rationale</span>
               <p class="wz-margin-top-10 pExpanded">{{item.rationale}}</p>
@@ -264,10 +268,6 @@
               <span class="tSize16">Compliance</span>
               <p class="wz-margin-top-10 pExpanded"><span class="wz-padding-right-8"
                   ng-repeat="c in item.compliance">{{c.key}}/{{c.value}}</span></p>
-            </div>
-            <div layout="column" ng-if="!item.result" class="wz-margin-top-10 expandedDiv">
-                <span class="tSize16">Reason</span>
-                <p class="wz-margin-top-10 pExpanded">{{ item.reason }}</p>
             </div>
           </md-card>
         </td>
