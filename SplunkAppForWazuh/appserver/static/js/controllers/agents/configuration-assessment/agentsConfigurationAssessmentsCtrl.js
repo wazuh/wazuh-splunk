@@ -136,6 +136,8 @@ define([
         this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus =>
         this.formatAgentStatus(agentStatus)
+
+      this.scope.refreshScans = () => this.refreshScans()
     }
 
     /**
@@ -226,6 +228,13 @@ define([
           e.preventDefault()
         }
       })
+    }
+
+    /**
+     * Refresh SCA scans
+     */
+    refreshScans() {
+      this.state.reload()
     }
   }
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
