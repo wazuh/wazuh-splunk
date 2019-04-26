@@ -65,7 +65,7 @@ define([
           this.launchSearches()
         })
 
-        this.scope.expandArray = [false, false, false, false, false, false]
+        this.scope.expandArray = [false, false, false, false, false, false,false,false]
         this.scope.expand = (i, id) => this.expand(i, id)
 
         this.vizz = [
@@ -141,12 +141,20 @@ define([
             'commonAffectedPackages',
             this.scope
           ),
-          new BarChart(
+          new PieChart(
             'commonCves',
             `${
             this.filters
             } rule.groups{}=vulnerability-detector | top data.vulnerability.cve limit=5`,
             'commonCves',
+            this.scope
+          ),
+          new PieChart(
+            'commonCwes',
+            `${
+            this.filters
+            } rule.groups{}=vulnerability-detector | top data.vulnerability.cwe_reference limit=5`,
+            'commonCwes',
             this.scope
           ),
           new Table(
@@ -187,6 +195,7 @@ define([
                 'severityDist',
                 'commonAffectedPackages',
                 'commonCves',
+                'commonCwes',
                 'alertsSummary'
               ],
               {}, //Metrics
@@ -221,7 +230,7 @@ define([
             this.timePicker.destroy()
             this.vizz.map(vizz => vizz.destroy())
           })
-        } catch (error) { }
+        } catch (error) { } //eslint-disable-line
       }
 
       /**

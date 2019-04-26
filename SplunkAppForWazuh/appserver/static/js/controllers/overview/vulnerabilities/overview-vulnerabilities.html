@@ -77,7 +77,7 @@
       </md-card>
       <md-card flex="66" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts evolution over time
+          <span class="wz-headline-title">Alerts severity
             <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsEvolution')">
               <wz-svg icon="expand"></wz-svg>
             </span>
@@ -89,7 +89,7 @@
     </div>
 
     <div layout="row" layout-align="center stretch">
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Severity distribution
             <span class="wz-text-link" style="float:right;" ng-click="expand(2,'severityDist')">
@@ -100,7 +100,7 @@
           <div id='severityDist'></div>
         </md-card-content>
       </md-card>
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Commonly affectected packages
             <span class="wz-text-link" style="float:right;" ng-click="expand(3,'commonAffectedPackages')">
@@ -111,7 +111,7 @@
           <div id='commonAffectedPackages'></div>
         </md-card-content>
       </md-card>
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Most common CVEs
             <span class="wz-text-link" style="float:right;" ng-click="expand(4,'commonCves')">
@@ -122,9 +122,20 @@
           <div id='commonCves'></div>
         </md-card-content>
       </md-card>
+      <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Most common CWEs
+            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'commonCwes')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='commonCwes'></div>
+        </md-card-content>
+      </md-card>
     </div>
 
-    <div layout="row" class="height-570">
+    <div layout="row">
       <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Alerts summary

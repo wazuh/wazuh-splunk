@@ -77,73 +77,38 @@ define([
         /**
          * Visualizations
          */
-        new AreaChart(
-          'eventsOverTimeElement',
-          `${this.filters}  | timechart span=12h count by rule.id`,
-          'eventsOverTimeElement',
-          this.scope
-        ),
-        new Table(
-          'eventsSummaryElement',
-          `${
-            this.filters
-          } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-          'eventsSummaryElement',
-          this.scope
-        ),
-        new Table(
-          'top5Rules',
-          `${
-            this.filters
-          } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5Rules',
-          this.scope
-        ),
+
         new PieChart(
-          'alertsVolume',
+          'lastScannedFiles',
           `${
             this.filters
-          } | stats count by rule.description | rename "rule.description" as "Description"`,
-          'alertsVolume',
+          } | top limit=5 data.virustotal.source.file`,
+          'lastScannedFiles',
+          this.scope
+        ),
+        new AreaChart(
+          'maliciousEventsOverTimeElement',
+          `${this.filters} data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives`,
+          'maliciousEventsOverTimeElement',
           this.scope
         ),
         new Table(
-          'filesAffected',
+          'lastFiles',
           `${
             this.filters
-          }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-          'filesAffected',
+          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          'lastFiles',
           this.scope
         ),
         new RawTableDataService(
-          'eventsSummaryTable',
+          'lastFilesTable',
           `${
             this.filters
-          } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-          'eventsSummaryTableToken',
+          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          'lastFilesToken',
           '$result$',
           this.scope,
-          'Events Summary'
-        ),
-        new RawTableDataService(
-          'top5RulesTable',
-          `${
-            this.filters
-          } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5RulesTableToken',
-          '$result$',
-          this.scope,
-          'Top 5 Rules'
-        ),
-        new RawTableDataService(
-          'filesAffectedTable',
-          `${
-            this.filters
-          }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-          'filesAffectedTableToken',
-          '$result$',
-          this.scope,
-          'Files Affected'
+          'Last Files'
         )
       ]
 
@@ -173,11 +138,9 @@ define([
           'VirusTotal',
           this.filters,
           [
-            'alertsVolume',
-            'eventsSummaryElement',
-            'eventsOverTimeElement',
-            'top5Rules',
-            'filesAffected'
+            'lastScannedFiles',
+            'maliciousEventsOverTimeElement',
+            'lastFiles',
           ],
           this.reportMetrics,
           this.tableResults,

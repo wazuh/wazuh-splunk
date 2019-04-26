@@ -74,7 +74,7 @@ define([
           'eventsPerAgent',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=2h count by agent.name`,
+          } sourcetype=wazuh | timechart span=2h count by data.title`,
           'eventsPerAgent',
           this.scope
         ),
@@ -158,7 +158,7 @@ define([
           }
           if (!this.scope.$$phase) this.scope.$digest()
         })
-      } catch (error) {}
+      } catch (error) {} //eslint-disable-line
     }
 
     /**
