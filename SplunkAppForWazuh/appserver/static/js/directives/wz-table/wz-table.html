@@ -260,9 +260,21 @@
               <span class="tSize16">Remediation</span>
               <p class="wz-margin-top-10 pExpanded">{{item.remediation}}</p>
             </div>
+            <div layout="column" ng-if="item.description" class="wz-margin-top-10 expandedDiv">
+              <span class="tSize16">Description</span>
+              <p class="wz-margin-top-10 pExpanded">{{item.description}}</p>
+            </div>
             <div layout="column" ng-if="item.directory" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Path(s)</span>
               <p class="wz-margin-top-10 pExpanded">{{ item.directory }}</p>
+            </div>
+            <div layout="column" ng-if="item.rules.length > 0" class="wz-margin-top-10 expandedDiv">
+              <span class="tSize16">Checks</span>
+              <ul class="noDot pExpanded">
+                <li ng-repeat="r in item.rules">
+                  {{r.rule}}
+                </li>
+              </ul>
             </div>
             <div layout="column" ng-if="item.compliance.length > 0" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Compliance</span>
