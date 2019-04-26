@@ -181,6 +181,7 @@ define([
         this.formatAgentStatus(agentStatus)
 
       this.scope.refreshScans = () => this.refreshScans()
+      this.scope.search = term => this.search(term)
 
 
       this.scope.loadCharts = (policy) => {
@@ -229,6 +230,14 @@ define([
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
+    }
+
+    /**
+     * Searches for a term
+     * @param {String} term
+     */
+    search(term) {
+      this.scope.$broadcast('wazuhSearch', { term })
     }
 
     /**
