@@ -40,7 +40,8 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler
+      $groupHandler,
+      $dateDiffService
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -56,6 +57,7 @@ define([
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
 
       try {
         const parsedResult = agentData.map(item =>
@@ -141,6 +143,14 @@ define([
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
+
+      this.scope.offsetTimestamp = (text, time) => {
+        try {
+          return text + this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
 
       this.scope.loadCharts = (id) => {
         setTimeout(() => {

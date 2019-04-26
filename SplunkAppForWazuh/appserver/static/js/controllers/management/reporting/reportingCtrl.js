@@ -9,7 +9,7 @@ define(['../../module'], function(app) {
      * @param {Object} $requestService
      * @param {Array} reportsList
      */
-    constructor($scope, $notificationService, $requestService, reportsList) {
+    constructor($scope, $notificationService, $requestService, reportsList, $dateDiffService) {
       this.scope = $scope
       this.notification = $notificationService
       this.genericReq = $requestService.httpReq
@@ -20,6 +20,7 @@ define(['../../module'], function(app) {
       this.items = []
       this.scope.gap = 0
       this.items = reportsList.data.data
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
     }
 
     /**
@@ -33,6 +34,14 @@ define(['../../module'], function(app) {
       this.scope.load = () => this.load()
       this.scope.deleteReport = name => this.deleteReport(name)
       this.load()
+
+      this.scope.offsetTimestamp = time => {
+        try {
+          return this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
     }
 
     /**
