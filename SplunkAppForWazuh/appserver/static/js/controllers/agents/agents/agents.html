@@ -9,16 +9,18 @@
           <wz-svg icon="hex"></wz-svg> Status
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <canvas id="bar" ng-if="lastAgent && lastAgent.id" class="wz-margin-top-16 chart chart-doughnut wz-margin-bottom-10"
-          ng-init="loadCharts('bar')">
-          <div layout="row" class="wz-margin-top-16 layout-align-center-center" ng-if="!lastAgent || !lastAgent.id">
-            There are no agents yet.
-          </div>
-          <div layout="row" class="wz-margin-top-16 layout-align-center-center" ng-if="!lastAgent || !lastAgent.id">
-            <button class="kuiButton kuiButton--success" ng-click="openRegistrationDocs()">
-              <react-component name="EuiIcon" props="{type: 'help'}" /> How to
-            </button>
-          </div>
+        <div class="wz-margin-top-10">
+          <canvas id="bar" ng-if="lastAgent && lastAgent.id"
+            class="wz-margin-top-16 chart chart-doughnut wz-margin-bottom-10" ng-init="loadCharts('bar')">
+        </div>
+        <div layout="row" class="wz-margin-top-16 layout-align-center-center" ng-if="!lastAgent || !lastAgent.id">
+          There are no agents yet.
+        </div>
+        <div layout="row" class="wz-margin-top-16 layout-align-center-center" ng-if="!lastAgent || !lastAgent.id">
+          <button class="kuiButton kuiButton--success" ng-click="openRegistrationDocs()">
+            <react-component name="EuiIcon" props="{type: 'help'}" /> How to
+          </button>
+        </div>
       </div>
       <div flex class="layout-column md-padding">
         <span class="wz-headline-title">
@@ -26,7 +28,7 @@
         </span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive wz-margin-top-4">
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive wz-margin-top-5">
           <div class="euiFlexItem euiFlexItem--flexGrowZero">
 
             <div class="euiStat">
