@@ -121,7 +121,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
@@ -129,7 +129,7 @@ define([
           'top5GDPR',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.gdpr{} | sort count DESC`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} `,
           'top5GDPR',
           this.scope
         ),
@@ -137,7 +137,7 @@ define([
           'rulesVizz',
           `${
             this.filters
-          } sourcetype=wazuh  | stats count by rule.description | sort count DESC`,
+          } sourcetype=wazuh  | top limit=5 rule.description `,
           'rulesVizz',
           this.scope
         ),
