@@ -40,7 +40,7 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler, 
+      $groupHandler,
       $dateDiffService
     ) {
       this.scope = $scope
@@ -150,6 +150,35 @@ define([
         } catch (error) {
           return ''
         }
+      }
+
+      this.scope.loadCharts = (id) => {
+        setTimeout(() => {
+          const chart = new Chart(document.getElementById(id),
+            {
+              type: "doughnut",
+              data: {
+                labels: ["Active", "Disconected", "Never connected"],
+                datasets: [
+                  {
+                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                    data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
+                  }
+                ]
+              },
+              options: {
+                cutoutPercentage: 85,
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+                tooltips: {
+                  displayColors: false
+                }
+              }
+            });
+          chart.update();
+        }, 250);
       }
     }
 

@@ -234,11 +234,11 @@
         ng-click="expandPolicyMonitoringCheck(item)">
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
           <span ng-show="key === 'result'" class="no-wrap">
-            <p class="round status littleStat" ng-class="(item.result === 'passed') ? 'teal' : 'red'"></p>&nbsp;&nbsp;
+            <p class="round status littleStat" ng-class="item.result ? ((item.result === 'passed') ? 'teal' : 'red') : 'gray'"></p>&nbsp;&nbsp;
           </span>
           <span>
             {{
-            parseValue(key,item)
+            key === 'result' && !item.result ? item.status : parseValue(key,item)
             }}
           </span>
         </td>
@@ -248,6 +248,10 @@
         ng-repeat-end="">
         <td colspan="{{keys.length}}" style="border-top: none">
           <md-card>
+            <div layout="column" ng-if="!item.result" class="wz-margin-top-10 expandedDiv">
+                <span class="tSize16">Check not applicable due to:</span>
+                <p class="wz-margin-top-10 pExpanded">{{ item.reason }}</p>
+            </div>
             <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Rationale</span>
               <p class="wz-margin-top-10 pExpanded">{{item.rationale}}</p>

@@ -1793,3 +1793,12 @@ label.wz-icon-loupe  input {
 .orange {
   color: #ff9999;
 }
+
+.gray {
+  background-color: #5c6773 !important;
+}
+
+.center {
+  margin: 0 auto !important;
+  text-align: center !important;
+}

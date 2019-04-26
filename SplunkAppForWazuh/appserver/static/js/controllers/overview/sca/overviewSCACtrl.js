@@ -12,12 +12,18 @@
 
 define([
   '../../module',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/single-value',
+  '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
 ], function(
   app,
+  ColumnChart,
+  SingleValue,
+  GaugeChart,
   PieChart,
   AreaChart,
   Table,
@@ -74,7 +80,7 @@ define([
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
-      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expandArray = [false, false, false, false, false,false,false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
 
@@ -97,7 +103,25 @@ define([
       this.vizz = [
         /**
          * Visualizations
-         */
+         */ 
+        new SingleValue(
+          'overallScore',
+          `${
+            this.filters
+          }  | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed | eval total=((passed/(failed+passed))*100) | eval total2=round(total,1) | eval total3=(total2 + "%") | table total3 `,
+          'overallScore',
+          this.scope
+        ),
+        new GaugeChart(
+          'scoreByPolicy',
+          `${
+            this.filters
+          }  | stats values(data.sca.score) by data.sca.policy_id `,
+          'scoreByPolicy',
+          { trellisEnabled : true,
+            gaugeType : 'radialGauge'},
+          this.scope
+        ),
         new PieChart(
           'resultDistribution',
           `${
@@ -106,12 +130,28 @@ define([
           'resultDistribution',
           this.scope
         ),
-        new AreaChart(
-          'resultsOverTime',
+        new ColumnChart(
+          'resultDistributionByPolicy',
           `${
             this.filters
-          } | timechart span=1h count by data.sca.check.result`,
-          'resultsOverTime',
+          } | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed  by data.sca.policy`,
+          'resultDistributionByPolicy',
+          this.scope
+        ),
+        new PieChart(
+          'top5Passed',
+          `${
+            this.filters
+          }  data.sca.check.result="passed"  | top limit=5 data.sca.check.title`,
+          'top5Passed',
+          this.scope
+        ),
+        new PieChart(
+          'top5Failed',
+          `${
+            this.filters
+          }  data.sca.check.result="failed"  | top limit=5 data.sca.check.title`,
+          'top5Failed',
           this.scope
         ),
         new AreaChart( 
@@ -140,9 +180,13 @@ define([
           'Configuration assessment',
           this.filters,
           [
+            'overallScore',
+            'scoreByPolicy',
             'resultDistribution',
             'alertsOverTime',
-            'alertLevelEvolution',
+            'resultDistributionByPolicy',
+            'top5Failed',
+            'top5Passed',
             'alertsSummary'
           ],
           {}, //Metrics,
