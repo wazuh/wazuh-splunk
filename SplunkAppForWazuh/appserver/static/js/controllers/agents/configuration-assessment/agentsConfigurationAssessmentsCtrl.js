@@ -265,11 +265,11 @@ define([
     /**
      * Loads policies checks
      */
-    async loadPolicyChecks(id, name) {
-      this.scope.showPolicyChecks = name
-      this.scope.policyId = id
+    async loadPolicyChecks(policy) {
+      this.scope.showPolicyChecks = true
+      this.scope.policy = policy
       const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
+      this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
     }
 
     /**

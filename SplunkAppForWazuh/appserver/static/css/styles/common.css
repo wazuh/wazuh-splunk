@@ -1802,3 +1802,17 @@ label.wz-icon-loupe  input {
   margin: 0 auto !important;
   text-align: center !important;
 }
+
+.sca-title {
+  font-size: 16px !important;
+}
+
+.sca-title-checks{
+  font-size: 13px !important;
+}
+
+.sca-hash {
+  margin: 10px 5px;
+  display: block;
+  color: gray;
+}
