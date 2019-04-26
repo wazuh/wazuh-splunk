@@ -42,69 +42,77 @@
     </div>
   </div>
   <div ng-show="!loadingVizz">
+
     <!-- First row -->
     <div layout="row" layout-align="center stretch">
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 agents with engines detected
-            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'top5AgentsPositive')">
-              <wz-svg icon="expand"></wz-svg>
+      <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Unique malicious files per agent
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'MaliciousFilesPerAgent')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="top5AgentsPositive" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Events summary
-            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'eventsSummary')">
-              <wz-svg icon="expand"></wz-svg>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id="MaliciousFilesPerAgent" class="dashboard-element single" style="width: 100%"></div>
+          </md-card-content>
+        </md-card>
+        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Last scanned files
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'lastScannedFiles')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="eventsSummary" class="dashboard-element single" style="width: 100%;"></div>
-        </md-card-content>
-      </md-card>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id="lastScannedFiles" class="dashboard-element single" style="width: 100%"></div>
+          </md-card-content>
+        </md-card>
     </div>
-    <!-- Second row -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 agents with no positives found
-            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5AgentsNoPositive')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="top5AgentsNoPositive" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts per agent
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertsPerAgent')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="alertsPerAgent" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- Third row -->
-    <div layout="row" layout-align="left stretch">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 rules
-            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'top5Rules')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="top5Rules" class="dashboard-element single" style="width: 100%;"></div>
-        </md-card-content>
-      </md-card>
-    </div>
+
+     <!-- Second row -->
+     <div layout="row" layout-align="center stretch">
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Top 10 agents with positive scans
+                <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top10AgentsPositive')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id="top10AgentsPositive" class="dashboard-element single" style="width: 100%"></div>
+            </md-card-content>
+          </md-card>
+       </div>
+
+       <!-- Third row -->
+       <div layout="row" layout-align="center stretch">
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Malicious files alerts evolution
+                <span class="wz-text-link" style="float:right;" ng-click="expand(3,'maliciousEventsOverTimeElement')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id="maliciousEventsOverTimeElement" class="dashboard-element single" style="width: 100%"></div>
+            </md-card-content>
+          </md-card>
+       </div>
+
+
+       <!-- Fourth row -->
+       <div layout="row" layout-align="center stretch">
+          <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+              <md-card-content class="wazuh-column">
+                <span class="wz-headline-title">Last files
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(4,'lastFiles')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div id="lastFiles" class="dashboard-element single" style="width: 100%"></div>
+              </md-card-content>
+            </md-card>
+         </div>
   </div>
 </md-content>
