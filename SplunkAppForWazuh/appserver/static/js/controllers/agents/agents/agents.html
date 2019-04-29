@@ -1,7 +1,7 @@
 <!-- End loading ring -->
 <div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
 
-  <div layout="row" layout-align="space-between stretch">
+  <div layout="row" layout-align="space-between stretch" ng-if="!wazuhNotReadyYet">
 
     <div class="md-padding euiFlexGroup--wrap layout-row wz-margin-top--20">
       <div class="layout-column md-padding">
