@@ -26,6 +26,7 @@ define(['../../module', '../../../utils/config-handler'], function(
      * @param {*} $currentDataService
      * @param {*} $beautifierJson
      * @param {*} $notificationService
+     * @param {*} $reportingService
      * @param {Object} data
      * @param {Object} agent
      */
@@ -37,9 +38,12 @@ define(['../../module', '../../../utils/config-handler'], function(
       $currentDataService,
       $beautifierJson,
       $notificationService,
+      $reportingService,
       data,
       agent
     ) {
+      this.api = $currentDataService.getApi()
+      this.reportingService = $reportingService
       this.$scope = $scope
       this.agent = agent
       this.$scope.currentAgent = this.agent.data.data
@@ -67,6 +71,7 @@ define(['../../module', '../../../utils/config-handler'], function(
      * On controller loads
      */
     $onInit() {
+      this.initReportConfig()
       this.$scope.showingInfo = false
       this.$scope.showInfo = () => this.showInfo()
       this.$scope.goToEdition = false
@@ -155,6 +160,136 @@ define(['../../module', '../../../utils/config-handler'], function(
     showInfo() {
       this.$scope.showingInfo = !this.$scope.showingInfo
       this.$scope.$applyAsync()
+    }
+
+
+    /**
+     * 
+     */
+    async initReportConfig(){
+      const data = {
+        configurations: [
+          {
+            title: 'Main configurations',
+            sections: [
+              {
+                subtitle: 'Global configuration',
+                desc: 'Logging settings that apply to the agent',
+                config: [{ component: 'com', configuration: 'logging' }]
+              },
+              {
+                subtitle: 'Communication',
+                desc: 'Settings related to the connection with the manager',
+                config: [{ component: 'agent', configuration: 'client' }]
+              },
+              {
+                subtitle: 'Anti-flooding settings',
+                desc: 'Agent bucket parameters to avoid event flooding',
+                config: [{ component: 'agent', configuration: 'buffer' }]
+              },
+              {
+                subtitle: 'Labels',
+                desc:
+                  'User-defined information about the agent included in alerts',
+                config: [{ component: 'agent', configuration: 'labels' }]
+              }
+            ]
+          },
+          {
+            title: 'Auditing and policy monitoring',
+            sections: [
+              {
+                subtitle: 'Policy monitoring',
+                desc:
+                  'Configuration to ensure compliance with security policies, standards and hardening guides',
+                config: [
+                  { component: 'syscheck', configuration: 'rootcheck' },
+                  { component: 'wmodules', configuration: 'wmodules' }
+                ]
+              },
+              {
+                subtitle: 'OpenSCAP',
+                desc:
+                  'Configuration assessment and automation of compliance monitoring using SCAP checks',
+                wodle: 'open-scap'
+              },
+              {
+                subtitle: 'CIS-CAT',
+                desc:
+                  'Configuration assessment using CIS scanner and SCAP checks',
+                wodle: 'cis-cat'
+              }
+            ]
+          },
+          {
+            title: 'System threats and incident response',
+            sections: [
+              {
+                subtitle: 'Osquery',
+                desc:
+                  'Expose an operating system as a high-performance relational database',
+                wodle: 'osquery'
+              },
+              {
+                subtitle: 'Inventory data',
+                desc:
+                  'Gather relevant information about system OS, hardware, networking and packages',
+                wodle: 'syscollector'
+              },
+              {
+                subtitle: 'Active response',
+                desc: 'Active threat addressing by inmmediate response',
+                config: [
+                  { component: 'analysis', configuration: 'command' },
+                  { component: 'analysis', configuration: 'active_response' }
+                ]
+              },
+              {
+                subtitle: 'Active response',
+                desc: 'Active threat addressing by inmmediate response',
+                config: [{ component: 'com', configuration: 'active-response' }]
+              },
+              {
+                subtitle: 'Commands',
+                desc: 'Configuration options of the Command wodle',
+                wodle: 'command'
+              },
+              {
+                subtitle: 'Docker listener',
+                desc:
+                  'Monitor and collect the activity from Docker containers such as creation, running, starting, stopping or pausing events',
+                wodle: 'docker-listener'
+              }
+            ]
+          },
+          {
+            title: 'Log data analysis',
+            sections: [
+              {
+                subtitle: 'Log collection',
+                desc:
+                  'Log analysis from text files, Windows events or syslog outputs',
+                config: [
+                  { component: 'logcollector', configuration: 'localfile' },
+                  { component: 'logcollector', configuration: 'socket' }
+                ]
+              },
+              {
+                subtitle: 'Integrity monitoring',
+                desc:
+                  'Identify changes in content, permissions, ownership, and attributes of files',
+                config: [{ component: 'syscheck', configuration: 'syscheck' }]
+              }
+            ]
+          }
+        ]
+      }
+
+
+      this.reportingService.reportAgentConfiguration(this.id,data,this.api)
+
+
+
     }
 
     /**

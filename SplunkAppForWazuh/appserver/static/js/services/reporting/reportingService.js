@@ -336,6 +336,50 @@ define(['../module', 'jquery'], function(module, $) {
         this.notification.showErrorToast('Reporting error')
       }
     }
+
+    async reportAgentConfiguration(agentId,reportData,apiId) {
+      try{
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        const isAgentConf = true
+        const isAgents = false
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          isAgentConf,
+          isAgents,
+          apiId : apiId,
+          timeRange: false,
+          sectionTitle: 'Agent Configuration',
+          queryFilters: '',
+          metrics: {},
+          tableResults : {},
+          pdfName: 'agent-conf',
+          timeZone,
+          data: reportData,
+          agentId : agentId
+        }
+
+        await this.genericReq('POST', '/report/generate', {
+          data: JSON.stringify(data)
+        })
+
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Reporting error')
+      }
+    }
+
   }
 
   module.service('$reportingService', ReportingService)

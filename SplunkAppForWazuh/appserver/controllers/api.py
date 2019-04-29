@@ -200,6 +200,36 @@ class api(controllers.BaseController):
             self.logger.error("Error while requesting to Wazuh API: %s" % (e))
             raise e
 
+    def exec_request(self, kwargs):
+        try:
+            if 'id' not in kwargs or 'endpoint' not in kwargs:
+                return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
+            if 'method' not in kwargs:
+                method = 'GET'
+            elif kwargs['method'] == 'GET':
+                del kwargs['method']
+                method = 'GET'
+            else:
+                if str(self.getSelfAdminStanza()['admin']) != 'true':
+                    self.logger.error('Admin mode is disabled.')
+                    return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
+                method = kwargs['method']
+                del kwargs['method']
+            the_id = kwargs['id']
+            url, auth, verify, cluster_enabled = self.get_credentials(the_id)
+            opt_endpoint = kwargs["endpoint"]
+            del kwargs['id']
+            del kwargs['endpoint']
+            daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
+            if not daemons_ready:
+                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
+            request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
+            result = jsonbak.dumps(request)
+        except Exception as e:
+            self.logger.error("Error making API request: %s" % (e))
+            return jsonbak.dumps({'error': str(e)})
+        return result
+
     def check_daemons(self, url, auth, verify, check_cluster):
         """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
 
@@ -267,29 +297,7 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
-            if 'id' not in kwargs or 'endpoint' not in kwargs:
-                return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
-            if 'method' not in kwargs:
-                method = 'GET'
-            elif kwargs['method'] == 'GET':
-                del kwargs['method']
-                method = 'GET'
-            else:
-                if str(self.getSelfAdminStanza()['admin']) != 'true':
-                    self.logger.error('Admin mode is disabled.')
-                    return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
-                method = kwargs['method']
-                del kwargs['method']
-            the_id = kwargs['id']
-            url, auth, verify, cluster_enabled = self.get_credentials(the_id)
-            opt_endpoint = kwargs["endpoint"]
-            del kwargs['id']
-            del kwargs['endpoint']
-            daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
-            if not daemons_ready:
-                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
-            request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
-            result = jsonbak.dumps(request)
+            result = self.exec_request(kwargs)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return jsonbak.dumps({'error': str(e)})

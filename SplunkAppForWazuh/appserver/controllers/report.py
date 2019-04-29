@@ -22,6 +22,7 @@ from log import log
 import base64
 from fpdf import FPDF
 import math
+from api import api
 
 class PDF(FPDF):
     def header(self):
@@ -58,8 +59,9 @@ class report(controllers.BaseController):
 
     def __init__(self):
         """Constructor."""
-        self.logger = log()
         try:
+            self.logger = log()
+            self.miapi = api()
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
@@ -102,6 +104,7 @@ class report(controllers.BaseController):
             first_page = True
             self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data']
+            self.miapi.exec_request(kwargs)
             data = jsonbak.loads(json_acceptable_string)
             #Replace "'" in images
             clean_images = jsonbak.dumps(data['images'])
