@@ -172,7 +172,7 @@ define([
             this.dropdown.destroy()
             this.vizz.map(vizz => vizz.destroy())
           })
-        } catch (error) { }
+        } catch (error) { } //eslint-disable-line
       }
 
       /**

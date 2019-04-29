@@ -181,6 +181,7 @@ define([
         this.formatAgentStatus(agentStatus)
 
       this.scope.refreshScans = () => this.refreshScans()
+      this.scope.search = term => this.search(term)
 
 
       this.scope.loadCharts = (policy) => {
@@ -232,6 +233,14 @@ define([
     }
 
     /**
+     * Searches for a term
+     * @param {String} term
+     */
+    search(term) {
+      this.scope.$broadcast('wazuhSearch', { term })
+    }
+
+    /**
      * Exports the table in CSV format
      */
     async downloadCsv() {
@@ -265,11 +274,11 @@ define([
     /**
      * Loads policies checks
      */
-    async loadPolicyChecks(id, name) {
-      this.scope.showPolicyChecks = name
-      this.scope.policyId = id
+    async loadPolicyChecks(policy) {
+      this.scope.showPolicyChecks = true
+      this.scope.policy = policy
       const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
+      this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
     }
 
     /**

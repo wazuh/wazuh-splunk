@@ -144,7 +144,7 @@ define([
           'alertLevEvoVizz',
           this.scope
         ),
-        new ColumnChart(
+        new LinearChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
           'alertsVizz',

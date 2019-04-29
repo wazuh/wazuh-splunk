@@ -114,16 +114,32 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.groups{}`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
-          'agentsVizz',
+          'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name`,
-          'agentsVizz',
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description`,
+          'topRules',
+          this.scope
+        ),
+        new PieChart(
+          'top5Pcidss',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{}`,
+          'top5Pcidss',
+          this.scope
+        ),
+        new PieChart(
+          'ruleLevelDistribution',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level`,
+          'ruleLevelDistribution',
           this.scope
         ),
         new ColumnChart(
@@ -181,8 +197,10 @@ define([
           this.filters,
           [
             'pciReqSearchVizz',
+            'ruleLevelDistribution',
+            'top5Pcidss',
             'groupsVizz',
-            'agentsVizz',
+            'topRules',
             'reqByAgentsVizz',
             'alertsSummaryVizz'
           ],

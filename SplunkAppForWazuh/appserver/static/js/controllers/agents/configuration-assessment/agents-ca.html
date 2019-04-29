@@ -94,7 +94,7 @@
             </thead>
             <tbody>
               <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
-                <td ng-click="loadPolicyChecks(policy.policy_id, policy.name)" class="wz-text-link cursor-pointer">
+                <td ng-click="loadPolicyChecks(policy)" class="wz-text-link cursor-pointer">
                   {{policy.name}}</td>
                 <td>{{policy.description}}</td>
                 <td>{{policy.end_scan}}</td>
@@ -151,16 +151,36 @@
     <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
       <md-card flex="" class="wz-md-card _md flex">
         <md-card-content>
-          <span class="wz-headline-title">
+          <span class="sca-title">
             <i class="fa fa-fw fa-arrow-left cursor-pointer" ng-click="backToConfAssess()">
               <md-tooltip class="wz-tooltip" md-direction="top">
                 Back to Configuration assessment
               </md-tooltip>
             </i>
-            {{showPolicyChecks}}
+            {{policy.name}}&nbsp;
+            <span class="sca-title-checks">
+              Pass: <b>{{policy.pass}}</b> &nbsp;
+              Failed: <b>{{policy.fail}}</b> &nbsp;
+              Not applicable: <b>{{policy.invalid}}</b> &nbsp;
+              Score: <b>{{policy.score}}%</b> &nbsp;
+            </span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <wazuh-table flex path="wzTablePath" row-sizes="[13,11,9]" extra-limit="100" keys="['title','file','result']">
+          <span class="sca-hash">Policy checksum: {{policy.hash_file}}</span>
+          <div flex layout="row">
+            <div class="wz-width-100 wz-margin-bottom-25">
+              <label class="wz-icon-loupe">
+                <input id="search-input-rules" placeholder="Filter checks..." ng-model="customSearch" type="text" flex
+                  class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+              </label>
+            </div>
+            <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
+              ng-click="search(customSearch)">
+              <span>Search</span>
+            </button>
+          </div>
+          <wazuh-table flex path="wzTablePath" row-sizes="[13,11,9]" extra-limit="100"
+            keys="['id', 'title','file','result']">
           </wazuh-table>
 
         </md-card-content>
