@@ -71,7 +71,6 @@ define(['../../module', '../../../utils/config-handler'], function(
      * On controller loads
      */
     $onInit() {
-      this.initReportConfig()
       this.$scope.showingInfo = false
       this.$scope.showInfo = () => this.showInfo()
       this.$scope.goToEdition = false
@@ -128,6 +127,8 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.getIntegration = list =>
         this.configurationHandler.getIntegration(list, this.$scope)
       this.$scope.goGroups = group => this.goGroups(group)
+
+      this.$scope.initReportConfig = () => this.initReportConfig()
     }
 
     /**
