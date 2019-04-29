@@ -398,24 +398,56 @@ table span.badge {
   background-color: white !important;
   padding: 10px !important;
 }
-.wz-margin-top-20 {
-  margin-top: 20px;
+
+.wz-margin-top-4 {
+  margin-top: 4px !important;
+}
+
+.wz-margin-top-5 {
+  margin-top: 5px !important;
 }
 
 .wz-margin-top-10 {
-  margin-top: 10px;
+  margin-top: 10px !important;
+}
+
+.wz-margin-top-15 {
+  margin-top: 15px !important;
+}
+
+.wz-margin-top-20 {
+  margin-top: 20px !important;
+}
+
+.wz-margin-top--15{
+  margin-top: -15px !important;
+}
+
+.wz-margin-right-10 {
+  margin-right: 10px !important;
+}
+
+.wz-margin-left-20 {
+  margin-left: 20px !important;
+}
+
+.wz-margin-left--10 {
+  margin-left: -10px !important;
 }
 
 .wz-margin-5 {
-  margin: 5px;
+  margin: 5px !important;
 }
 
 .wz-margin-10 {
-  margin: 10px;
+  margin: 10px !important;
 }
 
+.wz-margin-20 {
+  margin: 20px !important;
+}
 .wz-padding-5 {
-  padding: 5px;
+  padding: 5px !important;
 }
 
 .wz-table-element-pull-left{
