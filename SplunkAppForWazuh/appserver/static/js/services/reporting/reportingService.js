@@ -350,7 +350,7 @@ define(['../module', 'jquery'], function(module, $) {
           isAgents,
           apiId : apiId,
           timeRange: false,
-          sectionTitle: 'Agent Configuration',
+          sectionTitle: 'Agent configuration',
           queryFilters: '',
           metrics: {},
           tableResults : {},
