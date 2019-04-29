@@ -1,6 +1,6 @@
 # Change Log
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
-## Wazuh v3.9.0 - Splunk Enterprise v7.2.4 - Splunk app v3.9.0-rev-23
+## Wazuh v3.9.0 - Splunk Enterprise v7.2.4 / v7.2.5 / v7.2.6 - Splunk app v3.9.0-rev-23
 
 ### Added 
 
@@ -52,7 +52,14 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
     ).
 - Cabability to expand visualizations ([#567](https://github.com/wazuh/wazuh-splunk/pull/567)).
 - Set the browser time zone to the report ([#619](https://github.com/wazuh/wazuh-splunk/pull/619)).
-
+- View no local rules/decoders XML files ([#667](https://github.com/wazuh/wazuh-splunk/pull/667)).
+- Added some Angular charts in Agents Preview and Agents SCA sections ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
+- Added Docker listener settings in configuration views ([#665](https://github.com/wazuh/wazuh-splunk/pull/665)).
+- Added Docker dashboards for both Agents and Overview ([#665](https://github.com/wazuh/wazuh-splunk/pull/665)).
+- New server module, it's a job queue so we can add delayed jobs to be run in background, this iteration only accepts delayed Wazuh API calls ([#629](https://github.com/wazuh/wazuh-splunk/pull/629)).
+- Added a dynamic table columns selecto ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
+- Added resizable columns by dragging in tables ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
+- Added an info bar when Wazuh is not ready yet in order to prevent App fails. ([#636](https://github.com/wazuh/wazuh-splunk/pull/636)).
 
 ### Changed
 
@@ -73,6 +80,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Modularize some functions ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
 - View logs as raw text ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
 - Show logs in a text box ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
+- Reviewed Osquery dashboards ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
+- Improve audit dashboards ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
 
 ### Fixed
 
@@ -86,8 +95,9 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - More descriptive error when savinga file and get an error ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
 - Show success message when group configuration is saved ([#601](https://github.com/wazuh/wazuh-splunk/pull/601)).
 - Error when trying to download a CSV file ([#604](https://github.com/wazuh/wazuh-splunk/pull/604)).
-
-
+- Do not show pagination for one-page tables ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
+- Show email configuration on the configuration on demand ([#672](https://github.com/wazuh/wazuh-splunk/pull/672)).
+- Unify timezone ([#673](https://github.com/wazuh/wazuh-splunk/pull/673)).
 - Properly handling long messages on notifier service, until now, they were using out of the card space, also we replaced some API messages with more meaningful messages ([#570](https://github.com/wazuh/wazuh-splunk/pull/570)).
 - Adapted Wazuh icon for multiple browsers where it was gone ([#475](https://github.com/wazuh/wazuh-splunk/pull/475)).
 
