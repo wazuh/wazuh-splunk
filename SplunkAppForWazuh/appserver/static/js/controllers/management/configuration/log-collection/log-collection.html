@@ -29,15 +29,13 @@
 
   <!-- No configuration section -->
   <wz-no-config flex error="currentConfig['logcollector-localfile']"
-    ng-if="currentConfig['logcollector-localfile'] && isString(currentConfig['logcollector-localfile'])"></wz-no-config>
-  <wz-no-config flex error="'not-present'"
-    ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && !currentConfig['logcollector-localfile'].localfile">
-  </wz-no-config>
+    ng-if="currentConfig['logcollector-localfile'].length && !isString(currentConfig['logcollector-localfile'])"></wz-no-config>
+  <wz-no-config flex error="'not-present'" ng-if="!currentConfig['logcollector-localfile'].length"></wz-no-config>
   <!-- End no configuration section -->
 
   <!-- This section is the main content -->
   <div class="configuration-margin-top" flex layout="column"
-    ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && currentConfig['logcollector-localfile'].localfile && currentConfig['logcollector-localfile'].localfile.length">
+    ng-if="currentConfig['logcollector-localfile'].length && !isString(currentConfig['logcollector-localfile']) && currentConfig['logcollector-localfile'].localfile && currentConfig['logcollector-localfile'].localfile.length">
 
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
