@@ -360,7 +360,7 @@ define(['../module', 'jquery'], function(module, $) {
           agentId : agentId
         }
 
-        await this.genericReq('POST', '/report/generate', {
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
           data: JSON.stringify(data)
         })
 
