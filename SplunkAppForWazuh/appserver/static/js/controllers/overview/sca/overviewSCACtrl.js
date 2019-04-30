@@ -17,6 +17,7 @@ define([
   '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
 ], function(
@@ -26,6 +27,7 @@ define([
   GaugeChart,
   PieChart,
   AreaChart,
+  LinearChart,
   Table,
   TimePicker,
 ) {
@@ -104,14 +106,6 @@ define([
         /**
          * Visualizations
          */ 
-        new SingleValue(
-          'overallScore',
-          `${
-            this.filters
-          }  | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed | eval total=((passed/(failed+passed))*100) | eval total2=round(total,1) | eval total3=(total2 + "%") | table total3 `,
-          'overallScore',
-          this.scope
-        ),
         new GaugeChart(
           'scoreByPolicy',
           `${
@@ -154,6 +148,14 @@ define([
           'top5Failed',
           this.scope
         ),
+        new PieChart(
+          'top5Agents',
+          `${
+            this.filters
+          }  | top agent.name limit=5`,
+          'top5Agents',
+          this.scope 
+        ),
         new AreaChart( 
           'alertLevelEvolution',
           `${
@@ -162,11 +164,19 @@ define([
           'alertLevelEvolution',
           this.scope
         ),
+        new LinearChart(
+          'overTimePolicy',
+          `${
+            this.filters
+          } | timechart count by data.sca.policy`,
+          'overTimePolicy',
+          this.scope
+        ),
         new Table(
           'alertsSummary',
           `${
             this.filters
-          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count`,
+          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
         )
@@ -180,7 +190,6 @@ define([
           'Configuration assessment',
           this.filters,
           [
-            'overallScore',
             'scoreByPolicy',
             'resultDistribution',
             'alertsOverTime',

@@ -250,28 +250,28 @@
           <md-card>
             <div layout="column" ng-if="!item.result" class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Check not applicable due to:</span>
-                <p class="wz-margin-top-10 pExpanded">{{ item.reason }}</p>
+                <p class="wz-margin-top-10 pExpanded wz-text-sca">{{ item.reason }}</p>
             </div>
             <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Rationale</span>
-              <p class="wz-margin-top-10 pExpanded">{{item.rationale}}</p>
+              <p class="wz-margin-top-10 pExpanded wz-text-sca">{{item.rationale}}</p>
             </div>
             <div layout="column" ng-if="item.remediation" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Remediation</span>
-              <p class="wz-margin-top-10 pExpanded">{{item.remediation}}</p>
+              <p class="wz-margin-top-10 pExpanded wz-text-sca">{{item.remediation}}</p>
             </div>
             <div layout="column" ng-if="item.description" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Description</span>
-              <p class="wz-margin-top-10 pExpanded">{{item.description}}</p>
+              <p class="wz-margin-top-10 pExpanded wz-text-sca">{{item.description}}</p>
             </div>
             <div layout="column" ng-if="item.directory" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Path(s)</span>
-              <p class="wz-margin-top-10 pExpanded">{{ item.directory }}</p>
+              <p class="wz-margin-top-10 pExpanded wz-text-sca">{{ item.directory }}</p>
             </div>
             <div layout="column" ng-if="item.rules.length > 0" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Checks</span>
               <ul class="noDot pExpanded">
-                <li ng-repeat="r in item.rules">
+                <li class="wz-text-sca wz-margin-top-20" ng-repeat="r in item.rules">
                   {{r.rule}}
                 </li>
               </ul>

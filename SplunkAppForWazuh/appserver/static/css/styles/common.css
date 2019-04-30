@@ -1082,6 +1082,11 @@ md-toast {
   text-overflow: ellipsis;        
 }
 
+.wz-text-sca {
+  width: calc(100% - 100px) !important;
+  line-height: initial;
+}
+
 .wz-text-truncatable-container {
   overflow: hidden;
   width: auto;
@@ -1787,4 +1792,44 @@ label.wz-icon-loupe  input {
   margin: 10px 5px;
   display: block;
   color: gray;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(6) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(8) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(10) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(12) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(14) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(16) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:nth-child(20) {
+  font-size: 25px !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:not(:nth-child(20)) {
+  visibility: hidden !important;
+}
+
+.vis-sca .viz-panel {
+  width: 15% !important;
+}
+
+#scoreByPolicy .lazy-view-container {
+  height: 80% !important;
 }
