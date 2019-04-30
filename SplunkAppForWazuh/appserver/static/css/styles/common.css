@@ -1793,3 +1793,35 @@ label.wz-icon-loupe  input {
   display: block;
   color: gray;
 }
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(6) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(8) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(10) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(12) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(14) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(16) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:nth-child(20) {
+  font-size: 25px !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:not(:nth-child(20)) {
+  visibility: hidden !important;
+}

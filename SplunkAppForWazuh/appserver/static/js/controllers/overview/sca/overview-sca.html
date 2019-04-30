@@ -52,33 +52,33 @@
     <div>
 
 
-      
-        <div layout="row" layout-align="center stretch" style="height:300px;">
-            <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-              <md-card-content class="wazuh-column">
-                <span class="wz-headline-title">Overall Score
-                  <span class="wz-text-link" style="float:right;" ng-click="expand(5,'overallScore')"><i
-                      class="fa fa-fw fa-expand"></i></span>
-                </span>
-                <md-divider class="wz-margin-top-10"></md-divider>
-                <div id='overallScore'></div>
-              </md-card-content>
-            </md-card>
-
-            
-            <md-card flex="75" class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
-                <md-card-content class="wazuh-column">
-                  <span class="wz-headline-title">Score by policy
-                    <span class="wz-text-link" style="float:right;" ng-click="expand(6,'scoreByPolicy')"><i
-                        class="fa fa-fw fa-expand"></i></span>
-                  </span>
-                  <md-divider class="wz-margin-top-10"></md-divider>
-                  <div id='scoreByPolicy'></div>
-                </md-card-content>
-              </md-card>
-          </div>
-
       <!-- First row -->
+      <div layout="row" layout-align="center stretch" style="height:300px;">
+        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Overall Score
+              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'overallScore')"><i
+                  class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='overallScore'></div>
+          </md-card-content>
+        </md-card>
+
+
+        <md-card flex="75" class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Score by policy
+              <span class="wz-text-link" style="float:right;" ng-click="expand(6,'scoreByPolicy')"><i
+                  class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div class="vis-sca" id='scoreByPolicy'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+
+      <!-- Second row -->
       <div layout="row" layout-align="center stretch" class="height-390">
         <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
@@ -114,8 +114,7 @@
       </div>
 
 
-
-      <!-- Second row -->
+      <!-- Thrid row -->
       <div layout="row" layout-align="center stretch">
         <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
@@ -129,7 +128,7 @@
         </md-card>
       </div>
 
-      <!-- Third row -->
+      <!-- Fourth row -->
       <div layout="row" layout-align="center stretch" class="height-390">
         <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
           <md-card-content class="wazuh-column">
