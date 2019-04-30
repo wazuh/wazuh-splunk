@@ -60,6 +60,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added a dynamic table columns selecto ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
 - Added resizable columns by dragging in tables ([#668](https://github.com/wazuh/wazuh-splunk/pull/668)).
 - Added an info bar when Wazuh is not ready yet in order to prevent App fails. ([#636](https://github.com/wazuh/wazuh-splunk/pull/636)).
+- Show follow symbolic link in the configuration ondemand ([#685](https://github.com/wazuh/wazuh-splunk/pull/685)).
 
 ### Changed
 
