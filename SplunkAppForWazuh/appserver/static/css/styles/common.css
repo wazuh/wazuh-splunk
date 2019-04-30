@@ -1082,6 +1082,11 @@ md-toast {
   text-overflow: ellipsis;        
 }
 
+.wz-text-sca {
+  width: calc(100% - 100px) !important;
+  line-height: initial;
+}
+
 .wz-text-truncatable-container {
   overflow: hidden;
   width: auto;
