@@ -1825,3 +1825,11 @@ label.wz-icon-loupe  input {
 .wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:not(:nth-child(20)) {
   visibility: hidden !important;
 }
+
+.vis-sca .viz-panel {
+  width: 15% !important;
+}
+
+#scoreByPolicy .lazy-view-container {
+  height: 80% !important;
+}
