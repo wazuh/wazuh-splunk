@@ -176,7 +176,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed`,
+          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
         )
