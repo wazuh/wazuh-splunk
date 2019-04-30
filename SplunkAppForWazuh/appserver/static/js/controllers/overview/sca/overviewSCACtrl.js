@@ -154,6 +154,14 @@ define([
           'top5Failed',
           this.scope
         ),
+        new PieChart(
+          'top5Agents',
+          `${
+            this.filters
+          }  | top agent.name limit=5`,
+          'top5Agents',
+          this.scope 
+        ),
         new AreaChart( 
           'alertLevelEvolution',
           `${

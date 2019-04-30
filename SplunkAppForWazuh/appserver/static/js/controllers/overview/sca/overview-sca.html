@@ -80,7 +80,7 @@
 
       <!-- Second row -->
       <div layout="row" layout-align="center stretch" class="height-390">
-        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Results distribution
               <span class="wz-text-link" style="float:right;" ng-click="expand(0,'resultDistribution')"><i
@@ -90,7 +90,7 @@
             <div id='resultDistribution'></div>
           </md-card-content>
         </md-card>
-        <md-card flex="35" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Top 5 passed checks
               <span class="wz-text-link" style="float:right;" ng-click="expand(1,'top5Passed')"><i
@@ -100,7 +100,7 @@
             <div id='top5Passed'></div>
           </md-card-content>
         </md-card>
-        <md-card flex="35" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Top 5 failed checks
               <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5Failed')"><i
@@ -116,7 +116,17 @@
 
       <!-- Thrid row -->
       <div layout="row" layout-align="center stretch">
-        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+      <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top 5 agents
+              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'top5Agents')"><i
+                  class="fa fa-fw fa-expand"></i></span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='top5Agents'></div>
+          </md-card-content>
+        </md-card>
+        <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Result distribution by policy
               <span class="wz-text-link" style="float:right;" ng-click="expand(3,'resultDistributionByPolicy')"><i
