@@ -76,6 +76,7 @@ define([
         this.scope.lastAgent = lastAgent.items[0]
           ? lastAgent.items[0]
           : 'Unknown'
+        console.log("last agent ", this.scope.lastAgent)
         const os = platforms
           ? platforms.items.map(item => item.os).filter(item => !!item)
           : false
@@ -113,7 +114,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} | top agent.name`,
+        `index=wazuh ${this.filters} NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',
@@ -122,7 +123,7 @@ define([
         true,
         'loadingSearch'
       )
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -234,8 +235,8 @@ define([
           ) {
             throw Error('Error fetching agent data')
           }
-          if (agentInfo.data.data.id !== '000') {
-            this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
+          if (agentInfo.data.data.items[0].id !== '000') {
+            this.state.go(`agent-overview`, { id: agentInfo.data.data.items[0].id })
           }
         } else {
           throw Error('Cannot fetch agent name')
