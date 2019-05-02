@@ -1838,3 +1838,7 @@ label.wz-icon-loupe  input {
   position: absolute;
   right: 10px;
 }
+
+.md-sidenav {
+  background-color: #fafafa;
+}
