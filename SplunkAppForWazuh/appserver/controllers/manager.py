@@ -22,6 +22,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
+from requestsbak.exceptions import ConnectionError
 
 
 def getSelfConfStanza(file, stanza):
@@ -309,12 +310,16 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            request_manager = self.session.get(
-                url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify).json()           
-            request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
-            request_cluster_name = self.session.get(
-                url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
+            try:
+                request_manager = self.session.get(
+                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify).json()   
+                request_cluster = self.session.get(
+                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                request_cluster_name = self.session.get(
+                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
+            except ConnectionError as e:
+                self.logger.error("Cannot connect to API : %s" % (e))
+                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
             # Pass the cluster status instead of always False

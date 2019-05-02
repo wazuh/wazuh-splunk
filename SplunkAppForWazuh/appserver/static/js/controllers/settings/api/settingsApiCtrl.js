@@ -121,7 +121,7 @@ define(['../../module'], function(controllers) {
         this.notification.showSuccessToast('Connection established')
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.notification.showErrorToast('Unreachable API')
+        this.notification.showErrorToast(err || 'Unreachable API')
       }
     }
 
