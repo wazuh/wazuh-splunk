@@ -309,12 +309,21 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            request_manager = self.session.get(
-                url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify).json()           
-            request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
-            request_cluster_name = self.session.get(
-                url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
+            try:
+                # Checks in the first request if the credentials are ok
+                request_manager = self.session.get(
+                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify)
+                if request_manager.status_code == 401:
+                    self.logger.error("Cannot connect to API; Invalid credentials.")
+                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
+                request_manager = request_manager.json()  
+                request_cluster = self.session.get(
+                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                request_cluster_name = self.session.get(
+                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
+            except ConnectionError as e:
+                self.logger.error("Cannot connect to API : %s" % (e))
+                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
             try:
                 self.check_wazuh_version(kwargs)
