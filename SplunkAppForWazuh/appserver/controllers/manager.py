@@ -22,7 +22,6 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
-from requestsbak.exceptions import ConnectionError
 
 
 def getSelfConfStanza(file, stanza):
@@ -322,7 +321,7 @@ class manager(controllers.BaseController):
                     url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
                 request_cluster_name = self.session.get(
                     url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
-            except ConnectionError as e:
+            except requestsbak.exceptions.ConnectionError as e:
                 self.logger.error("Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
