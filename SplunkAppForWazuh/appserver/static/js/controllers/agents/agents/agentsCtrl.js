@@ -76,7 +76,6 @@ define([
         this.scope.lastAgent = lastAgent.items[0]
           ? lastAgent.items[0]
           : 'Unknown'
-        console.log("last agent ", this.scope.lastAgent)
         const os = platforms
           ? platforms.items.map(item => item.os).filter(item => !!item)
           : false
