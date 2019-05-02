@@ -12,9 +12,9 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
      * @param {String} attachedElement
      * @param {scope} scope
      */
-    constructor(id, search, attachedElement,scope, options) {
+    constructor(id, search, attachedElement, scope, options) {
       let trellisEnabled = false
-      if(options)
+      if (options)
         trellisEnabled = options.trellisEnabled ? options.trellisEnabled : false
       super(
         new ChartElement(

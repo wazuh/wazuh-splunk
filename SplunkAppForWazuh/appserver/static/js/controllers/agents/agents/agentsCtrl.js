@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function (app, SearchHandler) {
+], function(app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -109,7 +109,7 @@ define([
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
-      } catch (error) { } //eslint-disable-line
+      } catch (error) {} //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
@@ -152,33 +152,36 @@ define([
         }
       }
 
-      this.scope.loadCharts = (id) => {
+      this.scope.loadCharts = id => {
         setTimeout(() => {
-          const chart = new Chart(document.getElementById(id),
-            {
-              type: "doughnut",
-              data: {
-                labels: ["Active", "Disconected", "Never connected"],
-                datasets: [
-                  {
-                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
-                    data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
-                  }
-                ]
-              },
-              options: {
-                cutoutPercentage: 85,
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-                tooltips: {
-                  displayColors: false
+          const chart = new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: {
+              labels: ['Active', 'Disconected', 'Never connected'],
+              datasets: [
+                {
+                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  data: [
+                    this.scope.agentsCountActive,
+                    this.scope.agentsCountDisconnected,
+                    this.scope.agentsCountNeverConnected
+                  ]
                 }
+              ]
+            },
+            options: {
+              cutoutPercentage: 85,
+              legend: {
+                display: true,
+                position: 'right'
+              },
+              tooltips: {
+                displayColors: false
               }
-            });
-          chart.update();
-        }, 250);
+            }
+          })
+          chart.update()
+        }, 250)
       }
     }
 

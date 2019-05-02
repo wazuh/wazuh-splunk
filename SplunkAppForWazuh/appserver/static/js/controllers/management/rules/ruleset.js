@@ -369,11 +369,9 @@ define(['../../module', 'FileSaver'], function(app) {
       }
     }
 
-
-    
     /**
      * Removes all filters
-     * 
+     *
      */
     removeAllFilters() {
       try {
@@ -383,7 +381,6 @@ define(['../../module', 'FileSaver'], function(app) {
         this.notification.showErrorToast('Error removing the filter')
       }
     }
-
 
     /**
      * Gets the path from the state name

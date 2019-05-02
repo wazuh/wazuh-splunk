@@ -312,18 +312,16 @@ define([
     async runScan() {
       try {
         const id = this.agent.data.data.id
-        const result = await this.apiReq(
-          `/syscheck/${id}`,
-          {},
-          'PUT'
-        ) 
+        const result = await this.apiReq(`/syscheck/${id}`, {}, 'PUT')
         if (result && result.data && !result.data.error) {
-          this.notification.showSuccessToast('Syscheck scan launched.')  
+          this.notification.showSuccessToast('Syscheck scan launched.')
         } else {
           throw result.data.message
         }
       } catch (error) {
-        this.notification.showErrorToast(error || 'Cannot launch syscheck scan.')
+        this.notification.showErrorToast(
+          error || 'Cannot launch syscheck scan.'
+        )
       }
     }
 

@@ -31,7 +31,7 @@ define(['../../module', 'FileSaver'], function(module) {
       $reportingService,
       reportingEnabled,
       $currentDataService,
-      $csvRequestService, 
+      $csvRequestService,
       $dateDiffService
     ) {
       this.scope = $scope
@@ -66,7 +66,7 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     $onInit() {
       try {
-        this.setBrowserOffset("2019/04/24 10:59:03")
+        this.setBrowserOffset('2019/04/24 10:59:03')
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length

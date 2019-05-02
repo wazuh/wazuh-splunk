@@ -241,8 +241,10 @@ define(['../module'], function(module) {
         // Otherwise throw a new error
         throw new Error('Missing API fields.')
       } catch (err) {
-        if(err.status === 500){
-          throw new Error('There was an error connecting to the api. Please check your api configuration.')          
+        if (err.status === 500) {
+          throw new Error(
+            'There was an error connecting to the api. Please check your api configuration.'
+          )
         }
         return Promise.reject(err)
       }

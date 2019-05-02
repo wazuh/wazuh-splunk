@@ -90,7 +90,7 @@ define(['../../module'], function(controllers) {
           const usedApi = this.currentDataService.getApi()
           if (entry._key === usedApi._key) {
             this.currentDataService.removeCurrentApi()
-          } 
+          }
           this.scope.apiList.splice(index, 1)
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => {})
@@ -318,7 +318,9 @@ define(['../../module'], function(controllers) {
       if (this.userRegEx.test(user)) {
         return true
       } else {
-        this.scope.validatingError.push('Invalid username format, it must have a length between 3 and 100 characters.')
+        this.scope.validatingError.push(
+          'Invalid username format, it must have a length between 3 and 100 characters.'
+        )
         return false
       }
     }
@@ -331,7 +333,9 @@ define(['../../module'], function(controllers) {
       if (this.passRegEx.test(pass)) {
         return true
       } else {
-        this.scope.validatingError.push('Invalid password format, it must have a length between 3 and 100 characters.')
+        this.scope.validatingError.push(
+          'Invalid password format, it must have a length between 3 and 100 characters.'
+        )
         return false
       }
     }
