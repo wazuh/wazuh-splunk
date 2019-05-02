@@ -1833,3 +1833,7 @@ label.wz-icon-loupe  input {
 #scoreByPolicy .lazy-view-container {
   height: 80% !important;
 }
+
+md-sidenav {
+  background-color: #fafafa;
+}
