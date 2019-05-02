@@ -65,7 +65,7 @@ define(['../module'], function(module) {
         }
         return $q.resolve(data)
       } catch (error) {
-        console.error('errore in request ', error)
+        console.error('error in request ', error)
         return $q.reject(error)
       }
     }
