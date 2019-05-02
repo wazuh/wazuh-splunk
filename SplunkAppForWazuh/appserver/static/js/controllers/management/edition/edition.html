@@ -33,7 +33,7 @@
     <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
       ng-change="changeNode(selectedNode.name)" style="margin:0 5px;" ng-if="isAdmin && clusterEnabled"
       class="input input-dropdown wz-button-empty"></select>
-    <button class="md-icon-button" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i
+    <button class="md-icon-button cursor-pointer" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i
         class="fa fa-fw fa-close" aria-hidden="true"></i>
       <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
     </button>
