@@ -13,23 +13,23 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/single-value',
   '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   ColumnChart,
-  SingleValue,
   GaugeChart,
   PieChart,
   AreaChart,
   LinearChart,
   Table,
   TimePicker,
+  RawTableDataService
 ) {
   'use strict'
 
@@ -110,7 +110,7 @@ define([
           'scoreByPolicy',
           `${
             this.filters
-          }  | stats values(data.sca.score) by data.sca.policy_id `,
+          }  |  stats values(data.sca.score) as values by data.sca.policy_id | sort - values`,
           'scoreByPolicy',
           { trellisEnabled : true,
             gaugeType : 'radialGauge'},
@@ -179,6 +179,16 @@ define([
           } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
+          'alertsSummaryTable',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         )
       ]
       /**
@@ -194,9 +204,11 @@ define([
             'resultDistribution',
             'alertsOverTime',
             'resultDistributionByPolicy',
+            'top5Agents',
             'top5Failed',
             'top5Passed',
-            'alertsSummary'
+            'overTimePolicy',
+            'alertLevelEvolution'
           ],
           {}, //Metrics,
           this.tableResults,
