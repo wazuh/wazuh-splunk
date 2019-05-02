@@ -167,7 +167,6 @@ define(['../../module', 'FileSaver'], function(module) {
             ? this.processesDate.items[0].scan_time
             : 'Unknown'
         }
-        console.log("tss ", this.scope.syscollector)
         this.scope.$applyAsync()
         return
       } catch (error) {
