@@ -41,7 +41,7 @@ define(['../module'], function(module) {
         if (type === 1) {
           $mdToast.show({
             //Success
-            hideDelay: 3000,
+            hideDelay: 6000,
             position: pinTo,
             template:
               '<md-toast  style="border-top: 3px solid #23c405;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
@@ -54,7 +54,7 @@ define(['../module'], function(module) {
         } else if (type === 2) {
           //Error
           $mdToast.show({
-            hideDelay: 15000,
+            hideDelay: 30000,
             position: pinTo,
             template:
               '<md-toast  style="border-top: 3px solid #db0d0d;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
@@ -67,7 +67,7 @@ define(['../module'], function(module) {
         } else if (type === 3) {
           //Warning
           $mdToast.show({
-            hideDelay: 3000,
+            hideDelay: 30000,
             position: pinTo,
             template:
               '<md-toast style="border-top: 3px solid #eddb07;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
@@ -80,7 +80,7 @@ define(['../module'], function(module) {
         } else {
           $mdToast.show({
             //Info
-            hideDelay: 3000,
+            hideDelay: 6000,
             position: pinTo,
             template:
               '<md-toast style="border-top: 3px solid #005571;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
