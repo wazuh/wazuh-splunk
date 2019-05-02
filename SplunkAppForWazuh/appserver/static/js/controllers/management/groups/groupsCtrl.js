@@ -197,6 +197,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           ) {
             this.mainGroup = this.stateParams.group
             this.loadGroup(this.mainGroup)
+            this.goBackFiles()
           }
         }
 
