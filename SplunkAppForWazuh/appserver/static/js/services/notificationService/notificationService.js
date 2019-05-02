@@ -54,7 +54,7 @@ define(['../module'], function(module) {
         } else if (type === 2) {
           //Error
           $mdToast.show({
-            hideDelay: 3000,
+            hideDelay: 15000,
             position: pinTo,
             template:
               '<md-toast  style="border-top: 3px solid #db0d0d;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
