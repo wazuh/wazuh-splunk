@@ -40,6 +40,7 @@ define([
       $csvRequestService,
       $notificationService,
       $reportingService,
+      $requestService,
       reportingEnabled
     ) {
       this.state = $state
@@ -56,6 +57,7 @@ define([
       this.showFiles = false
       this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel
+      this.apiReq = $requestService.apiReq
       this.currentDataService.addFilter(
         `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
       )
@@ -279,8 +281,8 @@ define([
      */
     $onInit() {
       this.scope.loadingVizz = true
-      this.show()
       this.scope.show = () => this.show()
+      this.scope.runScan = () => this.runScan()
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -302,6 +304,27 @@ define([
       this.showFiles = !this.showFiles
       this.scope.showFiles = this.showFiles
       if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    /**
+     * Runs syscheck scan
+     */
+    async runScan() {
+      try {
+        const id = this.agent.data.data.id
+        const result = await this.apiReq(
+          `/syscheck/${id}`,
+          {},
+          'PUT'
+        ) 
+        if (result && result.data && !result.data.error) {
+          this.notification.showSuccessToast('Syscheck scan launched.')  
+        } else {
+          throw result.data.message
+        }
+      } catch (error) {
+        this.notification.showErrorToast(error || 'Cannot launch syscheck scan.')
+      }
     }
 
     /**
