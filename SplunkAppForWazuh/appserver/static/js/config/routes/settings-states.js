@@ -139,6 +139,7 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('settings.configuration')
           },
           controller: 'settingsConfigCtrl',
+          controllerAs: 'vm',
           resolve: {
             configuration: [
               '$state',

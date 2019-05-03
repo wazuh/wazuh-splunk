@@ -16,13 +16,17 @@ define(['../../module'], function (controllers) {
         const id = this.currentApi['_key']
         this.scope.configuration = this.configuration.data
 
+        this.dropDownValue = false
+        this.editingNewValue = false
+        this.scope.logLevelOptions = ['info', 'debug']
         this.scope.getDescription = key => this.getDescription(key)
         this.scope.switchEdit = (key, value) => this.switchEdit(key, value)
         this.scope.cancelEdition =  () => this.cancelEdition()
-        this.scope.setValue = value => this.setValue(value)
-        
-
-      } catch (error) { }
+        this.scope.setValue = () => this.setValue()
+        this.scope.selectValue = value => this.selectValue(value)
+      } catch (error) { 
+        console.error("onInit err : ", error)
+      }
 
     }
 
@@ -49,7 +53,10 @@ define(['../../module'], function (controllers) {
     switchEdit(key, value) {
       try {
         this.scope.editingKey = key
-        this.scope.editingNewValue = value
+        this.editingNewValue = value
+        if (key === 'log.level') {
+          this.inputEnabled = true
+        }
       } catch (error) {
         return false
       }
@@ -60,7 +67,9 @@ define(['../../module'], function (controllers) {
      */
     cancelEdition() {
       this.scope.editingKey = false
-      this.scope.editingNewValue = false
+      this.editingNewValue = false
+      this.dropDownValue = false
+      this.inputEnabled = false
     }
 
     /**
@@ -68,7 +77,7 @@ define(['../../module'], function (controllers) {
      */
     async setValue() {
       try {
-        console.log(this.scope.editingNewValue)
+        const val = this.inputEnabled ? this.editingNewValue : this.dropDownValue
         /** TODO: call to an endpoint to overwritte the value */
         this.cancelEdition()
         this.refreshConfig()
@@ -76,6 +85,15 @@ define(['../../module'], function (controllers) {
         return Promise.reject(error) 
       }
     }
+
+    /**
+     * Select value from dropdown
+     * @param {String} value 
+     */
+    selectValue(value) {
+      this.dropDownValue = value
+    }
+
 
     /**
      * Refresh the configuration

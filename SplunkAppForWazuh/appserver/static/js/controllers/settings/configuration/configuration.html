@@ -29,7 +29,17 @@
             <!-- value to edit -->
             <td>
               <div ng-show="!editingKey || editingKey !== key">{{value}}</div>
-              <div ng-show="editingKey === key"><input class="wz-margin-zero" type="text" ng-model="editingNewValue"></div>
+              <!-- Input -->
+              <div ng-show="editingKey === key && editingKey !== 'log.level'">
+                <input class="wz-margin-zero" type="text" ng-model="vm.editingNewValue">
+              </div>
+              <!-- Log dropdown -->
+              <div ng-show="editingKey === key && editingKey === 'log.level'">
+                <select ng-options="option for option in logLevelOptions" ng-model="vm.dropDownValue"
+                  ng-init="logLevelOptions[0]" ng-change="selectValue(vm.dropDownValue)"
+                  class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero">
+                </select>
+              </div>
             </td>
             <!-- end value -->
             <td>{{getDescription(key)}}</td>
@@ -49,7 +59,7 @@
                       Cancel
                     </md-tooltip>
                   </i>
-                  <i ng-click="setValue('testing')" class="fa fa-fw fa-check cursor-pointer">
+                  <i ng-click="setValue()" class="fa fa-fw fa-check cursor-pointer">
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Apply
                     </md-tooltip>
