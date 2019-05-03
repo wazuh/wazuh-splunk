@@ -123,6 +123,10 @@
   padding-bottom: 14px;
 } 
 
+.wz-padding-16 {
+  padding: 16px
+}
+
 .wz-padding-left-8 {
   padding-left: 8px
 }
@@ -424,6 +428,10 @@ div.uil-ring-css {
 
 .wz-margin-top-15 {
   margin-top: 15px;
+}
+
+.wz-margin-top--3 {
+  margin-top: -3px;
 }
 
 .wz-margin-top--15{
@@ -1792,4 +1800,8 @@ label.wz-icon-loupe  input {
 
 .orange {
   color: #ff9999;
+}
+
+.border-top-none-settings th{
+  border-top: none !important;
 }

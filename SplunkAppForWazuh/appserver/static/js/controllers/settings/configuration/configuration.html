@@ -1,14 +1,41 @@
 <div layout="column" layout-align="start stretch" ng-if="!load">
 
-    <!-- Headline -->
-    <div layout="column" layout-padding>
-      <span class="font-size-18"><i class="fa fa-fw fa-check-square-o" aria-hidden="true"></i> Wazuh Splunk App configuration</span>
-      <span>Configuration settings</span>
-    </div>
-    <!-- End headline -->
-
-    <!-- Configuration table -->
-    {{configuration}}
-    <!-- End configuration table -->
-    
+  <!-- Headline -->
+  <div layout="column" layout-padding>
+    <span class="font-size-18"><i class="fa fa-wrench" aria-hidden="true"></i> Wazuh Splunk App configuration</span>
+    <span>Configuration settings</span>
   </div>
+  <!-- End headline -->
+
+  <md-card class="wz-md-card">
+    <md-card-actions layout="row" class="layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+      <i class="fa fa-file-o" aria-hidden="true"></i>&nbsp;
+      <span class="wz-margin-top--3">Current configuration</span>
+    </md-card-actions>
+    <md-card-contents class="wz-padding-16">
+      <!-- Configuration table -->
+      <table class="table-striped table-condensed">
+        <thead>
+          <tr class="border-top-none-settings">
+            <th>Setting</th>
+            <th>Value</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="(key, value) in configuration">
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+            <td>{{getDescription(key)}}</td>
+            <td>
+              <wz-svg icon="pencil" color="#0079a5"></wz-svg>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </md-card-contents>
+  </md-card>
+  <!-- End configuration table -->
+
+</div>
