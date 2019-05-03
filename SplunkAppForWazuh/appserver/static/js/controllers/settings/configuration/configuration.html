@@ -14,11 +14,11 @@
     </md-card-actions>
     <md-card-contents class="wz-padding-16">
       <!-- Configuration table -->
-      <table class="table-striped table-condensed">
+      <table class="table-striped table-condensed table-hover">
         <thead>
           <tr class="border-top-none-settings">
             <th>Setting</th>
-            <th>Value</th>
+            <th class="wz-width-350">Value</th>
             <th>Description</th>
             <th>Action</th>
           </tr>
@@ -26,10 +26,37 @@
         <tbody>
           <tr ng-repeat="(key, value) in configuration" ng-if="key !== 'admin'">
             <td>{{key}}</td>
-            <td>{{value}}</td>
+            <!-- value to edit -->
+            <td>
+              <div ng-show="!editingKey || editingKey !== key">{{value}}</div>
+              <div ng-show="editingKey === key"><input class="wz-margin-zero" type="text" ng-model="editingNewValue"></div>
+            </td>
+            <!-- end value -->
             <td>{{getDescription(key)}}</td>
             <td>
-              <wz-svg icon="pencil" color="#0079a5"></wz-svg>
+              <!-- switch to edit -->
+              <div ng-show="!editingKey || editingKey !== key">
+                <wz-svg icon="pencil" color="#0079a5" ng-click="switchEdit(key, value)">
+                  <md-tooltip md-direction="left" class="wz-tooltip">
+                    Edit
+                  </md-tooltip>
+                </wz-svg>
+              </div>
+              <div ng-show="editingKey === key">
+                <span style="color: #0079a5">
+                  <i ng-click="cancelEdition()" class="fa fa-fw fa-times cursor-pointer">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Cancel
+                    </md-tooltip>
+                  </i>
+                  <i ng-click="setValue('testing')" class="fa fa-fw fa-check cursor-pointer">
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Apply
+                    </md-tooltip>
+                  </i>
+                </span>
+              </div>
+              <!-- end switch -->
             </td>
           </tr>
         </tbody>

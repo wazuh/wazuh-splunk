@@ -119,7 +119,15 @@
   width: 100% !important;
 }
 
+.wz-width-350 {
+  width: 350px !important;
+}
+
 /* Custom margin styles */
+
+.wz-margin-zero {
+  margin: 0px !important;
+}
 
 .wz-margin-left-5 {
   margin-left: 5px;
