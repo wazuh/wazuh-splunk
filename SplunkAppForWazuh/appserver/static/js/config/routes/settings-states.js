@@ -15,6 +15,19 @@ define(['../module'], function(module) {
             'static/app/SplunkAppForWazuh/js/controllers/settings/main/settings.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('settings.api')
+          },
+          controller: 'settingsCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
           }
         })
         // settings -> about

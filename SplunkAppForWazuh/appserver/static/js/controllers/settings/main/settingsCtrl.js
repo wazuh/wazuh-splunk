@@ -2,11 +2,12 @@ define(['../../module'], function(controllers) {
   'use strict'
 
   class Main {
-    constructor($scope, $navigationService) {
+    constructor($scope, $navigationService, isAdmin) {
       this.$navigationService = $navigationService
       this.$scope = $scope
       this.$scope.message = 'Settings'
       this.$scope.tabName = ''
+      this.$scope.isAdmin = isAdmin
     }
 
     $onInit() {
