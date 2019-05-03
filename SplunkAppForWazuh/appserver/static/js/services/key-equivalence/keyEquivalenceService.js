@@ -19,7 +19,7 @@ define(['../module'], function(module) {
           level: 'Level',
           conf_sum: 'Group MD5 sum',
           merged_sum: 'Group sum',
-          hash: 'MD5 sum',
+          hash: 'Checksum',
           filename: 'File',
           file: 'File',
           gdpr: 'GDPR',
@@ -42,7 +42,7 @@ define(['../module'], function(module) {
           details: 'Details',
           position: 'Position',
           configSum: 'Group MD5 sum',
-          mergedSum: 'Group sum',
+          mergedSum: 'Configuration checksum',
           key: 'Key',
           scan_id: 'Scan ID',
           format: 'Format',
@@ -64,7 +64,21 @@ define(['../module'], function(module) {
           uname: 'User',
           gname: 'Group',
           perm: 'Permissions',
-          process: 'Process'
+          process: 'Process',
+          md5: 'MD5',
+          sha1: 'SHA1',
+          sha256: 'SHA256',
+          cis: 'CIS',
+          event: 'Event',
+          size: 'Size',
+          uid: 'User ID',
+          gid: 'Group ID',
+          mtime: 'Last modified',
+          date: 'Date',
+          expanded: 'Expanded',
+          title: 'Title',
+          result: 'Result',
+          agents: 'Agents'
         }
       }
     }

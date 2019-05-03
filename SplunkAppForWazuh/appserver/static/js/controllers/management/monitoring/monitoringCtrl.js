@@ -40,7 +40,10 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.toast = $notificationService.showSimpleToast
+      this.scope.expandArray = [false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.notification = $notificationService
       this.apiReq = $requestService.apiReq
       this.vizz = [
         new LinearChart(
@@ -101,15 +104,18 @@ define([
      * On controller load
      */
     $onInit() {
+      this.scope.selectedNavTab = 'monitoring'
       this.scope.currentApi =
         this.currentApi.clusterName || this.currentApi.managerName
       this.scope.search = term => this.search(term)
       this.scope.status = 'yes'
       this.scope.reset = () => this.reset()
       this.scope.goConfiguration = () => this.goConfiguration()
+      this.scope.goBack = () => this.goBack()
       this.scope.goNodes = () => this.goNodes()
 
       this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
+        event.stopPropagation()
         try {
           if (this.checkStatus()) {
             this.scope.currentNode = parameters.node
@@ -186,7 +192,7 @@ define([
           }
           if (!this.scope.$$phase) this.scope.$digest()
         } catch (error) {
-          this.toast(error.message || error)
+          this.notification.showErrorToast(error.message || error)
         }
       })
 
@@ -254,6 +260,10 @@ define([
     setBooleans(component) {
       this.scope.showConfig = component === 'showConfig'
       this.scope.showNodes = component === 'showNodes'
+      if(component === 'showClusterMonitoring'){
+        this.scope.showConfig = false
+        this.scope.showNodes = false
+      }
       this.scope.currentNode = null
       if (!this.scope.$$phase) this.scope.$digest()
     }
@@ -273,6 +283,13 @@ define([
     }
 
     /**
+     * Navigates to cluster monitoring
+     */
+    goBack() {
+      this.setBooleans('showClusterMonitoring')
+    }
+
+    /**
      * Launches the searches
      */
     launchSearches() {
@@ -281,6 +298,29 @@ define([
           this.scope.currentNode.name
         } sourcetype=wazuh | timechart span=2h count`
       )
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
   app.controller('monitoringCtrl', Monitoring)

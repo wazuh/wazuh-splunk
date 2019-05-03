@@ -36,22 +36,18 @@ define(['../module'], function(module) {
             agentsInfo: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async $requestService => {
                 try {
                   const result = await $requestService.apiReq('/agents/summary')
                   return result
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+                } catch (err) {} //eslint-disable-line
               }
             ],
             extensions: [
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -84,6 +80,22 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            awsExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('aws')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -95,7 +107,52 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-pm')
           },
-          controller: 'overviewPolicyMonitoringCtrl'
+          controller: 'overviewPolicyMonitoringCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })// Overview - SCA Security Configuration Assessment
+        .state('ow-sca', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/sca/overview-sca.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-sca')
+          },
+          controller: 'overviewSCACtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - FIM
         .state('ow-fim', {
@@ -105,9 +162,27 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-fim')
           },
-          controller: 'overviewFimCtrl'
+          controller: 'overviewFimCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            awsExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('aws')
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
-        // Overview - OSQUERy
+        // Overview - Osquery
         .state('ow-osquery', {
           templateUrl:
             BASE_URL +
@@ -130,6 +205,22 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -141,7 +232,25 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-audit')
           },
-          controller: 'overviewAuditCtrl'
+          controller: 'overviewAuditCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - OpenSCAP
         .state('ow-os', {
@@ -151,7 +260,25 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-os')
           },
-          controller: 'overviewOpenScapCtrl'
+          controller: 'overviewOpenScapCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - PCI-DSS
         .state('ow-pci', {
@@ -161,7 +288,45 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-pci')
           },
-          controller: 'overviewPciCtrl'
+          controller: 'overviewPciCtrl',
+          resolve: {
+            pciTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const pciTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/pci?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    pciTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return pciTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - GDPR
         .state('ow-gdpr', {
@@ -171,8 +336,47 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-gdpr')
           },
-          controller: 'overviewGdprCtrl'
+          controller: 'overviewGdprCtrl',
+          resolve: {
+            gdprTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const gdprTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/gdpr?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    gdprTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return gdprTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
+
         // Overview - Vulnerabilities
         .state('ow-vul', {
           templateUrl:
@@ -181,7 +385,25 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-vul')
           },
-          controller: 'overviewVulnerabilitiesCtrl'
+          controller: 'overviewVulnerabilitiesCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - CIS-CAT
         .state('ow-ciscat', {
@@ -191,7 +413,25 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-ciscat')
           },
-          controller: 'ciscatCtrl'
+          controller: 'ciscatCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // Overview - VirusTotal
         .state('ow-virustotal', {
@@ -201,7 +441,25 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-virustotal')
           },
-          controller: 'overviewVirusTotal'
+          controller: 'overviewVirusTotal',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
         // =========== AWS =========== //
         .state('ow-aws', {
@@ -211,7 +469,43 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-aws')
           },
-          controller: 'awsCtrl'
+          controller: 'awsCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ]
+          }
+        })
+        // =========== Docker listener =========== //
+        .state('ow-docker', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/docker/overview-docker.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-docker')
+          },
+          controller: 'dockerCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
         })
     }
   ])

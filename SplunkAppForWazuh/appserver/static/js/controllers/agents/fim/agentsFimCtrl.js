@@ -14,7 +14,7 @@ define([
   Table,
   AreaChart,
   TimePicker,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -39,7 +39,8 @@ define([
       $tableFilterService,
       $csvRequestService,
       $notificationService,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.state = $state
       this.wzTableFilter = $tableFilterService
@@ -47,13 +48,29 @@ define([
       this.agent = agent
       this.api = this.currentDataService.getApi()
       this.csvReq = $csvRequestService
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.showFiles = false
       this.scope.showFiles = this.showFiles
       this.urlTokenModel = $urlTokenModel
+      this.currentDataService.addFilter(
+        `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
+      )
+      this.scope.expandArray = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+      this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&
         this.agent.data &&
@@ -71,11 +88,13 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -87,7 +106,7 @@ define([
           'eventsOverTimeElement',
           `${
             this.filters
-          } sourcetype="wazuh"  "rule.groups"="syscheck" | timechart span=12h count by rule.description`,
+          } sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement',
           this.scope
         ),
@@ -105,6 +124,14 @@ define([
             this.filters
           } sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
           'topUserOwnersElement',
+          this.scope
+        ),
+        new PieChart(
+          'topActions',
+          `${
+            this.filters
+          } sourcetype="wazuh" | stats count by "syscheck.event"`,
+          'topActions',
           this.scope
         ),
         new PieChart(
@@ -127,7 +154,7 @@ define([
           'wordWritableFilesElement',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
+          } sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement',
           this.scope
         ),
@@ -135,26 +162,45 @@ define([
           'eventsSummaryElement',
           `${
             this.filters
-          } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement',
+          this.scope
+        ),
+        new RawTableDataService(
+          'eventsSummaryTable',
+          `${
+            this.filters
+          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          'eventsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Events Summary'
+        ),
+        new PieChart(
+          'topNewFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topNewFiles',
+          this.scope
+        ),
+        new PieChart(
+          'topModifiedFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topModifiedFiles',
+          this.scope
+        ),
+        new PieChart(
+          'topDeletedFiles',
+          `${
+            this.filters
+          } sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+          'topDeletedFiles',
           this.scope
         )
       ]
-
-      this.eventsSummaryTable = new rawTableDataService(
-        'eventsSummaryTable',
-        `${
-          this.filters
-        } sourcetype="wazuh" rule.groups="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-        'eventsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.eventsSummaryTable)
-
-      this.eventsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Events Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -182,8 +228,12 @@ define([
           'File integrity monitoring',
           this.filters,
           [
+            'topNewFiles',
+            'topModifiedFiles',
+            'topDeletedFiles',
             'eventsOverTimeElement',
             'topGroupOwnersElement',
+            'topActions',
             'topUserOwnersElement',
             'topFileChangesElement',
             'rootUserFileChangesElement',
@@ -205,6 +255,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -223,6 +278,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.show()
       this.scope.show = () => this.show()
       this.scope.agent =
@@ -271,8 +327,10 @@ define([
      */
     async downloadCsv(path, name) {
       try {
-        this.toast('Your download should begin automatically...')
-        const currentApi = this.api.id
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
           currentApi,
@@ -282,7 +340,7 @@ define([
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -293,6 +351,29 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
   app.controller('agentsFimCtrl', AgentsFim)

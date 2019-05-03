@@ -1,5 +1,6 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring'" ng-init="switchConfigurationSubTab('pm-general')">
-  
+<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca' || configurationSubTab === 'pm-unix' || configurationSubTab === 'pm-general'"
+   ng-init="switchConfigurationSubTab('pm-general')">
+
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
@@ -18,22 +19,26 @@
     && isString(currentConfig['syscheck-rootcheck']))"
         class="wz-agent-status-indicator small red">Disabled</span>
     </div>
-    <span class="md-subheader">Configuration to ensure compliance with security policies, standards and hardening
+    <span>Configuration to ensure compliance with security policies, standards and hardening
       guides</span>
   </div>
   <!-- End headline -->
 
   <!-- Policy monitoring navigation bar -->
   <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Policy monitoring navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
+    <md-nav-item ng-if="currentAgent" class="wz-nav-item" md-nav-click="switchWodle('sca'); switchConfigurationSubTab('pm-ca')" name="pm-ca">Configuration
+      assessment</md-nav-item>
   </md-nav-bar>
   <!-- End Policy monitoring navigation bar -->
 
-  <!-- Loading ring -->
-  <div class='uil-ring-css' ng-show="load">
-    <div></div>
-  </div>
+<!-- Loading bar -->
+<div class="loader-bar" ng-show="load">
+  <div class="loader"></div>
+</div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
@@ -44,16 +49,16 @@
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['syscheck-rootcheck'] && !isString(currentConfig['syscheck-rootcheck']) && currentConfig['syscheck-rootcheck'].rootcheck">
+    <div class="configuration-margin-top" flex layout="column">
 
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && !currentConfig['syscheck-rootcheck'].rootcheck.system_audit"></wz-no-config>
+      <wz-no-config flex error="'not-present'" ng-if="(configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && !currentConfig['syscheck-rootcheck'].rootcheck.system_audit)"></wz-no-config>
       <!-- End no configuration section -->
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && currentConfig['syscheck-rootcheck'].rootcheck.system_audit">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">UNIX audit files</span>
@@ -91,7 +96,7 @@
 
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-general'">
-        <md-card-content>
+        <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">All settings</span>
@@ -158,64 +163,91 @@
       </md-card>
       <!-- End main card with all the settings -->
 
+      <!-- The configuration assessment -->
 
-      <!-- JSON card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="JSONContent">
-        <md-card-content flex layout="column">
+      <!-- No configuration section -->
+      <wz-no-config flex error="'not-present'" ng-if="(configurationSubTab === 'pm-ca' && !currentConfig['sca'])"></wz-no-config>
+      <!-- End no configuration section -->
+
+      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ca' && currentConfig['sca']">
+        <md-card-content>
+          <!-- Configuration block -->
           <div layout="row" layout-align="start center">
             <div>
-              <span class="font-size-16">JSON viewer</span>
+              <span class="font-size-16">Configuration assessment</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">View this configuration in raw JSON format</span>
               </div>
             </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
-          <!-- The JSON viewer -->
-          <div flex="auto" class="wz-margin-top-10 wz-code-viewer">
-            <pre><code wz-dynamic="JSONContent"></code></pre>
+          <div ng-if="currentConfig['sca']" layout="row" style="padding-left: 20%; margin-bottom:30px;">
+            <div class="wz-padding-top-10" style="width:100%">
+              <!-- content -->
+              <wz-config-item label="Configuration assessment status" value="currentConfig['sca'].enabled === 'yes' ? 'enabled' : 'disabled'">
+              </wz-config-item>
+              <wz-config-item label="Interval" value="currentConfig['sca'].interval">
+              </wz-config-item>
+              <wz-config-item label="Scan on start" value="currentConfig['sca'].scan_on_start">
+              </wz-config-item>
+              <wz-config-item label="Skip nfs" value="currentConfig['sca'].skip_nfs">
+              </wz-config-item>
+              <!-- end content -->
+            </div>
           </div>
-          <!-- End JSON viewer -->
-        </md-card-content>
-      </md-card>
-      <!-- End JSON card -->
+          <!-- End configuration block -->
 
-      <!-- XML card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="XMLContent">
-        <md-card-content flex layout="column">
-          <div layout="row" layout-align="start center">
-            <div>
-              <span class="font-size-16">XML viewer</span>
-              <div class="wz-margin-top-10">
-                <span class="md-subheader small">View this configuration in raw XML format</span>
+          <!-- Policies block -->
+          <div ng-if="currentConfig['sca'].enabled === 'yes'">
+            <div layout="row" layout-align="start center">
+              <div>
+                <span class="font-size-16">Policies</span>
+                <div class="wz-margin-top-10">
+                </div>
               </div>
             </div>
-            <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
-            <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
-          </div>
-          <md-divider class="wz-margin-top-10"></md-divider>
+            <md-divider class="wz-margin-top-10"></md-divider>
 
-          <!-- The XML viewer -->
-          <div flex="auto" class="wz-margin-top-10 wz-code-viewer">
-            <pre>{{ XMLContent }}</pre>
+            <div class="wz-padding-top-10" style="width:100%">
+              <!-- content -->
+              <table class="table table-striped table-condensed table-layout-fixed table-vertical-align-middle">
+                <thead class="wz-text-bold">
+                  <th class="wz-text-left">Name</th>
+                </thead>
+                <tbody>
+                  <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['sca'].policies">
+                    <td>
+                      <span>{{policy}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </wz-config-item>
+              <!-- end content -->
+            </div>
           </div>
-          <!-- End XML viewer -->
+          <!-- End policies block -->
+
+
         </md-card-content>
+
       </md-card>
-      <!-- End XML card -->
+      <!-- End configuration assessment -->
+
+
+      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
 
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
-    <md-sidenav class="md-sidenav-right" md-is-locked-open="true">
+    <!-- Help button -->
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+      aria-label="Link to open app about section">
+      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+    </md-button>
+    <!-- End help button -->
+    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
         <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/anomalies-detection/index.html">Anomaly

@@ -23,14 +23,20 @@ define(['../../module', 'FileSaver'], function(app) {
     ) {
       this.scope = $scope
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.scope.type_log = 'all'
       this.scope.category = 'all'
+      this.scope.sortFilter = false
       this.api = $currentDataService.getApi()
       this.logs = logs
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
+      this.scope.$on('scrolledToBottom', (ev, parameters) => {
+        ev.stopPropagation()
+        if (!this.scope.realtime)
+          this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
+      })
     }
 
     /**
@@ -38,6 +44,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     $onInit() {
       try {
+        this.scope.selectedNavTab = 'logs'
         this.scope.search = term => this.search(term)
         this.scope.filter = term => this.filter(term)
         this.scope.changeNode = node => this.changeNode(node)
@@ -46,9 +53,51 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
         this.initialize()
+
+        this.scope.sort = () => this.sort()
+        this.scope.$on('wazuhFetched', (ev, params) => {
+          ev.stopPropagation()
+          this.scope.emptyResults = false
+          if (params.items.length < 1) {
+            this.scope.emptyResults = true
+          } else {
+            this.scope.XMLContent = this.parseLogsToText(params.items)
+            this.scope.$broadcast('XMLContentReady', {
+              data: this.scope.XMLContent
+            })
+          }
+          this.scope.$applyAsync()
+        })
       } catch (err) {
-        this.toast('Cannot fetch logs data from server')
+        this.notification.showErrorToast('Cannot fetch logs data from server')
       }
+    }
+
+    /**
+     * Parse json logs to plane text
+     * @param {Object} logs
+     */
+    parseLogsToText(logs) {
+      try {
+        let result = ''
+        logs.map(log => {
+          if (log) {
+            result += `${log.timestamp} ${log.tag} ${(
+              log.level || ''
+            ).toUpperCase()}:  ${log.description}\n`
+          }
+        })
+        return result
+      } catch (error) {
+        this.notification.showErrorToast('Cannot parse logs.')
+      }
+    }
+
+    /**
+     * Sorts logs by timestamp
+     */
+    sort() {
+      this.scope.$broadcast('wazuhSort', { field: 'timestamp' })
     }
 
     /**
@@ -56,8 +105,10 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...')
-        const currentApi = this.api.id
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
+        const currentApi = this.api['_key']
         if (this.clusterEnabled) {
           this.path = `/cluster/${this.scope.selectedNode}/logs`
         }
@@ -70,11 +121,11 @@ define(['../../module', 'FileSaver'], function(app) {
           const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
           saveAs(blob, 'logs.csv') // eslint-disable-line
         } else {
-          this.toast('Empty results.')
+          this.notification.showWarningToast('Empty results.')
         }
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -124,7 +175,7 @@ define(['../../module', 'FileSaver'], function(app) {
         if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (err) {
-        this.toast('Error initializing data')
+        this.notification.showErrorToast('Error initializing data')
       }
       return
     }
@@ -149,7 +200,7 @@ define(['../../module', 'FileSaver'], function(app) {
         }))
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Error at fetching logs')
+        this.notification.showErrorToast('Error at fetching logs')
       }
     }
 

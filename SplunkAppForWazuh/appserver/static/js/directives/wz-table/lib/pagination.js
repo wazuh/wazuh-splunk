@@ -12,7 +12,7 @@
 define([], function() {
   'use strict'
   return {
-    nextPage: async (currentPage, $scope, errorHandler, fetch) => {
+    nextPage: async (currentPage, $scope, errorHandler, fetch, last) => {
       try {
         $scope.error = false
         if (
@@ -23,15 +23,24 @@ define([], function() {
           $scope.currentPage++
         }
         if (
-          $scope.pagedItems[currentPage || $scope.currentPage].includes(null)
+          ($scope.pagedItems[currentPage || $scope.currentPage] || []).includes(
+            null
+          )
         ) {
           const copy = $scope.currentPage
           $scope.wazuhTableLoading = true
-          const currentNonNull = $scope.items.filter(item => !!item)
-          await fetch({ offset: currentNonNull.length })
+          let currentNonNull = $scope.items.filter(item => !!item)
+          if (!last) {
+            await fetch({ offset: currentNonNull.length })
+          } else {
+            while (currentNonNull.length < $scope.items.length) {
+              await fetch({ offset: currentNonNull.length })
+              currentNonNull = $scope.items.filter(item => !!item)
+            }
+          }
           $scope.wazuhTableLoading = false
           $scope.currentPage = copy
-          if (!$scope.$$phase) $scope.$digest()
+          $scope.$applyAsync()
         }
       } catch (error) {
         $scope.wazuhTableLoading = false

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module', 'FileSaver'], function(module) {
   'use strict'
   class Inventory {
     /**
@@ -28,20 +28,28 @@ define(['../../module'], function(module) {
       $rootScope,
       $notificationService,
       $scope,
-      $reportingService
+      $reportingService,
+      reportingEnabled,
+      $currentDataService,
+      $csvRequestService, 
+      $dateDiffService
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.data = syscollector
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
       this.root = $rootScope
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.netifaceResponse = false
       this.ports = {}
       this.packagesDate = {}
       this.processesDate = {}
       this.netaddrResponse = false
       this.reportingService = $reportingService
+      this.api = $currentDataService.getApi()
+      this.csvReq = $csvRequestService
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
     }
 
     /**
@@ -58,6 +66,8 @@ define(['../../module'], function(module) {
      */
     $onInit() {
       try {
+        this.setBrowserOffset("2019/04/24 10:59:03")
+        this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
@@ -103,24 +113,17 @@ define(['../../module'], function(module) {
         this.init()
 
         this.scope.startVis2Png = () =>
-          this.reportingService.reportInventoryData(
-            'agents-inventory',
-            'Inventory Data',
-            '', //Filters,
-            [], //Visualizations,
-            {}, //Metrics,
-            {}, //tableResults
-            'inventory', //isAgent
-            this.scope.agent.id //agentId
-          )
+          this.reportingService.reportInventoryData(this.scope.agent.id)
 
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
         })
 
+        this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
+
         return
       } catch (error) {
-        this.toast(error.message || error)
+        this.notification.showErrorToast(error.message || error)
       }
     }
 
@@ -164,11 +167,31 @@ define(['../../module'], function(module) {
             ? this.processesDate.items[0].scan_time
             : 'Unknown'
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        console.log("tss ", this.scope.syscollector)
+        this.scope.$applyAsync()
         return
       } catch (error) {
         throw new Error(error.message || error)
       }
+    }
+
+    /**
+     * Exports the table in CSV format
+     */
+    async downloadCsv(path, name) {
+      try {
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
+        const currentApi = this.api['_key']
+        const output = await this.csvReq.fetch(path, currentApi)
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, name) // eslint-disable-line
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Error downloading CSV')
+      }
+      return
     }
   }
   // Logs controller

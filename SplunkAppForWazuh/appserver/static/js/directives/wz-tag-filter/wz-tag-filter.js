@@ -26,6 +26,7 @@ define(['../module'], function(app) {
         $scope.newTag = ''
         $scope.isAutocomplete = false
         $scope.dataModel = []
+        $scope.connectors = []
 
         /**
          * Adds a new tag
@@ -60,7 +61,13 @@ define(['../module'], function(app) {
                 return x.type === 'search'
               })
               if (!isFilter && idxSearch) {
-                $scope.removeTag(idxSearch.id, false)
+                $scope.removeTag(
+                  idxSearch.id,
+                  false,
+                  $scope.searchIdx,
+                  undefined,
+                  true
+                )
               }
               if (
                 !$scope.tagList.find(function(x) {
@@ -74,13 +81,14 @@ define(['../module'], function(app) {
               ) {
                 $scope.tagList.push(tag)
                 $scope.groupedTagList = groupBy($scope.tagList, 'key')
+                $scope.connectors = addConnectors($scope.groupedTagList)
                 buildQuery($scope.groupedTagList)
               }
               $scope.showAutocomplete(flag)
               $scope.newTag = ''
             }
           } catch (error) {
-            $notificationService.showSimpleToast(error, 'Error adding filter')
+            $notificationService.showErrorToast(error, 'Error adding filter')
           }
         }
 
@@ -90,49 +98,93 @@ define(['../module'], function(app) {
          */
         const buildQuery = groups => {
           try {
-            let queryObj = {
+            const queryObj = {
               query: '',
               search: ''
             }
-            let first = true
-            groups.forEach(function(group) {
-              const search = group.find(function(x) {
-                return x.type === 'search'
-              })
+            groups.forEach((group, idx) => {
+              const search = group.find(x => x.type === 'search')
               if (search) {
+                $scope.searchIdx = idx
                 queryObj.search = search.value.name
+                if (idx === groups.length - 1)
+                  queryObj.query = queryObj.query.substring(
+                    0,
+                    queryObj.query.length - 1
+                  )
               } else {
-                if (!first) {
-                  queryObj.query += ';'
-                }
                 const twoOrMoreElements = group.length > 1
                 if (twoOrMoreElements) {
                   queryObj.query += '('
                 }
                 group
-                  .filter(function(x) {
-                    return x.type === 'filter'
-                  })
-                  .forEach(function(tag, idx2) {
+                  .filter(x => x.type === 'filter')
+                  .forEach((tag, idx2) => {
                     queryObj.query += tag.key + '=' + tag.value.value
                     if (idx2 != group.length - 1) {
-                      queryObj.query += ','
+                      queryObj.query +=
+                        $scope.connectors[idx].subgroup[idx2].value
                     }
                   })
                 if (twoOrMoreElements) {
                   queryObj.query += ')'
                 }
-                first = false
+                if (idx !== groups.length - 1) {
+                  queryObj.query += $scope.connectors[idx].value
+                }
               }
             })
+            $scope.$applyAsync()
             $scope.queryFn({ q: queryObj.query, search: queryObj.search })
           } catch (error) {
-            $notificationService.showSimpleToast(
-              error,
-              'Error in query request'
-            )
+            $notificationService.showErrorToast(error, 'Error in query request')
           }
         }
+
+        const addConnectors = groups => {
+          const result = []
+          groups.forEach((group, index) => {
+            result.push({})
+            const subGroup = []
+            group.forEach((tag, idx) => {
+              if (idx != group.length - 1) {
+                subGroup.push({
+                  value:
+                    (
+                      ((($scope.connectors || [])[index] || {}).subgroup || [])[
+                        idx
+                      ] || {}
+                    ).value || ','
+                })
+              }
+            })
+            if (subGroup.length > 0) result[index].subgroup = subGroup
+            if (index != groups.length - 1) {
+              result[index].value =
+                (($scope.connectors || [])[index] || {}).value || ';'
+            }
+          })
+          return result
+        }
+
+        $scope.changeConnector = (parentIdx, idx) => {
+          if (
+            (parentIdx === $scope.searchIdx - 1 ||
+              parentIdx === $scope.searchIdx) &&
+            idx === undefined
+          ) {
+            $scope.connectors[parentIdx].value = ';'
+          } else {
+            if (idx !== undefined) {
+              $scope.connectors[parentIdx].subgroup[idx].value = ','
+            } else {
+              const value = $scope.connectors[parentIdx].value
+              $scope.connectors[parentIdx].value = value === ';' ? ',' : ';'
+              buildQuery($scope.groupedTagList)
+            }
+          }
+        }
+
         const groupBy = (collection, property) => {
           let i = 0,
             val,
@@ -163,23 +215,50 @@ define(['../module'], function(app) {
           $scope.newTag += value
           $scope.addTag()
         }
-        $scope.removeTag = (id, deleteGroup) => {
+        $scope.removeTag = (
+          id,
+          deleteGroup,
+          parentIdx,
+          idx,
+          overwrite = false
+        ) => {
           if (deleteGroup) {
-            $scope.tagList = $scope.tagList.filter(function(x) {
-              return x.key !== id
-            })
+            $scope.tagList = $scope.tagList.filter(x => x.key !== id)
+            $scope.connectors.splice(parentIdx, 1)
           } else {
-            $scope.tagList.splice(
-              $scope.tagList.findIndex(function(x) {
-                return x.id === id
-              }),
-              1
-            )
+            $scope.tagList.splice($scope.tagList.findIndex(x => x.id === id), 1)
+            if (idx < 0) {
+              idx = 0
+            }
+            if (
+              $scope.connectors[parentIdx] &&
+              $scope.connectors[parentIdx].subgroup
+            ) {
+              $scope.connectors[parentIdx].subgroup.splice(idx, 1)
+            } else $scope.connectors.splice(parentIdx, 1)
+          }
+          if ($scope.tagList.length <= 1) {
+            $scope.connectors = [{}]
           }
           $scope.groupedTagList = groupBy($scope.tagList, 'key')
+          const search = $scope.tagList.find(x => x.type === 'search')
+          if (!search) {
+            $scope.searchIdx = false
+          }
+          $scope.connectors = addConnectors($scope.groupedTagList)
+          if (!overwrite) buildQuery($scope.groupedTagList)
+          $scope.showAutocomplete(false)
+        }
+
+        $scope.removeAll = () => {
+          $scope.tagList = []
+          $scope.connectors = []
+          $scope.groupedTagList = []
+          $scope.searchIdx = false
           buildQuery($scope.groupedTagList)
           $scope.showAutocomplete(false)
         }
+
         $scope.showAutocomplete = flag => {
           if (flag) {
             $scope.getAutocompleteContent()
@@ -307,6 +386,7 @@ define(['../module'], function(app) {
             }
           }
         })
+        $('#wz-search-filter-bar-input').attr('autocomplete', 'off')
         load()
       },
       templateUrl:

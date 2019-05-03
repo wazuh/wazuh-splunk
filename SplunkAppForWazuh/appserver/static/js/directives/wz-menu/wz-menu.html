@@ -12,27 +12,32 @@
   
       <!-- Overview buttom-->
       <md-button class="wz-menu-button" ui-sref="overview" ng-click="select('overview')" ng-class="{'wz-menu-active': menuNavItem === 'overview' }" aria-label="Overview tab">
-        <i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> Overview
+        <wz-svg icon="chart"></wz-svg>
+        Overview
       </md-button>
   
       <!-- Manager buttom-->
       <md-button class="wz-menu-button" ui-sref="manager" ng-click="select('manager')" ng-class="{'wz-menu-active': menuNavItem === 'manager' }" aria-label="Cluster tab">
-        <i class="fa fa-fw fa-server" aria-hidden="true"></i> Management
+        <wz-svg icon="cloud"></wz-svg>
+        Management
       </md-button>
   
       <!-- Agents buttom-->
       <md-button class="wz-menu-button" ui-sref="agents" ng-click="select('agents')" ng-class="{'wz-menu-active': menuNavItem === 'agents' }" aria-label="Agents tab">
-        <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agents
+        <i class="fa fa-fw fa-tv" aria-hidden="true"></i>
+        Agents
       </md-button>
   
       <!-- Discover buttom -->
-      <md-button class="wz-menu-button" ng-click="dumpHtml('discover')" ng-class="{'wz-menu-active': menuNavItem === 'discover' }" aria-label="Discover">
-          <i class="fa fa-fw fa-compass" aria-hidden="true"></i>Discover
+      <md-button class="wz-menu-button" ng-click="openDiscover()" ng-class="{'wz-menu-active': menuNavItem === 'discover' }" aria-label="Discover">
+          <wz-svg icon="compass"></wz-svg>
+          Discover
         </md-button>
   
       <!-- Dev tools buttom -->
       <md-button class="wz-menu-button" ui-sref="dev-tools" ng-click="select('dev-tools')" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
-        <i class="fa fa-fw fa-code" aria-hidden="true"></i> Dev tools
+        <wz-svg icon="console"></wz-svg>
+        Dev tools
       </md-button>
   
       <!-- Fill up the space between left and right area -->
@@ -62,14 +67,14 @@
       <span ng-if="theresAPI" class="small">
         {{currentIndex}}
         <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Selected index pattern
+          Selected index
         </md-tooltip>
       </span>
   
       <!-- Settings tab button -->
-      <md-button class="wz-menu-button md-icon-button" ui-sref='settings.api' ng-click="select('settings')" ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
+      <md-button class="wz-menu-button wz-menu-settings" ui-sref='settings.api' ng-click="select('settings')" ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
         aria-label="Settings tab">
-        <i class="fa fa-cog" aria-hidden="true"></i>
+        <wz-svg icon="settings"></wz-svg>
         <md-tooltip md-direction="bottom" class="wz-tooltip">
           Settings
         </md-tooltip>
@@ -78,4 +83,4 @@
     </div>
   
   </md-toolbar>
-  <toaster-container></toaster-container>
+  <wz-head-toaster></wz-head-toaster>

@@ -6,10 +6,12 @@ define([
   './virustotal/overviewVirusTotalCtrl',
   './aws/awsCtrl',
   './osquery/osqueryCtrl',
+  './docker/dockerCtrl',
   './scap/overviewOpenScapCtrl',
   './gdpr/overviewGdprCtrl',
   './pci/overviewPciCtrl',
   './ciscat/ciscatCtrl',
   './policy-monitoring/overviewPolicyMonitoringCtrl',
-  './vulnerabilities/overviewVulnerabilitiesCtrl'
+  './vulnerabilities/overviewVulnerabilitiesCtrl',
+  './sca/overviewSCACtrl'
 ], function() {})

@@ -55,7 +55,7 @@ define(['../../../utils/filter-handler'], function(FilterHandler) {
       $scope.wazuhTableLoading = false
     } catch (error) {
       $scope.wazuhTableLoading = false
-      $scope.error = `Error while init table - ${error.message || error}.`
+      $scope.error = `Error while init table.`
       errorHandler.showSimpleToast(
         `Error while init table. ${error.message || error}`
       )

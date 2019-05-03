@@ -8,5 +8,10 @@ define([
   './reporting/reportingCtrl',
   './rules/managerRulesetCtrl',
   './rules/managerRulesetIdCtrl',
-  './status/statusCtrl'
+  './status/statusCtrl',
+  './edition/editionCtrl',
+  './cdb/managerCdbCtrl',
+  './cdb/managerCdbIdCtrl',
+  './status/statusCtrl',
+  './configuration/edit-configuration/editGroupsCtrl'
 ], function() {})

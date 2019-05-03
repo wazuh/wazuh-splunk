@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, Table, AreaChart, TimePicker, rawTableDataService) {
+], function(app, PieChart, Table, AreaChart, TimePicker, RawTableDataService) {
   'use strict'
 
   class AgentsVirusTotal {
@@ -25,18 +25,25 @@ define([
       $scope,
       $currentDataService,
       agent,
-      $reportingService
+      $reportingService,
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
-        `{"rule.groups":"virustotal", "implicit":true}`
+        `{"rule.groups{}":"virustotal", "implicit":true}`
       )
       this.agent = agent
+      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
       if (
         this.agent &&
         this.agent.data &&
@@ -56,11 +63,13 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -68,90 +77,40 @@ define([
         /**
          * Visualizations
          */
-        new AreaChart(
-          'eventsOverTimeElement',
-          `${this.filters}  | timechart span=12h count by rule.id`,
-          'eventsOverTimeElement',
-          this.scope
-        ),
-        new Table(
-          'eventsSummaryElement',
-          `${
-            this.filters
-          } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-          'eventsSummaryElement',
-          this.scope
-        ),
-        new Table(
-          'top5Rules',
-          `${
-            this.filters
-          } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'top5Rules',
-          this.scope
-        ),
+
         new PieChart(
-          'alertsVolume',
+          'lastScannedFiles',
           `${
             this.filters
-          } | stats count by rule.description | rename "rule.description" as "Description"`,
-          'alertsVolume',
+          } | top limit=5 data.virustotal.source.file`,
+          'lastScannedFiles',
+          this.scope
+        ),
+        new AreaChart(
+          'maliciousEventsOverTimeElement',
+          `${this.filters} data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives`,
+          'maliciousEventsOverTimeElement',
           this.scope
         ),
         new Table(
-          'filesAffected',
+          'lastFiles',
           `${
             this.filters
-          }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-          'filesAffected',
+          } | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
+          'lastFiles',
           this.scope
+        ),
+        new RawTableDataService(
+          'lastFilesTable',
+          `${
+            this.filters
+          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          'lastFilesToken',
+          '$result$',
+          this.scope,
+          'Last Files'
         )
       ]
-
-      this.eventsSummaryTable = new rawTableDataService(
-        'eventsSummaryTable',
-        `${
-          this.filters
-        } | stats count sparkline by rule.description | sort count DESC | rename agent.name as Agent, rule.description as Description, count as Count`,
-        'eventsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.eventsSummaryTable)
-
-      this.eventsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Events Summary'] = result
-      })
-
-      this.top5RulesTable = new rawTableDataService(
-        'top5RulesTable',
-        `${
-          this.filters
-        } | stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-        'top5RulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.top5RulesTable)
-
-      this.top5RulesTable.getSearch().on('result', result => {
-        this.tableResults['Top 5 Rules'] = result
-      })
-
-      this.filesAffectedTable = new rawTableDataService(
-        'filesAffectedTable',
-        `${
-          this.filters
-        }  rule.level=12 | top data.virustotal.source.file |  rename data.virustotal.source.file as "File" | fields - percent | fields - count`,
-        'filesAffectedTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.filesAffectedTable)
-
-      this.filesAffectedTable.getSearch().on('result', result => {
-        this.tableResults['Files Affected'] = result
-      })
 
       // Set agent info
       try {
@@ -179,11 +138,9 @@ define([
           'VirusTotal',
           this.filters,
           [
-            'alertsVolume',
-            'eventsSummaryElement',
-            'eventsOverTimeElement',
-            'top5Rules',
-            'filesAffected'
+            'lastScannedFiles',
+            'maliciousEventsOverTimeElement',
+            'lastFiles',
           ],
           this.reportMetrics,
           this.tableResults,
@@ -202,6 +159,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -220,6 +182,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -250,6 +213,29 @@ define([
         'Files modified': this.scope.filesModified,
         'Files deleted': this.scope.filesDeleted
       }
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
   app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)

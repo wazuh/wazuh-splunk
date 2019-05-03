@@ -10,10 +10,16 @@ define([
      * @param {Object} $urlTokenModel
      */
 
-    constructor($scope, $currentDataService, $urlTokenModel) {
+    constructor(
+      $scope,
+      $currentDataService,
+      $urlTokenModel,
+      $notificationService
+    ) {
       this.scope = $scope
-      this.$currentDataService = $currentDataService
+      this.currentDataService = $currentDataService
       this.urlTokenModel = $urlTokenModel
+      this.notification = $notificationService
 
       this.dropdown = new Dropdown(
         'inputIndexes',
@@ -34,8 +40,15 @@ define([
     $onInit() {
       this.dropdownInstance = this.dropdown.getElement()
       this.dropdownInstance.on('change', newValue => {
-        if (newValue && this.dropdownInstance)
-          this.urlTokenModel.handleValueChange(this.dropdownInstance)
+        try {
+          if (newValue && this.dropdownInstance) {
+            this.currentDataService.setIndex(newValue)
+            this.scope.$emit('updatedAPI', {})
+            this.urlTokenModel.handleValueChange(this.dropdownInstance)
+          }
+        } catch (error) {
+          this.notification.showErrorToast(error)
+        }
       })
 
       this.scope.$on('$destroy', () => {

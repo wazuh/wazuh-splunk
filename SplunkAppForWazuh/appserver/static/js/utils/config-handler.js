@@ -39,7 +39,13 @@ define([
      * @param {string} configurationTab The configuration tab to open
      * @param {Array<object>} sections Array that includes sections to be fetched
      */
-    async switchConfigTab(configurationTab, sections, $scope, agentId = false) {
+    async switchConfigTab(
+      configurationTab,
+      sections,
+      $scope,
+      agentId = false,
+      node = false
+    ) {
       try {
         $scope.load = true
         $scope.currentConfig = null
@@ -48,9 +54,10 @@ define([
         $scope.configurationSubTab = false
         $scope.configurationTab = configurationTab
         const currentConfigReq = await queryConfig(
-          agentId || '000',
           sections,
-          this.apiReq
+          this.apiReq,
+          agentId,
+          node
         )
         $scope.currentConfig = currentConfigReq
         if (sections[0].component === 'integrator') {
@@ -59,8 +66,11 @@ define([
             $scope
           )
         } else if (sections[0].component === 'logcollector') {
-          const logcollector =
-            currentConfigReq['logcollector-localfile'].localfile
+          const logcollector = currentConfigReq['logcollector-localfile'].localfile
+          $scope.currentConfig['logcollector-localfile']['localfile-logs'] = 
+            logcollector.filter(log => log.logformat !== 'command' && log.logformat !== 'full_command')
+          $scope.currentConfig['logcollector-localfile']['localfile-commands'] = 
+            logcollector.filter(log => log.logformat === 'command' || log.logformat === 'full_command')
           logcollector.map(log => {
             const keys = Object.keys(log)
             if (
@@ -76,9 +86,8 @@ define([
           $scope.integrations = {}
         }
         $scope.load = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
-        this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
       }
       return
@@ -88,7 +97,7 @@ define([
      * Switchs to a wodle section
      * @param {string} wodleName The wodle to open
      */
-    async switchWodle(wodleName, $scope, agentId = false) {
+    async switchWodle(wodleName, $scope, agentId = false, node = false) {
       try {
         $scope.load = true
         $scope.currentConfig = null
@@ -98,9 +107,10 @@ define([
         $scope.configurationTab = wodleName
 
         $scope.currentConfig = await queryConfig(
-          agentId || '000',
           [{ component: 'wmodules', configuration: 'wmodules' }],
-          this.apiReq
+          this.apiReq,
+          agentId,
+          node
         )
 
         // Filter by provided wodleName
@@ -124,7 +134,7 @@ define([
         }
 
         $scope.load = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
         this.errorHandler.showSimpleToast(error, 'Manager')
         $scope.load = false
@@ -143,7 +153,7 @@ define([
       $scope.JSONContent = false
       $scope.configurationSubTab = false
       $scope.configurationTab = configurationTab
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -155,7 +165,7 @@ define([
       $scope.XMLContent = false
       $scope.JSONContent = false
       $scope.configurationSubTab = configurationSubTab
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -172,11 +182,12 @@ define([
         try {
           const cleaned = objectWithoutProperties(config)
           $scope.XMLContent = XMLBeautifier(js2xmlparser(cleaned))
+          $scope.$broadcast('XMLContentReady', { data: $scope.XMLContent })
         } catch (error) {
           $scope.XMLContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     /**
@@ -192,12 +203,13 @@ define([
       } else {
         try {
           const cleaned = objectWithoutProperties(config)
-          $scope.JSONContent = this.beautifier.prettyPrint(cleaned)
+          $scope.JSONContent = JSON.stringify(cleaned, null, 2)
+          $scope.$broadcast('JSONContentReady', { data: $scope.JSONContent })
         } catch (error) {
           $scope.JSONContent = false
         }
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
     }
 
     reset($scope) {

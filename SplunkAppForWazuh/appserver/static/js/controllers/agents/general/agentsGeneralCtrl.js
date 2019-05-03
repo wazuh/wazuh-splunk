@@ -25,7 +25,7 @@ define([
   PieChart,
   Table,
   TimePicker,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -53,18 +53,22 @@ define([
       agent,
       $state,
       $dateDiffService,
-      $reportingService
+      $reportingService,
+      reportingEnabled
     ) {
       this.state = $state
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
       this.requestService = $requestService
       this.tableResults = {}
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.stateParams = $stateParams
       this.agent = agent
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
+      this.scope.expandArray = [false, false, false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&
         this.agent.length &&
@@ -82,11 +86,13 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -102,7 +108,7 @@ define([
         ),
         new PieChart(
           'top5GroupsVizz',
-          `${this.filters} sourcetype=wazuh | top rule.groups limit=5`,
+          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=5`,
           'top5GroupsVizz',
           this.scope
         ),
@@ -130,26 +136,39 @@ define([
           'agentsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
+        ),
+        new Table(
+          'groupsSummaryVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
+          'groupsSummaryVizz',
+          this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
+        ),
+        new RawTableDataService(
+          'groupsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
+          'groupsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Groups Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort rule.level DESC | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
@@ -162,6 +181,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -181,6 +205,7 @@ define([
      */
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         this.agentInfo = {
           name: this.agent[0].data.data.name,
           id: this.agent[0].data.data.id,
@@ -259,7 +284,8 @@ define([
               'top5PCIreqVizz',
               'alertLevelEvoVizz',
               'alertsVizz',
-              'agentsSummaryVizz'
+              'agentsSummaryVizz',
+              'groupsSummaryVizz'
             ],
             this.reportMetrics,
             this.tableResults,
@@ -320,7 +346,7 @@ define([
         }
         this.state.go(`mg-groups`, { group: this.groupData[0] })
       } catch (err) {
-        this.notificationService.showSimpleToast('Error fetching group data')
+        this.notification.showErrorToast('Error fetching group data')
       }
     }
 
@@ -348,6 +374,29 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
 

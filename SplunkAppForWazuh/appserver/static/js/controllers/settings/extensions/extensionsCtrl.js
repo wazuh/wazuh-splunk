@@ -5,8 +5,7 @@ define(['../../module'], function(controllers) {
     constructor($scope, $currentDataService, $notificationService, extensions) {
       this.scope = $scope
       this.scope.extensions = {}
-      this.toast = $notificationService.showSimpleToast
-      this.setExtensions = $currentDataService.setExtensions
+      this.notification = $notificationService
       this.currentApi = $currentDataService.getApi()
       this.getExtensions = $currentDataService.getExtensions
       this.setExtensions = $currentDataService.setExtensions
@@ -14,7 +13,7 @@ define(['../../module'], function(controllers) {
     }
 
     $onInit() {
-      const id = this.currentApi.id
+      const id = this.currentApi['_key']
       this.scope.toggleExtension = (extension, state) =>
         this.toggleExtension(extension, state)
       this.currentExtensions = this.extensions.data || this.extensions
@@ -30,12 +29,12 @@ define(['../../module'], function(controllers) {
 
     toggleExtension(extension, state) {
       try {
-        const api = this.currentApi.id
+        const api = this.currentApi['_key']
         this.currentExtensions[extension] = state.toString()
         this.setExtensions(api, this.currentExtensions)
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast(error)
+        this.notification.showErrorToast(error)
       }
     }
   }

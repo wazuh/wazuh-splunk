@@ -22,8 +22,9 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * @param {String} path
        * @param {Object} implicitFilter
        */
-      constructor(path, implicitFilter) {
+      constructor(path, implicitFilter, implicitSort) {
         this.implicitFilter = implicitFilter || false
+        this.implicitSort = implicitSort || false
         this.items = []
         this.path = path
         this.filters = []
@@ -32,6 +33,9 @@ define(['../module', 'splunkjs/mvc'], function(module) {
         this.sortValue = false
         this.busy = false
         if (this.implicitFilter) this.filters.push(...this.implicitFilter)
+        if (this.implicitSort) {
+          this.addSorting(this.implicitSort)
+        }
       }
 
       /**
@@ -95,31 +99,36 @@ define(['../module', 'splunkjs/mvc'], function(module) {
           const offset = options.offset || 0
           const limit = options.limit || 500
           const parameters = { limit, offset }
-
           this.serializeFilters(parameters)
 
           // Fetch next <limit> items
           const firstPage = await $requestService.apiReq(this.path, parameters)
-          this.items = this.items.filter(item => !!item)
-          this.items.push(...firstPage.data.data.items)
 
-          const totalItems = firstPage.data.data.totalItems
+          if (firstPage.data.error) {
+            this.busy = false
+            return Promise.reject(firstPage.data.message)
+          } else {
+            this.items = this.items.filter(item => !!item)
+            this.items.push(...firstPage.data.data.items)
 
-          const remaining =
-            this.items.length === totalItems
-              ? 0
-              : totalItems - this.items.length
+            const totalItems = firstPage.data.data.totalItems
 
-          // Ignore manager as an agent, once the team solves this issue, review this line
-          if (this.path === '/agents')
-            this.items = this.items.filter(item => item.id !== '000')
+            const remaining =
+              this.items.length === totalItems
+                ? 0
+                : totalItems - this.items.length
 
-          if (remaining > 0) this.items.push(...Array(remaining).fill(null))
+            // Ignore manager as an agent, once the team solves this issue, review this line
+            if (this.path === '/agents')
+              this.items = this.items.filter(item => item.id !== '000')
 
-          const end = new Date()
-          const elapsed = (end - start) / 1000
-          this.busy = false
-          return { items: this.items, time: elapsed }
+            if (remaining > 0) this.items.push(...Array(remaining).fill(null))
+
+            const end = new Date()
+            const elapsed = (end - start) / 1000
+            this.busy = false
+            return { items: this.items, time: elapsed }
+          }
         } catch (error) {
           this.busy = false
           return Promise.reject(error)

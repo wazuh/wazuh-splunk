@@ -25,7 +25,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -46,15 +46,25 @@ define([
       $currentDataService,
       $state,
       agent,
-      $reportingService
+      $reportingService,
+      reportingEnabled,
+      extensions
     ) {
       this.urlTokenModel = $urlTokenModel
       this.scope = $scope
+      ;(this.scope.reportingEnabled = reportingEnabled),
+        (this.scope.extensions = extensions)
       this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(
+        `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
+      )
       this.reportingService = $reportingService
       this.tableResults = {}
       this.state = $state
       this.agent = agent
+      this.scope.expandArray = [false, false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
       if (
         this.agent &&
         this.agent.data &&
@@ -74,11 +84,13 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -129,7 +141,7 @@ define([
           'alertsSeverityOverTimeVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+          } sourcetype=wazuh rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsSeverityOverTimeVizz',
           this.scope
         ),
@@ -137,7 +149,7 @@ define([
           'commonRules',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
+          } rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
           'commonRules',
           this.scope
         ),
@@ -145,7 +157,7 @@ define([
           'commonCves',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top data.vulnerability.cve limit=5`,
+          } rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
           'commonCves',
           this.scope
         ),
@@ -153,7 +165,7 @@ define([
           'severityDistribution',
           `${
             this.filters
-          } rule.groups="vulnerability-detector" | top data.vulnerability.severity limit=5`,
+          } rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
           'severityDistribution',
           this.scope
         ),
@@ -167,41 +179,31 @@ define([
           'alertsSummaryVizz',
           `${
             this.filters
-          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
+          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
           'alertsSummaryVizz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
+        ),
+        new RawTableDataService(
+          'commonRulesTable',
+          `${
+            this.filters
+          } rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'commonRulesTableToken',
+          '$result$',
+          this.scope,
+          'Common Rules'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
-
-      this.commonRulesTable = new rawTableDataService(
-        'commonRulesTable',
-        `${
-          this.filters
-        } rule.groups="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-        'commonRulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.commonRulesTable)
-
-      this.commonRulesTable.getSearch().on('result', result => {
-        this.tableResults['Common Rules'] = result
-      })
 
       // Set agent info
       try {
@@ -253,6 +255,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -271,6 +278,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -317,6 +325,29 @@ define([
         'Medium severity alerts': this.scope.mediumSeverity,
         'Low severity alerts': this.scope.lowSeverity
       }
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
 

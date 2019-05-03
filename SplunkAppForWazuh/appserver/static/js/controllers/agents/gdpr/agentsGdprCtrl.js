@@ -13,7 +13,7 @@ define([
   Table,
   TimePicker,
   Dropdown,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -34,14 +34,31 @@ define([
       $scope,
       $state,
       agent,
-      $reportingService
+      $reportingService,
+      gdprTabs,
+      reportingEnabled,
+      pciExtensionEnabled
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService
       this.tableResults = {}
       this.agent = agent
+      this.scope.expandArray = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
       if (
         this.agent &&
         this.agent.data &&
@@ -77,14 +94,14 @@ define([
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
       })
-
-      this.scope.gdprTabs = false
-
-      this.scope.$on('deletedFilter', () => {
+      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -104,8 +121,24 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by rule.groups`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{}`,
           'groupsVizz',
+          this.scope
+        ),
+        new PieChart(
+          'top5GDPR',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} `,
+          'top5GDPR',
+          this.scope
+        ),
+        new PieChart(
+          'rulesVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh  | top limit=5 rule.description `,
+          'rulesVizz',
           this.scope
         ),
         new PieChart(
@@ -131,23 +164,18 @@ define([
           } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -177,6 +205,8 @@ define([
           [
             'gdprRequirementsVizz',
             'groupsVizz',
+            'top5GDPR',
+            'rulesVizz',
             'agentsVizz',
             'requirementsByAgentVizz',
             'alertsSummaryVizz'
@@ -197,10 +227,16 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
       })
+
       /**
        * When controller is destroyed
        */
@@ -215,6 +251,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -249,6 +286,29 @@ define([
     launchSearches() {
       this.filters = this.getFilters()
       this.state.reload()
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
   app.controller('agentsGdprCtrl', AgentsGdpr)

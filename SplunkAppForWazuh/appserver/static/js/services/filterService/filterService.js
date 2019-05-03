@@ -3,7 +3,7 @@ define(['../module'], function(module) {
 
   class FilterService {
     constructor($notificationService) {
-      this.$notificationService = $notificationService
+      this.notification = $notificationService
     }
 
     /**
@@ -48,7 +48,7 @@ define(['../module'], function(module) {
           window.localStorage.setItem('filters', `[${filter}]`)
         }
       } catch (err) {
-        this.$notificationService.showSimpleToast(
+        this.notification.showErrorToast(
           'Incorrent format. Please use key:value syntax'
         )
       }
@@ -58,24 +58,30 @@ define(['../module'], function(module) {
      * Returns the filters in a way that visualizations can handle
      * @returns {String} The serialized filters
      */
-    getSerializedFilters() {
+    getSerializedFilters(hideOnlyShowFilters = true) {
       try {
         let filterStr = ' '
-        if (window.localStorage.filters)
-          for (const filter of JSON.parse(window.localStorage.filters)) {
-            if (typeof filter === 'object') {
-              const key = Object.keys(filter)[0]
-              filterStr += key
-              filterStr += '='
-              filterStr += filter[key]
-              filterStr += ' '
-            } else {
-              filterStr += filter + ' '
-            }
+        let filters = []
+        if (window.localStorage.filters) {
+          filters = JSON.parse(window.localStorage.filters)
+          filters = hideOnlyShowFilters
+            ? filters.filter(fil => !fil.onlyShow)
+            : filters
+        }
+        for (const filter of filters) {
+          if (typeof filter === 'object') {
+            const key = Object.keys(filter)[0]
+            filterStr += key
+            filterStr += '='
+            filterStr += filter[key]
+            filterStr += ' '
+          } else {
+            filterStr += filter + ' '
           }
+        }
         return filterStr
       } catch (err) {
-        this.$notificationService.showSimpleToast('Error when getting filters.')
+        this.notification.showErrorToast('Error when getting filters.')
       }
     }
 
@@ -100,7 +106,31 @@ define(['../module'], function(module) {
         })
         window.localStorage.setItem('filters', JSON.stringify(filters))
       } catch (err) {
-        this.$notificationService.showSimpleToast('Error removing filter.')
+        this.notification.showErrorToast('Error removing filter.')
+      }
+    }
+
+    /**
+     * Pins a filter
+     * @param {Object}: The filter to be pined
+     */
+    pinFilter(filter) {
+      try {
+        filter = JSON.parse(filter)
+        const key = Object.keys(filter)[0]
+        const value = filter[key]
+        const pined = filter.pined
+        let filters = JSON.parse(window.localStorage.filters)
+        filters = filters.filter(fil => Object.keys(fil)[0] != key)
+        if (pined) {
+          filter = JSON.parse(`{"${key}":"${value}"}`)
+        } else {
+          filter = JSON.parse(`{"${key}":"${value}", "pined":"true"}`)
+        }
+        filters.push(filter)
+        window.localStorage.setItem('filters', JSON.stringify(filters))
+      } catch (err) {
+        this.notification.showErrorToast('Error pinning filter.')
       }
     }
 
@@ -108,7 +138,38 @@ define(['../module'], function(module) {
      * Sets the filters empty
      */
     cleanFilters() {
-      delete window.localStorage.filters
+      let filters = []
+      try {
+        if (window.localStorage.filters) {
+          filters = JSON.parse(window.localStorage.filters)
+          filters = filters.filter(fil => fil.pined)
+          filters = JSON.stringify(filters)
+          window.localStorage.setItem('filters', filters)
+        }
+      } catch (err) {
+        delete window.localStorage.filters // In case of error, delete all filters
+      }
+    }
+
+    /**
+     * Sets the filters empty
+     */
+    cleanAgentsPinedFilters() {
+      try {
+        let filters = []
+        let pined = []
+        if (window.localStorage.filters) {
+          filters = JSON.parse(window.localStorage.filters)
+          pined = filters.filter(fil => fil.pined)
+          filters = filters.filter(fil => !fil.pined)
+          pined = pined.filter(pin => !Object.keys(pin)[0].startsWith('agent.'))
+          filters.push(...pined)
+        }
+        filters = JSON.stringify(filters)
+        window.localStorage.setItem('filters', filters)
+      } catch (err) {
+        delete window.localStorage.filters // In case of error, delete all filters
+      }
     }
   }
   module.service('$filterService', FilterService)

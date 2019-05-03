@@ -12,6 +12,10 @@ define(['../module'], function(module) {
       return $apiMgrService.getPollintState
     }
 
+    const addApi = record => {
+      return $apiMgrService.addApi(record)
+    }
+
     const getBaseUrl = () => {
       return $requestService.getBaseUrl()
     }
@@ -56,16 +60,24 @@ define(['../module'], function(module) {
       return $filterService.addFilter(filter)
     }
 
-    const getSerializedFilters = () => {
-      return $filterService.getSerializedFilters()
+    const getSerializedFilters = hideOnlyShowFilters => {
+      return $filterService.getSerializedFilters(hideOnlyShowFilters)
     }
 
     const removeFilter = filter => {
       return $filterService.removeFilter(filter)
     }
 
+    const pinFilter = filter => {
+      return $filterService.pinFilter(filter)
+    }
+
     const cleanFilters = () => {
       return $filterService.cleanFilters()
+    }
+
+    const cleanAgentsPinedFilters = () => {
+      return $filterService.cleanAgentsPinedFilters()
     }
 
     const update = register => {
@@ -133,6 +145,74 @@ define(['../module'], function(module) {
       }
     }
 
+    /**
+     * Gets admin extensions by ID
+     * @param {String} id
+     */
+    const getAdminExtensions = async () => {
+      try {
+        const result = {}
+        const ext = await $requestService.httpReq(
+          `GET`,
+          `/manager/admin_extensions`
+        )
+        Object.assign(result, ext.data)
+        return result
+      } catch (error) {
+        return Promise.reject(false)
+      }
+    }
+
+    /**
+     * Checks if is admin
+     */
+    const isAdmin = async () => {
+      try {
+        const id = getApi().id
+        const extensions = await getExtensionsById(id)
+        return extensions['admin'] === 'true'
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Checks if an extension is enabled
+     */
+    const extensionIsEnabled = async ext => {
+      try {
+        const extensions = await getCurrentExtensions()
+        return extensions[ext] === 'true'
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Get extension by for the current API id
+     */
+    const getCurrentExtensions = async () => {
+      try {
+        const id = getApi()['_key']
+        return await getExtensionsById(id)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /*
+     * Gets reporting status
+     */
+    const getReportingStatus = async () => {
+      try {
+        const result = await getAdminExtensions()
+        const status = result.reporting === 'true'
+        return status
+      } catch (error) {
+        return true
+      }
+    }
+
     return {
       getPollintState: getPollintState,
       getBaseUrl: getBaseUrl,
@@ -146,7 +226,9 @@ define(['../module'], function(module) {
       addFilter: addFilter,
       getSerializedFilters: getSerializedFilters,
       removeFilter: removeFilter,
+      pinFilter: pinFilter,
       cleanFilters: cleanFilters,
+      cleanAgentsPinedFilters: cleanAgentsPinedFilters,
       getFilters: getFilters,
       update: update,
       getIndex: getIndex,
@@ -159,8 +241,14 @@ define(['../module'], function(module) {
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
       getExtensions: getExtensions,
+      getAdminExtensions: getAdminExtensions,
+      getCurrentExtensions: getCurrentExtensions,
+      getExtensionsById: getExtensionsById,
+      extensionIsEnabled: extensionIsEnabled,
       setExtensions: setExtensions,
-      getExtensionsById: getExtensionsById
+      addApi: addApi,
+      isAdmin: isAdmin,
+      getReportingStatus: getReportingStatus
     }
   })
 })

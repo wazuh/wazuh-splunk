@@ -20,7 +20,7 @@ define(['../module'], function(module) {
             agentData: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async $requestService => {
                 try {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
@@ -51,9 +51,7 @@ define(['../module'], function(module) {
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+                } catch (err) {} //eslint-disable-line
               }
             ]
           }
@@ -101,13 +99,21 @@ define(['../module'], function(module) {
                 }
               }
             ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ],
             extensions: [
               '$currentDataService',
               async $currentDataService => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const result = await $currentDataService.getExtensionsById(id)
-                  return result
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
@@ -173,6 +179,12 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -235,6 +247,22 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -278,6 +306,12 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -315,6 +349,12 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -350,6 +390,22 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
                 }
               }
             ]
@@ -389,6 +445,22 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -424,6 +496,22 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
                 }
               }
             ]
@@ -488,6 +576,12 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
             ]
           }
         })
@@ -523,6 +617,42 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            gdprTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const gdprTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/gdpr?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    gdprTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return gdprTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
                 }
               }
             ]
@@ -562,6 +692,98 @@ define(['../module'], function(module) {
                   $state.go('agents')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+
+        // agents - configuration assessments
+        .state('ag-ca', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/configuration-assessment/agents-ca.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-ca')
+          },
+          controller: 'agentsConfigurationAssessmentsCtrl',
+          params: { id: null },
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            configAssess: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/sca/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -597,6 +819,42 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            pciTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const pciTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/pci?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    pciTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return pciTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
                 }
               }
             ]
@@ -636,6 +894,22 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -671,6 +945,73 @@ define(['../module'], function(module) {
                   return result
                 } catch (err) {
                   $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+        // =========== Docker listener =========== //
+        .state('ag-docker', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/docker/agents-docker.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-docker')
+          },
+          controller: 'agentsDockerCtrl',
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
                 }
               }
             ]

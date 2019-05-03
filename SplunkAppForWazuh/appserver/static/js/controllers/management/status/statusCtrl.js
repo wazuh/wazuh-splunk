@@ -9,18 +9,22 @@ define(['../../module'], function(controllers) {
      * @param {*} $notificationService
      * @param {Array} statusData
      * @param {Object} agentInfo
+     * @param {Boolean} isAdmin
+     * @param {*} $restartService
      */
     constructor(
       $scope,
       $requestService,
       $notificationService,
       statusData,
-      agentInfo
+      agentInfo,
+      isAdmin,
+      $restartService
     ) {
       this.scope = $scope
       this.scope.load = true
       this.apiReq = $requestService.apiReq
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       const parsedStatusData = statusData.map(item =>
         item && item.data && item.data.data ? item.data.data : item
       )
@@ -44,12 +48,19 @@ define(['../../module'], function(controllers) {
       this.decoders = decoders
       this.scope.clusterEnabled = masterNode || false
       this.agentInfo = agentInfo.data.data
+      this.isAdmin = isAdmin
+      this.restartService = $restartService
     }
 
     /**
      * On controller loads
      */
     $onInit() {
+      this.scope.selectedNavTab = 'status'
+      this.scope.confirmingRestart = false
+      this.scope.isAdmin = this.isAdmin
+      this.scope.switchRestart = () => this.switchRestart()
+      this.scope.restartInProgress = false
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name
         this.scope.nodeId = masterNodeName
@@ -65,14 +76,27 @@ define(['../../module'], function(controllers) {
         this.scope.load = false
         if (!this.scope.$$phase) this.scope.$digest()
       }
+
       this.scope.changeNode = node => this.changeNode(node)
+      this.scope.restart = () => this.restart()
       this.bindStatus()
+
       if (this.nodeStatus) {
-        this.scope.daemons = this.nodeStatus
+        this.scope.daemons = this.objToArr(this.nodeStatus)
       }
       if (this.nodeInfo) {
         this.scope.managerInfo = this.nodeInfo
       }
+    }
+
+    /**
+     * Transforms objects to arrays
+     * @param {Object} : obj
+     */
+    objToArr(obj) {
+      const arr = []
+      for (const key in obj) arr.push({ key, value: obj[key] })
+      return arr
     }
 
     /**
@@ -103,15 +127,13 @@ define(['../../module'], function(controllers) {
             'This cluster is enabled but not running. Please check your cluster health.'
           )
         }
-        this.scope.daemons = daemonResult[0].data.data
+        this.scope.daemons = this.objToArr(daemonResult[0].data.data)
         this.scope.managerInfo = daemonResult[1].data.data
-        this.scope.load = false
-        if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.scope.load = false
         this.scope.clusterError = err.message || err
-        if (!this.scope.$$phase) this.scope.$digest()
       }
+      this.scope.load = false
+      if (!this.scope.$$phase) this.scope.$digest()
     }
 
     /**
@@ -135,13 +157,31 @@ define(['../../module'], function(controllers) {
         this.scope.totalRules = this.rules.totalItems
         this.scope.totalDecoders = this.decoders.totalItems
         this.scope.agentInfo = this.agentInfo
-        this.scope.load = false
-
-        if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.scope.load = false
-        this.toast(err.message || err)
+        this.notification.showErrorToast(err.message || err)
       }
+      this.scope.load = false
+      if (!this.scope.$$phase) this.scope.$digest()
+    }
+
+    /**
+     * Function to restart the manager or cluster
+     */
+    async restart() {
+      try {
+        this.scope.restartInProgress = true
+        this.scope.confirmingRestart = false
+        const result = await this.restartService.restart()
+        this.notification.showSimpleToast(result)
+      } catch (error) {
+        this.notification.showErrorToast(error)
+        this.scope.confirmingRestart = false
+      }
+      this.scope.restartInProgress = false
+    }
+
+    switchRestart() {
+      this.scope.confirmingRestart = !this.scope.confirmingRestart
     }
   }
 

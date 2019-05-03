@@ -1,8 +1,8 @@
-const chai = require('chai')
-const needle = require('needle')
+const chai = require('chai')// eslint-disable-line
+const needle = require('needle')// eslint-disable-line
 
 chai.should()
-chai.use(require('chai-match'));
+chai.use(require('chai-match'))// eslint-disable-line
 
 const s_url = 'http://localhost:8000/en-US/custom/SplunkAppForWazuh/manager'
 
@@ -55,8 +55,8 @@ describe('manager-api', () => {
     resBodyJson.forEach(api => {
       api.passapi.should.be.a('string')
       api.portapi.should.be.a('string')
-      api.id.should.be.a('string')
-      chai.expect(api.id).to.match(/^\w+\-\w+\-\w+\-\w+\-\w+$/) // eslint-disable-line
+      api['_key'].should.be.a('string')
+      chai.expect(api['_key']).to.match(/^\w+\-\w+\-\w+\-\w+\-\w+$/) // eslint-disable-line
       api.url.should.be.a('string')
       api.userapi.should.be.a('string')
     })   

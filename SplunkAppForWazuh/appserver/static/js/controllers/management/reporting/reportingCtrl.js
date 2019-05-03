@@ -9,9 +9,9 @@ define(['../../module'], function(app) {
      * @param {Object} $requestService
      * @param {Array} reportsList
      */
-    constructor($scope, $notificationService, $requestService, reportsList) {
+    constructor($scope, $notificationService, $requestService, reportsList, $dateDiffService) {
       this.scope = $scope
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.genericReq = $requestService.httpReq
       this.loading = true
       this.itemsPerPage = 15
@@ -20,18 +20,28 @@ define(['../../module'], function(app) {
       this.items = []
       this.scope.gap = 0
       this.items = reportsList.data.data
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
     }
 
     /**
      * On controller loads
      */
     $onInit() {
+      this.scope.selectedNavTab = 'reporting'
       this.scope.setPage = n => this.setPage(n)
       this.scope.nextPage = n => this.nextPage(n)
       this.scope.prevPage = () => this.prevPage()
       this.scope.load = () => this.load()
       this.scope.deleteReport = name => this.deleteReport(name)
       this.load()
+
+      this.scope.offsetTimestamp = time => {
+        try {
+          return this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
     }
 
     /**
@@ -52,9 +62,9 @@ define(['../../module'], function(app) {
         this.loading = true
         await this.genericReq('GET', '/report/remove', { name: name })
         await this.load()
-        this.toast('Deleted report')
+        this.notification.showSuccessToast('Deleted report.')
       } catch (error) {
-        this.toast('Reporting error')
+        this.notification.showErrorToast('Cannot delete the report.')
       }
     }
 
@@ -150,7 +160,7 @@ define(['../../module'], function(app) {
         this.loading = false
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (error) {
-        this.toast('Error loading reports')
+        this.notification.showErrorToast('Error loading reports.')
       }
     }
   }

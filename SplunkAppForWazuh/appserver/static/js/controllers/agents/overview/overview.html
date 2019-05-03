@@ -1,132 +1,192 @@
 <div flex layout="column" layout-align="start stretch">
 
   <!-- Breadcrumbs -->
-  <div layout="row" layout-padding>
-    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-    <div>
+  <div layout="row" class="wz-height-35">
+    <div class='wz-breadcrumb-margin'>
       <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
       <span> / </span>
       <span ng-if="!agent.error" class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
       <span ng-if="agent.error">Unknown agent</span>
-      <span> / </span>
-      <span>Welcome</span>
-    </div>
-    <div ng-if="agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)" aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      <span ng-if="agent.status">
+        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
+          aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+      </span>
     </div>
   </div>
   <!-- End breadcrumbs -->
 
   <!-- Headline -->
   <div layout="column" layout-padding>
-    <span class="font-size-18">
-      <i class="fa fa-fw fa-tv" aria-hidden="true"></i> Agent overview</span>
+    <div layout="row" class="wz-no-padding-bottom">
+      <span class="font-size-20 wz-lh-32">
+        <i class="fa fa-fw fa-tv" aria-hidden="true"></i> {{ agent.name || '-' }}
+      </span>
+      <span flex="" class="flex"></span>
+      <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
+        tooltip="Discover">
+        <wz-svg icon="compass"></wz-svg>
+        Discover
+      </button>
+      <!-- Restart button -->
+      <div ng-show="confirmingRestart" style="text-align: right;">
+        <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
+        <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+          class='btn wz-button-cancel pull-right wz-margin-left-10'>
+          <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+        </button>
+        <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
+          class='btn wz-button-empty pull-right wz-margin-left-10'>
+          <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+        </button>
+      </div>
+      <div ng-show="!confirmingRestart">
+        <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
+          class="btn wz-button-empty pull-right ng-scope">
+          <span aria-hidden="false">
+            <wz-svg icon="refresh"></wz-svg>
+            Restart agent
+          </span>
+        </button>
+      </div>
+    </div>
+    <div layout="row" layout-padding class="wz-no-padding wz-margin-top-20">
+      <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
+        <md-card-content class="agent-details-box">
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">ID</p>
+                </div>
+                <p class="euiText--small euiStat__description">{{ agent.id || '-' }}</p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">IP</p>
+                </div>
+                <p class="euiText--small euiStat__description">{{ agent.ip || '-'}}</p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">Version</p>
+                </div>
+                <p class="euiText--small euiStat__description">{{ agent.version || '-'}}</p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">OS</p>
+                </div>
+                <p class="euiText--small euiStat__description">{{ agentOS || '-'}}</p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">Registration date</p>
+                </div>
+                <p class="euiText--small euiStat__description">{{offsetTimestamp('', agent.dateAdd) || '-'}}</p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">Last keep alive</p>
+                </div>
+                <p class="euiText--small euiStat__description">{{offsetTimestamp('', agent.lastKeepAlive) || '-'}}</p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">Last syscheck scan</p>
+                </div>
+                <p class="euiText--small euiStat__description" ng-if="syscheck.inProgress">Scan
+                  in progress</p>
+                <p class="euiText--small euiStat__description" ng-if="!syscheck.inProgress">
+                  {{offsetTimestamp('', syscheck.end) || '-'}}
+                  <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
+                    md-direction="bottom" class="wz-tooltip">
+                    Start time: {{offsetTimestamp('', syscheck.start) || '-'}} <br>
+                    End time: {{offsetTimestamp('', syscheck.end) || '-'}} <br>
+                    Duration time: {{syscheck.duration +' minutes' || '-'}}
+                  </md-tooltip>
+                </p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem">
+              <div class="euiStat euiStat--leftAligned">
+                <div class="euiText euiText--small euiStat__description">
+                  <p class="agentField">Last rootcheck scan</p>
+                </div>
+                <p class="euiText--small euiStat__description" ng-if="rootcheck.inProgress">Scan
+                  in progress</p>
+                <p class="euiText--small euiStat__description" ng-if="!rootcheck.inProgress">{{offsetTimestamp('', rootcheck.end)
+                              || '-'}}
+                  <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end"
+                    md-direction="bottom" class="wz-tooltip">
+                    Start time: {{offsetTimestamp('', rootcheck.start) || '-'}} <br>
+                    End time: {{offsetTimestamp('', rootcheck.end) || '-'}} <br>
+                    Duration time: {{rootcheck.duration + ' minutes' || '-'}}
+                  </md-tooltip>
+                </p>
+              </div>
+            </div>
+          </div>
+        </md-card-content>
+      </md-card>
+    </div>
   </div>
   <!-- End headline -->
 
-  <!-- Agent information section -->
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="!agent.error">
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>
-          Name:
-          <span class="wz-text-bold">{{ agent.name }}</span>
-          <md-tooltip ng-if="agent.name.length" md-direction="bottom" class="wz-tooltip">
-            Full name: {{ agent.name }}
-          </md-tooltip>
+  <div layout="row" layout-padding class="wz-margin-top--15">
+    <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
+      <md-card-content>
+
+        <div layout="row" ng-if="agent.group">
+          <span class="font-size-17">Groups
+            <wz-svg ng-if='adminMode' ng-click="switchGroupEdit()" svg-tooltip="Add group" icon="plus" color="#0079a5">
+            </wz-svg>
+          </span>
         </div>
-        <div class="wz-text-truncatable" flex>
-          IP:
-          <span class="wz-text-bold">{{ agent.ip }}</span>
-        </div>
-        <!--  <div class="wz-text-truncatable" flex ng-if="agent.group">
-            Group:
-            <span class="wz-text-bold" ng-click="goGroups(agent.group)">{{ agent.group }}</span>
-          </div> -->
-        <div class="wz-text-truncatable" flex ng-if="agent.version">
-          Version:
-          <span class="wz-text-bold">{{ agent.version }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>
-          OS:
-          <span class="wz-text-bold">{{ agentOS }}</span>
-          <md-tooltip ng-if="agentOS.length" md-direction="bottom" class="wz-tooltip">
-            Full OS name: {{ agentOS }}
-          </md-tooltip>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if="!agent.error && agent.group">
-    <md-card flex class="wz-metric-color wz-md-card">
-      <md-card-content class="wz-padding-metric">
-        <div class="layout-row wz-word-break">
-          <span class="wz-text-link" ng-if='adminMode' ng-click="switchGroupEdit()"><i class="fa fa-fw fa-plus-circle"></i>&nbsp;</span>Groups:&nbsp;
-          <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link" ng-click="goGroups(agent,$index)">{{
-            group }}&nbsp;</span>
-        </div>
-        <div layout="row" class="wz-margin-top-10" ng-if="editGroup && !addingGroupToAgent">
+        <md-divider ng-if="agent.group" class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-margin-top-10" ng-if="agent.group && editGroup && !addingGroupToAgent">
           <div class="wz-word-break" flex ng-if="groups && groups.length">
             Available groups:
           </div>
           <div class="wz-word-break" flex ng-if="!groups || !groups.length">
-            There are no more groups available.
+            No more groups available. Create a new group at <span><a ui-sref="mg-groups">Management > Groups</a>.</span>
           </div>
-
         </div>
-        <div ng-if="editGroup && !addingGroupToAgent" class="wz-margin-top-4 wz-margin-left-10" ng-if="groups && groups.length">
+        <div ng-if="agent.group && editGroup && !addingGroupToAgent && groups && groups.length" class="wz-margin-top-4">
           <span ng-repeat="group in groups" class="wz-text-bold wz-text-link" ng-click="showConfirmAddGroup(group)">{{
-            group }}&nbsp;</span>
+                  group }}&nbsp;</span>
         </div>
 
-        <div class="wz-margin-top-10" ng-if="editGroup && addingGroupToAgent">
+        <div class="wz-margin-top-10 confirmEmbedBubble" ng-if="agent.group && editGroup && addingGroupToAgent">
           <div layout="row">
-            <span class="euiToastHeader__title font-size-12">Group {{addingGroupToAgent}} will be added to agent
-              {{agent.id}}</span>
+            <span class="font-size-12  wz-padding-left-8"> Agent {{agent.name}}({{agent.id}}) will be added to group
+              {{addingGroupToAgent}}.</span>
           </div>
           <div layout="row">
-            <md-button class="cancelBtnAgents" type="button" ng-click="cancelAddGroup()"><i aria-hidden='true' class='fa fa-fw fa-close'></i>
-              Cancel</md-button>
-            <md-button class="agreeBtnAgents" type="button" ng-click="confirmAddGroup(addingGroupToAgent)"><i
+            <md-button class="cancelBtn" type="button" ng-click="cancelAddGroup()">Cancel</md-button>
+            <md-button class="agreeBtn" type="button" ng-click="confirmAddGroup(addingGroupToAgent)"><i
                 aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
           </div>
         </div>
-      </md-card-content>
-    </md-card>
-  </div>
+        <div layout="row" ng-if="agent.group" class="wz-word-break wz-padding-top-10">
+          <span ng-repeat="group in agent.group" class="wz-text-bold wz-text-link font-size-15"
+            ng-click="goGroups(agent,$index)">{{
+                  group
+                  }}&nbsp;</span>
+        </div>
 
-
-  <div layout="row" class="wz-padding-top-0 wz-padding-bottom-0" ng-if='!agent.error'>
-    <md-card flex class="wz-metric-color wz-md-card wz-no-padding">
-      <md-card-content layout="row" class="wz-padding-metric">
-        <div class="wz-text-truncatable" flex>Last keep alive:
-          <span class="wz-text-bold"> {{agent.lastKeepAlive || 'Unknown' }}</span>
-        </div>
-        <div class="wz-text-truncatable" flex>Registration date:
-          <span class="wz-text-bold"> {{agent.dateAdd}}</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="syscheck.inProgress">Last syscheck scan:
-          <span class="wz-text-bold"> Scan in progress</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="!syscheck.inProgress">Last syscheck scan:
-          <span class="wz-text-bold"> {{syscheck.end || 'Unknown'}}</span>
-          <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom" class="wz-tooltip">
-            Start time: {{ syscheck.start || 'Unknown'}}
-            <br> End time: {{ syscheck.end || 'Unknown'}}
-            <br> Duration time: {{ syscheck.duration +' minutes' || 'Unknown'}}
-          </md-tooltip>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="rootcheck.inProgress">Last rootcheck scan:
-          <span class="wz-text-bold"> Scan in progress</span>
-        </div>
-        <div class="wz-text-truncatable" flex ng-if="!rootcheck.inProgress">Last rootcheck scan:
-          <span class="wz-text-bold"> {{rootcheck.end || 'Unknown'}}</span>
-          <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end" md-direction="bottom" class="wz-tooltip">
-            Start time: {{ rootcheck.start || 'Unknown'}}
-            <br> End time: {{ rootcheck.end || 'Unknown'}}
-            <br> Duration time: {{ rootcheck.duration +' minutes' || 'Unknown'}}
-          </md-tooltip>
-        </div>
       </md-card-content>
     </md-card>
   </div>
@@ -149,34 +209,58 @@
     <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Security Information Management</h3>
+          <h3 class="euiTitle wc-title">Security Information Management</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
-              title="'Security events'" ui-sref='ag-general({id:agent.id})' current-tab="'general'" description="'Browse through your security alerts, identifying issues and threats in your environment.'"></wz-welcome-card>
+              sub-title="'Security events'" ui-sref='ag-general({id:agent.id})' current-tab="'general'"
+              description="'Browse through your security alerts, identifying issues and threats in your environment.'">
+            </wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'"
-              title="'Integrity monitoring'" ui-sref='ag-fim({id:agent.id})' current-tab="'fim'" description="'Alerts related to file changes, including permissions, content, ownership and attributes.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="!agent.error" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'"
-              title="'Configuration'" ui-sref='ag-conf({id:agent.id})' current-tab="'configuration'" description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="!agent.error" ui-sref='ag-inventory({id:agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'"
-              title="'Inventory data'" switch-tab="switchTab('syscollector')" current-tab="'syscollector'" description="'Applications, network configuration, open ports and processes running on your monitored systems.'"></wz-welcome-card>
+              sub-title="'Integrity monitoring'" ui-sref='ag-fim({id:agent.id})' current-tab="'fim'"
+              description="'Alerts related to file changes, including permissions, content, ownership and attributes.'">
+            </wz-welcome-card>
+            <wz-welcome-card ng-if="!agent.error" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_devtools.svg'" sub-title="'Configuration'"
+              ui-sref='ag-conf({id:agent.id})' current-tab="'configuration'"
+              description="'Check the current agent configuration remotely applied by its group.'"></wz-welcome-card>
+            <wz-welcome-card ng-if="!agent.error" ui-sref='ag-inventory({id:agent.id})' class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_index_pattern.svg'" sub-title="'Inventory data'"
+              switch-tab="switchTab('syscollector')" current-tab="'syscollector'"
+              description="'Applications, network configuration, open ports and processes running on your monitored systems.'">
+            </wz-welcome-card>
           </div>
         </div>
       </div>
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Auditing and Policy Monitoring</h3>
+          <h3 class="euiTitle wc-title">Auditing and Policy Monitoring</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
-              title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'" description="'Configuration to ensure compliance with security policies, standards and hardening guides'"></wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+              sub-title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'"
+              description="'Configuration to ensure compliance with security policies, standards and hardening guides'">
+            </wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/sca.png'"
+              sub-title="'Security Configuration Assessment'" ui-sref='ag-ca({id:aoc.agent.id})'
+              current-tab="'conf-assess'" description="'Scan your assets as part of a configuration assessment audit.'">
+            </wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-              title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux" current-tab="'audit'"
-              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="oscap && isLinux" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
-              title="'Open SCAP'" ui-sref='ag-os({id:agent.id})' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
-            <wz-welcome-card ng-if='ciscat' ui-sref='ag-ciscat({id:agent.id})' class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
-              title="'CIS-CAT'" switch-tab="switchTab('ciscat')" current-tab="'ciscat'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
+              sub-title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && isLinux"
+              current-tab="'audit'"
+              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'">
+            </wz-welcome-card>
+            <wz-welcome-card ng-if="oscap && isLinux" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'" sub-title="'Open SCAP'"
+              ui-sref='ag-os({id:agent.id})' current-tab="'oscap'"
+              description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'">
+            </wz-welcome-card>
+            <wz-welcome-card ng-if='ciscat' ui-sref='ag-ciscat({id:agent.id})' class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'" sub-title="'CIS-CAT'"
+              switch-tab="switchTab('ciscat')" current-tab="'ciscat'"
+              description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'">
+            </wz-welcome-card>
           </div>
         </div>
       </div>
@@ -187,29 +271,44 @@
     <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Threat Detection and Response</h3>
+          <h3 class="euiTitle wc-title">Threat Detection and Response</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
-              title="'Vulnerabilities'" ui-sref='ag-vul({id:agent.id})' current-tab="'vuls'" description="'Discover what applications are affected by well-known vulnerabilities'"></wz-welcome-card>
-
-            <wz-welcome-card ng-if="osquery" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'"
-              title="'Osquery'" ui-sref='ag-osquery' current-tab="'osquery'" description="'Osquery allows to expose an operating system as a high-performance relational database.'"></wz-welcome-card>
-
-            <wz-welcome-card ng-if="virustotal" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
-              title="'VirusTotal'" ui-sref='ag-virustotal' current-tab="'virustotal'" description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"></wz-welcome-card>
+              sub-title="'Vulnerabilities'" ui-sref='ag-vul({id:agent.id})' current-tab="'vuls'"
+              description="'Discover what applications are affected by well-known vulnerabilities'"></wz-welcome-card>
+            <wz-welcome-card ng-if="virustotal" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'" sub-title="'VirusTotal'"
+              ui-sref='ag-virustotal' current-tab="'virustotal'"
+              description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'">
+            </wz-welcome-card>
+            <wz-welcome-card ng-if="osquery" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'" sub-title="'Osquery'" ui-sref='ag-osquery'
+              current-tab="'osquery'"
+              description="'Osquery allows to expose an operating system as a high-performance relational database.'">
+          </wz-welcome-card>
+          <wz-welcome-card ng-if="docker" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/docker.png'" 
+            sub-title="'Docker listener'" ui-sref='ag-docker' current-tab="'docker'" 
+            description="'Collects events on Docker containers such as starting, stopping or pausing.'">
+          </wz-welcome-card>
           </div>
         </div>
       </div>
       <div ng-if="gdpr || pci" class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle">Regulatory Compliance</h3>
+          <h3 class="euiTitle wc-title">Regulatory Compliance</h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card ng-if="pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
-              title="'PCI DSS'" ui-sref='ag-pci({id:agent.id})' current-tab="'pci'" description="'Global security standard for entities that process, store or transmit payment cardholder data.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="gdpr" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
-              title="'GDPR'" ui-sref='ag-gdpr({id:agent.id})' current-tab="'gdpr'" description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'"></wz-welcome-card>
+            <wz-welcome-card ng-if="pci" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'" sub-title="'PCI DSS'"
+              ui-sref='ag-pci({id:agent.id})' current-tab="'pci'"
+              description="'Global security standard for entities that process, store or transmit payment cardholder data.'">
+            </wz-welcome-card>
+            <wz-welcome-card ng-if="gdpr" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'GDPR'"
+              ui-sref='ag-gdpr({id:agent.id})' current-tab="'gdpr'"
+              description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'">
+            </wz-welcome-card>
           </div>
         </div>
       </div>

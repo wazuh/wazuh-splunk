@@ -1,10 +1,12 @@
 <div layout="row" class="md-padding" ng-show="wazuh_table_loading">
-  <div class='uil-ring-css'>
-    <div></div>
-  </div>
+  <!-- Loading bar -->
+  <div class="loader" ></div>
 </div>
 <div ng-show="!error && !wazuh_table_loading" layout="row" class="wz-margin-top-17">
-  <input placeholder="Filter..." ng-model="searchTerm" ng-change="filterTable()" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid">
+  
+  <label class="wz-icon-loupe">
+    <input placeholder="Filter..." ng-model="searchTerm" ng-change="filterTable()" type="text" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid">
+  </label>
   <button class="kuiLocalSearchButton height-40"><span class="fa fa-search" aria-hidden="true"></span> </button>
 </div>
 <div ng-show="!error && !wazuh_table_loading && items.length">
@@ -28,17 +30,17 @@
     <tfoot>
       <td colspan="{{keys.length}}">
         <span ng-show="!wazuh_table_loading" class="color-grey">{{ totalItems }} items</span>
-        <div ng-show="items.length >= itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+        <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
           <ul layout="row">
             <li ng-show="currentPage" class="md-padding">
-              <a href ng-click="prevPage()">« Prev</a>
+              <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
             </li>
             <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) " ng-class="{'wz-text-active': n == currentPage}"
               ng-click="setPage()" class="md-padding">
               <a href ng-bind="n + 1">1</a>
             </li>
             <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-              <a href ng-click="nextPage()">Next »</a>
+              <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
             </li>
           </ul>
         </div>

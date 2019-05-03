@@ -17,7 +17,10 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $notificationService,
       $currentDataService,
       $tableFilterService,
-      $csvRequestService
+      $csvRequestService,
+      $restartService,
+      isAdmin,
+      $fileEditor
     ) {
       super(
         $scope,
@@ -26,32 +29,37 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         'decoders',
         $currentDataService,
         $tableFilterService,
-        $csvRequestService
+        $csvRequestService,
+        $restartService,
+        $fileEditor
       )
       this.scope.typeFilter = 'all'
+      this.isAdmin = isAdmin
+      this.restartService = $restartService
     }
 
     /**
      * On controller load
      */
     $onInit() {
+      this.scope.adminMode = this.isAdmin
+      this.scope.localFilter = false
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.$on('decodersIsReloaded', () => {
-        this.scope.viewingDetail = false
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
       this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
+      this.scope.addNewFile = () => this.addNewFile()
+      this.scope.saveRuleConfig = (fileName, dir, overwrite) =>
+        this.saveRuleConfig(fileName, dir, overwrite)
 
-      this.scope.$on('wazuhShowDecoder', (event, parameters) => {
-        this.scope.currentDecoder = parameters.decoder
-        this.scope.viewingDetail = true
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
+      this.scope.selectedNavTab = 'decoders'
 
-      this.scope.$on('loadedTable', () => {
+      this.scope.restart = () => this.restart()
+      this.scope.closeRestartConfirmation = () =>
+        this.closeRestartConfirmation()
+
+      this.scope.$on('loadedTable', event => {
+        event.stopPropagation()
         try {
           if (window.localStorage.decoders) {
             const parsedFilter = JSON.parse(window.localStorage.decoders)
@@ -60,7 +68,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
               this.scope.$broadcast('wazuhFilter', { filter: this.filter })
           }
         } catch (err) {
-          this.toast('Error applying filter')
+          this.notification.showErrorToast('Error applying filter')
         }
       })
     }
@@ -74,12 +82,59 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       if (window.localStorage.decoders) {
         delete window.localStorage.decoders
       }
-      if (typeFilter === 'all')
+      if (typeFilter === 'all') {
+        this.scope.onlyParentDecoders = false
         this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
-      else
+      } else {
+        this.scope.onlyParentDecoders = true
         this.scope.$broadcast('wazuhUpdateInstancePath', {
           path: '/decoders/parents'
         })
+      }
+    }
+
+    /**
+     * Open the editor for a new file
+     */
+    addNewFile() {
+      this.scope.overwrite = false
+      this.scope.addingNewFile = true
+      this.scope.editingFile = {
+        file: ``,
+        dir: `decoders`
+      }
+      this.scope.fetchedXML = `<!-- Configure your local decoders here -->`
+    }
+
+    /**
+     * Save the new content
+     * @param {String} fileName
+     * @param {String} dir
+     */
+    saveRuleConfig(fileName, dir, overwrite = false) {
+      try {
+        const containsBlanks = /.* .*/
+        fileName = this.scope.editingFile.file
+        fileName = fileName.endsWith('.xml') ? fileName : `${fileName}.xml`
+        if (containsBlanks.test(fileName)) {
+          this.notification.showErrorToast(
+            'Error creating a new file. The filename can not contain white spaces.'
+          )
+        } else {
+          if (fileName !== '.xml') {
+            this.scope.saveIncomplete = true
+            this.scope.$broadcast('saveXmlFile', {
+              file: fileName,
+              dir,
+              overwrite
+            })
+          } else {
+            throw new Error('The name cannot be ".xml"')
+          }
+        }
+      } catch (error) {
+        this.notification.showWarningToast('Please set a valid name')
+      }
     }
   }
   controllers.controller('managerDecodersCtrl', Decoders)

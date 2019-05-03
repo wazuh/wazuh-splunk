@@ -22,7 +22,8 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/show-hint',
   '../../libs/codemirror-conv/querystring-browser/bundle',
-  '../../utils/excluded-devtools-autocomplete-keys'
+  '../../utils/excluded-devtools-autocomplete-keys',
+  'FileSaver'
 ], function(
   app,
   $,
@@ -63,13 +64,14 @@ define([
       this.request = $requestService
       this.$window = $window
       this.appState = $navigationService
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.$document = $document
       this.groups = []
       this.linesWithClass = []
       this.widgets = []
+      this.multipleKeyPressed = []
       try {
-        this.admin = extensions['admin'] === 'true' ? true : false
+        this.admin = extensions['admin'] === 'true'
       } catch (err) {
         this.admin = false
       }
@@ -79,71 +81,109 @@ define([
      * When controller loads
      */
     $onInit() {
-      this.apiInputBox = CodeMirror.fromTextArea(
-        this.$document[0].getElementById('api_input'),
-        {
-          lineNumbers: true,
-          matchBrackets: true,
-          mode: { name: 'javascript', json: true },
-          theme: 'ttcn',
-          foldGutter: true,
-          styleSelectedText: true,
-          gutters: ['CodeMirror-foldgutter']
-        }
-      )
-      // Register plugin for code mirror
-      CodeMirror.commands.autocomplete = function(cm) {
-        CodeMirror.showHint(cm, CodeMirror.hint.dictionaryHint, {
-          completeSingle: false
+      try {
+        $(this.$document[0]).keydown(e => {
+          if (!this.multipleKeyPressed.includes(e.which)) {
+            this.multipleKeyPressed.push(e.which)
+          }
+          if (
+            this.multipleKeyPressed.includes(13) &&
+            this.multipleKeyPressed.includes(16) &&
+            this.multipleKeyPressed.length === 2
+          ) {
+            e.preventDefault()
+            return this.send()
+          }
         })
-      }
 
-      this.apiInputBox.on('change', () => {
-        this.groups = this.analyzeGroups()
-        const currentState = this.apiInputBox.getValue().toString()
-        this.appState.setCurrentDevTools(currentState)
-        const currentGroup = this.calculateWhichGroup()
-        if (currentGroup) {
-          const hasWidget = this.widgets.filter(
-            item => item.start === currentGroup.start
-          )
-          if (hasWidget.length)
-            this.apiInputBox.removeLineWidget(hasWidget[0].widget)
-          setTimeout(() => this.checkJsonParseError(), 150)
-        }
-      })
-
-      this.apiInputBox.on('cursorActivity', () => {
-        const currentGroup = this.calculateWhichGroup()
-        this.highlightGroup(currentGroup)
-        this.checkJsonParseError()
-      })
-
-      this.apiOutputBox = CodeMirror.fromTextArea(
-        this.$document[0].getElementById('api_output'),
-        {
-          lineNumbers: true,
-          matchBrackets: true,
-          mode: { name: 'javascript', json: true },
-          readOnly: true,
-          lineWrapping: true,
-          styleActiveLine: true,
-          theme: 'ttcn',
-          foldGutter: true,
-          gutters: ['CodeMirror-foldgutter']
-        }
-      )
-
-      this.$scope.send = firstTime => this.send(firstTime)
-
-      this.$scope.help = () => {
-        this.$window.open(
-          'https://documentation.wazuh.com/current/user-manual/api/reference.html'
+        // eslint-disable-next-line
+        $(this.$document[0]).keyup(e => {
+          this.multipleKeyPressed = []
+        })
+        this.apiInputBox = CodeMirror.fromTextArea(
+          this.$document[0].getElementById('api_input'),
+          {
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: { name: 'javascript', json: true },
+            theme: 'ttcn',
+            foldGutter: true,
+            styleSelectedText: true,
+            gutters: ['CodeMirror-foldgutter']
+          }
         )
-      }
+        // Register plugin for code mirror
+        CodeMirror.commands.autocomplete = function(cm) {
+          CodeMirror.showHint(cm, CodeMirror.hint.dictionaryHint, {
+            completeSingle: false
+          })
+        }
 
-      this.init()
-      this.$scope.send(true)
+        this.apiInputBox.on('change', () => {
+          this.groups = this.analyzeGroups()
+          const currentState = this.apiInputBox.getValue().toString()
+          this.appState.setCurrentDevTools(currentState)
+          const currentGroup = this.calculateWhichGroup()
+          if (currentGroup) {
+            const hasWidget = this.widgets.filter(
+              item => item.start === currentGroup.start
+            )
+            if (hasWidget.length)
+              this.apiInputBox.removeLineWidget(hasWidget[0].widget)
+            setTimeout(() => this.checkJsonParseError(), 150)
+          }
+        })
+
+        this.apiInputBox.on('cursorActivity', () => {
+          const currentGroup = this.calculateWhichGroup()
+          this.highlightGroup(currentGroup)
+          this.checkJsonParseError()
+        })
+
+        this.apiOutputBox = CodeMirror.fromTextArea(
+          this.$document[0].getElementById('api_output'),
+          {
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: { name: 'javascript', json: true },
+            readOnly: true,
+            lineWrapping: true,
+            styleActiveLine: true,
+            theme: 'ttcn',
+            foldGutter: true,
+            gutters: ['CodeMirror-foldgutter']
+          }
+        )
+
+        this.$scope.send = firstTime => this.send(firstTime)
+
+        this.$scope.help = () => {
+          this.$window.open(
+            'https://documentation.wazuh.com/current/user-manual/api/reference.html'
+          )
+        }
+
+        this.init()
+        this.$scope.send(true)
+        this.$scope.exportOutput = () => this.exportOutput()
+      } catch (error) {
+        this.notification.showErrorToast(error)
+      }
+    }
+
+    /**
+     * Exports results in JSON format
+     */
+    exportOutput() {
+      try {
+        // eslint-disable-next-line
+        const blob = new Blob([this.apiOutputBox.getValue()], {
+          type: 'application/json'
+        })
+        saveAs(blob, 'export.json') // eslint-disable-line
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
 
     /**
@@ -160,7 +200,7 @@ define([
           .filter(item => item.replace(/\s/g, '').length)
         let start = 0
         let end = 0
-
+        let starts = []
         const slen = splitted.length
         for (let i = 0; i < slen; i++) {
           let tmp = splitted[i].split('\n')
@@ -171,6 +211,26 @@ define([
 
           if (cursor.findNext()) start = cursor.from().line
           else return []
+
+          /**
+           * Prevents from user frustation when there are duplicated queries.
+           * We want to look for the next query when available, even if it
+           * already exists but it's not the selected query.
+           */
+          if (tmp.length) {
+            // It's a safe loop since findNext method returns null if there is no next query.
+            while (
+              this.apiInputBox.getLine(cursor.from().line) !== tmp[0] &&
+              cursor.findNext()
+            ) {
+              start = cursor.from().line
+            }
+            // It's a safe loop since findNext method returns null if there is no next query.
+            while (starts.includes(start) && cursor.findNext()) {
+              start = cursor.from().line
+            }
+          }
+          starts.push(start)
 
           end = start + tmp.length
 
@@ -210,7 +270,7 @@ define([
             end
           })
         }
-
+        starts = []
         return tmpgroups
       } catch (error) {
         return []
@@ -547,23 +607,32 @@ define([
           for (const key in extra) JSONraw[key] = extra[key]
           const path = req.includes('?') ? req.split('?')[0] : req
           //if (typeof JSONraw === 'object') JSONraw.devTools = true
-          const output = await this.request.apiReq(path, JSONraw, method)
-          const result =
-            output.data && output.data.data && !output.data.error
-              ? JSON.stringify((output || {}).data, null, 2)
+          if (!firstTime) {
+            const output = await this.request.apiReq(path, JSONraw, method)
+            const result = output.data
+              ? JSON.stringify((output || {}).data || {}, null, 2).replace(
+                  /\\\\/g,
+                  '\\'
+                )
               : output.data.message || 'Unkown error'
-          this.apiOutputBox.setValue(result)
-        } else {
-          this.apiOutputBox.setValue('Welcome!')
+            this.apiOutputBox.setValue(result)
+          }
         }
+        ;(firstTime || !desiredGroup) && this.apiOutputBox.setValue('Welcome!') // eslint-disable-line
       } catch (error) {
-        const parsedError = this.toast(error)
-        if (typeof parsedError === 'string') {
-          return this.apiOutputBox.setValue(parsedError)
-        } else if (error && error.data && typeof error.data === 'object') {
-          return this.apiOutputBox.setValue(JSON.stringify(error.data))
+        if ((error || {}).status === -1) {
+          return this.apiOutputBox.setValue(
+            "Wazuh API don't reachable. Reason: timeout."
+          )
         } else {
-          return this.apiOutputBox.setValue('Empty')
+          this.notification.showErrorToast(error)
+          if (typeof error === 'string') {
+            return this.apiOutputBox.setValue(error)
+          } else if (error && error.data && typeof error.data === 'object') {
+            return this.apiOutputBox.setValue(JSON.stringify(error))
+          } else {
+            return this.apiOutputBox.setValue('Empty')
+          }
         }
       }
     }

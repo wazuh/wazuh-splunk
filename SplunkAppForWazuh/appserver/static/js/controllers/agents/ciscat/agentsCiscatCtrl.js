@@ -13,7 +13,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
 
@@ -33,16 +33,23 @@ define([
       $state,
       $currentDataService,
       agent,
-      $reportingService
+      $reportingService,
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
+      this.currentDataService.addFilter(
+        `{"rule.groups{}":"ciscat", "implicit":true, "onlyShow":true}`
+      )
       this.reportingService = $reportingService
       this.tableResults = {}
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -50,6 +57,10 @@ define([
       )
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.agent = agent
+
+      this.scope.expandArray = [false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
       if (
         this.agent &&
         this.agent.data &&
@@ -145,7 +156,7 @@ define([
           `lastScanBenchmark`,
           `${
             this.filters
-          } rule.groups=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
+          } rule.groups{}=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
           'lastScanBenchmark',
           '$result.data.cis.benchmark$',
           'lastScanBenchmark',
@@ -159,7 +170,7 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
+          } sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
@@ -167,7 +178,7 @@ define([
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
+          } sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope
         ),
@@ -175,26 +186,21 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          } sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       // Set agent info
       try {
@@ -239,6 +245,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -249,6 +260,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -257,11 +269,13 @@ define([
         this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -303,6 +317,29 @@ define([
         'Last unknown': this.scope.lastUnknown,
         'Last scan benchmark': this.scope.lastScanBenchmark
       }
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
 
     /**

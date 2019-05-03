@@ -13,7 +13,7 @@ define([
   Table,
   TimePicker,
   SearchHandler,
-  rawTableDataService
+  RawTableDataService
 ) {
   'use strict'
   class Ciscat {
@@ -29,9 +29,13 @@ define([
       $scope,
       $currentDataService,
       $state,
-      $reportingService
+      $reportingService,
+      reportingEnabled,
+      extensions
     ) {
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.state = $state
       this.reportingService = $reportingService
       this.addFilter = $currentDataService.addFilter
@@ -45,11 +49,16 @@ define([
         $urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.expandArray = [false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -138,7 +147,7 @@ define([
           `lastScanBenchmark`,
           `${
             this.filters
-          } rule.groups=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
+          } rule.groups{}=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
           'lastScanBenchmark',
           '$result.data.cis.benchmark$',
           'lastScanBenchmark',
@@ -152,7 +161,7 @@ define([
           'topCiscatGroups',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | top data.cis.group`,
+          } sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
@@ -160,7 +169,7 @@ define([
           'scanResultEvolution',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | timechart count by data.cis.result usenull=f`,
+          } sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope
         ),
@@ -168,26 +177,21 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          } sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          }  sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
         )
       ]
-
-      this.alertsSummaryTable = new rawTableDataService(
-        'alertsSummaryTable',
-        `${
-          this.filters
-        }  sourcetype=wazuh rule.groups="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
-        'alertsSummaryTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.alertsSummaryTable)
-
-      this.alertsSummaryTable.getSearch().on('result', result => {
-        this.tableResults['Alerts Summary'] = result
-      })
 
       /**
        * Generates report
@@ -214,6 +218,11 @@ define([
           this.scope.loadingVizz = false
           this.setReportMetrics()
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -224,7 +233,8 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.addFilter(`{"rule.groups":"ciscat", "implicit":true}`)
+      this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
+      this.scope.loadingVizz = true
 
       /**
        * On controller destroy
@@ -257,6 +267,29 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
   app.controller('ciscatCtrl', Ciscat)

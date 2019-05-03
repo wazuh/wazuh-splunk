@@ -71,6 +71,13 @@
   background-color: #0079a5 !important;
 }
 
+.btn-ruleset {
+  width: auto !important;
+  height: 30px !important;
+  margin-left: 10px !important;
+  margin-top: 10px !important;
+}
+
 /* Classes for custom widths */
 
 .wz-width-15 {
@@ -119,7 +126,7 @@
 }
 
 .wz-margin-left-10 {
-  margin-left: 10px;
+  margin-left: 10px !important;
 }
 
 .wz-margin-left-16 {
@@ -163,7 +170,11 @@
 }
 
 .wz-margin-bottom-10 {
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
+}
+
+.wz-margin-top--20 {
+  margin-top: -20px !important;
 }
 
 /* Classes for custom shadows for dashboard cells */
@@ -387,24 +398,56 @@ table span.badge {
   background-color: white !important;
   padding: 10px !important;
 }
-.wz-margin-top-20 {
-  margin-top: 20px;
+
+.wz-margin-top-4 {
+  margin-top: 4px !important;
+}
+
+.wz-margin-top-5 {
+  margin-top: 5px !important;
 }
 
 .wz-margin-top-10 {
-  margin-top: 10px;
+  margin-top: 10px !important;
+}
+
+.wz-margin-top-15 {
+  margin-top: 15px !important;
+}
+
+.wz-margin-top-20 {
+  margin-top: 20px !important;
+}
+
+.wz-margin-top--15{
+  margin-top: -15px !important;
+}
+
+.wz-margin-right-10 {
+  margin-right: 10px !important;
+}
+
+.wz-margin-left-20 {
+  margin-left: 20px !important;
+}
+
+.wz-margin-left--10 {
+  margin-left: -10px !important;
 }
 
 .wz-margin-5 {
-  margin: 5px;
+  margin: 5px !important;
 }
 
 .wz-margin-10 {
-  margin: 10px;
+  margin: 10px !important;
 }
 
+.wz-margin-20 {
+  margin: 20px !important;
+}
 .wz-padding-5 {
-  padding: 5px;
+  padding: 5px !important;
 }
 
 .wz-table-element-pull-left{
@@ -434,5 +477,8 @@ table span.badge {
 }
 
 .wz-metric-color {
-  background-color: #e4f2f5;
+  margin: 0 !important;
+  background-color: #ecf6fb !important;
+  border: 1px solid #dfeff8 !important;
+  box-shadow: none !important;
 }

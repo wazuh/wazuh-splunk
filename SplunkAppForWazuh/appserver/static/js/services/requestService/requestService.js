@@ -52,8 +52,9 @@ define(['../module'], function(module) {
         else if (method === 'POST')
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
-        else if (method === 'DELETE')
+        else if (method === 'DELETE') {
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+        }
         if (!data) {
           throw new Error(
             `Error doing a request to ${tmpUrl}, method: ${method}.`
@@ -64,6 +65,7 @@ define(['../module'], function(module) {
         }
         return $q.resolve(data)
       } catch (error) {
+        console.error('errore in request ', error)
         return $q.reject(error)
       }
     }
@@ -78,15 +80,88 @@ define(['../module'], function(module) {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
-        const id = currentApi && currentApi.id ? currentApi.id : opts.id
+        const id =
+          currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
         const payload = { id, endpoint, method }
         if (opts && typeof opts === `object`) {
           Object.assign(payload, opts)
         }
-        const result = await httpReq(`POST`, `/api/request`, payload)
+        const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
+        const result = await httpReq('POST', backPoint, payload)
+        if (
+          result &&
+          result.data &&
+          result.data.error &&
+          result.data.error === 3099
+        ) {
+          throw new Error('ERROR3099 - Wazuh not ready yet.')
+        }
         return result
       } catch (err) {
         return Promise.reject(err)
+      }
+    }
+
+    const wazuhIsReady = async (opts = null) => {
+      try {
+        $http.defaults.headers.post['Content-Type'] =
+          'application/x-www-form-urlencoded'
+        const currentApi = $apiIndexStorageService.getApi()
+        const id =
+          currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
+        const endpoint = '/api/wazuh_ready'
+        const method = 'GET'
+        const payload = { id, method }
+        const result = await httpReq('POST', endpoint, payload)
+        return result
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    const sendConfiguration = async (url, content) => {
+      try {
+        const result = await apiReq(
+          `${url}`,
+          { content, origin: 'xmleditor' },
+          'POST'
+        )
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          if (result.data.error === 1905) {
+            return result
+          } else {
+            throw new Error(
+              result.data.message || result.data.error || 'Cannot send file.'
+            )
+          }
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    const getConfiguration = async url => {
+      try {
+        const result = await apiReq(url)
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0 ||
+          (result.data.data.error && result.data.data.error !== 0)
+        ) {
+          throw new Error('Cannot get file.')
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
       }
     }
 
@@ -94,7 +169,10 @@ define(['../module'], function(module) {
       getBaseUrl: getBaseUrl,
       getWellFormedUri: getWellFormedUri,
       apiReq: apiReq,
-      httpReq: httpReq
+      httpReq: httpReq,
+      sendConfiguration: sendConfiguration,
+      getConfiguration: getConfiguration,
+      wazuhIsReady: wazuhIsReady
     }
     return service
   })

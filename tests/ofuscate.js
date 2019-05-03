@@ -1,5 +1,5 @@
-const chai = require('chai')
-const needle = require('needle')
+const chai = require('chai')// eslint-disable-line
+const needle = require('needle')// eslint-disable-line
 chai.should()
 const url = process.env.ofuscateurl || ''
 const s_url = `${url}/custom/SplunkAppForWazuh/api/ofuscate_test`

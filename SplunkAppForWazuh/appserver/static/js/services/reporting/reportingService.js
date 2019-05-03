@@ -4,18 +4,93 @@ define(['../module', 'jquery'], function(module, $) {
     constructor(
       $rootScope,
       vis2png,
-      //  rawVisualizations,
       $currentDataService,
       $requestService,
-      $notificationService
+      $notificationService,
+      $navigationService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
-      //  this.rawVisualizations = rawVisualizations
-      this.visHandlers = $currentDataService
+      this.currentDataService = $currentDataService
       this.genericReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
-      this.errorHandler = $notificationService.showSimpleToast
+      this.notification = $notificationService
+      this.navigationService = $navigationService
+    }
+
+    /**
+     * Checks if is a float
+     */
+    isFloat(n) {
+      return Number(n) === n && n % 1 !== 0
+    }
+
+    /**
+     * Checks if the search time range is between two dates
+     */
+    betweenDates() {
+      try {
+        let { earliest_time, latest_time } = JSON.parse(
+          localStorage.getItem('searchTimeRange')
+        )
+        earliest_time = parseFloat(earliest_time)
+        latest_time = parseFloat(latest_time)
+        if (
+          isNaN(earliest_time) ||
+          !earliest_time ||
+          isNaN(latest_time) ||
+          !latest_time
+        ) {
+          return false
+        }
+        if (
+          Number.isInteger(earliest_time) ||
+          (this.isFloat(earliest_time) && Number.isInteger(latest_time)) ||
+          this.isFloat(latest_time)
+        ) {
+          return this.formatBetweenDates(earliest_time, latest_time)
+        }
+      } catch (error) {
+        return false
+      }
+    }
+
+    /**
+     * Formats dates in milliseconds to a human readable format
+     */
+    formatBetweenDates(earliest, latest) {
+      try {
+        //Remove milliseconds and multiply per 1000 to get a milliseconds date format
+        earliest = Math.trunc(earliest) * 1000
+        latest = Math.trunc(latest) * 1000
+        const eDate = this.formatDate(earliest)
+        const lDate = this.formatDate(latest)
+        return `${eDate}  -  ${lDate}`
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+
+    /**
+     * Formats dates in YYYY-MM-DD HH:MM:SS format
+     */
+    formatDate(date) {
+      try {
+        const d = new Date(date)
+        const year = d.getFullYear()
+        const month =
+          d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1
+        const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()
+        const hour = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()
+        const minute =
+          d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()
+        const second =
+          d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds()
+        const dateFormatted = `${year}-${month}-${day} ${hour}:${minute}:${second}`
+        return dateFormatted
+      } catch (error) {
+        return date
+      }
     }
 
     /**
@@ -37,35 +112,39 @@ define(['../module', 'jquery'], function(module, $) {
         metrics = JSON.stringify(metrics)
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         if (this.vis2png.isWorking()) {
-          this.errorHandler('Report in progress')
+          this.notification.showSimpleToast('Report in progress')
           return
         }
-        this.$rootScope.reportBusy = true
-        this.$rootScope.reportStatus = 'Generating report...0%'
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
 
         this.vis2png.clear()
 
-        // const idArray = this.rawVisualizations.getList().map(item => item.id)
-        const idArray = vizz
-
-        for (const item of idArray) {
+        for (const item of vizz) {
           const tmpHTMLElement = $(`#${item}`)
           this.vis2png.assignHTMLItem(item, tmpHTMLElement)
         }
 
-        const appliedFilters = this.visHandlers.getSerializedFilters()
+        const appliedFilters = this.currentDataService.getSerializedFilters()
 
-        const images = await this.vis2png.checkArray(idArray)
+        const images = await this.vis2png.checkArray(vizz)
         const name = `wazuh-${
           isAgents ? 'agents' : 'overview'
         }-${tab}-${(Date.now() / 1000) | 0}.pdf`
 
-        //Search time range
-        const timeRange = document
-          .getElementById('timePicker')
-          .getElementsByTagName('span')[1].innerHTML
+        let timeRange
 
+        //Search time range
+        try {
+          timeRange =
+            this.betweenDates() ||
+            document
+              .getElementById('timePicker')
+              .getElementsByTagName('span')[1].innerHTML
+        } catch (error) {
+          timeRange = false
+        }
+
+        const timeZone = new Date().getTimezoneOffset()
         const data = {
           images,
           tableResults,
@@ -81,36 +160,45 @@ define(['../module', 'jquery'], function(module, $) {
           tables: appliedFilters.tables,
           pdfName: tab,
           section: isAgents ? 'agents' : 'overview',
-          isAgents
+          isAgents,
+          timeZone
         }
-
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
-
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-        this.errorHandler('Success. Go to Management -> Reporting')
+        try {
+          const reportingUrl = this.navigationService.updateURLParameter(
+            window.location.href,
+            'currentTab',
+            'mg-reporting'
+          )
+          this.notification.showSuccessToast(
+            `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+          )
+        } catch (error) {
+          this.notification.showSuccessToast(
+            'Success. Go to Management ->  Reporting'
+          )
+        }
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
-        this.errorHandler('Reporting error')
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        if (error === 'Impossible fetch visualizations') {
+          this.notification.showErrorToast(`Reporting error: ${error}.`)
+        } else {
+          this.notification.showErrorToast('Reporting error.')
+        }
       }
     }
-    async reportInventoryData(
-      tab,
-      sectionTitle,
-      queryFilters = '',
-      vizz = [],
-      metrics = {},
-      tableResults = {},
-      isAgents = 'inventory',
-      agentId
-    ) {
+
+    async reportInventoryData(agentId) {
       try {
+        let tableResults = {}
+        let isAgents
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         //Get agent info and formating tables
         try {
@@ -121,18 +209,30 @@ define(['../module', 'jquery'], function(module, $) {
             this.apiReq(`/syscollector/${agentId}/hardware`),
             this.apiReq(`/syscollector/${agentId}/os`)
           ])
+
+          const agentInfo = agent[0].data.data
+          const {
+            name,
+            id,
+            ip,
+            version,
+            manager,
+            os,
+            dateAdd,
+            lastKeepAlive,
+            group
+          } = agentInfo
+
           isAgents = {
-            ID: agent[0].data.data.id,
-            Name: agent[0].data.data.name,
-            IP: agent[0].data.data.ip,
-            Version: agent[0].data.data.version,
-            Manager: agent[0].data.data.manager,
-            OS: `${agent[0].data.data.os.name} ${
-              agent[0].data.data.os.codename
-            } ${agent[0].data.data.os.version}`,
-            dateAdd: agent[0].data.data.dateAdd,
-            lastKeepAlive: agent[0].data.data.lastKeepAlive,
-            group: agent[0].data.data.group.toString()
+            ID: id,
+            Name: name,
+            IP: ip,
+            Version: version,
+            Manager: manager,
+            OS: `${os.name} ${os.codename} ${os.version}`,
+            dateAdd: dateAdd,
+            lastKeepAlive: lastKeepAlive,
+            group: group.toString()
           }
         } catch (error) {
           isAgents = 'inventory'
@@ -142,7 +242,8 @@ define(['../module', 'jquery'], function(module, $) {
         const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
         const networkInterfaceData = netiface.data.data.items.map(i => {
-          return [i.name, i.mac, i.state, i.mtu.toString(), i.type]
+          i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
+          return [i.name, i.mac, i.state, i.mtu, i.type]
         })
         const networkInterfaceTable = {
           fields: networkInterfaceKeys,
@@ -154,7 +255,8 @@ define(['../module', 'jquery'], function(module, $) {
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
         const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
         const networkPortsData = ports.data.data.items.map(p => {
-          return [p.local.ip, p.local.port.toString(), p.state, p.protocol]
+          p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
+          return [p.local.ip, p.local.port, p.state, p.protocol]
         })
         const networkPortsTable = {
           fields: networkPortsKeys,
@@ -186,7 +288,8 @@ define(['../module', 'jquery'], function(module, $) {
         )
         const processesKeys = ['Name', 'Euser', 'Nice', 'State']
         const processesData = processes.data.data.items.map(n => {
-          return [n.name, n.euser, n.nice.toString(), n.state]
+          n.nice = n.nice ? n.nice.toString() : 'undefined'
+          return [n.name, n.euser, n.nice, n.state]
         })
         const processesTable = { fields: processesKeys, rows: processesData }
         tableResults['Processes'] = processesTable
@@ -200,32 +303,37 @@ define(['../module', 'jquery'], function(module, $) {
         const packagesTable = { fields: packagesKeys, rows: packagesData }
         tableResults['Packages'] = packagesTable
 
-        const images = vizz
+        const timeZone = new Date().getTimezoneOffset()
+
         const data = {
-          images,
+          images: [],
           tableResults,
-          timeRange: '',
-          sectionTitle,
-          queryFilters,
-          metrics,
-          pdfName: tab,
-          isAgents
+          timeRange: false,
+          sectionTitle: 'Inventory Data',
+          queryFilters: '',
+          metrics: {},
+          pdfName: 'agents-inventory',
+          isAgents,
+          timeZone
         }
 
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
 
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
-        this.errorHandler('Success. Go to Management -> Reporting')
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
         this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        this.$rootScope.reportBusy = false
-        this.$rootScope.reportStatus = false
-        this.errorHandler('Reporting error')
+        this.notification.showErrorToast('Reporting error')
       }
     }
   }

@@ -31,9 +31,16 @@ define([
         fileName: '@fileName',
         validFn: '&',
         data: '=data',
-        targetName: '=targetName'
+        targetName: '=targetName',
+        closeFn: '&'
       },
-      controller($scope, $document, $notificationService, $groupHandler) {
+      controller(
+        $scope,
+        $document,
+        $notificationService,
+        $groupHandler,
+        $fileEditor
+      ) {
         /**
          * Custom .replace method. Instead of using .replace which
          * evaluates regular expressions.
@@ -54,7 +61,13 @@ define([
           const lines = oDOM.documentElement.textContent.split('\n')
 
           for (const line of lines) {
-            const sanitized = line.trim().xmlReplace('&', '&amp;')
+            const sanitized = line
+              .trim()
+              .xmlReplace('&', '&amp;')
+              .xmlReplace(/</g, '&lt;') // eslint-disable-line
+              .xmlReplace(/>/g, '&gt;') // eslint-disable-line
+              .xmlReplace(/"/g, '&quot;') // eslint-disable-line
+              .xmlReplace(/'/g, '&apos;') // eslint-disable-line
             /**
              * Do not remove this condition. We don't want to replace
              * non-sanitized lines.
@@ -89,7 +102,7 @@ define([
                 !xml.length
             })
           } catch (error) {
-            $notificationService.showSimpleToast(error, 'Error validating XML')
+            $notificationService.showErrorToast(error, 'Error validating XML')
           }
           checkingXmlError = false
           if (!$scope.$$phase) $scope.$digest()
@@ -161,18 +174,62 @@ define([
 
         const saveFile = async params => {
           try {
+            $scope.showErrorMessages = false
+            $scope.errorInfo = false
             const text = $scope.xmlCodeBox.getValue()
             const xml = replaceIllegalXML(text)
-            await $groupHandler.sendConfiguration(params.group, xml)
-            $notificationService.showSimpleToast(
-              'Success. Group has been updated'
-            )
-            $scope.$emit('configurationSuccess')
+            if (params && params.group) {
+              await $groupHandler.sendConfiguration(params.group, xml)
+              $scope.$emit('saveComplete', {})
+              $notificationService.showSuccessToast(
+                `Group ${params.group} saved successfully.`
+              )
+            } else if (params && params.file) {
+              const result = await $fileEditor.sendConfiguration(
+                params.file,
+                params.dir,
+                params.node,
+                xml,
+                params.overwrite
+              )
+              if (result === 'fileAlreadyExists') {
+                $scope.showErrorMessages = true
+                $scope.errorInfo = ['File already exists.']
+                $scope.$emit('fileAlreadyExists', {})
+              } else {
+                $scope.$emit('saveComplete', {})
+                $scope.$emit('configSavedSuccessfully', {})
+                $scope.restartBtn = true
+                let msg = null
+                if (params.file === 'ossec.conf') {
+                  if (params.node) {
+                    msg = `Succes. Node(${
+                      params.node
+                    }) configuration has been updated.`
+                  } else {
+                    msg = 'Succes. Manager configuration has been updated.'
+                  }
+                } else {
+                  msg = 'Configuration saved successfully.'
+                }
+                $notificationService.showSuccessToast(msg)
+              }
+            }
+            //$scope.closeFn()
           } catch (error) {
-            $notificationService.showSimpleToast(
-              error.message || error,
-              'Send file error'
-            )
+            $scope.$emit('saveComplete', {})
+            if (error.badConfig) {
+              $scope.showErrorMessages = true
+              $scope.errorInfo = error.errMsg
+              $notificationService.showWarningToast(
+                'Configuration saved, but some errors were found.'
+              )
+            } else {
+              $notificationService.showErrorToast(
+                error.message || error,
+                'Error sending file.'
+              )
+            }
           }
           return
         }
@@ -180,6 +237,7 @@ define([
           $document[0].getElementById('xml_box'),
           {
             lineNumbers: true,
+            lineWrapping: true,
             matchClosing: true,
             matchBrackets: true,
             mode: 'text/xml',
@@ -190,19 +248,28 @@ define([
           }
         )
 
+        $scope.doRestart = () => {
+          $scope.restartBtn = false
+          $scope.$emit('performRestart', {})
+        }
+
         const init = (data = false) => {
           try {
             $scope.xmlCodeBox.setValue(autoFormat(data || $scope.data))
             firstTime = false
-            $scope.xmlCodeBox.refresh()
+            setTimeout(() => {
+              $scope.xmlCodeBox.refresh()
+            }, 1)
+            //autoFormat()
           } catch (error) {
-            $notificationService.showSimpleToast('Fetching original file')
+            $notificationService.showErrorToast('Error fetching xml content.')
           }
         }
 
         init()
 
         $scope.$on('fetchedFile', (ev, params) => {
+          $scope.restartBtn = false
           if (!firstTime) {
             init(params.data)
           }
@@ -210,6 +277,11 @@ define([
 
         $scope.xmlCodeBox.on('change', () => {
           checkXmlParseError()
+        })
+
+        $scope.$on('removeRestartMsg', () => {
+          $scope.restartBtn = false
+          $scope.$applyAsync()
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))

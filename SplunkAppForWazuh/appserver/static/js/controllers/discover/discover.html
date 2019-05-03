@@ -1,26 +1,58 @@
-<iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
+<!-- Loading bar -->
+<div class="loader-bar" ng-show="loadingRing">
+  <div class="loader"></div>
+</div>
 
-<script>
-  $(document).ready(function(){
-    var iframe = $("#searchAndReporting")
-    $.when(
-    iframe.attr("src", localStorage.getItem('urlDiscover'))
-    ).then( function(){     
-      var getHeader = setInterval( function(){
-        if (iframe.contents().find("header")) {
-          var header = iframe.contents().find("header")
-          header.hide()
-        }
-      },500)
-    })
-  })
-</script>
+<div ng-show='!loadingRing'>
+  <div layout="row" ng-show="fromDashboard" class="div-cont">
+    <!--Print breadcumbs-->
+    <div class="div-bread">
+      <span class="wz-text-link cursor-pointer" ui-sref='{{breadcrumbs.ref}}'>{{breadcrumbs.section}}</span>
+      <span class="wz-text-link cursor-pointer" ng-if="breadcrumbs.agentName" ui-sref='{{breadcrumbs.agentRef}}'>/ {{breadcrumbs.agentName}} ({{breadcrumbs.agentId}})</span>
+      <span ng-if="breadcrumbs.agentName">/ {{breadcrumbs.subSection}} </span>
+      <span ng-if="!breadcrumbs.agentName">/ {{breadcrumbs.subSection}} </span>
+    </div>
+    <!--Back to dashboard-->
+    <div class="div-dash">
+      <span ng-click="backToDashboard()" aria-label="Dashboard">
+        <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Back to the dashboard.
+        </md-tooltip>
+      </span>
+    </div>
+  </div>
+
+  <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src=""></iframe>
+</div>
 
 <style>
   .iframeSr {
     width: calc(100% - 5px);
-    height: 90vh;  
+    height: 87vh;
     position: absolute;
     overflow: scroll;
+  }
+
+  .div-cont {
+    background-color: rgb(242, 244, 245);
+    display: flow-root;
+    margin-bottom: px;
+    height: 40px;
+  }
+
+  .div-bread {
+    padding-top: 10px;
+    padding-left: 20px;
+    float: left;
+  }
+
+  .div-dash {
+    padding-top: 10px;
+    margin-bottom: -6px;
+    text-align: right;
+    padding-right: 53px;
+    cursor: pointer;
+    float: right;
   }
 </style>

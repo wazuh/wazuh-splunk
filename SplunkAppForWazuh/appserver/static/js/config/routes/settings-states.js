@@ -79,11 +79,7 @@ define(['../module'], function(module) {
               '$currentDataService',
               async ($state, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const currentExtensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return currentExtensions
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   $state.reload()
                 }
@@ -137,11 +133,7 @@ define(['../module'], function(module) {
               '$currentDataService',
               async ($state, $currentDataService) => {
                 try {
-                  const id = $currentDataService.getApi().id
-                  const currentExtensions = await $currentDataService.getExtensionsById(
-                    id
-                  )
-                  return await currentExtensions
+                  return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   $state.go('settings.api')
                 }
@@ -156,7 +148,12 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('discover')
           },
-          params: { id: null }
+          controller: 'discoverCtrl',
+          params: {
+            fromDashboard: null,
+            previousState: null,
+            breadcrumbs: null
+          }
         })
     }
   ])

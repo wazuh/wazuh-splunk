@@ -29,7 +29,8 @@ define([
   './lib/listeners',
   './lib/data',
   './lib/click-action',
-  './lib/check-gap'
+  './lib/check-gap',
+  'JqueryUI'
 ], function(
   app,
   calcTableRows,
@@ -52,7 +53,10 @@ define([
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
-        adminMode: '=adminMode'
+        adminMode: '=adminMode',
+        emptyResults: '=emptyResults',
+        customColumns: '=customColumns',
+        implicitSort: '=implicitSort'
       },
       controller(
         $rootScope,
@@ -66,17 +70,74 @@ define([
         $notificationService,
         $tableFilterService,
         $window,
-        $groupHandler
+        $groupHandler,
+        $sce,
+        $fileEditor,
+        $dateDiffService
       ) {
         /**
          * Init variables
          */
+
+        $scope.showingChecks = false
         let realTime = false
-        const instance = new $dataService($scope.path, $scope.implicitFilter)
+        const instance = new $dataService(
+          $scope.path,
+          $scope.implicitFilter,
+          $scope.implicitSort
+        )
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
         $scope.items = []
+        $scope.customEmptyResults =
+          $scope.emptyResults && typeof $scope.emptyResults === 'string'
+            ? $scope.emptyResults
+            : 'Empty results for this table.'
+
+        $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
+        $scope.scapepath = $scope.path.split('/').join('')
+
+        $scope.updateColumns = key => {
+          const cleanArray = $scope.keys.map(item => item.value || item)
+          if (cleanArray.includes(key)) {
+            const idx = cleanArray.indexOf(key)
+            if (idx > -1) {
+              $scope.keys.splice(idx, 1)
+            }
+          } else {
+            let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+            originalKey = originalKey[0].key
+
+            const originalIdx = $scope.originalkeys.findIndex(
+              item => item.key === originalKey
+            )
+            if (originalIdx >= 0) {
+              $scope.keys.splice(originalIdx, 0, originalKey)
+            } else {
+              $scope.keys.push(originalKey)
+            }
+          }
+          //updateStoredKeys($scope.keys)
+        }
+
+        $scope.setColResizable = () => {
+          try {
+            if ($scope.customColumns) {
+              $(`#table${$scope.scapepath} th`).resizable({
+                handles: 'e',
+                minWidth: 75,
+                start: () => {
+                  $scope.resizingColumns = true
+                },
+                end: () => {
+                  $scope.resizingColumns = false
+                }
+              })
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
+        }
 
         /**
          * Resizing. Calculate number of table rows depending on the screen height
@@ -85,14 +146,17 @@ define([
         let doit
         let resizing = false
         $window.onresize = () => {
-          if (resizing) return
+          if (resizing || $scope.resizingColumns) return
           resizing = true
           clearTimeout(doit)
           doit = setTimeout(() => {
             $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
             $scope.itemsPerPage = $scope.rowsPerPage
             init()
-              .then(() => (resizing = false))
+              .then(() => {
+                $scope.setColResizable()
+                resizing = false
+              })
               .catch(() => (resizing = false))
           }, 150)
         }
@@ -112,19 +176,56 @@ define([
             state
           )
 
+        /* Deprecated at the moment  
+        const getStoredKeys = () => {
+          try {
+            if ($scope.customColumns) {
+              if (sessionStorage[$scope.path]) {
+                $scope.keys = sessionStorage[$scope.path].split(';')
+              } else {
+                updateStoredKeys($scope.keys)
+              }
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
+        }
+
+        const updateStoredKeys = keys => {
+          try {
+            if ($scope.customColumns) {
+              let stringKeys = keys[0]
+              for (var i = 1; i < keys.length; i++) {
+                let tmp = keys[i].value || keys[i]
+                stringKeys += ';' + tmp
+              }
+              sessionStorage[$scope.path] = stringKeys || ''
+              $scope.$applyAsync()
+            }
+          } catch (error) {} // eslint-disable-line
+        }
+        */
+
         /**
          * Fetchs data from API
          * @param {Object} options
          */
         const fetch = async (options = {}) => {
           try {
+            if ((instance.filters || []).length) {
+              $scope.customEmptyResults =
+                'No results match your search criteria'
+            } else {
+              $scope.customEmptyResults =
+                $scope.emptyResults || 'Empty results for this table.'
+            }
             const result = await instance.fetch(options)
-            items = options.realTime ? result.items.slice(0, 10) : result.items
+            items = result.items
             $scope.time = result.time
             $scope.totalItems = items.length
             $scope.items = items
             checkGap($scope, items)
             $scope.searchTable()
+            $scope.$emit('wazuhFetched', { items })
             return
           } catch (error) {
             if (
@@ -147,7 +248,11 @@ define([
          * @param {String} term
          * @param {Boolean} removeFilters
          */
-        const search = async (term, removeFilters) =>
+        const search = async (term, removeFilters) => {
+          if (term && typeof term === 'string') {
+            $scope.customEmptyResults = 'No results match your search criteria.'
+          }
+
           data.searchData(
             term,
             removeFilters,
@@ -157,6 +262,7 @@ define([
             $tableFilterService,
             $notificationService
           )
+        }
 
         /**
          * Queries to the API
@@ -196,7 +302,7 @@ define([
           try {
             $scope.error = false
             while (realTime) {
-              await fetch({ realTime: true, limit: 10 })
+              await fetch({ realTime: true })
               if (!$scope.$$phase) $scope.$digest()
               await $timeout(1000)
             }
@@ -217,7 +323,9 @@ define([
             $keyEquivalenceService.equivalences(),
             key,
             item,
-            instance.path
+            instance.path,
+            $sce,
+            $dateDiffService
           )
 
         /**
@@ -226,16 +334,19 @@ define([
         const init = async () => {
           try {
             $scope.error = false
-            $scope.wazuhTableLoading = true
             await fetch()
+            //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
             if (!$scope.$$phase) $scope.$digest()
+            setTimeout(() => {
+              $scope.setColResizable()
+            }, 100)
           } catch (error) {
             $scope.wazuhTableLoading = false
-            $scope.error = `Error while init table. ${error.message || error}.`
-            $notificationService.showSimpleToast(
+            $scope.error = `Error while init table.`
+            $notificationService.showErrorToast(
               `Error while init table. ${error.message || error}`
             )
           }
@@ -255,16 +366,33 @@ define([
         $scope.range = (size, start, end) =>
           pagination.range(size, start, end, $scope.gap)
         $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async currentPage =>
-          pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-        $scope.setPage = function() {
-          $scope.currentPage = this.n
-          $scope.nextPage(this.n)
+        $scope.nextPage = async (currentPage, last) =>
+          pagination.nextPage(
+            currentPage,
+            $scope,
+            $notificationService,
+            fetch,
+            last
+          )
+        $scope.setPage = function(page = false, last = false, first = false) {
+          $scope.currentPage = page || this.n
+          if (!first) {
+            $scope.nextPage(this.n, last)
+          }
+        }
+        $scope.firstPage = () => {
+          $scope.setPage(1, false, true)
+          $scope.prevPage()
         }
 
         /**
          * Event listeners
          */
+
+        $scope.$on('increaseLogs', async (event, parameters) => {
+          $scope.setPage(parseInt(parameters.lines / $scope.itemsPerPage))
+        })
+
         $scope.$on('wazuhUpdateInstancePath', (event, parameters) =>
           listeners.wazuhUpdateInstancePath(parameters, instance, init)
         )
@@ -275,6 +403,10 @@ define([
 
         $scope.$on('wazuhSearch', (event, parameters) =>
           listeners.wazuhSearch(parameters, instance, search)
+        )
+
+        $scope.$on('wazuhSort', (event, parameters) =>
+          $scope.sort(parameters.field)
         )
 
         $scope.$on('wazuhRemoveFilter', (event, parameters) =>
@@ -341,15 +473,22 @@ define([
           $scope.removingGroup = null
         }
 
+        $scope.editGroup = group => {
+          $scope.$emit('openGroupFromList', { group })
+        }
+
         $scope.confirmRemoveAgent = async agent => {
           try {
             const group = instance.path.split('/').pop()
-            await $groupHandler.removeAgentFromGroup(group, agent)
-            $notificationService.showSimpleToast(
-              `Success. Agent ${agent} has been removed from ${group}`
+            const result = await $groupHandler.removeAgentFromGroup(
+              group,
+              agent
+            )
+            $notificationService.showSuccessToast(
+              result || `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
-            $notificationService.showSimpleToast(`${error.message || error}`)
+            $notificationService.showErrorToast(`${error.message || error}`)
           }
           $scope.removingAgent = null
           return init()
@@ -358,14 +497,151 @@ define([
         $scope.confirmRemoveGroup = async group => {
           try {
             await $groupHandler.removeGroup(group)
-            $notificationService.showSimpleToast(
+            $notificationService.showSuccessToast(
               `Success. Group ${group} has been removed`
             )
           } catch (error) {
-            $notificationService.showSimpleToast(`${error.message || error}`)
+            $notificationService.showErrorToast(`${error.message || error}`)
           }
           $scope.removingGroup = null
           return init()
+        }
+
+        $scope.isPolicyMonitoring = () => {
+          return (
+            instance.path.includes('sca') && instance.path.includes('/checks')
+          )
+        }
+
+        $scope.expandPolicyMonitoringCheck = item => {
+          if (item.expanded) item.expanded = false
+          else {
+            $scope.pagedItems[$scope.currentPage].map(
+              item => (item.expanded = false)
+            )
+            item.expanded = true
+          }
+        }
+
+        /**
+         * Edits a file
+         */
+        $scope.editFile = (file, path, readOnly = false) => {
+          $scope.$emit('editFile', { file, path, readOnly })
+        }
+
+        /**
+         * Removes a file
+         */
+
+        $scope.showConfirmRemoveFile = (ev, item) => {
+          $scope.removingFile = item
+        }
+
+        $scope.confirmRemoveFile = async item => {
+          try {
+            $scope.removingFile = false
+            const result = await $fileEditor.removeFile(item)
+            $notificationService.showSuccessToast(result)
+            init()
+            $scope.$applyAsync()
+          } catch (error) {
+            $notificationService.showErrorToast(
+              error || `Cannot delete ${item.file || item.name}`
+            )
+          }
+        }
+
+        $scope.cancelRemoveFile = () => {
+          $scope.removingFile = null
+          return init()
+        }
+
+        $scope.getWitdh = key => {
+          try {
+            if (key.includes('id') || key.includes('level')) {
+              return 'wz-width-85'
+            }
+            if (key.includes('pci') || key.includes('gdpr')) {
+              return 'wz-width-150'
+            }
+          } catch (error) {} // eslint-disable-line
+        }
+
+        /**
+         * Removes a file
+         */
+        $scope.showConfirmRemoveFile = (ev, item) => {
+          $scope.removingFile = item
+        }
+
+        $scope.isSyschecks = () => {
+          return instance.path.startsWith('/syscheck')
+        }
+
+        $scope.isWindows = () => {
+          try {
+            const agent = $scope.$parent.$parent.$parent.$parent.agent
+            return (agent.os || {}).platform === 'windows'
+          } catch (error) {
+            return false
+          }
+        }
+
+        $scope.expandItem = item => {
+          if (item.expanded) item.expanded = false
+          else {
+            $scope.pagedItems[$scope.currentPage].map(
+              item => (item.expanded = false)
+            )
+            item.expanded = true
+          }
+        }
+
+        /**
+         * Show a checkbox for each key to show or hide it
+         */
+        const cleanKeys = () => {
+          if ($scope.customColumns && sessionStorage[$scope.path]) {
+            $scope.cleanKeys = {}
+            $scope.keys.map(key => {
+              const k = key.value || key
+              let storedKeys = sessionStorage[$scope.path].split(';')
+              $scope.cleanKeys[k] = storedKeys.indexOf(k) !== -1
+            })
+          } else {
+            $scope.cleanKeys = {}
+            $scope.keys.map(key => {
+              const k = key.value || key
+              $scope.cleanKeys[k] = true
+            })
+          }
+        }
+
+        /**
+         * Launch an event to open the discover with the agent id
+         */
+        $scope.launchAgentDiscover = agentId => {
+          $scope.$emit('openDiscover', agentId)
+        }
+
+        cleanKeys()
+
+        $scope.getEquivalence = key => {
+          return $scope.keyEquivalence[key]
+        }
+
+        $scope.showCheckbox = () => {
+          $scope.showingChecks = !$scope.showingChecks
+        }
+
+        $scope.switchKey = key => {
+          $scope.cleanKeys[key] = !$scope.cleanKeys[key]
+        }
+
+        $scope.showKey = item => {
+          const it = item.value || item
+          return $scope.cleanKeys[it]
         }
       },
       templateUrl:

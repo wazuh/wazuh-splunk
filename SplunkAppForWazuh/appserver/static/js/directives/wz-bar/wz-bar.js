@@ -25,7 +25,10 @@ define(['../module'], function(directives) {
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
-              prettyFilters.push(`${key}:${filter[key]}`)
+              const cleanKey = key.replace('{}', '')
+              if (key !== 'index') {
+                prettyFilters.push(`${cleanKey}:${filter[key]}`)
+              }
             }
           }
           return prettyFilters
@@ -38,15 +41,24 @@ define(['../module'], function(directives) {
          * @param {String} filter
          * @returns {Boolean}
          */
-        $scope.filterStatic = filter => {
+        function filterStatic(filter) {
+          let keyStatic = false
           const key = filter.split(':')[0]
           const staticTrue = $currentDataService
             .getFilters()
             .filter(item => !!item.implicit)
-          const isIncluded = staticTrue.filter(
-            item => typeof item[key] !== 'undefined'
+          staticTrue.map(
+            item => {
+              let k = Object.keys(item)[0]
+              if (k.endsWith('{}')) {
+                k = k.substring(0, k.length - 2)
+              }
+              if (k === key) {
+                keyStatic = item['implicit']
+              }
+            }
           )
-          return !!isIncluded.length
+          return keyStatic
         }
 
         /**
@@ -84,7 +96,66 @@ define(['../module'], function(directives) {
             $scope.$emit('barFilter', {})
             if (!$scope.$$phase) $scope.$digest()
           } catch (err) {
-            $notificationService.showSimpleToast(err.message || err)
+            $notificationService.showErrorToast(err.message || err)
+          }
+        }
+
+        /**
+         * Change chip showing pin and trash icons
+         * @param {Object | String} chip
+         */
+        $scope.editChip = chip => {
+          const chipIsStatic = filterStatic(chip)
+          if (!chipIsStatic) {
+            $scope.editingChip = chip
+          }
+        }
+
+        /**
+         * Cancel edition mode
+         * @param {Object | String} chip
+         */
+        $scope.finishChipEdition = () => {
+          $scope.editingChip = false
+        }
+
+        /**
+         * Check if the filter is pined
+         * @param {Object | String} chip
+         */
+        function filterPined(filter) {
+          const key = filter.split(':')[0]
+          const staticTrue = $currentDataService
+            .getFilters()
+            .filter(item => !!item.pined)
+          const isIncluded = staticTrue.filter(
+            item => typeof item[key] !== 'undefined'
+          )
+          return !!isIncluded.length
+        }
+        $scope.filterPined = chip => filterPined(chip)
+
+        /**
+         * Pin the filter
+         * @param {Object | String} chip
+         */
+        $scope.pinFilter = filter => {
+          try {
+            const key = filter.split(':')[0]
+            const value = filter.split(':')[1]
+            if (filterPined(filter)) {
+              $currentDataService.pinFilter(
+                `{"${key}":"${value}", "pined":true}`
+              )
+            } else {
+              $currentDataService.pinFilter(
+                `{"${key}":"${value}", "pined":false}`
+              )
+            }
+            $scope.filters = getPrettyFilters()
+            if (!$scope.$$phase) $scope.$digest()
+          } catch (err) {
+            $notificationService.showErrorToast(err.message || err)
           }
         }
       },

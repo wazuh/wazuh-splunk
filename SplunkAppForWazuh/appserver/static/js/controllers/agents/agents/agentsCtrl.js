@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function(app, SearchHandler) {
+], function (app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -40,7 +40,8 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler
+      $groupHandler,
+      $dateDiffService
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -49,59 +50,66 @@ define([
       this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
-      this.toast = $notificationService.showSimpleToast
+      this.notification = $notificationService
       this.currentClusterInfo = this.currentDataService.getClusterInfo()
       this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
-      const parsedResult = agentData.map(item =>
-        item && item.data && item.data.data ? item.data.data : false
-      )
-      let [
-        summary,
-        lastAgent,
-        platforms,
-        versions,
-        nodes,
-        groups
-      ] = parsedResult
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
 
-      this.scope.agentsCountActive = summary.Active - 1
-      this.scope.lastAgent = lastAgent.items[0] ? lastAgent.items[0] : 'Unknown'
-      const os = platforms
-        ? platforms.items.map(item => item.os).filter(item => !!item)
-        : false
-      versions = versions
-        ? versions.items.map(item => item.version).filter(item => !!item)
-        : false
-      nodes =
-        nodes && nodes.items
-          ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+      try {
+        const parsedResult = agentData.map(item =>
+          item && item.data && item.data.data ? item.data.data : false
+        )
+        let [
+          summary,
+          lastAgent,
+          platforms,
+          versions,
+          nodes,
+          groups
+        ] = parsedResult
+
+        this.scope.agentsCountActive = summary.Active - 1
+        this.scope.lastAgent = lastAgent.items[0]
+          ? lastAgent.items[0]
+          : 'Unknown'
+        const os = platforms
+          ? platforms.items.map(item => item.os).filter(item => !!item)
           : false
-      groups = groups
-        ? groups.items.map(item => item.name).filter(item => !!item)
-        : false
-      this.scope.agentsCountDisconnected = summary.Disconnected
-      this.scope.agentsCountNeverConnected = summary['Never connected']
-      const agentsCountTotal = summary.Total - 1
-      this.scope.agentsCoverity = agentsCountTotal
-        ? (this.scope.agentsCountActive / agentsCountTotal) * 100
-        : 0
+        versions = versions
+          ? versions.items.map(item => item.version).filter(item => !!item)
+          : false
+        nodes =
+          nodes && nodes.items
+            ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+            : false
+        groups = groups
+          ? groups.items.map(item => item.name).filter(item => !!item)
+          : false
+        this.scope.agentsCountDisconnected = summary.Disconnected
+        this.scope.agentsCountNeverConnected = summary['Never connected']
+        const agentsCountTotal = summary.Total - 1
+        this.scope.agentsCoverity = agentsCountTotal
+          ? (this.scope.agentsCountActive / agentsCountTotal) * 100
+          : 0
 
-      this.scope.searchBarModel = {
-        status: ['Active', 'Disconnected', 'Never connected'],
-        group: groups ? groups : [],
-        version: versions ? versions : [],
-        'os.platform': os ? os.map(x => x.platform) : [],
-        'os.version': os ? os.map(x => x.version) : [],
-        'os.name': os ? os.map(x => x.name) : []
-      }
+        this.scope.searchBarModel = {
+          name: [],
+          status: ['Active', 'Disconnected', 'Never connected'],
+          group: groups ? groups : [],
+          version: versions ? versions : [],
+          'os.platform': os ? os.map(x => x.platform) : [],
+          'os.version': os ? os.map(x => x.version) : [],
+          'os.name': os ? os.map(x => x.name) : []
+        }
 
-      if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
-        this.scope.searchBarModel.node_name = nodes || []
-      }
+        if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
+          this.scope.searchBarModel.node_name = nodes || []
+        }
+      } catch (error) { } //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
@@ -134,6 +142,44 @@ define([
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
+      this.scope.reloadList = () => this.reloadList()
+
+      this.scope.offsetTimestamp = (text, time) => {
+        try {
+          return text + this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
+
+      this.scope.loadCharts = (id) => {
+        setTimeout(() => {
+          const chart = new Chart(document.getElementById(id),
+            {
+              type: "doughnut",
+              data: {
+                labels: ["Active", "Disconected", "Never connected"],
+                datasets: [
+                  {
+                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                    data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
+                  }
+                ]
+              },
+              options: {
+                cutoutPercentage: 85,
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+                tooltips: {
+                  displayColors: false
+                }
+              }
+            });
+          chart.update();
+        }, 250);
+      }
     }
 
     /**
@@ -141,8 +187,10 @@ define([
      */
     async downloadCsv() {
       try {
-        this.toast('Your download should begin automatically...')
-        const currentApi = this.api.id
+        this.notification.showSimpleToast(
+          'Your download should begin automatically...'
+        )
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           '/agents',
           currentApi,
@@ -152,7 +200,7 @@ define([
         saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
-        this.toast('Error downloading CSV')
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -181,7 +229,7 @@ define([
             !agentInfo.data.data ||
             agentInfo.data.error
           ) {
-            throw Error('Error')
+            throw Error('Error fetching agent data')
           }
           if (agentInfo.data.data.id !== '000') {
             this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
@@ -190,8 +238,17 @@ define([
           throw Error('Cannot fetch agent name')
         }
       } catch (err) {
-        this.toast(err.message || 'Error fetching agent data')
+        this.notification.showErrorToast(
+          err.message || 'Error fetching agent data'
+        )
       }
+    }
+
+    /**
+     * Reload list of agents
+     */
+    reloadList() {
+      this.scope.$broadcast('wazuhSearch', { term: '' })
     }
   }
   app.controller('agentsCtrl', Agents)

@@ -24,7 +24,7 @@ from db import database
 from log import log
 
 
-def getSelfConfStanza(file,stanza):
+def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
 
     Parameters
@@ -53,7 +53,8 @@ def diff_keys_dic_update_api(kwargs_dic):
     try:
         diff = []
         kwargs_dic_keys = kwargs_dic.keys()
-        dic_keys = ['id', 'url', 'portapi', 'userapi', 'passapi']
+        dic_keys = ['_key', 'url', 'portapi', 'userapi',
+                    'passapi', 'filterName', 'filterType', 'managerName']
         for key in dic_keys:
             if key not in kwargs_dic_keys:
                 diff.append(key)
@@ -75,34 +76,6 @@ class manager(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))
-
-    # /custom/SplunkAppForWazuh/manager/node
-    @expose_page(must_login=False, methods=['GET'])
-    def check_connection(self, **kwargs):
-        """Check API connection.
-
-        Parameters
-        ----------
-        kwargs : dict
-            The request's parameters
-
-        """
-        try:
-            opt_username = kwargs["user"]
-            opt_password = kwargs["pass"]
-            opt_base_url = kwargs["ip"]
-            opt_base_port = kwargs["port"]
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            request_cluster = self.session.get(
-                url + '/version', auth=auth, timeout=8, verify=verify).json()
-            del kwargs['pass']
-            result = jsonbak.dumps(request_cluster)
-        except Exception as e:
-            self.logger.error("Cannot connect to API : %s" % (e))
-            return jsonbak.dumps({"status": "400", "error": str(e)})
-        return result
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -138,7 +111,24 @@ class manager(controllers.BaseController):
 
         """
         try:
-            stanza = getSelfConfStanza("config","extensions")
+            stanza = getSelfConfStanza("config", "extensions")
+            data_temp = stanza
+        except Exception as e:
+            return jsonbak.dumps({'error': str(e)})
+        return data_temp
+
+    @expose_page(must_login=False, methods=['GET'])
+    def admin_extensions(self, **kwargs):
+        """Obtain extension from file.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            stanza = getSelfConfStanza("config", "admin_extensions")
             data_temp = stanza
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
@@ -200,8 +190,8 @@ class manager(controllers.BaseController):
 
         """
         try:
-            data_temp = self.db.all()
-            result = jsonbak.dumps(data_temp)
+            apis = self.db.all()
+            result = apis
         except Exception as e:
             self.logger.error(jsonbak.dumps({"error": str(e)}))
             return jsonbak.dumps({"error": str(e)})
@@ -218,18 +208,19 @@ class manager(controllers.BaseController):
 
         """
         try:
+
             record = kwargs
-            keys_list = ['url', 'portapi', 'userapi', 'passapi']
+            keys_list = ['url', 'portapi', 'userapi', 'passapi',
+                         'managerName', 'filterType', 'filterName']
             if set(record.keys()) == set(keys_list):
-                record['id'] = str(uuid.uuid4())
-                self.db.insert(record)
-                parsed_data = jsonbak.dumps({'result': record['id']})
+                key = self.db.insert(jsonbak.dumps(record))
+                parsed_data = jsonbak.dumps({'result': key})
+                return parsed_data
             else:
-                return jsonbak.dumps({'error': 'Invalid number of arguments'})
+                raise Exception('Invalid number of arguments')
         except Exception as e:
-            self.logger.error({'error': str(e)})
+            self.logger.error({'manager - add_api': str(e)})
             return jsonbak.dumps({'error': str(e)})
-        return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
@@ -243,9 +234,9 @@ class manager(controllers.BaseController):
         """
         try:
             api_id = kwargs
-            if 'id' not in api_id:
+            if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})
-            self.db.remove(api_id['id'])
+            self.db.remove(api_id['_key'])
             parsed_data = jsonbak.dumps({'data': 'success'})
         except Exception as e:
             self.logger.error("Error in remove_api endpoint: %s" % (e))
@@ -264,7 +255,9 @@ class manager(controllers.BaseController):
         """
         try:
             entry = kwargs
-            keys_list = ['id', 'url', 'portapi', 'userapi',
+            if '_user' in kwargs:
+                del kwargs['_user']
+            keys_list = ['_key', 'url', 'portapi', 'userapi',
                          'passapi', 'filterName', 'filterType', 'managerName']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)
@@ -296,3 +289,82 @@ class manager(controllers.BaseController):
             self.logger.error("Get_log_lines endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
+
+    @expose_page(must_login=False, methods=['GET'])
+    def check_connection(self, **kwargs):
+        """Check API connection.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            opt_username = kwargs["user"]
+            opt_password = kwargs["pass"]
+            opt_base_url = kwargs["ip"]
+            opt_base_port = kwargs["port"]
+            opt_cluster = kwargs["cluster"] == "true"
+            url = opt_base_url + ":" + opt_base_port
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+            request_manager = self.session.get(
+                url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify).json()           
+            request_cluster = self.session.get(
+                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+            request_cluster_name = self.session.get(
+                url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
+            output = {}
+            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
+            # Pass the cluster status instead of always False
+            if not daemons_ready:
+                raise Exception("Daemons are not ready yet.")
+            output['managerName'] = request_manager['data']
+            output['clusterMode'] = request_cluster['data']
+            output['clusterName'] = request_cluster_name['data']
+            del kwargs['pass']
+            result = jsonbak.dumps(output) 
+        except Exception as e:
+            if not daemons_ready:
+                self.logger.error("Cannot connect to API; Wazuh not ready yet.")
+                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
+            else:
+                self.logger.error("Cannot connect to API : %s" % (e))
+                return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
+        return result
+
+    def check_daemons(self, url, auth, verify, check_cluster):
+        """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
+
+        Parameters
+        ----------
+        url: str
+        auth: str
+        verify: str
+        cluster_enabled: bool
+        """
+        try:
+            request_cluster = self.session.get(
+                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+            # Try to get cluster is enabled if the request fail set to false
+            try:
+                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+            except Exception as e:
+                cluster_enabled = False
+            cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
+            opt_endpoint = "/manager/status"
+            daemons_status = self.session.get(
+                    url + opt_endpoint, auth=auth,
+                    verify=verify).json()
+            if not daemons_status['error']:
+                d = daemons_status['data']
+                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                if cc:
+                    daemons['clusterd'] = d['wazuh-clusterd']
+                values = list(daemons.values())
+                wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
+                return wazuh_ready
+        except Exception as e:
+            self.logger.error("Error checking daemons: %s" % (e))
+            raise e

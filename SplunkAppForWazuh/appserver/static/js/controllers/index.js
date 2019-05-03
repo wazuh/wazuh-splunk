@@ -10,5 +10,7 @@ define([
   //Dev-tools
   './dev-tools/devToolsCtrl',
   // Main
-  './main/mainCtrl'
+  './main/mainCtrl',
+  //Discover
+  './discover/discoverCtrl'
 ], function() {})

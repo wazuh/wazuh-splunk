@@ -13,6 +13,11 @@ require.config({
     ngMaterial: 'js/libs/material',
     ngRoute: 'js/libs/router',
 
+    // Angular Chart
+    moment: 'js/libs/moment',
+    chart: 'js/libs/chart',
+    angularChart: 'js/libs/angular-chart',
+
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
 
@@ -20,7 +25,10 @@ require.config({
     FileSaver: 'js/libs/file-saver/file-saver',
 
     // dom-to-image
-    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image'
+    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image',
+
+    // JqueryUI
+    JqueryUI: 'js/libs/jquery-ui'
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
@@ -43,6 +51,14 @@ require.config({
     ngRoute: {
       exports: 'ngRoute',
       deps: ['angular']
+    },
+    chart: {
+      exports: 'chart',
+      deps: ['angular']
+    },
+    angularChart: {
+      exports: 'angularChart',
+      deps: ['angular', 'chart']
     }
   },
 

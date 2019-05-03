@@ -20,6 +20,7 @@ import requestsbak
 import datetime
 from db import database
 from log import log
+import sys
 
 db = database()
 logger = log()
@@ -28,7 +29,8 @@ logger = log()
 def get_apis():
     """Obtain the list of APIs."""
     try:
-        data_temp = db.all()
+        session_key = getSplunkSessionKey()
+        data_temp = db.all(session_key)
     except Exception as e:
         return jsonbak.dumps({'error': str(e)})
     return data_temp
@@ -38,6 +40,7 @@ def check_status():
     """Check status of agents."""
     try:
         apis = get_apis()
+        apis = jsonbak.loads(apis) #get_apis() returns a JSON string, it needs to be converted as a dictionary
         date = str(datetime.datetime.utcnow())[:-7]
         # obtains
         for api in apis:
@@ -46,7 +49,7 @@ def check_status():
             opt_base_url = api["url"]
             opt_base_port = api["portapi"]
             agent_list = {}
-            url = opt_base_url + ":" + opt_base_port
+            url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             agents_url_total_items = url + '/agents?limit=1&q=id!=000'
@@ -99,5 +102,10 @@ def check_status():
         logger.error("Error requesting agents status: %s" % str(e))
         pass
 
+
+def getSplunkSessionKey():
+    """Get the session key, it needs to configure in the inputs.conf that executes this script the following parameter: passAuth = splunk-system-user"""
+    session_key = sys.stdin.readline().strip()
+    return session_key
 
 check_status()

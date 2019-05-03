@@ -67,6 +67,9 @@ define(['../../module', '../../../utils/config-handler'], function(
      * On controller loads
      */
     $onInit() {
+      this.$scope.showingInfo = false
+      this.$scope.showInfo = () => this.showInfo()
+      this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -96,15 +99,21 @@ define(['../../module', '../../../utils/config-handler'], function(
           configurationTab,
           sections,
           this.$scope,
-          this.id
+          this.id, // Send the agent id
+          false // Send node as false
         )
       this.$scope.switchWodle = wodleName =>
         this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)
-      this.$scope.switchConfigurationTab = configurationTab =>
+      this.$scope.switchConfigurationTab = async configurationTab => {
+        if (configurationTab === 'welcome') {
+          this.$scope.isSynchronized = await this.checkAgentSync()
+        }
         this.configurationHandler.switchConfigurationTab(
           configurationTab,
           this.$scope
         )
+      }
+
       this.$scope.switchConfigurationSubTab = configurationSubTab =>
         this.configurationHandler.switchConfigurationSubTab(
           configurationSubTab,
@@ -137,6 +146,28 @@ define(['../../module', '../../../utils/config-handler'], function(
         this.state.go(`mg-groups`, { group: groupData[0] })
       } catch (err) {
         this.errorHandler.showSimpleToast('Error fetching group data')
+      }
+    }
+
+    /**
+     * Show or hide sidebar with info
+     */
+    showInfo() {
+      this.$scope.showingInfo = !this.$scope.showingInfo
+      this.$scope.$applyAsync()
+    }
+
+    /**
+     * Checks if the agent is synchronized
+     */
+    async checkAgentSync() {
+      try {
+        const sync = await this.apiReq.apiReq(
+          `/agents/${this.$scope.agent.id}/group/is_sync`
+        )
+        return sync.data.data.synced
+      } catch (error) {
+        return false
       }
     }
   }

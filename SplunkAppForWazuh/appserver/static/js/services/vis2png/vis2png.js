@@ -29,27 +29,51 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         let currentCompleted = 0
         await Promise.all(
           visArray.map(async currentValue => {
-            const tmpNode = this.htmlObject[currentValue]
-            const title = document
-              .getElementById(currentValue)
-              .parentElement.getElementsByTagName('span')[0].innerHTML
-            const classes = document
-              .getElementById(currentValue)
-              .className.split(' ')
+            const tmpNode = $('#' + currentValue + ' .panel-body')
+            const noResults = $('#' + currentValue + ' .panel-body .alert')
+            let error = false
+            if (noResults.length > 0) {
+              error = true
+            }
+
+            let classes = ''
+            let title = ''
+            try {
+              //Try to fetch the title of the visualization
+              title = document
+                .getElementById(currentValue)
+                .parentElement.getElementsByTagName('span')[0].innerHTML
+
+              if (title.search('<span')) {
+                title = title.substring(0, title.search('<span'))
+                classes = document
+                  .getElementById(currentValue)
+                  .className.split(' ')
+              }
+            } catch (error) {} // eslint-disable-line
+
             try {
               if (!classes.includes('table')) {
-                const tmpResult = await domToImg.toPng(tmpNode[0])
+                const tmpResult = await domToImg.toPng(
+                  error ? noResults[0] : tmpNode[0],
+                  {
+                    width: tmpNode.width(),
+                    height: tmpNode.height()
+                  }
+                )
+                if (tmpResult === 'data:,') {
+                  return Promise.reject('Impossible fetch visualizations')
+                }
                 this.rawArray.push({
                   element: tmpResult,
-                  width: tmpNode.width(),
+                  width: error ? -1 : tmpNode.width(),
                   height: tmpNode.height(),
                   id: currentValue,
                   title: title
                 })
               }
-            } catch (error) {
-              console.error('error converting ', error)
-            } // eslint-disable-line
+            } catch (error) {} // eslint-disable-line
+
             currentCompleted++
             this.$rootScope.reportStatus = `Generating report...${Math.round(
               (currentCompleted / len) * 100

@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, rawTableDataService) {
+], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class OsqueryAgents {
@@ -41,19 +41,25 @@ define([
       $currentDataService,
       $state,
       osquery,
-      $reportingService
+      $reportingService,
+      reportingEnabled,
+      extensions
     ) {
       this.state = $state
       this.currentDataService = $currentDataService
       this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.urlTokenModel = $urlTokenModel
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.tableResults = {}
       this.reportingService = $reportingService
       this.osquery = osquery
       this.currentDataService.addFilter(
-        `{"rule.groups":"osquery", "implicit":true}`
+        `{"rule.groups{}":"osquery", "implicit":true}`
       )
+      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
       this.agent = agent
       if (
         this.agent &&
@@ -71,11 +77,13 @@ define([
       )
       this.scope.osqueryWodle = null
 
-      this.scope.$on('deletedFilter', () => {
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', () => {
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
         this.launchSearches()
       })
 
@@ -101,7 +109,7 @@ define([
           'mostCommonActions',
           `${
             this.filters
-          } sourcetype=wazuh  | top "data.osquery.action" limit=5`,
+          } sourcetype=wazuh  | top data.osquery.action limit=5`,
           'mostCommonActions',
           this.scope
         ),
@@ -118,23 +126,36 @@ define([
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertsOverTime',
           this.scope
+        ),
+        new RawTableDataService(
+          'topRulesTable',
+          `${
+            this.filters
+          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'topRulesTableToken',
+          '$result$',
+          this.scope,
+          'Top Rules'
+        ),
+        new Table(
+          'alertsSummary',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummary',
+          this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         )
       ]
-
-      this.topRulesTable = new rawTableDataService(
-        'topRulesTable',
-        `${
-          this.filters
-        } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-        'topRulesTableToken',
-        '$result$',
-        this.scope
-      )
-      this.vizz.push(this.topRulesTable)
-
-      this.topRulesTable.getSearch().on('result', result => {
-        this.tableResults['Top Rules'] = result
-      })
 
       // Set agent info
       try {
@@ -166,7 +187,8 @@ define([
             'alertsPacksOverTime',
             'mostCommonActions',
             'topRules',
-            'alertsOverTime'
+            'alertsOverTime',
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
@@ -184,6 +206,11 @@ define([
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
           this.scope.loadingVizz = true
         }
         if (!this.scope.$$phase) this.scope.$digest()
@@ -202,6 +229,7 @@ define([
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -212,7 +240,7 @@ define([
           item => item.osquery
         )[0].osquery
       } catch (err) {
-        this.notificationService.showSimpleToast(
+        this.notification.showErrorToast(
           'Cannot load wodle configuration. Osquery not configured.'
         )
       }
@@ -232,6 +260,29 @@ define([
     launchSearches() {
       this.filters = this.currentDataService.getSerializedFilters()
       this.state.reload()
+    }
+
+    expand(i, id) {
+      this.scope.expandArray[i] = !this.scope.expandArray[i]
+      let vis = $(
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
+      )
+      this.scope.expandArray[i]
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
+
+      let vis_header = $('.wz-headline-title')
+      vis_header.dblclick(e => {
+        if (this.scope.expandArray[i]) {
+          this.scope.expandArray[i] = !this.scope.expandArray[i]
+          this.scope.expandArray[i]
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
+          this.scope.$applyAsync()
+        } else {
+          e.preventDefault()
+        }
+      })
     }
   }
 

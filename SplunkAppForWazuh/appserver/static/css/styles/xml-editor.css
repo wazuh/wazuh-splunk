@@ -14,10 +14,10 @@
  /* ------------------ Wazuh XML file editor stylesheet ---------------------- */
  /* -------------------------------------------------------------------------- */
 
-.wzXmlEditor{
+ .wzXmlEditor{
     background: #fff;
     width: 100%;
-    height: min-content;
+    height: inherit;
     top: 0;
     border: 1px solid #d9d9d9;
     -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
@@ -28,11 +28,36 @@
     padding: 15px;
 }
 
- .wzXmlEditorHeader b{
+.wzXmlEditorHeader b{
     font-weight: 600;
 }
 
- .wzXmlEditorBody, .wzXmlEditorBody .CodeMirror{
-    height: calc('100vh - 475px');
-    min-height: 300px;
+.wzXmlEditorBody, .wzXmlEditorBody .CodeMirror{
+    height: calc(100% - 25px);
+} 
+
+.wzXmlEditorDivContent {
+    width: calc(100vw - 32px);
+    margin-left: auto;
+    margin-right: 18px;
+}
+
+
+.wzXmlEditorError{
+    border-bottom: inherit;
+}
+
+.wzXmlEditorError b{
+    font-weight: 600;
+}
+
+.mdListXmlError {
+    padding-bottom: 25px;
+    padding-top: 0px;
+}
+.extraHeaderInfo{
+    background: #ecf6fb;
+    border-top: 1px solid #dfeff8 !important;
+    color: #0079a5 !important;
+    padding: 12px 15px;
 } 

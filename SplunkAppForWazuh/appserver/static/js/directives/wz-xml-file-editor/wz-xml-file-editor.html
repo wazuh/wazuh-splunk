@@ -1,10 +1,24 @@
 <div class='wzXmlEditor'>
-  <div class='wzXmlEditorHeader'>
-    <span>Edit <b>configuration</b> of <b>{{targetName}}</b> group</span>
+  <!-- Show errors in the configuration -->
+  <div class='wzXmlEditorError' ng-show="showErrorMessages">
+    <md-list role="list" class="mdListXmlError">
+      <md-list-item style="color:#ff645c !important; margin-bottom: -30px;"
+        ng-repeat="err in errorInfo track by $index">
+        {{err}}
+      </md-list-item>
+    </md-list>
   </div>
-  <div class='wzXmlEditorBody'>
-    <div ng-show='!loadingFile'>
-      <textarea id='xml_box'></textarea>
-    </div>
+  <!-- End show errors -->
+  <div class='wzXmlEditorHeader'>
+    <span>Edit <b>{{fileName}}</b> of <b>{{targetName}}</b></span>
+  </div>
+  <div layout="row" ng-if="restartBtn" class="extraHeaderInfo">
+    <span><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+      Changes will not take effect until a restart is performed.</span>
+    <span flex></span>
+    <span class="cursor-pointer" ng-if="fileName !== 'ossec.conf'" ng-click="doRestart()">Restart now</span>
+  </div>
+  <div class='wzXmlEditorBody' ng-show='!loadingFile'>
+    <textarea id='xml_box'></textarea>
   </div>
 </div>

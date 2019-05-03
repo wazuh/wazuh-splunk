@@ -43,14 +43,14 @@ define(['../module'], function(app) {
     }
 
     /**
-     * Select an API
-     * @param {String} API
+     * Select an Api
+     * @param {String} Api
      */
-    setApi(API) {
+    setApi(Api) {
       try {
         delete this.sessionStorage.selectedAPI
-        if (typeof API === 'object') {
-          this.sessionStorage.selectedAPI = JSON.stringify(API)
+        if (typeof Api === 'object') {
+          this.sessionStorage.selectedAPI = JSON.stringify(Api)
         }
       } catch (error) {
         return
@@ -58,8 +58,8 @@ define(['../module'], function(app) {
     }
 
     /**
-     * Returns currently selected API
-     * @param {String} API
+     * Returns currently selected Api
+     * @param {String} Api
      */
     getApi() {
       try {
@@ -67,6 +67,7 @@ define(['../module'], function(app) {
           return JSON.parse(this.sessionStorage.selectedAPI)
         }
       } catch (err) {
+        console.error('err  getApi() ', err)
         return null
       }
     }
@@ -95,7 +96,7 @@ define(['../module'], function(app) {
           let existentApi = false
           for (let i = 0; i < parsedExtensions.length; i++) {
             if (parsedExtensions[i].id === id) {
-              parsedExtensions[i] = { id: id, ...extensions }
+              parsedExtensions[i] = { id: id, ...extensions } //eslint-disable-line
               existentApi = true
               break
             }

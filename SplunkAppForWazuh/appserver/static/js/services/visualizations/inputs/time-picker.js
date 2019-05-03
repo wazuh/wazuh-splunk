@@ -25,6 +25,9 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
       ).render()
       this.handleValueChange = handleValueChange
       this.input.on('change', newValue => {
+        try {
+          localStorage.setItem('searchTimeRange', JSON.stringify(newValue))
+        } catch (error) {} //eslint-disable-line
         if (newValue && this.input) this.handleValueChange(this.input)
       })
     }
