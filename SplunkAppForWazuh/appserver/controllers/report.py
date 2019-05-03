@@ -123,31 +123,37 @@ class report(controllers.BaseController):
             pdf.set_font('Arial', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(20)
+            self.logger.info(data)
             for n in data['data']['configurations']:
                 try:
-                    self.logger.info(n)
                     pdf.set_font('Arial', '', 18)
-                    pdf.cell(0, 10, txt = n['title'], border = 1, ln = 1, align = '', fill = False, link = '')
+                    pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
                     pdf.set_font('Arial', '', 12)
                     for currentSection in n['sections']:
-                        pdf.cell(5, 10, txt = "     ", border = 1, align = '', fill = False, link = '')
-                        pdf.cell(0, 10, txt = currentSection['subtitle'], border = 1, align = '', fill = False, link = '')
+                        pdf.cell(5, 10, txt = "     ", border = 'TL', align = '', fill = False, link = '')
+                        pdf.cell(0, 10, txt = currentSection['subtitle'], border = 'TR', align = '', fill = False, link = '')
                         pdf.ln(10)
                         for currentConfig in currentSection['config']:
                             configuration = currentConfig['configuration']
                             component = currentConfig['component']
-                            self.logger.info(configuration)
-                            self.logger.info(component)
                             config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+component+'/'+configuration , 'id':str(data['apiId']['_key'])}
                             self.logger.info(config_request)
                             conf_data = self.miapi.exec_request(config_request)
-                            pdf.cell(0, 10, txt = conf_data, border = 1, align = '', fill = False, link = '')
-                            
+                            conf_data = jsonbak.loads(conf_data)
+                            self.logger.info("------")
+                            if configuration == 'logging' :
+                                pdf.set_fill_color((242, 229, 193)
+                                pdf.cell(100, 10, txt = "Write internal logs in plain text " , border = 'LT', ln = 0, align = 'R', fill = False, link = '')
+                                pdf.cell(0, 10, txt = conf_data['data'][configuration]['plain'], border = 'TR', ln = 1, align = '', fill = True, link = '')
+                                pdf.cell(0, 10, txt = "Write Wazuh internal logs in JSON format " , border = 'L', ln = 0, align = 'R', fill = False, link = '')
+                                pdf.cell(0, 10, txt = conf_data['data'][configuration]['json'], border = 'LR', ln = 1, align = '', fill = True, link = '')
+                        pdf.ln(150)
                 except Exception as e:
                     self.logger.error(e)
             pdf_name = "prueba"
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
+            self.logger.info(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf')
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
