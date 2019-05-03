@@ -24,7 +24,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="(key, value) in configuration">
+          <tr ng-repeat="(key, value) in configuration" ng-if="key !== 'admin'">
             <td>{{key}}</td>
             <td>{{value}}</td>
             <td>{{getDescription(key)}}</td>

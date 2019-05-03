@@ -28,7 +28,7 @@ define(['../../module'], function (controllers) {
     getDescription(key) {
       try {
         const description = {
-          log: 'Set the app loggin level, allowed values are info and debug.'
+          'log.level': 'Set the app loggin level, allowed values are info and debug.'
         }
         return description[key]
       } catch (error) {

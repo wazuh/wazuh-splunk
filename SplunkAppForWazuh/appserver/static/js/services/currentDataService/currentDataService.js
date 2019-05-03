@@ -168,9 +168,11 @@ define(['../module'], function(module) {
      */
     const isAdmin = async () => {
       try {
-        const id = getApi().id
-        const extensions = await getExtensionsById(id)
-        return extensions['admin'] === 'true'
+        const config = await $requestService.httpReq(
+          `GET`,
+          `/manager/configuration`
+        )
+        return config.data.admin === 'true'
       } catch (error) {
         return Promise.reject(error)
       }
