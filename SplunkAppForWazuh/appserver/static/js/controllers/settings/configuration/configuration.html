@@ -36,7 +36,7 @@
               <!-- Log dropdown -->
               <div ng-show="editingKey === key && editingKey === 'log.level'">
                 <select ng-options="option for option in logLevelOptions" ng-model="vm.dropDownValue"
-                  ng-init="logLevelOptions[0]" ng-change="selectValue(vm.dropDownValue)"
+                  ng-init="vm.dropDownValue = logLevelOptions[0]" ng-change="selectValue(vm.dropDownValue)"
                   class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero">
                 </select>
               </div>
