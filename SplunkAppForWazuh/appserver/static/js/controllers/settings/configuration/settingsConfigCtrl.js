@@ -2,13 +2,15 @@ define(['../../module'], function (controllers) {
   'use strict'
 
   class Configuration {
-    constructor($scope, $currentDataService, $notificationService, configuration) {
+    constructor($scope, $currentDataService, $notificationService, configuration, config, $requestService) {
       this.scope = $scope
       this.scope.extensions = {}
       this.notification = $notificationService
       this.currentApi = $currentDataService.getApi()
       this.getCurrentConfiguration = $currentDataService.getCurrentConfiguration
       this.configuration = configuration
+      this.config = config
+      this.req = $requestService
     }
 
     $onInit() {
