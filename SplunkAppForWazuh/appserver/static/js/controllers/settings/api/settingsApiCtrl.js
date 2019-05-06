@@ -279,7 +279,11 @@ define(['../../module'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
         this.notification.showSuccessToast('New API was added')
       } catch (err) {
-        this.notification.showErrorToast(err.message || err || 'Cannot save the API.')
+        if (err.startsWith('Unexpected Wazuh version')) {
+          this.scope.validatingError.push(err)
+        } else {
+          this.notification.showErrorToast(err.message || err || 'Cannot save the API.')
+        }
       }
       this.savingApi = false
     }
