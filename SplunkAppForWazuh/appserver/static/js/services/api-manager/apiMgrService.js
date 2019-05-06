@@ -1,6 +1,6 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$apiMgrService', function(
+  module.service('$apiMgrService', function (
     $requestService,
     $apiIndexStorageService,
     $splunkStoreService
@@ -222,9 +222,9 @@ define(['../module'], function(module) {
           const clusterEnabled = api.filterType === 'cluster.name'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${
+            }&port=${
             api.portapi
-          }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
+            }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
@@ -313,6 +313,39 @@ define(['../module'], function(module) {
       }
     }
 
+
+    /** 
+    * Checks if the Splunk Version are the same that the Wazuh version
+    */
+    const checkWazuhVersion = async () => {
+      try {
+        const wazuhVersion = await $requestService.apiReq('/version')
+        const appVersion = await $requestService.httpReq(
+          'GET',
+          '/manager/app_info'
+        )
+        if (
+          wazuhVersion.data &&
+          wazuhVersion.data.data &&
+          !wazuhVersion.data.error &&
+          appVersion.data &&
+          appVersion.data.version &&
+          !appVersion.data.error
+        ) {
+          const wv = wazuhVersion.data.data
+          const av = appVersion.data.version
+          const wazuhSplit = wv.split('v')[1].split('.')
+          const appSplit = av.split('.')
+
+          if (wazuhSplit[0] !== appSplit[0] || wazuhSplit[1] !== appSplit[1]) {
+            throw new Error(`Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`)
+          }
+        }
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     return {
       checkApiConnection: checkApiConnection,
       checkPollingState: checkPollingState,
@@ -330,7 +363,8 @@ define(['../module'], function(module) {
       setIndex: setIndex,
       getApi: getApi,
       setApi: setApi,
-      addApi: addApi
+      addApi: addApi,
+      checkWazuhVersion: checkWazuhVersion
     }
   })
 })
