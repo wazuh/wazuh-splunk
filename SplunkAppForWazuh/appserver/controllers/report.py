@@ -11,6 +11,8 @@ the Free Software Foundation; either version 2 of the License, or
 
 Find more information about this on the LICENSE file.
 """
+
+from . import api
 import os
 import time
 import jsonbak
@@ -22,7 +24,6 @@ from log import log
 import base64
 from fpdf import FPDF
 import math
-from api import api
 
 class PDF(FPDF):
     def header(self):
@@ -61,9 +62,9 @@ class report(controllers.BaseController):
         """Constructor."""
         try:
             self.logger = log()
-            self.miapi = api()
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
+            self.miapi = api.api()
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))
 
@@ -110,6 +111,8 @@ class report(controllers.BaseController):
             today = today.strftime('%Y.%m.%d %H:%M')
             parsed_data = jsonbak.dumps({'data': 'success'})
             section_title = data['sectionTitle']
+            # Print agent info
+            agent_data = data['isAgents']
             # Add title and filters 
             pdf.alias_nb_pages()
             pdf.add_page()
@@ -122,18 +125,40 @@ class report(controllers.BaseController):
             #Date
             pdf.set_font('Arial', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
-            pdf.ln(20)
+            pdf.ln(1)
             self.logger.info(data)
+
+            if agent_data:
+                self.print_agent_info(agent_data, pdf)
+
+            pdf.set_line_width(0.1)
+            pdf.set_fill_color(252,252,252)
+            pdf.set_draw_color(200,200,200)
+            pdf.ln(5)
+            pdf.set_draw_color(200,200,200)
             for n in data['data']['configurations']:
                 try:
-                    pdf.set_font('Arial', '', 18)
+                    #Set color and print configuration tittle
+                    pdf.set_font('Arial', '', 14)
                     pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
-                    pdf.set_font('Arial', '', 12)
+                    pdf.ln(3)
+                    #Color WazuhBlue
+                    pdf.set_text_color(75, 179, 204)
+                    pdf.set_font('Arial', '', 11)
                     for currentSection in n['sections']:
-                        pdf.cell(5, 10, txt = "     ", border = 'TL', align = '', fill = False, link = '')
-                        pdf.cell(0, 10, txt = currentSection['subtitle'], border = 'TR', align = '', fill = False, link = '')
-                        pdf.ln(10)
+                        pdf.set_fill_color(252,252,252)
+                        pdf.set_draw_color(200,200,200)
+                        pdf.set_fill_color(75, 179, 204)
+                        pdf.set_font('Arial', '', 11)
+                        #Color WazuhBlue
+                        pdf.set_text_color(255, 255, 255)
+                        pdf.cell(2, 7, txt = "     ", border = 'TL', align = '', fill = True, link = '')
+                        pdf.cell(186, 7, txt = currentSection['subtitle'], border = 'TB', align = '', fill = True, link = '')
+                        pdf.cell(2, 7, txt = "     ", border = 'TR', align = 'R', fill = True, link = '')
+                        pdf.set_font('Arial', '', 8)
+                        pdf.ln(7)
                         for currentConfig in currentSection['config']:
+                            pdf.set_text_color(150, 150, 150)
                             configuration = currentConfig['configuration']
                             component = currentConfig['component']
                             config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+component+'/'+configuration , 'id':str(data['apiId']['_key'])}
@@ -142,18 +167,74 @@ class report(controllers.BaseController):
                             conf_data = jsonbak.loads(conf_data)
                             self.logger.info("------")
                             if configuration == 'logging' :
-                                pdf.set_fill_color((242, 229, 193)
-                                pdf.cell(100, 10, txt = "Write internal logs in plain text " , border = 'LT', ln = 0, align = 'R', fill = False, link = '')
-                                pdf.cell(0, 10, txt = conf_data['data'][configuration]['plain'], border = 'TR', ln = 1, align = '', fill = True, link = '')
-                                pdf.cell(0, 10, txt = "Write Wazuh internal logs in JSON format " , border = 'L', ln = 0, align = 'R', fill = False, link = '')
-                                pdf.cell(0, 10, txt = conf_data['data'][configuration]['json'], border = 'LR', ln = 1, align = '', fill = True, link = '')
-                        pdf.ln(150)
+
+                                pdf.set_draw_color(99,99,99)
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 7, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 7, txt = "Write internal logs in plain text " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 7, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 7, txt = str(conf_data['data'][configuration]['plain']), border = 'BR', ln = 1, align = '', fill = True, link = '')
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 7, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 7, txt = "Write Wazuh internal logs in JSON format "  , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 7, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 7, txt = str(conf_data['data'][configuration]['json']), border = 'BR', ln = 1, align = '', fill = True, link = '')
+                                pdf.ln(5)
+                            if configuration == 'client' :
+
+                                pdf.set_draw_color(99,99,99)
+                                
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 7, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 7, txt = "Time before attempting to reconnect " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 7, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 7, txt = str(conf_data['data'][configuration]['time-reconnect']) + " seconds", border = 'BR', ln = 1, align = '', fill = True, link = '')
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 7, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 7, txt = "Configuration profiles "  , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 7, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 7, txt = str(conf_data['data'][configuration]['config-profile']), border = 'BR', ln = 1, align = '', fill = True, link = '')
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 7, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 7, txt = "Time between agent checkings to the manager "  , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 7, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 7, txt = str(conf_data['data'][configuration]['notify_time']) + " seconds", border = 'BR', ln = 1, align = '', fill = True, link = '')
+                                pdf.set_draw_color(99,99,99)
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 6, txt = " " , border = 'L', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 6, txt = "Auto-restart the agent when receiving valid configuration"  , border = '', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 6, txt = " " , border = '', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 6, txt = str(conf_data['data'][configuration]['auto_restart']), border = 'R', ln = 1, align = '', fill = True, link = '')
+
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 4, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 4, txt = " from manager "  , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 4, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 4, txt = " ", border = 'BR', ln = 1, align = '', fill = True, link = '')
+
+
+                                pdf.set_draw_color(99,99,99)
+                                pdf.set_fill_color(252,252,252)
+                                pdf.cell(4, 7, txt = " " , border = 'BL', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(110, 7, txt = "Method used to encrypt communications "  , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                pdf.set_fill_color(243,243,243)
+                                pdf.cell(2, 7, txt = " " , border = 'B', ln = 0, align = 'C', fill = True, link = '')
+                                pdf.cell(0, 7, txt = str(conf_data['data'][configuration]['crypto_method']), border = 'BR', ln = 1, align = '', fill = True, link = '')
+                                pdf.ln(5)
+                    pdf.ln(15)
                 except Exception as e:
                     self.logger.error(e)
             pdf_name = "prueba"
             #Save pdf
+            self.logger.info("report agent configuration successful")
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
-            self.logger.info(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf')
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})

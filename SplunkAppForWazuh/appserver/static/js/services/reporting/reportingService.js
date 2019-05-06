@@ -339,9 +339,49 @@ define(['../module', 'jquery'], function(module, $) {
 
     async reportAgentConfiguration(agentId,reportData,apiId) {
       try{
+        let isAgents
         this.$rootScope.$broadcast('loadingReporting', { status: true })
+        try {
+          const agent = await Promise.all([
+            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/syscheck/${agentId}/last_scan`),
+            this.apiReq(`/rootcheck/${agentId}/last_scan`),
+            this.apiReq(`/syscollector/${agentId}/hardware`),
+            this.apiReq(`/syscollector/${agentId}/os`)
+          ])
+
+          const agentInfo = agent[0].data.data
+          const {
+            name,
+            id,
+            ip,
+            version,
+            manager,
+            os,
+            dateAdd,
+            lastKeepAlive,
+            group
+          } = agentInfo
+
+          isAgents = {
+            ID: id,
+            Name: name,
+            IP: ip,
+            Version: version,
+            Manager: manager,
+            OS: `${os.name} ${os.codename} ${os.version}`,
+            dateAdd: dateAdd,
+            lastKeepAlive: lastKeepAlive,
+            group: group.toString()
+          }
+        } catch (error) {
+          isAgents = false
+        }
+
+
+
+
         const isAgentConf = true
-        const isAgents = false
         const timeZone = new Date().getTimezoneOffset()
 
         const data = {
