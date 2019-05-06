@@ -9,11 +9,11 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzMenu', function(BASE_URL) {
+  directives.directive('wzMenu', function (BASE_URL) {
     return {
-      controller: function(
+      controller: function (
         $scope,
         $currentDataService,
         $navigationService,
@@ -25,13 +25,13 @@ define(['../module'], function(directives) {
 
         $scope.select = item => {
           $scope.menuNavItem = item
-          if (!$scope.$$phase) $scope.$digest()
+          $scope.$applyAsync()
         }
 
         $scope.openDiscover = agentId => {
           $scope.menuNavItem = 'discover'
           $scope.$broadcast('stateChanged', 'discover')
-          if (!$scope.$$phase) $scope.$digest()
+          $scope.$applyAsync()
           const index = $currentDataService.getIndex().index || 'wazuh'
           //Generate url
           let url = `${BASE_URL}/app/search/search?q=index=${index}`
@@ -46,40 +46,50 @@ define(['../module'], function(directives) {
         })
 
         const checkLastState = (prefix, state) => {
-          if (
-            ($navigationService.getLastState() &&
-              $navigationService.getLastState() !== '' &&
-              $navigationService.getLastState().includes(prefix)) ||
-            $navigationService.getLastState().includes(state)
-          ) {
-            return true
-          } else {
-            return false
+          try {
+            if (
+              ($navigationService.getLastState() &&
+                $navigationService.getLastState() !== '' &&
+                $navigationService.getLastState().includes(prefix)) ||
+              $navigationService.getLastState().includes(state)
+            ) {
+              return true
+            } else {
+              return false
+            }
+          } catch (error) {
+            throw new Error(error)
           }
+
         }
 
         const update = () => {
-          const index = $currentDataService.getIndex()
-          const api = $currentDataService.getApi()
-          $scope.currentIndex = !index ? 'wazuh' : index.index
-          $scope.currentAPI = !api ? '---' : api.managerName
-          $scope.theresAPI = $scope.currentAPI === '---' ? false : true
+          try {
+            const index = $currentDataService.getIndex()
+            const api = $currentDataService.getApi()
+            $scope.currentIndex = !index ? 'wazuh' : index.index
+            $scope.currentAPI = !api ? '---' : api.managerName
+            $scope.theresAPI = $scope.currentAPI === '---' ? false : true
 
-          if (checkLastState('ow-', 'overview')) {
-            $scope.menuNavItem = 'overview'
-          } else if (checkLastState('mg-', 'manager')) {
-            $scope.menuNavItem = 'manager'
-          } else if (checkLastState('ag-', 'agents')) {
-            $scope.menuNavItem = 'agents'
-          } else if (checkLastState('api.', 'settings')) {
-            $scope.menuNavItem = 'settings'
-          } else if (checkLastState('dev-tools', 'dev-tools')) {
-            $scope.menuNavItem = 'dev-tools'
-          } else if (checkLastState('discover', 'discover')) {
-            $scope.menuNavItem = 'discover'
+            if (checkLastState('ow-', 'overview')) {
+              $scope.menuNavItem = 'overview'
+            } else if (checkLastState('mg-', 'manager')) {
+              $scope.menuNavItem = 'manager'
+            } else if (checkLastState('ag-', 'agents')) {
+              $scope.menuNavItem = 'agents'
+            } else if (checkLastState('api.', 'settings')) {
+              $scope.menuNavItem = 'settings'
+            } else if (checkLastState('dev-tools', 'dev-tools')) {
+              $scope.menuNavItem = 'dev-tools'
+            } else if (checkLastState('discover', 'discover')) {
+              $scope.menuNavItem = 'discover'
+            }
+            $scope.$applyAsync()
+          } catch (error) {
+            $state.go('settings.api')
           }
-          if (!$scope.$$phase) $scope.$digest()
         }
+
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', event => {
           event.stopPropagation()
