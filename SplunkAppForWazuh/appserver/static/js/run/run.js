@@ -6,12 +6,14 @@ define(['./module'], function (module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
+    '$notificationService',
     function (
       $rootScope,
       $state,
       $transitions,
       $navigationService,
-      $currentDataService
+      $currentDataService, 
+      $notificationService
     ) {
       //Go to last state or to a specified tab if "currentTab" param is specified in the url
       $navigationService.manageState()
@@ -60,6 +62,7 @@ define(['./module'], function (module) {
             await $currentDataService.checkWazuhVersion()
           }
         } catch (error) {
+          $notificationService.showErrorToast(error || 'Unexpected Wazuh Version.')
           $state.go('settings.api')
           return false
         }

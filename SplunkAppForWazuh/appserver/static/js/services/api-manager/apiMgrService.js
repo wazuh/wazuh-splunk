@@ -338,7 +338,7 @@ define(['../module'], function (module) {
           const appSplit = av.split('.')
 
           if (wazuhSplit[0] !== appSplit[0] || wazuhSplit[1] !== appSplit[1]) {
-            throw new Error(`Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`)
+            throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
           }
         }
       } catch (error) {
