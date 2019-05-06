@@ -316,6 +316,11 @@ class manager(controllers.BaseController):
             request_cluster_name = self.session.get(
                 url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
             output = {}
+            try:
+                self.check_wazuh_version(kwargs)
+            except Exception as e:
+                error = {"status": 400, "error": str(e)}
+                return jsonbak.dumps(error)
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
             # Pass the cluster status instead of always False
             if not daemons_ready:
@@ -328,11 +333,51 @@ class manager(controllers.BaseController):
         except Exception as e:
             if not daemons_ready:
                 self.logger.error("Cannot connect to API; Wazuh not ready yet.")
-                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
+                return jsonbak.dumps({"status": 200, "error": 3099, "message": "Wazuh not ready yet."})
             else:
                 self.logger.error("Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
+                return jsonbak.dumps({"status": 400, "error": "Cannot connect to the API"})
         return result
+
+    def check_wazuh_version(self, kwargs):
+        """Check Wazuh version
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+        """
+        try:
+            opt_username = kwargs["user"]
+            opt_password = kwargs["pass"]
+            opt_base_url = kwargs["ip"]
+            opt_base_port = kwargs["port"]
+            url = opt_base_url + ":" + opt_base_port
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+
+            wazuh_version = self.session.get(
+                url + '/version', auth=auth, timeout=20, verify=verify).json()   
+            wazuh_version = wazuh_version['data']
+            wazuh_version = wazuh_version.split('v')[1]
+
+            app_version = cli.getConfStanza(
+                'package',
+                'app')
+            app_version = app_version['version']
+
+            v_split = wazuh_version.split('.')
+            a_split = app_version.split('.')
+
+            wazuh_version = str(v_split[0]+"."+v_split[1])
+            app_version = str(a_split[0]+"."+a_split[1])
+            if wazuh_version != app_version:
+                raise Exception("Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (app_version, wazuh_version))
+        except Exception as e:
+            self.logger.error("Error when checking Wazuh version: %s" % (e))
+            raise e
+
+
 
     def check_daemons(self, url, auth, verify, check_cluster):
         """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
@@ -368,3 +413,4 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error checking daemons: %s" % (e))
             raise e
+        return

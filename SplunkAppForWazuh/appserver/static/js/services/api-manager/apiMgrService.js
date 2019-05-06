@@ -231,15 +231,15 @@ define(['../module'], function (module) {
           )
           if (result.data.status === 400 || result.data.error) {
             if (result.data.error === 3099) {
-              throw new Error('ERROR3099 - Wazuh not ready yet.')
+              throw 'ERROR3099 - Wazuh not ready yet.'
             } else {
-              throw new Error('Unreachable API.')
+              throw result.data.error || 'Unreachable API.'
             }
           }
           return result
         }
         // Otherwise throw a new error
-        throw new Error('Missing API fields.')
+        throw 'Missing API fields.'
       } catch (err) {
         return Promise.reject(err)
       }

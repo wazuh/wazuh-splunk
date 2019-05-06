@@ -121,7 +121,7 @@ define(['../../module'], function(controllers) {
         this.notification.showSuccessToast('Connection established')
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.notification.showErrorToast('Unreachable API')
+        this.notification.showErrorToast(err || 'Unreachable API')
       }
     }
 
@@ -201,7 +201,7 @@ define(['../../module'], function(controllers) {
         this.scope.edit = false
         this.notification.showSuccessToast('Updated API')
       } catch (err) {
-        this.notification.showErrorToast('Cannot update API')
+        this.notification.showErrorToast(err || 'Cannot update API')
       }
       this.savingApi = false
     }
@@ -221,7 +221,7 @@ define(['../../module'], function(controllers) {
         this.scope.$emit('updatedAPI', () => {})
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.notification.showErrorToast('Could not select manager')
+        this.notification.showErrorToast(err || 'Could not select manager')
       }
     }
 
@@ -279,7 +279,7 @@ define(['../../module'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
         this.notification.showSuccessToast('New API was added')
       } catch (err) {
-        this.notification.showErrorToast(err.message)
+        this.notification.showErrorToast(err.message || err || 'Cannot save the API.')
       }
       this.savingApi = false
     }
