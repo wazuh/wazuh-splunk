@@ -36,6 +36,23 @@ class Configuration(controllers.BaseController):
             self.logger.error(
                 "Error in configuration module constructor: %s" % (e))
 
+    @expose_page(must_login=False, methods=['POST'])
+    def update_parameter(self, **kwargs):
+        """Updates a parameter of the configuration.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Request parameters
+        """
+        try:
+            param = kwargs['parameter']
+            result = self.config.update_parameter(param)
+            return jsonbak.dumps({"data": result, "error": 0})
+        except Exception as e:
+            self.logger.error("Error updating the configuration: %s" % (e))
+            return jsonbak.dumps({'error': str(e)})
+
     @expose_page(must_login=False, methods=['GET'])
     def get_config(self):
         """Gets the configuration.
@@ -46,8 +63,22 @@ class Configuration(controllers.BaseController):
             Request parameters
         """
         try:
-            result = self.config.get_config()
-            return jsonbak.dumps({"data": result, "error": 0})
+            config =  self.check_init_config()
+            return jsonbak.dumps({"data": config, "error": 0})
         except Exception as e:
             self.logger.error("Error getting the configuration: %s" % (e))
+            return jsonbak.dumps({'error': str(e)})
+
+    
+    def check_init_config(self):
+        """Checks if exist the init configuration, else it will create it.
+        """
+        try:
+            config = self.config.get_config()
+            if config:
+                self.logger.info("Configuration created")
+            else:
+                self.logger.info("Configuration is not created yet")
+        except Exception as e:
+            self.logger.error("Error creating the configuration: %s" % (e))
             return jsonbak.dumps({'error': str(e)})

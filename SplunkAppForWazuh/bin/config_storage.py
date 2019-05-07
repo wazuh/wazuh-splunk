@@ -81,7 +81,7 @@ class ConfigStorage():
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(kvstoreUri, headers={
                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
-            return jsonbak.dumps(result)
+            return result
         except Exception as e:
             self.logger.error(
                 'Error getting the configuration ConfigStorage module: %s ' % (e))
