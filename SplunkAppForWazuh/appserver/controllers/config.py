@@ -31,6 +31,7 @@ class Configuration(controllers.BaseController):
         try:
             self.config = ConfigStorage()
             self.logger = log()
+            self.initial_conf = {'log.level': 'info', 'timeout': '20'}
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error(
@@ -76,9 +77,11 @@ class Configuration(controllers.BaseController):
         try:
             config = self.config.get_config()
             if config:
-                self.logger.info("Configuration created")
+                return config
             else:
-                self.logger.info("Configuration is not created yet")
+                for key in self.initial_conf:
+                    self.config.add_parameter({'key': key, 'value': self.initial_conf[key]})
+            return self.config.get_config()
         except Exception as e:
             self.logger.error("Error creating the configuration: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            raise e

@@ -40,6 +40,29 @@ class ConfigStorage():
             self.logger.error("Error in ConfigStorage module constructor: %s" % (e))
 
 
+    def add_parameter(self, parameter, session_key=False):
+        """Insert a new config parameter.
+
+        Parameters
+        ----------
+        dic : parameter
+            The parameter information
+        str : session_key
+            The authorized session key
+
+        """
+        try:
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
+            auth_key = session_key if session_key else splunk.getSessionKey()
+            parameter = jsonbak.dumps(parameter)
+            result = self.session.post(kvstoreUri, data=parameter, headers={
+                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error(
+                'Error creating a new parameter in ConfigStorage module: %s ' % (e))
+            return jsonbak.dumps({"error": str(e)})
+
     def update_parameter(self, param, session_key=False):
         """Update an already inserted API.
 
