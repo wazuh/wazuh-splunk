@@ -47,8 +47,7 @@ class Configuration(controllers.BaseController):
             Request parameters
         """
         try:
-            param = kwargs['parameter']
-            result = self.config.update_parameter(param)
+            result = self.config.update_parameter(kwargs)
             return jsonbak.dumps({"data": result, "error": 0})
         except Exception as e:
             self.logger.error("Error updating the configuration: %s" % (e))

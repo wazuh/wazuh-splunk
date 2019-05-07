@@ -83,7 +83,7 @@ class ConfigStorage():
             result = self.session.post(kvstoreUri, data=param, headers={
                                        "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             if '_key' in result.keys() and result['_key'] == id:
-                return 'Parameter updated, changes will not be applied until restart Splunk.'
+                return 'Parameter updated.'
             else:
                 raise Exception('Parameter cannot be updated.')
         except Exception as e:

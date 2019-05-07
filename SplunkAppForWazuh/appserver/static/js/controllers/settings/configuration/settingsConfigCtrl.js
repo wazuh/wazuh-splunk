@@ -23,7 +23,7 @@ define(['../../module'], function (controllers) {
         this.scope.getDescription = key => this.getDescription(key)
         this.scope.switchEdit = (_key, key, value) => this.switchEdit(_key, key, value)
         this.scope.cancelEdition =  () => this.cancelEdition()
-        this.scope.setValue = () => this.setValue()
+        this.scope.setValue = (_key, key) => this.setValue(_key, key)
         this.scope.selectValue = value => this.selectValue(value)
       } catch (error) { 
         console.error("onInit err : ", error)
@@ -55,7 +55,7 @@ define(['../../module'], function (controllers) {
       try {
         this.scope.editingKey = _key
         this.editingNewValue = value
-        if (key === 'log.level') {
+        if (key !== 'log.level') {
           this.inputEnabled = true
         }
       } catch (error) {
@@ -76,10 +76,11 @@ define(['../../module'], function (controllers) {
     /**
      * Edit the value
      */
-    async setValue() {
+    async setValue(_key, key) {
       try {
-        const val = this.inputEnabled ? this.editingNewValue : this.dropDownValue
-        /** TODO: call to an endpoint to overwritte the value */
+        const value = this.inputEnabled ? this.editingNewValue : this.dropDownValue
+        await this.req.httpReq('POST', '/config/update_parameter', {_key: _key, key: key, value: value})
+        this.notification.showSuccessToast(`${key} updated successfully.`)
         this.cancelEdition()
         this.refreshConfig()
       } catch (error) {
