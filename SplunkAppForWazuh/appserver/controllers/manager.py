@@ -16,13 +16,14 @@ Find more information about this on the LICENSE file.
 import jsonbak
 import requestsbak
 import uuid
+import sys
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
-
+from . import config
 
 def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
@@ -72,6 +73,9 @@ class manager(controllers.BaseController):
         try:
             controllers.BaseController.__init__(self)
             self.db = database()
+            #self.session_key = sys.stdin.readline().strip()
+            self.session_key = False
+            self.timeout = config.Configuration().get_time_out(self.session_key)
             self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
@@ -327,11 +331,11 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             request_manager = self.session.get(
-                url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify).json()           
+                url + '/agents/000?select=name', auth=auth, timeout=self.timeout, verify=verify).json()           
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
             request_cluster_name = self.session.get(
-                url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()           
+                url + '/cluster/node', auth=auth, timeout=self.timeout, verify=verify).json()           
             output = {}
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
             # Pass the cluster status instead of always False
@@ -363,7 +367,7 @@ class manager(controllers.BaseController):
         """
         try:
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'

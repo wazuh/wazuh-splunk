@@ -85,7 +85,7 @@ class ConfigStorage():
             if '_key' in result.keys() and result['_key'] == id:
                 return 'Parameter updated.'
             else:
-                raise Exception('Parameter cannot be updated.')
+                raise Exception('Parameter cannot be updated. Changes will not be applied until restart Splunk.')
         except Exception as e:
             self.logger.error("Error updating in ConfigStorage module: %s" % (e))
             raise e
