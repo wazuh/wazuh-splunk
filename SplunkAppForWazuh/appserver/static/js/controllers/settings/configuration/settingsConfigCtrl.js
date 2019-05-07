@@ -2,27 +2,26 @@ define(['../../module'], function (controllers) {
   'use strict'
 
   class Configuration {
-    constructor($scope, $currentDataService, $notificationService, configuration, config, $requestService) {
+    constructor($scope, $currentDataService, $notificationService, configuration, $requestService) {
       this.scope = $scope
       this.scope.extensions = {}
       this.notification = $notificationService
       this.currentApi = $currentDataService.getApi()
       this.getCurrentConfiguration = $currentDataService.getCurrentConfiguration
       this.configuration = configuration
-      this.config = config
       this.req = $requestService
     }
 
     $onInit() {
       try {
         const id = this.currentApi['_key']
-        this.scope.configuration = this.configuration.data
+        this.scope.configuration = this.configuration.data.data
 
         this.dropDownValue = false
         this.editingNewValue = false
         this.scope.logLevelOptions = ['info', 'debug']
         this.scope.getDescription = key => this.getDescription(key)
-        this.scope.switchEdit = (key, value) => this.switchEdit(key, value)
+        this.scope.switchEdit = (_key, key, value) => this.switchEdit(_key, key, value)
         this.scope.cancelEdition =  () => this.cancelEdition()
         this.scope.setValue = () => this.setValue()
         this.scope.selectValue = value => this.selectValue(value)
@@ -52,9 +51,9 @@ define(['../../module'], function (controllers) {
      * Enable edition
      * @param {String} key 
      */
-    switchEdit(key, value) {
+    switchEdit(_key, key, value) {
       try {
-        this.scope.editingKey = key
+        this.scope.editingKey = _key
         this.editingNewValue = value
         if (key === 'log.level') {
           this.inputEnabled = true
@@ -84,7 +83,7 @@ define(['../../module'], function (controllers) {
         this.cancelEdition()
         this.refreshConfig()
       } catch (error) {
-        return Promise.reject(error) 
+        this.notification.showErrorToast(error || 'Error setting value.')
       }
     }
 
@@ -103,7 +102,7 @@ define(['../../module'], function (controllers) {
     async refreshConfig() {
       try {
         const config = await this.getCurrentConfiguration()
-        this.scope.configuration = config.data
+        this.scope.configuration = config.data.data
         this.scope.$applyAsync()  
       } catch (error) {
         return Promise.reject(error) 

@@ -210,7 +210,7 @@ define(['../module'], function(module) {
       try {
         const conf = await $requestService.httpReq(
           `GET`,
-          `/manager/configuration`
+          `/config/get_config`
         )
         return conf
       } catch (error) {

@@ -151,17 +151,6 @@ define(['../module'], function(module) {
                   $state.reload()
                 }
               }
-            ],
-            config: [
-              '$state',
-              '$requestService',
-              async ($state, $requestService) => {
-                try {
-                  return await $requestService.httpReq('GET', '/config/get_config')
-                } catch (error) {
-                  $state.reload()
-                }
-              }
             ]
           }
         })

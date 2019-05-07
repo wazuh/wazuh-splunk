@@ -24,17 +24,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="(key, value) in configuration" ng-if="key !== 'admin'">
-            <td>{{key}}</td>
+          <tr ng-repeat="parameter in configuration" ng-if="key !== 'admin'">
+            <td>{{parameter.key}}</td>
             <!-- value to edit -->
             <td>
-              <div ng-show="!editingKey || editingKey !== key">{{value}}</div>
+              <div ng-show="!editingKey || editingKey !== parameter._key">{{parameter.value}}</div>
               <!-- Input -->
-              <div ng-show="editingKey === key && editingKey !== 'log.level'">
+              <div ng-show="editingKey === parameter._key && parameter.key !== 'log.level'">
                 <input class="wz-margin-zero" type="text" ng-model="vm.editingNewValue">
               </div>
               <!-- Log dropdown -->
-              <div ng-show="editingKey === key && editingKey === 'log.level'">
+              <div ng-show="editingKey === parameter._key && parameter.key === 'log.level'">
                 <select ng-options="option for option in logLevelOptions" ng-model="vm.dropDownValue"
                   ng-init="vm.dropDownValue = logLevelOptions[0]" ng-change="selectValue(vm.dropDownValue)"
                   class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero">
@@ -42,17 +42,17 @@
               </div>
             </td>
             <!-- end value -->
-            <td>{{getDescription(key)}}</td>
+            <td>{{getDescription(parameter.key)}}</td>
             <td>
               <!-- switch to edit -->
-              <div ng-show="!editingKey || editingKey !== key">
-                <wz-svg icon="pencil" color="#0079a5" ng-click="switchEdit(key, value)">
+              <div ng-show="!editingKey || editingKey !== parameter._key">
+                <wz-svg icon="pencil" color="#0079a5" ng-click="switchEdit(parameter._key, parameter.key, parameter.value)">
                   <md-tooltip md-direction="left" class="wz-tooltip">
                     Edit
                   </md-tooltip>
                 </wz-svg>
               </div>
-              <div ng-show="editingKey === key">
+              <div ng-show="editingKey === parameter._key">
                 <span style="color: #0079a5">
                   <i ng-click="cancelEdition()" class="fa fa-fw fa-times cursor-pointer">
                     <md-tooltip md-direction="left" class="wz-tooltip">
