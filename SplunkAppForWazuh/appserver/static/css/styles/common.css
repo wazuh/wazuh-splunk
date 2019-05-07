@@ -1837,6 +1837,7 @@ label.wz-icon-loupe  input {
 .closeToastCross {
   position: absolute;
   right: 10px;
+  top: 12px;
 }
 
 .md-sidenav {
