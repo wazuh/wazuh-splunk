@@ -29,10 +29,8 @@ class Configuration(controllers.BaseController):
     def __init__(self):
         """Constructor."""
         try:
-            self.config = ConfigStorage()
-            self.e_config = EditConfig()
+            self.config = EditConfig()
             self.logger = log()
-            self.initial_conf = self.e_config.get_config()
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error(
@@ -64,23 +62,8 @@ class Configuration(controllers.BaseController):
             Request parameters
         """
         try:
-            config =  self.check_init_config()
+            config = self.config.get_config()
             return jsonbak.dumps({"data": config, "error": 0})
         except Exception as e:
             self.logger.error("Error getting the configuration: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
-
-    def check_init_config(self):
-        """Checks if exist the init configuration, else it will create it.
-        """
-        try:
-            config = self.config.get_config()
-            if config:
-                return config
-            else:
-                for key in self.initial_conf:
-                    self.config.add_parameter({'key': key, 'value': self.initial_conf[key]})
-            return self.config.get_config()
-        except Exception as e:
-            self.logger.error("Error creating the configuration: %s" % (e))
-            raise e

@@ -21,9 +21,9 @@ define(['../../module'], function (controllers) {
         this.editingNewValue = false
         this.scope.logLevelOptions = ['info', 'debug']
         this.scope.getDescription = key => this.getDescription(key)
-        this.scope.switchEdit = (_key, key, value) => this.switchEdit(_key, key, value)
+        this.scope.switchEdit = (key, value) => this.switchEdit(key, value)
         this.scope.cancelEdition =  () => this.cancelEdition()
-        this.scope.setValue = (_key, key) => this.setValue(_key, key)
+        this.scope.setValue = (key) => this.setValue(key)
         this.scope.selectValue = value => this.selectValue(value)
       } catch (error) { 
         console.error("onInit err : ", error)
@@ -51,9 +51,9 @@ define(['../../module'], function (controllers) {
      * Enable edition
      * @param {String} key 
      */
-    switchEdit(_key, key, value) {
+    switchEdit(key, value) {
       try {
-        this.scope.editingKey = _key
+        this.scope.editingKey = key
         this.editingNewValue = value
         if (key !== 'log.level') {
           this.inputEnabled = true
@@ -76,10 +76,10 @@ define(['../../module'], function (controllers) {
     /**
      * Edit the value
      */
-    async setValue(_key, key) {
+    async setValue(key) {
       try {
         const value = this.inputEnabled ? this.editingNewValue : this.dropDownValue
-        await this.req.httpReq('POST', '/config/update_parameter', {_key: _key, key: key, value: value})
+        await this.req.httpReq('POST', '/config/update_parameter', {key: key, value: value})
         this.notification.showSuccessToast(`${key} updated successfully.`)
         this.cancelEdition()
         this.refreshConfig()
