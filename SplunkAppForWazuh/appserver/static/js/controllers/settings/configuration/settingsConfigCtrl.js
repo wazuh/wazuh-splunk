@@ -16,6 +16,7 @@ define(['../../module'], function (controllers) {
       try {
         const id = this.currentApi['_key']
         this.scope.configuration = this.configuration.data.data
+        console.log("this.scope.config ", this.scope.configuration)
 
         this.dropDownValue = false
         this.editingNewValue = false
@@ -79,10 +80,19 @@ define(['../../module'], function (controllers) {
     async setValue(key) {
       try {
         const value = this.inputEnabled ? this.editingNewValue : this.dropDownValue
-        await this.req.httpReq('POST', '/config/update_parameter', {key: key, value: value})
-        this.notification.showSuccessToast(`${key} updated successfully.`)
-        this.cancelEdition()
-        this.refreshConfig()
+        this.scope.configuration[key] = value
+        const result = await this.req.httpReq('POST', '/config/update_config', this.scope.configuration)
+        if (
+          result.data &&
+          !result.data.error
+        ) {
+          this.notification.showSuccessToast(`${key} updated successfully.`)
+          this.cancelEdition()
+          this.refreshConfig()
+        } else {
+          throw result.data.error
+        }
+        
       } catch (error) {
         this.notification.showErrorToast(error || 'Error setting value.')
       }

@@ -44,8 +44,7 @@ class EditConfig():
                 k, v =  c.split("=")        
                 k = k.strip()
                 v = v.strip()
-                if k != 'admin':
-                    config_dict[k] = v
+                config_dict[k] = v
             return config_dict
         except Exception as e:
             self.logger.error("Error getting configuration: %s" % (e))
@@ -67,10 +66,9 @@ class EditConfig():
         """
         try:
             unalterable = self.get_unalterable_config()
-            f = open(self.config_path)
+            f = open(self.config_path, "w")
             f.write(unalterable)
             f.write("[configuration]")
-            f.write("\nadmin = true")
             for k, v in new_config.items():
                 f.write("\n%s = %s" % (str(k),str(v)))
             f.close()

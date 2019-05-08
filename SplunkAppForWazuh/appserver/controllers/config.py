@@ -37,7 +37,7 @@ class Configuration(controllers.BaseController):
                 "Error in configuration module constructor: %s" % (e))
 
     @expose_page(must_login=False, methods=['POST'])
-    def update_parameter(self, **kwargs):
+    def update_config(self, **kwargs):
         """Updates a parameter of the configuration.
 
         Parameters
@@ -46,7 +46,7 @@ class Configuration(controllers.BaseController):
             Request parameters
         """
         try:
-            result = self.config.update_parameter(kwargs)
+            result = self.config.update_config(kwargs)
             return jsonbak.dumps({"data": result, "error": 0})
         except Exception as e:
             self.logger.error("Error updating the configuration: %s" % (e))
