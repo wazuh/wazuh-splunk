@@ -16,7 +16,6 @@ Find more information about this on the LICENSE file.
 import jsonbak
 import requestsbak
 import uuid
-import sys
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -73,10 +72,8 @@ class manager(controllers.BaseController):
         try:
             controllers.BaseController.__init__(self)
             self.db = database()
-            #self.session_key = sys.stdin.readline().strip()
-            self.session_key = False
-            self.timeout = config.Configuration().get_time_out(self.session_key)
-            self.session = requestsbak.Session()
+            self.timeout = 20
+            self.session = requestsbak.Session()            
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("Error in manager module constructor: %s" % (e))

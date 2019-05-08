@@ -17,6 +17,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 from config_storage import ConfigStorage
+from edit_config import EditConfig
 
 class Configuration(controllers.BaseController):
 
@@ -29,8 +30,9 @@ class Configuration(controllers.BaseController):
         """Constructor."""
         try:
             self.config = ConfigStorage()
+            self.e_config = EditConfig()
             self.logger = log()
-            self.initial_conf = {'log.level': 'info', 'timeout': '20'}
+            self.initial_conf = self.e_config.get_config()
             controllers.BaseController.__init__(self)
         except Exception as e:
             self.logger.error(
@@ -82,23 +84,3 @@ class Configuration(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error creating the configuration: %s" % (e))
             raise e
-
-    def get_time_out(self, session_key = False):
-        """ Returns the seted timeout
-        """
-        try:
-            return 20
-            '''
-            config = self.config.get_config(session_key)
-            self.logger.info(str(config))
-            timeout = filter(lambda c: c['key'] == 'timeout', config)
-            self.logger.info("timeout "+ str(type(timeout)))
-            self.logger.info("timeout "+ str(timeout))'''
-            '''self.logger.info("t1 "+str(timeout))
-            self.logger.info("t2 "+str(timeout[0]))
-            self.logger.info("t3 "+str(timeout[0]['value']))'''
-            #timeout =  int(timeout[0]['value'])
-            return 20
-        except Exception as e:
-            self.logger.error("Error getting the timeout: %s" % (e))
-            return 20
