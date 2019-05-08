@@ -69,7 +69,6 @@ define(['../../module'], function (controllers) {
     cancelEdition() {
       this.scope.editingKey = false
       this.editingNewValue = false
-      this.dropDownValue = false
       this.inputEnabled = false
     }
 
@@ -123,6 +122,8 @@ define(['../../module'], function (controllers) {
 
     /**
      * Validate inserted value
+     * @param {String} key
+     * @param {String} key
      */
     validateValue(key, value) {
       if (key === 'timeout') {
