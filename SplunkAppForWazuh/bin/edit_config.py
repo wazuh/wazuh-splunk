@@ -50,4 +50,31 @@ class EditConfig():
         except Exception as e:
             self.logger.error("Error getting configuration: %s" % (e))
             raise e
-    
+
+    def get_unalterable_config(self):
+        """Returns all the config.conf file content exect the [configuration] block
+        """
+        try:
+            content = self.read_config_file()
+            config = content.split("[configuration]")[0]
+            return config
+        except Exception as e:
+            self.logger.error("Error getting unalterable configuration: %s" % (e))
+            raise e
+
+    def update_config(self, new_config):
+        """Updates the config writting over the config.conf file, modify only the [configuration] block
+        """
+        try:
+            unalterable = self.get_unalterable_config()
+            f = open(self.config_path)
+            f.write(unalterable)
+            f.write("[configuration]")
+            f.write("\nadmin = true")
+            for k, v in new_config.items():
+                f.write("\n%s = %s" % (str(k),str(v)))
+            f.close()
+            return {"data": "Configuration updated susccesfully.", "error": 0}
+        except Exception as e:
+                self.logger.error("Error updating configuration: %s" % (e))
+                raise e
