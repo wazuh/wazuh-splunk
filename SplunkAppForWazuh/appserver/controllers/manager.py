@@ -22,7 +22,6 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
-from . import config
 
 def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
@@ -72,7 +71,8 @@ class manager(controllers.BaseController):
         try:
             controllers.BaseController.__init__(self)
             self.db = database()
-            self.timeout = 20
+            self.config =  self.get_config_on_memory()
+            self.timeout = int(self.config['timeout'])
             self.session = requestsbak.Session()            
             self.session.trust_env = False
         except Exception as e:
@@ -385,4 +385,13 @@ class manager(controllers.BaseController):
                 return wazuh_ready
         except Exception as e:
             self.logger.error("Error checking daemons: %s" % (e))
+            raise e
+
+    def get_config_on_memory(self):
+        try:
+            config_str = getSelfConfStanza("config", "configuration")
+            config = jsonbak.loads(config_str)
+            return config
+        except Exception as e:
+            self.logger.error("Error getting the configuration on memory: %s" % (e))
             raise e

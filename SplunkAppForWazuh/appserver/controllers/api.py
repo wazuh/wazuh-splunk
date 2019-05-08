@@ -35,8 +35,10 @@ class api(controllers.BaseController):
         """Constructor."""
         try:
             self.logger = log()
-            controllers.BaseController.__init__(self)
+            self.config =  self.get_config_on_memory()
+            self.timeout = int(self.config['timeout'])
             self.db = database()
+            controllers.BaseController.__init__(self)
             self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
@@ -212,7 +214,7 @@ class api(controllers.BaseController):
         """
         try:
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -470,3 +472,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
+
+    def get_config_on_memory(self):
+        try:
+            config = cli.getConfStanza("config", "configuration")
+            return config
+        except Exception as e:
+            self.logger.error("Error getting the configuration on memory: %s" % (e))
+            raise e

@@ -16,7 +16,6 @@ define(['../../module'], function (controllers) {
       try {
         const id = this.currentApi['_key']
         this.scope.configuration = this.configuration.data.data
-        console.log("this.scope.config ", this.scope.configuration)
 
         this.dropDownValue = false
         this.editingNewValue = false
@@ -84,17 +83,18 @@ define(['../../module'], function (controllers) {
         const result = await this.req.httpReq('POST', '/config/update_config', this.scope.configuration)
         if (
           result.data &&
-          !result.data.error
+          result.data.data &&
+          !result.data.data.error
         ) {
-          this.notification.showSuccessToast(`${key} updated successfully.`)
+          this.notification.showSuccessToast(result.data.data.data || 'Configuration updated. Restart Splunk to apply changes.')
           this.cancelEdition()
           this.refreshConfig()
         } else {
-          throw result.data.error
+          throw result.data.data.error
         }
         
       } catch (error) {
-        this.notification.showErrorToast(error || 'Error setting value.')
+        this.notification.showErrorToast(error || 'Error updating the configuration.')
       }
     }
 
