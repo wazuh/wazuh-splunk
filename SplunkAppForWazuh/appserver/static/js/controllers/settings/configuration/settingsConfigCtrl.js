@@ -79,6 +79,7 @@ define(['../../module'], function (controllers) {
     async setValue(key) {
       try {
         const value = this.inputEnabled ? this.editingNewValue : this.dropDownValue
+        this.validateValue(key, value)
         this.scope.configuration[key] = value
         const result = await this.req.httpReq('POST', '/config/update_config', this.scope.configuration)
         if (
@@ -120,6 +121,17 @@ define(['../../module'], function (controllers) {
       }
     }
 
+    /**
+     * Validate inserted value
+     */
+    validateValue(key, value) {
+      if (key === 'timeout') {
+        if (!Number(value)) {
+          throw 'Incorrect format'
+        }
+      }
+      return
+    }
 
   }
   controllers.controller('settingsConfigCtrl', Configuration)
