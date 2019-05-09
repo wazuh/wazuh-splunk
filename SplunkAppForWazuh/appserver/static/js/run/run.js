@@ -1,4 +1,4 @@
-define(['./module'], function(module) {
+define(['./module'], function (module) {
   'use strict'
   module.run([
     '$rootScope',
@@ -6,12 +6,14 @@ define(['./module'], function(module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
-    function(
+    '$notificationService',
+    function (
       $rootScope,
       $state,
       $transitions,
       $navigationService,
-      $currentDataService
+      $currentDataService, 
+      $notificationService
     ) {
       //Go to last state or to a specified tab if "currentTab" param is specified in the url
       $navigationService.manageState()
@@ -27,7 +29,7 @@ define(['./module'], function(module) {
           )
           $currentDataService.addFilter(
             `{"index":"${
-              $currentDataService.getIndex().index
+            $currentDataService.getIndex().index
             }", "implicit":true}`
           )
           // If change the primary state and do not receive an error the two below code lines clear the warning message
@@ -54,6 +56,17 @@ define(['./module'], function(module) {
       // Check secondary states when Wazuh is not ready to prevent change the state
       $transitions.onBefore({}, async trans => {
         const to = trans.to().name
+
+        try {
+          if (!to.startsWith('settings')) {
+            await $currentDataService.checkWazuhVersion()
+          }
+        } catch (error) {
+          $notificationService.showErrorToast(error || 'Unexpected Wazuh Version.')
+          $state.go('settings.api')
+          return false
+        }
+
         if (
           to !== 'overview' &&
           to !== 'manager' &&
