@@ -24,6 +24,7 @@ define(['../../module'], function (module) {
      * Initialize
      */
     $onInit() {
+      this.scope.refreshing = false
       this.scope.logs = []
       this.scope.refreshLogs = () => this.refreshLogs()
       try {
@@ -83,9 +84,11 @@ define(['../../module'], function (module) {
      */
     async refreshLogs() {
       try {
-        this.root.$broadcast('loading', { status: true })
+        this.scope.refreshing = true
+        this.scope.logs = []
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
         this.parseLogs(result.data.logs)
+        this.scope.refreshing = false
         return
       } catch (error) {
         this.scope.logs = [
