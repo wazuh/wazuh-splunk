@@ -49,6 +49,7 @@ class Queue(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("queue: Adding job to the jobs queue.")
             now = time.time()
             exec_time = now + float(kwargs['delay'])
             del kwargs['delay']
