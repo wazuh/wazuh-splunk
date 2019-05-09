@@ -45,6 +45,7 @@ class Configuration(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("config: Updating configuration.")
             result = self.config.update_config(kwargs)
             return jsonbak.dumps({"data": result, "error": 0})
         except Exception as e:
@@ -61,6 +62,7 @@ class Configuration(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("config: Reading the config.conf file.")
             config = self.config.get_config()
             return jsonbak.dumps({"data": config, "error": 0})
         except Exception as e:
