@@ -13,9 +13,10 @@
 define(['../../module'], function (module) {
   'use strict'
   class Logs {
-    constructor($scope, $requestService, logs, $rootScope) {
+    constructor($scope, $requestService, logs, debugEnabled, $rootScope) {
       this.scope = $scope
       this.logs = logs
+      this.debugEnabled = debugEnabled
       this.httpReq = $requestService.httpReq
       this.root = $rootScope
     }
@@ -50,7 +51,7 @@ define(['../../module'], function (module) {
       try {
         if (Array.isArray(logs)) {
           logs.map(log => {
-            if (log.startsWith('INFO:') || log.startsWith('ERROR:') || log.startsWith('DEBUG:')) {
+            if (log.startsWith('INFO:') || log.startsWith('ERROR:') || (log.startsWith('DEBUG:') && this.debugEnabled)) {
               const l = log.split("'")
               const message = l[1]
               const levelAndDate = l[0].split(':')
