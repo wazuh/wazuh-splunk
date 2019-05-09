@@ -14,6 +14,7 @@ Find more information about this on the LICENSE file.
 
 import logging
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
+from splunk.clilib import cli_common as cli
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
 import tailer
 
@@ -28,6 +29,8 @@ class log():
     def __init__(self):
         """Setup a logger for the REST handler."""
         global loggers
+        self.config = self.get_config_on_memory()
+        self.debug_enabled = True if self.config['log.level'] == 'debug' else False
 
         if loggers.get('splunk.appserver.%s.controllers.logs' % _APPNAME):
             self.logger = loggers.get(
@@ -62,6 +65,11 @@ class log():
         """Info log message."""
         self.logger.info(msg)
 
+    def debug(self, msg):
+        """Info messages if debug is enabled."""
+        if self.debug_enabled:
+            self.logger.debug(msg)
+
     def get_last_log_lines(self, lines):
         """Return the last logs messages."""
         try:
@@ -72,3 +80,11 @@ class log():
             self.error('[log.py][get_last_log_lines] %s' % (e))
             raise e
         return result
+
+    def get_config_on_memory(self):
+        try:
+            config = cli.getConfStanza("config", "configuration")
+            return config
+        except Exception as e:
+            self.logger.error("Error getting the configuration on memory: %s" % (e))
+            raise e

@@ -191,7 +191,9 @@ class api(controllers.BaseController):
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
+            self.logger.debug("Making request: ENDPOINT: %s%s DATA: %s" % (url, opt_endpoint, kwargs))                    
             if request['error'] and request['error'] in socket_errors:
+                self.logger.debug("Trying the previous request again.")                    
                 if counter > 0:
                     time.sleep(0.5)
                     return self.make_request(method, url, opt_endpoint, kwargs, auth, verify, counter - 1)
@@ -213,6 +215,7 @@ class api(controllers.BaseController):
         cluster_enabled: bool
         """
         try:
+            self.logger.debug("Checking Wazuh daemons.")
             request_cluster = self.session.get(
                 url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
@@ -232,6 +235,7 @@ class api(controllers.BaseController):
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
                 wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
+                self.logger.debug("Wazuh daemons checked, ready: %s" % str(wazuh_ready))
                 return wazuh_ready
         except Exception as e:
             self.logger.error("Error checking daemons: %s" % (e))
@@ -248,6 +252,7 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("Checking if Wazuh is ready.")
             if 'id' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing API ID.'})
             the_id = kwargs['id']
@@ -317,6 +322,7 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("Generating CSV file.")
             if 'id' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
@@ -475,6 +481,7 @@ class api(controllers.BaseController):
 
     def get_config_on_memory(self):
         try:
+            self.logger.debug("Getting the configuration set.")
             config = cli.getConfStanza("config", "configuration")
             return config
         except Exception as e:

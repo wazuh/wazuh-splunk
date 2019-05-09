@@ -16,7 +16,6 @@ import jsonbak
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
-from config_storage import ConfigStorage
 from edit_config import EditConfig
 
 class Configuration(controllers.BaseController):
