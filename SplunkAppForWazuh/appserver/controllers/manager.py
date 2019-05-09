@@ -89,6 +89,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting agents polling state.")
             app = cli.getConfStanza(
                 'inputs',
                 'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
@@ -112,6 +113,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting extensions.")
             stanza = getSelfConfStanza("config", "extensions")
             data_temp = stanza
         except Exception as e:
@@ -129,6 +131,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting admin extensions.")
             stanza = getSelfConfStanza("config", "admin_extensions")
             data_temp = stanza
         except Exception as e:
@@ -146,6 +149,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting configuration on memory from frondent.")
             stanza = getSelfConfStanza("config", "configuration")
             data_temp = stanza
         except Exception as e:
@@ -163,6 +167,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting app info.")
             stanza = cli.getConfStanza(
                 'package',
                 'app')
@@ -187,6 +192,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting API info from _key.")
             if 'id' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['id']
@@ -208,6 +214,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting API list.")
             apis = self.db.all()
             result = apis
         except Exception as e:
@@ -226,7 +233,7 @@ class manager(controllers.BaseController):
 
         """
         try:
-
+            self.logger.debug("manager: Adding a new API.")
             record = kwargs
             keys_list = ['url', 'portapi', 'userapi', 'passapi',
                          'managerName', 'filterType', 'filterName']
@@ -251,6 +258,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Removing API.")
             api_id = kwargs
             if '_key' not in api_id:
                 return jsonbak.dumps({'error': 'Missing ID'})
@@ -272,6 +280,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Updating API information.")
             entry = kwargs
             if '_user' in kwargs:
                 del kwargs['_user']
@@ -301,6 +310,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Getting last log lines.")
             lines = self.logger.get_last_log_lines(20)
             parsed_data = jsonbak.dumps({'logs': lines})
         except Exception as e:
@@ -319,6 +329,7 @@ class manager(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("manager: Checking API connection.")
             opt_username = kwargs["user"]
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
@@ -363,6 +374,7 @@ class manager(controllers.BaseController):
         cluster_enabled: bool
         """
         try:
+            self.logger.debug("manager: Checking Wazuh daemons.")
             request_cluster = self.session.get(
                 url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
@@ -389,6 +401,7 @@ class manager(controllers.BaseController):
 
     def get_config_on_memory(self):
         try:
+            self.logger.debug("manager: Getting configuration on memory.")
             config_str = getSelfConfStanza("config", "configuration")
             config = jsonbak.loads(config_str)
             return config
