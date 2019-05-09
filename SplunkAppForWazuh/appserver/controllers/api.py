@@ -42,7 +42,7 @@ class api(controllers.BaseController):
             self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
-            self.logger.error("Error in API module constructor: %s" % (e))
+            self.logger.error("api: Error in API module constructor: %s" % (e))
 
     def get_credentials(self, the_id):
         try:
@@ -113,7 +113,7 @@ class api(controllers.BaseController):
                         integ["api_key"] = hide
             return response
         except Exception as e:
-            self.logger.error("Error while cleaning keys in request response: %s" % (e))
+            self.logger.error("api: Error while cleaning keys in request response: %s" % (e))
             raise e
 
     def format_output(self, arr):
@@ -162,7 +162,7 @@ class api(controllers.BaseController):
             dic["data"]["items"] = [{"items": items}]
             return dic
         except Exception as e:
-            self.logger.error("Error formating CDB list: %s" % (e))
+            self.logger.error("api: Error formating CDB list: %s" % (e))
             raise e
 
 
@@ -205,7 +205,7 @@ class api(controllers.BaseController):
                     raise Exception("Tried to execute %s %s three times with no success, aborted." % (method, opt_endpoint))
             return self.clean_keys(request)
         except Exception as e:
-            self.logger.error("Error while requesting to Wazuh API: %s" % (e))
+            self.logger.error("api: Error while requesting to Wazuh API: %s" % (e))
             raise e
 
     def check_daemons(self, url, auth, verify, check_cluster):
@@ -243,7 +243,7 @@ class api(controllers.BaseController):
                 self.logger.debug("api: %s" % checked_debug_msg)
                 return wazuh_ready
         except Exception as e:
-            self.logger.error("Error checking daemons: %s" % (e))
+            self.logger.error("api: Error checking daemons: %s" % (e))
             raise e
 
 
@@ -267,7 +267,7 @@ class api(controllers.BaseController):
             self.logger.debug("api: %s" % msg)
             return jsonbak.dumps({"status": "200", "ready": daemons_ready, "message": msg})
         except Exception as e:
-            self.logger.error("Error checking daemons: %s" % (e))
+            self.logger.error("api: Error checking daemons: %s" % (e))
             return jsonbak.dumps({"status": "200", "ready": False, "message": "Error getting the Wazuh daemons status."})
 
     @expose_page(must_login=False, methods=['POST'])
@@ -290,7 +290,7 @@ class api(controllers.BaseController):
                 method = 'GET'
             else:
                 if str(self.getSelfAdminStanza()['admin']) != 'true':
-                    self.logger.error('Admin mode is disabled.')
+                    self.logger.error('api: Admin mode is disabled.')
                     return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
@@ -305,7 +305,7 @@ class api(controllers.BaseController):
             request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
             result = jsonbak.dumps(request)
         except Exception as e:
-            self.logger.error("Error making API request: %s" % (e))
+            self.logger.error("api: Error making API request: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
         return result
 
@@ -413,7 +413,7 @@ class api(controllers.BaseController):
             output_file.close()
             self.logger.debug("api: CSV file generated.")
         except Exception as e:
-            self.logger.error("Error in CSV generation!: %s" % (str(e)))
+            self.logger.error("api: Error in CSV generation!: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
         return csv_result
 
@@ -451,7 +451,7 @@ class api(controllers.BaseController):
                 result['pci']['description'] = pci_description
                 return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
+            self.logger.error("api: Error getting PCI-DSS requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
 
     @expose_page(must_login=False, methods=['GET'])
@@ -488,7 +488,7 @@ class api(controllers.BaseController):
                 result['gdpr']['description'] = pci_description
                 return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
+            self.logger.error("api: Error getting PCI-DSS requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
 
     def get_config_on_memory(self):
@@ -497,5 +497,5 @@ class api(controllers.BaseController):
             config = cli.getConfStanza("config", "configuration")
             return config
         except Exception as e:
-            self.logger.error("Error getting the configuration on memory: %s" % (e))
+            self.logger.error("api: Error getting the configuration on memory: %s" % (e))
             raise e

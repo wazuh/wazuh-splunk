@@ -49,7 +49,7 @@ class Configuration(controllers.BaseController):
             result = self.config.update_config(kwargs)
             return jsonbak.dumps({"data": result, "error": 0})
         except Exception as e:
-            self.logger.error("Error updating the configuration: %s" % (e))
+            self.logger.error("config: Error updating the configuration: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
 
     @expose_page(must_login=False, methods=['GET'])
@@ -66,5 +66,5 @@ class Configuration(controllers.BaseController):
             config = self.config.get_config()
             return jsonbak.dumps({"data": config, "error": 0})
         except Exception as e:
-            self.logger.error("Error getting the configuration: %s" % (e))
+            self.logger.error("config: Error getting the configuration: %s" % (e))
             return jsonbak.dumps({'error': str(e)})

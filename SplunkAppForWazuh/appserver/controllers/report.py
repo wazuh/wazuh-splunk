@@ -63,7 +63,7 @@ class report(controllers.BaseController):
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error("Error in report module constructor: %s" % (e))
+            self.logger.error("report: Error in report module constructor: %s" % (e))
 
     def save_images(self, images):
         self.logger.debug("report: Saving images on disk.")
@@ -324,7 +324,7 @@ class report(controllers.BaseController):
             #Delete the images
             self.delete_images(saved_images)
         except Exception as e:
-            self.logger.error("Error generating report: %s" % (e))
+            self.logger.error("report: Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
@@ -532,7 +532,7 @@ class report(controllers.BaseController):
 
             parsed_data = jsonbak.dumps({'data': pdf_files})
         except Exception as e:
-            self.logger.error("Error getting PDF files: %s" % (e))
+            self.logger.error("report: Error getting PDF files: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
@@ -556,6 +556,6 @@ class report(controllers.BaseController):
             parsed_data = jsonbak.dumps({"data": "Deleted file"})
             self.logger.info("report: Report %s deleted." % filename)
         except Exception as e:
-            self.logger.error("Error deleting PDF file: %s" % (e))
+            self.logger.error("report: Error deleting PDF file: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data

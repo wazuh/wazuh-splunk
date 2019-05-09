@@ -76,7 +76,7 @@ class manager(controllers.BaseController):
             self.session = requestsbak.Session()            
             self.session.trust_env = False
         except Exception as e:
-            self.logger.error("Error in manager module constructor: %s" % (e))
+            self.logger.error("manager: Error in manager module constructor: %s" % (e))
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -199,7 +199,7 @@ class manager(controllers.BaseController):
             data_temp = self.db.get(id)
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
-            self.logger.error("Error in get_apis endpoint: %s" % (e))
+            self.logger.error("manager: Error in get_apis endpoint: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
         return parsed_data
 
@@ -265,7 +265,7 @@ class manager(controllers.BaseController):
             self.db.remove(api_id['_key'])
             parsed_data = jsonbak.dumps({'data': 'success'})
         except Exception as e:
-            self.logger.error("Error in remove_api endpoint: %s" % (e))
+            self.logger.error("manager: Error in remove_api endpoint: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
         return parsed_data
 
@@ -295,7 +295,7 @@ class manager(controllers.BaseController):
                     "Invalid arguments, missing params : %s"
                     % str(missing_params))
         except Exception as e:
-            self.logger.error("Error in update_api endpoint: %s" % (e))
+            self.logger.error("manager: Error in update_api endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
@@ -314,7 +314,7 @@ class manager(controllers.BaseController):
             lines = self.logger.get_last_log_lines(20)
             parsed_data = jsonbak.dumps({'logs': lines})
         except Exception as e:
-            self.logger.error("Get_log_lines endpoint: %s" % (e))
+            self.logger.error("manager: Get_log_lines endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
@@ -356,10 +356,10 @@ class manager(controllers.BaseController):
             result = jsonbak.dumps(output) 
         except Exception as e:
             if not daemons_ready:
-                self.logger.error("Cannot connect to API; Wazuh not ready yet.")
+                self.logger.error("manager: Cannot connect to API; Wazuh not ready yet.")
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             else:
-                self.logger.error("Cannot connect to API : %s" % (e))
+                self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
         return result
 
@@ -396,7 +396,7 @@ class manager(controllers.BaseController):
                 wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
                 return wazuh_ready
         except Exception as e:
-            self.logger.error("Error checking daemons: %s" % (e))
+            self.logger.error("manager: Error checking daemons: %s" % (e))
             raise e
 
     def get_config_on_memory(self):
@@ -406,5 +406,5 @@ class manager(controllers.BaseController):
             config = jsonbak.loads(config_str)
             return config
         except Exception as e:
-            self.logger.error("Error getting the configuration on memory: %s" % (e))
+            self.logger.error("manager: Error getting the configuration on memory: %s" % (e))
             raise e
