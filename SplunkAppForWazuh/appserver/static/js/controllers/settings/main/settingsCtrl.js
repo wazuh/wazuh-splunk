@@ -29,7 +29,7 @@ define(['../../module'], function(controllers) {
           this.$scope.tabName = 'logs'
           break
         case 'settings.configuration':
-          this.$scope.tabName =  'configuration'
+          this.$scope.tabName = 'configuration'
       }
       this.$scope.switchTab = name => {
         this.$scope.tabName = name

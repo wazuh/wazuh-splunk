@@ -105,7 +105,9 @@ define([
               $scope.keys.splice(idx, 1)
             }
           } else {
-            let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+            let originalKey = $scope.originalkeys.filter(
+              k => k.key.value === key || k.key === key
+            )
             originalKey = originalKey[0].key
 
             const originalIdx = $scope.originalkeys.findIndex(

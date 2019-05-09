@@ -203,21 +203,17 @@ define(['../module'], function(module) {
     }
 
     /**
-     * Get the current configuration 
+     * Get the current configuration
      */
 
-     const getCurrentConfiguration = async () => {
+    const getCurrentConfiguration = async () => {
       try {
-        const conf = await $requestService.httpReq(
-          `GET`,
-          `/config/get_config`
-        )
+        const conf = await $requestService.httpReq(`GET`, `/config/get_config`)
         return conf
       } catch (error) {
         return Promise.reject(error)
       }
-     }
-
+    }
 
     /*
      * Gets reporting status

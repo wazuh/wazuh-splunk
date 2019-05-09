@@ -132,10 +132,10 @@ define(['../module'], function(module) {
             ],
             debugEnabled: [
               '$currentDataService',
-              async ($currentDataService) => {
+              async $currentDataService => {
                 try {
-                  const config =  await $currentDataService.getCurrentConfiguration()
-                  const enabled =  config.data.data['log.level'] === 'debug'
+                  const config = await $currentDataService.getCurrentConfiguration()
+                  const enabled = config.data.data['log.level'] === 'debug'
                   return enabled
                 } catch (err) {
                   return false

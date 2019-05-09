@@ -198,7 +198,7 @@ define([
     }
 
     /**
-     * 
+     *
      * Backs to config assessment
      */
     backToConfAssess() {

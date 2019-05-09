@@ -16,15 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
-], function(
-  app,
-  ColumnChart,
-  PieChart,
-  AreaChart,
-  Table,
-  TimePicker,
-) {
+  '../../../services/visualizations/inputs/time-picker'
+], function(app, ColumnChart, PieChart, AreaChart, Table, TimePicker) {
   'use strict'
 
   class overviewSCA {
@@ -79,19 +72,18 @@ define([
       this.scope.expandArray = [false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
 
-
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
         '#timePicker',
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -99,12 +91,11 @@ define([
       this.vizz = [
         /**
          * Visualizations
-         */ 
+         */
+
         new PieChart(
           'resultDistribution',
-          `${
-            this.filters
-          }  | stats count by data.sca.check.result `,
+          `${this.filters}  | stats count by data.sca.check.result `,
           'resultDistribution',
           this.scope
         ),
@@ -132,11 +123,9 @@ define([
           'top5Failed',
           this.scope
         ),
-        new AreaChart( 
+        new AreaChart(
           'alertLevelEvolution',
-          `${
-            this.filters
-          } | timechart span=1h count by rule.level`,
+          `${this.filters} | timechart span=1h count by rule.level`,
           'alertLevelEvolution',
           this.scope
         ),
@@ -302,7 +291,6 @@ define([
         }
       })
     }
-
   }
   app.controller('overviewSCACtrl', overviewSCA)
 })
