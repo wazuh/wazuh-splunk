@@ -32,8 +32,8 @@
     font-weight: 600;
 }
 
-.wzXmlEditorBody, .wzXmlEditorBody .CodeMirror{
-    height: calc(100% - 25px);
+.wzXmlEditorBody .CodeMirror {
+    height: 100%;
 } 
 
 .wzXmlEditorDivContent {

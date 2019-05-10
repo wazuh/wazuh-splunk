@@ -231,6 +231,7 @@ define([
               )
             }
           }
+          dynamicHeight()
           return
         }
         $scope.xmlCodeBox = CodeMirror.fromTextArea(
@@ -271,9 +272,13 @@ define([
         const dynamicHeight = () => {
           setTimeout(function () {
             const editorContainer = $('.wzXmlEditor')
+            const headerContainer = $('#wzXmlEditorHeader')
             const windows = $(window).height()
             const offsetTop = getPosition(editorContainer[0]).y
-            editorContainer.height(windows - (offsetTop + 30))
+            editorContainer.height(windows - (offsetTop + 25))
+            $('.wzXmlEditorBody').css({
+              height: 'calc(100% - ' + (headerContainer.height()) + 'px)'
+            })
           }, 1)
         }
 
