@@ -89,6 +89,20 @@ class report(controllers.BaseController):
         for img in images:
             os.remove(img['path'])
 
+
+    def getString(self, value):
+        result = ""
+        if type(value) is list:
+            for i in value:
+                result += str(i) + ","
+            result = result[:len(result)-1]
+        elif value:
+            result = str(value)
+        else:
+            result = "-"
+
+        return result
+
     @expose_page(must_login=False, methods=['POST'])
     def generateConfigurationReport(self, **kwargs):
         """Generate configuration PDF report.
@@ -113,6 +127,7 @@ class report(controllers.BaseController):
             section_title = data['sectionTitle']
             # Print agent info
             agent_data = data['isAgents']
+            first_page = True
             # Add title and filters 
             pdf.alias_nb_pages()
             pdf.add_page()
@@ -126,19 +141,22 @@ class report(controllers.BaseController):
             pdf.set_font('Arial', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(1)
-            self.logger.info(data)
 
             if agent_data:
                 self.print_agent_info(agent_data, pdf)
 
-
-
             pdf.ln(5)
             pdf.set_draw_color(200,200,200)
+            wmodules_conf_data = []
             for n in data['data']['configurations']:
                 try:
                     #Set color and print configuration tittle
                     pdf.set_font('Arial', '', 18)
+                    if first_page:
+                        first_page = False
+                    else:
+                        pdf.add_page()
+                        pdf.ln(25)
                     pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
                     pdf.set_margins(12, 0, 12)
                     pdf.ln(3)
@@ -147,6 +165,9 @@ class report(controllers.BaseController):
                         pdf.set_font('Arial', '', 12)
                         pdf.set_fill_color(75, 179, 204)
                         pdf.set_text_color(255,255,255)
+                        if(pdf.get_y() > 250):
+                            pdf.add_page()
+                            pdf.ln(25)
                         pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
                         # rows
                         pdf.set_text_color(91, 91, 91)
@@ -162,56 +183,151 @@ class report(controllers.BaseController):
                                 self.logger.info(config_request)
                                 conf_data = self.miapi.exec_request(config_request)
                                 conf_data = jsonbak.loads(conf_data)
-                                self.logger.info("------")
-                                if type(conf_data['data'][configuration]) is dict:
+                                
+                                if 'data' not in conf_data or not conf_data['data'] or not conf_data['data'][configuration] :
+                                    pdf.set_fill_color(75, 179, 204)
+                                    pdf.set_text_color(122,122,122)
+                                    pdf.set_draw_color(155, 155, 155)
+                                   
+                                    pdf.ln(5)
+                                    pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                                elif type(conf_data['data'][configuration]) is list:
+                                    if configuration == 'localfile':
+                                        # The localfile list contains both syslog and commands so we divide it to show 2 different tables (syslog and commands)
+                                        syslog_conf = []
+                                        command_conf = [] 
+                                        for currentConf in conf_data['data'][configuration]:
+                                            if 'logformat' in currentConf and currentConf['logformat'] == 'syslog':
+                                                syslog_conf.append(currentConf)
+                                            elif 'logformat' in currentConf and currentConf['logformat'] == 'command':
+                                                command_conf.append(currentConf)
+                                            elif 'logformat' in currentConf and currentConf['logformat'] == 'full_command':
+                                                command_conf.append(currentConf)
+
+                                        # Syslog table
+                                        if syslog_conf:
+                                            pdf.set_fill_color(75, 179, 204)
+                                            pdf.set_text_color(122,122,122)
+                                            pdf.set_draw_color(155, 155, 155)
+                                            pdf.cell(0, 5, txt = "Logs", border = 'B', align = '', fill = False, link = '')
+                                            pdf.ln(5)
+                                            pdf.set_font('Arial', '', 10)
+                                            pdf.set_fill_color(75, 179, 204)
+                                            pdf.set_text_color(44,44,44)
+                                            pdf.set_draw_color(155, 155, 155)
+                                            keys_amount = len(syslog_conf[0].keys())
+                                            for key in syslog_conf[0]: #Header
+                                                pdf.cell(185/keys_amount, 5, txt = key, border = '', align = '', fill = True, link = '')
+                                            pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
+                                            pdf.ln(5)
+                                            pdf.set_text_color(150, 150, 150)
+                                            pdf.set_draw_color(75, 179, 204)
+                                            pdf.set_font('Arial', '', 8)
+                                            for row in syslog_conf: # Rows
+                                                for key,value in row.iteritems():
+                                                    pdf.cell(185/keys_amount, 5, txt = self.getString(value), border = 'B', align = '', ln = 0, fill = False, link = '')
+                                                pdf.cell(0, 5, txt = " ", border = 'B', align = '', ln = 0, fill = False, link = '')
+                                                pdf.ln(5)
+                                        # Commands table
+                                        if command_conf:
+                                            pdf.set_fill_color(75, 179, 204)
+                                            pdf.set_text_color(122,122,122)
+                                            pdf.set_draw_color(155, 155, 155)
+                                            pdf.cell(0, 5, txt = "Commands", border = 'B', align = '', fill = False, link = '')
+                                            pdf.ln(5)
+                                            pdf.set_font('Arial', '', 10)
+                                            pdf.set_fill_color(75, 179, 204)
+                                            pdf.set_text_color(44,44,44)
+                                            pdf.set_draw_color(155, 155, 155)
+                                            keys_amount = len(command_conf[0].keys())
+                                            for key in command_conf[0]: #Header
+                                                pdf.cell(185/keys_amount, 5, txt = key, border = '', align = '', fill = True, link = '')
+                                            pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
+                                            pdf.ln(5)
+                                            pdf.set_text_color(150, 150, 150)
+                                            pdf.set_draw_color(75, 179, 204)
+                                            pdf.set_font('Arial', '', 8)
+                                            for row in command_conf: # Rows
+                                                for key,value in row.iteritems():
+                                                    pdf.cell(185/keys_amount, 5, txt = self.getString(value), border = 'B', align = '', ln = 0, fill = False, link = '')
+                                                pdf.cell(0, 5, txt = " ", border = 'B', align = '', ln = 0, fill = False, link = '')
+                                                pdf.ln(5)
+                                elif type(conf_data['data'][configuration]) is dict:
                                     customTable = []
                                     for key,value in conf_data['data'][configuration].iteritems():
                                         if type(value) is not list and type(value) is not dict:
                                             pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
+                                            if 'labels' in currentSection and key in currentSection['labels']:
+                                                pdf.cell(100, 5, txt = currentSection['labels'][key] , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+                                            else:
+                                                pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+                                            pdf.cell(0, 5, txt = self.getString(value), border = 'B', ln = 1, align = '', fill = False, link = '')       
+                                            if(pdf.get_y() > 250):
+                                                pdf.add_page()
+                                                pdf.ln(25)
+                                        elif type(value) is list and value and type(value[0]) is not dict:
+                                            # shows all [value] in one line, key is shown once
+                                            pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
                                             pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
-                                            pdf.cell(0, 5, txt = str(value), border = 'B', ln = 1, align = '', fill = False, link = '')
+                                            pdf.cell(0, 5, txt = self.getString(value), border = 'B', align = '', ln = 1, fill = False, link = '')
+
+                                            #shows a row per key - [value],  key is shown multiple times
+                                            #for value2 in value:
+                                            #    pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
+                                            #    pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+                                            #    pdf.cell(0, 5, txt = self.getString(value2), border = 'B', align = '', ln = 1, fill = False, link = '')
                                         else:
                                             customTable.append({key:value})
                                     if customTable:
                                         for table in customTable:
-                                            for key,value in table.iteritems():
-                                                pdf.set_font('Arial', '', 10)
-                                                pdf.ln(5)
-                                                pdf.set_fill_color(75, 179, 204)
-                                                pdf.set_text_color(255,255,255)
-                                                pdf.set_draw_color(155, 155, 155)
-                                                pdf.cell(0, 5, txt = "Server settings", border = 'B', align = '', fill = True, link = '')
-                                                pdf.ln(5)
-                                                pdf.set_font('Arial', '', 9)
-                                                pdf.set_draw_color(75, 179, 204)
-                                                keys_amount = len(value[0].keys())
-                                                self.logger.error(keys_amount)
-                                                for key in value[0]: #Header
-                                                    pdf.cell(185/keys_amount, 5, txt = key, border = '', align = '', fill = True, link = '')
-                                                pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
-                                                pdf.ln(5)
-                                                pdf.set_text_color(150, 150, 150)
-                                                pdf.set_draw_color(75, 179, 204)
-                                                pdf.set_font('Arial', '', 8)
-                                                for row in value: # rows
-                                                    for key2,value2 in row.iteritems():
-                                                        pdf.cell(185/keys_amount, 5, txt = str(value2), border = 'B', align = '', ln = 0, fill = False, link = '')
+                                            if type(table) is dict:
+                                                for key,value in table.iteritems():
+                                                    pdf.set_font('Arial', '', 10)
                                                     pdf.ln(5)
+                                                    pdf.set_fill_color(75, 179, 204)
+                                                    pdf.set_text_color(44,44,44)
+                                                    pdf.set_draw_color(155, 155, 155)
+                                                    pdf.cell(0, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                                                    pdf.ln(5)
+                                                    pdf.set_text_color(255,255,255)
+                                                    pdf.set_font('Arial', '', 9)
+                                                    pdf.set_draw_color(75, 179, 204)
+                                                    keys_amount = len(value[0].keys())
+                                                    for key in value[0]: #Header
+                                                        pdf.cell(185/keys_amount, 5, txt = key, border = '', align = '', fill = True, link = '')
+                                                    pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
+                                                    pdf.ln(5)
+                                                    pdf.set_text_color(150, 150, 150)
+                                                    pdf.set_draw_color(75, 179, 204)
+                                                    pdf.set_font('Arial', '', 8)
+                                                    for row in value: # rows
+                                                        for key2,value2 in row.iteritems():
+                                                            pdf.cell(185/keys_amount, 5, txt = self.getString(value2), border = 'B', align = '', ln = 0, fill = False, link = '')
+                                                        pdf.ln(5)
 
                         if 'wodle' in currentSection:
                             currentWodle = currentSection['wodle']
-                            config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+'wmodules'+'/'+'wmodules' , 'id':str(data['apiId']['_key'])}
-                            self.logger.info(config_request)
-                            conf_data = self.miapi.exec_request(config_request)
-                            conf_data = jsonbak.loads(conf_data)
-                            self.logger.info(conf_data)
-                            for key,value in conf_data['data'][currentWodle].iteritems():
-                                if type(value) is not list and type(value) is not dict:
-                                    pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-                                    pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
-                                    pdf.cell(0, 5, txt = str(value), border = 'B', ln = 1, align = '', fill = False, link = '')
+                            if not wmodules_conf_data: # ask for all wodles just once
+                                config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+'wmodules'+'/'+'wmodules' , 'id':str(data['apiId']['_key'])}
+                                self.logger.info(config_request)
+                                conf_data = self.miapi.exec_request(config_request)
+                                wmodules_conf_data = jsonbak.loads(conf_data)
+
+                            currentWodle_data = next(item for item in wmodules_conf_data['data']['wmodules'] if currentWodle in item) # finds the current wodle in the list of wodles
+                            if not currentWodle_data and currentWodle not in currentWodle_data:
+                                pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                            else:
+                                pdf.set_text_color(150, 150, 150)
+                                for key,value in currentWodle_data[currentWodle].iteritems():
+                                    if type(value) is not list and type(value) is not dict:
+                                        pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
+                                        pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+                                        pdf.cell(0, 5, txt = self.getString(value), border = 'B', ln = 1, align = '', fill = False, link = '')
+                                        if(pdf.get_y() > 250):
+                                            pdf.add_page()
+                                            pdf.ln(25)
                             pdf.ln(5)
-                    pdf.ln(15)
+                        pdf.ln(5) # space between configuracion tables
                 except Exception as e:
                     self.logger.error(e)
             pdf_name = "prueba"

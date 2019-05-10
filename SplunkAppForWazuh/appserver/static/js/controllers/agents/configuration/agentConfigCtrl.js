@@ -176,7 +176,10 @@ define(['../../module', '../../../utils/config-handler'], function(
               {
                 subtitle: 'Global configuration',
                 desc: 'Logging settings that apply to the agent',
-                config: [{ component: 'com', configuration: 'logging' }]
+                config: [{ component: 'com', configuration: 'logging' }],
+                labels : {
+                  plain : "Write internal logs in plain text",
+                  json  : "Write Wazuh internal logs in JSON format"}
               },
               {
                 subtitle: 'Communication',
@@ -236,14 +239,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Gather relevant information about system OS, hardware, networking and packages',
                 wodle: 'syscollector'
-              },
-              {
-                subtitle: 'Active response',
-                desc: 'Active threat addressing by inmmediate response',
-                config: [
-                  { component: 'analysis', configuration: 'command' },
-                  { component: 'analysis', configuration: 'active_response' }
-                ]
               },
               {
                 subtitle: 'Active response',
