@@ -47,12 +47,12 @@ define(['../module'], function (directives) {
 
         const checkLastState = (prefix, state) => {
           try {
-            if (
-              ($navigationService.getLastState() &&
-                $navigationService.getLastState() !== '' &&
-                $navigationService.getLastState().includes(prefix)) ||
-              $navigationService.getLastState().includes(state)
-            ) {
+            const lastState = $navigationService.getLastState()
+            if ((
+              lastState &&
+              lastState !== '' &&
+              lastState.includes(prefix)
+            ) || lastState.includes(state)) {
               return true
             } else {
               return false
