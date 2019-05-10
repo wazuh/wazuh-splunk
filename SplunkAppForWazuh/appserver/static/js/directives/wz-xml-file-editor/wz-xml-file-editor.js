@@ -22,9 +22,9 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function(app, CodeMirror) {
+], function (app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function(BASE_URL) {
+  app.directive('wzXmlFileEditor', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -46,7 +46,7 @@ define([
          * evaluates regular expressions.
          * Alternative using split + join, same result.
          */
-        String.prototype.xmlReplace = function(str, newstr) {
+        String.prototype.xmlReplace = function (str, newstr) {
           return this.split(str).join(newstr)
         }
         let firstTime = true
@@ -152,10 +152,10 @@ define([
             var type = single
               ? 'single'
               : closing
-              ? 'closing'
-              : opening
-              ? 'opening'
-              : 'other'
+                ? 'closing'
+                : opening
+                  ? 'opening'
+                  : 'other'
             var fromTo = lastType + '->' + type
             lastType = type
             var padding = ''
@@ -205,7 +205,7 @@ define([
                   if (params.node) {
                     msg = `Succes. Node(${
                       params.node
-                    }) configuration has been updated.`
+                      }) configuration has been updated.`
                   } else {
                     msg = 'Succes. Manager configuration has been updated.'
                   }
@@ -253,8 +253,34 @@ define([
           $scope.$emit('performRestart', {})
         }
 
+        const getPosition = element => {
+          var xPosition = 0
+          var yPosition = 0
+
+          while (element) {
+            xPosition +=
+              element.offsetLeft - element.scrollLeft + element.clientLeft
+            yPosition +=
+              element.offsetTop - element.scrollTop + element.clientTop
+            element = element.offsetParent
+          }
+
+          return { x: xPosition, y: yPosition }
+        }
+
+        const dynamicHeight = () => {
+          setTimeout(function () {
+            const editorContainer = $('.wzXmlEditor')
+            const windows = $(window).height()
+            const offsetTop = getPosition(editorContainer[0]).y
+            editorContainer.height(windows - (offsetTop + 30))
+          }, 1)
+        }
+
         const init = (data = false) => {
           try {
+            $('.wzXmlEditor').height(0)
+            dynamicHeight()
             $scope.xmlCodeBox.setValue(autoFormat(data || $scope.data))
             firstTime = false
             setTimeout(() => {
@@ -285,6 +311,12 @@ define([
         })
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
+
+
+        $(window).on('resize', function () {
+          dynamicHeight()
+        })
+
       },
       templateUrl:
         BASE_URL +
