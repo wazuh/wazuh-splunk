@@ -1,0 +1,39 @@
+<md-content flex layout="column" layout-align="end">
+  <div layout="row" class="wz-height-35">
+    <div class='wz-breadcrumb-margin'>
+      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+      <span>/ {{state}} </span>
+    </div>
+    <div flex></div>
+    <!-- Report button -->
+    <div style="display:flex; padding-right: 10px;">
+      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
+        ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
+        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
+        <md-tooltip md-direction="left" class="wz-tooltip">
+          Generate report
+        </md-tooltip>
+      </button>
+      <wz-discover breadcrumbs="{section: 'Overview', subSection: 'General', ref: 'overview'}"></wz-discover>
+    </div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+
+  <!-- Security information management navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'general'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-sim.general" name="general">Security
+      events</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-sim.ow-fim" name="fim">Integrity
+      monitoring
+    </md-nav-item>
+    <md-nav-item ng-if="awsExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-sim.ow-aws" name="aws">Amazon AWS</md-nav-item>
+  </md-nav-bar>
+
+  <!-- End navigation bar -->
+  <div layout="column" layout-align="start stretch">
+    <div ui-view></div>
+  </div>
+
+  <!-- end document  -->
+</md-content>

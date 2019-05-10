@@ -1,9 +1,7 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
@@ -11,9 +9,7 @@ define([
 ], function(
   app,
   LinearChart,
-  ColumnChart,
   PieChart,
-  AreaChart,
   Table,
   TimePicker,
   SearchHandler,
@@ -31,7 +27,6 @@ define([
      * @param {*} $notificationService
      * @param {*} $requestService
      * @param {Object} pollingState
-     * @param {*} $reportingService
      * @param {*} $rootScope
      */
     constructor(
@@ -42,18 +37,13 @@ define([
       $notificationService,
       $requestService,
       pollingState,
-      $reportingService,
-      $rootScope,
-      reportingEnabled,
-      awsExtensionEnabled
+      $rootScope
     ) {
       this.currentDataService = $currentDataService
       this.rootScope = $rootScope
       this.filters = this.currentDataService.getSerializedFilters()
       this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled
-      this.reportingService = $reportingService
-      this.scope.awsExtensionEnabled = awsExtensionEnabled
+      this.scope.state = 'General'
       this.apiReq = $requestService.apiReq
       this.tableResults = {}
       this.timePicker = new TimePicker(

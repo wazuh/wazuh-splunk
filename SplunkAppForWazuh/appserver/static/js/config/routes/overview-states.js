@@ -1,17 +1,15 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
   }
   module.constant('BASE_URL', module.paths.root)
   module.config([
-    '$mdIconProvider',
     '$locationProvider',
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function(
-      $mdIconProvider,
+    function (
       $locationProvider,
       $stateProvider,
       $mdThemingProvider,
@@ -40,7 +38,7 @@ define(['../module'], function(module) {
                 try {
                   const result = await $requestService.apiReq('/agents/summary')
                   return result
-                } catch (err) {} //eslint-disable-line
+                } catch (err) { } //eslint-disable-line
               }
             ],
             extensions: [
@@ -56,31 +54,18 @@ define(['../module'], function(module) {
           }
         })
 
-        // Overview - General
-        .state('ow-general', {
+        //Overview - Security Information Management
+        .state('ow-sim', {
+          abstract: true,
           templateUrl:
             BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/overview/general/overview-general.html',
+            'static/app/SplunkAppForWazuh/js/controllers/overview/sim/overview-security-information-management.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-general')
+            $navigationService.storeRoute('ow-sim')
           },
-          controller: 'overviewGeneralCtrl',
+          controller: 'overviewSimCtrl',
+          controllerAs: 'owSim',
           resolve: {
-            pollingState: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const result = await $requestService.httpReq(
-                    `GET`,
-                    `/manager/polling_state`
-                  )
-                  return result
-                } catch (err) {
-                  $state.go('settings.api')
-                }
-              }
-            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -97,6 +82,36 @@ define(['../module'], function(module) {
                 }
               }
             ]
+          }
+        }
+        )
+        // Overview - General
+        .state('ow-sim.general', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/general/overview-general.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-sim.general')
+          },
+          controller: 'overviewGeneralCtrl',
+          controllerAs: 'owSimGeneral',
+          resolve: {
+            pollingState: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const result = await $requestService.httpReq(
+                    `GET`,
+                    `/manager/polling_state`
+                  )
+                  return result
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ]
+
           }
         })
         // Overview - policy monitoring

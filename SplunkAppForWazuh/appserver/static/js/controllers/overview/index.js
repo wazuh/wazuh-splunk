@@ -1,4 +1,5 @@
 define([
+  './sim/overviewSimCtrl',
   './general/overviewGeneralCtrl',
   './welcome/overviewWelcomeCtrl',
   './audit/overviewAuditCtrl',
