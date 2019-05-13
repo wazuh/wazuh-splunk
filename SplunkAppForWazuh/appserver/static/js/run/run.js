@@ -74,17 +74,14 @@ define(['./module'], function(module) {
       $transitions.onStart({}, async trans => {
         const to = trans.to().name
         const from = trans.from().name
-        console.log(`TO: ${to} FROM: ${from}`)
         if (
           to.startsWith('ow-') && from.startsWith('ow-') ||
           to.startsWith('mg-') && from.startsWith('mg-') ||
           to.startsWith('ag-') && from.startsWith('ag-') ||
           to.startsWith('settings.') && from.startsWith('settings.') 
         ){
-          console.log("between states")
           $rootScope.$broadcast('loadingContent', { status: true })  
         } else {
-          console.log("differetn")
           $rootScope.$broadcast('loading', { status: true })  
         }
         if (to !== from && from !== 'discover') {
