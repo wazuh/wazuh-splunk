@@ -35,8 +35,7 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel,
-        $notificationService = null,
+        $urlTokenModel
       ) {
         this.scope = $scope
         this.reportingService = $reportingService
@@ -49,7 +48,6 @@ define([
           '#timePicker',
           $urlTokenModel.handleValueChange
         )
-        this.notification = $notificationService
         this.tableResults = {}
         this.initialize()
       }
@@ -84,9 +82,9 @@ define([
               this.scope.loadingVizz = false
               try {
                 // There's not always metrics to set.
-                this.setReportMetrics()  
-              } catch (error) {}
-              
+                this.setReportMetrics()
+              } catch (error) { }
+
             } else {
               this.vizz.map(v => {
                 if (v.constructor.name === 'RawTableData') {
@@ -115,7 +113,7 @@ define([
             // There's not always a dropdown.
             try {
               this.dropdown.destroy()
-            } catch (error) {}
+            } catch (error) { }
           })
         } catch (error) {
           console.error('Error initializing OverviewMain: ', error)

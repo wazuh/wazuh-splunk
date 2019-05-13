@@ -44,12 +44,12 @@ define([
           $state,
           $currentDataService,
           $urlTokenModel,
-          $notificationService
         )
         this.scope.reportingEnabled = reportingEnabled
         this.currentDataService.addFilter(
           `{"rule.groups{}":"amazon", "implicit":true}`
         )
+        this.notification = $notificationService
 
         this.scope.expandArray = [
           false,
