@@ -30,96 +30,105 @@
     <md-nav-item ng-if="gdprExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-gdpr"
       name="gdpr">GDPR</md-nav-item>
   </md-nav-bar>
-  <!-- Filter bar -->
-  <wazuh-bar></wazuh-bar>
 
 
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+  <div ng-show="loadingContent">
+    <div class="loader-bar" ng-show="loadingContent">
+      <div class="loader"></div>
     </div>
   </div>
-  <div ng-show="!loadingVizz">
-    <!-- first row  -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-show='pciTabs'>
-        <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom>
-          <md-tab ng-repeat="tab in pciTabs" label="{{tab.title}}">
-            <div class="md-padding">
-              <span class="wz-headline-title">PCI-DSS Requirement: {{tab.title}}</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div layout="row" class="wz-padding-top-10 wz-line-height">
-                <div>{{tab.content}}</div>
+  <div ng-show="!loadingContent">
+    <!-- Filter bar -->
+    <wazuh-bar></wazuh-bar>
+
+
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div ng-show="!loadingVizz">
+      <!-- first row  -->
+      <div layout="row" layout-align="center stretch">
+        <md-card flex class="wz-md-card" ng-show='pciTabs'>
+          <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom>
+            <md-tab ng-repeat="tab in pciTabs" label="{{tab.title}}">
+              <div class="md-padding">
+                <span class="wz-headline-title">PCI-DSS Requirement: {{tab.title}}</span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div layout="row" class="wz-padding-top-10 wz-line-height">
+                  <div>{{tab.content}}</div>
+                </div>
               </div>
-            </div>
-          </md-tab>
-        </md-tabs>
-      </md-card>
-    </div>
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">PCI Requirements
-            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'pciReqVizz')">
-              <wz-svg icon="expand"></wz-svg>
+            </md-tab>
+          </md-tabs>
+        </md-card>
+      </div>
+      <div layout="row" layout-align="center stretch">
+        <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">PCI Requirements
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'pciReqVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='pciReqVizz'></div>
-        </md-card-content>
-      </md-card>
-      <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 10 Agents by alerts number
-            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'agentsVizz')">
-              <wz-svg icon="expand"></wz-svg>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='pciReqVizz'></div>
+          </md-card-content>
+        </md-card>
+        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top 10 Agents by alerts number
+              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'agentsVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='agentsVizz'></div>
-        </md-card-content>
-      </md-card>
-    </div>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='agentsVizz'></div>
+          </md-card-content>
+        </md-card>
+      </div>
 
-    <div layaout="row">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top requirements over time
-            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'evoVizz')">
-              <wz-svg icon="expand"></wz-svg>
-            </span> </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='evoVizz'></div>
-        </md-card-content>
-      </md-card>
-    </div>
+      <div layaout="row">
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top requirements over time
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'evoVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span> </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='evoVizz'></div>
+          </md-card-content>
+        </md-card>
+      </div>
 
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Requirements by agent
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'requirementsByAgentVizz')">
-              <wz-svg icon="expand"></wz-svg>
+      <div layout="row" layout-align="center stretch">
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Requirements by agent
+              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'requirementsByAgentVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='requirementsByAgentVizz'></div>
-        </md-card-content>
-      </md-card>
-    </div>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='requirementsByAgentVizz'></div>
+          </md-card-content>
+        </md-card>
+      </div>
 
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts summary
-            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummaryViz')">
-              <wz-svg icon="expand"></wz-svg>
+      <div layout="row" layout-align="center stretch">
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Alerts summary
+              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummaryViz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertsSummaryViz'></div>
-        </md-card-content>
-      </md-card>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='alertsSummaryViz'></div>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
   </div>
 </md-content>
