@@ -87,7 +87,7 @@
 
   </div>
 
-  <div class="md-padding md-padding-top-10" ng-if="fetchedXML" style="height: calc(100vh - 245px)">
+  <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
     <wz-xml-file-editor style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode"
       valid-fn='xmlIsValid(valid)'>
       <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"

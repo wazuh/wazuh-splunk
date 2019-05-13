@@ -193,7 +193,7 @@
         </button>
 
       </div>
-      <div class="wzXmlEditorDivContent wz-margin-left-10" style="height: calc(100vh - 280px);" ng-if="fetchedXML">
+      <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
         <wz-xml-file-editor style="height: inherit;" file-name='decoder' data="fetchedXML"
           target-name="currentDecoder.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
         </wz-xml-file-editor>
