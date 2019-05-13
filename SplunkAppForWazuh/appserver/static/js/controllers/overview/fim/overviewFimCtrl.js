@@ -173,6 +173,11 @@ define([
             this.scope.loadingReporting = data.status
           })
 
+          this.scope.$on('loadingContent', (event, data) => {
+            console.log("FIM: ", data)
+            this.scope.loadingContent = data.status
+          })
+
         } catch (error) {
           console.error('error on init ', error)
         }

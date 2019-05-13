@@ -33,101 +33,110 @@
       name="aws">Amazon AWS</md-nav-item>
   </md-nav-bar>
 
-  <!-- Wazuh filters bar -->
-  <wazuh-bar></wazuh-bar>
-
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+  <div ng-show="loadingContent">
+    <div class="loader-bar" ng-show="loadingContent">
+      <div class="loader"></div>
     </div>
   </div>
-  <div ng-show="!loadingVizz">
-    <!-- First row -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts by action over time
-            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsByActionOverTime')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="alertsByActionOverTime" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
+  <div ng-show="!loadingContent">
+    <!-- Wazuh filters bar -->
+    <wazuh-bar></wazuh-bar>
+
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      </div>
     </div>
-
-    <!-- Second row -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 agents
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'top5Agents')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="top5Agents" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-      <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Events summary
-            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'eventsSummary')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="eventsSummary" class="dashboard-element single" style="width: 100%"></div>
-        </md-card-content>
-      </md-card>
-    </div>
-
-
-    <!-- Third row -->
-    <div layout="row" layout-align="center stretch">
-      <div flex='33' layout-align="center stretch">
-        <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+    <div ng-show="!loadingVizz">
+      <!-- First row -->
+      <div layout="row" layout-align="center stretch">
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Rule distribution
-              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'ruleDistribution')">
+            <span class="wz-headline-title">Alerts by action over time
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsByActionOverTime')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="ruleDistribution" class="dashboard-element single" style="width: 100%"></div>
+            <div id="alertsByActionOverTime" class="dashboard-element single" style="width: 100%"></div>
           </md-card-content>
         </md-card>
       </div>
 
-      <div flex='33' layout-align="center stretch">
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+      <!-- Second row -->
+      <div layout="row" layout-align="center stretch">
+        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top actions
-              <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topActions')">
+            <span class="wz-headline-title">Top 5 agents
+              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'top5Agents')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="topActions" class="dashboard-element single" style="width: 100%"></div>
+            <div id="top5Agents" class="dashboard-element single" style="width: 100%"></div>
           </md-card-content>
         </md-card>
-      </div>
-
-      <div flex='33' layout-align="center stretch">
-        <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+        <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top 5 users
-              <span class="wz-text-link" style="float:right;" ng-click="expand(6,'topUsers')">
+            <span class="wz-headline-title">Events summary
+              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'eventsSummary')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="topUsers" class="dashboard-element single" style="width: 100%"></div>
+            <div id="eventsSummary" class="dashboard-element single" style="width: 100%"></div>
           </md-card-content>
         </md-card>
       </div>
 
+
+      <!-- Third row -->
+      <div layout="row" layout-align="center stretch">
+        <div flex='33' layout-align="center stretch">
+          <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Rule distribution
+                <span class="wz-text-link" style="float:right;" ng-click="expand(5,'ruleDistribution')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id="ruleDistribution" class="dashboard-element single" style="width: 100%"></div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div flex='33' layout-align="center stretch">
+          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Top actions
+                <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topActions')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id="topActions" class="dashboard-element single" style="width: 100%"></div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div flex='33' layout-align="center stretch">
+          <md-card class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Top 5 users
+                <span class="wz-text-link" style="float:right;" ng-click="expand(6,'topUsers')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id="topUsers" class="dashboard-element single" style="width: 100%"></div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+      </div>
     </div>
   </div>
+
+  <!-- end document  -->
 </md-content>

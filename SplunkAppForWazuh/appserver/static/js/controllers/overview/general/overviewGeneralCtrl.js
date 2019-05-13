@@ -292,6 +292,12 @@ define([
           }
           if (!this.scope.$$phase) this.scope.$digest()
         })
+
+        this.scope.$on('loadingContent', (event, data) => {
+          console.log("GENERAL: ", data)
+          this.scope.loadingContent = data.status
+        })
+
       } catch (error) {
         console.error('error on init ', error)
       }

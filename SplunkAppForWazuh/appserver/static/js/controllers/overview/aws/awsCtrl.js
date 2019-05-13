@@ -223,8 +223,14 @@ define([
               })
               this.scope.loadingVizz = true
             }
-            if (!this.scope.$$phase) this.scope.$digest()
+            this.scope.$applyAsync()
           })
+
+          this.scope.$on('loadingContent', (event, data) => {
+            console.log("AWS: ", data)
+            this.scope.loadingContent = data.status
+          })
+
         } catch (error) {
           console.error('error on init ', error)
         }
