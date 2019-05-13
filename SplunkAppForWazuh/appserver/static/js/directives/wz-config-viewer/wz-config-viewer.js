@@ -87,7 +87,34 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         })
       }
 
-      const init = () => {}
+      const getPosition = element => {
+        var xPosition = 0
+        var yPosition = 0
+
+        while (element) {
+          xPosition +=
+            element.offsetLeft - element.scrollLeft + element.clientLeft
+          yPosition +=
+            element.offsetTop - element.scrollTop + element.clientTop
+          element = element.offsetParent
+        }
+
+        return { x: xPosition, y: yPosition }
+      }
+
+      const dynamicHeight = () => {
+        setTimeout(function () {
+          const editorContainer = $('.wzConfigViewer')
+          const windows = $(window).height()
+          const offsetTop = getPosition(editorContainer[0]).y
+          editorContainer.height(windows - (offsetTop + 30))
+        }, 1)
+      }
+
+      const init = () => {
+        $('.wzConfigViewer').height(0)
+        dynamicHeight()
+      }
 
       const refreshJsonBox = json => {
         $scope.jsoncontent = json
@@ -99,6 +126,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setTimeout(function() {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()
+            window.dispatchEvent(new Event('resize'))
           }, 300)
         }
       }
@@ -113,6 +141,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setTimeout(function() {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
+            window.dispatchEvent(new Event('resize'))
           }, 300)
         }
       }
@@ -127,6 +156,10 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       $scope.$on('XMLContentReady', (ev, params) => {
         refreshXmlBox(params.data)
+      })
+
+      $(window).on('resize', function () {
+        dynamicHeight()
       })
 
       init()
