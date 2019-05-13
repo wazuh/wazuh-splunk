@@ -14,12 +14,14 @@ define([
        * @param {*} reportingEnabled
        * @param {*} awsExtensionEnabled
        * @param {*} $reportingService
+       * @param {*} $notificationService
        */
-      constructor($scope, reportingEnabled, awsExtensionEnabled, $reportingService) {
+      constructor($scope, reportingEnabled, awsExtensionEnabled, $reportingService, $notificationService) {
         this.scope = $scope
         this.scope.reportingEnabled = reportingEnabled
         this.scope.awsExtensionEnabled = awsExtensionEnabled
         this.reportingService = $reportingService
+        this.notification = $notificationService
       }
 
       /**

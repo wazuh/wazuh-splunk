@@ -24,7 +24,6 @@ define([
      * @param {*} $scope
      * @param {*} $currentDataService
      * @param {*} $state
-     * @param {*} $notificationService
      * @param {*} $requestService
      * @param {Object} pollingState
      * @param {*} $rootScope
@@ -34,7 +33,6 @@ define([
       $scope,
       $currentDataService,
       $state,
-      $notificationService,
       $requestService,
       pollingState,
       $rootScope
@@ -64,7 +62,7 @@ define([
         console.error('e', error)
       }
 
-      this.notification = $notificationService
+      
 
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()

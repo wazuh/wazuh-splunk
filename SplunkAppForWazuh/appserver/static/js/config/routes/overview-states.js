@@ -86,15 +86,16 @@ define(['../module'], function (module) {
         }
         )
         // Overview - General
-        .state('ow-sim.general', {
+        .state('ow-general', {
+          parent: 'ow-sim',
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/general/overview-general.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('ow-sim.general')
+            $navigationService.storeRoute('ow-general')
           },
           controller: 'overviewGeneralCtrl',
-          controllerAs: 'owSimGeneral',
+          controllerAs: 'owGeneral',
           resolve: {
             pollingState: [
               '$requestService',
