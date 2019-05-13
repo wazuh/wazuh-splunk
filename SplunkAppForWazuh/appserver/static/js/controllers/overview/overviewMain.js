@@ -23,12 +23,10 @@ define([
       /**
        * Class OverviewMain
        * @param {*} $scope
-       * @param {*} $notificationService
        * @param {*} $reportingService
        * @param {*} $state
        * @param {*} $currentDataService
        * @param {*} $urlTokenModel
-       * @param {*} $notificationService
        */
       constructor(
         $scope,
@@ -108,6 +106,7 @@ define([
           * On controller destroy
           */
           this.scope.$on('$destroy', () => {
+            this.tableResults = {}
             this.timePicker.destroy()
             this.vizz.map(vizz => vizz.destroy())
             // There's not always a dropdown.

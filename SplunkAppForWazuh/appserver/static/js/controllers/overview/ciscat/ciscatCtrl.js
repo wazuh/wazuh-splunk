@@ -187,19 +187,6 @@ define([
             'Alerts Summary'
           )
         ]
-
-        /**
-         * Generates report
-         */
-        this.scope.startVis2Png = () =>
-          this.reportingService.startVis2Png(
-            'overview-ciscat',
-            'CIS-CAT',
-            this.filters,
-            ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
-            this.reportMetrics,
-            this.tableResults
-          )
       }
 
       /**
@@ -207,7 +194,19 @@ define([
        */
       $onInit() {
         try {
-          this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`) 
+          this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
+          /**
+          * Generates report
+          */
+          this.scope.startVis2Png = () =>
+            this.reportingService.startVis2Png(
+              'overview-ciscat',
+              'CIS-CAT',
+              this.filters,
+              ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
+              this.reportMetrics,
+              this.tableResults
+            )
         } catch (error) {
           console.error('Error onInit ', error)
         }
