@@ -5,7 +5,8 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/dropdown-input'
+  '../../../services/visualizations/inputs/dropdown-input',
+  '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
   DashboardMain,
@@ -13,7 +14,8 @@ define([
   ColumnChart,
   PieChart,
   Table,
-  Dropdown
+  Dropdown,
+  RawTableDataService
 ) {
     'use strict'
     class OverviewGDPR extends DashboardMain {
@@ -111,6 +113,16 @@ define([
             } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
             'alertsSummaryViz',
             this.scope
+          ),
+          new RawTableDataService(
+            'alertsSummaryVizTable',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+            'alertsSummaryVizTableToken',
+            '$result$',
+            this.scope,
+            'Alerts Summary'
           )
         ]
       }
