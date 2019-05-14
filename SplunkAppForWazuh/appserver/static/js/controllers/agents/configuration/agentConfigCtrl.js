@@ -209,7 +209,8 @@ define(['../../module', '../../../utils/config-handler'], function(
                 config: [
                   { component: 'syscheck', configuration: 'rootcheck' },
                   { component: 'wmodules', configuration: 'wmodules' }
-                ]
+                ],
+                wodle : 'sca'
               },
               {
                 subtitle: 'OpenSCAP',
@@ -266,7 +267,7 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Log analysis from text files, Windows events or syslog outputs',
                 config: [
-                  { component: 'logcollector', configuration: 'localfile' },
+                  { component: 'logcollector', configuration: 'localfile', filterBy : 'logformat' },
                   { component: 'logcollector', configuration: 'socket' }
                 ]
               },

@@ -94,8 +94,8 @@ class report(controllers.BaseController):
         result = ""
         if type(value) is list:
             for i in value:
-                result += str(i) + ",  "
-            result = result[:len(result)-1]
+                result += str(i) + ", "
+            result = result[:len(result)-2]
         elif value:
             result = str(value)
         else:
@@ -150,40 +150,43 @@ class report(controllers.BaseController):
         # Calculate the number of lines needed to show a row
         for key,value in row.iteritems():
             fullValue = self.getString(value)
-            if len(fullValue) > max_len:
+            totalCharacters = len(fullValue)
+            tmpValue = []
+            if totalCharacters > max_len:
                 tmpLines = (len(fullValue) / max_len) + 1
+                # Get the max amount of lines needed to print the full string
                 if tmpLines > num_lines:
                     num_lines = tmpLines
-
-
-        for key,value in row.iteritems():
-            fullValue = self.getString(value)
-            for i in range(1,num_lines+1):
-                self.logger.info("current customTABLE line: " + str(i))
-                tmpValue = "-"
-                if len(fullValue) < i*50:
-                    tmpValue = fullValue[(i-1)*50:]
-                else:
-                    tmpValue = fullValue[(i-1)*50:i*50]
+                for i in range(1,tmpLines+1):
+                    tmpValue.append(fullValue[(i-1)*max_len:i*max_len])
+            else:
+                tmpValue.append(value)
+            row[key] = tmpValue
+        
+        for i in range(0,num_lines):
+            for currentKey in row.keys():
                 useBorder = ''
-                if i == num_lines:
+                if i == num_lines-1:
                     useBorder = 'B'
-
-                pdf.cell(185/keys_amount, 4, txt = tmpValue, border = useBorder, align = '', ln = 0, fill = False, link = '')
-        pdf.ln(5)
-                if(pdf.get_y() > 250):
-                    pdf.add_page()
-                    pdf.ln(25)
+                if i < len(row[currentKey]):
+                    pdf.cell(185/keys_amount, 4, txt = str(row[currentKey][i]), border = useBorder, align = '', ln = 0, fill = False, link = '')
+                else:
+                    pdf.cell(185/keys_amount, 4, txt = " ", border = useBorder, align = '', ln = 0, fill = False, link = '')
+            pdf.ln(4)
+            if(pdf.get_y() > 250):
+                pdf.add_page()
+                pdf.ln(25)
 
 
                 
 
 
     def addTable(self, data, pdf):
-        try:  
+        try:
+            self.logger.info(data)
             customTables = []
             if not data: # if data is empty
-                pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                pdf.cell(0, 10, txt = "No configuration availableee" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
             elif type(data) is dict:
                 for key,value in data.iteritems():
                     if type(value) is not list and type(value) is not dict:
@@ -210,8 +213,6 @@ class report(controllers.BaseController):
 
             if customTables:
                 for extraTable in customTables:
-                    self.logger.info(str(extraTable))
-
                     for key,value in extraTable.iteritems():
                         pdf.set_font('Arial', '', 10)
                         pdf.ln(5)
@@ -234,9 +235,6 @@ class report(controllers.BaseController):
                             pdf.set_font('Arial', '', 8)
                             for row in value: # rows
                                 self.addCustomTableRow(row,keys_amount,pdf)
-                                for key2,value2 in row.iteritems():
-                                    pdf.cell(185/keys_amount, 5, txt = self.getString(value2), border = 'B', align = '', ln = 0, fill = False, link = '')
-                                pdf.ln(5)
                         elif type(value) is dict:
                             for currentTableKey, currentTableValue in value.iteritems():
                                 self.addTableRow(currentTableKey,currentTableValue,pdf)
@@ -245,6 +243,22 @@ class report(controllers.BaseController):
 
         except Exception as e:
             self.logger.error("error generating report table " + str(e))
+
+
+    def filterTableByField(self,field,data):
+        result = {}
+        currentFields = []
+
+        for currentData in data:
+            if field in currentData:
+                if currentData[field] in result:
+                    result[currentData[field]].append(currentData)
+                else:
+                    result[currentData[field]] = []
+                    result[currentData[field]].append(currentData)
+
+        return result
+
 
 
 
@@ -333,7 +347,11 @@ class report(controllers.BaseController):
                                 if not conf_data or 'data' not in conf_data or configuration not in conf_data['data']:
                                     pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                                 else:
-                                    self.addTable(conf_data['data'][configuration], pdf)
+                                    if 'filterBy' in currentConfig:
+                                        filteredTables = self.filterTableByField(currentConfig['filterBy'], conf_data['data'][configuration])
+                                        self.addTable(filteredTables, pdf)
+                                    else:
+                                        self.addTable(conf_data['data'][configuration], pdf)
 
                         if 'wodle' in currentSection:
                             currentWodle = currentSection['wodle']
@@ -518,6 +536,7 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 rows_count = 12 # Set row_count with 12 for the agent information size
                 table_keys = tables.keys()
+                self.logger.info(str(tables))
                 for key in table_keys:
                     if tables[key]:#Check if this table has information, if it has, process it
                         table_title = key
