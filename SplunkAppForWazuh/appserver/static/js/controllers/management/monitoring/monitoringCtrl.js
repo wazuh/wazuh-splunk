@@ -45,7 +45,6 @@ define([
 
       this.notification = $notificationService
       this.apiReq = $requestService.apiReq
-      this.filters = this.getFilters()
 
       this.vizz = [
         new LinearChart(
