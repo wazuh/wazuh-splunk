@@ -16,7 +16,7 @@ define([
   Dropdown
 ) {
     'use strict'
-    class OverviewGDPR extends DashboardMain{
+    class OverviewGDPR extends DashboardMain {
       /**
        * Class GDPR
        * @param {*} $urlTokenModel
@@ -65,6 +65,8 @@ define([
         })
 
         this.scope.expandArray = [false, false, false, false, false]
+
+        this.filters = this.getFilters()
 
         this.vizz = [
           /**

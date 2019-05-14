@@ -63,6 +63,8 @@ define([
 
         this.scope.expandArray = [false, false, false, false, false, false, false, false]
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Metrics

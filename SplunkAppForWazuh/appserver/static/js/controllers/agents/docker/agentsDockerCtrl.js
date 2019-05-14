@@ -75,6 +75,8 @@ define([
             `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
           )
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           //`${this.filters} sourcetype=wazuh | timechart span=1h count`,
           /**

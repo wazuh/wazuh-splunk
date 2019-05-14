@@ -57,6 +57,8 @@ define([
         this.addFilter = $currentDataService.addFilter
         this.scope.expandArray = [false, false, false]
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Metrics

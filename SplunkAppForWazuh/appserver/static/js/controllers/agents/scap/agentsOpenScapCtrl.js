@@ -107,6 +107,8 @@ define([
           }
         })
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Metrics

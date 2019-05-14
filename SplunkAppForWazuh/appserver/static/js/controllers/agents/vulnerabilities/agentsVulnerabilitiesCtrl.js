@@ -78,6 +78,8 @@ define([
           this.state.go('overview')
         }
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Metrics

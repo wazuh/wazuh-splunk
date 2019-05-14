@@ -19,7 +19,7 @@ define([
 ) {
     'use strict'
 
-    class AWS extends DashboardMain{
+    class AWS extends DashboardMain {
       /**
        * Class constructor
        * @param {*} $rootScope
@@ -61,6 +61,8 @@ define([
           false,
           false
         ]
+
+        this.filters = this.getFilters()
 
         this.vizz = [
           /**

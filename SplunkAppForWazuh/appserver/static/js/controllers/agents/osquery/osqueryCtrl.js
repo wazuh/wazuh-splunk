@@ -80,6 +80,8 @@ define([
 
         this.scope.osqueryWodle = null
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

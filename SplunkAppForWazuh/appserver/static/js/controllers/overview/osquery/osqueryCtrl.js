@@ -66,6 +66,8 @@ define([
         this.scope.expandArray = [false, false, false, false]
         this.notification = $notificationService
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

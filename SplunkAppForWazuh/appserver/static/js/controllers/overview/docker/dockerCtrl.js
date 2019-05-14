@@ -59,6 +59,8 @@ define([
           `{"rule.groups{}":"docker", "implicit":true}`
         )
         this.scope.expandArray = [false, false, false, false]
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

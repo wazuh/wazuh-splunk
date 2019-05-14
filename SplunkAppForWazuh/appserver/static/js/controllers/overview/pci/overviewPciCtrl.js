@@ -67,7 +67,9 @@ define([
           if (newValue && this.dropdownInstance)
             $urlTokenModel.handleValueChange(this.dropdownInstance)
         })
-        
+
+        this.filters = this.getFilters()
+
         this.vizz = [
           new ColumnChart(
             'pciReqVizz',
@@ -142,7 +144,7 @@ define([
               {}, //Metrics
               this.tableResults
             )
-        } catch (error) {}
+        } catch (error) { }
       }
     }
     app.controller('overviewPciCtrl', PCI)

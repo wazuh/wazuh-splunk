@@ -19,7 +19,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
-], function(
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -29,187 +29,189 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  'use strict'
-  class Audit extends DashboardMain{
-    /**
-     * Class Audit
-     * @param {*} $urlTokenModel
-     * @param {*} $scope
-     * @param {*} $currentDataService
-     * @param {*} $state
-     * @param {*} $reportingService
-     */
-    constructor(
-      $urlTokenModel,
-      $scope,
-      $currentDataService,
-      $state,
-      $reportingService,
-      reportingEnabled,
-      extensions
-    ) {
-      super(
+    'use strict'
+    class Audit extends DashboardMain {
+      /**
+       * Class Audit
+       * @param {*} $urlTokenModel
+       * @param {*} $scope
+       * @param {*} $currentDataService
+       * @param {*} $state
+       * @param {*} $reportingService
+       */
+      constructor(
+        $urlTokenModel,
         $scope,
-        $reportingService,
-        $state,
         $currentDataService,
-        $urlTokenModel
-    )
-      this.scope.reportingEnabled = reportingEnabled
-      this.scope.extensions = extensions
-      this.currentDataService.addFilter(
-        `{"rule.groups{}":"audit", "implicit":true, "onlyShow":true}`
-      )
-
-      this.scope.expandArray = [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
-
-      this.vizz = [
-        /**
-         * Metrics
-         */
-        new SearchHandler(
-          `filesAddedSearch`,
-          `${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,
-          `filesAddedToken`,
-          '$result.count$',
-          'newFiles',
-          this.submittedTokenModel,
-          this.scope
-        ),
-        new SearchHandler(
-          `readFilesSearch`,
-          `${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,
-          `readFilesToken`,
-          '$result.count$',
-          'readFiles',
-          this.submittedTokenModel,
-          this.scope
-        ),
-        new SearchHandler(
-          `modifiedFiles`,
-          `${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,
-          `filesModifiedToken`,
-          '$result.count$',
-          'filesModifiedToken',
-          this.submittedTokenModel,
-          this.scope
-        ),
-        new SearchHandler(
-          `deletedFiles`,
-          `${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,
-          'filesDeletedToken',
-          '$result.count$',
-          'filesDeleted',
-          this.submittedTokenModel,
-          this.scope
-        ),
-        /**
-         * Visualizations
-         */
-        new PieChart(
-          'groupsElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
-          'groupsElement',
-          this.scope
-        ),
-        new ColumnChart(
-          'agentsElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
-          'agentsElement',
-          this.scope
-        ),
-        new PieChart(
-          'commandsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
-          'commandsVizz',
-          this.scope
-        ),
-        new PieChart(
-          'filesElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
-          'filesElement',
-          this.scope
-        ),
-        new AreaChart(
-          'alertsOverTime',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
-          'alertsOverTimeElement',
-          this.scope
-        ),
-        new Table(
-          'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
-          'alertsSummaryElement',
-          this.scope
-        ),
-        new RawTableDataService(
-          'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
-          'alertsSummaryTableToken',
-          '$result$',
-          this.scope,
-          'Alerts Summary'
+        $state,
+        $reportingService,
+        reportingEnabled,
+        extensions
+      ) {
+        super(
+          $scope,
+          $reportingService,
+          $state,
+          $currentDataService,
+          $urlTokenModel
         )
-      ]
-    }
+        this.scope.reportingEnabled = reportingEnabled
+        this.scope.extensions = extensions
+        this.currentDataService.addFilter(
+          `{"rule.groups{}":"audit", "implicit":true, "onlyShow":true}`
+        )
 
-    $onInit() {
-      try {
-        this.reportMetrics = {
-          'New files': this.scope.newFiles,
-          'Read files': this.scope.readFiles,
-          'Modified files': this.scope.filesModifiedToken,
-          'Deleted files': this.scope.filesDeleted
-        }
-  
-        /**
-         * Generates report
-         */
-        this.scope.startVis2Png = () =>
-          this.reportingService.startVis2Png(
-            'overview-audit',
-            'Audit',
-            this.filters,
-            [
-              'groupsElement',
-              'agentsElement',
-              'commandsVizz',
-              'filesElement',
-              'alertsOverTimeElement',
-              'alertsSummaryElement'
-            ],
-            this.reportMetrics,
-            this.tableResults
+        this.scope.expandArray = [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+
+        this.filters = this.getFilters()
+
+        this.vizz = [
+          /**
+           * Metrics
+           */
+          new SearchHandler(
+            `filesAddedSearch`,
+            `${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,
+            `filesAddedToken`,
+            '$result.count$',
+            'newFiles',
+            this.submittedTokenModel,
+            this.scope
+          ),
+          new SearchHandler(
+            `readFilesSearch`,
+            `${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,
+            `readFilesToken`,
+            '$result.count$',
+            'readFiles',
+            this.submittedTokenModel,
+            this.scope
+          ),
+          new SearchHandler(
+            `modifiedFiles`,
+            `${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,
+            `filesModifiedToken`,
+            '$result.count$',
+            'filesModifiedToken',
+            this.submittedTokenModel,
+            this.scope
+          ),
+          new SearchHandler(
+            `deletedFiles`,
+            `${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,
+            'filesDeletedToken',
+            '$result.count$',
+            'filesDeleted',
+            this.submittedTokenModel,
+            this.scope
+          ),
+          /**
+           * Visualizations
+           */
+          new PieChart(
+            'groupsElement',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
+            'groupsElement',
+            this.scope
+          ),
+          new ColumnChart(
+            'agentsElement',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
+            'agentsElement',
+            this.scope
+          ),
+          new PieChart(
+            'commandsVizz',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
+            'commandsVizz',
+            this.scope
+          ),
+          new PieChart(
+            'filesElement',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
+            'filesElement',
+            this.scope
+          ),
+          new AreaChart(
+            'alertsOverTime',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
+            'alertsOverTimeElement',
+            this.scope
+          ),
+          new Table(
+            'alertsSummary',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+            'alertsSummaryElement',
+            this.scope
+          ),
+          new RawTableDataService(
+            'alertsSummaryTable',
+            `${
+            this.filters
+            } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+            'alertsSummaryTableToken',
+            '$result$',
+            this.scope,
+            'Alerts Summary'
           )
-  
-      } catch (error) {}
+        ]
+      }
+
+      $onInit() {
+        try {
+          this.reportMetrics = {
+            'New files': this.scope.newFiles,
+            'Read files': this.scope.readFiles,
+            'Modified files': this.scope.filesModifiedToken,
+            'Deleted files': this.scope.filesDeleted
+          }
+
+          /**
+           * Generates report
+           */
+          this.scope.startVis2Png = () =>
+            this.reportingService.startVis2Png(
+              'overview-audit',
+              'Audit',
+              this.filters,
+              [
+                'groupsElement',
+                'agentsElement',
+                'commandsVizz',
+                'filesElement',
+                'alertsOverTimeElement',
+                'alertsSummaryElement'
+              ],
+              this.reportMetrics,
+              this.tableResults
+            )
+
+        } catch (error) { }
+      }
     }
-  }
-  app.controller('overviewAuditCtrl', Audit)
-})
+    app.controller('overviewAuditCtrl', Audit)
+  })

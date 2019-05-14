@@ -40,7 +40,6 @@ define([
         this.state = $state
         this.currentDataService = $currentDataService
         this.getFilters = this.currentDataService.getSerializedFilters
-        this.filters = this.getFilters()
         this.urlTokenModel = $urlTokenModel
         this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
         this.timePicker = new TimePicker(

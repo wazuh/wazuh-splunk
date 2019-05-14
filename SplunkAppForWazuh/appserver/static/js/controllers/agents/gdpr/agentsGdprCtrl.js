@@ -102,6 +102,8 @@ define([
         })
         this.scope.gdprTabs = gdprTabs ? gdprTabs : false
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

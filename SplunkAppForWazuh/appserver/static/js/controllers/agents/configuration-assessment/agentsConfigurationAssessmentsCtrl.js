@@ -109,6 +109,8 @@ define([
           this.scope.configAssess = this.configAssess
         }
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

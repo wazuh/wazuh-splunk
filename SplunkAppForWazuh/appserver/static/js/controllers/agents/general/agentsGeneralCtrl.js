@@ -81,6 +81,8 @@ define([
           )
         this.dateDiffService = $dateDiffService
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

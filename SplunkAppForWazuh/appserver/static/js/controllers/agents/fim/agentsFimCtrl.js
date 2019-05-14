@@ -93,6 +93,8 @@ define([
             `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
           )
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Visualizations

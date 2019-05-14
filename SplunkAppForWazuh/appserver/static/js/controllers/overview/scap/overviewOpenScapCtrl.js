@@ -96,6 +96,8 @@ define([
             $urlTokenModel.handleValueChange(this.dropdownInstance)
         })
 
+        this.filters = this.getFilters()
+
         this.vizz = [
           /**
            * Metrics
