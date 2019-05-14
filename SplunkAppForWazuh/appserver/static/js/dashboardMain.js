@@ -96,6 +96,7 @@ define([
 
           this.scope.$on('loadingContent', (event, data) => {
             this.scope.loadingContent = data.status
+            event.preventDefault()
           })
 
           this.scope.$on('loadingReporting', (event, data) => {

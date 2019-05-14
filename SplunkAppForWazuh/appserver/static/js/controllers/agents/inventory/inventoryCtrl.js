@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function(module) {
+define(['../../module', 'FileSaver'], function (module) {
   'use strict'
   class Inventory {
     /**
@@ -31,7 +31,7 @@ define(['../../module', 'FileSaver'], function(module) {
       $reportingService,
       reportingEnabled,
       $currentDataService,
-      $csvRequestService, 
+      $csvRequestService,
       $dateDiffService
     ) {
       this.scope = $scope
@@ -73,10 +73,10 @@ define(['../../module', 'FileSaver'], function(module) {
 
         this.scope.agent =
           this.data.length &&
-          this.data.length > 4 &&
-          typeof this.data[4] === 'object' &&
-          this.data[4].data &&
-          this.data[4].data.data
+            this.data.length > 4 &&
+            typeof this.data[4] === 'object' &&
+            this.data[4].data &&
+            this.data[4].data.data
             ? this.data[4].data.data
             : { error: true }
         this.scope.search = (term, specificPath) => {
@@ -121,6 +121,7 @@ define(['../../module', 'FileSaver'], function(module) {
 
         this.scope.$on('loadingContent', (event, data) => {
           this.scope.loadingContent = data.status
+          event.preventDefault()
         })
 
         this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
@@ -143,7 +144,7 @@ define(['../../module', 'FileSaver'], function(module) {
           )
           this.netifaceResponse =
             ((resultNetiface || {}).data || {}).data || false
-        } catch (error) {} // eslint-disable-line
+        } catch (error) { } // eslint-disable-line
 
         // This API call may fail so we put it out of Promise.all
         try {
@@ -153,7 +154,7 @@ define(['../../module', 'FileSaver'], function(module) {
           )
           this.netaddrResponse =
             ((resultNetaddrResponse || {}).data || {}).data || false
-        } catch (error) {} // eslint-disable-line
+        } catch (error) { } // eslint-disable-line
 
         this.scope.syscollector = {
           hardware: this.data[0].data.data,
@@ -163,8 +164,8 @@ define(['../../module', 'FileSaver'], function(module) {
           netaddr: this.netaddrResponse,
           packagesDate:
             this.packagesDate &&
-            this.packagesDate.items &&
-            this.packagesDate.items.length
+              this.packagesDate.items &&
+              this.packagesDate.items.length
               ? this.packagesDate.items[0].scan_time
               : 'Unknown',
           processesDate: ((this.processesDate || {}).items || []).length

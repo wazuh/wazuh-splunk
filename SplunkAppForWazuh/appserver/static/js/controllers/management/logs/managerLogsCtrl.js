@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function(app) {
+define(['../../module', 'FileSaver'], function (app) {
   'use strict'
 
   class Logs {
@@ -22,6 +22,7 @@ define(['../../module', 'FileSaver'], function(app) {
       logs
     ) {
       this.scope = $scope
+      this.scope.realtime = false
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
       this.scope.type_log = 'all'
@@ -32,11 +33,6 @@ define(['../../module', 'FileSaver'], function(app) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
-      this.scope.$on('scrolledToBottom', (ev, parameters) => {
-        ev.stopPropagation()
-        if (!this.scope.realtime)
-          this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
-      })
     }
 
     /**
@@ -55,6 +51,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.initialize()
 
         this.scope.sort = () => this.sort()
+
         this.scope.$on('wazuhFetched', (ev, params) => {
           ev.stopPropagation()
           this.scope.emptyResults = false
@@ -67,8 +64,15 @@ define(['../../module', 'FileSaver'], function(app) {
             })
           }
 
+          this.scope.$on('scrolledToBottom', (ev, parameters) => {
+            ev.stopPropagation()
+            if (!this.scope.realtime)
+              this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
+          })
+
           this.scope.$on('loadingContent', (event, data) => {
             this.scope.loadingContent = data.status
+            event.preventDefault()
           })
 
           this.scope.$applyAsync()
@@ -170,8 +174,8 @@ define(['../../module', 'FileSaver'], function(app) {
 
         const data = this.clusterEnabled
           ? await this.apiReq(
-              `/cluster/${this.scope.selectedNode}/logs/summary`
-            )
+            `/cluster/${this.scope.selectedNode}/logs/summary`
+          )
           : await this.apiReq('/manager/logs/summary')
         const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({

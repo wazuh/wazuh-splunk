@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Main {
@@ -35,6 +35,7 @@ define(['../../module'], function(controllers) {
 
       this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
+        event.preventDefault()
       })
     }
   }

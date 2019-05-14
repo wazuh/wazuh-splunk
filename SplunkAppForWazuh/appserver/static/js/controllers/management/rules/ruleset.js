@@ -138,6 +138,7 @@ define(['../../module', 'FileSaver'], function (app) {
 
       this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
+        event.preventDefault()
       })
     }
 
