@@ -47,250 +47,258 @@
       data</md-nav-item>
   </md-nav-bar>
 
-  <!-- Wazuh filters bar -->
-  <wazuh-bar></wazuh-bar>
-
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+  <div ng-show="loadingContent">
+    <div class="loader-bar" ng-show="loadingContent">
+      <div class="loader"></div>
     </div>
   </div>
-  <div ng-show="!loadingVizz">
+  <div ng-show="!loadingContent">
+    <!-- Filter bar -->
+    <wazuh-bar></wazuh-bar>
 
-    <div ng-show='!showFiles'>
-      <div class="wz-margin-right-15 wz-text-align-right">
-        <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
-        <span class='wz-text-link' ng-click='show()'>Show files</span>
-      </div>
-      <!-- first row  -->
-      <div id="row1" layout="row">
-
-        <div flex="25">
-          <!-- first row - first vis -->
-          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-            <md-card-content layout='column'>
-              <span class="wz-headline-title">Most active users
-                <span class="wz-text-link" style="float:right;" ng-click="expand(2,'topUserOwnersElement')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div layout-fill id='topUserOwnersElement'></div>
-            </md-card-content>
-          </md-card>
-        </div>
-        <div flex="25">
-          <!-- first row - second vis -->
-          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[9]}">
-            <md-card-content layout='column'>
-              <span class="wz-headline-title">Actions
-                <span class="wz-text-link" style="float:right;" ng-click="expand(9,'topActions')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div layout-fill id='topActions'></div>
-            </md-card-content>
-          </md-card>
-        </div>
-        <div flex="50">
-          <!-- first row - third vis -->
-          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-            <md-card-content class="wazuh-column">
-              <span class="wz-headline-title">Events
-                <span class="wz-text-link" style="float:right;" ng-click="expand(0,'eventsOverTimeElement')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div id='eventsOverTimeElement'></div>
-            </md-card-content>
-          </md-card>
-        </div>
-      </div>
-      <div id="row2" layout="row">
-        <div flex="33">
-          <!-- first row - first vis -->
-          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
-            <md-card-content class="wazuh-column">
-              <span class="wz-headline-title">Files added
-                <span class="wz-text-link" style="float:right;" ng-click="expand(6,'topNewFiles')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div id='topNewFiles'></div>
-            </md-card-content>
-          </md-card>
-        </div>
-        <div flex="33">
-          <!-- first row - second vis -->
-          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
-            <md-card-content class="wazuh-column">
-              <span class="wz-headline-title">Files modified
-                <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topModifiedFiles')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div id='topModifiedFiles'></div>
-            </md-card-content>
-          </md-card>
-        </div>
-        <div flex="33">
-          <!-- first row - third vis -->
-          <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
-            <md-card-content class="wazuh-column">
-              <span class="wz-headline-title">Files deleted
-                <span class="wz-text-link" style="float:right;" ng-click="expand(8,'topDeletedFiles')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div id='topDeletedFiles'></div>
-            </md-card-content>
-          </md-card>
-        </div>
-      </div>
-
-      <!-- third row  -->
-      <div id="row3" layout='row'>
-        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Alerts summary
-              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'eventsSummaryElement')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='eventsSummaryElement'></div>
-          </md-card-content>
-        </md-card>
-
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
       </div>
     </div>
+    <div ng-show="!loadingVizz">
 
-    <div ng-show='showFiles'>
-      <div class="wz-margin-right-15 wz-text-align-right">
-        <i class="fa fa-fw fa-area-chart formatted-color"></i>&nbsp;
-        <span class='wz-text-link' ng-click='show()'>Show alerts</span>
-      </div>
-      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
-        <md-card flex="" class="wz-md-card _md flex">
-          <md-card-content>
-            <span class="wz-headline-title"><i class="fa fa-fw fa-windows"></i> Windows registry</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-margin-top-10">
-              <label class="wz-icon-loupe">
-                <input flex placeholder="Filter registry..." ng-model="registrySearch" type="text"
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
-                  aria-invalid="false" wz-enter="search(registrySearch,{name:'type',value:'registry'})">
-              </label>
-              <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10"
-                ng-click="search(registrySearch,{name:'type',value:'registry'})">
-                <span>Search</span>
-              </button>
-            </div>
-            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
-                row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
-              </wazuh-table>
-            </div>
-            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
-                row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
-              </wazuh-table>
-            </div>
-            <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
-              <span flex></span>
-              <a class="small formatted-color" id="btnDownload"
-                ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">
-                <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
-                  height="16" viewBox="0 0 16 16">
-                  <path
-                    d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
-                  </path>
-                </svg>
-                &nbsp;Formatted
-              </a>
-            </div>
-          </md-card-content>
-        </md-card>
+      <div ng-show='!showFiles'>
+        <div class="wz-margin-right-15 wz-text-align-right">
+          <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
+          <span class='wz-text-link' ng-click='show()'>Show files</span>
+        </div>
+        <!-- first row  -->
+        <div id="row1" layout="row">
+
+          <div flex="25">
+            <!-- first row - first vis -->
+            <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+              <md-card-content layout='column'>
+                <span class="wz-headline-title">Most active users
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(2,'topUserOwnersElement')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div layout-fill id='topUserOwnersElement'></div>
+              </md-card-content>
+            </md-card>
+          </div>
+          <div flex="25">
+            <!-- first row - second vis -->
+            <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[9]}">
+              <md-card-content layout='column'>
+                <span class="wz-headline-title">Actions
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(9,'topActions')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div layout-fill id='topActions'></div>
+              </md-card-content>
+            </md-card>
+          </div>
+          <div flex="50">
+            <!-- first row - third vis -->
+            <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+              <md-card-content class="wazuh-column">
+                <span class="wz-headline-title">Events
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(0,'eventsOverTimeElement')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div id='eventsOverTimeElement'></div>
+              </md-card-content>
+            </md-card>
+          </div>
+        </div>
+        <div id="row2" layout="row">
+          <div flex="33">
+            <!-- first row - first vis -->
+            <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+              <md-card-content class="wazuh-column">
+                <span class="wz-headline-title">Files added
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(6,'topNewFiles')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div id='topNewFiles'></div>
+              </md-card-content>
+            </md-card>
+          </div>
+          <div flex="33">
+            <!-- first row - second vis -->
+            <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+              <md-card-content class="wazuh-column">
+                <span class="wz-headline-title">Files modified
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(7,'topModifiedFiles')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div id='topModifiedFiles'></div>
+              </md-card-content>
+            </md-card>
+          </div>
+          <div flex="33">
+            <!-- first row - third vis -->
+            <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
+              <md-card-content class="wazuh-column">
+                <span class="wz-headline-title">Files deleted
+                  <span class="wz-text-link" style="float:right;" ng-click="expand(8,'topDeletedFiles')">
+                    <wz-svg icon="expand"></wz-svg>
+                  </span>
+                </span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div id='topDeletedFiles'></div>
+              </md-card-content>
+            </md-card>
+          </div>
+        </div>
+
+        <!-- third row  -->
+        <div id="row3" layout='row'>
+          <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Alerts summary
+                <span class="wz-text-link" style="float:right;" ng-click="expand(5,'eventsSummaryElement')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div id='eventsSummaryElement'></div>
+            </md-card-content>
+          </md-card>
+
+        </div>
       </div>
 
-      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
-        <md-card flex="" class="wz-md-card _md flex">
-          <md-card-content>
-            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-margin-top-10">
-              <label class="wz-icon-loupe">
-                <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
-                  aria-invalid="false" wz-enter="search(filesSearch,{name:'type',value:'file'})"></label>
-              <button type="submit" aria-label="Search"
-                class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr"
-                ng-click="search(filesSearch,{name:'type',value:'file'})">
-                <span>Search</span>
-              </button>
-            </div>
-            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]"
-                row-sizes="[6,6,6]" extra-limit="true" keys="['file', 'size', 'uname', 'perm','sha256','uid','mtime']">
-              </wazuh-table>
-            </div>
-            <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
-              <span flex></span>
-              <a class="small formatted-color" id="btnDownload"
-                ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv', [{name:'type',value:'file'}])">
-                <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
-                  height="16" viewBox="0 0 16 16">
-                  <path
-                    d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
-                  </path>
-                </svg>
-                &nbsp;Formatted</a>
-            </div>
-          </md-card-content>
-        </md-card>
-      </div>
+      <div ng-show='showFiles'>
+        <div class="wz-margin-right-15 wz-text-align-right">
+          <i class="fa fa-fw fa-area-chart formatted-color"></i>&nbsp;
+          <span class='wz-text-link' ng-click='show()'>Show alerts</span>
+        </div>
+        <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
+          <md-card flex="" class="wz-md-card _md flex">
+            <md-card-content>
+              <span class="wz-headline-title"><i class="fa fa-fw fa-windows"></i> Windows registry</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout="row" class="wz-margin-top-10">
+                <label class="wz-icon-loupe">
+                  <input flex placeholder="Filter registry..." ng-model="registrySearch" type="text"
+                    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                    aria-invalid="false" wz-enter="search(registrySearch,{name:'type',value:'registry'})">
+                </label>
+                <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10"
+                  ng-click="search(registrySearch,{name:'type',value:'registry'})">
+                  <span>Search</span>
+                </button>
+              </div>
+              <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+                <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
+                  row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
+                </wazuh-table>
+              </div>
+              <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+                <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry'}]"
+                  row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
+                </wazuh-table>
+              </div>
+              <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
+                <span flex></span>
+                <a class="small formatted-color" id="btnDownload"
+                  ng-click="downloadCsv('/syscheck/' + agent.id,'syscheckFiles.csv')">
+                  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
+                    height="16" viewBox="0 0 16 16">
+                    <path
+                      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
+                    </path>
+                  </svg>
+                  &nbsp;Formatted
+                </a>
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
 
-      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'">
-        <md-card flex="" class="wz-md-card _md flex">
-          <md-card-content>
-            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
-              <label class="wz-icon-loupe">
-                <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
-                  aria-invalid="false" wz-enter="search(filesSearch)">
-              </label>
-              <button type="submit" aria-label="Search"
-                class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
-                <span>Search</span>
-              </button>
-            </div>
-            <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <wazuh-table custom-columns="true" flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]"
-                extra-limit="true" keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']">
-              </wazuh-table>
-            </div>
-            <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
-              <span flex></span>
-              <a class="small formatted-color" id="btnDownload"
-                ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv')">
-                <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
-                  height="16" viewBox="0 0 16 16">
-                  <path
-                    d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
-                  </path>
-                </svg>
-                &nbsp;Formatted
-              </a>
-            </div>
-          </md-card-content>
-        </md-card>
+        <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
+          <md-card flex="" class="wz-md-card _md flex">
+            <md-card-content>
+              <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout="row" class="wz-margin-top-10">
+                <label class="wz-icon-loupe">
+                  <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
+                    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+                    aria-invalid="false" wz-enter="search(filesSearch,{name:'type',value:'file'})"></label>
+                <button type="submit" aria-label="Search"
+                  class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr"
+                  ng-click="search(filesSearch,{name:'type',value:'file'})">
+                  <span>Search</span>
+                </button>
+              </div>
+              <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+                <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]"
+                  row-sizes="[6,6,6]" extra-limit="true"
+                  keys="['file', 'size', 'uname', 'perm','sha256','uid','mtime']">
+                </wazuh-table>
+              </div>
+              <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
+                <span flex></span>
+                <a class="small formatted-color" id="btnDownload"
+                  ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv', [{name:'type',value:'file'}])">
+                  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
+                    height="16" viewBox="0 0 16 16">
+                    <path
+                      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
+                    </path>
+                  </svg>
+                  &nbsp;Formatted</a>
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'">
+          <md-card flex="" class="wz-md-card _md flex">
+            <md-card-content>
+              <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
+                <label class="wz-icon-loupe">
+                  <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
+                    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+                    aria-invalid="false" wz-enter="search(filesSearch)">
+                </label>
+                <button type="submit" aria-label="Search"
+                  class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
+                  <span>Search</span>
+                </button>
+              </div>
+              <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+                <wazuh-table custom-columns="true" flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]"
+                  extra-limit="true" keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']">
+                </wazuh-table>
+              </div>
+              <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
+                <span flex></span>
+                <a class="small formatted-color" id="btnDownload"
+                  ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv')">
+                  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
+                    height="16" viewBox="0 0 16 16">
+                    <path
+                      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
+                    </path>
+                  </svg>
+                  &nbsp;Formatted
+                </a>
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
       </div>
     </div>
   </div>

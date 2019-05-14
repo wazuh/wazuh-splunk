@@ -119,6 +119,10 @@ define(['../../module', 'FileSaver'], function(module) {
           this.scope.loadingReporting = data.status
         })
 
+        this.scope.$on('loadingContent', (event, data) => {
+          this.scope.loadingContent = data.status
+        })
+
         this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
 
         return
@@ -167,7 +171,6 @@ define(['../../module', 'FileSaver'], function(module) {
             ? this.processesDate.items[0].scan_time
             : 'Unknown'
         }
-        console.log("tss ", this.scope.syscollector)
         this.scope.$applyAsync()
         return
       } catch (error) {
