@@ -304,7 +304,7 @@ define([
             while (realTime) {
               await fetch({ realTime: true })
               $scope.$applyAsync()
-              await $timeout(1000)
+              await $timeout(5000)
             }
           } catch (error) {
             realTime = false
