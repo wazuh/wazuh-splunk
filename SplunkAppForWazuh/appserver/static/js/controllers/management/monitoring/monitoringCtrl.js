@@ -115,6 +115,10 @@ define([
       this.scope.goBack = () => this.goBack()
       this.scope.goNodes = () => this.goNodes()
 
+      this.scope.$on('loadingContent', (event, data) => {
+        this.scope.loadingContent = data.status
+      })
+
       this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
         event.stopPropagation()
         try {

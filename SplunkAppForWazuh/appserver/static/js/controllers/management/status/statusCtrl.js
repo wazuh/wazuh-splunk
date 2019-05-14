@@ -87,6 +87,11 @@ define(['../../module'], function(controllers) {
       if (this.nodeInfo) {
         this.scope.managerInfo = this.nodeInfo
       }
+
+      this.scope.$on('loadingContent', (event, data) => {
+        this.scope.loadingContent = data.status
+      })
+      
     }
 
     /**

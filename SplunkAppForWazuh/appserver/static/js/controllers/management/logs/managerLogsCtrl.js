@@ -66,6 +66,11 @@ define(['../../module', 'FileSaver'], function(app) {
               data: this.scope.XMLContent
             })
           }
+
+          this.scope.$on('loadingContent', (event, data) => {
+            this.scope.loadingContent = data.status
+          })
+          
           this.scope.$applyAsync()
         })
       } catch (err) {

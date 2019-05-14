@@ -1,4 +1,4 @@
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class Reporting {
@@ -42,6 +42,10 @@ define(['../../module'], function(app) {
           return ''
         }
       }
+
+      this.scope.$on('loadingContent', (event, data) => {
+        this.scope.loadingContent = data.status
+      })
     }
 
     /**
