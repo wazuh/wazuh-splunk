@@ -122,7 +122,7 @@ define([
         true,
         'loadingSearch'
       )
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**

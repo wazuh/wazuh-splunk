@@ -303,7 +303,7 @@ define([
             $scope.error = false
             while (realTime) {
               await fetch({ realTime: true })
-              if (!$scope.$$phase) $scope.$digest()
+              $scope.$applyAsync()
               await $timeout(1000)
             }
           } catch (error) {
@@ -339,7 +339,7 @@ define([
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
-            if (!$scope.$$phase) $scope.$digest()
+            $scope.$applyAsync()
             setTimeout(() => {
               $scope.setColResizable()
             }, 100)

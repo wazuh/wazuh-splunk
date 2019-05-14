@@ -74,7 +74,7 @@ define(['../../module'], function(controllers) {
         this.scope.clusterError =
           'This cluster is enabled but not running. Please check your cluster health.'
         this.scope.load = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       }
 
       this.scope.changeNode = node => this.changeNode(node)
@@ -91,7 +91,7 @@ define(['../../module'], function(controllers) {
       this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
       })
-      
+
     }
 
     /**
@@ -138,7 +138,7 @@ define(['../../module'], function(controllers) {
         this.scope.clusterError = err.message || err
       }
       this.scope.load = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -166,7 +166,7 @@ define(['../../module'], function(controllers) {
         this.notification.showErrorToast(err.message || err)
       }
       this.scope.load = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**

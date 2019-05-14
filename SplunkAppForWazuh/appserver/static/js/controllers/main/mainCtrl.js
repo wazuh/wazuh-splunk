@@ -40,7 +40,7 @@ define([
       this.scope.$on('loading', (event, data) => {
         if (data.status) this.scope.loading = true
         else this.scope.loading = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       })
 
       this.dashboardController.onReady(() => {

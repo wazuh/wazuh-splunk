@@ -119,7 +119,7 @@ define(['../../module'], function(controllers) {
           }
         }
         this.notification.showSuccessToast('Connection established')
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (err) {
         this.notification.showErrorToast(err || 'Unreachable API')
       }
@@ -189,7 +189,7 @@ define(['../../module'], function(controllers) {
             this.scope.apiList[i] = updatedApi
           }
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
 
         if (
           this.currentDataService.getApi() &&
@@ -219,7 +219,7 @@ define(['../../module'], function(controllers) {
         this.setYellowStar(key)
         this.notification.showSuccessToast('API selected')
         this.scope.$emit('updatedAPI', () => {})
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (err) {
         this.notification.showErrorToast(err || 'Could not select manager')
       }
@@ -276,7 +276,7 @@ define(['../../module'], function(controllers) {
         }
 
         this.scope.showForm = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
       } catch (err) {
         if (err.startsWith('Unexpected Wazuh version')) {

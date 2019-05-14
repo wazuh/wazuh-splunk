@@ -83,7 +83,7 @@ define(['../../module'], function(controllers) {
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
         this.scope.$broadcast('fetchedFile', { data: content })
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast(`Error editing node: ${error}`)
       }
@@ -107,7 +107,7 @@ define(['../../module'], function(controllers) {
 
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     async restart(node = false) {

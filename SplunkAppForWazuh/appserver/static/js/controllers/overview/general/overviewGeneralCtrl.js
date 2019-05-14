@@ -197,7 +197,7 @@ define([
                   ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                   100
                   : 0
-                if (!this.scope.$$phase) this.scope.$digest()
+                this.scope.$applyAsync()
               })
               .catch(error => {
                 this.notification.showErrorToast(

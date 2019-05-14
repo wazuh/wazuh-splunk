@@ -35,7 +35,7 @@ define(['../module', 'jquery'], function(app, $) {
         this.scope.$on('loading', (event, data) => {
           if (data.status === true) {
             this.scope.loadingRing = true
-            if (!this.scope.$$phase) this.scope.$digest()
+            this.scope.$applyAsync()
           }
         })
       } catch (error) {
@@ -54,7 +54,7 @@ define(['../module', 'jquery'], function(app, $) {
             if (header.is(':hidden')) {
               clearInterval(interval)
               this.scope.loadingRing = false
-              if (!this.scope.$$phase) this.scope.$digest()
+              this.scope.$applyAsync()
             }
           }
         }, 500)

@@ -105,7 +105,7 @@ define([
             $notificationService.showErrorToast(error, 'Error validating XML')
           }
           checkingXmlError = false
-          if (!$scope.$$phase) $scope.$digest()
+          $scope.$applyAsync()
           return
         }
 

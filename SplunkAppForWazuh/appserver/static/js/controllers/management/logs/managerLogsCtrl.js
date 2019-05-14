@@ -70,7 +70,7 @@ define(['../../module', 'FileSaver'], function(app) {
           this.scope.$on('loadingContent', (event, data) => {
             this.scope.loadingContent = data.status
           })
-          
+
           this.scope.$applyAsync()
         })
       } catch (err) {
@@ -177,7 +177,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.daemons = Object.keys(daemons).map(item => ({
           title: item
         }))
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
         return
       } catch (err) {
         this.notification.showErrorToast('Error initializing data')
@@ -203,7 +203,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.daemons = Object.keys(daemons).map(item => ({
           title: item
         }))
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast('Error at fetching logs')
       }

@@ -74,7 +74,7 @@ define(['../../module'], function(module) {
           ]
         }
         this.root.$broadcast('loading', { status: false })
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
         return
       } catch (error) {
         this.root.$broadcast('loading', { status: false })

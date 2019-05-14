@@ -268,7 +268,7 @@ define([
       show() {
         this.showFiles = !this.showFiles
         this.scope.showFiles = this.showFiles
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       }
 
       /**

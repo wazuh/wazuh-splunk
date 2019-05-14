@@ -230,7 +230,7 @@ define(['../../module', 'FileSaver'], function (app) {
       this.scope.viewingDetail = false(this.view === 'ruleset')
         ? (this.scope.currentRule = false)
         : (this.scope.currentDecoder = false)
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**

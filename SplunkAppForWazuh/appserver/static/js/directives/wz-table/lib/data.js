@@ -36,7 +36,7 @@ define([], function() {
           `Error searching. ${error.message || error}`
         )
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
       return
     },
 
@@ -73,7 +73,7 @@ define([], function() {
         $tableFilterService.set(instance.filters)
         await fetch()
         $scope.wazuhTableLoading = false
-        if (!$scope.$$phase) $scope.$digest()
+        $scope.$applyAsync()
       } catch (error) {
         $scope.wazuhTableLoading = false
         $scope.error = `Error filtering by ${
@@ -85,7 +85,7 @@ define([], function() {
           }. ${error.message || error}`
         )
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
       return
     },
 
@@ -121,7 +121,7 @@ define([], function() {
             error}`
         )
       }
-      if (!$scope.$$phase) $scope.$digest()
+      $scope.$applyAsync()
       return
     }
   }

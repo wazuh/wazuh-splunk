@@ -162,7 +162,7 @@ define(['../../module'], function (app) {
         }
         this.search()
         this.loading = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast('Error loading reports.')
       }

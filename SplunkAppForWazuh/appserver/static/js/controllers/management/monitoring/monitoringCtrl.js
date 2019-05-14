@@ -195,7 +195,7 @@ define([
               }
             }
           }
-          if (!this.scope.$$phase) this.scope.$digest()
+          this.scope.$applyAsync()
         } catch (error) {
           this.notification.showErrorToast(error.message || error)
         }
@@ -235,7 +235,7 @@ define([
       this.scope.showConfig = false
       this.scope.showNodes = false
       this.scope.currentNode = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -270,7 +270,7 @@ define([
         this.scope.showNodes = false
       }
       this.scope.currentNode = null
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
