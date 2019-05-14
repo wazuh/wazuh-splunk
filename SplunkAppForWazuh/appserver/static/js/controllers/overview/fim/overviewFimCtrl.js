@@ -12,14 +12,14 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   PieChart,
   Table,
   LinearChart,
@@ -27,7 +27,7 @@ define([
 ) {
     'use strict'
 
-    class OverviewFIM extends OverviewMain {
+    class OverviewFIM extends DashboardMain {
       /**
        * Class File Integrity Monitoring (syscheck)
        * @param {*} $urlTokenModel

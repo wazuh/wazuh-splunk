@@ -12,7 +12,7 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
@@ -20,7 +20,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   LinearChart,
   PieChart,
   Table,
@@ -29,7 +29,7 @@ define([
 ) {
     'use strict'
 
-    class OverviewGeneral extends OverviewMain {
+    class OverviewGeneral extends DashboardMain {
       /**
        * Class Overview General
        * @param {*} $urlTokenModel

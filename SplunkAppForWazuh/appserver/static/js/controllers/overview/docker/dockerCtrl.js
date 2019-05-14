@@ -12,14 +12,14 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   PieChart,
   LinearChart,
   Table,
@@ -27,7 +27,7 @@ define([
 ) {
     'use strict'
 
-    class Docker extends OverviewMain {
+    class Docker extends DashboardMain {
       /**
        * Class Docker
        * @param {*} $urlTokenModel

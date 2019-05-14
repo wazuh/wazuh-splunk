@@ -1,6 +1,6 @@
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
@@ -8,7 +8,7 @@ define([
   '../../../services/visualizations/inputs/dropdown-input'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   LinearChart,
   ColumnChart,
   PieChart,
@@ -16,7 +16,7 @@ define([
   Dropdown
 ) {
     'use strict'
-    class OverviewGDPR extends OverviewMain{
+    class OverviewGDPR extends DashboardMain{
       /**
        * Class GDPR
        * @param {*} $urlTokenModel

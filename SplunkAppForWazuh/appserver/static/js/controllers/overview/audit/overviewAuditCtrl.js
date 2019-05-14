@@ -12,7 +12,7 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
@@ -21,7 +21,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
-  OverviewMain,
+  DashboardMain,
   ColumnChart,
   PieChart,
   AreaChart,
@@ -30,7 +30,7 @@ define([
   RawTableDataService
 ) {
   'use strict'
-  class Audit extends OverviewMain{
+  class Audit extends DashboardMain{
     /**
      * Class Audit
      * @param {*} $urlTokenModel

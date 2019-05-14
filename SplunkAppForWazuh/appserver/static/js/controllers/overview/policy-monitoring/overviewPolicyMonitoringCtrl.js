@@ -12,20 +12,20 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   PieChart,
   AreaChart,
   Table,
   RawTableDataService) {
     'use strict'
-    class PM extends OverviewMain {
+    class PM extends DashboardMain {
       /**
        *
        * @param {*} $urlTokenModel

@@ -11,8 +11,8 @@
  */
 
 define([
-  '../module',
-  '../../services/visualizations/inputs/time-picker'
+  './controllers/module',
+  './services/visualizations/inputs/time-picker'
 ], function (
   app,
   TimePicker

@@ -1,6 +1,6 @@
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/column-chart',
@@ -9,7 +9,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   PieChart,
   AreaChart,
   ColumnChart,
@@ -19,7 +19,7 @@ define([
 ) {
     'use strict'
 
-    class AWS extends OverviewMain{
+    class AWS extends DashboardMain{
       /**
        * Class constructor
        * @param {*} $rootScope

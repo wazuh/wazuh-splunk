@@ -1,6 +1,6 @@
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
@@ -9,7 +9,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   LinearChart,
   ColumnChart,
   PieChart,
@@ -19,7 +19,7 @@ define([
 ) {
     'use strict'
 
-    class PCI extends OverviewMain {
+    class PCI extends DashboardMain {
       /**
        * Class PCI-DSS
        * @param {*} $urlTokenModel

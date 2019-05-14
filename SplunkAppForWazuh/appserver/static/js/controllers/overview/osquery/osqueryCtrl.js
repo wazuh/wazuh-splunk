@@ -12,14 +12,14 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   PieChart,
   AreaChart,
   Table,
@@ -27,7 +27,7 @@ define([
 ) {
     'use strict'
 
-    class Osquery extends OverviewMain {
+    class Osquery extends DashboardMain {
       /**
        * Class Osquery
        * @param {*} $urlTokenModel

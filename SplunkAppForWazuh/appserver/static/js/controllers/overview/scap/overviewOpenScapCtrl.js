@@ -12,7 +12,7 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
@@ -24,7 +24,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   LinearChart,
   ColumnChart,
   PieChart,
@@ -37,7 +37,7 @@ define([
 ) {
     'use strict'
 
-    class OpenSCAP extends OverviewMain {
+    class OpenSCAP extends DashboardMain {
       /**
        * OpenSCAP class
        * @param {*} $urlTokenModel

@@ -12,7 +12,7 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
@@ -20,7 +20,7 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
-  OverviewMain,
+  DashboardMain,
   ColumnChart,
   LinearChart,
   Table,
@@ -28,7 +28,7 @@ define([
   RawTableDataService
 ) {
     'use strict'
-    class Ciscat extends OverviewMain {
+    class Ciscat extends DashboardMain {
       /**
        * Class CIS-CAT
        * @param {*} $urlTokenModel

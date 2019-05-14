@@ -12,7 +12,7 @@
 
 define([
   '../../module',
-  '../overviewMain',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
@@ -21,7 +21,7 @@ define([
   '../../../services/visualizations/table/table',
 ], function(
   app,
-  OverviewMain,
+  DashboardMain,
   ColumnChart,
   GaugeChart,
   PieChart,
@@ -31,7 +31,7 @@ define([
 ) {
   'use strict'
 
-  class overviewSCA extends OverviewMain{
+  class overviewSCA extends DashboardMain{
     /**
      * Class Overview SCA
      * @param {Object} $urlTokenModel
