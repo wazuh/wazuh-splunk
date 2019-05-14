@@ -41,10 +41,11 @@ define([
         this.currentDataService = $currentDataService
         this.getFilters = this.currentDataService.getSerializedFilters
         this.filters = this.getFilters()
-        this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
+        this.urlTokenModel = $urlTokenModel
+        this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
         this.timePicker = new TimePicker(
           '#timePicker',
-          $urlTokenModel.handleValueChange
+          this.urlTokenModel.handleValueChange
         )
         this.tableResults = {}
         this.initialize()
