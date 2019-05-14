@@ -17,7 +17,6 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService',
   'FileSaver'
 ], function (
@@ -27,7 +26,6 @@ define([
   PieChart,
   Table,
   AreaChart,
-  TimePicker,
   RawTableDataService
 ) {
     'use strict'

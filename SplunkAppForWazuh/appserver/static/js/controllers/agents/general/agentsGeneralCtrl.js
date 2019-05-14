@@ -17,7 +17,6 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
 ], function (
   app,
@@ -26,7 +25,6 @@ define([
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
   RawTableDataService
 ) {
     'use strict'
