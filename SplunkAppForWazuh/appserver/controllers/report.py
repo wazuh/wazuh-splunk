@@ -126,14 +126,14 @@ class report(controllers.BaseController):
                 if i == 1:
                     useKey = key
                 pdf.cell(2, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
-                pdf.cell(100, 4, txt = self.getString(useKey,labels) , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
+                pdf.cell(100, 4, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
                 pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
                 if(pdf.get_y() > 250):
                     pdf.add_page()
                     pdf.ln(25)
         else: # if value's length is lower than 50 we write the full string
             pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-            pdf.cell(100, 5, txt = self.getString(key,labels) , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+            pdf.cell(100, 5, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
             pdf.cell(0, 5, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
             if(pdf.get_y() > 250):
                 pdf.add_page()
@@ -170,7 +170,7 @@ class report(controllers.BaseController):
                 if i == num_lines-1:
                     useBorder = 'B'
                 if i < len(row[currentKey]):
-                    pdf.cell(185/keys_amount, 4, txt = str(row[currentKey][i]), border = useBorder, align = '', ln = 0, fill = False, link = '')
+                    pdf.cell(185/keys_amount, 4, txt = str(row[currentKey][i]).capitalize(), border = useBorder, align = '', ln = 0, fill = False, link = '')
                 else:
                     pdf.cell(185/keys_amount, 4, txt = " ", border = useBorder, align = '', ln = 0, fill = False, link = '')
             pdf.ln(4)

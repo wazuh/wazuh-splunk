@@ -170,6 +170,7 @@ define(['../../module', '../../../utils/config-handler'], function(
     async initReportConfig(){
       const data = {
         configurations: [
+
           {
             title: 'Main configurations',
             sections: [
@@ -180,7 +181,10 @@ define(['../../module', '../../../utils/config-handler'], function(
                 labels : {
                   plain: 'Write internal logs in plain text',
                   json: 'Write internal logs in JSON format',
-                  server: 'List of managers to connect'
+                  server: 'List of managers to connect',
+                  address: "Address",
+                  port : "Port",
+                  protocol : "Protocol"
                 }
               },
               {
@@ -229,7 +233,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   { component: 'syscheck', configuration: 'rootcheck' },
                   { component: 'wmodules', configuration: 'wmodules' }
                 ],
-                wodle : 'sca',
                 labels : {
                   system_audit: 'System audit',
                   disabled: 'Policy monitoring service enabled',
@@ -262,7 +265,8 @@ define(['../../module', '../../../utils/config-handler'], function(
                       enabled: 'Security configuration assessment enabled',
                       scan_on_start: 'Scan on start',
                       interval: 'Interval',
-                      policies: 'Policies'
+                      policies: 'Policies',
+                      skip_nfs: 'Skip nfs',
                     }       
                   },
               {
@@ -290,7 +294,9 @@ define(['../../module', '../../../utils/config-handler'], function(
                   java_path: 'Path to Java executable directory',
                   ciscat_path: 'Path to CIS-CAT executable directory',
                   timeout: 'Timeout (in seconds)',
-                  content: 'Benchmarks'
+                  content: 'Benchmarks',
+                  wday : 'Day of the week to run scans',
+                  time : 'Time of the day to run scans'
                 }
               }
             ]
@@ -386,7 +392,7 @@ define(['../../module', '../../../utils/config-handler'], function(
                   logformat: 'Log format',
                   command: 'Command',
                   syslog : 'Logs',
-                  full_comand : "Full command",
+                  full_command : "Full command",
                   alias: 'Command alias',
                   ignore_binaries: 'Ignore binaries',
                   target: 'Targets',
