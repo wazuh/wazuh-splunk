@@ -90,33 +90,34 @@ class report(controllers.BaseController):
             os.remove(img['path'])
 
 
-    def getString(self, value):
+    def getString(self, value,labels):
         result = ""
         if type(value) is list:
             for i in value:
                 result += str(i) + ", "
             result = result[:len(result)-2]
-        elif value:
-            result = str(value)
+        elif value or value == 0 or value == " ":
+            if value in labels:
+                result = labels[value]
+            else:
+                result = str(value)
         else:
-            result = "-"
+            result = " "
 
         return result
 
 
-    def addTableRow(self,key,value,pdf):
+    def addTableRow(self,key,value,pdf,labels):
         pdf.set_text_color(150, 150, 150)
         pdf.set_draw_color(75, 179, 204)
         pdf.set_font('Arial', '', 8)
 
-        fullValue = self.getString(value)
+        fullValue = self.getString(value,labels)
         
         # If value's length is greater than 50, we write 50characters per row
         if len(fullValue) > 50:
             num_lines = ( len(fullValue) / 50 ) + 1
-            self.logger.error(str(num_lines))
             for i in range(1,num_lines+1):
-                self.logger.info("currnet line: " + str(i))
                 tmpValue = fullValue[(i-1)*50:i*50]
                 useBorder = ''
                 useKey = ''
@@ -125,14 +126,14 @@ class report(controllers.BaseController):
                 if i == 1:
                     useKey = key
                 pdf.cell(2, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
-                pdf.cell(100, 4, txt = useKey , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
+                pdf.cell(100, 4, txt = self.getString(useKey,labels) , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
                 pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
                 if(pdf.get_y() > 250):
                     pdf.add_page()
                     pdf.ln(25)
         else: # if value's length is lower than 50 we write the full string
             pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-            pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+            pdf.cell(100, 5, txt = self.getString(key,labels) , border = 'B', ln = 0, align = 'L', fill = False, link = '')
             pdf.cell(0, 5, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
             if(pdf.get_y() > 250):
                 pdf.add_page()
@@ -140,7 +141,7 @@ class report(controllers.BaseController):
 
 
 
-    def addCustomTableRow(self,row,keys_amount,pdf):
+    def addCustomTableRow(self,row,keys_amount,pdf,labels):
         pdf.set_text_color(150, 150, 150)
         pdf.set_draw_color(75, 179, 204)
         pdf.set_font('Arial', '', 8)
@@ -149,7 +150,7 @@ class report(controllers.BaseController):
 
         # Calculate the number of lines needed to show a row
         for key,value in row.iteritems():
-            fullValue = self.getString(value)
+            fullValue = self.getString(value,labels)
             totalCharacters = len(fullValue)
             tmpValue = []
             if totalCharacters > max_len:
@@ -157,7 +158,7 @@ class report(controllers.BaseController):
                 # Get the max amount of lines needed to print the full string
                 if tmpLines > num_lines:
                     num_lines = tmpLines
-                for i in range(1,tmpLines+1):
+                for i in range(1,int(num_lines+1)):
                     tmpValue.append(fullValue[(i-1)*max_len:i*max_len])
             else:
                 tmpValue.append(value)
@@ -181,21 +182,20 @@ class report(controllers.BaseController):
                 
 
 
-    def addTable(self, data, pdf):
+    def addTable(self, data, pdf, labels):
         try:
-            self.logger.info(data)
             customTables = []
             if not data: # if data is empty
-                pdf.cell(0, 10, txt = "No configuration availableee" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
             elif type(data) is dict:
                 for key,value in data.iteritems():
                     if type(value) is not list and type(value) is not dict:
-                        self.addTableRow(key,value,pdf)
+                        self.addTableRow(key,value,pdf,labels)
                     if type(value) is list:
                         if value and type(value[0]) is dict:
                             customTables.append({key:value})
                         else:
-                            self.addTableRow(key,value,pdf)
+                            self.addTableRow(key,value,pdf,labels)
                             
                             if(pdf.get_y() > 250):
                                 pdf.add_page()
@@ -205,10 +205,10 @@ class report(controllers.BaseController):
             elif type(data) is list:
                 for item in data:
                     if type(item) is not list and type(item) is not dict:
-                        self.addTableRow(key,item,pdf)
+                        self.addTableRow(key,item,pdf,labels)
                     if type(item) is list:
                         for listItem in item:
-                            self.addTable(listItem,pdf)
+                            self.addTable(listItem,pdf,labels)
 
 
             if customTables:
@@ -219,7 +219,7 @@ class report(controllers.BaseController):
                         pdf.set_fill_color(75, 179, 204)
                         pdf.set_text_color(44,44,44)
                         pdf.set_draw_color(155, 155, 155)
-                        pdf.cell(0, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                        pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                         pdf.ln(5)
                         pdf.set_text_color(255,255,255)
                         pdf.set_font('Arial', '', 9)
@@ -227,17 +227,17 @@ class report(controllers.BaseController):
                         if type(value) is list:
                             keys_amount = len(value[0].keys())
                             for key in value[0]: #Header
-                                pdf.cell(185/keys_amount, 5, txt = key, border = '', align = '', fill = True, link = '')
+                                pdf.cell(185/keys_amount, 5, txt = self.getString(key,labels), border = '', align = '', fill = True, link = '')
                             pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
                             pdf.ln(5)
                             pdf.set_text_color(150, 150, 150)
                             pdf.set_draw_color(75, 179, 204)
                             pdf.set_font('Arial', '', 8)
                             for row in value: # rows
-                                self.addCustomTableRow(row,keys_amount,pdf)
+                                self.addCustomTableRow(row,keys_amount,pdf,labels)
                         elif type(value) is dict:
                             for currentTableKey, currentTableValue in value.iteritems():
-                                self.addTableRow(currentTableKey,currentTableValue,pdf)
+                                self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
 
 
 
@@ -328,6 +328,10 @@ class report(controllers.BaseController):
                             pdf.add_page()
                             pdf.ln(25)
                         pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
+                        customLabels = {} 
+                        if 'labels' in currentSection:
+                            customLabels = currentSection['labels']
+                        self.logger.info(str(currentSection))
                         # rows
                         pdf.set_text_color(91, 91, 91)
                         pdf.set_draw_color(75, 179, 204)
@@ -343,15 +347,14 @@ class report(controllers.BaseController):
                                 conf_data = self.miapi.exec_request(config_request)
                                 conf_data = jsonbak.loads(conf_data)
                                 
-                                
                                 if not conf_data or 'data' not in conf_data or configuration not in conf_data['data']:
-                                    pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                                    pass
                                 else:
                                     if 'filterBy' in currentConfig:
                                         filteredTables = self.filterTableByField(currentConfig['filterBy'], conf_data['data'][configuration])
-                                        self.addTable(filteredTables, pdf)
+                                        self.addTable(filteredTables, pdf, customLabels)
                                     else:
-                                        self.addTable(conf_data['data'][configuration], pdf)
+                                        self.addTable(conf_data['data'][configuration], pdf, customLabels)
 
                         if 'wodle' in currentSection:
                             currentWodle = currentSection['wodle']
@@ -365,7 +368,7 @@ class report(controllers.BaseController):
                             if not currentWodle_data and currentWodle not in currentWodle_data:
                                 pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                             else:
-                                self.addTable(currentWodle_data[currentWodle], pdf)
+                                self.addTable(currentWodle_data[currentWodle], pdf, customLabels)
 
                                 # pdf.set_text_color(150, 150, 150)
                                 #for key,value in currentWodle_data[currentWodle].iteritems():
