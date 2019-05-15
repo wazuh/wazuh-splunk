@@ -1,3 +1,15 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define(['../../module', 'FileSaver'], function (app) {
   'use strict'
 
@@ -70,12 +82,12 @@ define(['../../module', 'FileSaver'], function (app) {
               this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
           })
 
-          this.scope.$on('loadingContent', (event, data) => {
-            this.scope.loadingContent = data.status
-            event.preventDefault()
-          })
-
           this.scope.$applyAsync()
+        })
+
+        this.scope.$on('loadingContent', (event, data) => {
+          this.scope.loadingContent = data.status
+          event.preventDefault()
         })
       } catch (err) {
         this.notification.showErrorToast('Cannot fetch logs data from server')
