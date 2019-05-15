@@ -129,7 +129,6 @@ define([
 
       $onInit() {
         try {
-          this.scope.loadingVizz = true
           /**
           * Generates report
           */
