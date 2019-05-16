@@ -52,6 +52,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queu: Inserting job.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             job = jsonbak.dumps(job)
@@ -73,6 +74,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queue: Updating job.")
             if not '_key' in job:
                 raise Exception('Missing Key')
             id = job['_key']
@@ -100,6 +102,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queue: Removing job.")
             if not _key:
                 raise Exception('Missing ID in remove JobQueue module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
@@ -127,6 +130,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queue: Getting all jobs.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(kvstoreUri, headers={

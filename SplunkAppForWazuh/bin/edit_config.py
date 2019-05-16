@@ -23,6 +23,7 @@ class EditConfig():
         """Reads the config.conf file
         """
         try:
+            self.logger.debug("bin.edit_config: Reading config.conf file.")
             f = open(self.config_path)
             content = f.read()
             f.close()
@@ -35,6 +36,7 @@ class EditConfig():
         """Returns a dict with the parameters set in the [configuration] block
         """
         try:
+            self.logger.debug("bin.edit_config: Getting config.")
             content = self.read_config_file()
             config = content.split("[configuration]")[1]
             config = config.split("\n")
@@ -54,6 +56,7 @@ class EditConfig():
         """Returns all the config.conf file content exect the [configuration] block
         """
         try:
+            self.logger.debug("bin.edit_config: Getting unalterable config.")
             content = self.read_config_file()
             config = content.split("[configuration]")[0]
             return config
@@ -65,6 +68,7 @@ class EditConfig():
         """Updates the config writting over the config.conf file, modify only the [configuration] block
         """
         try:
+            self.logger.debug("bin.edit_config: Updating config.")
             unalterable = self.get_unalterable_config()
             f = open(self.config_path, "w")
             f.write(unalterable)

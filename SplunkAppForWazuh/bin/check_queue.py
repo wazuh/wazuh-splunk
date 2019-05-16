@@ -37,6 +37,7 @@ class CheckQueue():
         """Inits the jobs
         """
         try:
+            self.logger.debug("bin.check_queue: Checking jobs queue.")
             jobs = self.q.get_jobs(self.auth_key)
             #undone_jobs = self.get_undone_jobs(jobs)
             # self.check_undone_jobs(undone_jobs)
@@ -56,6 +57,7 @@ class CheckQueue():
         """
 
         try:
+            self.logger.debug("bin.check_queue: Gettings todo jobs.")
             jobs = jsonbak.loads(jobs)
             undone_jobs = filter(lambda j: j['done'] == False, jobs)
         except TypeError as e:
@@ -73,6 +75,7 @@ class CheckQueue():
             A dictionary with the undone jobs
         """
         try:
+            self.logger.debug("bin.check_queue: Checking todo jobs.")
             for job in jobs:
                 if job['exec_time'] < self.now:
                     self.exec_job(job)
@@ -89,6 +92,7 @@ class CheckQueue():
             A dictionary with the job
         """
         try:
+            self.logger.debug("bin.check_queue: Executing job.")
             req = job['job']
             method = 'GET'
 
@@ -140,6 +144,7 @@ class CheckQueue():
             The job key in the kvStore
         """
         try:
+            self.logger.debug("bin.check_queue: Marking job as done.")
             job['done'] = True
             self.q.update_job(job, self.auth_key)
         except Exception as e:
@@ -155,6 +160,7 @@ class CheckQueue():
             The job key in the kvStore
         """
         try:
+            self.logger.debug("bin.check_queue: Removing job.")
             self.q.remove_job(job_key, self.auth_key)
         except Exception as e:
             self.logger.error(
@@ -169,6 +175,7 @@ class CheckQueue():
             The API id
         """
         try:
+            self.logger.debug("bin.check_queue: Getting API credentials.")
             api = self.db.get(api_id, self.auth_key)
             api = jsonbak.loads(api)
             if api:
