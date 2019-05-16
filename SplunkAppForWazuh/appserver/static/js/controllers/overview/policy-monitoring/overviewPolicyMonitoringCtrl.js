@@ -106,7 +106,7 @@ define([
           event.stopPropagation()
           this.launchSearches()
         })
-  
+
         this.scope.$on('barFilter', event => {
           event.stopPropagation()
           this.launchSearches()
@@ -118,7 +118,7 @@ define([
           this.timePicker.destroy()
           this.vizz.map(vizz => vizz.destroy())
         })
-  
+
         /**
          * Generates report
          */
@@ -137,11 +137,11 @@ define([
             {}, //Metrics
             this.tableResults
           )
-  
+
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
         })
-  
+
         this.scope.$on('checkReportingStatus', () => {
           this.vizzReady = !this.vizz.filter(v => {
             return v.finish === false

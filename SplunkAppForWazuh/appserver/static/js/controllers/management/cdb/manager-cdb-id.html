@@ -38,16 +38,16 @@
     <md-card flex class="wz-metric-color">
       <md-card-content layout="row" class="wz-padding-metric">
         <div flex="50" class="wz-text-truncatable flex-50">Name: <span
-            class="wz-text-bold wz-text-link">audit-keys</span></div>
+            class="wz-text-bold ">audit-keys</span></div>
         <div flex="50" class="wz-text-truncatable flex-50">Path: <span
-            class="wz-text-bold wz-text-link">etc/lists</span></div>
+            class="wz-text-bold">etc/lists</span></div>
       </md-card-content>
     </md-card>
   </div>
 
   <div layout="row">
     <button ng-if="adminMode" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
-      class='btn wz-button pull-right wz-margin-left-10 wz-margin-left-20'>
+      class='btn wz-button pull-right wz-margin-left-20 wz-margin-left-20'>
       <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
           aria-hidden='true'></i>Save list</span>
     </button>
@@ -61,7 +61,7 @@
         <md-card-content style="min-height: calc(100vh - 390px)">
           <label class="wz-icon-loupe">
           <input placeholder="Filter entries..." type="text" flex
-            class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
+            class="kuiLocalSearchInput height-40 ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
             ng-model="cdbContent" style="width:100%;">
           </label>
           <table class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">

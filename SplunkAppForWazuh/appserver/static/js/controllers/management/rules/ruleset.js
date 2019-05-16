@@ -142,6 +142,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     switchFiles() {
       this.scope.rulesetFiles = !this.scope.rulesetFiles
+      this.removeAllFilters()
     }
 
     /**
@@ -363,6 +364,19 @@ define(['../../module', 'FileSaver'], function(app) {
         }
         this.applyCustomFilters()
         return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
+      } catch (err) {
+        this.notification.showErrorToast('Error removing the filter')
+      }
+    }
+
+    /**
+     * Removes all filters
+     *
+     */
+    removeAllFilters() {
+      try {
+        window.localStorage.removeItem(`${this.view}`)
+        this.applyCustomFilters()
       } catch (err) {
         this.notification.showErrorToast('Error removing the filter')
       }

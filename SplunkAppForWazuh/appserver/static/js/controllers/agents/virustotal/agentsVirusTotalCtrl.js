@@ -80,15 +80,15 @@ define([
 
         new PieChart(
           'lastScannedFiles',
-          `${
-            this.filters
-          } | top limit=5 data.virustotal.source.file`,
+          `${this.filters} | top limit=5 data.virustotal.source.file`,
           'lastScannedFiles',
           this.scope
         ),
         new AreaChart(
           'maliciousEventsOverTimeElement',
-          `${this.filters} data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives`,
+          `${
+            this.filters
+          } data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives`,
           'maliciousEventsOverTimeElement',
           this.scope
         ),
@@ -137,11 +137,7 @@ define([
           'agents-virustotal',
           'VirusTotal',
           this.filters,
-          [
-            'lastScannedFiles',
-            'maliciousEventsOverTimeElement',
-            'lastFiles',
-          ],
+          ['lastScannedFiles', 'maliciousEventsOverTimeElement', 'lastFiles'],
           this.reportMetrics,
           this.tableResults,
           this.agentReportData

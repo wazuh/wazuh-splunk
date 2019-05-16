@@ -1833,3 +1833,13 @@ label.wz-icon-loupe  input {
 #scoreByPolicy .lazy-view-container {
   height: 80% !important;
 }
+
+.closeToastCross {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+}
+
+.md-sidenav {
+  background-color: #fafafa;
+}

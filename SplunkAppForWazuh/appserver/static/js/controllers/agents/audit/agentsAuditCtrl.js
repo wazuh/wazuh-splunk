@@ -156,9 +156,7 @@ define([
         ),
         new PieChart(
           'commandsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | top limit=5 data.audit.command`,
+          `${this.filters} sourcetype=wazuh | top limit=5 data.audit.command`,
           'commandsVizz',
           this.scope
         ),
