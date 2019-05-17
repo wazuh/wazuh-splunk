@@ -1843,3 +1843,7 @@ label.wz-icon-loupe  input {
 .md-sidenav {
   background-color: #fafafa;
 }
+
+.md-sidenav-right {
+  background-color: #fafafa !important;
+}
