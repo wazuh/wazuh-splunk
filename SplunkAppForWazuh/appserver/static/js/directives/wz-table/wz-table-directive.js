@@ -107,19 +107,31 @@ define([
                 $scope.keys.splice(idx, 1)
               }
             } else {
-              let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
-              try {
-                originalKey = originalKey[0].key
-                const originalIdx = $scope.originalkeys.findIndex(
-                  item => item.key === originalKey
-                )
-                if (originalIdx >= 0) {
-                  $scope.keys.splice(originalIdx, 0, originalKey)
-                } else {
-                  $scope.keys.push(originalKey)
+              let originalKey = $scope.originalkeys.filter(
+                k => k.key.value === key || k.key === key
+              )
+              originalKey = originalKey[0].key
+
+              const originalIdx = $scope.originalkeys.findIndex(
+                item => item.key === originalKey
+              )
+              if (originalIdx >= 0) {
+                $scope.keys.splice(originalIdx, 0, originalKey)
+              } else {
+                let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+                try {
+                  originalKey = originalKey[0].key
+                  const originalIdx = $scope.originalkeys.findIndex(
+                    item => item.key === originalKey
+                  )
+                  if (originalIdx >= 0) {
+                    $scope.keys.splice(originalIdx, 0, originalKey)
+                  } else {
+                    $scope.keys.push(originalKey)
+                  }
+                } catch (error) {
+                  $notificationService.showWarningToast('Cannot recover column.')
                 }
-              } catch (error) {
-                $notificationService.showWarningToast('Cannot recover column.')
               }
             }
           }
@@ -280,7 +292,7 @@ define([
               while (realTime) {
                 await fetch({ realTime: true })
                 $scope.$applyAsync()
-                await $timeout(2000)
+                await $timeout(5000)
               }
             } catch (error) {
               realTime = false

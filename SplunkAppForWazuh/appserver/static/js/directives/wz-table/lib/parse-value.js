@@ -73,12 +73,14 @@ define([], function() {
     }
 
     if (key.offset && dateDiffService) {
-      const date = (item || {})[key.value];
+      const date = (item || {})[key.value]
       if (!item[`${key.value}offset`]) {
-        item[`${key.value}offset`] = date;
+        item[`${key.value}offset`] = date
       }
       if (date) {
-        item[key.value] = dateDiffService.setBrowserOffset(item[`${key.value}offset`]);
+        item[key.value] = dateDiffService.setBrowserOffset(
+          item[`${key.value}offset`]
+        )
       }
     }
 

@@ -13,23 +13,23 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/single-value',
   '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   ColumnChart,
-  SingleValue,
   GaugeChart,
   PieChart,
   AreaChart,
   LinearChart,
   Table,
   TimePicker,
+  RawTableDataService
 ) {
   'use strict'
 
@@ -82,9 +82,8 @@ define([
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
-      this.scope.expandArray = [false, false, false, false, false,false,false]
+      this.scope.expandArray = [false, false, false, false, false, false, false]
       this.scope.expand = (i, id) => this.expand(i, id)
-
 
       this.filters = this.currentDataService.getSerializedFilters()
       this.timePicker = new TimePicker(
@@ -92,12 +91,12 @@ define([
         this.urlTokenModel.handleValueChange
       )
 
-      this.scope.$on('deletedFilter', (event) => {
+      this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
 
-      this.scope.$on('barFilter', (event) => {
+      this.scope.$on('barFilter', event => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -105,22 +104,20 @@ define([
       this.vizz = [
         /**
          * Visualizations
-         */ 
+         */
+
         new GaugeChart(
           'scoreByPolicy',
           `${
             this.filters
-          }  | stats values(data.sca.score) by data.sca.policy_id `,
+          }  |  stats values(data.sca.score) as values by data.sca.policy_id | sort - values`,
           'scoreByPolicy',
-          { trellisEnabled : true,
-            gaugeType : 'radialGauge'},
+          { trellisEnabled: true, gaugeType: 'radialGauge' },
           this.scope
         ),
         new PieChart(
           'resultDistribution',
-          `${
-            this.filters
-          }  | stats count by data.sca.check.result `,
+          `${this.filters}  | stats count by data.sca.check.result `,
           'resultDistribution',
           this.scope
         ),
@@ -150,25 +147,19 @@ define([
         ),
         new PieChart(
           'top5Agents',
-          `${
-            this.filters
-          }  | top agent.name limit=5`,
+          `${this.filters}  | top agent.name limit=5`,
           'top5Agents',
-          this.scope 
+          this.scope
         ),
-        new AreaChart( 
+        new AreaChart(
           'alertLevelEvolution',
-          `${
-            this.filters
-          } | timechart span=1h count by rule.level`,
+          `${this.filters} | timechart span=1h count by rule.level`,
           'alertLevelEvolution',
           this.scope
         ),
         new LinearChart(
           'overTimePolicy',
-          `${
-            this.filters
-          } | timechart count by data.sca.policy`,
+          `${this.filters} | timechart count by data.sca.policy`,
           'overTimePolicy',
           this.scope
         ),
@@ -179,6 +170,16 @@ define([
           } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
+          'alertsSummaryTable',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         )
       ]
       /**
@@ -194,9 +195,11 @@ define([
             'resultDistribution',
             'alertsOverTime',
             'resultDistributionByPolicy',
+            'top5Agents',
             'top5Failed',
             'top5Passed',
-            'alertsSummary'
+            'overTimePolicy',
+            'alertLevelEvolution'
           ],
           {}, //Metrics,
           this.tableResults,
@@ -335,7 +338,6 @@ define([
         }
       })
     }
-
   }
   app.controller('overviewSCACtrl', overviewSCA)
 })

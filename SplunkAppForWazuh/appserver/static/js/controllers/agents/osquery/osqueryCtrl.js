@@ -107,9 +107,7 @@ define([
         ),
         new PieChart(
           'mostCommonActions',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top data.osquery.action limit=5`,
+          `${this.filters} sourcetype=wazuh  | top data.osquery.action limit=5`,
           'mostCommonActions',
           this.scope
         ),

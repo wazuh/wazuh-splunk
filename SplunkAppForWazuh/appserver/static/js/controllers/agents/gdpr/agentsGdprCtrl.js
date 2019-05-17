@@ -135,9 +135,7 @@ define([
         ),
         new PieChart(
           'rulesVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top limit=5 rule.description `,
+          `${this.filters} sourcetype=wazuh  | top limit=5 rule.description `,
           'rulesVizz',
           this.scope
         ),
