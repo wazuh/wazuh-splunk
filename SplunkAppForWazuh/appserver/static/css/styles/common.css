@@ -1656,6 +1656,10 @@ input:focus {
   color: #1278b0 !important;
 }
 
+.formatted-log {
+  margin: -10px 10px;
+}
+
 .switch-log {
   margin: 5px 10px;
 }
