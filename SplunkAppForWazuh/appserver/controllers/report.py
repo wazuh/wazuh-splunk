@@ -27,11 +27,16 @@ import math
 
 class PDF(FPDF):
     def header(self):
+        # Add fonts 
+        # Note that RobotoThin and RobotoRegular can't be used with 'B'-'I' options
+        self.add_font('RobotoThin','', 'Roboto-Thin.ttf',uni=True)
+        self.add_font('RobotoRegular','', 'Roboto-Regular.ttf',uni=True)
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 15)
-        self.set_font('Arial', '', 11)
+        self.set_font('RobotoRegular', '', 11)
         self.set_text_color(75, 179, 204)
         #Contact info
+        self.set_y(12)
         self.cell(150) #Move to the right
         self.cell(0, 5, 'info@wazuh.com', 0, 0, 'R')
         self.ln() #Break line
@@ -45,7 +50,7 @@ class PDF(FPDF):
         self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
         self.set_text_color(75, 179, 204)
-        self.set_font('Arial', 'B', 8)
+        self.set_font('RobotoRegular', '', 7)
         # Page number
         self.cell(100, 10, self.copyright, 0, 0, 'L')
         self.cell(0, 10, 'Page ' + str(self.page_no()) + ' of {nb}', 0, 0, 'R')
@@ -90,7 +95,7 @@ class report(controllers.BaseController):
             os.remove(img['path'])
 
 
-    def getString(self, value,labels):
+    def getString(self, value,labels={}):
         result = ""
         if type(value) is list:
             for i in value:
@@ -108,9 +113,9 @@ class report(controllers.BaseController):
 
 
     def addTableRow(self,key,value,pdf,labels):
-        pdf.set_text_color(150, 150, 150)
+        pdf.set_text_color(23,23,23)
         pdf.set_draw_color(75, 179, 204)
-        pdf.set_font('Arial', '', 8)
+        pdf.set_font('RobotoThin', '', 8)
 
         fullValue = self.getString(value,labels)
         
@@ -130,21 +135,21 @@ class report(controllers.BaseController):
                 pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
                 if(pdf.get_y() > 250):
                     pdf.add_page()
-                    pdf.ln(25)
+                    pdf.ln(20)
         else: # if value's length is lower than 50 we write the full string
             pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
             pdf.cell(100, 5, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
             pdf.cell(0, 5, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
             if(pdf.get_y() > 250):
                 pdf.add_page()
-                pdf.ln(25)
+                pdf.ln(20)
 
 
 
     def addCustomTableRow(self,row,keys_amount,pdf,labels):
-        pdf.set_text_color(150, 150, 150)
+        pdf.set_text_color(23,23,23)
         pdf.set_draw_color(75, 179, 204)
-        pdf.set_font('Arial', '', 8)
+        pdf.set_font('RobotoThin', '', 8)
         max_len = (185 / keys_amount) / 2
         num_lines = 1
 
@@ -176,7 +181,7 @@ class report(controllers.BaseController):
             pdf.ln(4)
             if(pdf.get_y() > 250):
                 pdf.add_page()
-                pdf.ln(25)
+                pdf.ln(20)
 
 
                 
@@ -199,7 +204,7 @@ class report(controllers.BaseController):
                             
                             if(pdf.get_y() > 250):
                                 pdf.add_page()
-                                pdf.ln(25)
+                                pdf.ln(20)
                     if type(value) is dict:
                             customTables.append({key:value})
             elif type(data) is list:
@@ -212,30 +217,125 @@ class report(controllers.BaseController):
 
 
             if customTables:
+                tables = {}
                 for extraTable in customTables:
                     for key,value in extraTable.iteritems():
-                        pdf.set_font('Arial', '', 10)
-                        pdf.ln(5)
-                        pdf.set_fill_color(75, 179, 204)
-                        pdf.set_text_color(44,44,44)
-                        pdf.set_draw_color(155, 155, 155)
-                        pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
-                        pdf.ln(5)
+                        pdf.set_font('RobotoRegular', '', 10)
+                        #pdf.set_fill_color(75, 179, 204)
+                        #pdf.set_text_color(44,44,44)
+                        #pdf.set_draw_color(155, 155, 155)
+                        #pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                         pdf.set_text_color(255,255,255)
-                        pdf.set_font('Arial', '', 9)
+                        pdf.set_font('RobotoRegular', '', 8)
                         pdf.set_draw_color(75, 179, 204)
+                        tableKey = self.getString(key,labels)
+                        newTable  = { tableKey : {} }
+                        fields = []
+                        rows = []
                         if type(value) is list:
                             keys_amount = len(value[0].keys())
                             for key in value[0]: #Header
-                                pdf.cell(185/keys_amount, 5, txt = self.getString(key,labels), border = '', align = '', fill = True, link = '')
-                            pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
-                            pdf.ln(5)
-                            pdf.set_text_color(150, 150, 150)
+                                fields.append(key)
+                                #pdf.cell(185/keys_amount, 5, txt = self.getString(key,labels), border = '', align = '', fill = True, link = '')
+                            #pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
+                            #pdf.ln(5)
+                            pdf.set_text_color(23,23,23)
                             pdf.set_draw_color(75, 179, 204)
-                            pdf.set_font('Arial', '', 8)
+                            pdf.set_font('RobotoThin', '', 8)
                             for row in value: # rows
-                                self.addCustomTableRow(row,keys_amount,pdf,labels)
+                                nextRow = []
+                                for rowKeys, rowValues in row.iteritems():
+                                    nextRow.append(self.getString(rowValues))
+                                rows.append(nextRow)
+                                #self.addCustomTableRow(row,keys_amount,pdf,labels)
+                            newTable[tableKey] = { "fields": fields, "rows": rows}
+                            self.logger.info(str(newTable))
+                            tables = newTable
+                            rows_count = 12 # Set row_count with 12 for the agent information size
+                            table_keys = tables.keys()
+                            for key in table_keys:
+                                if tables[key]:
+                                    if(pdf.get_y() > 225):
+                                        pdf.add_page()
+                                        pdf.ln(20)
+                                    table_title = key
+                                    pdf.set_font('RobotoThin', '', 13)
+                                    pdf.set_fill_color(75, 179, 204)
+                                    pdf.set_text_color(44,44,44)
+                                    pdf.set_draw_color(155, 155, 155)
+                                    pdf.ln(5)
+                                    pdf.cell(0, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
+                                    pdf.ln(5)
+                                    rows_count = rows_count + 5
+                                    pdf.set_font('RobotoRegular', '', 8)
+                                    pdf.set_fill_color(75, 179, 204)
+                                    pdf.set_text_color(255,255,255)
+                                    sizes_field = self.calculate_table_width(pdf, tables[key])
+                                    count = 0
+                                    #Table head - th
+                                    for field in tables[key]['fields']:
+                                        if(pdf.get_y() > 230):
+                                            pdf.add_page()
+                                            pdf.ln(20)
+                                        if field != 'sparkline':
+                                            x = 0
+                                            w = sizes_field[count]
+                                            width = w[0] if isinstance(w, list) else w
+                                            pdf.cell(width, 4, (self.getString(field)).capitalize(), 0, 0, 'L', 1)
+                                            count = count + 1
+                                    pdf.ln()
+                                    pdf.set_text_color(91, 91, 91)
+                                    pdf.set_draw_color(75, 179, 204)
+                                    pdf.set_font('RobotoThin', '', 8)
+                                    #Table rows - tr
+                                    for row in tables[key]['rows']:
+                                        first_field = True
+                                        bigger_y = 0
+                                        reset_y = False
+                                        rh = 4 #Row heigth
+                                        count = 0
+                                        for value in row:
+                                            if(pdf.get_y() > 250):
+                                                pdf.add_page()
+                                                pdf.ln(20)
+                                            if not isinstance(value, list) and count < len(sizes_field):
+                                                w = sizes_field[count]
+                                                width = w[0] if isinstance(w, list) else w
+                                                value = self.split_string(width, value) if isinstance(w, list) else value
+                                                if value and isinstance(value, list):
+                                                    if first_field:
+                                                        x = pdf.get_x()
+                                                        first_field = False
+                                                        y = pdf.get_y()
+                                                        reset_y = y
+                                                        bigger_y = y
+                                                    else:
+                                                        y = reset_y
+                                                    rows_count = rows_count + len(value)
+                                                    for v in value:
+                                                        pdf.set_xy(x, y)
+                                                        pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
+                                                        y = y + rh
+                                                    x = x + width
+                                                    bigger_y = y if y > bigger_y else bigger_y
+                                                else:
+                                                    if reset_y:
+                                                        pdf.set_xy(pdf.get_x(), reset_y)
+                                                    pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
+                                                    y = pdf.get_y()
+                                                count = count + 1
+                                        rows_count = rows_count + 1
+                                        y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
+                                        pdf.set_xy(12, y)
+                                        pdf.line(12, y, 202, y)
                         elif type(value) is dict:
+                            pdf.ln(5)
+                            pdf.set_font('RobotoThin', '', 13)
+                            pdf.set_fill_color(75, 179, 204)
+                            pdf.set_text_color(44,44,44)
+                            pdf.set_draw_color(155, 155, 155)
+                            pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
+                            pdf.ln(5)
                             for currentTableKey, currentTableValue in value.iteritems():
                                 self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
 
@@ -293,40 +393,40 @@ class report(controllers.BaseController):
             pdf.ln(20)
             #Color WazuhBlue
             pdf.set_text_color(75, 179, 204)
-            # Title Arial Bold 20
-            pdf.set_font('Arial', '', 25)
+            # Title RobotoThin Bold 20
+            pdf.set_font('RobotoThin', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('Arial', '', 12)
+            pdf.set_font('RobotoThin', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(1)
 
             if agent_data:
                 self.print_agent_info(agent_data, pdf)
 
-            pdf.ln(5)
+            pdf.ln(10)
             pdf.set_draw_color(200,200,200)
             wmodules_conf_data = []
             for n in data['data']['configurations']:
                 try:
                     #Set color and print configuration tittle
-                    pdf.set_font('Arial', '', 18)
+                    pdf.set_font('RobotoThin', '', 18)
                     if first_page:
                         first_page = False
                     else:
                         pdf.add_page()
-                        pdf.ln(25)
+                        pdf.ln(20)
                     pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
                     pdf.set_margins(12, 0, 12)
                     pdf.ln(3)
                     for currentSection in n['sections']:
                         # header
-                        pdf.set_font('Arial', '', 12)
+                        pdf.set_font('RobotoRegular', '', 12)
                         pdf.set_fill_color(75, 179, 204)
                         pdf.set_text_color(255,255,255)
                         if(pdf.get_y() > 250):
                             pdf.add_page()
-                            pdf.ln(25)
+                            pdf.ln(20)
                         pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
                         customLabels = {} 
                         if 'labels' in currentSection:
@@ -335,11 +435,11 @@ class report(controllers.BaseController):
                         # rows
                         pdf.set_text_color(91, 91, 91)
                         pdf.set_draw_color(75, 179, 204)
-                        pdf.set_font('Arial', '', 8)
-                        pdf.ln(7)
+                        pdf.set_font('RobotoThin', '', 8)
+                        pdf.ln(8)
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
-                                pdf.set_text_color(150, 150, 150)
+                                pdf.set_text_color(23,23,23)
                                 configuration = currentConfig['configuration']
                                 component = currentConfig['component']
                                 config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+component+'/'+configuration , 'id':str(data['apiId']['_key'])}
@@ -437,18 +537,18 @@ class report(controllers.BaseController):
             pdf.ln(20)
             #Color WazuhBlue
             pdf.set_text_color(75, 179, 204)
-            # Title Arial Bold 20
-            pdf.set_font('Arial', '', 25)
+            # Title RobotoThin Bold 20
+            pdf.set_font('RobotoThin', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('Arial', '', 12)
+            pdf.set_font('RobotoThin', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
             if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
                 pdf.ln(7)
                 pdf.set_fill_color(75, 179, 204)
                 pdf.set_text_color(255,255,255)
-                pdf.set_font('Arial', '', 10)
+                pdf.set_font('RobotoThin', '', 10)
                 if time_range:
                     pdf.cell(0, 5, ' Search time range: ' + time_range , 0, 0, 'L', 1)
                     pdf.ln(5)
@@ -465,7 +565,7 @@ class report(controllers.BaseController):
                 line_width = 0
                 total_width = 190
                 pdf.ln(10)
-                pdf.set_font('Arial', '', 8)
+                pdf.set_font('RobotoThin', '', 8)
                 for key in metrics.keys():
                     text = (str(key) +': '+ str(metrics[key]))
                     text_w = pdf.get_string_width(text) + w
@@ -491,7 +591,7 @@ class report(controllers.BaseController):
                 n_images = len(saved_images)
                 # Set top margin checking if metrics exist
                 pdf.set_text_color(75, 179, 204)
-                pdf.set_font('Arial', '', 14)
+                pdf.set_font('RobotoThin', '', 14)
                 if metrics_exists:
                     y_img = y_img + 10
                 if agent_data:
@@ -539,14 +639,13 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 rows_count = 12 # Set row_count with 12 for the agent information size
                 table_keys = tables.keys()
-                self.logger.info(str(tables))
                 for key in table_keys:
                     if tables[key]:#Check if this table has information, if it has, process it
                         table_title = key
                         pdf.ln(10)
                         #Table title
                         pdf.set_text_color(75, 179, 204)
-                        pdf.set_font('Arial', '', 14)
+                        pdf.set_font('RobotoThin', '', 14)
                         if rows_count > 60:
                             pdf.add_page()
                             pdf.ln(18)
@@ -555,7 +654,7 @@ class report(controllers.BaseController):
                         rows_count = rows_count + 5
                         pdf.ln()
                         #Table content
-                        pdf.set_font('Arial', '', 8)
+                        pdf.set_font('RobotoThin', '', 8)
                         pdf.set_fill_color(75, 179, 204)
                         pdf.set_text_color(255,255,255)
                         sizes_field = self.calculate_table_width(pdf, tables[key])
@@ -622,6 +721,7 @@ class report(controllers.BaseController):
                             pdf.line(10, y, 200, y)
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
+            self.logger.info('wazuh-'+pdf_name+'-'+report_id+'.pdf')
             #Delete the images
             self.delete_images(saved_images)
         except Exception as e:
@@ -711,14 +811,15 @@ class report(controllers.BaseController):
             count = 0
             for value in row:
                 if not isinstance(value, list):
-                    key = fields[count]
-                    prev_width = sizes[key]
-                    if value: # Check for possible undefined elements
-                        width = pdf.get_string_width(value) + 1
-                    else:
-                         width = 1
-                    if width > prev_width:
-                        sizes[key] = width
+                    if count < len(fields):
+                        key = fields[count]
+                        prev_width = sizes[key]
+                        if value: # Check for possible undefined elements
+                            width = pdf.get_string_width(str(value)) + 1
+                        else:
+                            width = 1
+                        if width > prev_width:
+                            sizes[key] = width
                 count = count + 1
         # This code block resize the table for fill all the width
         for key in sizes.keys():
@@ -777,24 +878,26 @@ class report(controllers.BaseController):
         for key in fields.keys():
             fields[key] = fields[key] + diff
         #Set color and print th
-        pdf.set_font('Arial', '', 8)
+        pdf.set_font('RobotoThin', '', 8)
         pdf.set_fill_color(75, 179, 204)
         pdf.set_text_color(255,255,255)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
         pdf.ln()
         #Change text color and print tr
-        pdf.set_text_color(75, 179, 204)
+        pdf.set_text_color(23,23,23)
+        pdf.set_draw_color(75, 179, 204)
         for key in sorted_fields:
-            pdf.cell(fields[key], 4, str(agent_info[key]), 0, 0, 'L', 0)
+            pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
         #Print the rest of the agent information
-        pdf.ln(5)
-        pdf.set_text_color(91, 91, 91)
-        pdf.cell(0,6, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
+        pdf.ln(7)
+        pdf.set_font('RobotoThin','',11)
+        pdf.set_text_color(23,23,23)
+        pdf.cell(0,10, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
         pdf.ln()
-        pdf.cell(0,6, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
+        pdf.cell(0,10, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
         pdf.ln()
-        pdf.cell(0,6, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
+        pdf.cell(0,10, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
         pdf.ln(2)
 
     #Sorts the width of the fields
