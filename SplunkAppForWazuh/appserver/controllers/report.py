@@ -184,6 +184,84 @@ class report(controllers.BaseController):
                 pdf.ln(20)
 
 
+    def addTables(self,tables,pdf):
+        rows_count = 12 # Set row_count with 12 for the agent information size
+        table_keys = tables.keys()
+        for key in table_keys:
+            if tables[key]:
+                if(pdf.get_y() > 225):
+                    pdf.add_page()
+                    pdf.ln(20)
+                table_title = key
+                pdf.set_font('RobotoThin', '', 13)
+                pdf.set_fill_color(75, 179, 204)
+                pdf.set_text_color(44,44,44)
+                pdf.set_draw_color(155, 155, 155)
+                pdf.ln(5)
+                pdf.cell(0, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
+                pdf.ln(5)
+                rows_count = rows_count + 5
+                pdf.set_font('RobotoRegular', '', 8)
+                pdf.set_fill_color(75, 179, 204)
+                pdf.set_text_color(255,255,255)
+                sizes_field = self.calculate_table_width(pdf, tables[key])
+                count = 0
+                #Table head - th
+                for field in tables[key]['fields']:
+                    if(pdf.get_y() > 230):
+                        pdf.add_page()
+                        pdf.ln(20)
+                    if field != 'sparkline':
+                        x = 0
+                        w = sizes_field[count]
+                        width = w[0] if isinstance(w, list) else w
+                        pdf.cell(width, 4, (self.getString(field)).capitalize(), 0, 0, 'L', 1)
+                        count = count + 1
+                pdf.ln()
+                pdf.set_text_color(91, 91, 91)
+                pdf.set_draw_color(75, 179, 204)
+                pdf.set_font('RobotoThin', '', 8)
+                #Table rows - tr
+                for row in tables[key]['rows']:
+                    first_field = True
+                    bigger_y = 0
+                    reset_y = False
+                    rh = 4 #Row heigth
+                    count = 0
+                    for value in row:
+                        if(pdf.get_y() > 250):
+                            pdf.add_page()
+                            pdf.ln(20)
+                        if not isinstance(value, list) and count < len(sizes_field):
+                            w = sizes_field[count]
+                            width = w[0] if isinstance(w, list) else w
+                            value = self.split_string(width, value) if isinstance(w, list) else value
+                            if value and isinstance(value, list):
+                                if first_field:
+                                    x = pdf.get_x()
+                                    first_field = False
+                                    y = pdf.get_y()
+                                    reset_y = y
+                                    bigger_y = y
+                                else:
+                                    y = reset_y
+                                rows_count = rows_count + len(value)
+                                for v in value:
+                                    pdf.set_xy(x, y)
+                                    pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
+                                    y = y + rh
+                                x = x + width
+                                bigger_y = y if y > bigger_y else bigger_y
+                            else:
+                                if reset_y:
+                                    pdf.set_xy(pdf.get_x(), reset_y)
+                                pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
+                                y = pdf.get_y()
+                            count = count + 1
+                    rows_count = rows_count + 1
+                    y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
+                    pdf.set_xy(12, y)
+                    pdf.line(12, y, 202, y)
                 
 
 
@@ -251,83 +329,8 @@ class report(controllers.BaseController):
                             newTable[tableKey] = { "fields": fields, "rows": rows}
                             self.logger.info(str(newTable))
                             tables = newTable
-                            rows_count = 12 # Set row_count with 12 for the agent information size
-                            table_keys = tables.keys()
-                            for key in table_keys:
-                                if tables[key]:
-                                    if(pdf.get_y() > 225):
-                                        pdf.add_page()
-                                        pdf.ln(20)
-                                    table_title = key
-                                    pdf.set_font('RobotoThin', '', 13)
-                                    pdf.set_fill_color(75, 179, 204)
-                                    pdf.set_text_color(44,44,44)
-                                    pdf.set_draw_color(155, 155, 155)
-                                    pdf.ln(5)
-                                    pdf.cell(0, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
-                                    pdf.ln(5)
-                                    rows_count = rows_count + 5
-                                    pdf.set_font('RobotoRegular', '', 8)
-                                    pdf.set_fill_color(75, 179, 204)
-                                    pdf.set_text_color(255,255,255)
-                                    sizes_field = self.calculate_table_width(pdf, tables[key])
-                                    count = 0
-                                    #Table head - th
-                                    for field in tables[key]['fields']:
-                                        if(pdf.get_y() > 230):
-                                            pdf.add_page()
-                                            pdf.ln(20)
-                                        if field != 'sparkline':
-                                            x = 0
-                                            w = sizes_field[count]
-                                            width = w[0] if isinstance(w, list) else w
-                                            pdf.cell(width, 4, (self.getString(field)).capitalize(), 0, 0, 'L', 1)
-                                            count = count + 1
-                                    pdf.ln()
-                                    pdf.set_text_color(91, 91, 91)
-                                    pdf.set_draw_color(75, 179, 204)
-                                    pdf.set_font('RobotoThin', '', 8)
-                                    #Table rows - tr
-                                    for row in tables[key]['rows']:
-                                        first_field = True
-                                        bigger_y = 0
-                                        reset_y = False
-                                        rh = 4 #Row heigth
-                                        count = 0
-                                        for value in row:
-                                            if(pdf.get_y() > 250):
-                                                pdf.add_page()
-                                                pdf.ln(20)
-                                            if not isinstance(value, list) and count < len(sizes_field):
-                                                w = sizes_field[count]
-                                                width = w[0] if isinstance(w, list) else w
-                                                value = self.split_string(width, value) if isinstance(w, list) else value
-                                                if value and isinstance(value, list):
-                                                    if first_field:
-                                                        x = pdf.get_x()
-                                                        first_field = False
-                                                        y = pdf.get_y()
-                                                        reset_y = y
-                                                        bigger_y = y
-                                                    else:
-                                                        y = reset_y
-                                                    rows_count = rows_count + len(value)
-                                                    for v in value:
-                                                        pdf.set_xy(x, y)
-                                                        pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
-                                                        y = y + rh
-                                                    x = x + width
-                                                    bigger_y = y if y > bigger_y else bigger_y
-                                                else:
-                                                    if reset_y:
-                                                        pdf.set_xy(pdf.get_x(), reset_y)
-                                                    pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
-                                                    y = pdf.get_y()
-                                                count = count + 1
-                                        rows_count = rows_count + 1
-                                        y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
-                                        pdf.set_xy(12, y)
-                                        pdf.line(12, y, 202, y)
+                            self.addTables(tables,pdf)
+                            
                         elif type(value) is dict:
                             pdf.ln(5)
                             pdf.set_font('RobotoThin', '', 13)
