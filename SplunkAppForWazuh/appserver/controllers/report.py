@@ -184,7 +184,7 @@ class report(controllers.BaseController):
                 pdf.ln(20)
 
 
-    def addTables(self,tables,pdf):
+    def addTables(self,tables,pdf,max_width=190,margin=10):
         rows_count = 12 # Set row_count with 12 for the agent information size
         table_keys = tables.keys()
         for key in table_keys:
@@ -198,13 +198,13 @@ class report(controllers.BaseController):
                 pdf.set_text_color(44,44,44)
                 pdf.set_draw_color(155, 155, 155)
                 pdf.ln(5)
-                pdf.cell(0, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
+                pdf.cell(max_width, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
                 pdf.ln(5)
                 rows_count = rows_count + 5
                 pdf.set_font('RobotoRegular', '', 8)
                 pdf.set_fill_color(75, 179, 204)
                 pdf.set_text_color(255,255,255)
-                sizes_field = self.calculate_table_width(pdf, tables[key])
+                sizes_field = self.calculate_table_width(pdf, tables[key], max_width)
                 count = 0
                 #Table head - th
                 for field in tables[key]['fields']:
@@ -260,8 +260,8 @@ class report(controllers.BaseController):
                             count = count + 1
                     rows_count = rows_count + 1
                     y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
-                    pdf.set_xy(12, y)
-                    pdf.line(12, y, 202, y)
+                    pdf.set_xy(margin, y)
+                    pdf.line(margin, y, max_width+margin, y)
                 
 
 
@@ -313,7 +313,7 @@ class report(controllers.BaseController):
                         if type(value) is list:
                             keys_amount = len(value[0].keys())
                             for key in value[0]: #Header
-                                fields.append(key)
+                                fields.append(self.getString(key,labels))
                                 #pdf.cell(185/keys_amount, 5, txt = self.getString(key,labels), border = '', align = '', fill = True, link = '')
                             #pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
                             #pdf.ln(5)
@@ -329,7 +329,7 @@ class report(controllers.BaseController):
                             newTable[tableKey] = { "fields": fields, "rows": rows}
                             self.logger.info(str(newTable))
                             tables = newTable
-                            self.addTables(tables,pdf)
+                            self.addTables(tables,pdf,185,12)
                             
                         elif type(value) is dict:
                             pdf.ln(5)
@@ -640,88 +640,7 @@ class report(controllers.BaseController):
                 if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
                     pdf.add_page()
                     pdf.ln(20)
-                rows_count = 12 # Set row_count with 12 for the agent information size
-                table_keys = tables.keys()
-                for key in table_keys:
-                    if tables[key]:#Check if this table has information, if it has, process it
-                        table_title = key
-                        pdf.ln(10)
-                        #Table title
-                        pdf.set_text_color(75, 179, 204)
-                        pdf.set_font('RobotoThin', '', 14)
-                        if rows_count > 60:
-                            pdf.add_page()
-                            pdf.ln(18)
-                            rows_count = 0
-                        pdf.cell(0 , 5, table_title, 0, 1, 'L')
-                        rows_count = rows_count + 5
-                        pdf.ln()
-                        #Table content
-                        pdf.set_font('RobotoThin', '', 8)
-                        pdf.set_fill_color(75, 179, 204)
-                        pdf.set_text_color(255,255,255)
-                        sizes_field = self.calculate_table_width(pdf, tables[key])
-                        count = 0
-                        #Table head
-                        for field in tables[key]['fields']:
-                            if rows_count > 60:
-                                pdf.add_page()
-                                pdf.ln(15)
-                                rows_count = 0
-                            if field != 'sparkline':
-                                x = 0
-                                #Check if the with is splitted in several rows
-                                w = sizes_field[count]
-                                width = w[0] if isinstance(w, list) else w
-                                pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
-                                count = count + 1
-                        pdf.ln()
-                        pdf.set_text_color(91, 91, 91)
-                        pdf.set_draw_color(75, 179, 204)
-                        #Table rows
-                        for row in tables[key]['rows']:
-                            first_field = True
-                            bigger_y = 0
-                            reset_y = False
-                            rh = 4 # Row heigth
-                            count = 0
-                            if rows_count > 55:
-                                pdf.add_page()
-                                pdf.ln(15)
-                                rows_count = 0
-                            for value in row:
-                                #Check that is not sparkline(sparkline field is an array)
-                                if not isinstance(value, list):
-                                    #Check if the with is splitted in several rows
-                                    w = sizes_field[count]
-                                    width = w[0] if isinstance(w, list) else w
-                                    value = self.split_string(width, value) if isinstance(w, list) else value
-                                    if value and isinstance(value, list):
-                                        if first_field:
-                                            x = pdf.get_x()
-                                            first_field = False
-                                            y = pdf.get_y()
-                                            reset_y = y
-                                            bigger_y = y
-                                        else:
-                                            y = reset_y
-                                        rows_count = rows_count + len(value)
-                                        for v in value:
-                                            pdf.set_xy(x, y)
-                                            pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
-                                            y = y + rh
-                                        x = x + width
-                                        bigger_y = y if y > bigger_y else bigger_y
-                                    else:
-                                        if reset_y:
-                                            pdf.set_xy(pdf.get_x(), reset_y)
-                                        pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
-                                        y = pdf.get_y()
-                                    count = count + 1
-                            rows_count = rows_count + 1
-                            y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
-                            pdf.set_xy(10, y)
-                            pdf.line(10, y, 200, y)
+                self.addTables(tables,pdf,190,10)
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
             self.logger.info('wazuh-'+pdf_name+'-'+report_id+'.pdf')
@@ -802,13 +721,13 @@ class report(controllers.BaseController):
         return False
 
     #Calculates the width of the fields
-    def calculate_table_width(self, pdf, table):
+    def calculate_table_width(self, pdf, table, max_width=190):
         sizes = {}
         total_width = 0
         fields = table['fields']
         for field in fields:
             if field != 'sparkline':
-                width = pdf.get_string_width(field) + 1
+                width = pdf.get_string_width(field) + 2
                 sizes[field] = width
         for row in table['rows']:
             count = 0
@@ -818,7 +737,7 @@ class report(controllers.BaseController):
                         key = fields[count]
                         prev_width = sizes[key]
                         if value: # Check for possible undefined elements
-                            width = pdf.get_string_width(str(value)) + 1
+                            width = pdf.get_string_width(str(value)) + 2
                         else:
                             width = 1
                         if width > prev_width:
@@ -830,21 +749,21 @@ class report(controllers.BaseController):
                 total_width = total_width + sizes[key]
             else:
                 total_width = total_width + 0
-        if total_width < 190:
-            diff = 190 - total_width
+        if total_width < max_width:
+            diff = max_width - total_width
             keys_num = len(sizes.keys())
             diff = diff / keys_num
             for key in sizes.keys(): # Sum the proporcional width difference to the fields
                 sizes[key] = sizes[key] + diff
         # Check if the row is more wide and calculates the width
-        elif total_width > 190:
+        elif total_width > max_width:
             wide_fields = []
             for key in sizes.keys():
                 if sizes[key] > 60:
                     wide_fields.append(key)
             fields_to_sum = self.exclude_fields(wide_fields, sizes)
             total_width_narrow_fields = self.sum_numbers_dic(fields_to_sum)
-            remaining_width = 190 - total_width_narrow_fields
+            remaining_width = max_width - total_width_narrow_fields
             wide_size = remaining_width / len(wide_fields)
             for wf in wide_fields:
                 sizes_arr = []
