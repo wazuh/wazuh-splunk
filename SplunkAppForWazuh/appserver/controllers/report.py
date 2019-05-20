@@ -113,10 +113,7 @@ class report(controllers.BaseController):
 
 
     def addTableRow(self,key,value,pdf,labels):
-        pdf.set_text_color(23,23,23)
-        pdf.set_draw_color(75, 179, 204)
-        pdf.set_font('RobotoThin', '', 8)
-
+        self.setTableRowStyle(pdf)
         fullValue = self.getString(value,labels)
         
         # If value's length is greater than 50, we write 50characters per row
@@ -144,47 +141,49 @@ class report(controllers.BaseController):
                 pdf.add_page()
                 pdf.ln(20)
 
+    def setTableTitle(self,pdf):
+        pdf.set_font('RobotoThin', '', 13)
+        pdf.set_text_color(44,44,44)
+        pdf.set_draw_color(155, 155, 155)
 
+    def setBlueHeaderStyle(self,pdf):
+        pdf.set_fill_color(75, 179, 204)
+        pdf.set_text_color(255,255,255)
+        pdf.set_font('RobotoThin', '', 10)
 
-    def addCustomTableRow(self,row,keys_amount,pdf,labels):
+    def setTableRowStyle(self,pdf):
         pdf.set_text_color(23,23,23)
         pdf.set_draw_color(75, 179, 204)
         pdf.set_font('RobotoThin', '', 8)
-        max_len = (185 / keys_amount) / 2
-        num_lines = 1
 
-        # Calculate the number of lines needed to show a row
-        for key,value in row.iteritems():
-            fullValue = self.getString(value,labels)
-            totalCharacters = len(fullValue)
-            tmpValue = []
-            if totalCharacters > max_len:
-                tmpLines = (len(fullValue) / max_len) + 1
-                # Get the max amount of lines needed to print the full string
-                if tmpLines > num_lines:
-                    num_lines = tmpLines
-                for i in range(1,int(num_lines+1)):
-                    tmpValue.append(fullValue[(i-1)*max_len:i*max_len])
-            else:
-                tmpValue.append(value)
-            row[key] = tmpValue
-        
-        for i in range(0,num_lines):
-            for currentKey in row.keys():
-                useBorder = ''
-                if i == num_lines-1:
-                    useBorder = 'B'
-                if i < len(row[currentKey]):
-                    pdf.cell(185/keys_amount, 4, txt = str(row[currentKey][i]).capitalize(), border = useBorder, align = '', ln = 0, fill = False, link = '')
-                else:
-                    pdf.cell(185/keys_amount, 4, txt = " ", border = useBorder, align = '', ln = 0, fill = False, link = '')
-            pdf.ln(4)
-            if(pdf.get_y() > 250):
-                pdf.add_page()
-                pdf.ln(20)
-
+    def setBlueHeaderStyle(self,pdf):
+        pdf.set_font('RobotoRegular', '', 8)
+        pdf.set_fill_color(75, 179, 204)
+        pdf.set_text_color(255,255,255)
+    
+    def setBlueTableTitle(self,pdf):
+        pdf.set_font('RobotoRegular', '', 12)
+        pdf.set_fill_color(75, 179, 204)
+        pdf.set_text_color(255,255,255)
 
     def addTables(self,tables,pdf,max_width=190,margin=10):
+        """ Creates tables with multiple fields
+            the width of each column is calculated depending on its content size
+            
+            Parameters
+                    ----------
+                    - tables: array of tables to be printed
+                        each table must be:
+                        { "tableTitle" : {
+                                "fields" : [field1,field2],
+                                "rows"   : [[value1.1, value1.2], [value2.1,value2.2]]
+                            }
+                        }
+                    - max_width - by default: 190 (A4 paper width)
+                        maximum width that the tables have
+                    - margin - by default: 10
+                        margin of table rows
+        """
         rows_count = 12 # Set row_count with 12 for the agent information size
         table_keys = tables.keys()
         for key in table_keys:
@@ -193,17 +192,12 @@ class report(controllers.BaseController):
                     pdf.add_page()
                     pdf.ln(20)
                 table_title = key
-                pdf.set_font('RobotoThin', '', 13)
-                pdf.set_fill_color(75, 179, 204)
-                pdf.set_text_color(44,44,44)
-                pdf.set_draw_color(155, 155, 155)
+                self.setTableTitle(pdf)
                 pdf.ln(5)
                 pdf.cell(max_width, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
                 pdf.ln(5)
                 rows_count = rows_count + 5
-                pdf.set_font('RobotoRegular', '', 8)
-                pdf.set_fill_color(75, 179, 204)
-                pdf.set_text_color(255,255,255)
+                self.setBlueHeaderStyle(pdf)
                 sizes_field = self.calculate_table_width(pdf, tables[key], max_width)
                 count = 0
                 #Table head - th
@@ -218,9 +212,7 @@ class report(controllers.BaseController):
                         pdf.cell(width, 4, (self.getString(field)).capitalize(), 0, 0, 'L', 1)
                         count = count + 1
                 pdf.ln()
-                pdf.set_text_color(91, 91, 91)
-                pdf.set_draw_color(75, 179, 204)
-                pdf.set_font('RobotoThin', '', 8)
+                self.setTableRowStyle(pdf)
                 #Table rows - tr
                 for row in tables[key]['rows']:
                     first_field = True
@@ -293,19 +285,11 @@ class report(controllers.BaseController):
                         for listItem in item:
                             self.addTable(listItem,pdf,labels)
 
-
             if customTables:
                 tables = {}
                 for extraTable in customTables:
                     for key,value in extraTable.iteritems():
-                        pdf.set_font('RobotoRegular', '', 10)
-                        #pdf.set_fill_color(75, 179, 204)
-                        #pdf.set_text_color(44,44,44)
-                        #pdf.set_draw_color(155, 155, 155)
-                        #pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
-                        pdf.set_text_color(255,255,255)
-                        pdf.set_font('RobotoRegular', '', 8)
-                        pdf.set_draw_color(75, 179, 204)
+                        self.setBlueHeaderStyle(pdf)
                         tableKey = self.getString(key,labels)
                         newTable  = { tableKey : {} }
                         fields = []
@@ -314,35 +298,21 @@ class report(controllers.BaseController):
                             keys_amount = len(value[0].keys())
                             for key in value[0]: #Header
                                 fields.append(self.getString(key,labels))
-                                #pdf.cell(185/keys_amount, 5, txt = self.getString(key,labels), border = '', align = '', fill = True, link = '')
-                            #pdf.cell(0, 5, txt = " ", border = '', align = '', fill = True, link = '')
-                            #pdf.ln(5)
-                            pdf.set_text_color(23,23,23)
-                            pdf.set_draw_color(75, 179, 204)
-                            pdf.set_font('RobotoThin', '', 8)
+                            self.setTableRowStyle(pdf)
                             for row in value: # rows
                                 nextRow = []
                                 for rowKeys, rowValues in row.iteritems():
                                     nextRow.append(self.getString(rowValues))
                                 rows.append(nextRow)
-                                #self.addCustomTableRow(row,keys_amount,pdf,labels)
                             newTable[tableKey] = { "fields": fields, "rows": rows}
-                            self.logger.info(str(newTable))
-                            tables = newTable
-                            self.addTables(tables,pdf,185,12)
-                            
+                            self.addTables(newTable,pdf,185,12)
                         elif type(value) is dict:
                             pdf.ln(5)
-                            pdf.set_font('RobotoThin', '', 13)
-                            pdf.set_fill_color(75, 179, 204)
-                            pdf.set_text_color(44,44,44)
-                            pdf.set_draw_color(155, 155, 155)
+                            self.setTableTitle(pdf)
                             pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                             pdf.ln(5)
                             for currentTableKey, currentTableValue in value.iteritems():
                                 self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
-
-
 
         except Exception as e:
             self.logger.error("error generating report table " + str(e))
@@ -396,16 +366,18 @@ class report(controllers.BaseController):
             pdf.ln(20)
             #Color WazuhBlue
             pdf.set_text_color(75, 179, 204)
-            # Title RobotoThin Bold 20
+            # Title pdf
             pdf.set_font('RobotoThin', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('RobotoThin', '', 12)
+            pdf.set_font('RobotoRegular', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(1)
 
             if agent_data:
                 self.print_agent_info(agent_data, pdf)
+            
+            pdf_name = str(agent_data['Name']) + '-agent-conf'
 
             pdf.ln(10)
             pdf.set_draw_color(200,200,200)
@@ -424,9 +396,7 @@ class report(controllers.BaseController):
                     pdf.ln(3)
                     for currentSection in n['sections']:
                         # header
-                        pdf.set_font('RobotoRegular', '', 12)
-                        pdf.set_fill_color(75, 179, 204)
-                        pdf.set_text_color(255,255,255)
+                        self.setBlueTableTitle(pdf)
                         if(pdf.get_y() > 250):
                             pdf.add_page()
                             pdf.ln(20)
@@ -434,11 +404,7 @@ class report(controllers.BaseController):
                         customLabels = {} 
                         if 'labels' in currentSection:
                             customLabels = currentSection['labels']
-                        self.logger.info(str(currentSection))
                         # rows
-                        pdf.set_text_color(91, 91, 91)
-                        pdf.set_draw_color(75, 179, 204)
-                        pdf.set_font('RobotoThin', '', 8)
                         pdf.ln(8)
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
@@ -446,10 +412,8 @@ class report(controllers.BaseController):
                                 configuration = currentConfig['configuration']
                                 component = currentConfig['component']
                                 config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+component+'/'+configuration , 'id':str(data['apiId']['_key'])}
-                                self.logger.info(config_request)
                                 conf_data = self.miapi.exec_request(config_request)
-                                conf_data = jsonbak.loads(conf_data)
-                                
+                                conf_data = jsonbak.loads(conf_data) 
                                 if not conf_data or 'data' not in conf_data or configuration not in conf_data['data']:
                                     pass
                                 else:
@@ -463,7 +427,6 @@ class report(controllers.BaseController):
                             currentWodle = currentSection['wodle']
                             if not wmodules_conf_data: # ask for all wodles just once
                                 config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+'wmodules'+'/'+'wmodules' , 'id':str(data['apiId']['_key'])}
-                                self.logger.info(config_request)
                                 conf_data = self.miapi.exec_request(config_request)
                                 wmodules_conf_data = jsonbak.loads(conf_data)
 
@@ -472,24 +435,13 @@ class report(controllers.BaseController):
                                 pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                             else:
                                 self.addTable(currentWodle_data[currentWodle], pdf, customLabels)
-
-                                # pdf.set_text_color(150, 150, 150)
-                                #for key,value in currentWodle_data[currentWodle].iteritems():
-                                #    if type(value) is not list and type(value) is not dict:
-                                #        pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-                                #         pdf.cell(100, 5, txt = key , border = 'B', ln = 0, align = 'L', fill = False, link = '')
-                                #        pdf.cell(0, 5, txt = self.getString(value), border = 'B', ln = 1, align = '', fill = False, link = '')
-                                #         if(pdf.get_y() > 250):
-                                #             pdf.add_page()
-                                #             pdf.ln(25)
                             pdf.ln(5)
-                        pdf.ln(5) # space between configuracion tables
+                        pdf.ln(5) # space between configuration tables
                 except Exception as e:
                     self.logger.error(e)
-            pdf_name = "prueba"
             #Save pdf
-            self.logger.info('report agent configuration successful' + self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf')
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
+            self.logger.info('report agent configuration successful' + self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf')
         except Exception as e:
             self.logger.error("Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
@@ -544,14 +496,12 @@ class report(controllers.BaseController):
             pdf.set_font('RobotoThin', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('RobotoThin', '', 12)
+            pdf.set_font('RobotoRegular', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
             if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
                 pdf.ln(7)
-                pdf.set_fill_color(75, 179, 204)
-                pdf.set_text_color(255,255,255)
-                pdf.set_font('RobotoThin', '', 10)
+                self.setBlueHeaderStyle(pdf)
                 if time_range:
                     pdf.cell(0, 5, ' Search time range: ' + time_range , 0, 0, 'L', 1)
                     pdf.ln(5)
@@ -643,7 +593,7 @@ class report(controllers.BaseController):
                 self.addTables(tables,pdf,190,10)
             #Save pdf
             pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
-            self.logger.info('wazuh-'+pdf_name+'-'+report_id+'.pdf')
+            self.logger.info('Report: wazuh-'+pdf_name+'-'+report_id+'.pdf  was successfully generated.')
             #Delete the images
             self.delete_images(saved_images)
         except Exception as e:
@@ -800,15 +750,12 @@ class report(controllers.BaseController):
         for key in fields.keys():
             fields[key] = fields[key] + diff
         #Set color and print th
-        pdf.set_font('RobotoThin', '', 8)
-        pdf.set_fill_color(75, 179, 204)
-        pdf.set_text_color(255,255,255)
+        self.setBlueHeaderStyle(pdf)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
         pdf.ln()
         #Change text color and print tr
-        pdf.set_text_color(23,23,23)
-        pdf.set_draw_color(75, 179, 204)
+        self.setTableRowStyle(pdf)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
         #Print the rest of the agent information
