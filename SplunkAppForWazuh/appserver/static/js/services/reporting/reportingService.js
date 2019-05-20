@@ -336,6 +336,45 @@ define(['../module', 'jquery'], function(module, $) {
         this.notification.showErrorToast('Reporting error')
       }
     }
+    
+    async reportGroupConfiguration(groupName,reportData,apiId) {
+      try{
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          apiId : apiId,
+          timeRange: false,
+          sectionTitle: 'Group configuration',
+          queryFilters: '',
+          metrics: {},
+          tableResults : {},
+          pdfName: 'group-conf',
+          timeZone,
+          data: reportData,
+          groupName : groupName
+        }
+
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
+          data: JSON.stringify(data)
+        })
+
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Reporting error')
+      }
+    }
 
     async reportAgentConfiguration(agentId,reportData,apiId) {
       try{

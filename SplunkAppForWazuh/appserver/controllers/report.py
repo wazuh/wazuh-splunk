@@ -220,10 +220,10 @@ class report(controllers.BaseController):
                     reset_y = False
                     rh = 4 #Row heigth
                     count = 0
+                    if(pdf.get_y() > 250):
+                        pdf.add_page()
+                        pdf.ln(20)
                     for value in row:
-                        if(pdf.get_y() > 250):
-                            pdf.add_page()
-                            pdf.ln(20)
                         if not isinstance(value, list) and count < len(sizes_field):
                             w = sizes_field[count]
                             width = w[0] if isinstance(w, list) else w
@@ -357,8 +357,7 @@ class report(controllers.BaseController):
             today = today.strftime('%Y.%m.%d %H:%M')
             parsed_data = jsonbak.dumps({'data': 'success'})
             section_title = data['sectionTitle']
-            # Print agent info
-            agent_data = data['isAgents']
+            
             first_page = True
             # Add title and filters 
             pdf.alias_nb_pages()
@@ -373,11 +372,14 @@ class report(controllers.BaseController):
             pdf.set_font('RobotoRegular', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(1)
-
-            if agent_data:
+            pdf_name = 'configuration-report'
+            # Print agent info
+            if 'isAgents' in data:
+                agent_data = data['isAgents']
                 self.print_agent_info(agent_data, pdf)
-            
-            pdf_name = str(agent_data['Name']) + '-agent-conf'
+                pdf_name = str(agent_data['Name']) + '-agent-conf'
+            if 'groupName' in data:
+                pdf_name = str(data['groupName']['name']) + '-conf'
 
             pdf.ln(10)
             pdf.set_draw_color(200,200,200)
@@ -406,6 +408,17 @@ class report(controllers.BaseController):
                             customLabels = currentSection['labels']
                         # rows
                         pdf.ln(8)
+                        if 'groupName' in data:
+                                config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
+                                conf_data = self.miapi.exec_request(config_request)
+                                conf_data = jsonbak.loads(conf_data)
+                                self.logger.info(conf_data)
+                                if not conf_data or 'data' not in conf_data:
+                                    pass
+                                else:
+                                    for item in conf_data['data']['items']:
+                                        self.addTable(item, pdf, customLabels)
+                            
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)

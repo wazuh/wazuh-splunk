@@ -12,6 +12,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * @param {*} $requestService
      * @param {*} $beautifierJson
      * @param {*} $notificationService
+     * @param {*} $reportingService
      */
     constructor(
       $scope,
@@ -23,11 +24,13 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $requestService,
       $beautifierJson,
       $notificationService,
+      $reportingService,
       $groupHandler,
       extensions
     ) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.beautifier = $beautifierJson
       this.stateParams = $stateParams
       this.api = $currentDataService.getApi()
@@ -183,6 +186,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.loadGroup(group, firstLoad)
         this.scope.toggle = () => (this.scope.lookingGroup = true)
         this.scope.goBackToAgents = () => this.goBackToAgents()
+        this.scope.initReportConfig = () => this.initReportConfig()
         this.scope.goBackFiles = () => this.goBackFiles()
         this.scope.goBackGroups = () => this.goBackGroups()
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
@@ -716,6 +720,31 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.notification.showErrorToast('Error showing file ')
       }
       return
+    }
+
+    async initReportConfig(){
+      console.log(this.scope.currentGroup)
+      const data = {
+        configurations: [
+
+          {
+            title: 'Main group configurations',
+            sections: [
+              {
+                subtitle: 'Global configuration',
+                desc: 'Logging settings that apply to the agent',
+                groupconfig: [{ component: 'com', configuration: 'logging' }],
+                labels : { }
+              },
+              
+            ]
+          }
+        ]
+      }
+
+
+      this.reportingService.reportGroupConfiguration(this.scope.currentGroup,data,this.api)
+
     }
 
     /**
