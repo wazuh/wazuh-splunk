@@ -147,19 +147,14 @@ class report(controllers.BaseController):
         pdf.set_draw_color(155, 155, 155)
 
     def setBlueHeaderStyle(self,pdf):
+        pdf.set_font('RobotoRegular', '', 8)
         pdf.set_fill_color(75, 179, 204)
         pdf.set_text_color(255,255,255)
-        pdf.set_font('RobotoThin', '', 10)
 
     def setTableRowStyle(self,pdf):
         pdf.set_text_color(23,23,23)
         pdf.set_draw_color(75, 179, 204)
         pdf.set_font('RobotoThin', '', 8)
-
-    def setBlueHeaderStyle(self,pdf):
-        pdf.set_font('RobotoRegular', '', 8)
-        pdf.set_fill_color(75, 179, 204)
-        pdf.set_text_color(255,255,255)
     
     def setBlueTableTitle(self,pdf):
         pdf.set_font('RobotoRegular', '', 12)
@@ -312,6 +307,8 @@ class report(controllers.BaseController):
                             pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                             pdf.ln(5)
                             for currentTableKey, currentTableValue in value.iteritems():
+                                self.logger.info(currentTableKey)
+                                self.logger.info(currentTableValue)
                                 self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
 
         except Exception as e:
@@ -380,6 +377,7 @@ class report(controllers.BaseController):
                 pdf_name = str(agent_data['Name']) + '-agent-conf'
             if 'groupName' in data:
                 pdf_name = str(data['groupName']['name']) + '-conf'
+                self.print_group_info(data['groupName'],pdf)
 
             pdf.ln(10)
             pdf.set_draw_color(200,200,200)
@@ -388,11 +386,12 @@ class report(controllers.BaseController):
                 try:
                     #Set color and print configuration tittle
                     pdf.set_font('RobotoThin', '', 18)
-                    if first_page:
-                        first_page = False
-                    else:
-                        pdf.add_page()
-                        pdf.ln(20)
+                    if 'isAgents' in data:
+                        if first_page:
+                            first_page = False
+                        else:
+                            pdf.add_page()
+                            pdf.ln(20)
                     pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
                     pdf.set_margins(12, 0, 12)
                     pdf.ln(3)
@@ -402,12 +401,13 @@ class report(controllers.BaseController):
                         if(pdf.get_y() > 250):
                             pdf.add_page()
                             pdf.ln(20)
-                        pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
+                        if 'subtitle' in currentSection:
+                            pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
+                            pdf.ln(8)
                         customLabels = {} 
                         if 'labels' in currentSection:
                             customLabels = currentSection['labels']
                         # rows
-                        pdf.ln(8)
                         if 'groupName' in data:
                                 config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
                                 conf_data = self.miapi.exec_request(config_request)
@@ -417,7 +417,18 @@ class report(controllers.BaseController):
                                     pass
                                 else:
                                     for item in conf_data['data']['items']:
-                                        self.addTable(item, pdf, customLabels)
+                                        if first_page:
+                                            first_page = False
+                                        else:
+                                            pdf.add_page()
+                                            pdf.ln(20)
+                                        self.setTableRowStyle(pdf)
+                                        if 'filters' in item:
+                                            self.setBlueTableTitle(pdf)
+                                            pdf.cell(0, 5, txt = "Configuration " + str(item['filters']) , border = 'B', ln = 1, align = 'L', fill = True, link = '')
+                                            del item['filters']
+                                        if 'config' in item:
+                                            self.addTable(item['config'], pdf, customLabels)  
                             
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
@@ -739,6 +750,16 @@ class report(controllers.BaseController):
                 sizes[wf] = sizes_arr
         sizes = self.sort_table_sizes(table['fields'], sizes)
         return sizes
+
+    #Print group info
+    def print_group_info(self, group, pdf):
+        pdf.ln(8)
+        pdf.set_font('RobotoThin','',11)
+        pdf.set_text_color(23,23,23)
+        pdf.cell(0,8, "Group name:  " + str(group['name']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,8, "Agents count:  " + str(group['count']), 0, 0, 'L', 0)
+        pdf.ln(5)
     
     #Print agent info
     def print_agent_info(self, agent_info, pdf):
