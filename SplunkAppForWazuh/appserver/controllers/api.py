@@ -68,7 +68,7 @@ class api(controllers.BaseController):
         """Get the configuration from a stanza.
         """
         try:
-            apikeyconf = cli.getConfStanza('config', 'extensions')
+            apikeyconf = cli.getConfStanza('config', 'configuration')
             # parsed_data = jsonbak.dumps(apikeyconf)
         except Exception as e:
             raise e
