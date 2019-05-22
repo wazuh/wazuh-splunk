@@ -26,7 +26,7 @@ define(['../module'], function(module) {
         const { data } = await $requestService.httpReq(
           `GET`,
           `/manager/get_api`,
-          { id: id }
+          { apiId: id }
         )
         const parsed = JSON.parse(data)
         const parsedJson = JSON.parse(parsed)
