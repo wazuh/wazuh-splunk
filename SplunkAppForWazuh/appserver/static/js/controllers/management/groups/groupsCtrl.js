@@ -731,8 +731,19 @@ define(['../../module', 'FileSaver'], function(controllers) {
             title: 'Main group configurations',
             sections: [
               {
-                desc: 'Logging settings that apply to the agent',
-                groupconfig: [{ component: 'com', configuration: 'logging' }],
+                desc: 'agent.conf',
+                groupConfig: true,
+                labels : { }
+              },
+              
+            ]
+          },
+          {
+            title: 'Agents ',
+            sections: [
+              {
+                desc: 'agents',
+                agentList: true,
                 labels : { }
               },
               

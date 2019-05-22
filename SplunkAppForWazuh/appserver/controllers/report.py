@@ -120,6 +120,9 @@ class report(controllers.BaseController):
         if len(fullValue) > 50:
             num_lines = ( len(fullValue) / 50 ) + 1
             for i in range(1,num_lines+1):
+                if(pdf.get_y() > 250):
+                    pdf.add_page()
+                    pdf.ln(20)
                 tmpValue = fullValue[(i-1)*50:i*50]
                 useBorder = ''
                 useKey = ''
@@ -127,12 +130,10 @@ class report(controllers.BaseController):
                     useBorder = 'B'
                 if i == 1:
                     useKey = key
-                pdf.cell(2, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
-                pdf.cell(100, 4, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
-                pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
-                if(pdf.get_y() > 250):
-                    pdf.add_page()
-                    pdf.ln(20)
+                if key:
+                    pdf.cell(2, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
+                    pdf.cell(100, 4, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
+                    pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
         else: # if value's length is lower than 50 we write the full string
             pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
             pdf.cell(100, 5, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
@@ -264,6 +265,8 @@ class report(controllers.BaseController):
                     if type(value) is list:
                         if value and type(value[0]) is dict:
                             customTables.append({key:value})
+                        elif value and type(value[0]) is list:
+                            self.addTable(value,pdf,labels)
                         else:
                             self.addTableRow(key,value,pdf,labels)
                             
@@ -290,6 +293,7 @@ class report(controllers.BaseController):
                         fields = []
                         rows = []
                         if type(value) is list:
+                            self.logger.error(str(value[0]))
                             keys_amount = len(value[0].keys())
                             for key in value[0]: #Header
                                 fields.append(self.getString(key,labels))
@@ -297,18 +301,20 @@ class report(controllers.BaseController):
                             for row in value: # rows
                                 nextRow = []
                                 for rowKeys, rowValues in row.iteritems():
-                                    nextRow.append(self.getString(rowValues))
+                                    if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
+                                        customTables.append({rowKeys:rowValues})
+                                    else:
+                                        nextRow.append(self.getString(rowValues))
                                 rows.append(nextRow)
-                            newTable[tableKey] = { "fields": fields, "rows": rows}
-                            self.addTables(newTable,pdf,185,12)
+                            if rows and type(rows) is list and rows[0]:
+                                newTable[tableKey] = { "fields": fields, "rows": rows}
+                                self.addTables(newTable,pdf,185,12)
                         elif type(value) is dict:
                             pdf.ln(5)
                             self.setTableTitle(pdf)
                             pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                             pdf.ln(5)
                             for currentTableKey, currentTableValue in value.iteritems():
-                                self.logger.info(currentTableKey)
-                                self.logger.info(currentTableValue)
                                 self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
 
         except Exception as e:
@@ -354,8 +360,6 @@ class report(controllers.BaseController):
             today = today.strftime('%Y.%m.%d %H:%M')
             parsed_data = jsonbak.dumps({'data': 'success'})
             section_title = data['sectionTitle']
-            
-            first_page = True
             # Add title and filters 
             pdf.alias_nb_pages()
             pdf.add_page()
@@ -408,28 +412,65 @@ class report(controllers.BaseController):
                         if 'labels' in currentSection:
                             customLabels = currentSection['labels']
                         # rows
-                        if 'groupName' in data:
-                                config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
-                                conf_data = self.miapi.exec_request(config_request)
-                                conf_data = jsonbak.loads(conf_data)
-                                self.logger.info(conf_data)
-                                if not conf_data or 'data' not in conf_data:
-                                    pass
-                                else:
-                                    for item in conf_data['data']['items']:
-                                        if first_page:
-                                            first_page = False
-                                        else:
-                                            pdf.add_page()
-                                            pdf.ln(20)
-                                        self.setTableRowStyle(pdf)
-                                        if 'filters' in item:
-                                            self.setBlueTableTitle(pdf)
-                                            pdf.cell(0, 5, txt = "Configuration " + str(item['filters']) , border = 'B', ln = 1, align = 'L', fill = True, link = '')
-                                            del item['filters']
-                                        if 'config' in item:
-                                            self.addTable(item['config'], pdf, customLabels)  
-                            
+                        if 'groupConfig' in currentSection:
+                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
+                            conf_data = self.miapi.exec_request(config_request)
+                            conf_data = jsonbak.loads(conf_data)
+                            self.logger.info(conf_data)
+                            if not conf_data or 'data' not in conf_data:
+                                pass
+                            else:
+                                for item in conf_data['data']['items']:
+                                    if first_page:
+                                        first_page = False
+                                    else:
+                                        pdf.add_page()
+                                        pdf.ln(20)
+                                    self.setTableRowStyle(pdf)
+                                    #print the filters 
+                                    if 'filters' in item:
+                                        filters = " "
+                                        values = []
+                                        for currentFilterKey,currentFilterValue in item['filters'].iteritems():
+                                            filters = filters + str(currentFilterKey) + ": " + str(currentFilterValue) + "   "
+                                            values.append(currentFilterValue)
+                                        rows = []
+                                        rows.append(values)
+                                        self.setBlueTableTitle(pdf)
+                                        self.logger.info(values)
+                                        pdf.cell(0, 5, txt = "Configuration " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
+                                        pdf.set_font('RobotoRegular','',8)
+                                        pdf.cell(0, 5, txt =  filters, border = 'B', ln = 1, align = 'R', fill = True, link = '')
+                                        pdf.set_font('RobotoRegular','',10)
+                                        pdf.set_text_color(23,23,23)
+                                        self.addTables({"Filters:" : {"fields" : item['filters'].keys(), "rows": rows}},pdf,185,12)
+                                        for currentFilterKey,currentFilterValue in item['filters'].iteritems():
+                                            pdf.cell(0,7, currentFilterKey + ": " + currentFilterValue, 0, 0, 'L', 0)
+                                            pdf.ln()
+                                        del item['filters']
+                                    if 'config' in item:
+                                        self.addTable(item['config'], pdf, customLabels)  
+                        if 'agentList' in currentSection:
+                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
+                            conf_data = self.miapi.exec_request(config_request)
+                            conf_data = jsonbak.loads(conf_data)
+                            self.logger.info(conf_data)
+                            if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data']:
+                                table = { "Agent List" : {} }
+                                fields = ['ID', 'Name', 'IP', 'Version', 'Manager', 'OS']
+                                rows = []
+                                for agent in conf_data['data']['items']:
+                                    currentAgentRow = []
+                                    currentAgentRow.append(agent['id'])
+                                    currentAgentRow.append(agent['name'])
+                                    currentAgentRow.append(agent['ip'])
+                                    currentAgentRow.append(agent['version'])
+                                    currentAgentRow.append(agent['manager'])
+                                    currentAgentRow.append(agent['os']['name'])
+                                    rows.append(currentAgentRow)
+                                table["Agent List"] = { "fields" : fields, "rows" : rows}
+                                self.addTables(table,pdf,185,12)
+
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)
