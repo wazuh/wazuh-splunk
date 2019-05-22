@@ -126,7 +126,7 @@ define(['../module'], function(module) {
               }
             ]
           }
-        })// Overview - SCA Security Configuration Assessment
+        }) // Overview - SCA Security Configuration Assessment
         .state('ow-sca', {
           templateUrl:
             BASE_URL +

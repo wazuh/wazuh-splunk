@@ -260,7 +260,7 @@ define([
     setBooleans(component) {
       this.scope.showConfig = component === 'showConfig'
       this.scope.showNodes = component === 'showNodes'
-      if(component === 'showClusterMonitoring'){
+      if (component === 'showClusterMonitoring') {
         this.scope.showConfig = false
         this.scope.showNodes = false
       }

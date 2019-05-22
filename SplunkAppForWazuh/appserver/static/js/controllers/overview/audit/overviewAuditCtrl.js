@@ -200,7 +200,7 @@ define([
           'Modified files': this.scope.filesModifiedToken,
           'Deleted files': this.scope.filesDeleted
         }
-  
+
         /**
          * Generates report
          */
@@ -220,11 +220,11 @@ define([
             this.reportMetrics,
             this.tableResults
           )
-  
+
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
         })
-  
+
         this.scope.$on('checkReportingStatus', () => {
           this.vizzReady = !this.vizz.filter(v => {
             return v.finish === false

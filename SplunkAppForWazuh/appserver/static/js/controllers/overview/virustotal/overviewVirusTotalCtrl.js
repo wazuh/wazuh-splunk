@@ -67,7 +67,9 @@ define([
          */
         new ColumnChart(
           'top10AgentsPositive',
-          `${this.filters}  | stats count(data.virustotal.positives) by agent.name | rename agent.name as "Agent name", count(data.virustotal.positives) as "Positives"`,
+          `${
+            this.filters
+          }  | stats count(data.virustotal.positives) by agent.name | rename agent.name as "Agent name", count(data.virustotal.positives) as "Positives"`,
           'top10AgentsPositive',
           this.scope
         ),
@@ -79,15 +81,15 @@ define([
         ),
         new AreaChart(
           'maliciousEventsOverTimeElement',
-          `${this.filters} data.virustotal.malicious="*" | timechart span=12h count by data.virustotal.malicious`,
+          `${
+            this.filters
+          } data.virustotal.malicious="*" | timechart span=12h count by data.virustotal.malicious`,
           'maliciousEventsOverTimeElement',
           this.scope
         ),
         new PieChart(
           'lastScannedFiles',
-          `${
-            this.filters
-          } | top limit=5 data.virustotal.source.file`,
+          `${this.filters} | top limit=5 data.virustotal.source.file`,
           'lastScannedFiles',
           this.scope
         ),
@@ -162,68 +164,68 @@ define([
 
     $onInit() {
       try {
-      this.scope.loadingVizz = true
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-      this.reportingService.startVis2Png(
-        'overview-virustotal',
-        'VirusTotal',
-        this.filters,
-        [
-          'lastFiles',
-          'maliciousEventsOverTimeElement',
-          'MaliciousFilesPerAgent',
-          'lastScannedFiles',
-          'top10AgentsPositive',
-          'eventsSummary',
-          'top10AgentsNoPositive',
-          'alertsPerAgent',
-          'top5Rules'
-        ],
-        {}, //Metrics
-        this.tableResults
-      )
-
-    this.scope.$on('loadingReporting', (event, data) => {
-      this.scope.loadingReporting = data.status
-    })
-
-    this.scope.$on('checkReportingStatus', () => {
-      this.vizzReady = !this.vizz.filter(v => {
-        return v.finish === false
-      }).length
-      if (this.vizzReady) {
-        this.scope.loadingVizz = false
-      } else {
-        this.vizz.map(v => {
-          if (v.constructor.name === 'RawTableData') {
-            this.tableResults[v.name] = v.results
-          }
-        })
         this.scope.loadingVizz = true
-      }
-      if (!this.scope.$$phase) this.scope.$digest()
-    })
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'overview-virustotal',
+            'VirusTotal',
+            this.filters,
+            [
+              'lastFiles',
+              'maliciousEventsOverTimeElement',
+              'MaliciousFilesPerAgent',
+              'lastScannedFiles',
+              'top10AgentsPositive',
+              'eventsSummary',
+              'top10AgentsNoPositive',
+              'alertsPerAgent',
+              'top5Rules'
+            ],
+            {}, //Metrics
+            this.tableResults
+          )
 
-    this.scope.$on('deletedFilter', event => {
-      event.stopPropagation()
-      this.launchSearches()
-    })
+        this.scope.$on('loadingReporting', (event, data) => {
+          this.scope.loadingReporting = data.status
+        })
 
-    this.scope.$on('barFilter', event => {
-      event.stopPropagation()
-      this.launchSearches()
-    })
+        this.scope.$on('checkReportingStatus', () => {
+          this.vizzReady = !this.vizz.filter(v => {
+            return v.finish === false
+          }).length
+          if (this.vizzReady) {
+            this.scope.loadingVizz = false
+          } else {
+            this.vizz.map(v => {
+              if (v.constructor.name === 'RawTableData') {
+                this.tableResults[v.name] = v.results
+              }
+            })
+            this.scope.loadingVizz = true
+          }
+          if (!this.scope.$$phase) this.scope.$digest()
+        })
 
-    /**
-     * On controller destroy
-     */
-    this.scope.$on('$destroy', () => {
-      this.timePicker.destroy()
-      this.vizz.map(vizz => vizz.destroy())
-    })
+        this.scope.$on('deletedFilter', event => {
+          event.stopPropagation()
+          this.launchSearches()
+        })
+
+        this.scope.$on('barFilter', event => {
+          event.stopPropagation()
+          this.launchSearches()
+        })
+
+        /**
+         * On controller destroy
+         */
+        this.scope.$on('$destroy', () => {
+          this.timePicker.destroy()
+          this.vizz.map(vizz => vizz.destroy())
+        })
       } catch (error) {} //eslint-disable-line
     }
 

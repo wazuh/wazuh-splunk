@@ -88,7 +88,7 @@
 
 <!-- Logs section -->
 <div layout="row" layout-padding ng-if="logsPath" ng-hide="true">
-  <wazuh-table flex extra-limit="100" path="logsPath" implicit-sort="'timestamp'"
+  <wazuh-table flex extra-limit="100" path="logsPath" implicit-sort="'timestamp'"  wz-config-viewer="true"
     keys="['timestamp',{value:'tag',size:2},'level',{value:'description',size:4,nosortable:true}]" rows-per-page="15">
   </wazuh-table>
 </div>
@@ -115,7 +115,7 @@
 
 <div layout="row" class="wz-margin-right-20">
   <span flex></span>
-  <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv()">
+  <a class="small formatted-color formatted-log" id="btnDownload" ng-click="downloadCsv()">
     <wz-svg icon="download"></wz-svg>&nbsp;Formatted
   </a>
 </div>

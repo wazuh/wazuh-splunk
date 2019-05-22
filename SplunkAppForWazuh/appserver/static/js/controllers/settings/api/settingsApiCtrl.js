@@ -90,7 +90,7 @@ define(['../../module'], function(controllers) {
           const usedApi = this.currentDataService.getApi()
           if (entry._key === usedApi._key) {
             this.currentDataService.removeCurrentApi()
-          } 
+          }
           this.scope.apiList.splice(index, 1)
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => {})
@@ -121,7 +121,7 @@ define(['../../module'], function(controllers) {
         this.notification.showSuccessToast('Connection established')
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.notification.showErrorToast('Unreachable API')
+        this.notification.showErrorToast(err || 'Unreachable API')
       }
     }
 
@@ -201,7 +201,7 @@ define(['../../module'], function(controllers) {
         this.scope.edit = false
         this.notification.showSuccessToast('Updated API')
       } catch (err) {
-        this.notification.showErrorToast('Cannot update API')
+        this.notification.showErrorToast(err || 'Cannot update API')
       }
       this.savingApi = false
     }
@@ -221,7 +221,7 @@ define(['../../module'], function(controllers) {
         this.scope.$emit('updatedAPI', () => {})
         if (!this.scope.$$phase) this.scope.$digest()
       } catch (err) {
-        this.notification.showErrorToast('Could not select manager')
+        this.notification.showErrorToast(err || 'Could not select manager')
       }
     }
 
@@ -279,7 +279,11 @@ define(['../../module'], function(controllers) {
         if (!this.scope.$$phase) this.scope.$digest()
         this.notification.showSuccessToast('New API was added')
       } catch (err) {
-        this.notification.showErrorToast(err.message)
+        if (err.startsWith('Unexpected Wazuh version')) {
+          this.scope.validatingError.push(err)
+        } else {
+          this.notification.showErrorToast(err.message || err || 'Cannot save the API.')
+        }
       }
       this.savingApi = false
     }
@@ -318,7 +322,9 @@ define(['../../module'], function(controllers) {
       if (this.userRegEx.test(user)) {
         return true
       } else {
-        this.scope.validatingError.push('Invalid username format, it must have a length between 3 and 100 characters.')
+        this.scope.validatingError.push(
+          'Invalid username format, it must have a length between 3 and 100 characters.'
+        )
         return false
       }
     }
@@ -331,7 +337,9 @@ define(['../../module'], function(controllers) {
       if (this.passRegEx.test(pass)) {
         return true
       } else {
-        this.scope.validatingError.push('Invalid password format, it must have a length between 3 and 100 characters.')
+        this.scope.validatingError.push(
+          'Invalid password format, it must have a length between 3 and 100 characters.'
+        )
         return false
       }
     }

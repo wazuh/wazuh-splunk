@@ -107,9 +107,7 @@ define([
         ),
         new PieChart(
           'mostCommonActions',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top data.osquery.action limit=5`,
+          `${this.filters} sourcetype=wazuh  | top data.osquery.action limit=5`,
           'mostCommonActions',
           this.scope
         ),
@@ -126,16 +124,6 @@ define([
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertsOverTime',
           this.scope
-        ),
-        new RawTableDataService(
-          'topRulesTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'topRulesTableToken',
-          '$result$',
-          this.scope,
-          'Top Rules'
         ),
         new Table(
           'alertsSummary',
@@ -183,12 +171,10 @@ define([
           'Osquery',
           this.filters,
           [
-            'mostCommonPacks',
-            'alertsPacksOverTime',
             'mostCommonActions',
-            'topRules',
-            'alertsOverTime',
-            'alertsSummary'
+            'alertsPacksOverTime',
+            'mostCommonPacks',
+            'topRules'
           ],
           {}, //Metrics,
           this.tableResults,

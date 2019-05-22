@@ -38,16 +38,16 @@ class CheckQueue():
         """
         try:
             jobs = self.q.get_jobs(self.auth_key)
-            #undone_jobs = self.get_undone_jobs(jobs)
-            # self.check_undone_jobs(undone_jobs)
+            todo_jobs = self.get_todo_jobs(jobs)
+            self.check_todo_jobs(todo_jobs)
             jobs = jsonbak.loads(jobs)
-            self.check_undone_jobs(jobs)
+            self.check_todo_jobs(jobs)
         except Exception as e:
             self.logger.error(
                 'Error at init in the CheckQueue module: {}'.format(e))
 
-    def get_undone_jobs(self, jobs):
-        """Gets the undone jobs
+    def get_todo_jobs(self, jobs):
+        """Gets the to do jobs
 
         Parameters
         ----------
@@ -57,20 +57,20 @@ class CheckQueue():
 
         try:
             jobs = jsonbak.loads(jobs)
-            undone_jobs = filter(lambda j: j['done'] == False, jobs)
+            todo_jobs = filter(lambda j: j['done'] == False, jobs)
         except TypeError as e:
-            undone_jobs = []
+            todo_jobs = []
             self.logger.error(
                 'Error filtering the fields in the CheckQueue module: {}'.format(e))
-        return undone_jobs
+        return todo_jobs
 
-    def check_undone_jobs(self, jobs):
-        """Check the undone jobs
+    def check_todo_jobs(self, jobs):
+        """Check the to do jobs
 
         Parameters
         ----------
         dic: jobs
-            A dictionary with the undone jobs
+            A dictionary with the todo jobs
         """
         try:
             for job in jobs:
@@ -78,7 +78,7 @@ class CheckQueue():
                     self.exec_job(job)
         except Exception as e:
             self.logger.error(
-                'Error checking undone jobs the fields in the CheckQueue module: {}'.format(e))
+                'Error checking to do jobs in the CheckQueue module: {}'.format(e))
 
     def exec_job(self, job):
         """Exec the passed job

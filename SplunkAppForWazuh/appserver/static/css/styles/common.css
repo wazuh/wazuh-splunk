@@ -1656,6 +1656,10 @@ input:focus {
   color: #1278b0 !important;
 }
 
+.formatted-log {
+  margin: -10px 10px;
+}
+
 .switch-log {
   margin: 5px 10px;
 }
@@ -1832,4 +1836,18 @@ label.wz-icon-loupe  input {
 
 #scoreByPolicy .lazy-view-container {
   height: 80% !important;
+}
+
+.closeToastCross {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+}
+
+.md-sidenav {
+  background-color: #fafafa;
+}
+
+.md-sidenav-right {
+  background-color: #fafafa !important;
 }

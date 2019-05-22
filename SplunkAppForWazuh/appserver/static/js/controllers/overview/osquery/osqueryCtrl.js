@@ -5,7 +5,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function (app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
   'use strict'
 
   class Osquery {
@@ -69,20 +69,24 @@ define([
         new AreaChart(
           'alertsPacksOverTime',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
           this.scope
         ),
         new PieChart(
           'topOsqueryAdded',
-          `${this.filters} sourcetype=wazuh data.osquery.action="added"  | top data.osquery.name limit=5`,
+          `${
+            this.filters
+          } sourcetype=wazuh data.osquery.action="added"  | top data.osquery.name limit=5`,
           'topOsqueryAdded',
           this.scope
         ),
         new PieChart(
           'topOsqueryRemoved',
-          `${this.filters} sourcetype=wazuh data.osquery.action="removed"  | top data.osquery.name limit=5`,
+          `${
+            this.filters
+          } sourcetype=wazuh data.osquery.action="removed"  | top data.osquery.name limit=5`,
           'topOsqueryRemoved',
           this.scope
         ),
@@ -95,7 +99,7 @@ define([
         new Table(
           'alertsSummary',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummary',
           this.scope
@@ -103,7 +107,7 @@ define([
         new RawTableDataService(
           'alertsSummaryTable',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
@@ -113,7 +117,7 @@ define([
         new Table(
           'topRules',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
@@ -122,7 +126,7 @@ define([
         new RawTableDataService(
           'topRulesTable',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRulesTableToken',
           '$result$',

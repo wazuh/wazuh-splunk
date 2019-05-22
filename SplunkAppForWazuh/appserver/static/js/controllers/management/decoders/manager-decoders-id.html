@@ -176,7 +176,7 @@
     <!-- XML editor for decoder -->
     <div ng-show="editingFile">
       <div layout="row" class="md-padding wz-padding-top-0">
-        <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i
+        <button class="md-icon-button cursor-pointer" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i
             class="fa fa-fw fa-close" aria-hidden="true"></i>
           <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
         </button>
@@ -193,7 +193,7 @@
         </button>
 
       </div>
-      <div class="wzXmlEditorDivContent wz-margin-left-10" style="height: calc(100vh - 280px);" ng-if="fetchedXML">
+      <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
         <wz-xml-file-editor style="height: inherit;" file-name='decoder' data="fetchedXML"
           target-name="currentDecoder.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
         </wz-xml-file-editor>
