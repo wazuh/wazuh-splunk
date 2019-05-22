@@ -2,6 +2,8 @@
 
 define([
   '../../module',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
@@ -10,6 +12,8 @@ define([
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  ColumnChart,
+  AreaChart,
   PieChart,
   Table,
   LinearChart,
@@ -61,16 +65,32 @@ define([
         /**
          * Visualizations
          */
-        new PieChart(
-          'top5AgentsPositive',
-          `${this.filters} rule.id=87105 | top agent.name limit=5`,
-          'top5AgentsPositive',
+        new ColumnChart(
+          'top10AgentsPositive',
+          `${
+            this.filters
+          }  | stats count(data.virustotal.positives) by agent.name | rename agent.name as "Agent name", count(data.virustotal.positives) as "Positives"`,
+          'top10AgentsPositive',
           this.scope
         ),
         new PieChart(
-          'top5AgentsNoPositive',
+          'top10AgentsNoPositive',
           `${this.filters} rule.id=87104 | top agent.name limit=5`,
-          'top5AgentsNoPositive',
+          'top10AgentsNoPositive',
+          this.scope
+        ),
+        new AreaChart(
+          'maliciousEventsOverTimeElement',
+          `${
+            this.filters
+          } data.virustotal.malicious="*" | timechart span=12h count by data.virustotal.malicious`,
+          'maliciousEventsOverTimeElement',
+          this.scope
+        ),
+        new PieChart(
+          'lastScannedFiles',
+          `${this.filters} | top limit=5 data.virustotal.source.file`,
+          'lastScannedFiles',
           this.scope
         ),
         new Table(
@@ -80,6 +100,24 @@ define([
           } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'top5Rules',
           this.scope
+        ),
+        new Table(
+          'MaliciousFilesPerAgent',
+          `${
+            this.filters
+          }| stats count(data.virustotal.malicious) by agent.name,data.virustotal.source.md5 | rename agent.name as "Agent name", count(data.virustotal.malicious)  as Count, data.virustotal.source.md5 as md5`,
+          'MaliciousFilesPerAgent',
+          this.scope
+        ),
+        new RawTableDataService(
+          'MaliciousFilesPerAgentTable',
+          `${
+            this.filters
+          }| stats count(data.virustotal.malicious) by agent.name,data.virustotal.source.md5 | rename agent.name as "Agent name", count(data.virustotal.malicious)  as Count, data.virustotal.source.md5 as md5`,
+          'MaliciousFilesPerAgentTableToken',
+          '$result$',
+          this.scope,
+          'Unique malicious files per agent'
         ),
         new LinearChart(
           'eventsSummary',
@@ -92,6 +130,24 @@ define([
           `${this.filters} | top agent.name`,
           'alertsPerAgent',
           this.scope
+        ),
+        new Table(
+          'lastFiles',
+          `${
+            this.filters
+          } | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
+          'lastFiles',
+          this.scope
+        ),
+        new RawTableDataService(
+          'lastFilesTable',
+          `${
+            this.filters
+          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          'lastFilesToken',
+          '$result$',
+          this.scope,
+          'Last Files'
         ),
         new RawTableDataService(
           'top5RulesTable',
@@ -118,9 +174,13 @@ define([
             'VirusTotal',
             this.filters,
             [
-              'top5AgentsPositive',
+              'lastFiles',
+              'maliciousEventsOverTimeElement',
+              'MaliciousFilesPerAgent',
+              'lastScannedFiles',
+              'top10AgentsPositive',
               'eventsSummary',
-              'top5AgentsNoPositive',
+              'top10AgentsNoPositive',
               'alertsPerAgent',
               'top5Rules'
             ],
@@ -166,7 +226,7 @@ define([
           this.timePicker.destroy()
           this.vizz.map(vizz => vizz.destroy())
         })
-      } catch (error) {}
+      } catch (error) {} //eslint-disable-line
     }
 
     /**

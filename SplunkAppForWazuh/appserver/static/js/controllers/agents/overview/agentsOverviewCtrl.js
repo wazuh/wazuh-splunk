@@ -150,6 +150,14 @@ define(['../../module'], function(app) {
                 : group
             }
 
+            this.scope.offsetTimestamp = (text, time) => {
+              try {
+                return text + this.dateDiffService.setBrowserOffset(time)
+              } catch (error) {
+                return ''
+              }
+            }
+
             this.scope.cancelAddGroup = () =>
               (this.scope.addingGroupToAgent = false)
 

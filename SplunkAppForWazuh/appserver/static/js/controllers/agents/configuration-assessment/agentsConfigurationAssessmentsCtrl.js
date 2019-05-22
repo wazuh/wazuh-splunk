@@ -12,10 +12,9 @@
 
 define([
   '../../module',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, AreaChart, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/chart/pie-chart'
+], function(app, TimePicker, PieChart) {
   'use strict'
 
   class AgentsCA {
@@ -46,7 +45,8 @@ define([
       $tableFilterService,
       reportingEnabled,
       BASE_URL,
-      extensions
+      extensions,
+      $dateDiffService
     ) {
       this.urlTokenModel = $urlTokenModel
       this.rootScope = $rootScope
@@ -61,7 +61,17 @@ define([
       this.configAssess = configAssess
       this.notification = $notificationService
       this.api = $currentDataService.getApi()
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
       this.csvReq = $csvRequestService
+
+      this.scope.offsetTimestamp = (text, time) => {
+        try {
+          return text + this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
+
       this.wzTableFilter = $tableFilterService
       this.baseUrl = BASE_URL
       this.scope.noScansPng = `${
@@ -110,11 +120,43 @@ define([
         this.launchSearches()
       })
 
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'resultDistribution',
+          `${
+            this.filters
+          }  rule.groups{}="sca" | stats count by data.sca.policy,data.sca.check.result `,
+          'resultDistribution',
+          this.scope,
+          { trellisEnabled: true }
+        )
+      ]
+
+      /**
+       * Generates report
+       */
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'agents-ca',
+          'Configuration assessment',
+          this.filters,
+          ['resultDistribution'],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
+
       /**
        * When controller is destroyed
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
+        this.vizz.map(vizz => {
+          vizz.destroy()
+        })
       })
     }
 
@@ -136,6 +178,37 @@ define([
         this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus =>
         this.formatAgentStatus(agentStatus)
+
+      this.scope.refreshScans = () => this.refreshScans()
+      this.scope.search = term => this.search(term)
+
+      this.scope.loadCharts = policy => {
+        setTimeout(function() {
+          const chart = new Chart(document.getElementById(policy.policy_id), {
+            type: 'doughnut',
+            data: {
+              labels: ['pass', 'fail', 'not applicable'],
+              datasets: [
+                {
+                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  data: [policy.pass, policy.fail, policy.invalid]
+                }
+              ]
+            },
+            options: {
+              cutoutPercentage: 85,
+              legend: {
+                display: true,
+                position: 'right'
+              },
+              tooltips: {
+                displayColors: false
+              }
+            }
+          })
+          chart.update()
+        }, 250)
+      }
     }
 
     /**
@@ -154,6 +227,14 @@ define([
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
+    }
+
+    /**
+     * Searches for a term
+     * @param {String} term
+     */
+    search(term) {
+      this.scope.$broadcast('wazuhSearch', { term })
     }
 
     /**
@@ -190,11 +271,19 @@ define([
     /**
      * Loads policies checks
      */
-    async loadPolicyChecks(id, name) {
-      this.scope.showPolicyChecks = name
-      this.scope.policyId = id
+    async loadPolicyChecks(policy) {
+      this.scope.showPolicyChecks = true
+      this.scope.policy = policy
       const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
+      this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
+    }
+
+    /**
+     *
+     * Backs to config assessment
+     */
+    backToConfAssess() {
+      this.scope.showPolicyChecks = false
     }
 
     /**
@@ -212,7 +301,7 @@ define([
       )
       this.scope.expandArray[i]
         ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
+        : vis.css('height', '280px')
 
       let vis_header = $('.wz-headline-title')
       vis_header.dblclick(e => {
@@ -220,12 +309,19 @@ define([
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]
             ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
+            : vis.css('height', '280px')
           this.scope.$applyAsync()
         } else {
           e.preventDefault()
         }
       })
+    }
+
+    /**
+     * Refresh SCA scans
+     */
+    refreshScans() {
+      this.state.reload()
     }
   }
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)

@@ -426,8 +426,14 @@ div.uil-ring-css {
   margin-top: 4px;
 }
 
-.wz-margin-top-15 {
-  margin-top: 15px;
+.text-black { 
+  color: black !important;
+}
+
+.wz-ruleset-subnav {
+  margin: 15px;
+  margin-right: 0px !important;
+  margin-left: 0px !important;
 }
 
 .wz-margin-top--3 {
@@ -462,6 +468,25 @@ div.uil-ring-css {
 
 .wz-margin-12 {
   margin: 12px;
+}
+
+.wz-margin-9 {
+  margin: 9px !important;
+}
+
+.wz-margin-top-0 {
+  margin-top: 0px !important;
+}
+
+.wz-margin-bottom--15 {
+  margin-bottom: -15px !important;
+}
+
+.wz-height-35 {
+  height: 35px !important;
+}
+.wz-height-20 {
+  height: 20px !important;
 }
 
 .wz-margin-9 {
@@ -1118,6 +1143,11 @@ md-toast {
   text-overflow: ellipsis;        
 }
 
+.wz-text-sca {
+  width: calc(100% - 100px) !important;
+  line-height: initial;
+}
+
 .wz-text-truncatable-container {
   overflow: hidden;
   width: auto;
@@ -1687,6 +1717,10 @@ input:focus {
   color: #1278b0 !important;
 }
 
+.formatted-log {
+  margin: -10px 10px;
+}
+
 .switch-log {
   margin: 5px 10px;
 }
@@ -1806,3 +1840,79 @@ label.wz-icon-loupe  input {
   border-top: none !important;
 }
 
+.gray {
+  background-color: #5c6773 !important;
+}
+
+.center {
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+.sca-title {
+  font-size: 16px !important;
+}
+
+.sca-title-checks{
+  font-size: 13px !important;
+}
+
+.sca-hash {
+  margin: 10px 5px;
+  display: block;
+  color: gray;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(6) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(8) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(10) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(12) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(14) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > path:nth-child(16) {
+  visibility: hidden !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:nth-child(20) {
+  font-size: 25px !important;
+}
+
+.wz-md-card:not(.fullscreen) .vis-sca #radialGauge > div > div > svg > text:not(:nth-child(20)) {
+  visibility: hidden !important;
+}
+
+.vis-sca .viz-panel {
+  width: 15% !important;
+}
+
+#scoreByPolicy .lazy-view-container {
+  height: 80% !important;
+}
+
+.closeToastCross {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+}
+
+.md-sidenav {
+  background-color: #fafafa;
+}
+
+.md-sidenav-right {
+  background-color: #fafafa !important;
+}

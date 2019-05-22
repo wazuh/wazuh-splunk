@@ -1,12 +1,18 @@
 define([
   '../../module',
-  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, ColumnChart, PieChart, Table, LinearChart, TimePicker) {
+], function(
+  app,
+  PieChart,
+  Table,
+  LinearChart,
+  TimePicker,
+  RawTableDataService
+) {
   'use strict'
 
   class OverviewFIM {
@@ -99,6 +105,16 @@ define([
           } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
           'topUsers',
           this.scope
+        ),
+        new RawTableDataService(
+          'topUsersTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
+          'topUsersTable',
+          '$result$',
+          this.scope,
+          'Top users'
         )
       ]
     }
@@ -129,8 +145,7 @@ define([
               'top5Agents',
               'eventsSummary',
               'ruleDistribution',
-              'topActions',
-              'topUsers'
+              'topActions'
             ],
             {}, //Metrics
             this.tableResults

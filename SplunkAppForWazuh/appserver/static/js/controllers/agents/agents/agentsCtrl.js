@@ -40,7 +40,8 @@ define([
       $tableFilterService,
       agentData,
       $mdDialog,
-      $groupHandler
+      $groupHandler,
+      $dateDiffService
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -56,6 +57,7 @@ define([
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
+      this.setBrowserOffset = $dateDiffService.setBrowserOffset
 
       try {
         const parsedResult = agentData.map(item =>
@@ -111,7 +113,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} | top agent.name`,
+        `index=wazuh ${this.filters} NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',
@@ -120,7 +122,7 @@ define([
         true,
         'loadingSearch'
       )
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -141,6 +143,46 @@ define([
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
+
+      this.scope.offsetTimestamp = (text, time) => {
+        try {
+          return text + this.setBrowserOffset(time)
+        } catch (error) {
+          return ''
+        }
+      }
+
+      this.scope.loadCharts = id => {
+        setTimeout(() => {
+          const chart = new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: {
+              labels: ['Active', 'Disconected', 'Never connected'],
+              datasets: [
+                {
+                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  data: [
+                    this.scope.agentsCountActive,
+                    this.scope.agentsCountDisconnected,
+                    this.scope.agentsCountNeverConnected
+                  ]
+                }
+              ]
+            },
+            options: {
+              cutoutPercentage: 85,
+              legend: {
+                display: true,
+                position: 'right'
+              },
+              tooltips: {
+                displayColors: false
+              }
+            }
+          })
+          chart.update()
+        }, 250)
+      }
     }
 
     /**
@@ -192,8 +234,8 @@ define([
           ) {
             throw Error('Error fetching agent data')
           }
-          if (agentInfo.data.data.id !== '000') {
-            this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
+          if (agentInfo.data.data.items[0].id !== '000') {
+            this.state.go(`agent-overview`, { id: agentInfo.data.data.items[0].id })
           }
         } else {
           throw Error('Cannot fetch agent name')

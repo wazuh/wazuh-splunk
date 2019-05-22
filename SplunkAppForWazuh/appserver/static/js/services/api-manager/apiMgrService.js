@@ -1,6 +1,6 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$apiMgrService', function(
+  module.service('$apiMgrService', function (
     $requestService,
     $apiIndexStorageService,
     $splunkStoreService
@@ -222,25 +222,30 @@ define(['../module'], function(module) {
           const clusterEnabled = api.filterType === 'cluster.name'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-          }&port=${
+            }&port=${
             api.portapi
-          }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
+            }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
           )
           if (result.data.status === 400 || result.data.error) {
             if (result.data.error === 3099) {
-              throw new Error('ERROR3099 - Wazuh not ready yet.')
+              throw 'ERROR3099 - Wazuh not ready yet.'
             } else {
-              throw new Error('Unreachable API.')
+              throw result.data.error || 'Unreachable API.'
             }
           }
           return result
         }
         // Otherwise throw a new error
-        throw new Error('Missing API fields.')
+        throw 'Missing API fields.'
       } catch (err) {
+        if (err.status === 500) {
+          throw new Error(
+            'There was an error connecting to the api. Please check your api configuration.'
+          )
+        }
         return Promise.reject(err)
       }
     }
@@ -313,6 +318,39 @@ define(['../module'], function(module) {
       }
     }
 
+
+    /** 
+    * Checks if the Splunk Version are the same that the Wazuh version
+    */
+    const checkWazuhVersion = async () => {
+      try {
+        const wazuhVersion = await $requestService.apiReq('/version')
+        const appVersion = await $requestService.httpReq(
+          'GET',
+          '/manager/app_info'
+        )
+        if (
+          wazuhVersion.data &&
+          wazuhVersion.data.data &&
+          !wazuhVersion.data.error &&
+          appVersion.data &&
+          appVersion.data.version &&
+          !appVersion.data.error
+        ) {
+          const wv = wazuhVersion.data.data
+          const av = appVersion.data.version
+          const wazuhSplit = wv.split('v')[1].split('.')
+          const appSplit = av.split('.')
+
+          if (wazuhSplit[0] !== appSplit[0] || wazuhSplit[1] !== appSplit[1]) {
+            throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
+          }
+        }
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     return {
       checkApiConnection: checkApiConnection,
       checkPollingState: checkPollingState,
@@ -330,7 +368,8 @@ define(['../module'], function(module) {
       setIndex: setIndex,
       getApi: getApi,
       setApi: setApi,
-      addApi: addApi
+      addApi: addApi,
+      checkWazuhVersion: checkWazuhVersion
     }
   })
 })

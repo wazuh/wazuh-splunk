@@ -125,16 +125,6 @@ define([
           'alertsOverTime',
           this.scope
         ),
-        new RawTableDataService(
-          'topRulesTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'topRulesTableToken',
-          '$result$',
-          this.scope,
-          'Top Rules'
-        ),
         new Table(
           'alertsSummary',
           `${
@@ -181,12 +171,10 @@ define([
           'Osquery',
           this.filters,
           [
-            'mostCommonPacks',
-            'alertsPacksOverTime',
             'mostCommonActions',
-            'topRules',
-            'alertsOverTime',
-            'alertsSummary'
+            'alertsPacksOverTime',
+            'mostCommonPacks',
+            'topRules'
           ],
           {}, //Metrics,
           this.tableResults,

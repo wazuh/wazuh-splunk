@@ -1,9 +1,7 @@
 define([
   '../../module',
   '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
@@ -11,9 +9,7 @@ define([
 ], function(
   app,
   LinearChart,
-  ColumnChart,
   PieChart,
-  AreaChart,
   Table,
   TimePicker,
   SearchHandler,
@@ -144,7 +140,7 @@ define([
           'alertLevEvoVizz',
           this.scope
         ),
-        new ColumnChart(
+        new LinearChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
           'alertsVizz',
@@ -172,7 +168,7 @@ define([
           'agentsSummaryVizz',
           this.scope
         ),
-        (this.agentsSummaryTable = new RawTableDataService(
+        new RawTableDataService(
           'agentsSummaryTable',
           `${
             this.filters
@@ -181,7 +177,7 @@ define([
           '$result$',
           this.scope,
           'Agents Summary'
-        ))
+        )
       ]
     }
 
@@ -258,9 +254,9 @@ define([
             [
               'alertLevEvoVizz',
               'alertsVizz',
-              'alertsEvoTop10Agents',
-              'top10ruleGroups',
-              'agentsSummaryVizz'
+              'alertsEvoTop5Agents',
+              'top5ruleGroups',
+              'agentStatus'
             ],
             this.reportMetrics,
             this.tableResults

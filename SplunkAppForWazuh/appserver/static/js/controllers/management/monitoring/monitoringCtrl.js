@@ -111,6 +111,7 @@ define([
       this.scope.status = 'yes'
       this.scope.reset = () => this.reset()
       this.scope.goConfiguration = () => this.goConfiguration()
+      this.scope.goBack = () => this.goBack()
       this.scope.goNodes = () => this.goNodes()
 
       this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
@@ -259,6 +260,10 @@ define([
     setBooleans(component) {
       this.scope.showConfig = component === 'showConfig'
       this.scope.showNodes = component === 'showNodes'
+      if (component === 'showClusterMonitoring') {
+        this.scope.showConfig = false
+        this.scope.showNodes = false
+      }
       this.scope.currentNode = null
       if (!this.scope.$$phase) this.scope.$digest()
     }
@@ -275,6 +280,13 @@ define([
      */
     goNodes() {
       this.setBooleans('showNodes')
+    }
+
+    /**
+     * Navigates to cluster monitoring
+     */
+    goBack() {
+      this.setBooleans('showClusterMonitoring')
     }
 
     /**

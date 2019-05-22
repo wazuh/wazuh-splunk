@@ -12,7 +12,10 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
      * @param {String} attachedElement
      * @param {scope} scope
      */
-    constructor(id, search, attachedElement, scope) {
+    constructor(id, search, attachedElement, scope, options) {
+      let trellisEnabled = false
+      if (options)
+        trellisEnabled = options.trellisEnabled ? options.trellisEnabled : false
       super(
         new ChartElement(
           {
@@ -20,6 +23,7 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
             resizable: true,
             'charting.drilldown': 'none',
             'charting.chart': 'pie',
+            'trellis.enabled': trellisEnabled,
             managerid: `${id}Search`,
             el: $(`#${attachedElement}`)
           },

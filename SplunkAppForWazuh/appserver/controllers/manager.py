@@ -22,6 +22,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
+from requestsbak.exceptions import ConnectionError
 
 def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
@@ -338,13 +339,27 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            request_manager = self.session.get(
-                url + '/agents/000?select=name', auth=auth, timeout=self.timeout, verify=verify).json()           
-            request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
-            request_cluster_name = self.session.get(
-                url + '/cluster/node', auth=auth, timeout=self.timeout, verify=verify).json()           
+            try:
+                # Checks in the first request if the credentials are ok
+                request_manager = self.session.get(
+                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify)
+                if request_manager.status_code == 401:
+                    self.logger.error("Cannot connect to API; Invalid credentials.")
+                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
+                request_manager = request_manager.json()  
+                request_cluster = self.session.get(
+                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                request_cluster_name = self.session.get(
+                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
+            except ConnectionError as e:
+                self.logger.error("manager: Cannot connect to API : %s" % (e))
+                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
+            try:
+                self.check_wazuh_version(kwargs)
+            except Exception as e:
+                error = {"status": 400, "error": str(e)}
+                return jsonbak.dumps(error)
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
             # Pass the cluster status instead of always False
             if not daemons_ready:
@@ -360,9 +375,47 @@ class manager(controllers.BaseController):
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             else:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": "400", "error": "Cannot connect to the API"})
+                return jsonbak.dumps({"status": 400, "error": "Cannot connect to the API"})
         return result
 
+    def check_wazuh_version(self, kwargs):
+        """Check Wazuh version
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+        """
+        try:
+            opt_username = kwargs["user"]
+            opt_password = kwargs["pass"]
+            opt_base_url = kwargs["ip"]
+            opt_base_port = kwargs["port"]
+            url = opt_base_url + ":" + opt_base_port
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+
+            wazuh_version = self.session.get(
+                url + '/version', auth=auth, timeout=20, verify=verify).json()   
+            wazuh_version = wazuh_version['data']
+            wazuh_version = wazuh_version.split('v')[1]
+
+            app_version = cli.getConfStanza(
+                'package',
+                'app')
+            app_version = app_version['version']
+
+            v_split = wazuh_version.split('.')
+            a_split = app_version.split('.')
+
+            wazuh_version = str(v_split[0]+"."+v_split[1])
+            app_version = str(a_split[0]+"."+a_split[1])
+            if wazuh_version != app_version:
+                raise Exception("Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (app_version, wazuh_version))
+        except Exception as e:
+            self.logger.error("Error when checking Wazuh version: %s" % (e))
+            raise e
+            
     def check_daemons(self, url, auth, verify, check_cluster):
         """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
 

@@ -71,7 +71,7 @@
                 <tr ng-repeat="item in currentConfig['open-scap'].content">
                   <td>{{item.path}}</td>
                   <td>
-                    <ul>
+                    <ul class="noDot">
                       <li ng-repeat="profile in item.profile">{{profile}}</li>
                     </ul>
                     <span ng-if="!item.profile">-</span>

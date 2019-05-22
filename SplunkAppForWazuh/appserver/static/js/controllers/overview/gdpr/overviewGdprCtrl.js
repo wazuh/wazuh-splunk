@@ -5,7 +5,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/inputs/dropdown-input'
+  '../../../services/visualizations/inputs/dropdown-input',
+  '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
   LinearChart,
@@ -13,7 +14,8 @@ define([
   PieChart,
   Table,
   TimePicker,
-  Dropdown
+  Dropdown,
+  RawTableDataService
 ) {
   'use strict'
   class OverviewGDPR {
@@ -122,6 +124,16 @@ define([
           } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryViz',
           this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryVizTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryVizToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         )
       ]
     }
@@ -139,8 +151,8 @@ define([
             this.filters,
             [
               'gdprRequirements',
-              'groupsViz',
               'agentsViz',
+              'evoViz',
               'requirementsByAgents',
               'alertsSummaryViz'
             ],
@@ -159,6 +171,11 @@ define([
           if (this.vizzReady) {
             this.scope.loadingVizz = false
           } else {
+            this.vizz.map(v => {
+              if (v.constructor.name === 'RawTableData') {
+                this.tableResults[v.name] = v.results
+              }
+            })
             this.scope.loadingVizz = true
           }
           if (!this.scope.$$phase) this.scope.$digest()
@@ -172,7 +189,7 @@ define([
           this.dropdown.destroy()
           this.vizz.map(vizz => vizz.destroy())
         })
-      } catch (error) {}
+      } catch (error) {} //eslint-disable-line
     }
 
     /**

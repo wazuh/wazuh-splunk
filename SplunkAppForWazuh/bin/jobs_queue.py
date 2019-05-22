@@ -135,6 +135,10 @@ class JobsQueue():
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(kvstoreUri, headers={
                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            if 'messages' in result:
+                r = result['messages'][0]
+                if r['type'] == 'ERROR' and r['text'] == 'KV Store is initializing. Please try again later.':
+                    result = []
             return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error(

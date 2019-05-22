@@ -59,8 +59,13 @@
 
     <div ng-show='!showFiles'>
       <div class="wz-margin-right-15 wz-text-align-right">
-        <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
-        <span class='wz-text-link' ng-click='show()'>Show files</span>
+        <span class='wz-text-link' ng-click='runScan()'>
+          <i class="fa fa-play" aria-hidden="true"></i>&nbsp;Run scan
+        </span>
+
+        <span class='wz-text-link' ng-click='show()'>
+          <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;Show files
+        </span>
       </div>
       <!-- first row  -->
       <div id="row1" layout="row">
@@ -172,8 +177,12 @@
 
     <div ng-show='showFiles'>
       <div class="wz-margin-right-15 wz-text-align-right">
-        <i class="fa fa-fw fa-area-chart formatted-color"></i>&nbsp;
-        <span class='wz-text-link' ng-click='show()'>Show alerts</span>
+        <span class='wz-text-link' ng-click='runScan()'>
+          <i class="fa fa-play" aria-hidden="true"></i>&nbsp;Run scan
+        </span>
+        <span class='wz-text-link' ng-click='show()'>
+          <i class="fa fa-fw fa-area-chart formatted-color"></i>&nbsp;Show alerts
+        </span>
       </div>
       <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform === 'windows'">
         <md-card flex="" class="wz-md-card _md flex">
@@ -226,10 +235,10 @@
             <div layout="row" class="wz-margin-top-10">
               <label class="wz-icon-loupe">
                 <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
                   aria-invalid="false" wz-enter="search(filesSearch,{name:'type',value:'file'})"></label>
               <button type="submit" aria-label="Search"
-                class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr"
+                class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr"
                 ng-click="search(filesSearch,{name:'type',value:'file'})">
                 <span>Search</span>
               </button>
@@ -260,14 +269,14 @@
           <md-card-content>
             <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Files</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-margin-top-10">
+            <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
               <label class="wz-icon-loupe">
                 <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-30"
+                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
                   aria-invalid="false" wz-enter="search(filesSearch)">
               </label>
               <button type="submit" aria-label="Search"
-                class="btn height-32 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
+                class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
                 <span>Search</span>
               </button>
             </div>

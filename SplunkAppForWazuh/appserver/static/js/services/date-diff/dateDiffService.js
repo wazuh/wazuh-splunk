@@ -28,6 +28,18 @@ define(['../module'], function(module) {
       }
       return result
     }
+
+    setBrowserOffset(d) {
+      try {
+        const date = new Date(d)
+        const offset = new Date().getTimezoneOffset()
+        const offsetTime = new Date(date.getTime() - offset * 60000)
+        const result = offsetTime.toLocaleString('en-ZA').replace(',', '')
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
   }
 
   module.service('$dateDiffService', DateDiffService)
