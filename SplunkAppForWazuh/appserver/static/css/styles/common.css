@@ -123,6 +123,10 @@
   padding-bottom: 14px;
 } 
 
+.wz-padding-16 {
+  padding: 16px
+}
+
 .wz-padding-left-8 {
   padding-left: 8px
 }
@@ -414,6 +418,44 @@ div.uil-ring-css {
   top: -3px;
 }
 
+.wz-margin-20 {
+  margin: 20px;
+}
+
+.wz-margin-top-4 {
+  margin-top: 4px;
+}
+
+.text-black { 
+  color: black !important;
+}
+
+.wz-ruleset-subnav {
+  margin: 15px;
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
+.wz-margin-top--3 {
+  margin-top: -3px;
+}
+
+.wz-margin-top--15{
+  margin-top: -15px;
+}
+
+.wz-margin-right-10 {
+  margin-right: 10px;
+}
+
+.wz-margin-left-20 {
+  margin-left: 20px !important;
+}
+
+.wz-margin-left--10 {
+  margin-left: -10px;
+}
+
 .text-black { 
   color: black !important;
 }
@@ -426,6 +468,25 @@ div.uil-ring-css {
 
 .wz-margin-12 {
   margin: 12px;
+}
+
+.wz-margin-9 {
+  margin: 9px !important;
+}
+
+.wz-margin-top-0 {
+  margin-top: 0px !important;
+}
+
+.wz-margin-bottom--15 {
+  margin-bottom: -15px !important;
+}
+
+.wz-height-35 {
+  height: 35px !important;
+}
+.wz-height-20 {
+  height: 20px !important;
 }
 
 .wz-margin-9 {
@@ -1773,6 +1834,10 @@ label.wz-icon-loupe  input {
 
 .orange {
   color: #ff9999;
+}
+
+.border-top-none-settings th{
+  border-top: none !important;
 }
 
 .gray {

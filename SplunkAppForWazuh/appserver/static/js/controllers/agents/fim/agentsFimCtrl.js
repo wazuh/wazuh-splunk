@@ -281,6 +281,7 @@ define([
      */
     $onInit() {
       this.scope.loadingVizz = true
+      this.show()
       this.scope.show = () => this.show()
       this.scope.runScan = () => this.runScan()
       this.scope.agent =

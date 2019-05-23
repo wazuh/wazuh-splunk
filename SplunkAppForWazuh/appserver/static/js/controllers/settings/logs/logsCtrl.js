@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module'], function (module) {
   'use strict'
   class Logs {
     constructor($scope, $requestService, logs, $rootScope) {
@@ -24,6 +24,8 @@ define(['../../module'], function(module) {
      * Initialize
      */
     $onInit() {
+      this.scope.refreshing = false
+      this.scope.logs = []
       this.scope.refreshLogs = () => this.refreshLogs()
       try {
         if (Array.isArray(this.logs.data.logs)) {
@@ -33,7 +35,7 @@ define(['../../module'], function(module) {
         this.scope.logs = [
           {
             date: new Date(),
-            level: 'error',
+            level: 'ERROR',
             message: 'Error when loading Wazuh app logs'
           }
         ]
@@ -47,41 +49,30 @@ define(['../../module'], function(module) {
     parseLogs(logs) {
       try {
         if (Array.isArray(logs)) {
-          if (logs.length > 0) {
-            for (let i = 0; i < logs.length; i++) {
-              try {
-                logs[i] = JSON.parse(logs[i])
-              } catch (error) {
-                logs[i] = {
-                  date: new Date(),
-                  level: 'parse_error',
-                  message: 'Cannot parse this log message'
-                }
-              }
-            }
-            const excludeParseError = logs.filter(
-              log => log.level !== 'parse_error'
-            )
-            this.scope.logs = excludeParseError
-          } else {
-            this.scope.logs = [
-              { date: new Date(), level: 'info', message: 'Empty logs' }
-            ]
-          }
+          logs.map(log => {
+            const l = log.split("'")
+            const message = l[1]
+            const levelAndDate = l[0].split(':')
+            const level = levelAndDate[0]
+            const date = `${levelAndDate[1]}:${levelAndDate[2]}:${
+              levelAndDate[3]
+              }`
+            const formatLog = { date, level, message }
+            this.scope.logs.push(formatLog)
+          })
+          this.scope.$applyAsync()
         } else {
           this.scope.logs = [
-            { date: new Date(), level: 'info', message: 'Empty logs' }
+            { date: new Date(), level: 'INFO', message: 'Empty logs' }
           ]
         }
-        this.root.$broadcast('loading', { status: false })
-        if (!this.scope.$$phase) this.scope.$digest()
         return
       } catch (error) {
         this.root.$broadcast('loading', { status: false })
         this.scope.logs = [
           {
             date: new Date(),
-            level: 'error',
+            level: 'ERROR',
             message: 'Error when loading Wazuh app logs'
           }
         ]
@@ -93,15 +84,17 @@ define(['../../module'], function(module) {
      */
     async refreshLogs() {
       try {
-        this.root.$broadcast('loading', { status: true })
+        this.scope.refreshing = true
+        this.scope.logs = []
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
         this.parseLogs(result.data.logs)
+        this.scope.refreshing = false
         return
       } catch (error) {
         this.scope.logs = [
           {
             date: new Date(),
-            level: 'error',
+            level: 'ERROR',
             message: 'Error when loading Wazuh app logs'
           }
         ]

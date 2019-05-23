@@ -168,9 +168,11 @@ define(['../module'], function(module) {
      */
     const isAdmin = async () => {
       try {
-        const id = getApi().id
-        const extensions = await getExtensionsById(id)
-        return extensions['admin'] === 'true'
+        const config = await $requestService.httpReq(
+          `GET`,
+          `/manager/configuration`
+        )
+        return config.data.admin === 'true'
       } catch (error) {
         return Promise.reject(error)
       }
@@ -195,6 +197,19 @@ define(['../module'], function(module) {
       try {
         const id = getApi()['_key']
         return await getExtensionsById(id)
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    /**
+     * Get the current configuration
+     */
+
+    const getCurrentConfiguration = async () => {
+      try {
+        const conf = await $requestService.httpReq(`GET`, `/config/get_config`)
+        return conf
       } catch (error) {
         return Promise.reject(error)
       }
@@ -254,6 +269,7 @@ define(['../module'], function(module) {
       getExtensions: getExtensions,
       getAdminExtensions: getAdminExtensions,
       getCurrentExtensions: getCurrentExtensions,
+      getCurrentConfiguration: getCurrentConfiguration,
       getExtensionsById: getExtensionsById,
       extensionIsEnabled: extensionIsEnabled,
       setExtensions: setExtensions,

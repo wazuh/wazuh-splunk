@@ -57,7 +57,6 @@
   <div ng-show="!loadingVizz">
 
     <!-- Metrics -->
-
     <div layout="row" ng-if="!agent.error" class="wz-margin-9">
       <md-card flex class="wz-metric-color">
         <md-card-content layout="row" class="wz-padding-metric">
@@ -106,6 +105,9 @@
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div id="topCiscatGroups" class="dashboard-element single" style="width: 100%"></div>
+            <span class="wz-text-link" ng-click="expand(0)">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
           </md-card-content>
         </md-card>
       </div>
@@ -123,6 +125,7 @@
           </md-card-content>
         </md-card>
       </div>
+
     </div>
 
     <div layout="row" layout-align="center stretch">

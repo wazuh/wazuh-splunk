@@ -12,9 +12,9 @@
 
 define([
   '../../module',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/chart/pie-chart'
+], function(app, TimePicker, PieChart) {
   'use strict'
 
   class AgentsCA {
@@ -154,7 +154,9 @@ define([
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
+        this.vizz.map(vizz => {
+          vizz.destroy()
+        })
       })
     }
 
@@ -274,6 +276,14 @@ define([
       this.scope.policy = policy
       const agentId = this.agent.data.data.id
       this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
+    }
+
+    /**
+     *
+     * Backs to config assessment
+     */
+    backToConfAssess() {
+      this.scope.showPolicyChecks = false
     }
 
     /**

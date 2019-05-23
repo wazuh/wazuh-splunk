@@ -63,9 +63,10 @@ class report(controllers.BaseController):
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error("Error in report module constructor: %s" % (e))
+            self.logger.error("report: Error in report module constructor: %s" % (e))
 
     def save_images(self, images):
+        self.logger.debug("report: Saving images on disk.")
         i = 0
         images_saved = []
         while i in range(0, len(images)):
@@ -83,6 +84,7 @@ class report(controllers.BaseController):
         return images_saved
 
     def delete_images(self, images):
+        self.logger.debug("report: Removing images from disk.")
         for img in images:
             os.remove(img['path'])
 
@@ -97,10 +99,10 @@ class report(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("report: Generating report.")
             pdf = PDF('P', 'mm', 'A4')
             metrics_exists = False
             first_page = True
-            self.logger.info("Start generating report ")
             json_acceptable_string = kwargs['data']
             data = jsonbak.loads(json_acceptable_string)
             #Replace "'" in images
@@ -152,6 +154,7 @@ class report(controllers.BaseController):
                 self.print_agent_info(agent_data, pdf)
             #Check metrics and print if exist
             if len(metrics) > 0:
+                self.logger.debug("report: Printing metrics.")
                 pdf.set_text_color(255,255,255)
                 metrics_exists = True
                 w = 5
@@ -172,6 +175,7 @@ class report(controllers.BaseController):
                     pdf.cell((total_width - line_width), 4, '', 0, 0, 'L', 1)#Fill rest of the width in the last row
             # Add visualizations
             if saved_images:
+                self.logger.debug("report: Printing images.")
                 # Default sizes and margins values
                 x = 30
                 y = 10
@@ -227,6 +231,7 @@ class report(controllers.BaseController):
                         count = 0
             #Add tables
             if self.tables_have_info(tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
+                self.logger.debug("report: Printing tables.")
                 if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
                     pdf.add_page()
                     pdf.ln(20)
@@ -313,11 +318,13 @@ class report(controllers.BaseController):
                             pdf.set_xy(10, y)
                             pdf.line(10, y, 200, y)
             #Save pdf
-            pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
+            pdf_final_name = 'wazuh-'+pdf_name+'-'+report_id+'.pdf'
+            pdf.output(self.path+pdf_final_name, 'F')
+            self.logger.info("report: Report generated -> %s" % pdf_final_name)
             #Delete the images
             self.delete_images(saved_images)
         except Exception as e:
-            self.logger.error("Error generating report: %s" % (e))
+            self.logger.error("report: Error generating report: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
@@ -392,6 +399,7 @@ class report(controllers.BaseController):
 
     #Calculates the width of the fields
     def calculate_table_width(self, pdf, table):
+        self.logger.debug("report: Calculating table widths.")
         sizes = {}
         total_width = 0
         fields = table['fields']
@@ -448,6 +456,7 @@ class report(controllers.BaseController):
     
     #Print agent info
     def print_agent_info(self, agent_info, pdf):
+        self.logger.debug("report: Printing agent info.")
         pdf.ln(10)
         sorted_fields = ('ID', 'Name', 'IP', 'Version', 'Manager', 'OS')
         fields = {'ID':0, 'Name':0, 'IP':0, 'Version':0, 'Manager':0, 'OS':0}
@@ -509,6 +518,7 @@ class report(controllers.BaseController):
 
         """
         try:
+            self.logger.debug("report: Getting generated reports.")
             pdf_files = []
             for f in os.listdir(self.path):
                 if os.path.isfile(os.path.join(self.path, f)):
@@ -522,7 +532,7 @@ class report(controllers.BaseController):
 
             parsed_data = jsonbak.dumps({'data': pdf_files})
         except Exception as e:
-            self.logger.error("Error getting PDF files: %s" % (e))
+            self.logger.error("report: Error getting PDF files: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
@@ -542,9 +552,10 @@ class report(controllers.BaseController):
                 raise Exception('Missing filename')
             filename = kwargs['name']
             os.remove(self.path+filename)
-            self.logger.info("Removed report %s" % kwargs['name'])
+            self.logger.debug("Removing report %s" % kwargs['name'])
             parsed_data = jsonbak.dumps({"data": "Deleted file"})
+            self.logger.info("report: Report %s deleted." % filename)
         except Exception as e:
-            self.logger.error("Error deleting PDF file: %s" % (e))
+            self.logger.error("report: Error deleting PDF file: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data

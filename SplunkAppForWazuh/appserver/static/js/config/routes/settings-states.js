@@ -15,6 +15,19 @@ define(['../module'], function(module) {
             'static/app/SplunkAppForWazuh/js/controllers/settings/main/settings.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('settings.api')
+          },
+          controller: 'settingsCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
           }
         })
         // settings -> about
@@ -114,6 +127,28 @@ define(['../module'], function(module) {
                   )
                 } catch (error) {
                   $state.go('settings.api')
+                }
+              }
+            ]
+          }
+        })
+        .state('settings.configuration', {
+          templateUrl:
+            '/static/app/SplunkAppForWazuh/js/controllers/settings/configuration/configuration.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('settings.configuration')
+          },
+          controller: 'settingsConfigCtrl',
+          controllerAs: 'vm',
+          resolve: {
+            configuration: [
+              '$state',
+              '$currentDataService',
+              async ($state, $currentDataService) => {
+                try {
+                  return await $currentDataService.getCurrentConfiguration()
+                } catch (err) {
+                  $state.reload()
                 }
               }
             ]
