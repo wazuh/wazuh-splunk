@@ -44,7 +44,6 @@ define(['./module'], function(module) {
             toPrimaryState(state)
           } else {
             $rootScope.$broadcast('loadingMain', { status: false })
-            $rootScope.$broadcast('loadingContent', { status: false })
             if (state != 'settings.api')
               $rootScope.$broadcast('stateChanged', 'settings')
             $state.go('settings.api')
@@ -72,18 +71,9 @@ define(['./module'], function(module) {
       })
 
       $transitions.onStart({}, async trans => {
+        $rootScope.$broadcast('loadingMain', { status: true })  
         const to = trans.to().name
         const from = trans.from().name
-        if (
-          to.startsWith('ow-') && from.startsWith('ow-') ||
-          to.startsWith('mg-') && from.startsWith('mg-') ||
-          to.startsWith('ag-') && from.startsWith('ag-') ||
-          to.startsWith('settings.') && from.startsWith('settings.') 
-        ){
-          $rootScope.$broadcast('loadingContent', { status: true })  
-        } else {
-          $rootScope.$broadcast('loadingMain', { status: true })  
-        }
         if (to !== from && from !== 'discover') {
           $currentDataService.cleanFilters()
         }
@@ -99,7 +89,6 @@ define(['./module'], function(module) {
 
       $transitions.onSuccess({}, async trans => {
         $rootScope.$broadcast('loadingMain', { status: false })
-        $rootScope.$broadcast('loadingContent', { status: false })
         const to = trans.to().name
         const from = trans.from().name
         //Select primary states
