@@ -10,13 +10,12 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module'], function (module) {
   'use strict'
   class Logs {
-    constructor($scope, $requestService, logs, debugEnabled, $rootScope) {
+    constructor($scope, $requestService, logs, $rootScope) {
       this.scope = $scope
       this.logs = logs
-      this.debugEnabled = debugEnabled
       this.httpReq = $requestService.httpReq
       this.root = $rootScope
     }
@@ -51,21 +50,15 @@ define(['../../module'], function(module) {
       try {
         if (Array.isArray(logs)) {
           logs.map(log => {
-            if (
-              log.startsWith('INFO:') ||
-              log.startsWith('ERROR:') ||
-              (log.startsWith('DEBUG:') && this.debugEnabled)
-            ) {
-              const l = log.split("'")
-              const message = l[1]
-              const levelAndDate = l[0].split(':')
-              const level = levelAndDate[0]
-              const date = `${levelAndDate[1]}:${levelAndDate[2]}:${
-                levelAndDate[3]
+            const l = log.split("'")
+            const message = l[1]
+            const levelAndDate = l[0].split(':')
+            const level = levelAndDate[0]
+            const date = `${levelAndDate[1]}:${levelAndDate[2]}:${
+              levelAndDate[3]
               }`
-              const formatLog = { date, level, message }
-              this.scope.logs.push(formatLog)
-            }
+            const formatLog = { date, level, message }
+            this.scope.logs.push(formatLog)
           })
           this.scope.$applyAsync()
         } else {

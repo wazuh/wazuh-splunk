@@ -129,18 +129,6 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
-            ],
-            debugEnabled: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  const config = await $currentDataService.getCurrentConfiguration()
-                  const enabled = config.data.data['log.level'] === 'debug'
-                  return enabled
-                } catch (err) {
-                  return false
-                }
-              }
             ]
           }
         })
