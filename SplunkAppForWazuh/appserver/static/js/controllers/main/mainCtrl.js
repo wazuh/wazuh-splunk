@@ -38,8 +38,8 @@ define([
      */
     $onInit() {
       this.scope.$on('loading', (event, data) => {
-        if (data.status) this.scope.loading = true
-        else this.scope.loading = false
+        data.status ? this.scope.loading = true :this.scope.loading = false
+        event.preventDefault()
         this.scope.$applyAsync()
       })
 
