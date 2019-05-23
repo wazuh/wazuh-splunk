@@ -728,6 +728,17 @@ define(['../../module', 'FileSaver'], function(controllers) {
         configurations: [
 
           {
+            title: 'Agents ',
+            sections: [
+              {
+                desc: 'agents',
+                agentList: true,
+                labels : { }
+              },
+              
+            ]
+          },
+          {
             title: 'Main group configurations',
             sections: [
               {
@@ -738,17 +749,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
               
             ]
           },
-          {
-            title: 'Agents ',
-            sections: [
-              {
-                desc: 'agents',
-                agentList: true,
-                labels : { }
-              },
-              
-            ]
-          }
         ]
       }
 

@@ -13,6 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 from . import api
+from . import report_vars
 import os
 import time
 import jsonbak
@@ -28,12 +29,12 @@ import math
 class PDF(FPDF):
     def header(self):
         # Add fonts 
-        # Note that RobotoThin and RobotoRegular can't be used with 'B'-'I' options
+        # Note that RobotoThin and RobotoThin can't be used with 'B'-'I' options
         self.add_font('RobotoThin','', 'Roboto-Thin.ttf',uni=True)
-        self.add_font('RobotoRegular','', 'Roboto-Regular.ttf',uni=True)
+        self.add_font('RobotoThin','', 'Roboto-Regular.ttf',uni=True)
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 15)
-        self.set_font('RobotoRegular', '', 11)
+        self.set_font('RobotoThin', '', 11)
         self.set_text_color(75, 179, 204)
         #Contact info
         self.set_y(12)
@@ -50,7 +51,7 @@ class PDF(FPDF):
         self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
         self.set_text_color(75, 179, 204)
-        self.set_font('RobotoRegular', '', 7)
+        self.set_font('RobotoThin', '', 7)
         # Page number
         self.cell(100, 10, self.copyright, 0, 0, 'L')
         self.cell(0, 10, 'Page ' + str(self.page_no()) + ' of {nb}', 0, 0, 'R')
@@ -70,6 +71,7 @@ class report(controllers.BaseController):
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
             self.miapi = api.api()
+            self.labels = report_vars.labels
         except Exception as e:
             self.logger.error("Error in report module constructor: %s" % (e))
 
@@ -131,13 +133,13 @@ class report(controllers.BaseController):
                 if i == 1:
                     useKey = key
                 if key:
-                    pdf.cell(2, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
-                    pdf.cell(100, 4, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
+                    pdf.cell(1, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
+                    pdf.cell(90, 4, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
                     pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
         else: # if value's length is lower than 50 we write the full string
-            pdf.cell(2, 5, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-            pdf.cell(100, 5, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
-            pdf.cell(0, 5, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
+            pdf.cell(1, 4, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
+            pdf.cell(90, 4, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+            pdf.cell(0, 4, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
             if(pdf.get_y() > 250):
                 pdf.add_page()
                 pdf.ln(20)
@@ -148,7 +150,7 @@ class report(controllers.BaseController):
         pdf.set_draw_color(155, 155, 155)
 
     def setBlueHeaderStyle(self,pdf):
-        pdf.set_font('RobotoRegular', '', 8)
+        pdf.set_font('RobotoThin', '', 8)
         pdf.set_fill_color(75, 179, 204)
         pdf.set_text_color(255,255,255)
 
@@ -158,7 +160,7 @@ class report(controllers.BaseController):
         pdf.set_font('RobotoThin', '', 8)
     
     def setBlueTableTitle(self,pdf):
-        pdf.set_font('RobotoRegular', '', 12)
+        pdf.set_font('RobotoThin', '', 12)
         pdf.set_fill_color(75, 179, 204)
         pdf.set_text_color(255,255,255)
 
@@ -189,8 +191,10 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 table_title = key
                 self.setTableTitle(pdf)
+                pdf.set_margins(11, 0, 11)
                 pdf.ln(5)
-                pdf.cell(max_width, 5, txt = table_title, border = 'B', align = '', fill = False, link = '')
+                pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
+                pdf.set_margins(12, 0, 12)
                 pdf.ln(5)
                 rows_count = rows_count + 5
                 self.setBlueHeaderStyle(pdf)
@@ -261,6 +265,9 @@ class report(controllers.BaseController):
             elif type(data) is dict:
                 for key,value in data.iteritems():
                     if type(value) is not list and type(value) is not dict:
+                        self.logger.info("a")
+                        self.logger.info(str(key))
+                        self.logger.info(str(value))
                         self.addTableRow(key,value,pdf,labels)
                     if type(value) is list:
                         if value and type(value[0]) is dict:
@@ -268,6 +275,9 @@ class report(controllers.BaseController):
                         elif value and type(value[0]) is list:
                             self.addTable(value,pdf,labels)
                         else:
+                            self.logger.info("b")
+                            self.logger.info(str(key))
+                            self.logger.info(str(value))
                             self.addTableRow(key,value,pdf,labels)
                             
                             if(pdf.get_y() > 250):
@@ -278,6 +288,9 @@ class report(controllers.BaseController):
             elif type(data) is list:
                 for item in data:
                     if type(item) is not list and type(item) is not dict:
+                        self.logger.info("c")
+                        self.logger.info(str(key))
+                        self.logger.info(str(value))
                         self.addTableRow(key,item,pdf,labels)
                     if type(item) is list:
                         for listItem in item:
@@ -293,7 +306,6 @@ class report(controllers.BaseController):
                         fields = []
                         rows = []
                         if type(value) is list:
-                            self.logger.error(str(value[0]))
                             keys_amount = len(value[0].keys())
                             for key in value[0]: #Header
                                 fields.append(self.getString(key,labels))
@@ -315,6 +327,9 @@ class report(controllers.BaseController):
                             pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                             pdf.ln(5)
                             for currentTableKey, currentTableValue in value.iteritems():
+                                self.logger.info("d")
+                                self.logger.info(str(key))
+                                self.logger.info(str(value))
                                 self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
 
         except Exception as e:
@@ -370,7 +385,7 @@ class report(controllers.BaseController):
             pdf.set_font('RobotoThin', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('RobotoRegular', '', 12)
+            pdf.set_font('RobotoThin', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(1)
             pdf_name = 'configuration-report'
@@ -409,14 +424,13 @@ class report(controllers.BaseController):
                             pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
                             pdf.ln(8)
                         customLabels = {} 
-                        if 'labels' in currentSection:
-                            customLabels = currentSection['labels']
+                        if self.labels:
+                            customLabels = self.labels
                         # rows
                         if 'groupConfig' in currentSection:
                             config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
-                            self.logger.info(conf_data)
                             if not conf_data or 'data' not in conf_data:
                                 pass
                             else:
@@ -437,11 +451,10 @@ class report(controllers.BaseController):
                                         rows = []
                                         rows.append(values)
                                         self.setBlueTableTitle(pdf)
-                                        self.logger.info(values)
                                         pdf.cell(0, 5, txt = "Configuration " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
-                                        pdf.set_font('RobotoRegular','',8)
+                                        pdf.set_font('RobotoThin','',8)
                                         pdf.cell(0, 5, txt =  filters, border = 'B', ln = 1, align = 'R', fill = True, link = '')
-                                        pdf.set_font('RobotoRegular','',10)
+                                        pdf.set_font('RobotoThin','',10)
                                         pdf.set_text_color(23,23,23)
                                         self.addTables({"Filters:" : {"fields" : item['filters'].keys(), "rows": rows}},pdf,185,12)
                                         for currentFilterKey,currentFilterValue in item['filters'].iteritems():
@@ -449,12 +462,12 @@ class report(controllers.BaseController):
                                             pdf.ln()
                                         del item['filters']
                                     if 'config' in item:
-                                        self.addTable(item['config'], pdf, customLabels)  
+                                        self.addTable(item['config'], pdf, customLabels)
+
                         if 'agentList' in currentSection:
                             config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
-                            self.logger.info(conf_data)
                             if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data']:
                                 table = { "Agent List" : {} }
                                 fields = ['ID', 'Name', 'IP', 'Version', 'Manager', 'OS']
@@ -470,7 +483,8 @@ class report(controllers.BaseController):
                                     rows.append(currentAgentRow)
                                 table["Agent List"] = { "fields" : fields, "rows" : rows}
                                 self.addTables(table,pdf,185,12)
-
+                            pdf.add_page()
+                            pdf.ln(20)
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)
@@ -561,7 +575,7 @@ class report(controllers.BaseController):
             pdf.set_font('RobotoThin', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('RobotoRegular', '', 12)
+            pdf.set_font('RobotoThin', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
             if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
@@ -834,14 +848,14 @@ class report(controllers.BaseController):
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
         #Print the rest of the agent information
-        pdf.ln(7)
+        pdf.ln(6)
         pdf.set_font('RobotoThin','',11)
         pdf.set_text_color(23,23,23)
-        pdf.cell(0,10, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
+        pdf.cell(0,9, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
         pdf.ln()
-        pdf.cell(0,10, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
+        pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
         pdf.ln()
-        pdf.cell(0,10, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
+        pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
         pdf.ln(2)
 
     #Sorts the width of the fields
