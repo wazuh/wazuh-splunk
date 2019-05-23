@@ -3,7 +3,7 @@ define([
   'splunkjs/mvc/layoutview',
   'splunkjs/mvc/simplexml',
   '../../services/visualizations/inputs/time-picker'
-], function(app, LayoutView, DashboardController, TimePicker) {
+], function (app, LayoutView, DashboardController, TimePicker) {
   'use strict'
 
   class MainCtrl {
