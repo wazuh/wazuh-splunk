@@ -36,9 +36,7 @@ class Queue(controllers.BaseController):
             self.logger = log()
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error(
-                "queue: Error in Jobs queue module constructor: %s" % (e))
-
+            self.logger.error("queue: Error in Jobs queue module constructor: %s" % (e))
     @expose_page(must_login=False, methods=['POST'])
     def add_job(self, **kwargs):
         """Add job to the queue.

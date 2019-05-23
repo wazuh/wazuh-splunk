@@ -405,7 +405,7 @@ class api(controllers.BaseController):
                             dict_writer.writerows(format_paginated_results)
 
                         csv_result = output_file.getvalue()
-                        self.logger.info('CSV generated successfully.')
+                        self.logger.info("api: CSV generated successfully.")
                 else:
                     csv_result = '[]'
             else:

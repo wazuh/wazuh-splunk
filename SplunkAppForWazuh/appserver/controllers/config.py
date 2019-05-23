@@ -32,9 +32,7 @@ class Configuration(controllers.BaseController):
             self.logger = log()
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error(
-                "Error in configuration module constructor: %s" % (e))
-
+            self.logger.error("config: Error in configuration module constructor: %s" % (e))
     @expose_page(must_login=False, methods=['POST'])
     def update_config(self, **kwargs):
         """Updates a parameter of the configuration.

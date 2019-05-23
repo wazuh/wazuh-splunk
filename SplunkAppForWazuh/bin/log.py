@@ -87,5 +87,5 @@ class log():
             config = cli.getConfStanza("config", "configuration")
             return config
         except Exception as e:
-            self.logger.error("Error getting the configuration on memory: %s" % (e))
+            self.logger.error("log: Error getting the configuration on memory: %s" % (e))
             raise e

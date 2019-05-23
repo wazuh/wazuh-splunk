@@ -44,8 +44,7 @@ class CheckQueue():
             jobs = jsonbak.loads(jobs)
             self.check_todo_jobs(jobs)
         except Exception as e:
-            self.logger.error(
-                'Error at init in the CheckQueue module: {}'.format(e))
+            self.logger.error('bin.check_queue: Error at init in the CheckQueue module: {}'.format(e))
 
     def get_todo_jobs(self, jobs):
         """Gets the to do jobs
@@ -62,8 +61,7 @@ class CheckQueue():
             todo_jobs = filter(lambda j: j['done'] == False, jobs)
         except TypeError as e:
             todo_jobs = []
-            self.logger.error(
-                'Error filtering the fields in the CheckQueue module: {}'.format(e))
+            self.logger.error('bin.check_queue: Error filtering the fields in the CheckQueue module: {}'.format(e))
         return todo_jobs
 
     def check_todo_jobs(self, jobs):
@@ -80,8 +78,7 @@ class CheckQueue():
                 if job['exec_time'] < self.now:
                     self.exec_job(job)
         except Exception as e:
-            self.logger.error(
-                'Error checking to do jobs in the CheckQueue module: {}'.format(e))
+            self.logger.error('bin.check_queue: Error checking to do jobs in the CheckQueue module: {}'.format(e))
 
     def exec_job(self, job):
         """Exec the passed job
@@ -132,8 +129,7 @@ class CheckQueue():
                 raise Exception('Job cannot be executed properly.')
             return request
         except Exception as e:
-            self.logger.error(
-                'Error executing the job in CheckQueue module: {}'.format(e))
+            self.logger.error('bin.check_queue: Error executing the job in CheckQueue module: {}'.format(e))
 
     def mark_as_done(self, job):
         """Update the job and mark as done.
@@ -148,8 +144,7 @@ class CheckQueue():
             job['done'] = True
             self.q.update_job(job, self.auth_key)
         except Exception as e:
-            self.logger.error(
-                'Error updating the job in CheckQueue module: {}'.format(e))
+            self.logger.error('bin.check_queue: Error updating the job in CheckQueue module: {}'.format(e))
 
     def remove_job(self, job_key):
         """Remove the job of the queue.
@@ -163,8 +158,7 @@ class CheckQueue():
             self.logger.debug("bin.check_queue: Removing job.")
             self.q.remove_job(job_key, self.auth_key)
         except Exception as e:
-            self.logger.error(
-                'Error removing the job in CheckQueue module: {}'.format(e))
+            self.logger.error('bin.check_queue: Error removing the job in CheckQueue module: {}'.format(e))
 
     def get_api_credentials(self, api_id):
         """Get API credentials.
