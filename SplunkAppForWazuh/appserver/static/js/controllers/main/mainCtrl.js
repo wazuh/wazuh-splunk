@@ -37,8 +37,8 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.$on('loading', (event, data) => {
-        data.status ? this.scope.loading = true :this.scope.loading = false
+      this.scope.$on('loadingMain', (event, data) => {
+        data.status ? this.scope.loadingMain = true :this.scope.loadingMain = false
         event.preventDefault()
         this.scope.$applyAsync()
       })

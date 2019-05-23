@@ -73,11 +73,11 @@ define(['../../module'], function(module) {
             { date: new Date(), level: 'info', message: 'Empty logs' }
           ]
         }
-        this.root.$broadcast('loading', { status: false })
+        this.root.$broadcast('loadingMain', { status: false })
         this.scope.$applyAsync()
         return
       } catch (error) {
-        this.root.$broadcast('loading', { status: false })
+        this.root.$broadcast('loadingMain', { status: false })
         this.scope.logs = [
           {
             date: new Date(),
@@ -93,7 +93,7 @@ define(['../../module'], function(module) {
      */
     async refreshLogs() {
       try {
-        this.root.$broadcast('loading', { status: true })
+        this.root.$broadcast('loadingMain', { status: true })
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
         this.parseLogs(result.data.logs)
         return

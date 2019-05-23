@@ -20,7 +20,7 @@ define(['./module'], function(module) {
         try {
           const { api } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
-          //$currentDataService.cleanFilters()
+          $currentDataService.cleanFilters()
           $navigationService.storeRoute(state)
           $currentDataService.addFilter(
             `{"${api.filterType}":"${api.filterName}", "implicit":true}`
@@ -43,7 +43,7 @@ define(['./module'], function(module) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})
             toPrimaryState(state)
           } else {
-            $rootScope.$broadcast('loading', { status: false })
+            $rootScope.$broadcast('loadingMain', { status: false })
             $rootScope.$broadcast('loadingContent', { status: false })
             if (state != 'settings.api')
               $rootScope.$broadcast('stateChanged', 'settings')
@@ -82,7 +82,7 @@ define(['./module'], function(module) {
         ){
           $rootScope.$broadcast('loadingContent', { status: true })  
         } else {
-          $rootScope.$broadcast('loading', { status: true })  
+          $rootScope.$broadcast('loadingMain', { status: true })  
         }
         if (to !== from && from !== 'discover') {
           $currentDataService.cleanFilters()
@@ -98,7 +98,7 @@ define(['./module'], function(module) {
       })
 
       $transitions.onSuccess({}, async trans => {
-        $rootScope.$broadcast('loading', { status: false })
+        $rootScope.$broadcast('loadingMain', { status: false })
         $rootScope.$broadcast('loadingContent', { status: false })
         const to = trans.to().name
         const from = trans.from().name

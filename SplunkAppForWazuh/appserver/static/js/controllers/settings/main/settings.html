@@ -1,14 +1,8 @@
 <div flex layout="column" ng-cloak ng-controller="settingsCtrl">
 
-  <!-- Loading bar 
-  <div class="loader-bar"  ng-show="loading">
-  <div class="loader"></div>
-</div>
-  -->
   <!-- Navigation bar -->
   <div>
     <md-nav-bar class="wz-nav-bar" md-selected-nav-item="tabName" nav-bar-aria-label="Settings navigation links">
-
       <md-nav-item class="wz-nav-item" ui-sref='settings.api' md-nav-click="switchTab('api')" name="api">API
       </md-nav-item>
       <md-nav-item class="wz-nav-item" ui-sref='settings.extensions' md-nav-click="switchTab('extensions')"
@@ -21,6 +15,7 @@
       </md-nav-item>
     </md-nav-bar>
     <!-- End navigation bar -->
+
     <div layout="column" layout-align="start stretch">
       <div ng-show="loadingContent">
         <div class="loader-bar" ng-show="loadingContent">
