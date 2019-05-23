@@ -19,9 +19,9 @@ define([
 ) {
     'use strict'
 
-    class OverviewMain {
+    class DashboardMain {
       /**
-       * Class OverviewMain
+       * Class DashboardMain
        * @param {*} $scope
        * @param {*} $reportingService
        * @param {*} $state
@@ -116,7 +116,7 @@ define([
             } catch (error) { }
           })
         } catch (error) {
-          console.error('Error initializing OverviewMain: ', error)
+          console.error('Error initializing DashboardMain: ', error)
         }
       }
 
@@ -156,6 +156,6 @@ define([
         })
       }
     }
-    app.controller('overviewMain', OverviewMain)
-    return OverviewMain
+    app.controller('dashboardMain', DashboardMain)
+    return DashboardMain
   })
