@@ -40,12 +40,8 @@
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory">Inventory data</md-nav-item>
   </md-nav-bar>
 
-  <div ng-show="loadingContent">
-    <div class="loader-bar" ng-show="loadingContent">
-      <div class="loader"></div>
-    </div>
-  </div>
-  <div ng-show="!loadingContent">
+
+  <div>
     <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
       <md-card flex class="wz-md-card" flex>
         <md-card-content class="wz-text-center">
