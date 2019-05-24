@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module'], function (module) {
   'use strict'
   class Logs {
     constructor($scope, $requestService, logs, $rootScope) {
@@ -56,7 +56,7 @@ define(['../../module'], function(module) {
             const level = levelAndDate[0]
             const date = `${levelAndDate[1]}:${levelAndDate[2]}:${
               levelAndDate[3]
-            }`
+              }`
             const formatLog = { date, level, message }
             this.scope.logs.push(formatLog)
           })
@@ -66,11 +66,8 @@ define(['../../module'], function(module) {
             { date: new Date(), level: 'INFO', message: 'Empty logs' }
           ]
         }
-        this.root.$broadcast('loadingMain', { status: false })
-        this.scope.$applyAsync()
         return
       } catch (error) {
-        this.root.$broadcast('loadingMain', { status: false })
         this.scope.logs = [
           {
             date: new Date(),
@@ -86,7 +83,8 @@ define(['../../module'], function(module) {
      */
     async refreshLogs() {
       try {
-        this.root.$broadcast('loadingMain', { status: true })
+        this.scope.refreshing = true
+        this.scope.logs = []
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
         this.parseLogs(result.data.logs)
         this.scope.refreshing = false
