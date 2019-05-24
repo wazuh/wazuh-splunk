@@ -1916,3 +1916,11 @@ label.wz-icon-loupe  input {
 .md-sidenav-right {
   background-color: #fafafa !important;
 }
+
+.wz-list-box {
+  margin: auto;
+  width: 1175px;
+  margin-top: 10px;
+  resize: none;
+  height: calc(100vh - 350px);
+}

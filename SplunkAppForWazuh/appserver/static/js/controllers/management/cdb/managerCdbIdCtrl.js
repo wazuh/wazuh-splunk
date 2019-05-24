@@ -59,6 +59,7 @@ define([
      */
     $onInit() {
       try {
+        this.scope.textBox = false
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
@@ -87,6 +88,7 @@ define([
         this.scope.currentList.list = this.cdbInfo.content
         this.scope.adminMode = this.isAdmin
         this.scope.saveList = () => this.saveList()
+        this.scope.switchTextBox = () => this.switchTextBox()
 
         /**
          * Pagination variables and functions
@@ -273,6 +275,11 @@ define([
       this.checkGap(this.scope, this.scope.items)
       this.scope.searchTable()
     }
+
+    switchTextBox() {
+      this.scope.textBox = !this.scope.textBox
+    }
+
   }
   controllers.controller('managerCdbIdCtrl', CdbListId)
 })
