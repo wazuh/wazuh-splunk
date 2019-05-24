@@ -165,6 +165,41 @@ class report(controllers.BaseController):
         pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(120,200,222)
 
+    def addKeyValueTable(self,keyList,valueList,pdf):
+        max_key_width = 0
+        max_value_width = 0
+        for i in keyList:
+            current_width = (pdf.get_string_width(i) + len(i)) / 2
+            if current_width > max_key_width:
+                max_key_width = current_width
+        
+        for i in valueList:
+            current_width = (pdf.get_string_width(i) + len(i) ) / 2
+            if current_width > max_value_width:
+                max_value_width = current_width
+                
+        self.setTableRowStyle(pdf)
+        if ( max_value_width + max_key_width < 185):
+            for key,value in zip(keyList,valueList):
+                pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
+                pdf.ln(5)
+        else:
+            for key,value in zip(keyList,valueList):
+                key_size = (pdf.get_string_width(key) + len(i)) / 2
+                value_size = (pdf.get_string_width(value) + len(i)) / 2
+                if key_size < max_key_width and value_size < max_key_width:
+                    pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                    pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
+                    pdf.ln(5)
+                #else: # create as many as lines as needed
+                #    pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                #    pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
+                #    pdf.ln(5)
+
+
+        
+        
 
 
     def addTables(self,tables,pdf,max_width=190,margin=10):
@@ -264,19 +299,23 @@ class report(controllers.BaseController):
     def addTable(self, data, pdf, labels):
         try:
             customTables = []
+            keyList = []
+            valueList = []
             if not data: # if data is empty
                 pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
             elif type(data) is dict:
                 for key,value in data.iteritems():
                     if type(value) is not list and type(value) is not dict:
-                        self.addTableRow(key,value,pdf,labels)
+                        keyList.append(self.getString(key,labels))
+                        valueList.append(self.getString(value,labels))
                     if type(value) is list:
                         if value and type(value[0]) is dict:
                             customTables.append({key:value})
                         elif value and type(value[0]) is list:
                             self.addTable(value,pdf,labels)
                         else:
-                            self.addTableRow(key,value,pdf,labels)
+                            keyList.append(self.getString(key,labels))
+                            valueList.append(self.getString(value,labels))
                             
                             if(pdf.get_y() > 250):
                                 pdf.add_page()
@@ -286,13 +325,13 @@ class report(controllers.BaseController):
             elif type(data) is list:
                 for item in data:
                     if type(item) is not list and type(item) is not dict:
-                        self.logger.info("c")
-                        self.logger.info(str(key))
-                        self.logger.info(str(value))
-                        self.addTableRow(key,item,pdf,labels)
+                        keyList.append(self.getString(key,labels))
+                        valueList.append(self.getString(value,labels))
                     if type(item) is list:
                         for listItem in item:
                             self.addTable(listItem,pdf,labels)
+            if keyList and valueList:
+                self.addKeyValueTable(keyList,valueList,pdf)
 
             if customTables:
                 tables = {}
@@ -321,15 +360,17 @@ class report(controllers.BaseController):
                                 newTable[tableKey] = { "fields": fields, "rows": rows}
                                 self.addTables(newTable,pdf,185,12)
                         elif type(value) is dict:
+                            customKeyList = []
+                            customValueList = []
                             pdf.ln(5)
                             self.setTableTitle(pdf)
                             pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
                             pdf.ln(5)
                             for currentTableKey, currentTableValue in value.iteritems():
-                                self.logger.info("d")
-                                self.logger.info(str(key))
-                                self.logger.info(str(value))
-                                self.addTableRow(currentTableKey,currentTableValue,pdf,labels)
+                                customKeyList.append(self.getString(currentTableKey,labels))
+                                customValueList.append(self.getString(currentTableValue,labels))
+                            self.addKeyValueTable(keyList,valueList,pdf)
+                            
 
         except Exception as e:
             self.logger.error("error generating report table " + str(e))
