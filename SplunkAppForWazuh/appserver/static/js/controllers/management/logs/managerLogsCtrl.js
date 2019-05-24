@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function (app) {
+define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Logs {
@@ -186,8 +186,8 @@ define(['../../module', 'FileSaver'], function (app) {
 
         const data = this.clusterEnabled
           ? await this.apiReq(
-            `/cluster/${this.scope.selectedNode}/logs/summary`
-          )
+              `/cluster/${this.scope.selectedNode}/logs/summary`
+            )
           : await this.apiReq('/manager/logs/summary')
         const daemons = data.data.data
         this.scope.daemons = Object.keys(daemons).map(item => ({

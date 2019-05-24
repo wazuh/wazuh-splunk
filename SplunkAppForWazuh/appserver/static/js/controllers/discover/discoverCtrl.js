@@ -16,7 +16,7 @@ define(['../module', 'jquery'], function(app, $) {
       this.scope = $scope
       this.state = $state
       this.stateParams = $stateParams
-      this.iframe = $($document[0]).find('#searchAndReporting')      
+      this.iframe = $($document[0]).find('#searchAndReporting')
       this.currentDataService = $currentDataService
       this.notification = $notificationService
     }

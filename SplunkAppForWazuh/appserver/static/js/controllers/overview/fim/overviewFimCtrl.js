@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/rawTableData/rawTableDataService'
-], function (
+], function(
   app,
   DashboardMain,
   PieChart,
@@ -25,135 +25,134 @@ define([
   LinearChart,
   RawTableDataService
 ) {
-    'use strict'
+  'use strict'
 
-    class OverviewFIM extends DashboardMain {
-      /**
-       * Class File Integrity Monitoring (syscheck)
-       * @param {*} $urlTokenModel
-       * @param {*} $scope
-       * @param {*} $currentDataService
-       * @param {*} $state
-       * @param {*} $reportingService
-       */
-      constructor(
-        $urlTokenModel,
+  class OverviewFIM extends DashboardMain {
+    /**
+     * Class File Integrity Monitoring (syscheck)
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $reportingService
+     */
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService,
+      reportingEnabled,
+      awsExtensionEnabled
+    ) {
+      super(
         $scope,
-        $currentDataService,
-        $state,
         $reportingService,
-        reportingEnabled,
-        awsExtensionEnabled
-      ) {
-        super(
-          $scope,
-          $reportingService,
-          $state,
-          $currentDataService,
-          $urlTokenModel
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.awsExtensionEnabled = awsExtensionEnabled
+      this.currentDataService.addFilter(
+        `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
+      )
+
+      this.scope.expandArray = [false, false, false, false, false, false, false]
+
+      this.filters = this.getFilters()
+
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new LinearChart(
+          'alertsByActionOverTime',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | timechart count by syscheck.event`,
+          'alertsByActionOverTime',
+          this.scope
+        ),
+        new PieChart(
+          'top5Agents',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top agent.name limit=5`,
+          'top5Agents',
+          this.scope
+        ),
+        new LinearChart(
+          'eventsSummary',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | timechart count`,
+          'eventsSummary',
+          this.scope
+        ),
+        new PieChart(
+          'ruleDistribution',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 rule.description`,
+          'ruleDistribution',
+          this.scope
+        ),
+        new PieChart(
+          'topActions',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 syscheck.event`,
+          'topActions',
+          this.scope
+        ),
+        new Table(
+          'topUsers',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
+          'topUsers',
+          this.scope
+        ),
+        new RawTableDataService(
+          'topUsersTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
+          'topUsersTableToken',
+          '$result$',
+          this.scope,
+          'Top users'
         )
-        this.scope.reportingEnabled = reportingEnabled
-        this.scope.awsExtensionEnabled = awsExtensionEnabled
-        this.currentDataService.addFilter(
-          `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
-        )
-
-        this.scope.expandArray = [false, false, false, false, false, false, false]
-
-        this.filters = this.getFilters()
-
-        this.vizz = [
-          /**
-           * Visualizations
-           */
-          new LinearChart(
-            'alertsByActionOverTime',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | timechart count by syscheck.event`,
-            'alertsByActionOverTime',
-            this.scope
-          ),
-          new PieChart(
-            'top5Agents',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | top agent.name limit=5`,
-            'top5Agents',
-            this.scope
-          ),
-          new LinearChart(
-            'eventsSummary',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | timechart count`,
-            'eventsSummary',
-            this.scope
-          ),
-          new PieChart(
-            'ruleDistribution',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 rule.description`,
-            'ruleDistribution',
-            this.scope
-          ),
-          new PieChart(
-            'topActions',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 syscheck.event`,
-            'topActions',
-            this.scope
-          ),
-          new Table(
-            'topUsers',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
-            'topUsers',
-            this.scope
-          ),
-          new RawTableDataService(
-            'topUsersTable',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
-            'topUsersTableToken',
-            '$result$',
-            this.scope,
-            'Top users'
-          ),
-        ]
-
-      }
-
-      $onInit() {
-        try {
-          /**
-           * Generates report
-           */
-          this.scope.startVis2Png = () =>
-            this.reportingService.startVis2Png(
-              'overview-fim',
-              'File integrity monitoring',
-              this.filters,
-              [
-                'alertsByActionOverTime',
-                'top5Agents',
-                'eventsSummary',
-                'ruleDistribution',
-                'topActions',
-                'topUsers'
-              ],
-              {}, //Metrics
-              this.tableResults
-            )
-        } catch (error) {
-          console.error('error on init ', error)
-        }
-      }
+      ]
     }
 
-    app.controller('overviewFimCtrl', OverviewFIM)
-  })
+    $onInit() {
+      try {
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'overview-fim',
+            'File integrity monitoring',
+            this.filters,
+            [
+              'alertsByActionOverTime',
+              'top5Agents',
+              'eventsSummary',
+              'ruleDistribution',
+              'topActions',
+              'topUsers'
+            ],
+            {}, //Metrics
+            this.tableResults
+          )
+      } catch (error) {
+        console.error('error on init ', error)
+      }
+    }
+  }
+
+  app.controller('overviewFimCtrl', OverviewFIM)
+})

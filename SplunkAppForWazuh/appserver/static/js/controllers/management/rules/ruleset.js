@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (app) {
+define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
   class Ruleset {
@@ -187,10 +187,10 @@ define(['../../module', 'FileSaver'], function (app) {
             coloredString = coloredString.replace(
               /\(((?!<\/span>).)*?\)(?!<\/span>)/im,
               '<span style="color: ' +
-              this.colors[i] +
-              ' ">' +
-              valuesArray[i] +
-              '</span>'
+                this.colors[i] +
+                ' ">' +
+                valuesArray[i] +
+                '</span>'
             )
           }
         }
@@ -211,10 +211,10 @@ define(['../../module', 'FileSaver'], function (app) {
         coloredString = coloredString.replace(
           valuesArray[i],
           '<span style="color: ' +
-          this.colors[i] +
-          ' ">' +
-          valuesArray[i] +
-          '</span>'
+            this.colors[i] +
+            ' ">' +
+            valuesArray[i] +
+            '</span>'
         )
       }
       return this.sce.trustAsHtml(coloredString)

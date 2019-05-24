@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/rawTableData/rawTableDataService'
-], function (
+], function(
   app,
   DashboardMain,
   PieChart,
@@ -25,76 +25,76 @@ define([
   Table,
   RawTableDataService
 ) {
-    'use strict'
+  'use strict'
 
-    class OsqueryAgents extends DashboardMain {
-      /**
-       * Class Agents Osquery
-       * @param {Object} $urlTokenModel
-       * @param {Object} $state
-       * @param {Object} $scope
-       * @param {Object} $currentDataService
-       * @param {Object} $notificationService
-       * @param {Object} agent
-       * @param {Object} osquery
-       * @param {*} $reportingService
-       */
+  class OsqueryAgents extends DashboardMain {
+    /**
+     * Class Agents Osquery
+     * @param {Object} $urlTokenModel
+     * @param {Object} $state
+     * @param {Object} $scope
+     * @param {Object} $currentDataService
+     * @param {Object} $notificationService
+     * @param {Object} agent
+     * @param {Object} osquery
+     * @param {*} $reportingService
+     */
 
-      constructor(
-        $urlTokenModel,
+    constructor(
+      $urlTokenModel,
+      $scope,
+      agent,
+      $notificationService,
+      $currentDataService,
+      $state,
+      osquery,
+      $reportingService,
+      reportingEnabled,
+      extensions
+    ) {
+      super(
         $scope,
-        agent,
-        $notificationService,
-        $currentDataService,
-        $state,
-        osquery,
         $reportingService,
-        reportingEnabled,
-        extensions
-      ) {
-        super(
-          $scope,
-          $reportingService,
-          $state,
-          $currentDataService,
-          $urlTokenModel,
-        )
-        this.scope.reportingEnabled = reportingEnabled
-        this.scope.extensions = extensions
-        this.notification = $notificationService
-        this.osquery = osquery
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
+      this.notification = $notificationService
+      this.osquery = osquery
+      this.currentDataService.addFilter(
+        `{"rule.groups{}":"osquery", "implicit":true}`
+      )
+      this.scope.expandArray = [false, false, false, false, false]
+      this.agent = agent
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
         this.currentDataService.addFilter(
-          `{"rule.groups{}":"osquery", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-        this.scope.expandArray = [false, false, false, false, false]
-        this.agent = agent
-        if (
-          this.agent &&
-          this.agent.data &&
-          this.agent.data.data &&
-          this.agent.data.data.id
-        )
-          this.currentDataService.addFilter(
-            `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
-          )
 
-        this.scope.osqueryWodle = null
+      this.scope.osqueryWodle = null
 
-        this.filters = this.getFilters()
+      this.filters = this.getFilters()
 
-        this.vizz = [
-          /**
-           * Visualizations
-           */
-          new PieChart(
-            'mostCommonPacks',
-            `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
-            'mostCommonPacks',
-            this.scope
-          ),
-          new AreaChart(
-            'alertsPacksOverTime',
-            `${
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'mostCommonPacks',
+          `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
+          'mostCommonPacks',
+          this.scope
+        ),
+        new AreaChart(
+          'alertsPacksOverTime',
+          `${
             this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
@@ -124,88 +124,88 @@ define([
           'alertsSummary',
           `${
             this.filters
-            } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
-            'alertsSummary',
-            this.scope
-          ),
-          new RawTableDataService(
-            'alertsSummaryTable',
-            `${
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummary',
+          this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
             this.filters
-            } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
-            'alertsSummaryTableToken',
-            '$result$',
-            this.scope,
-            'Alerts summary'
-          )
-        ]
+          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
+        )
+      ]
 
-        // Set agent info
-        try {
-          this.agentReportData = {
-            ID: this.agent.data.data.id,
-            Name: this.agent.data.data.name,
-            IP: this.agent.data.data.ip,
-            Version: this.agent.data.data.version,
-            Manager: this.agent.data.data.manager,
-            OS: this.agent.data.data.os.name,
-            dateAdd: this.agent.data.data.dateAdd,
-            lastKeepAlive: this.agent.data.data.lastKeepAlive,
-            group: this.agent.data.data.group.toString()
-          }
-        } catch (error) {
-          this.agentReportData = false
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
         }
-
-        /**
-         * Generates report
-         */
-        this.scope.startVis2Png = () =>
-          this.reportingService.startVis2Png(
-            'agents-osquery',
-            'Osquery',
-            this.filters,
-            [
-              'mostCommonPacks',
-              'alertsPacksOverTime',
-              'mostCommonActions',
-              'topRules',
-              'alertsOverTime',
-              'alertsSummary'
-            ],
-            {}, //Metrics,
-            this.tableResults,
-            this.agentReportData
-          )
+      } catch (error) {
+        this.agentReportData = false
       }
 
       /**
-       * On controller loads
+       * Generates report
        */
-      $onInit() {
-        this.scope.agent =
-          this.agent && this.agent.data && this.agent.data.data
-            ? this.agent.data.data
-            : { error: true }
-        try {
-          this.wodles = this.osquery.data.data.wmodules
-          this.scope.osqueryWodle = this.wodles.filter(
-            item => item.osquery
-          )[0].osquery
-        } catch (err) {
-          this.notification.showErrorToast(
-            'Cannot load wodle configuration. Osquery not configured.'
-          )
-        }
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'agents-osquery',
+          'Osquery',
+          this.filters,
+          [
+            'mostCommonPacks',
+            'alertsPacksOverTime',
+            'mostCommonActions',
+            'topRules',
+            'alertsOverTime',
+            'alertsSummary'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
+    }
 
-        this.scope.getAgentStatusClass = agentStatus =>
-          agentStatus === 'Active' ? 'teal' : 'red'
-        this.scope.formatAgentStatus = agentStatus => {
-          return ['Active', 'Disconnected'].includes(agentStatus)
-            ? agentStatus
-            : 'Never connected'
-        }
+    /**
+     * On controller loads
+     */
+    $onInit() {
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      try {
+        this.wodles = this.osquery.data.data.wmodules
+        this.scope.osqueryWodle = this.wodles.filter(
+          item => item.osquery
+        )[0].osquery
+      } catch (err) {
+        this.notification.showErrorToast(
+          'Cannot load wodle configuration. Osquery not configured.'
+        )
+      }
+
+      this.scope.getAgentStatusClass = agentStatus =>
+        agentStatus === 'Active' ? 'teal' : 'red'
+      this.scope.formatAgentStatus = agentStatus => {
+        return ['Active', 'Disconnected'].includes(agentStatus)
+          ? agentStatus
+          : 'Never connected'
       }
     }
-    app.controller('osqueryAgentCtrl', OsqueryAgents)
-  })
+  }
+  app.controller('osqueryAgentCtrl', OsqueryAgents)
+})

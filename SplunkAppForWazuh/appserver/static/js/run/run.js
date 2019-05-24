@@ -71,7 +71,7 @@ define(['./module'], function(module) {
       })
 
       $transitions.onStart({}, async trans => {
-        $rootScope.$broadcast('loadingMain', { status: true })  
+        $rootScope.$broadcast('loadingMain', { status: true })
         const to = trans.to().name
         const from = trans.from().name
         if (to !== from && from !== 'discover') {

@@ -19,7 +19,7 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
-], function (
+], function(
   app,
   DashboardMain,
   ColumnChart,
@@ -29,222 +29,222 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-    'use strict'
+  'use strict'
 
-    class AgentsGdpr extends DashboardMain {
-      /**
-       * Class constructor
-       * @param {Object} $urlTokenModel
-       * @param {Object} $scope
-       * @param {Object} $currentDataService
-       * @param {Object} $state
-       * @param {Object} agent
-       * @param {*} $reportingService
-       */
+  class AgentsGdpr extends DashboardMain {
+    /**
+     * Class constructor
+     * @param {Object} $urlTokenModel
+     * @param {Object} $scope
+     * @param {Object} $currentDataService
+     * @param {Object} $state
+     * @param {Object} agent
+     * @param {*} $reportingService
+     */
 
-      constructor(
-        $urlTokenModel,
-        $currentDataService,
+    constructor(
+      $urlTokenModel,
+      $currentDataService,
+      $scope,
+      $state,
+      agent,
+      $reportingService,
+      gdprTabs,
+      reportingEnabled,
+      pciExtensionEnabled
+    ) {
+      super(
         $scope,
-        $state,
-        agent,
         $reportingService,
-        gdprTabs,
-        reportingEnabled,
-        pciExtensionEnabled
-      ) {
-        super(
-          $scope,
-          $reportingService,
-          $state,
-          $currentDataService,
-          $urlTokenModel,
-        )
-        this.scope.reportingEnabled = reportingEnabled
-        this.scope.pciExtensionEnabled = pciExtensionEnabled
-        this.agent = agent
-        this.scope.expandArray = [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false
-        ]
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.pciExtensionEnabled = pciExtensionEnabled
+      this.agent = agent
+      this.scope.expandArray = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
 
-        if (
-          this.agent &&
-          this.agent.data &&
-          this.agent.data.data &&
-          this.agent.data.data.id
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-          this.currentDataService.addFilter(
-            `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
-          )
 
-        this.dropdown = new Dropdown(
-          'dropDownInput',
-          `${
+      this.dropdown = new Dropdown(
+        'dropDownInput',
+        `${
           this.filters
-          } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-          'rule.gdpr{}',
-          '$form.gdpr$',
-          'dropDownInput',
-          this.scope
-        )
-        this.dropdownInstance = this.dropdown.getElement()
-        this.dropdownInstance.on('change', newValue => {
-          if (newValue && this.dropdownInstance) {
-            $urlTokenModel.handleValueChange(this.dropdownInstance)
-          }
-        })
-        this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-
-        this.filters = this.getFilters()
-
-        this.vizz = [
-          /**
-           * Visualizations
-           */
-          new ColumnChart(
-            'gdprRequirementsVizz',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
-            'gdprRequirementsVizz',
-            this.scope
-          ),
-          new PieChart(
-            'groupsVizz',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{}`,
-            'groupsVizz',
-            this.scope
-          ),
-          new PieChart(
-            'top5GDPR',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} `,
-            'top5GDPR',
-            this.scope
-          ),
-          new PieChart(
-            'rulesVizz',
-            `${this.filters} sourcetype=wazuh  | top limit=5 rule.description `,
-            'rulesVizz',
-            this.scope
-          ),
-          new PieChart(
-            'agentsVizz',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
-            'agentsVizz',
-            this.scope
-          ),
-          new ColumnChart(
-            'requirementsByAgentVizz',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
-            'requirementsByAgentVizz',
-            this.scope
-          ),
-          new Table(
-            'alertsSummaryVizz',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-            'alertsSummaryVizz',
-            this.scope
-          ),
-          new RawTableDataService(
-            'alertsSummaryTable',
-            `${
-            this.filters
-            } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-            'alertsSummaryTableToken',
-            '$result$',
-            this.scope,
-            'Alerts Summary'
-          )
-        ]
-
-        // Set agent info
-        try {
-          this.agentReportData = {
-            ID: this.agent.data.data.id,
-            Name: this.agent.data.data.name,
-            IP: this.agent.data.data.ip,
-            Version: this.agent.data.data.version,
-            Manager: this.agent.data.data.manager,
-            OS: this.agent.data.data.os.name,
-            dateAdd: this.agent.data.data.dateAdd,
-            lastKeepAlive: this.agent.data.data.lastKeepAlive,
-            group: this.agent.data.data.group.toString()
-          }
-        } catch (error) {
-          this.agentReportData = false
+        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
+        'rule.gdpr{}',
+        '$form.gdpr$',
+        'dropDownInput',
+        this.scope
+      )
+      this.dropdownInstance = this.dropdown.getElement()
+      this.dropdownInstance.on('change', newValue => {
+        if (newValue && this.dropdownInstance) {
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
+      })
+      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
 
+      this.filters = this.getFilters()
+
+      this.vizz = [
         /**
-         * Generates report
+         * Visualizations
          */
-        this.scope.startVis2Png = () =>
-          this.reportingService.startVis2Png(
-            'agents-gdpr',
-            'GDPR',
-            this.filters,
-            [
-              'gdprRequirementsVizz',
-              'groupsVizz',
-              'top5GDPR',
-              'rulesVizz',
-              'agentsVizz',
-              'requirementsByAgentVizz',
-              'alertsSummaryVizz'
-            ],
-            {}, //Metrics,
-            this.tableResults,
-            this.agentReportData
-          )
+        new ColumnChart(
+          'gdprRequirementsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
+          'gdprRequirementsVizz',
+          this.scope
+        ),
+        new PieChart(
+          'groupsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{}`,
+          'groupsVizz',
+          this.scope
+        ),
+        new PieChart(
+          'top5GDPR',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} `,
+          'top5GDPR',
+          this.scope
+        ),
+        new PieChart(
+          'rulesVizz',
+          `${this.filters} sourcetype=wazuh  | top limit=5 rule.description `,
+          'rulesVizz',
+          this.scope
+        ),
+        new PieChart(
+          'agentsVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
+          'agentsVizz',
+          this.scope
+        ),
+        new ColumnChart(
+          'requirementsByAgentVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          'requirementsByAgentVizz',
+          this.scope
+        ),
+        new Table(
+          'alertsSummaryVizz',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryVizz',
+          this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryTable',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          'alertsSummaryTableToken',
+          '$result$',
+          this.scope,
+          'Alerts Summary'
+        )
+      ]
+
+      // Set agent info
+      try {
+        this.agentReportData = {
+          ID: this.agent.data.data.id,
+          Name: this.agent.data.data.name,
+          IP: this.agent.data.data.ip,
+          Version: this.agent.data.data.version,
+          Manager: this.agent.data.data.manager,
+          OS: this.agent.data.data.os.name,
+          dateAdd: this.agent.data.data.dateAdd,
+          lastKeepAlive: this.agent.data.data.lastKeepAlive,
+          group: this.agent.data.data.group.toString()
+        }
+      } catch (error) {
+        this.agentReportData = false
       }
 
       /**
-       * On controller loads
+       * Generates report
        */
-      $onInit() {
-        this.scope.agent =
-          this.agent && this.agent.data && this.agent.data.data
-            ? this.agent.data.data
-            : { error: true }
-        this.scope.getAgentStatusClass = agentStatus =>
-          this.getAgentStatusClass(agentStatus)
-        this.scope.formatAgentStatus = agentStatus =>
-          this.formatAgentStatus(agentStatus)
-      }
-
-      /**
-       * Returns a class depending of the agent state
-       * @param {String} agentStatus
-       */
-      getAgentStatusClass(agentStatus) {
-        return agentStatus === 'Active' ? 'teal' : 'red'
-      }
-
-      /**
-       * Checks and returns agent status
-       * @param {Array} agentStatus
-       */
-      formatAgentStatus(agentStatus) {
-        return ['Active', 'Disconnected'].includes(agentStatus)
-          ? agentStatus
-          : 'Never connected'
-      }
+      this.scope.startVis2Png = () =>
+        this.reportingService.startVis2Png(
+          'agents-gdpr',
+          'GDPR',
+          this.filters,
+          [
+            'gdprRequirementsVizz',
+            'groupsVizz',
+            'top5GDPR',
+            'rulesVizz',
+            'agentsVizz',
+            'requirementsByAgentVizz',
+            'alertsSummaryVizz'
+          ],
+          {}, //Metrics,
+          this.tableResults,
+          this.agentReportData
+        )
     }
-    app.controller('agentsGdprCtrl', AgentsGdpr)
-  })
+
+    /**
+     * On controller loads
+     */
+    $onInit() {
+      this.scope.agent =
+        this.agent && this.agent.data && this.agent.data.data
+          ? this.agent.data.data
+          : { error: true }
+      this.scope.getAgentStatusClass = agentStatus =>
+        this.getAgentStatusClass(agentStatus)
+      this.scope.formatAgentStatus = agentStatus =>
+        this.formatAgentStatus(agentStatus)
+    }
+
+    /**
+     * Returns a class depending of the agent state
+     * @param {String} agentStatus
+     */
+    getAgentStatusClass(agentStatus) {
+      return agentStatus === 'Active' ? 'teal' : 'red'
+    }
+
+    /**
+     * Checks and returns agent status
+     * @param {Array} agentStatus
+     */
+    formatAgentStatus(agentStatus) {
+      return ['Active', 'Disconnected'].includes(agentStatus)
+        ? agentStatus
+        : 'Never connected'
+    }
+  }
+  app.controller('agentsGdprCtrl', AgentsGdpr)
+})

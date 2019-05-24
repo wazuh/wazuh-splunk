@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/rawTableData/rawTableDataService'
-], function (
+], function(
   app,
   DashboardMain,
   PieChart,
@@ -25,120 +25,117 @@ define([
   Table,
   RawTableDataService
 ) {
-    'use strict'
+  'use strict'
 
-    class Docker extends DashboardMain {
-      /**
-       * Class Docker
-       * @param {*} $urlTokenModel
-       * @param {*} $scope
-       * @param {*} $currentDataService
-       * @param {*} $state
-       * @param {*} $notificationService
-       * @param {*} $reportingService
-       */
-      constructor(
-        $urlTokenModel,
+  class Docker extends DashboardMain {
+    /**
+     * Class Docker
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {*} $reportingService
+     */
+    constructor(
+      $urlTokenModel,
+      $scope,
+      $currentDataService,
+      $state,
+      $reportingService,
+      reportingEnabled,
+      extensions
+    ) {
+      super(
         $scope,
-        $currentDataService,
-        $state,
         $reportingService,
-        reportingEnabled,
-        extensions
-      ) {
-        super(
-          $scope,
-          $reportingService,
-          $state,
-          $currentDataService,
-          $urlTokenModel,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
+      this.currentDataService.addFilter(
+        `{"rule.groups{}":"docker", "implicit":true}`
+      )
+      this.scope.expandArray = [false, false, false, false]
+      this.filters = this.getFilters()
+
+      this.vizz = [
+        /**
+         * Visualizations
+         */
+        new PieChart(
+          'top5images',
+          `${this.filters} sourcetype=wazuh | stats count by data.docker.id`,
+          'top5images',
+          this.scope
+        ),
+        new LinearChart(
+          'eventsOcurred',
+          `${
+            this.filters
+          } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
+          'eventsOcurred',
+          this.scope
+        ),
+        new PieChart(
+          'top5actions',
+          `${this.filters} sourcetype=wazuh  | top data.docker.Action limit=5`,
+          'top5actions',
+          this.scope
+        ),
+        new Table(
+          'alertsSummary',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          'alertsSummary',
+          this.scope
+        ),
+        new LinearChart(
+          'resourceUsage',
+          `${
+            this.filters
+          } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
+          'resourceUsage',
+          this.scope
+        ),
+        new RawTableDataService(
+          'alertsSummaryRawTable',
+          `${
+            this.filters
+          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count`,
+          'alertsSummaryRawTableToken',
+          '$result$',
+          this.scope,
+          'Alerts summary'
         )
-        this.scope.reportingEnabled = reportingEnabled
-        this.scope.extensions = extensions
-        this.currentDataService.addFilter(
-          `{"rule.groups{}":"docker", "implicit":true}`
-        )
-        this.scope.expandArray = [false, false, false, false]
-        this.filters = this.getFilters()
-
-        this.vizz = [
-          /**
-           * Visualizations
-           */
-          new PieChart(
-            'top5images',
-            `${this.filters} sourcetype=wazuh | stats count by data.docker.id`,
-            'top5images',
-            this.scope
-          ),
-          new LinearChart(
-            'eventsOcurred',
-            `${
-            this.filters
-            } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
-            'eventsOcurred',
-            this.scope
-          ),
-          new PieChart(
-            'top5actions',
-            `${this.filters} sourcetype=wazuh  | top data.docker.Action limit=5`,
-            'top5actions',
-            this.scope
-          ),
-          new Table(
-            'alertsSummary',
-            `${
-            this.filters
-            } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
-            'alertsSummary',
-            this.scope
-          ),
-          new LinearChart(
-            'resourceUsage',
-            `${
-            this.filters
-            } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
-            'resourceUsage',
-            this.scope
-          ),
-          new RawTableDataService(
-            'alertsSummaryRawTable',
-            `${
-            this.filters
-            } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count`,
-            'alertsSummaryRawTableToken',
-            '$result$',
-            this.scope,
-            'Alerts summary'
-          )
-        ]
-
-
-      }
-
-      /**
-       * On controller loads
-       */
-      $onInit() {
-        try {
-          /**
-          * Generates report
-          */
-          this.scope.startVis2Png = () =>
-            this.reportingService.startVis2Png(
-              'ow-docker',
-              'Docker',
-              this.filters,
-              ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
-              {}, //Metrics
-              this.tableResults
-            )
-        } catch (error) {
-          console.error('Error onInit ', error)
-        }
-
-      }
+      ]
     }
 
-    app.controller('dockerCtrl', Docker)
-  })
+    /**
+     * On controller loads
+     */
+    $onInit() {
+      try {
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'ow-docker',
+            'Docker',
+            this.filters,
+            ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
+            {}, //Metrics
+            this.tableResults
+          )
+      } catch (error) {
+        console.error('Error onInit ', error)
+      }
+    }
+  }
+
+  app.controller('dockerCtrl', Docker)
+})

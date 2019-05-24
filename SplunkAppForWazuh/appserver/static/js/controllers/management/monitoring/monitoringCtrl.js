@@ -4,7 +4,7 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/inputs/time-picker'
-], function (app, LinearChart, PieChart, ColumChart, TimePicker) {
+], function(app, LinearChart, PieChart, ColumChart, TimePicker) {
   'use strict'
   class Monitoring {
     /**
@@ -56,7 +56,7 @@ define([
         new LinearChart(
           'alertNodeSummary',
           `${
-          this.filters
+            this.filters
           } sourcetype=wazuh | timechart span=1h count by cluster.node`,
           'alertNodeSummary',
           this.scope
@@ -301,7 +301,7 @@ define([
     launchSearches() {
       this.vizz[3].changeSearch(
         `${this.filters} cluster.node=${
-        this.scope.currentNode.name
+          this.scope.currentNode.name
         } sourcetype=wazuh | timechart span=2h count`
       )
     }

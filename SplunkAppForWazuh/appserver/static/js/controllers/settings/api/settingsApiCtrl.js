@@ -282,7 +282,9 @@ define(['../../module'], function(controllers) {
         if (err.startsWith('Unexpected Wazuh version')) {
           this.scope.validatingError.push(err)
         } else {
-          this.notification.showErrorToast(err.message || err || 'Cannot save the API.')
+          this.notification.showErrorToast(
+            err.message || err || 'Cannot save the API.'
+          )
         }
       }
       this.savingApi = false

@@ -3,7 +3,7 @@ define([
   'splunkjs/mvc/layoutview',
   'splunkjs/mvc/simplexml',
   '../../services/visualizations/inputs/time-picker'
-], function (app, LayoutView, DashboardController, TimePicker) {
+], function(app, LayoutView, DashboardController, TimePicker) {
   'use strict'
 
   class MainCtrl {
@@ -38,7 +38,9 @@ define([
      */
     $onInit() {
       this.scope.$on('loadingMain', (event, data) => {
-        data.status ? this.scope.loadingMain = true :this.scope.loadingMain = false
+        data.status
+          ? (this.scope.loadingMain = true)
+          : (this.scope.loadingMain = false)
         event.preventDefault()
         this.scope.$applyAsync()
       })

@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module'], function(controllers) {
   'use strict'
 
   class Status {
@@ -92,7 +92,6 @@ define(['../../module'], function (controllers) {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
-
     }
 
     /**
