@@ -10,9 +10,9 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wzSvg', function (BASE_URL) {
+  directives.directive('wzSvg', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -20,7 +20,7 @@ define(['../module'], function (directives) {
         color: '@',
         svgTooltip: '@'
       },
-      controller(){},
+      controller() {},
       templateUrl:
         BASE_URL +
         '/static/app/SplunkAppForWazuh/js/directives/wz-svg/wz-svg.html'

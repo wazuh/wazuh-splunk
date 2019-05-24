@@ -107,7 +107,9 @@ define([
                 $scope.keys.splice(idx, 1)
               }
             } else {
-              let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+              let originalKey = $scope.originalkeys.filter(
+                k => k.key.value === key || k.key === key
+              )
               originalKey = originalKey[0].key
 
               const originalIdx = $scope.originalkeys.findIndex(
@@ -116,7 +118,20 @@ define([
               if (originalIdx >= 0) {
                 $scope.keys.splice(originalIdx, 0, originalKey)
               } else {
-                $scope.keys.push(originalKey)
+                let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+                try {
+                  originalKey = originalKey[0].key
+                  const originalIdx = $scope.originalkeys.findIndex(
+                    item => item.key === originalKey
+                  )
+                  if (originalIdx >= 0) {
+                    $scope.keys.splice(originalIdx, 0, originalKey)
+                  } else {
+                    $scope.keys.push(originalKey)
+                  }
+                } catch (error) {
+                  $notificationService.showWarningToast('Cannot recover column.')
+                }
               }
             }
             //updateStoredKeys($scope.keys)
@@ -178,35 +193,6 @@ define([
               $scope,
               state
             )
-
-          /* Deprecated at the moment  
-          const getStoredKeys = () => {
-            try {
-              if ($scope.customColumns) {
-                if (sessionStorage[$scope.path]) {
-                  $scope.keys = sessionStorage[$scope.path].split(';')
-                } else {
-                  updateStoredKeys($scope.keys)
-                }
-                $scope.$applyAsync()
-              }
-            } catch (error) {} // eslint-disable-line
-          }
-  
-          const updateStoredKeys = keys => {
-            try {
-              if ($scope.customColumns) {
-                let stringKeys = keys[0]
-                for (var i = 1; i < keys.length; i++) {
-                  let tmp = keys[i].value || keys[i]
-                  stringKeys += ';' + tmp
-                }
-                sessionStorage[$scope.path] = stringKeys || ''
-                $scope.$applyAsync()
-              }
-            } catch (error) {} // eslint-disable-line
-          }
-          */
 
           /**
            * Fetchs data from API
@@ -306,7 +292,7 @@ define([
               $scope.error = false
               while (realTime) {
                 await fetch({ realTime: true })
-                if (!$scope.$$phase) $scope.$digest()
+                $scope.$applyAsync()
                 await $timeout(5000)
               }
             } catch (error) {
@@ -342,7 +328,7 @@ define([
               $tableFilterService.set(instance.filters)
               $scope.wazuhTableLoading = false
               $scope.$emit('loadedTable')
-              if (!$scope.$$phase) $scope.$digest()
+              $scope.$applyAsync()
               setTimeout(() => {
                 $scope.setColResizable()
               }, 100)

@@ -9,7 +9,13 @@ define(['../../module'], function (app) {
      * @param {Object} $requestService
      * @param {Array} reportsList
      */
-    constructor($scope, $notificationService, $requestService, reportsList, $dateDiffService) {
+    constructor(
+      $scope,
+      $notificationService,
+      $requestService,
+      reportsList,
+      $dateDiffService
+    ) {
       this.scope = $scope
       this.notification = $notificationService
       this.genericReq = $requestService.httpReq

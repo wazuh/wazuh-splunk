@@ -2,11 +2,12 @@ define(['../../module'], function (controllers) {
   'use strict'
 
   class Main {
-    constructor($scope, $navigationService) {
+    constructor($scope, $navigationService, isAdmin) {
       this.navigationService = $navigationService
       this.scope = $scope
       this.scope.message = 'Settings'
       this.scope.tabName = ''
+      this.scope.isAdmin = isAdmin
     }
 
     $onInit() {
@@ -27,6 +28,8 @@ define(['../../module'], function (controllers) {
         case 'settings.logs':
           this.scope.tabName = 'logs'
           break
+        case 'settings.configuration':
+          this.scope.tabName = 'configuration'
       }
 
       this.scope.switchTab = name => {

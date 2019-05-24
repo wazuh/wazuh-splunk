@@ -150,5 +150,6 @@ define([
         } catch (error) { } //eslint-disable-line
       }
     }
+
     app.controller('overviewGdprCtrl', OverviewGDPR)
   })

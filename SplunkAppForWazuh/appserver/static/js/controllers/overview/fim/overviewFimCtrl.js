@@ -154,5 +154,6 @@ define([
         }
       }
     }
+
     app.controller('overviewFimCtrl', OverviewFIM)
   })

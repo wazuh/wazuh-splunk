@@ -78,6 +78,7 @@ define([
           false
         ]
 
+
         if (
           this.agent &&
           this.agent.data &&
@@ -141,9 +142,7 @@ define([
           ),
           new PieChart(
             'commandsVizz',
-            `${
-            this.filters
-            } sourcetype=wazuh | top limit=5 data.audit.command`,
+            `${this.filters} sourcetype=wazuh | top limit=5 data.audit.command`,
             'commandsVizz',
             this.scope
           ),

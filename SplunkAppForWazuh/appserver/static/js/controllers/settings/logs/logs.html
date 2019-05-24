@@ -10,7 +10,12 @@
   </div>
 
   <!-- End headline -->
-  <div layout="row" class="md-padding">
+  <div flex class="row flex" ng-show="loading">
+    <!-- Loading bar -->
+    <div class="loader-bar"></div>
+    <div class="loader"></div>
+  </div>
+  <div layout="row" class="md-padding" ng-show="!refreshing">
     <table class="table table-striped table-condensed" style="table-layout: fixed !important" id="wz_table">
       <thead class="wz-text-bold">
         <th class="wz-text-left col-lg-2">Date</th>

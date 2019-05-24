@@ -14,7 +14,7 @@ define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
   'FileSaver'
-], function (app, SearchHandler) {
+], function(app, SearchHandler) {
   'use strict'
 
   class Agents {
@@ -109,11 +109,11 @@ define([
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
-      } catch (error) { } //eslint-disable-line
+      } catch (error) {} //eslint-disable-line
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} | top agent.name`,
+        `index=wazuh ${this.filters} NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',
@@ -152,33 +152,36 @@ define([
         }
       }
 
-      this.scope.loadCharts = (id) => {
+      this.scope.loadCharts = id => {
         setTimeout(() => {
-          const chart = new Chart(document.getElementById(id),
-            {
-              type: "doughnut",
-              data: {
-                labels: ["Active", "Disconected", "Never connected"],
-                datasets: [
-                  {
-                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
-                    data: [this.scope.agentsCountActive, this.scope.agentsCountDisconnected, this.scope.agentsCountNeverConnected],
-                  }
-                ]
-              },
-              options: {
-                cutoutPercentage: 85,
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-                tooltips: {
-                  displayColors: false
+          const chart = new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: {
+              labels: ['Active', 'Disconected', 'Never connected'],
+              datasets: [
+                {
+                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  data: [
+                    this.scope.agentsCountActive,
+                    this.scope.agentsCountDisconnected,
+                    this.scope.agentsCountNeverConnected
+                  ]
                 }
+              ]
+            },
+            options: {
+              cutoutPercentage: 85,
+              legend: {
+                display: true,
+                position: 'right'
+              },
+              tooltips: {
+                displayColors: false
               }
-            });
-          chart.update();
-        }, 250);
+            }
+          })
+          chart.update()
+        }, 250)
       }
     }
 
@@ -231,8 +234,8 @@ define([
           ) {
             throw Error('Error fetching agent data')
           }
-          if (agentInfo.data.data.id !== '000') {
-            this.state.go(`agent-overview`, { id: agentInfo.data.data.id })
+          if (agentInfo.data.data.items[0].id !== '000') {
+            this.state.go(`agent-overview`, { id: agentInfo.data.data.items[0].id })
           }
         } else {
           throw Error('Cannot fetch agent name')

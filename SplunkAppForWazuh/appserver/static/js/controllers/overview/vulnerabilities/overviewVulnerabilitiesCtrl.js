@@ -200,5 +200,6 @@ define([
         } catch (error) { } //eslint-disable-line
       }
     }
+
     app.controller('overviewVulnerabilitiesCtrl', OverviewVulnerabilities)
   })

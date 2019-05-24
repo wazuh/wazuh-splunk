@@ -53,7 +53,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           offset: 0,
           loadedAll: false
         }
-        this.scope.addMultipleAgents(false)
+        this.addMultipleAgents(false)
         if (!value) {
           this.scope.file = false
           this.scope.filename = false
@@ -197,6 +197,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           ) {
             this.mainGroup = this.stateParams.group
             this.loadGroup(this.mainGroup)
+            this.goBackFiles()
           }
         }
 

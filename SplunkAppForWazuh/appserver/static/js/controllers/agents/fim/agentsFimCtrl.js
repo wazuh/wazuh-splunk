@@ -268,7 +268,26 @@ define([
       show() {
         this.showFiles = !this.showFiles
         this.scope.showFiles = this.showFiles
-        this.scope.$applyAsync()
+        if (!this.scope.$$phase) this.scope.$digest()
+      }
+
+      /**
+       * Runs syscheck scan
+       */
+      async runScan() {
+        try {
+          const id = this.agent.data.data.id
+          const result = await this.apiReq(`/syscheck/${id}`, {}, 'PUT')
+          if (result && result.data && !result.data.error) {
+            this.notification.showSuccessToast('Syscheck scan launched.')
+          } else {
+            throw result.data.message
+          }
+        } catch (error) {
+          this.notification.showErrorToast(
+            error || 'Cannot launch syscheck scan.'
+          )
+        }
       }
 
       /**

@@ -12,13 +12,11 @@
 
 define([
   '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
+  '../../../dashboardMain'
 ], function (
   app,
-  DashboardMain,
-  PieChart,
-  ) {
+  DashboardMain
+) {
     'use strict'
 
     class AgentsCA extends DashboardMain {
@@ -110,38 +108,6 @@ define([
         }
 
         this.filters = this.getFilters()
-
-        this.vizz = [
-          /**
-           * Visualizations
-           */
-          new PieChart(
-            'resultDistribution',
-            `${
-            this.filters
-            }  rule.groups{}="sca" | stats count by data.sca.policy,data.sca.check.result `,
-            'resultDistribution',
-            this.scope,
-            { 'trellisEnabled': true }
-          )
-        ]
-
-        /**
-         * Generates report
-         */
-        this.scope.startVis2Png = () =>
-          this.reportingService.startVis2Png(
-            'agents-ca',
-            'Configuration assessment',
-            this.filters,
-            [
-              'resultDistribution'
-            ],
-            {}, //Metrics,
-            this.tableResults,
-            this.agentReportData
-          )
-
       }
 
       $onInit() {
@@ -166,34 +132,32 @@ define([
         this.scope.refreshScans = () => this.refreshScans()
         this.scope.search = term => this.search(term)
 
-
-        this.scope.loadCharts = (policy) => {
+        this.scope.loadCharts = policy => {
           setTimeout(function () {
-            const chart = new Chart(document.getElementById(policy.policy_id),
-              {
-                type: "doughnut",
-                data: {
-                  labels: ["pass", "fail", "not applicable"],
-                  datasets: [
-                    {
-                      backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
-                      data: [policy.pass, policy.fail, policy.invalid],
-                    }
-                  ]
-                },
-                options: {
-                  cutoutPercentage: 85,
-                  legend: {
-                    display: true,
-                    position: "right",
-                  },
-                  tooltips: {
-                    displayColors: false
+            const chart = new Chart(document.getElementById(policy.policy_id), {
+              type: 'doughnut',
+              data: {
+                labels: ['pass', 'fail', 'not applicable'],
+                datasets: [
+                  {
+                    backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                    data: [policy.pass, policy.fail, policy.invalid]
                   }
+                ]
+              },
+              options: {
+                cutoutPercentage: 85,
+                legend: {
+                  display: true,
+                  position: 'right'
+                },
+                tooltips: {
+                  displayColors: false
                 }
-              });
-            chart.update();
-          }, 250);
+              }
+            })
+            chart.update()
+          }, 250)
         }
       }
 
@@ -247,6 +211,40 @@ define([
       }
 
       /**
+       * Gets filters and launches search
+       */
+      launchSearches() {
+        this.filters = this.currentDataService.getSerializedFilters()
+        this.state.reload()
+      }
+
+      /**
+       * Loads policies checks
+       */
+      async loadPolicyChecks(policy) {
+        this.scope.showPolicyChecks = true
+        this.scope.policy = policy
+        const agentId = this.agent.data.data.id
+        this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
+      }
+
+      /**
+       *
+       * Backs to config assessment
+       */
+      backToConfAssess() {
+        this.scope.showPolicyChecks = false
+      }
+
+      /**
+       *
+       * Backs to config assessment
+       */
+      backToConfAssess() {
+        this.scope.showPolicyChecks = false
+      }
+
+      /**
        * Loads policies checks
        */
       async loadPolicyChecks(policy) {
@@ -271,5 +269,6 @@ define([
         this.state.reload()
       }
     }
+
     app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
   })

@@ -109,7 +109,11 @@ define([
           this.scope.$on('$destroy', () => {
             this.tableResults = {}
             this.timePicker.destroy()
-            this.vizz.map(vizz => vizz.destroy())
+            // Agents configuration assesment has not visualizations, this prevent an error
+            try {
+              this.vizz.map(vizz => vizz.destroy())  
+            } catch (error) { }
+            
             // There's not always a dropdown.
             try {
               this.dropdown.destroy()

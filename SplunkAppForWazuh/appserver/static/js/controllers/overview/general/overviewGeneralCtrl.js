@@ -274,8 +274,6 @@ define([
           'Authentication success': this.scope.authSuccess
         }
       }
-
-
     }
 
     app.controller('overviewGeneralCtrl', OverviewGeneral)

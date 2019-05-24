@@ -29,6 +29,7 @@ logger = log()
 def get_apis():
     """Obtain the list of APIs."""
     try:
+        logger.debug("bin.get_agents_status: Getting APIs.")
         session_key = getSplunkSessionKey()
         data_temp = db.all(session_key)
     except Exception as e:
@@ -39,6 +40,7 @@ def get_apis():
 def check_status():
     """Check status of agents."""
     try:
+        logger.debug("bin.get_agents_status: Checking agents status.")
         apis = get_apis()
         apis = jsonbak.loads(apis) #get_apis() returns a JSON string, it needs to be converted as a dictionary
         date = str(datetime.datetime.utcnow())[:-7]
@@ -105,6 +107,7 @@ def check_status():
 
 def getSplunkSessionKey():
     """Get the session key, it needs to configure in the inputs.conf that executes this script the following parameter: passAuth = splunk-system-user"""
+    logger.debug("bin.get_agents_status: Getting Splunk session key.")
     session_key = sys.stdin.readline().strip()
     return session_key
 

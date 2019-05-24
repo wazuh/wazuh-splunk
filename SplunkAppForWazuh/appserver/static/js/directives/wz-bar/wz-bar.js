@@ -47,17 +47,15 @@ define(['../module'], function(directives) {
           const staticTrue = $currentDataService
             .getFilters()
             .filter(item => !!item.implicit)
-          staticTrue.map(
-            item => {
-              let k = Object.keys(item)[0]
-              if (k.endsWith('{}')) {
-                k = k.substring(0, k.length - 2)
-              }
-              if (k === key) {
-                keyStatic = item['implicit']
-              }
+          staticTrue.map(item => {
+            let k = Object.keys(item)[0]
+            if (k.endsWith('{}')) {
+              k = k.substring(0, k.length - 2)
             }
-          )
+            if (k === key) {
+              keyStatic = item['implicit']
+            }
+          })
           return keyStatic
         }
 

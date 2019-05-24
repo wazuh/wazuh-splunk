@@ -96,45 +96,33 @@ define([
             'alertsPacksOverTime',
             `${
             this.filters
-            } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
-            'alertsPacksOverTime',
-            this.scope
-          ),
-          new PieChart(
-            'mostCommonActions',
-            `${
+          } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          'alertsPacksOverTime',
+          this.scope
+        ),
+        new PieChart(
+          'mostCommonActions',
+          `${this.filters} sourcetype=wazuh  | top data.osquery.action limit=5`,
+          'mostCommonActions',
+          this.scope
+        ),
+        new Table(
+          'topRules',
+          `${
             this.filters
-            } sourcetype=wazuh  | top data.osquery.action limit=5`,
-            'mostCommonActions',
-            this.scope
-          ),
-          new Table(
-            'topRules',
-            `${
-            this.filters
-            } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-            'topRules',
-            this.scope
-          ),
-          new AreaChart(
-            'alertsOverTime',
-            `${this.filters} sourcetype=wazuh | timechart span=1h count`,
-            'alertsOverTime',
-            this.scope
-          ),
-          new RawTableDataService(
-            'topRulesTable',
-            `${
-            this.filters
-            } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-            'topRulesTableToken',
-            '$result$',
-            this.scope,
-            'Top Rules'
-          ),
-          new Table(
-            'alertsSummary',
-            `${
+          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          'topRules',
+          this.scope
+        ),
+        new AreaChart(
+          'alertsOverTime',
+          `${this.filters} sourcetype=wazuh | timechart span=1h count`,
+          'alertsOverTime',
+          this.scope
+        ),
+        new Table(
+          'alertsSummary',
+          `${
             this.filters
             } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
             'alertsSummary',

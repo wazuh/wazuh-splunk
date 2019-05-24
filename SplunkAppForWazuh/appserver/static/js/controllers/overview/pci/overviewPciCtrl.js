@@ -147,5 +147,6 @@ define([
         } catch (error) { }
       }
     }
+
     app.controller('overviewPciCtrl', PCI)
   })
