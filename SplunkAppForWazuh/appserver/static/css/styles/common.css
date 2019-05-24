@@ -1919,8 +1919,7 @@ label.wz-icon-loupe  input {
 
 .wz-list-box {
   margin: auto;
-  width: 1175px;
-  margin-top: 10px;
+  width: 100%;
   resize: none;
   height: calc(100vh - 350px);
 }

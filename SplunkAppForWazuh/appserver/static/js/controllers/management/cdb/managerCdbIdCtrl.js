@@ -3,7 +3,7 @@ define([
   '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
   '../../../directives/wz-table/lib/check-gap'
-], function(controllers, Ruleset, pagination, checkGap) {
+], function (controllers, Ruleset, pagination, checkGap) {
   'use strict'
   class CdbListId extends Ruleset {
     /**
@@ -278,6 +278,18 @@ define([
 
     switchTextBox() {
       this.scope.textBox = !this.scope.textBox
+      this.copyListToBox()
+    }
+
+    copyListToBox() {
+      try {
+        const box = $('#listContent')
+        this.scope.items.map(i => {
+          box.val(`${box.val()}\n${i.toString()}`)
+        })
+      } catch (error) {
+        console.error(error)
+      }
     }
 
   }
