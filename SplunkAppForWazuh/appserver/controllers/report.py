@@ -29,12 +29,13 @@ import math
 class PDF(FPDF):
     def header(self):
         # Add fonts 
-        # Note that RobotoThin and RobotoThin can't be used with 'B'-'I' options
+        # Note that RobotoLight and RobotoLight can't be used with 'B'-'I' options
         self.add_font('RobotoThin','', 'Roboto-Thin.ttf',uni=True)
-        self.add_font('RobotoThin','', 'Roboto-Regular.ttf',uni=True)
+        self.add_font('RobotoRegular','', 'Roboto-Regular.ttf',uni=True)
+        self.add_font('RobotoLight','', 'Roboto-Light.ttf',uni=True)
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 15)
-        self.set_font('RobotoThin', '', 11)
+        self.set_font('RobotoLight', '', 11)
         self.set_text_color(75, 179, 204)
         #Contact info
         self.set_y(12)
@@ -51,7 +52,7 @@ class PDF(FPDF):
         self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
         self.set_text_color(75, 179, 204)
-        self.set_font('RobotoThin', '', 7)
+        self.set_font('RobotoLight', '', 7)
         # Page number
         self.cell(100, 10, self.copyright, 0, 0, 'L')
         self.cell(0, 10, 'Page ' + str(self.page_no()) + ' of {nb}', 0, 0, 'R')
@@ -133,36 +134,38 @@ class report(controllers.BaseController):
                 if i == 1:
                     useKey = key
                 if key:
-                    pdf.cell(1, 4, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
-                    pdf.cell(90, 4, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
-                    pdf.cell(0, 4, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
+                    pdf.cell(1, 6, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
+                    pdf.cell(90, 6, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
+                    pdf.cell(0, 6, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
         else: # if value's length is lower than 50 we write the full string
-            pdf.cell(1, 4, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-            pdf.cell(90, 4, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
-            pdf.cell(0, 4, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
+            pdf.cell(1, 6, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
+            pdf.cell(90, 6, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
+            pdf.cell(0, 6, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
             if(pdf.get_y() > 250):
                 pdf.add_page()
                 pdf.ln(20)
 
     def setTableTitle(self,pdf):
-        pdf.set_font('RobotoThin', '', 13)
-        pdf.set_text_color(44,44,44)
-        pdf.set_draw_color(155, 155, 155)
+        pdf.set_font('RobotoLight', '', 18)
+        pdf.set_fill_color(255, 255, 255)
+        pdf.set_text_color(11,11,11)
 
     def setBlueHeaderStyle(self,pdf):
-        pdf.set_font('RobotoThin', '', 8)
-        pdf.set_fill_color(75, 179, 204)
+        pdf.set_font('RobotoLight', '', 8)
+        pdf.set_fill_color(120,200,222)
         pdf.set_text_color(255,255,255)
 
     def setTableRowStyle(self,pdf):
-        pdf.set_text_color(23,23,23)
-        pdf.set_draw_color(75, 179, 204)
-        pdf.set_font('RobotoThin', '', 8)
+        pdf.set_text_color(55,55,55)
+        pdf.set_draw_color(159, 192, 214)
+        pdf.set_font('RobotoLight', '', 8)
     
     def setBlueTableTitle(self,pdf):
-        pdf.set_font('RobotoThin', '', 12)
-        pdf.set_fill_color(75, 179, 204)
-        pdf.set_text_color(255,255,255)
+        pdf.set_font('RobotoLight', '', 14)
+        pdf.set_fill_color(255, 255, 255)
+        pdf.set_text_color(120,200,222)
+
+
 
     def addTables(self,tables,pdf,max_width=190,margin=10):
         """ Creates tables with multiple fields
@@ -191,10 +194,11 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 table_title = key
                 self.setTableTitle(pdf)
-                pdf.set_margins(11, 0, 11)
+                pdf.set_font('RobotoLight', '', 10)
+                pdf.set_margins(10, 0, 10)
                 pdf.ln(5)
                 pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
-                pdf.set_margins(12, 0, 12)
+                pdf.set_margins(11, 0, 11)
                 pdf.ln(5)
                 rows_count = rows_count + 5
                 self.setBlueHeaderStyle(pdf)
@@ -265,9 +269,6 @@ class report(controllers.BaseController):
             elif type(data) is dict:
                 for key,value in data.iteritems():
                     if type(value) is not list and type(value) is not dict:
-                        self.logger.info("a")
-                        self.logger.info(str(key))
-                        self.logger.info(str(value))
                         self.addTableRow(key,value,pdf,labels)
                     if type(value) is list:
                         if value and type(value[0]) is dict:
@@ -275,9 +276,6 @@ class report(controllers.BaseController):
                         elif value and type(value[0]) is list:
                             self.addTable(value,pdf,labels)
                         else:
-                            self.logger.info("b")
-                            self.logger.info(str(key))
-                            self.logger.info(str(value))
                             self.addTableRow(key,value,pdf,labels)
                             
                             if(pdf.get_y() > 250):
@@ -300,7 +298,8 @@ class report(controllers.BaseController):
                 tables = {}
                 for extraTable in customTables:
                     for key,value in extraTable.iteritems():
-                        self.setBlueHeaderStyle(pdf)
+                        pdf.set_text_color(0,0,0)
+                        pdf.set_font('RobotoLight', '', 10)
                         tableKey = self.getString(key,labels)
                         newTable  = { tableKey : {} }
                         fields = []
@@ -382,10 +381,10 @@ class report(controllers.BaseController):
             #Color WazuhBlue
             pdf.set_text_color(75, 179, 204)
             # Title pdf
-            pdf.set_font('RobotoThin', '', 25)
-            pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
+            pdf.set_font('RobotoLight', '', 25)
+            pdf.cell(0,0, section_title , 0, 0, 'L')
             #Date
-            pdf.set_font('RobotoThin', '', 12)
+            pdf.set_font('RobotoLight', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             pdf.ln(1)
             pdf_name = 'configuration-report'
@@ -404,25 +403,36 @@ class report(controllers.BaseController):
             for n in data['data']['configurations']:
                 try:
                     #Set color and print configuration tittle
-                    pdf.set_font('RobotoThin', '', 18)
                     if 'isAgents' in data:
                         if first_page:
                             first_page = False
                         else:
                             pdf.add_page()
                             pdf.ln(20)
+                    
+                    pdf.set_margins(10, 0, 10)
+                    pdf.ln(1)
+                    pdf.set_text_color(120,200,222)
+                    pdf.set_font('RobotoLight', '', 24)
                     pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
-                    pdf.set_margins(12, 0, 12)
-                    pdf.ln(3)
+                    pdf.ln(6)
                     for currentSection in n['sections']:
                         # header
                         self.setBlueTableTitle(pdf)
-                        if(pdf.get_y() > 250):
+                        if(pdf.get_y() > 230):
                             pdf.add_page()
                             pdf.ln(20)
                         if 'subtitle' in currentSection:
-                            pdf.cell(0, 7, txt = currentSection['subtitle'], border = '', align = 'L', fill = True, link = '')
-                            pdf.ln(8)
+                            pdf.set_margins(10, 0, 10)
+                            pdf.ln(1)
+                            pdf.cell(0, 6, txt = currentSection['subtitle'], border = '', align = 'L', fill = False, link = '')
+                            pdf.ln(6)
+                            if 'desc' in currentSection:
+                                pdf.set_text_color(0,0,0)
+                                pdf.set_font('RobotoLight', '', 12)
+                                pdf.cell(0, 6, txt = currentSection['desc'], border = '', align = 'L', fill = False, link = '')
+                                pdf.set_margins(11, 0, 11)
+                                pdf.ln(7)
                         customLabels = {} 
                         if self.labels:
                             customLabels = self.labels
@@ -452,9 +462,9 @@ class report(controllers.BaseController):
                                         rows.append(values)
                                         self.setBlueTableTitle(pdf)
                                         pdf.cell(0, 5, txt = "Configuration " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
-                                        pdf.set_font('RobotoThin','',8)
+                                        pdf.set_font('RobotoLight','',8)
                                         pdf.cell(0, 5, txt =  filters, border = 'B', ln = 1, align = 'R', fill = True, link = '')
-                                        pdf.set_font('RobotoThin','',10)
+                                        pdf.set_font('RobotoLight','',10)
                                         pdf.set_text_color(23,23,23)
                                         self.addTables({"Filters:" : {"fields" : item['filters'].keys(), "rows": rows}},pdf,185,12)
                                         for currentFilterKey,currentFilterValue in item['filters'].iteritems():
@@ -500,6 +510,7 @@ class report(controllers.BaseController):
                                         filteredTables = self.filterTableByField(currentConfig['filterBy'], conf_data['data'][configuration])
                                         self.addTable(filteredTables, pdf, customLabels)
                                     else:
+                                        pdf.set_margins(11, 0, 11)
                                         self.addTable(conf_data['data'][configuration], pdf, customLabels)
 
                         if 'wodle' in currentSection:
@@ -571,11 +582,11 @@ class report(controllers.BaseController):
             pdf.ln(20)
             #Color WazuhBlue
             pdf.set_text_color(75, 179, 204)
-            # Title RobotoThin Bold 20
-            pdf.set_font('RobotoThin', '', 25)
+            # Title RobotoLight Bold 20
+            pdf.set_font('RobotoLight', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('RobotoThin', '', 12)
+            pdf.set_font('RobotoLight', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
             if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
@@ -597,7 +608,7 @@ class report(controllers.BaseController):
                 line_width = 0
                 total_width = 190
                 pdf.ln(10)
-                pdf.set_font('RobotoThin', '', 8)
+                pdf.set_font('RobotoLight', '', 8)
                 for key in metrics.keys():
                     text = (str(key) +': '+ str(metrics[key]))
                     text_w = pdf.get_string_width(text) + w
@@ -623,7 +634,7 @@ class report(controllers.BaseController):
                 n_images = len(saved_images)
                 # Set top margin checking if metrics exist
                 pdf.set_text_color(75, 179, 204)
-                pdf.set_font('RobotoThin', '', 14)
+                pdf.set_font('RobotoLight', '', 14)
                 if metrics_exists:
                     y_img = y_img + 10
                 if agent_data:
@@ -809,7 +820,7 @@ class report(controllers.BaseController):
     #Print group info
     def print_group_info(self, group, pdf):
         pdf.ln(8)
-        pdf.set_font('RobotoThin','',11)
+        pdf.set_font('RobotoLight','',11)
         pdf.set_text_color(23,23,23)
         pdf.cell(0,8, "Group name:  " + str(group['name']), 0, 0, 'L', 0)
         pdf.ln()
@@ -849,7 +860,7 @@ class report(controllers.BaseController):
             pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
         #Print the rest of the agent information
         pdf.ln(6)
-        pdf.set_font('RobotoThin','',11)
+        pdf.set_font('RobotoLight','',11)
         pdf.set_text_color(23,23,23)
         pdf.cell(0,9, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
         pdf.ln()

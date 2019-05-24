@@ -178,30 +178,13 @@ define(['../../module', '../../../utils/config-handler'], function(
                 subtitle: 'Global configuration',
                 desc: 'Logging settings that apply to the agent',
                 config: [{ component: 'com', configuration: 'logging' }],
-                labels : {
-                  plain: 'Write internal logs in plain text',
-                  json: 'Write internal logs in JSON format',
-                  server: 'List of managers to connect',
-                  address: "Address",
-                  port : "Port",
-                  protocol : "Protocol"
-                }
+                
               },
               {
                 subtitle: 'Communication',
                 desc: 'Settings related to the connection with the manager',
                 config: [{ component: 'agent', configuration: 'client' }],
                 labels :{
-                  crypto_method: 'Method used to encrypt communications',
-                  auto_restart:
-                    'Auto-restart the agent when receiving valid configuration from manager',
-                  notify_time:
-                    'Time (in seconds) between agent checkings to the manager',
-                  'time-reconnect':
-                    'Time (in seconds) before attempting to reconnect',
-                  server: 'List of managers to connect',
-                  'config-profile': 'Configuration profiles',
-                  remote_conf: 'Remote configuration is enabled'
                 }
               },
               {
@@ -209,9 +192,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc: 'Agent bucket parameters to avoid event flooding',
                 config: [{ component: 'agent', configuration: 'buffer' }],
                 labels : {
-                  disabled: 'Buffer enabled',
-                  queue_size: 'Queue size',
-                  events_per_second: 'Events per second'
                 }
               },
               {
@@ -234,26 +214,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   { component: 'wmodules', configuration: 'wmodules' }
                 ],
                 labels : {
-                  system_audit: 'System audit',
-                  disabled: 'Policy monitoring service enabled',
-                  base_directory: 'Base directory',
-                  rootkit_files: 'Rootkit files database path',
-                  rootkit_trojans: 'Rootkit trojans database path',
-                  scanall: 'Scan the entire system',
-                  skip_nfs: 'Skip scan on CIFS/NFS mounts',
-                  frequency: 'Frequency (in seconds) to run the scan',
-                  check_dev: 'Check /dev path',
-                  check_files: 'Check files',
-                  check_if: 'Check network interfaces',
-                  check_pids: 'Check processes IDs',
-                  check_ports: 'Check network ports',
-                  check_sys: 'Check anomalous system objects',
-                  check_trojans: 'Check trojans',
-                  check_unixaudit: 'Check UNIX audit',
-                  enabled: 'Security configuration assessment enabled',
-                  scan_on_start: 'Scan on start',
-                  interval: 'Interval',
-                  policies: 'Policies'
                 }
               },
                   {
@@ -275,11 +235,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   'Configuration assessment and automation of compliance monitoring using SCAP checks',
                 wodle: 'open-scap',
                 labels : {
-                  content: 'Evaluations',
-                  disabled: 'OpenSCAP integration enabled',
-                  'scan-on-start': 'Scan on start',
-                  interval: 'Interval',
-                  timeout: 'Timeout (in seconds)'
                 }
               },
               {
@@ -288,15 +243,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   'Configuration assessment using CIS scanner and SCAP checks',
                 wodle: 'cis-cat',
                 labels : {
-                  disabled: 'CIS-CAT integration enabled',
-                  'scan-on-start': 'Scan on start',
-                  interval: 'Interval',
-                  java_path: 'Path to Java executable directory',
-                  ciscat_path: 'Path to CIS-CAT executable directory',
-                  timeout: 'Timeout (in seconds)',
-                  content: 'Benchmarks',
-                  wday : 'Day of the week to run scans',
-                  time : 'Time of the day to run scans'
                 }
               }
             ]
@@ -310,11 +256,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   'Expose an operating system as a high-performance relational database',
                 wodle: 'osquery',
                 labels : {
-                  disabled: 'Osquery integration enabled',
-                  run_daemon: 'Auto-run the Osquery daemon',
-                  add_labels: 'Use defined labels as decorators',
-                  log_path: 'Path to the Osquery results log file',
-                  config_path: 'Path to the Osquery configuration file'
                 }
               },
               {
@@ -323,16 +264,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   'Gather relevant information about system OS, hardware, networking and packages',
                 wodle: 'syscollector',
                 labels : {
-                  disabled: 'Syscollector integration enabled',
-                  'scan-on-start': 'Scan on start',
-                  interval: 'Interval',
-                  network: 'Scan network interfaces',
-                  os: 'Scan operating system info',
-                  hardware: 'Scan hardware info',
-                  packages: 'Scan installed packages',
-                  ports: 'Scan listening network ports',
-                  ports_all: 'Scan all network ports',
-                  processes: 'Scan current processes'
                 }
               },
               {
@@ -340,9 +271,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc: 'Active threat addressing by inmmediate response',
                 config: [{ component: 'com', configuration: 'active-response' }],
                 labels : {
-                  disabled: 'Active response enabled',
-                  ca_store: 'Use the following list of root CA certificates',
-                  ca_verification: 'Validate WPKs using root CA certificate'
                 }
               },
               {
@@ -350,16 +278,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc: 'Configuration options of the Command wodle',
                 wodle: 'command',
                 labels : {
-                  disabled: 'Command enabled',
-                  run_on_start: 'Run on start',
-                  ignore_output: 'Ignore command output',
-                  skip_verification: 'Ignore checksum verification',
-                  interval: 'Interval',
-                  tag: 'Command name',
-                  command: 'Command to execute',
-                  verify_md5: 'Verify MD5 sum',
-                  verify_sha1: 'Verify SHA1 sum',
-                  verify_sha256: 'Verify SHA256 sum'
                 }
               },
               {
@@ -368,11 +286,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   'Monitor and collect the activity from Docker containers such as creation, running, starting, stopping or pausing events',
                 wodle: 'docker-listener',
                 labels : {
-                  disabled: 'Docker listener enabled',
-                  run_on_start:
-                    'Run the listener immediately when service is started',
-                  interval: 'Waiting time to rerun the listener in case it fails',
-                  attempts: 'Number of attempts to execute the listener'
                 }
               }
             ]
@@ -389,15 +302,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   { component: 'logcollector', configuration: 'socket' }
                 ],
                 labels : {
-                  logformat: 'Log format',
-                  command: 'Command',
-                  syslog : 'Logs',
-                  full_command : "Full command",
-                  alias: 'Command alias',
-                  ignore_binaries: 'Ignore binaries',
-                  target: 'Targets',
-                  frequency: 'Frequency',
-                  file: 'Log location'
                 }
               },
               {
@@ -406,16 +310,6 @@ define(['../../module', '../../../utils/config-handler'], function(
                   'Identify changes in content, permissions, ownership, and attributes of files',
                 config: [{ component: 'syscheck', configuration: 'syscheck' }],
                 labels : {
-                  disabled: 'Integrity monitoring enabled',
-                  frequency: 'Interval (in seconds) to run the integrity scan',
-                  skip_nfs: 'Skip scan on CIFS/NFS mounts',
-                  scan_on_start: 'Scan on start',
-                  directories: 'Monitored directories',
-                  nodiff: 'No diff directories',
-                  ignore: 'Ignored files and directories',
-                  restart_audit: 'Restart audit',
-                  startup_healthcheck: 'Startup healthcheck',
-                  whodata : 'Whodata'
                 }
               }
             ]
