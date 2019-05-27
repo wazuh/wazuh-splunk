@@ -254,9 +254,9 @@ define([
             [
               'alertLevEvoVizz',
               'alertsVizz',
-              'alertsEvoTop10Agents',
-              'top10ruleGroups',
-              'agentsSummaryVizz'
+              'alertsEvoTop5Agents',
+              'top5ruleGroups',
+              'agentStatus'
             ],
             this.reportMetrics,
             this.tableResults

@@ -170,9 +170,9 @@ class manager(controllers.BaseController):
 
         """
         try:
-            if 'id' not in kwargs:
+            if 'apiId' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
-            id = kwargs['id']
+            id = kwargs['apiId']
             data_temp = self.db.get(id)
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
