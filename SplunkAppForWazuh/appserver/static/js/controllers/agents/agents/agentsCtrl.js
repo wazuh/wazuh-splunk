@@ -99,11 +99,11 @@ define([
         this.scope.searchBarModel = {
           name: [],
           status: ['Active', 'Disconnected', 'Never connected'],
-          group: groups ? groups : [],
+          group: groups ? groups.sort() : [],
           version: versions ? versions : [],
-          'os.platform': os ? os.map(x => x.platform) : [],
-          'os.version': os ? os.map(x => x.version) : [],
-          'os.name': os ? os.map(x => x.name) : []
+          'os.platform': os ? os.map(x => x.platform).sort() : [],
+          'os.version': os ? os.map(x => x.version).sort() : [],
+          'os.name': os ? os.map(x => x.name).sort() : []
         }
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
