@@ -37,7 +37,7 @@
 }
 
 .wz-margin-right-20 {
-  margin-right: 20px;
+  margin-right: 20px !important;
 }
 
 .wz-margin-right-24 {

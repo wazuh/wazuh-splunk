@@ -49,12 +49,10 @@
       <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
           aria-hidden="true"></i>Save list</span>
     </button>
-    <button ng-click="switchTextBox()" class="btn wz-button-empty" ng-class="{'wz-margin-left-20': textBox, 'wz-margin-left-10': !textBox}">
-      <span>
-        <i class="fa fa-arrows-h" aria-hidden="true"></i>
-        {{!textBox ? "Copy list" : "Show list"}}
-      </span>
-    </button>
+    <span class="flex"></span>
+    <div class="wz-margin-top-5 wz-margin-right-20">
+      <wz-kbn-switch switch-model="plainText" switch-change="switchTextBox()"></wz-kbn-switch> Plain text editor
+    </div>
   </div>
   <!-- End back button, title and status indicator -->
 
