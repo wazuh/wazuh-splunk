@@ -79,7 +79,6 @@ define([
           /**
            * Init variables
            */
-
           $scope.showingChecks = false
           let realTime = false
           const instance = new $dataService(

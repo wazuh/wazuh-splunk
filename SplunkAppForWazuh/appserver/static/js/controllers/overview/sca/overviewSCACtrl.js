@@ -306,16 +306,6 @@ define([
       this.state.reload()
     }
 
-    /**
-     * Loads policies checks
-     */
-    async loadPolicyChecks(id, name) {
-      this.scope.showPolicyChecks = name
-      this.scope.policyId = id
-      const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
-    }
-
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
       let vis = $(
