@@ -283,7 +283,7 @@ define(['../../module', '../../../utils/config-handler'], function(
               {
                 subtitle: 'Docker listener',
                 desc:
-                  'Monitor and collect the activity from Docker containers such as creation, running, starting, stopping or pausing events',
+                  'Monitor and collect the activity from Docker containers',
                 wodle: 'docker-listener',
                 labels : {
                 }

@@ -23,7 +23,7 @@ labels =  {
 'rootkit_trojans': 'Rootkit trojans database path',
 'scanall': 'Scan the entire system',
 'skip_nfs': 'Skip scan on CIFS/NFS mounts',
-'frequency': 'Frequency (in seconds) to run the scan',
+'frequency': 'Frequency (in seconds)',
 'check_dev': 'Check /dev path',
 'check_files': 'Check files',
 'check_if': 'Check network interfaces',
@@ -87,5 +87,6 @@ labels =  {
 'label' : 'Labels',
 'os' : 'OS',
 'name' : 'Name',
-'log_format' : 'Log format'
+'log_format' : 'Log format',
+'audit': 'Audit'
 }

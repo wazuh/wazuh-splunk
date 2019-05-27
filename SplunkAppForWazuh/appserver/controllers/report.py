@@ -107,6 +107,8 @@ class report(controllers.BaseController):
         elif value or value == 0 or value == " ":
             if value in labels:
                 result = labels[value]
+            elif value == "":
+                result = "-"
             else:
                 result = str(value)
         else:
@@ -169,38 +171,47 @@ class report(controllers.BaseController):
         max_key_width = 0
         max_value_width = 0
         for i in keyList:
-            current_width = (pdf.get_string_width(i) + len(i)) / 2
+            current_width = int((len(i)) *1.5)
             if current_width > max_key_width:
                 max_key_width = current_width
         
         for i in valueList:
-            current_width = (pdf.get_string_width(i) + len(i) ) / 2
+            current_width = int((len(i) ) *1.5)
             if current_width > max_value_width:
                 max_value_width = current_width
                 
         self.setTableRowStyle(pdf)
-        if ( max_value_width + max_key_width < 185):
+        totalWidth =  max_value_width + max_key_width
+        if ( totalWidth < 185):
             for key,value in zip(keyList,valueList):
+                if(pdf.get_y() > 260):
+                    pdf.add_page()
+                    pdf.ln(20)
                 pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
                 pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
                 pdf.ln(5)
         else:
             for key,value in zip(keyList,valueList):
-                key_size = (pdf.get_string_width(key) + len(i)) / 2
-                value_size = (pdf.get_string_width(value) + len(i)) / 2
+                if(pdf.get_y() > 260):
+                    pdf.add_page()
+                    pdf.ln(20)
+                key_size =  int(len(key) *1.5)
+                value_size = int(len(value) *1.5)
                 if key_size < max_key_width and value_size < max_key_width:
                     pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
                     pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
                     pdf.ln(5)
-                #else: # create as many as lines as needed
-                #    pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
-                #    pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
-                #    pdf.ln(5)
-
-
-        
-        
-
+                else: # create as many as lines as needed
+                    for i in range(0,int(len(value)/(175-key_size*1.5))+1):
+                        if(pdf.get_y() > 260):
+                            pdf.add_page()
+                            pdf.ln(20)
+                        if i == 0:
+                            pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                        else:
+                            pdf.cell(max_key_width, 5, txt = " ", border = 'B', align = '', fill = False, link = '')
+                        pdf.cell(0, 5, txt = value[int((i)*(175-key_size*1.5)):int((i+1)*(175-key_size*1.5))], border = 'B', align = '', fill = False, link = '')
+                        pdf.ln(5)
 
     def addTables(self,tables,pdf,max_width=190,margin=10):
         """ Creates tables with multiple fields
@@ -230,10 +241,10 @@ class report(controllers.BaseController):
                 table_title = key
                 self.setTableTitle(pdf)
                 pdf.set_font('RobotoLight', '', 10)
-                pdf.set_margins(10, 0, 10)
+                pdf.set_margins(11, 0, 11)
                 pdf.ln(5)
                 pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
-                pdf.set_margins(11, 0, 11)
+                pdf.set_margins(12, 0, 12)
                 pdf.ln(5)
                 rows_count = rows_count + 5
                 self.setBlueHeaderStyle(pdf)
@@ -308,8 +319,21 @@ class report(controllers.BaseController):
                     if type(value) is not list and type(value) is not dict:
                         keyList.append(self.getString(key,labels))
                         valueList.append(self.getString(value,labels))
-                    if type(value) is list:
-                        if value and type(value[0]) is dict:
+                    elif type(value) is list:
+                        if key == 'directories':
+                            directoriesTable = {}
+                            fields = ['Dir','Realtime','Whodata','Changes','All sum','Sum','MD5','SHA1','Permis.']
+                            rows = []
+                            for row in value:
+                                newRow = []
+                                newRow.append(row['dir'])
+                                for i in range(0,8):
+                                    newRow.append('no')
+                                rows.append(newRow)
+                            directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
+                            self.addTables(directoriesTable,pdf,185,12)
+                            pdf.ln(5)
+                        elif value and type(value[0]) is dict:
                             customTables.append({key:value})
                         elif value and type(value[0]) is list:
                             self.addTable(value,pdf,labels)
@@ -320,7 +344,7 @@ class report(controllers.BaseController):
                             if(pdf.get_y() > 250):
                                 pdf.add_page()
                                 pdf.ln(20)
-                    if type(value) is dict:
+                    elif type(value) is dict:
                             customTables.append({key:value})
             elif type(data) is list:
                 for item in data:
@@ -369,7 +393,7 @@ class report(controllers.BaseController):
                             for currentTableKey, currentTableValue in value.iteritems():
                                 customKeyList.append(self.getString(currentTableKey,labels))
                                 customValueList.append(self.getString(currentTableValue,labels))
-                            self.addKeyValueTable(keyList,valueList,pdf)
+                            self.addKeyValueTable(customKeyList,customValueList,pdf)
                             
 
         except Exception as e:
@@ -470,7 +494,7 @@ class report(controllers.BaseController):
                             pdf.ln(6)
                             if 'desc' in currentSection:
                                 pdf.set_text_color(0,0,0)
-                                pdf.set_font('RobotoLight', '', 12)
+                                pdf.set_font('RobotoLight', '', 11)
                                 pdf.cell(0, 6, txt = currentSection['desc'], border = '', align = 'L', fill = False, link = '')
                                 pdf.set_margins(11, 0, 11)
                                 pdf.ln(7)
@@ -504,6 +528,7 @@ class report(controllers.BaseController):
                                         self.setBlueTableTitle(pdf)
                                         pdf.cell(0, 5, txt = "Configuration " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
                                         pdf.set_font('RobotoLight','',8)
+                                        pdf.set_margins(11, 0, 11)
                                         pdf.cell(0, 5, txt =  filters, border = 'B', ln = 1, align = 'R', fill = True, link = '')
                                         pdf.set_font('RobotoLight','',10)
                                         pdf.set_text_color(23,23,23)
