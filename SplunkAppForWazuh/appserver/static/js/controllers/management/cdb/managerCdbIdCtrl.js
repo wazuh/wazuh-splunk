@@ -59,6 +59,7 @@ define([
      */
     $onInit() {
       try {
+        this.box = $('#listContent')
         this.scope.textBox = false
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
@@ -277,18 +278,45 @@ define([
     }
 
     switchTextBox() {
-      this.scope.textBox = !this.scope.textBox
-      this.copyListToBox()
+      //this.scope.textBox = !this.scope.textBox
+      const isShown = this.scope.textBox
+      if (isShown) {
+        this.scope.textBox = false
+        this.copyBoxtoList()
+      } else {
+        this.scope.textBox = true
+        this.copyListToBox()
+      }
+
     }
 
     copyListToBox() {
       try {
-        const box = $('#listContent')
+        this.box.val('')
         this.scope.items.map(i => {
-          box.val(`${box.val()}\n${i.toString()}`)
+          this.box.val(`${this.box.val()}\n${i.join(':')}`)
         })
       } catch (error) {
-        console.error(error)
+        this.notification.showErrorToast(error || 'Cannot bind content.')
+      }
+    }
+
+    copyBoxtoList() {
+      try {
+        const content = this.box.val().split('\n')
+        const newContent = {}
+        content.map(line => {
+          if (line) {
+            const [key, val] = line.split(':')
+            if (key) {
+              newContent[key] = val
+            }           
+          }
+        })
+        this.scope.currentList.list = newContent
+        this.refreshCdbList()
+      } catch (error) {
+        this.notification.showErrorToast(error || 'Cannot bind content.')
       }
     }
 
