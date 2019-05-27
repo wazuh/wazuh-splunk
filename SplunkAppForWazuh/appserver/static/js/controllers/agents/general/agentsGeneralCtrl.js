@@ -119,11 +119,11 @@ define([
           this.scope
         ),
         new LinearChart(
-          'alertLevelEvoVizz',
+          'alertGroupsEvoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
-          'alertLevelEvoVizz',
+          } sourcetype=wazuh rule.level=*| timechart count by rule.groups{}`,
+          'alertGroupsEvoVizz',
           this.scope
         ),
         new ColumnChart(
