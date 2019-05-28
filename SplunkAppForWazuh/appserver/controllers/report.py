@@ -117,6 +117,69 @@ class report(controllers.BaseController):
         return result
 
 
+    def getDirectoriesChecks(self,row):
+        newRow = []
+        newRow.append(row['dir'])
+        if 'realtime' in row['opts'] and row['opts'].index('realtime'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'whodata' in row['opts'] and row['opts'].index('whodata'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'report_changes' in row['opts'] and row['opts'].index('report_changes'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_sha1sum	' in row['opts'] and row['opts'].index('check_sha1sum'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_md5sum' in row['opts'] and row['opts'].index('check_md5sum'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_sha256sum' in row['opts'] and row['opts'].index('check_sha256sum'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_size' in row['opts'] and row['opts'].index('check_size'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_owner' in row['opts'] and row['opts'].index('check_owner'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_group' in row['opts'] and row['opts'].index('check_group'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_perm' in row['opts'] and row['opts'].index('check_perm') :
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_mtime' in row['opts'] and row['opts'].index('check_mtime') :
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_inode' in row['opts'] and row['opts'].index('check_inode') :
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'follow_symbolic_link' in row['opts'] and row['opts'].index('follow_symbolic_link'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'recursion_level' in row:
+            newRow.append(row['recursion_level'])
+        else:
+            newRow.append('-')
+
+        return newRow
+
+
     def addTableRow(self,key,value,pdf,labels):
         self.setTableRowStyle(pdf)
         fullValue = self.getString(value,labels)
@@ -182,7 +245,7 @@ class report(controllers.BaseController):
                 
         self.setTableRowStyle(pdf)
         totalWidth =  max_value_width + max_key_width
-        if ( totalWidth < 185):
+        if ( totalWidth < 175):
             for key,value in zip(keyList,valueList):
                 if(pdf.get_y() > 260):
                     pdf.add_page()
@@ -197,12 +260,12 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 key_size =  int(len(key) *1.5)
                 value_size = int(len(value) *1.5)
-                if key_size < max_key_width and value_size < max_key_width:
-                    pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                if key_size <= max_key_width and value_size <= max_key_width:
+                    pdf.cell(max_key_width , 5, txt = key, border = 'B', align = '', fill = False, link = '')
                     pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
                     pdf.ln(5)
                 else: # create as many as lines as needed
-                    for i in range(0,int(len(value)/(175-key_size*1.5))+1):
+                    for i in range(0,int(len(value)/(1-max_key_width*1.5))+1):
                         if(pdf.get_y() > 260):
                             pdf.add_page()
                             pdf.ln(20)
@@ -210,7 +273,7 @@ class report(controllers.BaseController):
                             pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
                         else:
                             pdf.cell(max_key_width, 5, txt = " ", border = 'B', align = '', fill = False, link = '')
-                        pdf.cell(0, 5, txt = value[int((i)*(175-key_size*1.5)):int((i+1)*(175-key_size*1.5))], border = 'B', align = '', fill = False, link = '')
+                        pdf.cell(0, 5, txt = value[int((i)*(175-max_key_width*1.5)):int((i+1)*(175-max_key_width*1.5))], border = 'B', align = '', fill = False, link = '')
                         pdf.ln(5)
 
     def addTables(self,tables,pdf,max_width=190,margin=10):
@@ -322,16 +385,15 @@ class report(controllers.BaseController):
                     elif type(value) is list:
                         if key == 'directories':
                             directoriesTable = {}
-                            fields = ['Dir','Realtime','Whodata','Changes','All sum','Sum','MD5','SHA1','Permis.']
+                            fields = ['Dir','RT','WD','Changes','SHA-1','MD5','SHA256','Size','Owner','Group','Perm','MT','Inode','SL','RL']
                             rows = []
                             for row in value:
-                                newRow = []
-                                newRow.append(row['dir'])
-                                for i in range(0,8):
-                                    newRow.append('no')
+                                newRow = self.getDirectoriesChecks(row)
                                 rows.append(newRow)
                             directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
                             self.addTables(directoriesTable,pdf,185,12)
+                            pdf.set_text_color(75, 179, 204)
+                            pdf.cell(0, 5, txt = "Rt: Real Time | Wd: Who-Data | Per: Permission | Mt: Modification Time | Sl: Symbolic link | Rl: Recursion Level ", border = '',ln=1, align = '', fill = False, link = '')
                             pdf.ln(5)
                         elif value and type(value[0]) is dict:
                             customTables.append({key:value})

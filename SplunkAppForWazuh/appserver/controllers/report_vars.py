@@ -88,5 +88,6 @@ labels =  {
 'os' : 'OS',
 'name' : 'Name',
 'log_format' : 'Log format',
-'audit': 'Audit'
+'audit': 'Audit',
+'repeated_offenders' : 'List of timeouts (in minutes) for repeated offender'
 }
