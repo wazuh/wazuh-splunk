@@ -14,6 +14,7 @@ define([
   './wz-multiple-selector/wz-multiple-selector',
   './wz-config-viewer/wz-config-viewer',
   './wz-discover/wz-discover',
+  './wz-register-agent/wz-register-agent',
   './wz-svg/wz-svg',
   './wz-add-filter-chip/wz-add-filter-chip',
   './wz-head-toaster/wz-head-toaster',

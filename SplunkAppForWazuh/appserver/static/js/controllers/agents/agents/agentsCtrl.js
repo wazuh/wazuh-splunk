@@ -147,6 +147,7 @@ define([
       this.scope.reloadList = () => this.reloadList()
 
       this.scope.addNewAgent = () => this.addNewAgent()
+      this.scope.closeAddAgent = () => this.closeAddAgent()
 
       this.scope.offsetTimestamp = (text, time) => {
         try {
@@ -251,10 +252,22 @@ define([
       }
     }
 
+    /**
+     * Switchs view to add a new agent
+     */
     addNewAgent() {
-      this.scope.addingAgents = !this.scope.addingAgents
+      this.scope.addingAgents = true
       this.scope.$applyAsync()
     }
+
+    /**
+     * Switchs view to cancel the proccess to add a new agent
+     */
+    closeAddAgent() {
+      this.scope.addingAgents = false
+      this.scope.$applyAsync()
+    }
+
 
     /**
      * Reload list of agents

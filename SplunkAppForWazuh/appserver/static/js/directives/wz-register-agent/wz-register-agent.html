@@ -1,0 +1,57 @@
+<div class="wz-margin-auto">
+  <md-card class="wz-md-card no-margin-sides wz-margin-top-15 add-agent-card">
+    <md-card-contents>
+      <!-- Select the OS-->
+      <div ng-if="!config.osSelected">
+        <div class="bubble">1</div>
+        <span class="reg-agent-text">Choose OS:</span>
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('redhat')">
+          <span>{{osEquivalence("redhat")}}</span>
+        </button>
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('debian')">
+          <span>{{osEquivalence("debian")}}</span>
+        </button>
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('windows')">
+          <span>{{osEquivalence("windows")}}</span>
+        </button>
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('macos')">
+          <span>{{osEquivalence("macos")}}</span>
+        </button>
+      </div>
+      <!-- When OS is selected -->
+      <div ng-if="config.osSelected">
+        <div class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i></div>
+        <div class="wz-padding-top-7">
+          <span class="reg-agent-text">Chosen OS:</span> &nbsp;
+          <span>{{osEquivalence(config.osSelected)}}</span>
+        </div>
+      </div>
+      <!-- Select the IP-->
+      <div ng-if="config.osSelected && !config.managerIp" class="wz-margin-top-30">
+        <div class="bubble">2</div>
+        <div class="wz-padding-top-7"></div>
+        <span class="reg-agent-text">Wazuh server address:</span>
+        <div class="div-input-register-agent">
+          <input flex placeholder="Server address..." ng-model="managerAddress" type="text" class="input-register-agent"
+            wz-enter="selectManagerAddress()">
+          <button type="submit" class="btn wz-button-empty wz-margin-left-10 next-input-register-agent"
+            ng-click="selectManagerAddress(managerAddress)">
+            <span>Next</span>
+          </button>
+        </div>
+      </div>
+      <!-- When Manager IP is selected-->
+      <div ng-if="config.osSelected && config.managerIp" class="wz-margin-top-30">
+        <div class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i></div>
+        <div class="wz-padding-top-7">
+          <span class="reg-agent-text">Wazuh server address:</span> &nbsp;
+          <span>{{config.managerIp}}</span>
+        </div>
+      </div>
+      <div ng-if="config.osSelected" class="reset-register-agent cursor-pointer" ng-click="reset()">
+        <wz-svg icon="refresh" color="#00445a"></wz-svg>
+        <span>Reset</span>
+      </div>
+    </md-card-contents>
+  </md-card>
+</div>

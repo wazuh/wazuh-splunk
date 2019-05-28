@@ -1851,3 +1851,69 @@ label.wz-icon-loupe  input {
 .md-sidenav-right {
   background-color: #fafafa !important;
 }
+
+.wz-margin-auto {
+  margin: auto !important;
+}
+
+.add-agent-card {
+  padding: 50px;
+  width: 750px;
+  margin: auto;
+}
+
+.title-register-agent {
+  width: 750px;
+  text-align: center;
+}
+
+.bubble {
+  background: #e0dede;
+  padding: 8px;
+  height: 20px;
+  width: 20px;
+  float: left;
+  border-radius: 50%;
+  text-align: center;
+  color: #00445a;
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 10px;
+  margin-top: -2px;
+}
+
+.bubble-checked {
+  background: #00445a !important;
+  color: #e0dede !important;
+}
+
+.reg-agent-text {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.close-register-agent {
+  float: right;
+  color: #00445a;
+  margin-right: 5px;
+}
+
+.div-input-register-agent {
+  margin: 20px 0px 0px 45px;
+}
+
+.input-register-agent {
+  background: whitesmoke !important; 
+  border: none !important; 
+}
+
+.next-input-register-agent {
+  margin-top: -12px;
+  width: 100px;
+}
+
+.reset-register-agent {
+  margin: 30px 10px -10px 0px;
+  color: #00445a;
+  width: 80px;
+}
