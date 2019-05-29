@@ -261,7 +261,7 @@ define([
     }
 
     /**
-     * Switchs view to cancel the proccess to add a new agent
+     * Switchs view to cancel the process to add a new agent
      */
     closeAddAgent() {
       this.scope.addingAgents = false
