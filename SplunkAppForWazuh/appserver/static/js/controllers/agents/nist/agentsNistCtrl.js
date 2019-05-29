@@ -17,9 +17,9 @@ define([
 ) {
   'use strict'
 
-  class AgentsHipaa {
+  class AgentsNist {
     /**
-     * Class Agents HIPAA
+     * Class Agents Nist 800-53
      * @param {*} $urlTokenModel
      * @param {*} $scope
      * @param {*} $state
@@ -34,11 +34,11 @@ define([
       $currentDataService,
       agent,
       $reportingService,
-      hipaaTabs,
+      nistTabs,
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      nistExtensionEnabled,
+      hipaaExtensionEnabled,
     ) {
       this.state = $state
       this.reportingService = $reportingService
@@ -48,8 +48,8 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
-      this.scope.nistExtensionEnabled = nistExtensionEnabled
-      this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
+      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.nistTabs = nistTabs ? nistTabs : false
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',
@@ -196,8 +196,8 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-hipaa',
-          'HIPAA',
+          'agents-nist',
+          'NIST 800-53',
           this.filters,
           [
             'pciReqSearchVizz',
@@ -299,5 +299,5 @@ define([
       })
     }
   }
-  app.controller('agentsHipaaCtrl', AgentsHipaa)
+  app.controller('agentsNistCtrl', AgentsNist)
 })
