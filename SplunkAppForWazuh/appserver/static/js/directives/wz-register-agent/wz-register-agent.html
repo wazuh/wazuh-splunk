@@ -50,7 +50,8 @@
           <!-- If Redhat / Centos -->
           <div ng-if="config.osSelected === 'redhat'">
             1. Add the Wazuh repository.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+            <div class="register-snipped" id="step1">
               # rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
               # cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
                 [wazuh_repo]<br>
@@ -63,7 +64,8 @@
                 EOF
             </div>
             2. Deploy the installation.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step2')"></i>
+            <div class="register-snipped" id="step2">
               # WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
             </div>
             3. Wait until the process finish.
@@ -71,20 +73,24 @@
           <!-- If Debian / Ubuntu -->
           <div ng-if="config.osSelected === 'debian'">
             1. Install the necessaries utilities.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+            <div class="register-snipped" id="step1">
               # apt-get install curl apt-transport-https lsb-release
             </div>
             2. Install the Wazuh repository GPG key.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step2')"></i>
+            <div class="register-snipped" id="step2">
               # curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
             </div>
             3. Add the repository.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step3')"></i>
+            <div class="register-snipped" id="step3">
               # echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list<br>
               # apt-get update
             </div>
             4. Deploy the installation.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step4')"></i>
+            <div class="register-snipped" id="step4">
               # WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
             </div>
             5. Wait until the process finish.
@@ -92,7 +98,8 @@
           <!-- If Windows -->
           <div ng-if="config.osSelected === 'windows'">
             1. Deploy the installation.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+            <div class="register-snipped" id="step1"> 
               wazuh-agent-3.9.1-1.msi /q ADDRESS="{{config.managerIp}}" AUTHD_SERVER="{{config.managerIp}}"
             </div>
             2. Wait until the process finish.
@@ -100,7 +107,8 @@
           <!-- If MacOS -->
           <div ng-if="config.osSelected === 'macos'">
             1. Deploy the installation.
-            <div class="register-snipped">
+            <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+            <div class="register-snipped" id="step1">
               # launchctl setenv WAZUH_MANAGER_IP "{{config.managerIp}}" && installer -pkg wazuh-agent-<version>.pkg
                 -target /
             </div>
@@ -129,15 +137,18 @@
             <!-- If the agent is Linux -->
             <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
               1. Set the manager IP.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+              <div class="register-snipped" id="step1">
                 # sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
               </div>
               2. Register the agent against the manager.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step2')"></i>
+              <div class="register-snipped" id="step2">
                 # /var/ossec/bin/manage_agents -i {{config.agentKey}}
               </div>
               3. Restart the agent.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step3')"></i>
+              <div class="register-snipped" id="step3">
                 # /var/ossec/bin/ossec-control restart
               </div>
             </div>
@@ -149,7 +160,8 @@
                   class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
                   (x86)\ossec-agent\ossec.conf</b>:
               </div>
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+              <div class="register-snipped" id="step1">
                 &lt;client&gt;<br>
                 &nbsp;&nbsp;&lt;server&gt;<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&lt;address&gt;{{config.managerIp}}&lt;/address&gt;<br>
@@ -158,7 +170,8 @@
                 &lt;/client&gt;
               </div>
               2. Register the agent against the manager.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step2')"></i>
+              <div class="register-snipped" id="step2">
                 # 'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
               </div>
               3. Restart the agent.
@@ -166,11 +179,13 @@
                 <div class="power-cmd">For this you can use Powershell or CMD.</div>
                 a) Powershell:
                 # Restart-Service -Name wazuh
-                <div class="register-snipped">
+                <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('stepA')"></i>
+                <div class="register-snipped" id="stepA">
                   # Restart-Service -Name wazuh
                 </div>
                 b) CMD:
-                <div class="register-snipped">
+                <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('stepB')"></i>
+                <div class="register-snipped" id="stepB">
                   # net stop wazuh<br>
                   # net start wazuh
                 </div>
@@ -179,15 +194,18 @@
             <!-- If the agent is MacOs -->
             <div ng-if="config.osSelected === 'macos'">
               1. Set the manager IP.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step1')"></i>
+              <div class="register-snipped" id="step1">
                 # sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
               </div>
               2. Register the agent against the manager.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step2')"></i>
+              <div class="register-snipped" id="step2">
                 # /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
               </div>
               3. Restart the agent.
-              <div class="register-snipped">
+              <i class="fa fa-clipboard cursor-pointer" aria-hidden="true" ng-click="toClipboard('step3')"></i>
+              <div class="register-snipped" id="step3">
                 # /Library/Ossec/bin/ossec-control restart
               </div>
             </div>

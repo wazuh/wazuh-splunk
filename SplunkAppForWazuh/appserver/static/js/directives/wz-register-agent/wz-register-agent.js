@@ -21,7 +21,7 @@ define(['../module'], function (directives) {
         $notificationService,
         $requestService
       ) {
-        
+
         const apiReq = $requestService.apiReq
         $scope.config = { osSelected: '', managerIp: '', agentName: '', agentKey: '' }
         $scope.newInstall = true
@@ -59,14 +59,29 @@ define(['../module'], function (directives) {
           $scope.$applyAsync()
         }
 
-        $scope.changeInstall = (install) => {
+        $scope.changeInstall = install => {
           $scope.newInstall = install === 'newInstall'
           $scope.$applyAsync()
         }
 
+        $scope.toClipboard = element => {
+          try {
+            const el = document.getElementById(element)
+            const range = document.createRange()
+            range.selectNodeContents(el)
+            const sel = window.getSelection()
+            sel.removeAllRanges()
+            sel.addRange(range)
+            document.execCommand('copy')
+            $notificationService.showSimpleToast('Content has been copied')
+          } catch (error) {
+            $notificationService.showErrorToast('Cannot copy the selected content')
+          }
+        }
+
         $scope.addAgent = async () => {
           try {
-            const response = await apiReq(`/agents/${$scope.config.agentName}`, {}, 'PUT')  
+            const response = await apiReq(`/agents/${$scope.config.agentName}`, {}, 'PUT')
             if (
               response &&
               response.data &&
