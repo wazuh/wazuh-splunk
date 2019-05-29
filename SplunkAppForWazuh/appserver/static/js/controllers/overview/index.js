@@ -14,5 +14,6 @@ define([
   './policy-monitoring/overviewPolicyMonitoringCtrl',
   './vulnerabilities/overviewVulnerabilitiesCtrl',
   './sca/overviewSCACtrl',
-  './hipaa/overviewHipaaCtrl'
+  './hipaa/overviewHipaaCtrl',
+  './nist/overviewNistCtrl'
 ], function() {})

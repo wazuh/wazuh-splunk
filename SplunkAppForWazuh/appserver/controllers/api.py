@@ -21,7 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 from splunk.clilib import cli_common as cli
-from requirements import pci_requirements,gdpr_requirements,hipaa_requirements
+from requirements import pci_requirements,gdpr_requirements,hipaa_requirements,nist_requirements
 import time
 
 class api(controllers.BaseController):
@@ -527,6 +527,43 @@ class api(controllers.BaseController):
                 return jsonbak.dumps(result)
         except Exception as e:
             self.logger.error("api: Error getting HIPAA requirements: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})
+         
+    @expose_page(must_login=False, methods=['GET'])
+    def nist(self, **kwargs):
+        try:
+            self.logger.debug("api: Getting NIST 800-53 data.")
+            if not 'requirement' in kwargs:
+                raise Exception('Missing requirement.')
+            nist_description = ''
+            requirement = kwargs['requirement']
+            if requirement == 'all':
+                if not 'id' in kwargs:
+                    return jsonbak.dumps(nist_requirements.nist)
+                the_id = kwargs['id']
+                url,auth,verify = self.get_credentials(the_id)
+                opt_endpoint = '/rules/nist'
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+                if request['error'] != 0:
+                    return jsonbak.dumps({'error':request['error']})
+                data = request['data']['items']
+                result = {}
+                for item in data:
+                    result[item] = nist_requirements.nist[item]
+                return jsonbak.dumps(result)
+            else:
+                if not requirement in nist_requirements.nist:
+                    return jsonbak.dumps({'error':'Requirement not found.'})
+                nist_description = nist_requirements.nist[requirement]
+                result = {}
+                result['nist'] = {}
+                result['nist']['requirement'] = requirement
+                result['nist']['description'] = nist_description
+                return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error("api: Error getting NIST 800-53 requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
 
 
