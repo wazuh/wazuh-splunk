@@ -21,7 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 from splunk.clilib import cli_common as cli
-from requirements import pci_requirements,gdpr_requirements
+from requirements import pci_requirements,gdpr_requirements,hipaa_requirements
 import time
 
 class api(controllers.BaseController):
@@ -490,6 +490,45 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error("api: Error getting PCI-DSS requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
+
+            
+    @expose_page(must_login=False, methods=['GET'])
+    def hipaa(self, **kwargs):
+        try:
+            self.logger.debug("api: Getting HIPAA data.")
+            if not 'requirement' in kwargs:
+                raise Exception('Missing requirement.')
+            hipaa_description = ''
+            requirement = kwargs['requirement']
+            if requirement == 'all':
+                if not 'id' in kwargs:
+                    return jsonbak.dumps(hipaa_requirements.hipaa)
+                the_id = kwargs['id']
+                url,auth,verify = self.get_credentials(the_id)
+                opt_endpoint = '/rules/hipaa'
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+                if request['error'] != 0:
+                    return jsonbak.dumps({'error':request['error']})
+                data = request['data']['items']
+                result = {}
+                for item in data:
+                    result[item] = hipaa_requirements.hipaa[item]
+                return jsonbak.dumps(result)
+            else:
+                if not requirement in hipaa_requirements.hipaa:
+                    return jsonbak.dumps({'error':'Requirement not found.'})
+                hipaa_description = hipaa_requirements.hipaa[requirement]
+                result = {}
+                result['hipaa'] = {}
+                result['hipaa']['requirement'] = requirement
+                result['hipaa']['description'] = hipaa_description
+                return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error("api: Error getting HIPAA requirements: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})
+
 
     def get_config_on_memory(self):
         try:
