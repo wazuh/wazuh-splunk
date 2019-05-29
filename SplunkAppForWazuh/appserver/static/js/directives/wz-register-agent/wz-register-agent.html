@@ -130,7 +130,7 @@
             <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
               1. Set the manager IP.
               <div class="register-snipped">
-                # sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf<br>
+                # sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
               </div>
               2. Register the agent against the manager.
               <div class="register-snipped">
@@ -145,7 +145,8 @@
             <div ng-if="config.osSelected === 'windows'">
               1. Set the manager IP.
               <div class="power-cmd">
-                Change <span class="bg-whitesmoke">MANAGER_IP</span> for <span class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
+                Change <span class="bg-whitesmoke">MANAGER_IP</span> for <span
+                  class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
                   (x86)\ossec-agent\ossec.conf</b>:
               </div>
               <div class="register-snipped">
@@ -173,6 +174,21 @@
                   # net stop wazuh<br>
                   # net start wazuh
                 </div>
+              </div>
+            </div>
+            <!-- If the agent is MacOs -->
+            <div ng-if="config.osSelected === 'macos'">
+              1. Set the manager IP.
+              <div class="register-snipped">
+                # sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
+              </div>
+              2. Register the agent against the manager.
+              <div class="register-snipped">
+                # /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
+              </div>
+              3. Restart the agent.
+              <div class="register-snipped">
+                # /Library/Ossec/bin/ossec-control restart
               </div>
             </div>
           </div>
