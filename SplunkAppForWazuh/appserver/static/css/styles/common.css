@@ -1923,9 +1923,18 @@ label.wz-icon-loupe  input {
   margin: 15px 20px;
   padding: 15px 20px;
   font-size: 12px;
+  overflow-x: auto;
 }
 
 .btn-empty-selected {
   background-color: rgb(228, 242, 245) !important;
   color: rgb(0, 121, 165) !important;
+}
+
+.power-cmd {
+  margin: 10px 0px 10px 5px;
+}
+
+.bg-whitesmoke {
+  background-color: whitesmoke;
 }

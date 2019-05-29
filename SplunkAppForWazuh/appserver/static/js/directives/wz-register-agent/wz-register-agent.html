@@ -109,7 +109,73 @@
         </div>
         <!-- If only registraton-->
         <div ng-if="!newInstall">
-
+          <!-- Insert agent name -->
+          <div>
+            <div>
+              <span class="reg-agent-text">Agent name:</span> &nbsp;
+              <span>{{config.agentName}}</span>
+              <div class="wz-margin-top-15 wz-margin-left-20">
+                <input flex placeholder="Agent name..." ng-model="agentName" type="text" class="input-register-agent"
+                  ng-change="selectAgentName(agentName)">
+                <button ng-if="config.agentName && !registeredAgent" type="submit"
+                  class="btn wz-button-empty wz-margin-left-10 next-input-register-agent" ng-click="addAgent()">
+                  <span>Register</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- If the key was generated -->
+          <div ng-if="registeredAgent">
+            <!-- If the agent is Linux -->
+            <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
+              1. Set the manager IP.
+              <div class="register-snipped">
+                # sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf<br>
+              </div>
+              2. Register the agent against the manager.
+              <div class="register-snipped">
+                # /var/ossec/bin/manage_agents -i {{config.agentKey}}
+              </div>
+              3. Restart the agent.
+              <div class="register-snipped">
+                # /var/ossec/bin/ossec-control restart
+              </div>
+            </div>
+            <!-- If the agent is Windows -->
+            <div ng-if="config.osSelected === 'windows'">
+              1. Set the manager IP.
+              <div class="power-cmd">
+                Change <span class="bg-whitesmoke">MANAGER_IP</span> for <span class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
+                  (x86)\ossec-agent\ossec.conf</b>:
+              </div>
+              <div class="register-snipped">
+                &lt;client&gt;<br>
+                &nbsp;&nbsp;&lt;server&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;address&gt;{{config.managerIp}}&lt;/address&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+                &nbsp;&nbsp;&lt;/server&gt;<br>
+                &lt;/client&gt;
+              </div>
+              2. Register the agent against the manager.
+              <div class="register-snipped">
+                # 'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
+              </div>
+              3. Restart the agent.
+              <div class="wz-margin-left-10">
+                <div class="power-cmd">For this you can use Powershell or CMD.</div>
+                a) Powershell:
+                # Restart-Service -Name wazuh
+                <div class="register-snipped">
+                  # Restart-Service -Name wazuh
+                </div>
+                b) CMD:
+                <div class="register-snipped">
+                  # net stop wazuh<br>
+                  # net start wazuh
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div ng-if="config.osSelected" class="reset-register-agent cursor-pointer" ng-click="reset()">

@@ -17,11 +17,15 @@ define(['../module'], function (directives) {
       restrict: 'E',
       scope: {},
       controller(
-        $scope
+        $scope,
+        $notificationService,
+        $requestService
       ) {
         
-        $scope.config = { osSelected: '', managerIp: '' }
+        const apiReq = $requestService.apiReq
+        $scope.config = { osSelected: '', managerIp: '', agentName: '', agentKey: '' }
         $scope.newInstall = true
+        $scope.registeredAgent = false
 
         // Functions
         $scope.selectOs = (os) => {
@@ -39,10 +43,19 @@ define(['../module'], function (directives) {
           $scope.$applyAsync()
         }
 
+        $scope.selectAgentName = (agentName) => {
+          $scope.config.agentName = agentName
+          $scope.registeredAgent = false
+          $scope.$applyAsync()
+        }
+
         $scope.reset = () => {
           for (let key in $scope.config) {
             $scope.config[key] = ''
           }
+          $scope.managerAddress = ''
+          $scope.registeredAgent = false
+          $scope.newInstall = 'newInstall'
           $scope.$applyAsync()
         }
 
@@ -51,6 +64,26 @@ define(['../module'], function (directives) {
           $scope.$applyAsync()
         }
 
+        $scope.addAgent = async () => {
+          try {
+            const response = await apiReq(`/agents/${$scope.config.agentName}`, {}, 'PUT')  
+            if (
+              response &&
+              response.data &&
+              response.data.data &&
+              !response.data.error
+            ) {
+              $scope.config.agentKey = response.data.data.key
+              $scope.registeredAgent = true
+              $scope.$applyAsync()
+            } else {
+              const error = response.data.message || response.data.error || 'Cannot add agent'
+              throw error
+            }
+          } catch (error) {
+            $notificationService.showErrorToast(error || 'Cannot add agent')
+          }
+        }
       },
       templateUrl:
         BASE_URL +
