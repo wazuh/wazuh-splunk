@@ -20,7 +20,7 @@ define(['../module'], function (directives) {
         $scope
       ) {
         
-        $scope.config = { osSelected: false, managerIp: false }
+        $scope.config = { osSelected: '', managerIp: '' }
         $scope.newInstall = true
 
         // Functions
@@ -41,7 +41,7 @@ define(['../module'], function (directives) {
 
         $scope.reset = () => {
           for (let key in $scope.config) {
-            $scope.config[key] = false
+            $scope.config[key] = ''
           }
           $scope.$applyAsync()
         }

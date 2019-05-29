@@ -1924,3 +1924,8 @@ label.wz-icon-loupe  input {
   padding: 15px 20px;
   font-size: 12px;
 }
+
+.btn-empty-selected {
+  background-color: rgb(228, 242, 245) !important;
+  color: rgb(0, 121, 165) !important;
+}

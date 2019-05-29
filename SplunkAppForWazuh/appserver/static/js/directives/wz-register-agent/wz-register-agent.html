@@ -2,51 +2,42 @@
   <md-card class="wz-md-card no-margin-sides wz-margin-top-15 add-agent-card">
     <md-card-contents>
       <!-- Select the OS-->
-      <div ng-if="!config.osSelected">
-        <div class="bubble">1</div>
+      <div>
+        <div ng-if="!config.osSelected" class="bubble">1</div>
+        <div ng-if="config.osSelected" class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i>
+        </div>
         <span class="reg-agent-text">Choose OS:</span>
-        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('redhat')">
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('redhat')"
+          ng-class="{'btn-empty-selected': config.osSelected === 'redhat'}">
           <span>{{osEquivalence("redhat")}}</span>
         </button>
-        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('debian')">
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('debian')"
+          ng-class="{'btn-empty-selected': config.osSelected === 'debian'}">
           <span>{{osEquivalence("debian")}}</span>
         </button>
-        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('windows')">
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('windows')"
+          ng-class="{'btn-empty-selected': config.osSelected === 'windows'}">
           <span>{{osEquivalence("windows")}}</span>
         </button>
-        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('macos')">
+        <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('macos')"
+          ng-class="{'btn-empty-selected': config.osSelected === 'macos'}">
           <span>{{osEquivalence("macos")}}</span>
         </button>
       </div>
-      <!-- When OS is selected -->
-      <div ng-if="config.osSelected">
-        <div class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i></div>
-        <div class="wz-padding-top-7">
-          <span class="reg-agent-text">Chosen OS:</span> &nbsp;
-          <span>{{osEquivalence(config.osSelected)}}</span>
-        </div>
-      </div>
       <!-- Select the IP-->
-      <div ng-if="config.osSelected && !config.managerIp" class="wz-margin-top-30">
-        <div class="bubble">2</div>
+      <div class="wz-margin-top-30">
+        <div ng-if="!config.managerIp" class="bubble">2</div>
+        <div ng-if="config.managerIp" class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i></div>
         <div class="wz-padding-top-7"></div>
         <span class="reg-agent-text">Wazuh server address:</span>
+        <span class="wz-margin-left-10">{{config.managerIp}}</span>
         <div class="div-input-register-agent">
           <input flex placeholder="Server address..." ng-model="managerAddress" type="text" class="input-register-agent"
-            wz-enter="selectManagerAddress()">
-          <button type="submit" class="btn wz-button-empty wz-margin-left-10 next-input-register-agent"
-            ng-click="selectManagerAddress(managerAddress)">
-            <span>Next</span>
-          </button>
+            ng-change="selectManagerAddress(managerAddress)">
         </div>
       </div>
-      <!-- When Manager IP is selected-->
-      <div ng-if="config.osSelected && config.managerIp" class="wz-margin-top-30">
-        <div class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i></div>
-        <div class="wz-padding-top-7">
-          <span class="reg-agent-text">Wazuh server address:</span> &nbsp;
-          <span>{{config.managerIp}}</span>
-        </div>
+      <!-- Snipped with install steps-->
+      <div ng-if="config.osSelected && config.managerIp" class="wz-margin-top-10">
         <!-- Navbar to select if is a new install or not -->
         <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'newInstall'">
           <md-nav-item class="wz-nav-item" md-nav-click="changeInstall('newInstall')" name="newInstall">New installation
@@ -118,7 +109,7 @@
         </div>
         <!-- If only registraton-->
         <div ng-if="!newInstall">
-          
+
         </div>
       </div>
       <div ng-if="config.osSelected" class="reset-register-agent cursor-pointer" ng-click="reset()">
