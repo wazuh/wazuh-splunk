@@ -604,7 +604,7 @@ define([
           if (typeof JSONraw.pretty !== 'undefined') delete JSONraw.pretty
 
           let path = ''
-          if (method === 'GET' || method === 'POST') {
+          if (method === 'PUT' || method === 'POST') {
             // Assign inline parameters
             for (const key in extra) JSONraw[key] = extra[key]
             path = req.includes('?') ? req.split('?')[0] : req
