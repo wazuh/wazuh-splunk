@@ -17,88 +17,43 @@ define([
 ) {
   'use strict'
 
-  class AgentsGdpr {
+  class AgentsHipaa {
     /**
-     * Class constructor
-     * @param {Object} $urlTokenModel
-     * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $state
+     * Class Agents HIPAA
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $state
+     * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
      */
-
     constructor(
       $urlTokenModel,
-      $currentDataService,
       $scope,
       $state,
+      $currentDataService,
       agent,
       $reportingService,
-      gdprTabs,
+      hipaaTabs,
       reportingEnabled,
       pciExtensionEnabled,
-      hipaaExtensionEnabled,
-      nistExtensionEnabled
+      gdprExtensionEnabled,
+      nistExtensionEnabled,
     ) {
-      this.scope = $scope
-      this.scope.reportingEnabled = reportingEnabled
-      this.scope.pciExtensionEnabled = pciExtensionEnabled
-      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
-      this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.state = $state
-      this.currentDataService = $currentDataService
       this.reportingService = $reportingService
       this.tableResults = {}
-      this.agent = agent
-      this.scope.expandArray = [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
-      this.scope.expand = (i, id) => this.expand(i, id)
-
-      if (
-        this.agent &&
-        this.agent.data &&
-        this.agent.data.data &&
-        this.agent.data.data.id
-      )
-        this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
-        )
-      this.filters = this.currentDataService.getSerializedFilters()
-      if (!$currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
-      }
+      this.currentDataService = $currentDataService
+      this.scope = $scope
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.gdprExtensionEnabled = gdprExtensionEnabled
+      this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
+      this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
         '#timePicker',
-        $urlTokenModel.handleValueChange
+        this.urlTokenModel.handleValueChange
       )
-
-      this.dropdown = new Dropdown(
-        'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-        'rule.gdpr{}',
-        '$form.gdpr$',
-        'dropDownInput',
-        this.scope
-      )
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
-        if (newValue && this.dropdownInstance) {
-          $urlTokenModel.handleValueChange(this.dropdownInstance)
-        }
-      })
-      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
+      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
         this.launchSearches()
@@ -109,61 +64,99 @@ define([
         this.launchSearches()
       })
 
+      this.scope.$on('$destroy', () => {
+        this.dropdown.destroy()
+        this.timePicker.destroy()
+        this.vizz.map(vizz => vizz.destroy())
+      })
+
+      this.scope.expandArray = [false, false, false, false, false]
+      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.dropdown = new Dropdown(
+        'dropDownInput',
+        `${
+          this.filters
+        } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
+        'rule.pci_dss{}',
+        '$form.pci$',
+        'dropDownInput',
+        this.scope
+      )
+      this.dropdownInstance = this.dropdown.getElement()
+      this.dropdownInstance.on('change', newValue => {
+        if (newValue && this.dropdownInstance)
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
+      })
+      this.agent = agent
+      if (
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.id
+      )
+        this.currentDataService.addFilter(
+          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+        )
+      this.filters = this.currentDataService.getSerializedFilters()
+
       this.vizz = [
         /**
          * Visualizations
          */
         new ColumnChart(
-          'gdprRequirementsVizz',
+          'pciReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
-          'gdprRequirementsVizz',
+          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
+          'pciReqSearchVizz',
           this.scope
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{}`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
-          'top5GDPR',
+          'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} `,
-          'top5GDPR',
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description`,
+          'topRules',
           this.scope
         ),
         new PieChart(
-          'rulesVizz',
-          `${this.filters} sourcetype=wazuh  | top limit=5 rule.description `,
-          'rulesVizz',
+          'top5Pcidss',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{}`,
+          'top5Pcidss',
           this.scope
         ),
         new PieChart(
-          'agentsVizz',
+          'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
-          'agentsVizz',
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level`,
+          'ruleLevelDistribution',
           this.scope
         ),
         new ColumnChart(
-          'requirementsByAgentVizz',
+          'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
-          'requirementsByAgentVizz',
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          'reqByAgentsVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -171,7 +164,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -201,16 +194,16 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-gdpr',
-          'GDPR',
+          'agents-hipaa',
+          'HIPAA',
           this.filters,
           [
-            'gdprRequirementsVizz',
+            'pciReqSearchVizz',
+            'ruleLevelDistribution',
+            'top5Pcidss',
             'groupsVizz',
-            'top5GDPR',
-            'rulesVizz',
-            'agentsVizz',
-            'requirementsByAgentVizz',
+            'topRules',
+            'reqByAgentsVizz',
             'alertsSummaryVizz'
           ],
           {}, //Metrics,
@@ -238,15 +231,6 @@ define([
         }
         if (!this.scope.$$phase) this.scope.$digest()
       })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.dropdown.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
@@ -265,6 +249,14 @@ define([
     }
 
     /**
+     * Gets filters and launches search
+     */
+    launchSearches() {
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.state.reload()
+    }
+
+    /**
      * Returns a class depending of the agent state
      * @param {String} agentStatus
      */
@@ -280,14 +272,6 @@ define([
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
-    }
-
-    /**
-     * Gets filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.getFilters()
-      this.state.reload()
     }
 
     expand(i, id) {
@@ -313,5 +297,5 @@ define([
       })
     }
   }
-  app.controller('agentsGdprCtrl', AgentsGdpr)
+  app.controller('agentsHipaaCtrl', AgentsHipaa)
 })

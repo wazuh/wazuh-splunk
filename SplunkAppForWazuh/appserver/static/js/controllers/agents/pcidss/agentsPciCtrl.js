@@ -36,7 +36,9 @@ define([
       $reportingService,
       pciTabs,
       reportingEnabled,
-      gdprExtensionEnabled
+      gdprExtensionEnabled,
+      hipaaExtensionEnabled,
+      nistExtensionEnabled
     ) {
       this.state = $state
       this.reportingService = $reportingService
@@ -45,6 +47,8 @@ define([
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
+      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.pciTabs = pciTabs ? pciTabs : false
       this.urlTokenModel = $urlTokenModel
       this.timePicker = new TimePicker(
