@@ -24,6 +24,8 @@ define(['../module'], function(module) {
           file: 'File',
           gdpr: 'GDPR',
           pci: 'PCI',
+          hipaa: 'HIPAA',
+          nist: 'NIST 800-53',
           groups: 'Groups',
           name: 'Name',
           count: 'Count',
