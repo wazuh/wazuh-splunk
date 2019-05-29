@@ -47,6 +47,79 @@
           <span class="reg-agent-text">Wazuh server address:</span> &nbsp;
           <span>{{config.managerIp}}</span>
         </div>
+        <!-- Navbar to select if is a new install or not -->
+        <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'newInstall'">
+          <md-nav-item class="wz-nav-item" md-nav-click="changeInstall('newInstall')" name="newInstall">New installation
+          </md-nav-item>
+          <md-nav-item class="wz-nav-item" md-nav-click="changeInstall('onlyRegister')" name="onlyRegister">Registration
+          </md-nav-item>
+        </md-nav-bar>
+        <!-- If new install -->
+        <div ng-if="newInstall">
+          <!-- If Redhat / Centos -->
+          <div ng-if="config.osSelected === 'redhat'">
+            1. Add the Wazuh repository.
+            <div class="register-snipped">
+              # rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
+              # cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
+                [wazuh_repo]<br>
+                gpgcheck=1<br>
+                gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
+                enabled=1<br>
+                name=Wazuh repository<br>
+                baseurl=https://packages.wazuh.com/3.x/yum/<br>
+                protect=1<br>
+                EOF
+            </div>
+            2. Deploy the installation.
+            <div class="register-snipped">
+              # WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
+            </div>
+            3. Wait until the proccess finish.
+          </div>
+          <!-- If Debian / Ubuntu -->
+          <div ng-if="config.osSelected === 'debian'">
+            1. Install the necessaries utilities.
+            <div class="register-snipped">
+              # apt-get install curl apt-transport-https lsb-release
+            </div>
+            2. Install the Wazuh repository GPG key.
+            <div class="register-snipped">
+              # curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
+            </div>
+            3. Add the repository.
+            <div class="register-snipped">
+              # echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list<br>
+              # apt-get update
+            </div>
+            4. Deploy the installation.
+            <div class="register-snipped">
+              # WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
+            </div>
+            5. Wait until the proccess finish.
+          </div>
+          <!-- If Windows -->
+          <div ng-if="config.osSelected === 'windows'">
+            1. Deploy the installation.
+            <div class="register-snipped">
+              wazuh-agent-3.9.1-1.msi /q ADDRESS="{{config.managerIp}}" AUTHD_SERVER="{{config.managerIp}}"
+            </div>
+            2. Wait until the proccess finish.
+          </div>
+          <!-- If MacOS -->
+          <div ng-if="config.osSelected === 'macos'">
+            1. Deploy the installation.
+            <div class="register-snipped">
+              # launchctl setenv WAZUH_MANAGER_IP "{{config.managerIp}}" && installer -pkg wazuh-agent-<version>.pkg
+                -target /
+            </div>
+            2. Wait until the proccess finish.
+          </div>
+        </div>
+        <!-- If only registraton-->
+        <div ng-if="!newInstall">
+          
+        </div>
       </div>
       <div ng-if="config.osSelected" class="reset-register-agent cursor-pointer" ng-click="reset()">
         <wz-svg icon="refresh" color="#00445a"></wz-svg>

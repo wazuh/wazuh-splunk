@@ -21,6 +21,7 @@ define(['../module'], function (directives) {
       ) {
         
         $scope.config = { osSelected: false, managerIp: false }
+        $scope.newInstall = true
 
         // Functions
         $scope.selectOs = (os) => {
@@ -42,6 +43,11 @@ define(['../module'], function (directives) {
           for (let key in $scope.config) {
             $scope.config[key] = false
           }
+          $scope.$applyAsync()
+        }
+
+        $scope.changeInstall = (install) => {
+          $scope.newInstall = install === 'newInstall'
           $scope.$applyAsync()
         }
 
