@@ -35,7 +35,7 @@ define(['../module'], function (directives) {
         }
 
         $scope.osEquivalence = (os) => {
-          const equivalences = { redhat: 'Redhat / CentOS', debian: 'Debian / Ubuntu', windows: 'Windows', macos: 'MacOS' }
+          const equivalences = { redhat: 'Red Hat / CentOS', debian: 'Debian / Ubuntu', windows: 'Windows', macos: 'MacOS' }
           return equivalences[os] || 'Undefined'
         }
 
