@@ -1868,28 +1868,30 @@ label.wz-icon-loupe  input {
 }
 
 .bubble {
-  background: #f5f5f5;
-  padding: 8px;
-  height: 20px;
-  width: 20px;
+  background-color: #006BB4;
+  height: 32px;
+  width: 32px;
+  line-height: 32px;
   float: left;
-  border-radius: 50%;
+  border-radius: 32px;
   text-align: center;
-  color: #00445a;
-  font-weight: bold;
-  font-size: 18px;
+  color: #FFF;
+  font-size: 16px;
+  font-weight: 500;
   margin-right: 10px;
   margin-top: -2px;
+  text-align: center;
 }
 
 .bubble-checked {
-  background: #00445a !important;
-  color: #f5f5f5 !important;
+  background: #006BB4 !important;
+  color: #FFF !important;
 }
 
 .reg-agent-text {
   font-size: 16px;
   font-weight: bold;
+  padding-top: 5px;
 }
 
 .close-register-agent {
@@ -1903,8 +1905,17 @@ label.wz-icon-loupe  input {
 }
 
 .input-register-agent {
-  background: whitesmoke !important; 
   border: none !important; 
+  border-right: none !important;
+  border-left: none !important;
+  border-image: initial !important;
+  border-bottom: 1px solid rgb(21, 147, 210) !important;
+  border-radius: 0px !important;
+  margin-bottom: -5px !important;
+}
+
+.choose-os {
+  margin: 25px 0px 0px 35px;
 }
 
 .next-input-register-agent {
@@ -1937,4 +1948,15 @@ label.wz-icon-loupe  input {
 
 .bg-whitesmoke {
   background-color: whitesmoke;
+}
+
+
+.vertical-line {
+  border-left: solid 2px #D3DAE6;
+  height: 85px;
+  margin: -20px 0px -5px 15px;
+}
+
+.wz-padding-0 {
+  padding: 0px !important;
 }
