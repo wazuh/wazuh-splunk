@@ -41,7 +41,7 @@
         <div class="wz-margin-top-30">
           <div class="bubble">3</div>
           <div class="reg-agent-text">Complete the installation</div>
-          <!-- Snipped with install steps-->
+          <!-- snippet with install steps-->
           <div class="wz-margin-top-10">
             <!-- Navbar to select if is a new install or not -->
             <md-nav-bar ng-if="showNavTab" class="wz-nav-bar wz-margin-10 no-margin-left"
@@ -58,7 +58,7 @@
               <!-- If Redhat / Centos -->
               <div ng-if="config.osSelected === 'redhat'">
                 1. Add the Wazuh repository.
-                <div class="register-snipped" id="step1">
+                <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -77,7 +77,7 @@
                     EOF
                 </div>
                 2. Deploy the installation.
-                <div class="register-snipped" id="step2">
+                <div class="register-snippet" id="step2">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -90,7 +90,7 @@
               <!-- If Debian / Ubuntu -->
               <div ng-if="config.osSelected === 'debian'">
                 1. Install the necessaries utilities.
-                <div class="register-snipped" id="step1">
+                <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -100,7 +100,7 @@
                   apt-get install curl apt-transport-https lsb-release
                 </div>
                 2. Install the Wazuh repository GPG key.
-                <div class="register-snipped" id="step2">
+                <div class="register-snippet" id="step2">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -110,7 +110,7 @@
                   curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
                 </div>
                 3. Add the repository.
-                <div class="register-snipped" id="step3">
+                <div class="register-snippet" id="step3">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step3')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -122,7 +122,7 @@
                   apt-get update
                 </div>
                 4. Deploy the installation.
-                <div class="register-snipped" id="step4">
+                <div class="register-snippet" id="step4">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step4')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -135,7 +135,7 @@
               <!-- If Windows -->
               <div ng-if="config.osSelected === 'windows'">
                 1. Deploy the installation.
-                <div class="register-snipped" id="step1">
+                <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -148,7 +148,7 @@
               <!-- If MacOS -->
               <div ng-if="config.osSelected === 'macos'">
                 1. Deploy the installation.
-                <div class="register-snipped" id="step1">
+                <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i>
                     <md-tooltip md-direction="right" class="wz-tooltip">
@@ -185,7 +185,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step1">
+                  <div class="register-snippet" id="step1">
                     sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
@@ -195,7 +195,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step2">
+                  <div class="register-snippet" id="step2">
                     /var/ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
@@ -205,7 +205,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step3">
+                  <div class="register-snippet" id="step3">
                     /var/ossec/bin/ossec-control restart
                   </div>
                 </div>
@@ -223,7 +223,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step1">
+                  <div class="register-snippet" id="step1">
                     &lt;client&gt;<br>
                     &nbsp;&nbsp;&lt;server&gt;<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;&lt;address&gt;{{config.managerIp}}&lt;/address&gt;<br>
@@ -238,7 +238,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step2">
+                  <div class="register-snippet" id="step2">
                     'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
@@ -252,7 +252,7 @@
                         Copy to clipboard
                       </md-tooltip>
                     </span>
-                    <div class="register-snipped" id="stepA">
+                    <div class="register-snippet" id="stepA">
                       Restart-Service -Name wazuh
                     </div>
                     b) CMD:
@@ -262,7 +262,7 @@
                         Copy to clipboard
                       </md-tooltip>
                     </span>
-                    <div class="register-snipped" id="stepB">
+                    <div class="register-snippet" id="stepB">
                       net stop wazuh<br>
                       net start wazuh
                     </div>
@@ -277,7 +277,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step1">
+                  <div class="register-snippet" id="step1">
                     sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
@@ -287,7 +287,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step2">
+                  <div class="register-snippet" id="step2">
                     /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
@@ -297,7 +297,7 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  <div class="register-snipped" id="step3">
+                  <div class="register-snippet" id="step3">
                     /Library/Ossec/bin/ossec-control restart
                   </div>
                 </div>
