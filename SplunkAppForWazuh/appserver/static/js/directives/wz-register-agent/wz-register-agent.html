@@ -80,7 +80,6 @@
                 <div class="register-snipped" id="step2">
                   WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
                 </div>
-                3. Wait until the process finish.
               </div>
               <!-- If Debian / Ubuntu -->
               <div ng-if="config.osSelected === 'debian'">
@@ -110,7 +109,6 @@
                 <div class="register-snipped" id="step4">
                   WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
                 </div>
-                5. Wait until the process finish.
               </div>
               <!-- If Windows -->
               <div ng-if="config.osSelected === 'windows'">
@@ -120,7 +118,6 @@
                 <div class="register-snipped" id="step1">
                   wazuh-agent-3.9.1-1.msi /q ADDRESS="{{config.managerIp}}" AUTHD_SERVER="{{config.managerIp}}"
                 </div>
-                2. Wait until the process finish.
               </div>
               <!-- If MacOS -->
               <div ng-if="config.osSelected === 'macos'">
@@ -131,7 +128,6 @@
                   launchctl setenv WAZUH_MANAGER_IP "{{config.managerIp}}" && installer -pkg wazuh-agent-<version>.pkg
                     -target /
                 </div>
-                2. Wait until the process finish.
               </div>
             </div>
             <!-- If only registraton-->
