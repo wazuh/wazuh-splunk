@@ -26,6 +26,7 @@ define(['../module'], function (directives) {
         $scope.config = { osSelected: '', managerIp: '', agentName: '', agentKey: '' }
         $scope.newInstall = true
         $scope.registeredAgent = false
+        $scope.showNavTab = false
 
         // Functions
         $scope.selectOs = (os) => {
